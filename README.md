@@ -26,10 +26,10 @@ This script provides information only.  It does not alter any files on your comp
 
 ## Options
 
-The ```showonlyloaded``` switch will show mods that are loaded (active) in your save game but do not appear to be used.  Note that there will be a bunch of false positives in this list - any script only mod, or vehicle add on, or pre-requisite script for another mod may appear on this list.  Be careful with what you remove.  Some script only mods have been added to the checker to cut down on false positives.
+The ```showonlyload``` switch will show mods that are loaded (active) in your save game but do not appear to be used.  Note that there will be a bunch of false positives in this list - any script only mod, or vehicle add on, or pre-requisite script for another mod may appear on this list.  Be careful with what you remove.  Some script only mods have been added to the checker to cut down on false positives.
 
  ```
- C:\ > ./FS19_Mod_Checker.ps1 -showonlyloaded
+ C:\ > ./FS19_Mod_Checker.ps1 -showonlyload
  ```
 
 The ```nolog``` switch will prevent Mod Checker from writing a log file.
@@ -37,10 +37,10 @@ The ```nolog``` switch will prevent Mod Checker from writing a log file.
  C:\ > ./FS19_Mod_Checker.ps1 -nolog
 ```
 
-The ```noname``` switch will prevent Mod Checker from displaying mod long names (when known)
-```
- C:\ > ./FS19_Mod_Checker.ps1 -noname
-```
+```quiet```
+
+```savepath [path]```
+
 ## Requirements
 
 Windows powershell.  Sorry Mac users, maybe someday.
