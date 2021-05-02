@@ -4,16 +4,19 @@
 |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
                                               v1.0.0.0 by JTSage
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
 NOTE: This script does not in any way alter your mods or your
-savegame. To correct any problems found, you must manually follow
-the suggestions below.
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-DANGER: You have missing mods.  This should be corrected.
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-NOTICE: your mods folder is clean of broken files
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-DANGER: Missing mods that are loaded and used (this could cost you in-game money
+save game. To correct any problems found, you must manually
+follow the suggestions below.
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
+DANGER: You have missing mods.
+  Missing mods are mods that are either active or used in a
+  save game that no longer exist in the mods folder. They
+  are listed below.
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
+NOTICE: your mods folder is clean of mis-named / broken mod files
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
+DANGER: Missing mods that are active and used / placed / purchased
   FS19_ForestryDiscMulcher (Forestry Disc Mulcher)
   FS19_FST99Service (Field Service Trailer)
   FS19_Inspector (Fruchtzwerg's (JTSage) Inspector)
@@ -21,10 +24,10 @@ DANGER: Missing mods that are loaded and used (this could cost you in-game money
   FS19_MoreMissionsAllowed (MoreMissionsAllowed)
   FS19_Trex_600 (LIZARD Trex600)
   FS19_URAL_Tankcar (URAL 4320-60 ACV/ATZ)
-
-SUGGESTION: re-install these mods before starting the savegames that use them
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-WARNING: Missing mods that are loaded and NOT used (this is unlikely to cost you in-game money)
+SUGGESTION: Re-install these mods before starting the save game(s) that use them
+SUGGESTION: Failure to do so could cost you in-game money.
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
+WARNING: Missing mods that are active and NOT used / placed / purchased
   FS19_AgraZLandtrade (AgraZ Land Trade)
   FS19_Autonomous (John Deere Autonomous)
   FS19_BobcatT870 (Bobcat T870 Skid Steer)
@@ -56,9 +59,20 @@ WARNING: Missing mods that are loaded and NOT used (this is unlikely to cost you
   FS19_rtkStationsPack (John Deere RTK Stations Pack)
   FS19_sellingStation (Selling Station)
   FS19_SlurryTender_22000 (Lizard SlurryTender 22000l)
+SUGGESTION: Re-install these mods before starting the save game(s) that use them.
+SUGGESTION: Opening the save game without re-install will remove them from this list.
+SUGGESTION: These mods are unlikely to cost you in-game money.
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
+WARNING: Potential conflict found in your mod list
 
-SUGGESTION: re-install these mods.  Opening the savegame without re-install will remove them from this list.
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+NOTICE: "FS19_GlobalCompany" mod found - possible conflict
+  SUGGESTION: The Global Company mod can conflict with Place Anywhere if both are loaded (and GC's extended placables is used)
+
+SUGGESTION: This should not be taken as a suggestion that these mods do not work.
+SUGGESTION: This is also not intended as a slight against the mod or author.
+SUGGESTION: Many (most) times these mods will work as intended.
+SUGGESTION: If you do experience in-game problems, this may be a good place to start testing.
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
 NOTICE: These mods are not active in any savegame.
   FS19_2150_Series
   FS19_AdditionalGameSettings
@@ -75,10 +89,9 @@ NOTICE: These mods are not active in any savegame.
   FS19_MountableAttacher
   FS19_Pickup_Hitch_For_Claas_Forager
   FS19_Riverbird
-
 SUGGESTION: You could free up some space by getting rid of any of these you won't use.
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-NOTICE: These mods are active, but unused in a savegame.
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
+NOTICE: These mods are active, but NOT used / placed / purchased in any savegame.
   FS19_82s_TLX2020_Series (TLX 2020 Series)
   FS19_BigBaleStorage (Big Bale Storage Pack)
   FS19_CaseIH_Magnum_US_Series (Case IH Magnum US Series)
@@ -95,8 +108,12 @@ NOTICE: These mods are active, but unused in a savegame.
   FS19_snowMeltingStation (Snow Melting Station)
   FS19_StrawBlower_Big_Confort (Straw Blower Gyrax BIG CONFORT)
   FS19_TigerMate255 (Case IH Tiger-Mate 255 Field Cultivator)
-
 SUGGESTION: You could free up some space by getting rid of any of these you won't use.
-But do so carefully, script only mods and pre-requisites can appear here by mistake.
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Output created at: 05/02/2021 01:02:23
+SUGGESTION: Do so carefully, script only mods and pre-requisites can appear here by mistake.
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
+NOTICE: Report created at: 05/02/2021 12:44:41
+NOTICE: Savegame: all
+NOTICE: Data Folder: ~\Documents\My Games\FarmingSimulator2019\
+NOTICE: Mods Folder: ~\Documents\My Games\FarmingSimulator2019\mods\
+NOTICE: Mods Referenced / Found: 181 (38 are missing)
+   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---

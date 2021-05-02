@@ -1,0 +1,30 @@
+{
+	"_ignore_this_comment" : [
+		"This file contains mods that are known to break things in some circumstances",
+		"This is not meant as disparagement towards these mods or mod authors",
+		"If you are having in game issues, this may be a good place to start testing"
+	] ,
+	"FS19_InfoMenu" : 
+		"Some versions of Info Menu conflict with the Precision Farming DLC"
+	,
+	"FS19_UnitConvertLite" :
+		"Some versions of Unit Convert Lite conflict with the Precision Farming DLC"
+	,
+	"FS19_additionalFieldInfo" :
+		"Versions of Additional Field Info prior to 1.0.2.3 conflict with the Precision Farming DLC"
+	,
+	"FS19_towBar" :
+		"Old versions of the Tow Bar have been reported to be game breaking."
+	,
+	"FS19PlaceAnywhere" :
+		"The Place Anywhere mod can conflict with Global Company if both are loaded (and GC's extended placables is used)"
+	,
+	"FS19_GlobalCompany" :
+		"The Global Company mod can conflict with Place Anywhere if both are loaded (and GC's extended placables is used)"
+	,
+	"FS19_REA" :
+		"The Added Realism For Vehicles mod can cause conflicts with improperly prepared vehicle mods."
+	,
+	"FS19_realMud" :
+		"The Real Mud mod can cause conflicts with improperly prepared vehicle mods."
+}

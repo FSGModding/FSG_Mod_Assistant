@@ -6,6 +6,7 @@
                                               v1.0.0.0 by JTSage
 #> 
 param (
+	[parameter(Mandatory=$false)][ValidateRange(0,20)][Int]$saveslot = 0,
 	[string]$savepath       = "~\Documents\My` Games\FarmingSimulator2019\",
 	[switch]$showonlyload   = $false,
 	[switch]$nolog          = $false,
@@ -13,12 +14,14 @@ param (
 	[switch]$help           = $false
 )
 
+
 if ( $help ) {
 	Write-Host "ModChecker v1.0.0.0"
 	Write-Host "-------------------"
 	Write-Host "Usage:"
 	Write-Host " -savepath [Path to Save Files]  : Set path to save files"
-	Write-Host " -showonlyload                   : Show mods that are loaded buy potentially unused"
+	Write-Host " -saveslot [1-20]                : Look at a single save game, by slot number"
+	Write-Host " -showonlyload                   : Show mods that are active but potentially unused"
 	Write-Host " -nolog                          : Do not write log file"
 	Write-Host " -quiet                          : Do not print output to terminal"
 	Write-Host " -help                           : Print this screen"
@@ -31,7 +34,7 @@ $ERRORF  = "$Esc[91mFATAL ERROR$Esc[0m:"
 $WARNING = "$Esc[93mWARNING$Esc[0m:"
 $SUGGEST = "$Esc[96mSUGGESTION$Esc[0m:"
 $NOTICE  = "$Esc[92mNOTICE$Esc[0m:"
-$sepLine = "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+$sepLine = "   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---"
 
 
 $LogFile = "FS19_Used_Mods_Log.txt"
@@ -58,19 +61,22 @@ Writer( -join(
 	"                                              v1.0.0.0 by JTSage`n",
 	$sepLine, "`n",
 	"$Esc[93mNOTE$Esc[0m: This script does not in any way alter your mods or your`n",
-	"savegame. To correct any problems found, you must manually follow`n",
-	"the suggestions below.`n",
+	"save game. To correct any problems found, you must manually`n",
+	"follow the suggestions below.`n",
 	$sepLine
 ) )
 
 if ( !$nolog -And !$quiet ) { Write-Host "Output saved to $logFile`n$sepLine" }
 
 # Set up the default paths to all of the things we need to read
+
+#(if ( $saveslot -eq 0 ) { "*" } else { $saveslot })
+
 $GamePaths = @{
 	gameSettings = -join($savepath, "gameSettings.xml");
-	vehicles     = -join($savepath, "savegame*\vehicles.xml");
-	career       = -join($savepath, "savegame*\careerSavegame.xml");
-	items        = -join($savepath, "savegame*\items.xml");
+	vehicles     = -join($savepath, "savegame", $(if ( $saveslot -eq 0 ) { "*" } else { $saveslot }), "\vehicles.xml");
+	career       = -join($savepath, "savegame", $(if ( $saveslot -eq 0 ) { "*" } else { $saveslot }), "\careerSavegame.xml");
+	items        = -join($savepath, "savegame", $(if ( $saveslot -eq 0 ) { "*" } else { $saveslot }), "\items.xml");
 	modDir       = -join($savepath, "mods\");
 	modZip       = -join($savepath, "mods\*.zip");
 }
@@ -87,6 +93,9 @@ Select-Xml -Path $GamePaths.gameSettings -XPath '/gameSettings/modsDirectoryOver
 
 # Load those mods we know wont ever show a "used" status
 $scriptOnlyMods = Get-Content .\KnownScriptOnlyMods.txt | Select-Object -skip 2
+
+# Load those mods we know sometimes cause conflicts.
+$knownConflicts = Get-Content KnownConflicts.json | ConvertFrom-Json
 
 <# Create our mod list stucture.
 Internal = @{
@@ -115,6 +124,7 @@ $statusFlags = @{
 	badFile     = $false;
 	missingFile = $false;
 	garbageFile = $false;
+	modsMissing = 0;
 }
 
 <#
@@ -133,10 +143,13 @@ Get-ChildItem $GamePaths.modDir -Exclude "*.zip" |
 	Where-Object { !$_.PSIsContainer } |
 	ForEach-Object {
 		$statusFlags.garbageFile = $true
-		Writer(-join("$DANGER Garbage found: `"", $_.fullName, "`" - This file should not be here" ))
+		Writer(-join("$DANGER Garbage found: `"", $_.fullName, "`"" ))
 	}
 
-if ( $statusFlags.garbageFile ) { Writer($sepLine) }
+if ( $statusFlags.garbageFile ) { 
+	Writer("$SUGGEST Remove extra files from the mods folder, they only cause confusion")
+	Writer("$SUGGEST These are typically the result of improperly extracting a mod file")
+	Writer($sepLine) }
 
 # Next, lets look at the zip files in the mods folder.  This will populate our list.
 
@@ -210,6 +223,8 @@ foreach ( $thisCareerFile in $saveGameCareer ) {
 				$ModList[$thisModName]["name"]   = $thisTitle
 			} else {
 				$statusFlags.missingFile = $true
+				$statusFlags.modsMissing += 1
+				
 				$ModList[$thisModName] = @{
 					type    = "zip";
 					file    = $true;
@@ -259,8 +274,8 @@ foreach ( $thisKnownMod in $scriptOnlyMods ) {
 }
 
 
-if ( $statusFlags.badFile ) { Writer("$DANGER You have incorrectly named mods.  This should be corrected`n$sepLine") }
-if ( $statusFlags.missingFile ) { Writer("$DANGER You have missing mods.  This should be corrected.`n$sepLine" ) }
+if ( $statusFlags.badFile ) { Writer("$DANGER You have incorrectly named mods.`n  Incorrectly named mod will not load into the game. They are listed below.`n$sepLine") }
+if ( $statusFlags.missingFile ) { Writer("$DANGER You have missing mods.`n  Missing mods are mods that are either active or used in a`n  save game that no longer exist in the mods folder. They`n  are listed below.`n$sepLine" ) }
 
 
 <#
@@ -305,7 +320,7 @@ $modList.keys |
 		if ( $searchName -And $modList.Contains($searchName) ) {
 			Writer("  {0} `"{1}`" already exists, you should delete this file." -f $SUGGEST, $searchName)
 		} else {
-			Writer("  {0} good duplicate not found, you should rename this file. (`"{1}.zip`")" -f $SUGGEST, $searchName)
+			Writer("  {0} good duplicate not found, you should rename this file. (`"{1}.zip`"?)" -f $SUGGEST, $searchName)
 		}
 }
 
@@ -334,7 +349,7 @@ $modList.keys |
 		if ( $searchName -And $modList.Contains($searchName) ) {
 			Writer("  {0} `"{1}`" already exists, you should delete this folder." -f $SUGGEST, $searchName)
 		} else {
-			Writer("  {0} good duplicate not found, you should rename this folder. (`"{1}`")" -f $SUGGEST, $searchName)
+			Writer("  {0} good duplicate not found, you should rename this folder. (`"{1}`"?)" -f $SUGGEST, $searchName)
 		}
 		Writer("  {0} Additionally, unzipped mods cannot be used in multiplayer - you should zip this" -f $SUGGEST)
 }
@@ -349,7 +364,7 @@ $modList.keys |
 		Writer("  {0} Unzipped mods cannot be used in multiplayer - you should zip this" -f $SUGGEST)
 }
 
-if ( !$foundOne ) { Writer("$NOTICE your mods folder is clean of broken files") }
+if ( !$foundOne ) { Writer("$NOTICE your mods folder is clean of mis-named / broken mod files") }
 
 
 # Missing mods that are used (these can cost you money if you start the save)
@@ -359,13 +374,13 @@ $modList.keys |
 	Sort-Object |
 	ForEach-Object {
 		if ( !$foundOne ) {
-			Writer("$sepLine`n$DANGER Missing mods that are loaded and used (this could cost you in-game money")
+			Writer("$sepLine`n$DANGER Missing mods that are active and used / placed / purchased")
 			$foundOne = $true;
 		}
 		Writer("  {0} ({1})" -f $_, $modList[$_].name)
 	}
 
-if ( $foundOne ) { Writer("`n$SUGGEST re-install these mods before starting the savegames that use them") }
+if ( $foundOne ) { Writer("$SUGGEST Re-install these mods before starting the save game(s) that use them`n$SUGGEST Failure to do so could cost you in-game money.") }
 
 # Missing mods that are not used (these are unlikely to cost you money)
 $foundOne = $false;
@@ -374,13 +389,36 @@ $modList.keys |
 	Sort-Object |
 	ForEach-Object {
 		if ( !$foundOne ) {
-			Writer("$sepLine`n$WARNING Missing mods that are loaded and NOT used (this is unlikely to cost you in-game money)")
+			Writer("$sepLine`n$WARNING Missing mods that are active and NOT used / placed / purchased")
 			$foundOne = $true;
 		}
 		Writer("  {0} ({1})" -f $_, $modList[$_].name)
 	}
 
-if ( $foundOne ) { Writer("`n$SUGGEST re-install these mods.  Opening the savegame without re-install will remove them from this list.") }
+if ( $foundOne ) { Writer("$SUGGEST Re-install these mods before starting the save game(s) that use them.`n$SUGGEST Opening the save game without re-install will remove them from this list.`n$SUGGEST These mods are unlikely to cost you in-game money.") }
+
+
+# Lets talk about known conflicts here.
+$foundOne = $false
+
+foreach ($thisProperty in $knownConflicts.PSObject.Properties) {
+	if ( $modList.Contains($thisProperty.Name) ) {
+		if ( !$foundOne ) {
+			Writer("$sepLine`n$WARNING Potential conflict found in your mod list")
+			$foundOne = $true;	
+		}
+
+		Writer(-join("`n{0} `"{1}`" mod found - possible conflict" -f $NOTICE, $thisProperty.Name ))
+		Writer(-join("  {0} {1}" -f $SUGGEST, $thisProperty.Value))
+	}
+}
+if ( $foundOne ) {
+	Writer("`n$SUGGEST This should not be taken as a suggestion that these mods do not work.")
+	Writer("$SUGGEST This is also not intended as a slight against the mod or author.")
+	Writer("$SUGGEST Many (most) times these mods will work as intended.")
+	Writer("$SUGGEST If you do experience in-game problems, this may be a good place to start testing.")
+}
+
 
 # Mods that are neither loaded or used.
 $foundOne = $false;
@@ -389,12 +427,12 @@ $modList.keys |
 	Sort-Object |
 	ForEach-Object {
 		if ( !$foundOne ) {
-			Writer("$sepLine`n$NOTICE These mods are not active in any savegame.")
+			Writer("$sepLine`n$NOTICE These mods are not active in {0}." -f $(if ( $saveslot -eq 0 ) { "any savegame" } else { "savegame #$saveslot" }))
 			$foundOne = $true;
 		}
 		Writer("  {0}" -f $_)
 	}
-	if ( $foundOne ) { Writer("`n$SUGGEST You could free up some space by getting rid of any of these you won't use.") }
+	if ( $foundOne ) { Writer("$SUGGEST You could free up some space by getting rid of any of these you won't use.") }
 
 
 #Mods that are loaded but seemingly not used.  Most margin for error here.
@@ -405,18 +443,24 @@ if ( $showonlyload ) {
 		Sort-Object |
 		ForEach-Object {
 			if ( !$foundOne ) {
-				Writer("$sepLine`n$NOTICE These mods are active, but unused in a savegame.")
+				Writer("$sepLine`n$NOTICE These mods are active, but NOT used / placed / purchased in {0}." -f $(if ( $saveslot -eq 0 ) { "any savegame" } else { "savegame #$saveslot" }))
 				$foundOne = $true;
 			}
 			Writer("  {0} ({1})" -f $_, $modList[$_].name)
 		}
 		if ( $foundOne ) { 
-			Writer("`n$SUGGEST You could free up some space by getting rid of any of these you won't use.")
-			Writer("But do so carefully, script only mods and pre-requisites can appear here by mistake.")
+			Writer("$SUGGEST You could free up some space by getting rid of any of these you won't use.")
+			Writer("$SUGGEST Do so carefully, script only mods and pre-requisites can appear here by mistake.")
 		}
 }
 
 
 $today = Get-Date
-Writer("$sepLine`nOutput created at: $today")
+Writer($sepLine)
+Writer("$NOTICE Report created at: $today")
+Writer("$NOTICE Savegame: {0}" -f $(if ( $saveslot -eq 0 ) { "all" } else { "#$saveslot" }) )
+Writer("$NOTICE Data Folder: {0}" -f $savepath)
+Writer("$NOTICE Mods Folder: {0}" -f $GamePaths.modDir)
+Writer("$NOTICE Mods Referenced / Found: {0} ({1} are missing)" -f $ModList.count, $statusFlags.modsMissing)
+Writer($sepLine)
 
