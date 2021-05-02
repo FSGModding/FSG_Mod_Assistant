@@ -4,71 +4,100 @@
 |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
                                               v1.0.0.0 by JTSage
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Mod Folder Test Results:
-  DANGER: "01FS19_FIAT80Series - Copy.zip" is not a valid mod file. Delete or rename required
-  DANGER: "01FS19_FIAT80Series.zip" is not a valid mod file. Delete or rename required
-  DANGER: "FS19_FIAT80Series (1).zip" is not a valid mod file. Delete or rename required
-  WARNING: "FS19_BaleWapperExtension" is not zipped, and cannot be used in multiplayer
-  DANGER: "FS19_BaleWapperExtension - Copy" is not a valid mod folder. Delete or rename required
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-DANGER: The follow mods are used (purchased vehicles), but do not exist in the mods folder
-  FS19_ForestryDiscMulcher
-  FS19_FST99Service
-  FS19_Kinze_MachTill_401
-  FS19_Trex_600
-  FS19_URAL_Tankcar
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-WARNING: The follow mods are loaded, but do not exist in the mods folder
-  FS19_AgraZLandtrade
-  FS19_Autonomous
-  FS19_BobcatT870
-  FS19_ForestryDiscMulcher
-  FS19_FST99Service
-  FS19_InnomadeCombriRollSW3000
-  FS19_Inspector
-  FS19_KAMAZ_45143_AMKAR
-  FS19_Kinze_MachTill_401
-  FS19_Kuhn_Acura_1600
-  FS19_LagerSilo_Placeable
-  FS19_Lizard_Siroll3000
-  FS19_MoreMissionsAllowed
-  FS19_MultiComposter
-  FS19_rtkStationsPack
-  FS19_sellingStation
-  FS19_Trex_600
-  FS19_URAL_Tankcar
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-The following mods are neither loaded nor used in any savegame
-  01FS19_FIAT80Series - Copy.zip
-  01FS19_FIAT80Series.zip
-  FS19_2150_Series.zip
-  FS19_AdditionalGameSettings.zip
-  FS19_BaleWapperExtension
-  FS19_BaleWapperExtension - Copy
-  FS19_BigFieldsFarm.zip
-  FS19_CallContractors.zip
-  FS19_EasyDevControls.zip
-  FS19_FIAT80Series (1).zip
-  FS19_FIAT80Series.zip
-  FS19_FrontLifter.zip
-  FS19_Geo_Oregon.zip
-  FS19_GlobalCompanyPlaceable_AnimalFeeding_Trioliet.zip
-  FS19_GreenRiver2019.zip
-  FS19_GreenRiver2019_FarmingAgency_Edition.zip
-  FS19_JD_1720.zip
-  FS19_JohnDeere1990ccs.zip
-  FS19_Lime_Station_Placeable.zip
-  FS19_LoneOak_FarmHouse.zip
-  FS19_LoneOakPigFarmPack.zip
-  FS19_LoneOakSellPoints_Pack.zip
-  FS19_LoneOakSheepFarm_Pack.zip
-  FS19_MAD_Washer.zip
-  FS19_ManureTradingSystem.zip
-  FS19_MountableAttacher.zip
-  FS19_Pickup_Hitch_For_Claas_Forager.zip
-  FS19_Riverbird.zip
-  FS19_SaltSpreader.zip
-  FS19_SnowPlow.zip
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Output created at: 05/01/2021 17:00:39
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+NOTE: This script does not in any way alter your mods or your
+savegame. To correct any problems found, you must manually follow
+the suggestions below.
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+DANGER: Garbage found: "C:\Users\PC\Documents\My Games\FarmingSimulator2019\mods\crap.txt" - This file should not be here
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+DANGER: You have incorrectly named mods.  This should be corrected
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+DANGER: You have missing mods.  This should be corrected.
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+DANGER: "FS_19_Easy_Shed_Pack (1).zip" breaks naming conventions and will not be loaded.
+  SUGGESTION: "FS_19_Easy_Shed_Pack" already exists, you should delete this file.
+
+DANGER: "001FS_19_Easy_Shed_Pack.zip" breaks naming conventions and will not be loaded.
+  SUGGESTION: "FS_19_Easy_Shed_Pack" already exists, you should delete this file.
+
+DANGER: "FS_19_EZ_Shed_Pack (1).zip" breaks naming conventions and will not be loaded.
+  SUGGESTION: good duplicate not found, you should rename this file. ("FS_19_EZ_Shed_Pack.zip")
+
+DANGER: "FS_19_Easy_Shed_Pack - Copy (2).zip" breaks naming conventions and will not be loaded.
+  SUGGESTION: "FS_19_Easy_Shed_Pack" already exists, you should delete this file.
+
+DANGER: "01Bad_Folder" breaks naming conventions and will not be loaded.
+  SUGGESTION: good duplicate not found, you should rename this folder. ("Bad_Folder")
+  SUGGESTION: Additionaly, unzipped mods cannot be used in multiplayer - you should zip this
+
+WARNING: "FS19_Ok_Folder" is an unzipped folder.
+  SUGGESTION: Unzipped mods cannot be used in multiplayer - you should zip this
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+DANGER: Missing mods that are loaded and used (this could cost you in-game money
+  FS19_ForestryDiscMulcher (Forestry Disc Mulcher)
+  FS19_FST99Service (Field Service Trailer)
+  FS19_Inspector (Fruchtzwerg's (JTSage) Inspector)
+  FS19_Kinze_MachTill_401 (Kinze Mach Till 401)
+  FS19_MoreMissionsAllowed (MoreMissionsAllowed)
+  FS19_Trex_600 (LIZARD Trex600)
+  FS19_URAL_Tankcar (URAL 4320-60 ACV/ATZ)
+
+SUGGESTION: re-install these mods before starting the savegames that use them
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+WARNING: Missing mods that are loaded and NOT used (this is unlikely to cost you in-game money)
+  FS19_AgraZLandtrade (AgraZ Land Trade)
+  FS19_Autonomous (John Deere Autonomous)
+  FS19_BobcatT870 (Bobcat T870 Skid Steer)
+  FS19_Case_IH_490 (Case IH 490)
+  FS19_Case8575 (Case 8575)
+  FS19_CaseIH_4400_Series_Pack (CaseIH 4400 Series Pack)
+  FS19_CaseIH_NewHolland_Planters (Case IH Easy Rise & New Holland PL5015)
+  FS19_CaseIH_TrueTandem345 (CaseIH TRUE-TANDEM 345 Disc)
+  FS19_caseIHLB434R (Case IH LB434R)
+  FS19_CLAAS_Axion_900 (CLAAS Axion 900)
+  FS19_CLAAS_Xerion_3000_series (CLAAS Xerion 3000 series)
+  FS19_CLAAS_Xerion_5000_G1 (CLAAS Xerion 4000/5000 Series)
+  FS19_Fendt900Vario_S5_PC (Fendt Vario 900 Gen6 (MY 2020))
+  FS19_FI_FeedMixers (Animal Feed Mixers)
+  FS19_FI_FermentingSilo (Fermenting Silo T800)
+  FS19_GlobalCompanyPlaceable_BaleDrayer (GlobalCompany - Bale Drayer)
+  FS19_GlobalCompanyPlaceable_Dryer (GSI Grain Complex)
+  FS19_GlobalCompanyPlaceable_HayDrayer (GlobalCompany - Hay Dryer)
+  FS19_hauerSnowPack (Hauer Snow Pack)
+  FS19_InnomadeCombriRollSW3000 (Innomade CombriRoll SW3000)
+  FS19_JohnDeere_645FD (John Deere 645FD)
+  FS19_KAMAZ_45143_AMKAR (Kamaz 45143 Amkar)
+  FS19_kroneEasyCutPack (Krone EasyCut Pack)
+  FS19_Kuhn_Acura_1600 (Kuhn Accura 1600)
+  FS19_LagerSilo_Placeable (Placeable Storage Silo)
+  FS19_Lizard_Siroll3000 (Lizard Siroll 3000)
+  FS19_Man_ATF (MAN TGX ATF PACK)
+  FS19_MultiComposter (Composter)
+  FS19_rtkStationsPack (John Deere RTK Stations Pack)
+  FS19_sellingStation (Selling Station)
+  FS19_SlurryTender_22000 (Lizard SlurryTender 22000l)
+
+SUGGESTION: re-install these mods.  Opening the savegame without re-install will remove them from this list.
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+NOTICE: These mods are not active in any savegame.
+  FS19_2150_Series
+  FS19_AdditionalGameSettings
+  FS19_BigFieldsFarm
+  FS19_CallContractors
+  FS19_EasyDevControls
+  FS19_FrontLifter
+  FS19_GreenRiver2019
+  FS19_GreenRiver2019_FarmingAgency_Edition
+  FS19_JD_1720
+  FS19_JohnDeere1990ccs
+  FS19_Lime_Station_Placeable
+  FS19_MAD_Washer
+  FS19_MountableAttacher
+  FS19_Ok_Folder
+  FS19_Pickup_Hitch_For_Claas_Forager
+  FS19_Riverbird
+
+SUGGESTION: You could free up some space by getting rid of any of these you won't use.
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Output created at: 05/02/2021 00:54:35

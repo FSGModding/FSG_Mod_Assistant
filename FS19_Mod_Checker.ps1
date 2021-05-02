@@ -1,8 +1,3 @@
-param (
-	[switch]$showonlyloaded = $false,
-	[switch]$nolog = $false,
-	[switch]$noname = $false
-)
 <#
  _______           __ ______ __                __               
 |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
@@ -10,414 +5,418 @@ param (
 |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
                                               v1.0.0.0 by JTSage
 #> 
-
-### Change this to where your mods and savegames are.
-#
-# In most windows installations, ~ translates to C:\Users\[Your Username]\
-#
-# If you have a standard steam install, this should already be correct.
-#
-$modPath  = "~\Documents\My` Games\FarmingSimulator2019\mods"
-
-$savePath = "~\Documents\My` Games\FarmingSimulator2019\"
-
-
-## Known Script Only Exception Mods (do not show as unused when loaded)
-
-$knownException = (
-	'FS19_adjustWorkingSpeed',
-	'FS19_Agribumper',
-	'FS19_AnimalPenExtension',
-	'FS19_AutoDrive',
-	'FS19_BetterContracts',
-	'FS19_buyableLargeStackBales',
-	'FS19_categoryAdder',
-	'FS19_Courseplay',
-	'FS19_disableVehicleCameraCollision',
-	'FS19_EasyAutoLoad',
-	'FS19_Engine_Starter',
-	'FS19_GlobalCompany',
-	'FS19_GlobalCompanyAddOn_Icons',
-	'FS19_Inspector',
-	'FS19_MaizePlus',
-	'FS19_MapObjectsHider',
-	'FS19_MoneyTool',
-	'FS19_MoreMissionsAllowed',
-	'FS19_PrecisionFarmingAddon',
-	'FS19_realDirtColor',
-	'FS19_RM_Seasons',
-	'FS19_SleepAnytime',
-	'FS19_TrainStopMod',
-	'FS19_VehicleExplorer',
-	'VehicleInspector',
-	'FS19_AdvancedStats',
-	'FS19_StoreSales',
-	'FS19_SleepAnywhere',
-	'FS19_ExtendedVehicleMaintenance',
-	'FS19_BaleWapperExtension',
-	'FS19_UniversalPassenger',
-	'FS19_InfoDisplay',
-	'FS19_CameraSuspension',
-	'FS19_REA',
-	'FS19_ToolsCombo',
-	'FS19_InsideCameraZoom',
-	'FS19_VehicleControlAddon',
-	'FS19_KeyboardSteering',
-	'FS19_VehicleStraps',
-	'FS19_fixAttacherJointRot',
-	'FS19_NoAutomaticRefuel',
-	'FS19_realSpeedLimit',
-	'FS19_zzzSpeedControl',
-	'FS19_realDirtFix',
-	'FS19_READynamicDirt',
-	'FS19_AnimalScreenExtended',
-	'FS19_QuickCamera',
-	'FS19_guidanceSteering',
-	'FS19_vehicleDirtExtension',
-	'FS19_RM_Midwest',
-	'FS19_Geo_Montana'
+param (
+	[string]$savepath       = "~\Documents\My` Games\FarmingSimulator2019\",
+	[switch]$showonlyload   = $false,
+	[switch]$nolog          = $false,
+	[switch]$quiet          = $false,
+	[switch]$help           = $false
 )
 
-## DO NOT EDIT BELOW THIS LINE!!
+if ( $help ) {
+	Write-Host "ModChecker v1.0.0.0"
+	Write-Host "-------------------"
+	Write-Host "Usage:"
+	Write-Host " -savepath [Path to Save Files]  : Set path to save files"
+	Write-Host " -showonlyload                   : Show mods that are loaded buy potentially unused"
+	Write-Host " -nolog                          : Do not write log file"
+	Write-Host " -quiet                          : Do not print output to terminal"
+	Write-Host " -help                           : Print this screen"
+	exit 0
+}
 
-
-$modFileListType = @{};
-$modFileListLoad = @{};
-$modFileListUsed = @{};
-$modFileListName = @{};
-
-$modsAreGood = $true
-
-# This is for giants free DLC packs, which live in a different folder, and we don't want
-# to complain about them not being installed, so just assume they are.
-$specialCases = @('FS19_holmerPack')
-
-$sepLine = "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-
-$Esc=[char]0x1b 
-$DANGER = "$Esc[91mDANGER$Esc[0m:"
-$ERRORF = "$Esc[91mFATAL ERROR$Esc[0m:"
+$Esc     = [char]0x1b 
+$DANGER  = "$Esc[91mDANGER$Esc[0m:"
+$ERRORF  = "$Esc[91mFATAL ERROR$Esc[0m:"
 $WARNING = "$Esc[93mWARNING$Esc[0m:"
 $SUGGEST = "$Esc[96mSUGGESTION$Esc[0m:"
-$SUCCESS = "$Esc[92mSUCCESS$Esc[0m:"
+$NOTICE  = "$Esc[92mNOTICE$Esc[0m:"
+$sepLine = "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
-$Logfile = "FS19_Used_Mods.log"
-if ( !$nolog ) {
-	Set-Content $LogFile -value ""
-}
-Function LogWrite {
-	# Write a line to the log file
-	Param ([string]$logstring)
-	if ( !$nolog ) {
-		Add-content $Logfile -value $logstring
-	}
-}
 
-Function BothOutput {
-	# Write a line to the screen and the log file
-	Param ([string]$logstring)
-	LogWrite($logstring)
-	Write-Host $logstring
+$LogFile = "FS19_Used_Mods_Log.txt"
+if ( !$nolog ) { Set-Content $LogFile -value "" }
+
+Function Writer {
+	Param ([string]$outputString)
+	# Write a line to the log file and/or screen
+	if ( !$nolog ) { Add-content $LogFile -value ( $outputString -replace "$Esc\[\d+m" ) }
+	if ( !$quiet ) { Write-Host $outputString }
 }
 
-Function BothArrayIndent {
-	# Write an array to the screen and the log file
-	Param([array]$outty)
-	foreach ( $thisOut in $outty ) {
-		$nozip = $thisOut -replace '(.+)\.zip', '$1'
-		$writer = "  $thisOut"
-
-		if ( $modFileListName.Contains($thisOut) -And $modFileListName[$thisOut] -And !$noname ) {
-			$writer = -join("  ", $thisOut, " (", $modFileListName[$thisOut], ")")
-		}
-		if ( $modFileListName.Contains($nozip) -And $modFileListName[$nozip] -And !$noname ) {
-			$writer = -join("  ", $thisOut, " (", $modFileListName[$nozip], ")")
-		}
-		BothOutput($writer)
-	}
+# Check the given game path to see if we can find savefiles.
+if (-Not (Test-Path -Path $savepath)) {
+	Writer("$ERRORF Farming Simulator Save Files Not Found, Exiting.")
+	exit 1
 }
 
-Function BadArrayIndent {
-	# Write an array to the screen and log file (not-installed mod's version)
-	Param([array]$outty)
-	foreach ( $thisOut in $outty ) {
-		$writer = "  $thisOut"
-
-		if ( $badNames.Contains($thisOut) -And !$noname ) {
-			$writer = -join("  ", $thisOut, " (", $badNames[$thisOut], ")")
-		}
-		BothOutput($writer)
-	}
-}
-
-
-$banner = -join(
+Writer( -join(
 	" _______           __ ______ __                __               `n",
 	"|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.`n",
 	"|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|`n",
 	"|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  `n",
 	"                                              v1.0.0.0 by JTSage`n",
+	$sepLine, "`n",
+	"$Esc[93mNOTE$Esc[0m: This script does not in any way alter your mods or your`n",
+	"savegame. To correct any problems found, you must manually follow`n",
+	"the suggestions below.`n",
 	$sepLine
-)
+) )
 
-BothOutput($banner)
+if ( !$nolog -And !$quiet ) { Write-Host "Output saved to $logFile`n$sepLine" }
 
-# Give some information to the user.
-Write-Host "$Esc[93mNOTE$Esc[0m: this does not in any way alter your mod files or your savegame.  To correct any problems"
-Write-Host "found, you must manually follow the suggestions below."
-Write-Host ""
-Write-Host "To output those mods that are loaded but never used, use the `"-showonlyloaded`" switch"
-Write-Host ""
-Write-Host "This information is saved to the $Logfile file in the current directory"
-Write-Host $sepLine
-
-
-# Assume that you have the giants free DLC(s).  Only one at this time, but plan
-# for the furtre.
-foreach ( $thisSpecial in $specialCases ) {
-	$modFileListType.add($thisSpecial,"zip")
-	$modFileListLoad.add($thisSpecial,$false)
-	$modFileListUsed.add($thisSpecial,$false)
-	$modFileListName.add($thisSpecial,$false)
+# Set up the default paths to all of the things we need to read
+$GamePaths = @{
+	gameSettings = -join($savepath, "gameSettings.xml");
+	vehicles     = -join($savepath, "savegame*\vehicles.xml");
+	career       = -join($savepath, "savegame*\careerSavegame.xml");
+	items        = -join($savepath, "savegame*\items.xml");
+	modDir       = -join($savepath, "mods\");
+	modZip       = -join($savepath, "mods\*.zip");
 }
 
-## Check to see if the mod path we were given above is valid.  If not, fail exit.
-if (Test-Path -Path $modPath) {
-	Write-Host "Pulling all mods from your mods folder..."
-	Write-Host $sepLine
-} else {
-	Write-Host "$ERRORF Mod Path Does Not Exist, can't find anything!"
-	exit 1
+# In case mod path has been overridden, we need to grab the new one
+Select-Xml -Path $GamePaths.gameSettings -XPath '/gameSettings/modsDirectoryOverride' |
+	ForEach-Object { 
+		if ( $_.Node.active -eq "true" ) { 
+			$GamePaths.modDir = $_.Node.directory
+			$GamePaths.modZip = -join($_.Node.directory, "\*.zip")
+		}
+	}
+
+
+# Load those mods we know wont ever show a "used" status
+$scriptOnlyMods = Get-Content .\KnownScriptOnlyMods.txt | Select-Object -skip 2
+
+<# Create our mod list stucture.
+Internal = @{
+	type    = [zip/folder]
+	file    = boolean (file name ok?)
+	missing = boolean (file exists?)
+	loaded  = boolean (in careerSavegame?)
+	used    = boolean (purchased in-game?)
+	name    = String
+}
+#> 
+
+$ModList = @{}
+
+# This is a special case, just add it for simplicity.
+$ModList["FS19_holmerPack"] = @{
+	type    = "zip";
+	file    = $true;
+	missing = $false;
+	loaded  = $false;
+	used    = $false;
+	name    = "DLC Holmer Terra-Varient Pack"
 }
 
-LogWrite("Mod Folder Test Results:")
+$statusFlags = @{
+	badFile     = $false;
+	missingFile = $false;
+	garbageFile = $false;
+}
 
-# Append zip extension to find zipped mods
-$zipModPath = -join($modPath, "\*.zip")
+<#
+ oooooooooo.                 .             
+ `888'   `Y8b              .o8             
+  888      888  .oooo.   .o888oo  .oooo.   
+  888      888 `P  )88b    888   `P  )88b  
+  888      888  .oP"888    888    .oP"888  
+  888     d88' d8(  888    888 . d8(  888  
+ o888bood8P'   `Y888""8o   "888" `Y888""8o 
+#>
+# First, lets warn if there is any "cruft" in the mods folder.  That would be any file that
+# does not have a zip extension
 
-# Find all zipped mods.  Print a rejection notice for any that do not follow proper naming conventions.
-Get-ChildItem $zipModPath |
-	Where-Object { !$_.psiscontainer} | 
+Get-ChildItem $GamePaths.modDir -Exclude "*.zip" |
+	Where-Object { !$_.PSIsContainer } |
+	ForEach-Object {
+		$statusFlags.garbageFile = $true
+		Writer(-join("$DANGER Garbage found: `"", $_.fullName, "`" - This file should not be here" ))
+	}
+
+if ( $statusFlags.garbageFile ) { Writer($sepLine) }
+
+# Next, lets look at the zip files in the mods folder.  This will populate our list.
+
+# Find all zipped mods. Note any that have broken names for a bit later.
+Get-ChildItem $GamePaths.modZip |
+	Where-Object { !$_.PSIsContainer} | 
 	ForEach-Object {
 		$realName = $_.name.TrimEnd(".zip")
-		$fail = $false
-		if ( $realName -match '\W' ) {
-			$fail = $true
-			$modsAreGood = $false
-			Write-Host "$DANGER `"$realName.zip`" is not a valid mod file, and will not load in-game!"
-			Write-Host "  $SUGGEST delete or rename `"$realName.zip`""
-			Write-Host ""
-			LogWrite("  DANGER: `"$realName.zip`" is not a valid mod file. Delete or rename required")
-		}
-		if ( !$fail -And $realName -match '^[0-9].+' ) {
-			$modsAreGood = $false
-			Write-Host "$DANGER `"$realName.zip`" is not a valid mod file, and will not load in-game!"
-			Write-Host "  $SUGGEST delete or rename `"$realName.zip`""
-			Write-Host ""
-			LogWrite("  DANGER: `"$realName.zip`" is not a valid mod file. Delete or rename required")
-		}
-		$modFileListType.add($realName,"zip")
-		$modFileListLoad.add($realName,$false)
-		$modFileListUsed.add($realName,$false)
-		$modFileListName.add($realName,$false)
-	}
-
-# Find all unzipped mods, print an error for any that don't follow the naming conventions.
-# Additionally, print a warning that unzipped mods cannot be using in multiplayer, and suggest
-# that the user zip them appropriatly.
-Get-ChildItem -Directory $modPath |
-	Where-Object { {$_.PSIsContainer} } | 
-	ForEach-Object { 
-		$fail = $false
-		if ($_.name -match '\W' ) {
-			$fail = "TRUE"
-			$modsAreGood = $false
-			Write-Host "$DANGER `"$_`" is not a valid mod folder, and will not load in-game!"
-			Write-Host "  $SUGGEST delete or rename `"$_`""
-			Write-Host ""
-			LogWrite("  DANGER: `"$_`" is not a valid mod folder. Delete or rename required")
-		}
-		if ( !$fail ) {
-			$modsAreGood = $false
-			Write-Host "$WARNING `"$_`" is not zipped, and cannot be used in multi-player"
-			Write-Host "  $SUGGEST pack this folder into a zip file"
-			Write-Host ""
-			LogWrite("  WARNING: `"$_`" is not zipped, and cannot be used in multiplayer")
-		}
+		$modStatus = $true
 		
-		$modFileListType.add($_.name,"folder")
-		$modFileListLoad.add($_.name,$false)
-		$modFileListUsed.add($_.name,$false)
+		if ( $realName -match '\W' -or  $realName -match '^[0-9].+' ) {
+			$modStatus = $false
+			$statusFlags.badFile = $true
+		}
+
+		$ModList[$realName] = @{
+			type    = "zip";
+			file    = $modStatus;
+			missing = $false;
+			loaded  = $false;
+			used    = $false;
+			name    = $false;
+		}
 	}
 
-
-if ( $modsAreGood) {
-	Write-Host "$SUCCESS Your mod folder is clean of any invalid mod files or folders."
-	LogWrite("  No Problems Found")
-} else {
-	Write-Host $sepLine
-	Write-Host "$WARNING You have invalid mods to correct."
-}
-
-BothOutput($sepLine)
-
-
-# Check to make sure we can actually read the savegames.
-if (Test-Path -Path $savePath) {
-	Write-Host "Pulling all saved games from your savegames folder..."
-	Write-Host $sepLine
-} else {
-	Write-Host "$ERRORF Savegame Path Does Not Exist, can't find anything!"
-	exit 1
-}
-
-# Add the appropriate paths and file names to the save paths.
-$vehiclePath = -join($savePath, "savegame*\vehicles.xml")
-$careerPath  = -join($savePath, "savegame*\careerSavegame.xml")
-$itemPath  = -join($savePath, "savegame*\items.xml")
-
-$badLoads = @()
-$badUses = @()
-$badNames = @{}
-
-# Load a list of vehicle.xml and careerSavegame.xml files
-$saveGameVehicles = Get-ChildItem $vehiclePath |
-	Where-Object { !$_.psiscontainer} | 
-	ForEach-Object { $_.FullName }
-
-$saveGameCareer = Get-ChildItem $careerPath |
-	Where-Object { !$_.psiscontainer} | 
-	ForEach-Object { $_.FullName }
-
-$saveGameItems = Get-ChildItem $itemPath |
-	Where-Object { !$_.psiscontainer} | 
-	ForEach-Object { $_.FullName }
-
-foreach ( $thisItemFile in $saveGameItems ) {
-	Select-Xml -Path $thisItemFile -XPath '/items/item' |
-		ForEach-Object { 
-			$thisModName = $_.Node.modName
-			if ( !$thisModName ) {
-				# Skipping Blank entries.  Usually part of the map.
-				return
-			}
-			if ( $thisModName -match '^pdlc' ) {
-				# Skipping DLC files
-				return
-			} 
-			if ($modFileListType.ContainsKey($thisModName)) {
-				#$modFileListLoad[$thisModName] = $true
-				$modFileListUsed[$thisModName] = $true
-			} else {
-				# Track loaded mods that don't exist in the mods folder.
-				$badUses += $thisModName
-			}
+# Find all unzipped mods. Note any that have broken names for a bit later.  And note they are folders.
+Get-ChildItem -Directory $GamePaths.modDir |
+	Where-Object { $_.PSIsContainer} | 
+	ForEach-Object {
+		$realName = $_.name
+		$modStatus = $true
+		
+		if ( $realName -match '\W' -or  $realName -match '^[0-9].+' ) {
+			$modStatus = $false
+			$statusFlags.badFile = $true
 		}
-}
 
-# We need to do "loaded" mods first, or we will overwrite the used status later.
+		$ModList[$realName] = @{
+			type    = "folder";
+			file    = $modStatus;
+			missing = $false;
+			loaded  = $false;
+			used    = $false;
+			name    = $false;
+		}
+	}
+
+$saveGameVehicles = Get-ChildItem $GamePaths.vehicles |
+	Where-Object { !$_.PSIsContainer} | 
+	ForEach-Object { $_.FullName }
+
+$saveGameCareer = Get-ChildItem $GamePaths.career |
+	Where-Object { !$_.PSIsContainer} | 
+	ForEach-Object { $_.FullName }
+
+$saveGameItems = Get-ChildItem $GamePaths.items |
+	Where-Object { !$_.PSIsContainer} | 
+	ForEach-Object { $_.FullName }
+
 foreach ( $thisCareerFile in $saveGameCareer ) {
 	Select-Xml -Path $thisCareerFile -XPath '/careerSavegame/mod' |
 		ForEach-Object { 
 			$thisModName = $_.Node.modName
 			$thisTitle = $_.Node.title
-			if ( !$thisModName ) {
-				# Skipping Blank entries.  Usually part of the map.
-				return
-			}
-			if ( $thisModName -match '^pdlc' ) {
-				# Skipping DLC files
-				return
+			if ( !$thisModName -Or $thisModName -match '^pdlc' ) {
+				return # Skip DLC and Blanks
 			} 
-			if ($modFileListType.ContainsKey($thisModName)) {
-				$modFileListLoad[$thisModName] = $true
-				$modFileListName[$thisModName] = $thisTitle
+
+			if ( $ModList.ContainsKey($thisModName) ) {
+				$ModList[$thisModName]["loaded"] = $true
+				$ModList[$thisModName]["name"]   = $thisTitle
 			} else {
-				# Track loaded mods that don't exist in the mods folder.
-				$badLoads += $thisModName
-				$badNames[$thisModName] = $thisTitle
+				$statusFlags.missingFile = $true
+				$ModList[$thisModName] = @{
+					type    = "zip";
+					file    = $true;
+					missing = $true;
+					loaded  = $true;
+					used    = $false;
+					name    = $thisTitle;
+				}
 			}
 		}
 }
 
-# Lets do the vehicles last.  This is for vehicles that you *own*
+
+foreach ( $thisItemFile in $saveGameItems ) {
+	Select-Xml -Path $thisItemFile -XPath '/items/item' |
+		ForEach-Object { 
+			$thisModName = $_.Node.modName
+			if ( !$thisModName -Or $thisModName -match '^pdlc' ) {
+				return # Skip DLC and Blanks
+			}
+
+			if ( $modList.ContainsKey($thisModName) ) {
+				$modList[$thisModName]["used"] = $true
+			}
+		}
+}
+
 foreach ( $thisVehicleFile in $saveGameVehicles ) {
 	Select-Xml -Path $thisVehicleFile -XPath '/vehicles/vehicle' |
 		ForEach-Object { 
 			$thisModName = $_.Node.modName
-			if ( !$thisModName ) {
-				# Skipping Blank entries.  Usually part of the map.
-				return
+			if ( !$thisModName -Or $thisModName -match '^pdlc' ) {
+				return # Skip DLC and Blanks
 			}
-			if ( $thisModName -match '^pdlc' ) {
-				# Skipping DLC files
-				return
-			} 
-			if ($modFileListType.ContainsKey($thisModName)) {
-				#$modFileListLoad[$thisModName] = $true
-				$modFileListUsed[$thisModName] = $true
-			} else {
-				# Track used mods that don't exist in the mods folder.
-				$badUses += $thisModName
+
+			if ( $modList.ContainsKey($thisModName) ) {
+				$modList[$thisModName]["used"] = $true
 			}
 		}
 }
 
-if ( $badUses.length -gt 0 ) {
-	Write-Host "$DANGER The follow mods are used (purchased vehicles), but do not exist in the mods folder"
-	LogWrite("DANGER: The follow mods are used (purchased vehicles), but do not exist in the mods folder")
-	$badUsesUnique = $badUses | Sort-Object | Get-Unique
-	BadArrayIndent($badUsesUnique)
-	BothOutput($sepLine)
+# Set the used flag on known script only mods.  Saves having to check later.
+foreach ( $thisKnownMod in $scriptOnlyMods ) {
+	if ( $modList.ContainsKey($thisKnownMod) -And $modList[$thisKnownMod]["loaded"] -eq $true ) {
+		$modList[$thisKnownMod]["used"] = $true
+	}
 }
 
-if ( $badLoads.length -gt 0 ) {
-	Write-Host "$WARNING The follow mods are loaded, but do not exist in the mods folder"
-	LogWrite("WARNING: The follow mods are loaded, but do not exist in the mods folder")
-	$badLoadsUnique = $badLoads | Sort-Object | Get-Unique
-	BadArrayIndent($badLoadsUnique)
-	BothOutput($sepLine)
-}
 
-$onlyLoad = @()
-$neverUsed = @()
+if ( $statusFlags.badFile ) { Writer("$DANGER You have incorrectly named mods.  This should be corrected`n$sepLine") }
+if ( $statusFlags.missingFile ) { Writer("$DANGER You have missing mods.  This should be corrected.`n$sepLine" ) }
 
-# Build the lists of never used and loaded but un-purchased mods
-foreach ( $thisMod in $modFileListType.GetEnumerator() ) {
-	$realModName = $thisMod.name
-	if ( $thisMod.Value -eq "zip" ) {
-		$realModName = -join($thisMod.name, ".zip")
-	}
-	if ( !$modFileListLoad[$thisMod.Name] ) {	
-		$neverUsed += $realModName
-	}
-	if ( $modFileListLoad[$thisMod.Name] -And !$modFileListUsed[$thisMod.Name] ) {
-		if ( !$knownException.Contains($thisMod.name) ) {
-			$onlyLoad += $realModName
+
+<#
+ ooooooooo.                                               .            
+ `888   `Y88.                                           .o8            
+  888   .d88'  .ooooo.  oo.ooooo.   .ooooo.  oooo d8b .o888oo  .oooo.o 
+  888ooo88P'  d88' `88b  888' `88b d88' `88b `888""8P   888   d88(  "8 
+  888`88b.    888ooo888  888   888 888   888  888       888   `"Y88b.  
+  888  `88b.  888    .o  888   888 888   888  888       888 . o.  )88b 
+ o888o  o888o `Y8bod8P'  888bod8P' `Y8bod8P' d888b      "888" 8""888P' 
+                         888                                           
+                        o888o                                          
+#>
+
+
+
+
+# Fist up, bad files, of the zip variety.
+
+$foundOne = $false;
+
+$modList.keys | 
+	Where-Object { !$modList[$_].file -And $modList[$_].type -eq "zip" } |
+	ForEach-Object {
+		$thisName = $_
+		$searchName = $false;
+
+		if ( $foundOne ) { Writer("") } else { $foundOne = $true }
+		
+		Writer('{0} "{1}.zip" breaks naming conventions and will not be loaded.' -f $DANGER, $_)
+
+		if ( $thisName -Match '^\d+\w+' ) {
+			$searchName = $thisName -Replace '^\d+(\w+?)', '$1'
 		}
-	}	
+		if ( $thisName -Match '^\w+? \(\d+\)' ) { # "Mod_Name (1).zip" etc
+			$searchName = $thisName -Replace '^(\w+?) \(\d+\)', '$1'
+		}
+		if ( $thisName -Match '^\w+? - .+' ) { # "Mod_Name - Copy.zip" etc
+			$searchName = $thisName -Replace '^(\w+?) - .+', '$1'
+		}
+
+		if ( $searchName -And $modList.Contains($searchName) ) {
+			Writer("  {0} `"{1}`" already exists, you should delete this file." -f $SUGGEST, $searchName)
+		} else {
+			Writer("  {0} good duplicate not found, you should rename this file. (`"{1}.zip`")" -f $SUGGEST, $searchName)
+		}
 }
 
-if ( $neverUsed.length -gt 0 ) {
-	Write-Host "$SUGGEST The follow mods are not loaded or purchased in any savegame."
-	Write-Host "If you don't like them, perhaps you could free up some space by deleting them?"
-	LogWrite("The following mods are neither loaded nor used in any savegame")
-	$neverUsedUnique = $neverUsed | Sort-Object | Get-Unique
-	BothArrayIndent($neverUsedUnique)
-	BothOutput($sepLine)
+# Next up, bad folders
+
+$modList.keys | 
+	Where-Object { !$modList[$_].file -And $modList[$_].type -eq "folder" } |
+	ForEach-Object {
+		$thisName = $_
+		$searchName = $false;
+
+		if ( $foundOne ) { Writer("") } else { $foundOne = $true }
+		
+		Writer('{0} "{1}" breaks naming conventions and will not be loaded.' -f $DANGER, $_)
+
+		if ( $thisName -Match '^\d+\w+' ) {
+			$searchName = $thisName -Replace '^\d+(\w+?)', '$1'
+		}
+		if ( $thisName -Match '^\w+? \(\d+\)' ) { # "Mod_Name (1)" etc
+			$searchName = $thisName -Replace '^(\w+?) \(\d+\)', '$1'
+		}
+		if ( $thisName -Match '^\w+? - .+' ) { # "Mod_Name - Copy" etc
+			$searchName = $thisName -Replace '^(\w+?) - .+', '$1'
+		}
+
+		if ( $searchName -And $modList.Contains($searchName) ) {
+			Writer("  {0} `"{1}`" already exists, you should delete this folder." -f $SUGGEST, $searchName)
+		} else {
+			Writer("  {0} good duplicate not found, you should rename this folder. (`"{1}`")" -f $SUGGEST, $searchName)
+		}
+		Writer("  {0} Additionally, unzipped mods cannot be used in multiplayer - you should zip this" -f $SUGGEST)
 }
 
-if ( $onlyLoad.length -gt 0 -And $showonlyloaded ) {
-	Write-Host "$SUGGEST The follow mods are loaded but not used."
-	Write-Host "They could maybe be removed from your game.  HOWEVER - mods that are required by other mods"
-	Write-Host "may also appear here, so be VERY, VERY careful"
-	Write-Host "By definition, script only mods, vehicle addons, etc will appear here."
-	LogWrite("The following mods are only loaded.  They *might* be unused.")
-	$onlyLoadUnique = $onlyLoad | Sort-Object | Get-Unique
-	BothArrayIndent($onlyLoadUnique)
-	BothOutput($sepLine)
+# Finally, regular folders.  Suggest they get zipped up.
+$modList.keys | 
+	Where-Object { $modList[$_].file -And $modList[$_].type -eq "folder" } |
+	ForEach-Object {
+		if ( $foundOne ) { Writer("") } else { $foundOne = $true }
+		
+		Writer('{0} "{1}" is an unzipped folder.' -f $WARNING, $_)
+		Writer("  {0} Unzipped mods cannot be used in multiplayer - you should zip this" -f $SUGGEST)
 }
+
+if ( !$foundOne ) { Writer("$NOTICE your mods folder is clean of broken files") }
+
+
+# Missing mods that are used (these can cost you money if you start the save)
+$foundOne = $false;
+$modList.keys | 
+	Where-Object { $modList[$_].missing -And $modList[$_].used } |
+	Sort-Object |
+	ForEach-Object {
+		if ( !$foundOne ) {
+			Writer("$sepLine`n$DANGER Missing mods that are loaded and used (this could cost you in-game money")
+			$foundOne = $true;
+		}
+		Writer("  {0} ({1})" -f $_, $modList[$_].name)
+	}
+
+if ( $foundOne ) { Writer("`n$SUGGEST re-install these mods before starting the savegames that use them") }
+
+# Missing mods that are not used (these are unlikely to cost you money)
+$foundOne = $false;
+$modList.keys | 
+	Where-Object { $modList[$_].missing -And !$modList[$_].used } |
+	Sort-Object |
+	ForEach-Object {
+		if ( !$foundOne ) {
+			Writer("$sepLine`n$WARNING Missing mods that are loaded and NOT used (this is unlikely to cost you in-game money)")
+			$foundOne = $true;
+		}
+		Writer("  {0} ({1})" -f $_, $modList[$_].name)
+	}
+
+if ( $foundOne ) { Writer("`n$SUGGEST re-install these mods.  Opening the savegame without re-install will remove them from this list.") }
+
+# Mods that are neither loaded or used.
+$foundOne = $false;
+$modList.keys | 
+	Where-Object { $modList[$_].file -And !$modList[$_].used -And !$modList[$_].loaded } |
+	Sort-Object |
+	ForEach-Object {
+		if ( !$foundOne ) {
+			Writer("$sepLine`n$NOTICE These mods are not active in any savegame.")
+			$foundOne = $true;
+		}
+		Writer("  {0}" -f $_)
+	}
+	if ( $foundOne ) { Writer("`n$SUGGEST You could free up some space by getting rid of any of these you won't use.") }
+
+
+#Mods that are loaded but seemingly not used.  Most margin for error here.
+if ( $showonlyload ) {
+	$foundOne = $false;
+	$modList.keys | 
+		Where-Object { $modList[$_].file -And !$modList[$_].missing -And !$modList[$_].used -And $modList[$_].loaded } |
+		Sort-Object |
+		ForEach-Object {
+			if ( !$foundOne ) {
+				Writer("$sepLine`n$NOTICE These mods are active, but unused in a savegame.")
+				$foundOne = $true;
+			}
+			Writer("  {0} ({1})" -f $_, $modList[$_].name)
+		}
+		if ( $foundOne ) { 
+			Writer("`n$SUGGEST You could free up some space by getting rid of any of these you won't use.")
+			Writer("But do so carefully, script only mods and pre-requisites can appear here by mistake.")
+		}
+}
+
 
 $today = Get-Date
-LogWrite("Output created at: $today")
+Writer("$sepLine`nOutput created at: $today")
 

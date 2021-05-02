@@ -55,6 +55,10 @@ Windows powershell.  Sorry Mac users, maybe someday.
 
 # Planned Improvements
 
- * Better suggestions for renaming/deleting bad mods based off of other files in folder.
+ * Better suggestions for renaming/deleting bad mods based off of other files in folder. __[Started]__
 
  * Create a short list of popular script-only mods and hide them from the "loaded but not used" list. (i.e. AutoDrive, Global Company, Courseplay, etc.) __[Started]__
+
+ * Need new screenshot, it already changed
+
+ * Note some of the more popular mod conflicts and suggest avoiding them
