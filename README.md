@@ -4,9 +4,9 @@ This little script will take a look at your mod install folder and inform you of
 
  * If a mod file is named incorrectly and won't load in the game.
  * If a mod is not properly zipped.
- * If a mod is used in your savegames, but does not appear to be installed.
- * If a mod is not loaded or used in any of your savegames
- * Optionally: If a mod is loaded but unused in your savegames.
+ * If a mod is used in your save games, but does not appear to be installed.
+ * If a mod is not loaded or used in any of your save games
+ * Optionally: If a mod is loaded but unused in your save games.
 
  ## Usage:
 
@@ -26,12 +26,21 @@ This script provides information only.  It does not alter any files on your comp
 
 ## Options
 
-The ```showonlyloaded``` argument will show mods that are loaded (active) in your savegame but do not appear to be used.  Note that there will be a bunch of false positives in this list - any script only mod, or vehicle add on, or pre-requisite script for another mod may appear on this list.  Be careful with what you remove.
+The ```showonlyloaded``` switch will show mods that are loaded (active) in your save game but do not appear to be used.  Note that there will be a bunch of false positives in this list - any script only mod, or vehicle add on, or pre-requisite script for another mod may appear on this list.  Be careful with what you remove.  Some script only mods have been added to the checker to cut down on false positives.
 
  ```
  C:\ > ./FS19_Mod_Checker.ps1 -showonlyloaded
  ```
 
+The ```nolog``` switch will prevent Mod Checker from writing a log file.
+```
+ C:\ > ./FS19_Mod_Checker.ps1 -nolog
+```
+
+The ```noname``` switch will prevent Mod Checker from displaying mod long names (when known)
+```
+ C:\ > ./FS19_Mod_Checker.ps1 -noname
+```
 ## Requirements
 
 Windows powershell.  Sorry Mac users, maybe someday.
@@ -47,4 +56,5 @@ Windows powershell.  Sorry Mac users, maybe someday.
 # Planned Improvements
 
  * Better suggestions for renaming/deleting bad mods based off of other files in folder.
- * Create a short list of popular script-only mods and hide them from the "loaded but not used" list. (i.e. AutoDrive, Global Company, Courseplay, etc.)
+
+ * Create a short list of popular script-only mods and hide them from the "loaded but not used" list. (i.e. AutoDrive, Global Company, Courseplay, etc.) __[Started]__

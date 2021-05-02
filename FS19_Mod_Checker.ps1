@@ -1,5 +1,7 @@
 param (
-	[switch]$showonlyloaded = $false
+	[switch]$showonlyloaded = $false,
+	[switch]$nolog = $false,
+	[switch]$noname = $false
 )
 <#
  _______           __ ______ __                __               
@@ -9,11 +11,72 @@ param (
                                               v1.0.0.0 by JTSage
 #> 
 
-### Change this to where your savegames are.
-$modPath = "~\Documents\My` Games\FarmingSimulator2019\mods"
+### Change this to where your mods and savegames are.
+#
+# In most windows installations, ~ translates to C:\Users\[Your Username]\
+#
+# If you have a standard steam install, this should already be correct.
+#
+$modPath  = "~\Documents\My` Games\FarmingSimulator2019\mods"
 
 $savePath = "~\Documents\My` Games\FarmingSimulator2019\"
 
+
+## Known Script Only Exception Mods (do not show as unused when loaded)
+
+$knownException = (
+	'FS19_adjustWorkingSpeed',
+	'FS19_Agribumper',
+	'FS19_AnimalPenExtension',
+	'FS19_AutoDrive',
+	'FS19_BetterContracts',
+	'FS19_buyableLargeStackBales',
+	'FS19_categoryAdder',
+	'FS19_Courseplay',
+	'FS19_disableVehicleCameraCollision',
+	'FS19_EasyAutoLoad',
+	'FS19_Engine_Starter',
+	'FS19_GlobalCompany',
+	'FS19_GlobalCompanyAddOn_Icons',
+	'FS19_Inspector',
+	'FS19_MaizePlus',
+	'FS19_MapObjectsHider',
+	'FS19_MoneyTool',
+	'FS19_MoreMissionsAllowed',
+	'FS19_PrecisionFarmingAddon',
+	'FS19_realDirtColor',
+	'FS19_RM_Seasons',
+	'FS19_SleepAnytime',
+	'FS19_TrainStopMod',
+	'FS19_VehicleExplorer',
+	'VehicleInspector',
+	'FS19_AdvancedStats',
+	'FS19_StoreSales',
+	'FS19_SleepAnywhere',
+	'FS19_ExtendedVehicleMaintenance',
+	'FS19_BaleWapperExtension',
+	'FS19_UniversalPassenger',
+	'FS19_InfoDisplay',
+	'FS19_CameraSuspension',
+	'FS19_REA',
+	'FS19_ToolsCombo',
+	'FS19_InsideCameraZoom',
+	'FS19_VehicleControlAddon',
+	'FS19_KeyboardSteering',
+	'FS19_VehicleStraps',
+	'FS19_fixAttacherJointRot',
+	'FS19_NoAutomaticRefuel',
+	'FS19_realSpeedLimit',
+	'FS19_zzzSpeedControl',
+	'FS19_realDirtFix',
+	'FS19_READynamicDirt',
+	'FS19_AnimalScreenExtended',
+	'FS19_QuickCamera',
+	'FS19_guidanceSteering',
+	'FS19_vehicleDirtExtension',
+	'FS19_RM_Midwest',
+	'FS19_Geo_Montana'
+)
 
 ## DO NOT EDIT BELOW THIS LINE!!
 
@@ -21,9 +84,12 @@ $savePath = "~\Documents\My` Games\FarmingSimulator2019\"
 $modFileListType = @{};
 $modFileListLoad = @{};
 $modFileListUsed = @{};
+$modFileListName = @{};
 
 $modsAreGood = $true
 
+# This is for giants free DLC packs, which live in a different folder, and we don't want
+# to complain about them not being installed, so just assume they are.
 $specialCases = @('FS19_holmerPack')
 
 $sepLine = "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
@@ -36,24 +102,54 @@ $SUGGEST = "$Esc[96mSUGGESTION$Esc[0m:"
 $SUCCESS = "$Esc[92mSUCCESS$Esc[0m:"
 
 $Logfile = "FS19_Used_Mods.log"
-Set-Content $LogFile -value ""
-Function LogWrite
-{
-	Param ([string]$logstring)
-	Add-content $Logfile -value $logstring
+if ( !$nolog ) {
+	Set-Content $LogFile -value ""
 }
-Function BothArrayIndent {
-	Param([array]$outty)
-	foreach ( $thisOut in $outty ) {
-		Write-Host "  $thisOut"
-		LogWrite("  $thisOut")
+Function LogWrite {
+	# Write a line to the log file
+	Param ([string]$logstring)
+	if ( !$nolog ) {
+		Add-content $Logfile -value $logstring
 	}
 }
+
 Function BothOutput {
+	# Write a line to the screen and the log file
 	Param ([string]$logstring)
-	Add-content $Logfile -value $logstring
+	LogWrite($logstring)
 	Write-Host $logstring
 }
+
+Function BothArrayIndent {
+	# Write an array to the screen and the log file
+	Param([array]$outty)
+	foreach ( $thisOut in $outty ) {
+		$nozip = $thisOut -replace '(.+)\.zip', '$1'
+		$writer = "  $thisOut"
+
+		if ( $modFileListName.Contains($thisOut) -And $modFileListName[$thisOut] -And !$noname ) {
+			$writer = -join("  ", $thisOut, " (", $modFileListName[$thisOut], ")")
+		}
+		if ( $modFileListName.Contains($nozip) -And $modFileListName[$nozip] -And !$noname ) {
+			$writer = -join("  ", $thisOut, " (", $modFileListName[$nozip], ")")
+		}
+		BothOutput($writer)
+	}
+}
+
+Function BadArrayIndent {
+	# Write an array to the screen and log file (not-installed mod's version)
+	Param([array]$outty)
+	foreach ( $thisOut in $outty ) {
+		$writer = "  $thisOut"
+
+		if ( $badNames.Contains($thisOut) -And !$noname ) {
+			$writer = -join("  ", $thisOut, " (", $badNames[$thisOut], ")")
+		}
+		BothOutput($writer)
+	}
+}
+
 
 $banner = -join(
 	" _______           __ ______ __                __               `n",
@@ -82,6 +178,7 @@ foreach ( $thisSpecial in $specialCases ) {
 	$modFileListType.add($thisSpecial,"zip")
 	$modFileListLoad.add($thisSpecial,$false)
 	$modFileListUsed.add($thisSpecial,$false)
+	$modFileListName.add($thisSpecial,$false)
 }
 
 ## Check to see if the mod path we were given above is valid.  If not, fail exit.
@@ -122,6 +219,7 @@ Get-ChildItem $zipModPath |
 		$modFileListType.add($realName,"zip")
 		$modFileListLoad.add($realName,$false)
 		$modFileListUsed.add($realName,$false)
+		$modFileListName.add($realName,$false)
 	}
 
 # Find all unzipped mods, print an error for any that don't follow the naming conventions.
@@ -176,9 +274,11 @@ if (Test-Path -Path $savePath) {
 # Add the appropriate paths and file names to the save paths.
 $vehiclePath = -join($savePath, "savegame*\vehicles.xml")
 $careerPath  = -join($savePath, "savegame*\careerSavegame.xml")
+$itemPath  = -join($savePath, "savegame*\items.xml")
 
 $badLoads = @()
 $badUses = @()
+$badNames = @{}
 
 # Load a list of vehicle.xml and careerSavegame.xml files
 $saveGameVehicles = Get-ChildItem $vehiclePath |
@@ -189,9 +289,12 @@ $saveGameCareer = Get-ChildItem $careerPath |
 	Where-Object { !$_.psiscontainer} | 
 	ForEach-Object { $_.FullName }
 
-# We need to do "loaded" mods first, or we will overwrite the used status later.
-foreach ( $thisCareerFile in $saveGameCareer ) {
-	Select-Xml -Path $thisCareerFile -XPath '/careerSavegame/mod' |
+$saveGameItems = Get-ChildItem $itemPath |
+	Where-Object { !$_.psiscontainer} | 
+	ForEach-Object { $_.FullName }
+
+foreach ( $thisItemFile in $saveGameItems ) {
+	Select-Xml -Path $thisItemFile -XPath '/items/item' |
 		ForEach-Object { 
 			$thisModName = $_.Node.modName
 			if ( !$thisModName ) {
@@ -203,10 +306,36 @@ foreach ( $thisCareerFile in $saveGameCareer ) {
 				return
 			} 
 			if ($modFileListType.ContainsKey($thisModName)) {
+				#$modFileListLoad[$thisModName] = $true
+				$modFileListUsed[$thisModName] = $true
+			} else {
+				# Track loaded mods that don't exist in the mods folder.
+				$badUses += $thisModName
+			}
+		}
+}
+
+# We need to do "loaded" mods first, or we will overwrite the used status later.
+foreach ( $thisCareerFile in $saveGameCareer ) {
+	Select-Xml -Path $thisCareerFile -XPath '/careerSavegame/mod' |
+		ForEach-Object { 
+			$thisModName = $_.Node.modName
+			$thisTitle = $_.Node.title
+			if ( !$thisModName ) {
+				# Skipping Blank entries.  Usually part of the map.
+				return
+			}
+			if ( $thisModName -match '^pdlc' ) {
+				# Skipping DLC files
+				return
+			} 
+			if ($modFileListType.ContainsKey($thisModName)) {
 				$modFileListLoad[$thisModName] = $true
+				$modFileListName[$thisModName] = $thisTitle
 			} else {
 				# Track loaded mods that don't exist in the mods folder.
 				$badLoads += $thisModName
+				$badNames[$thisModName] = $thisTitle
 			}
 		}
 }
@@ -225,7 +354,7 @@ foreach ( $thisVehicleFile in $saveGameVehicles ) {
 				return
 			} 
 			if ($modFileListType.ContainsKey($thisModName)) {
-				$modFileListLoad[$thisModName] = $true
+				#$modFileListLoad[$thisModName] = $true
 				$modFileListUsed[$thisModName] = $true
 			} else {
 				# Track used mods that don't exist in the mods folder.
@@ -238,7 +367,7 @@ if ( $badUses.length -gt 0 ) {
 	Write-Host "$DANGER The follow mods are used (purchased vehicles), but do not exist in the mods folder"
 	LogWrite("DANGER: The follow mods are used (purchased vehicles), but do not exist in the mods folder")
 	$badUsesUnique = $badUses | Sort-Object | Get-Unique
-	BothArrayIndent($badUsesUnique)
+	BadArrayIndent($badUsesUnique)
 	BothOutput($sepLine)
 }
 
@@ -246,13 +375,14 @@ if ( $badLoads.length -gt 0 ) {
 	Write-Host "$WARNING The follow mods are loaded, but do not exist in the mods folder"
 	LogWrite("WARNING: The follow mods are loaded, but do not exist in the mods folder")
 	$badLoadsUnique = $badLoads | Sort-Object | Get-Unique
-	BothArrayIndent($badLoadsUnique)
+	BadArrayIndent($badLoadsUnique)
 	BothOutput($sepLine)
 }
 
 $onlyLoad = @()
 $neverUsed = @()
 
+# Build the lists of never used and loaded but un-purchased mods
 foreach ( $thisMod in $modFileListType.GetEnumerator() ) {
 	$realModName = $thisMod.name
 	if ( $thisMod.Value -eq "zip" ) {
@@ -262,7 +392,9 @@ foreach ( $thisMod in $modFileListType.GetEnumerator() ) {
 		$neverUsed += $realModName
 	}
 	if ( $modFileListLoad[$thisMod.Name] -And !$modFileListUsed[$thisMod.Name] ) {
-		$onlyLoad += $realModName
+		if ( !$knownException.Contains($thisMod.name) ) {
+			$onlyLoad += $realModName
+		}
 	}	
 }
 
@@ -288,7 +420,4 @@ if ( $onlyLoad.length -gt 0 -And $showonlyloaded ) {
 
 $today = Get-Date
 LogWrite("Output created at: $today")
-
-
-
 
