@@ -73,16 +73,16 @@ Windows powershell.  Sorry Mac users, maybe someday.
 
 ## Sample output
 
- * [Log file with bad mods](FS19_Sample_Log.txt)
+ * [Log file with bad mods](samples/FS19_Sample_Log.txt)
    * This log shows a mod folder with misnamed mods in it, along with some "extra" files
 
- * [Log file with no bad mods](FS19_Sample_Log_Clean.txt)
+ * [Log file with no bad mods](samples/FS19_Sample_Log_Clean.txt)
    * This log shows a mod folder with no misnamed mods, no extracted folders, and no "extra" files
 
  * Both log files were generated with the ```showonlyload``` option, and both contain "missing" mods.
 
 
-![Sample Terminal](CommandOutput.png)
+![Sample Terminal](samples/CommandOutput.png)
 
 
 ## Planned Improvements
