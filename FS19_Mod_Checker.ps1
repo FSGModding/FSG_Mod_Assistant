@@ -8,7 +8,7 @@
 param (
 	[parameter(Mandatory=$false)][ValidateRange(0,20)][Int]$saveslot = 0,
 	[string]$savepath       = "~\Documents\My` Games\FarmingSimulator2019\",
-	[switch]$showonlyload   = $false,
+	[switch]$hideonlyload   = $false,
 	[switch]$nolog          = $false,
 	[switch]$quiet          = $false,
 	[switch]$help           = $false
@@ -21,7 +21,7 @@ if ( $help ) {
 	Write-Host "Usage:"
 	Write-Host " -savepath [Path to Save Files]  : Set path to save files"
 	Write-Host " -saveslot [1-20]                : Look at a single save game, by slot number"
-	Write-Host " -showonlyload                   : Show mods that are active but potentially unused"
+	Write-Host " -hideonlyload                   : Do not show mods that are active but potentially unused"
 	Write-Host " -nolog                          : Do not write log file"
 	Write-Host " -quiet                          : Do not print output to terminal"
 	Write-Host " -help                           : Print this screen"
@@ -436,7 +436,7 @@ $modList.keys |
 
 
 #Mods that are loaded but seemingly not used.  Most margin for error here.
-if ( $showonlyload ) {
+if ( !$hideonlyload ) {
 	$foundOne = $false;
 	$modList.keys | 
 		Where-Object { $modList[$_].file -And !$modList[$_].missing -And !$modList[$_].used -And $modList[$_].loaded } |
@@ -464,3 +464,4 @@ Writer("$NOTICE Mods Folder: {0}" -f $GamePaths.modDir)
 Writer("$NOTICE Mods Referenced / Found: {0} ({1} are missing)" -f $ModList.count, $statusFlags.modsMissing)
 Writer($sepLine)
 
+pause
