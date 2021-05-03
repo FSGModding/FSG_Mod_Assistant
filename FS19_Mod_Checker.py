@@ -10,26 +10,27 @@ Main Program
 (c) 2021 JTSage.  MIT License.
 """
 
-from tkinter import *
+from tkinter import * # pylint: disable=unused-wildcard-import
 from tkinter import ttk
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import os
-import mod_checker_lib
+import lib.mod_checker_lib as mod_checker_lib
+from lib.mod_checker_data import knownScriptOnlyMods, knownConflicts
 
 modList = {}
-mainConfigFile = "";
+mainConfigFile = ""
 # My debug.
 #mainConfigFile = "C:/Users/PC/Documents/My Games/FarmingSimulator2019/gameSettings.xml"
 
-"""
- 
-  _______ _______ _____ __   _      _  _  _ _____ __   _ ______   _____  _  _  _
-  |  |  | |_____|   |   | \  |      |  |  |   |   | \  | |     \ |     | |  |  |
-  |  |  | |     | __|__ |  \_|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
-                                                                                
- 
-"""
+
+# 
+#  _______ _______ _____ __   _      _  _  _ _____ __   _ ______   _____  _  _  _
+#  |  |  | |_____|   |   | \  |      |  |  |   |   | \  | |     \ |     | |  |  |
+#  |  |  | |     | __|__ |  \_|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
+#                                                                                
+# 
+
 root = Tk()
 root.title("FS19 Mod Checker")
 root.minsize(650, 500)
@@ -59,14 +60,14 @@ n.pack(expand = 1, pady=(5,0), padx=5, fill ="both")
 root.update()
 
 
-"""
- 
-  _______  _____  __   _ _______ _____  ______      _______ _______ ______ 
-  |       |     | | \  | |______   |   |  ____         |    |_____| |_____]
-  |_____  |_____| |  \_| |       __|__ |_____|         |    |     | |_____]
-                                                                           
- 
-"""
+
+# 
+#  _______  _____  __   _ _______ _____  ______      _______ _______ ______ 
+#  |       |     | | \  | |______   |   |  ____         |    |_____| |_____]
+#  |_____  |_____| |  \_| |       __|__ |_____|         |    |     | |_____]
+#                                                                           
+# 
+
 tabConfig.columnconfigure(0, weight=1)
 tabConfig.columnconfigure(1, minsize=root.winfo_width()/2)
 
@@ -105,14 +106,14 @@ for child in tabConfig.winfo_children():
 	child.grid_configure(padx=5, pady=5)
 
 
-"""
- 
-  ______   ______  _____  _     _ _______ __   _      _______  _____  ______  _______
-  |_____] |_____/ |     | |____/  |______ | \  |      |  |  | |     | |     \ |______
-  |_____] |    \_ |_____| |    \_ |______ |  \_|      |  |  | |_____| |_____/ ______|
-                                                                                     
- 
-"""
+
+# 
+#  ______   ______  _____  _     _ _______ __   _      _______  _____  ______  _______
+#  |_____] |_____/ |     | |____/  |______ | \  |      |  |  | |     | |     \ |______
+#  |_____] |    \_ |_____| |    \_ |______ |  \_|      |  |  | |_____| |_____/ ______|
+#                                                                                     
+# 
+
 ttk.Label(tabBroken, text="These mods have broken file names, and will not appear in your game.  They need to be removed or renamed").pack()
 
 brokenTree = ttk.Treeview(tabBroken, selectmode='browse', columns=('Name','Type','Issue'))
@@ -130,14 +131,14 @@ brokenTree.configure(yscrollcommand=brokenTreevsb.set)
 
 
 
-"""
- 
-  _______ _____ _______ _______ _____ __   _  ______      _______  _____  ______  _______
-  |  |  |   |   |______ |______   |   | \  | |  ____      |  |  | |     | |     \ |______
-  |  |  | __|__ ______| ______| __|__ |  \_| |_____|      |  |  | |_____| |_____/ ______|
-                                                                                         
- 
-"""
+
+# 
+#  _______ _____ _______ _______ _____ __   _  ______      _______  _____  ______  _______
+#  |  |  |   |   |______ |______   |   | \  | |  ____      |  |  | |     | |     \ |______
+#  |  |  | __|__ ______| ______| __|__ |  \_| |_____|      |  |  | |_____| |_____/ ______|
+#                                                                                         
+# 
+
 ttk.Label(tabMissing, text="These mods are missing.  Those that are owned could cost you money").pack()
 
 missingTree = ttk.Treeview(tabMissing, selectmode='browse', columns=('Name','Title','Purchased','Savegame'))
@@ -158,14 +159,14 @@ missingTree.configure(yscrollcommand=missingTreevsb.set)
 
 
 
-"""
- 
-  _______  _____  __   _ _______        _____ _______ _______      _______  _____  ______  _______
-  |       |     | | \  | |______ |        |   |          |         |  |  | |     | |     \ |______
-  |_____  |_____| |  \_| |       |_____ __|__ |_____     |         |  |  | |_____| |_____/ ______|
-                                                                                                  
- 
-"""
+
+# 
+#  _______  _____  __   _ _______        _____ _______ _______      _______  _____  ______  _______
+#  |       |     | | \  | |______ |        |   |          |         |  |  | |     | |     \ |______
+#  |_____  |_____| |  \_| |       |_____ __|__ |_____     |         |  |  | |_____| |_____/ ______|
+#                                                                                                  
+# 
+
 ttk.Label(tabConflict, text="These mods could potentially cause conflicts.").pack()
 
 ttk.Label(tabConflict, text="This should not be taken as a suggestion that these mods do not work.").pack(pady=(20, 0))
@@ -179,14 +180,14 @@ conflictFrame.pack(fill="x")
 
 
 
-"""
- 
-  _____ __   _ _______ _______ _______ _____ _    _ _______      _______  _____  ______  _______
-    |   | \  | |_____| |          |      |    \  /  |______      |  |  | |     | |     \ |______
-  __|__ |  \_| |     | |_____     |    __|__   \/   |______      |  |  | |_____| |_____/ ______|
-                                                                                                
- 
-"""
+
+# 
+#  _____ __   _ _______ _______ _______ _____ _    _ _______      _______  _____  ______  _______
+#    |   | \  | |_____| |          |      |    \  /  |______      |  |  | |     | |     \ |______
+#  __|__ |  \_| |     | |_____     |    __|__   \/   |______      |  |  | |_____| |_____/ ______|
+#                                                                                                
+# 
+
 ttk.Label(tabInactive, text="These mods are never active.  Maybe you can save some room by getting rid of them?").pack()
 
 inactiveTree = ttk.Treeview(tabInactive, selectmode='browse', columns=('Name'))
@@ -202,14 +203,14 @@ inactiveTree.configure(yscrollcommand=inactiveTreevsb.set)
 
 
 
-"""
- 
-  _     _ __   _ _     _ _______ _______ ______       _______  _____  ______  _______
-  |     | | \  | |     | |______ |______ |     \      |  |  | |     | |     \ |______
-  |_____| |  \_| |_____| ______| |______ |_____/      |  |  | |_____| |_____/ ______|
-                                                                                     
- 
-"""
+
+# 
+#  _     _ __   _ _     _ _______ _______ ______       _______  _____  ______  _______
+#  |     | | \  | |     | |______ |______ |     \      |  |  | |     | |     \ |______
+#  |_____| |  \_| |_____| ______| |______ |_____/      |  |  | |_____| |_____/ ______|
+#                                                                                     
+# 
+
 ttk.Label(tabUnused, text="These mods are active but not purchased. Maybe remove what you don't need?").pack()
 
 unusedTree = ttk.Treeview(tabUnused, selectmode='browse', columns=('Name','Title','Savegame'))
@@ -227,12 +228,12 @@ unusedTreevsb.pack(side='right', fill='y')
 unusedTree.configure(yscrollcommand=unusedTreevsb.set)
 
 
-"""
- 
-  _______ _______ _____ __   _              _____   _____   _____ 
-  |  |  | |_____|   |   | \  |      |      |     | |     | |_____]
-  |  |  | |     | __|__ |  \_|      |_____ |_____| |_____| |      
-                                                                  
- 
-"""
+
+# 
+#  _______ _______ _____ __   _              _____   _____   _____ 
+#  |  |  | |_____|   |   | \  |      |      |     | |     | |_____]
+#  |  |  | |     | __|__ |  \_|      |_____ |_____| |_____| |      
+#                                                                  
+# 
+
 root.mainloop()

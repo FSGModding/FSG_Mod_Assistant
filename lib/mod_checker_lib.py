@@ -10,7 +10,7 @@ Main library file
 (c) 2021 JTSage.  MIT License.
 """
 
-from tkinter import *
+from tkinter import * # pylint: disable=unused-wildcard-import
 from tkinter import ttk
 from distutils.util import strtobool
 import tkinter.filedialog as fd
@@ -19,18 +19,17 @@ import os
 import re
 import glob
 from lxml import etree
-import mod_checker_data
+
 import __main__
 
 
-"""
- 
-          _____  _______ ______        _______ _______ _____ __   _       _______  _____  __   _ _______ _____  ______
-  |      |     | |_____| |     \       |  |  | |_____|   |   | \  |       |       |     | | \  | |______   |   |  ____
-  |_____ |_____| |     | |_____/ _____ |  |  | |     | __|__ |  \_| _____ |_____  |_____| |  \_| |       __|__ |_____|
-                                                                                                                      
- 
-"""
+# 
+#          _____  _______ ______        _______ _______ _____ __   _       _______  _____  __   _ _______ _____  ______
+#  |      |     | |_____| |     \       |  |  | |_____|   |   | \  |       |       |     | | \  | |______   |   |  ____
+#  |_____ |_____| |     | |_____/ _____ |  |  | |     | __|__ |  \_| _____ |_____  |_____| |  \_| |       __|__ |_____|
+#                                                                                                                      
+# 
+
 def load_main_config(*args):
 
 	filename = fd.askopenfilename(
@@ -47,26 +46,17 @@ def load_main_config(*args):
 		__main__.processButton.state(['!disabled'])
 
 
-"""
- 
-   _____   ______  _____  _______ _______ _______ _______       _______ _____        _______ _______
-  |_____] |_____/ |     | |       |______ |______ |______       |______   |   |      |______ |______
-  |       |    \_ |_____| |_____  |______ ______| ______| _____ |       __|__ |_____ |______ ______|
-                                                                                                    
- 
-"""
+
+# 
+#   _____   ______  _____  _______ _______ _______ _______       _______ _____        _______ _______
+#  |_____] |_____/ |     | |       |______ |______ |______       |______   |   |      |______ |______
+#  |       |    \_ |_____| |_____  |______ ______| ______| _____ |       __|__ |_____ |______ ______|
+#                                                                                                    
+# 
+
 def process_files(*args):
 	basePath  = __main__.mainConfigFile[0:-16]
 	modDir    = basePath + "/mods"
-
-	#Make sure the display is clear
-	__main__.brokenTree.delete(*__main__.brokenTree.get_children())
-	__main__.missingTree.delete(*__main__.missingTree.get_children())
-	__main__.inactiveTree.delete(*__main__.inactiveTree.get_children())
-	__main__.unusedTree.delete(*__main__.unusedTree.get_children())
-
-	for widget in __main__.conflictFrame.winfo_children():
-		widget.destroy()
 
 	# Find the savegame files
 	filesVehicles = glob.glob(basePath + "savegame*/vehicles.xml")
@@ -162,10 +152,9 @@ def process_files(*args):
 
 	# Finally, lets do items
 	for thisFile in filesItems:
-		thisXML = etree.parse(thisFile)
+		thisXML      = etree.parse(thisFile)
 		thisSavegame = re.search(r'savegame([\d+])', thisFile)[1]
-	
-		theseMods = thisXML.xpath("/items/item")
+		theseMods    = thisXML.xpath("/items/item")
 
 		for thisMod in theseMods:
 			if "modName" not in thisMod.attrib or thisMod.attrib["modName"].startswith("pdlc") :
@@ -174,7 +163,7 @@ def process_files(*args):
 				__main__.modList[thisMod.attrib["modName"]]["usedIn"].add(thisSavegame)
 
 	#Deal with the script only mods
-	for thisMod in mod_checker_data.knownScriptOnlyMods:
+	for thisMod in __main__.knownScriptOnlyMods:
 		if thisMod in __main__.modList.keys():
 			__main__.modList[thisMod]["usedIn"].update(__main__.modList[thisMod]["activeIn"])
 
@@ -188,19 +177,19 @@ def process_files(*args):
 
 
 
-"""
- 
-  _     _  _____  ______        _______  _____  __   _ _______ _____  ______
-  |     | |_____] |     \       |       |     | | \  | |______   |   |  ____
-  |_____| |       |_____/ _____ |_____  |_____| |  \_| |       __|__ |_____|
-                                                                            
- 
-"""
+
+# 
+#  _     _  _____  ______        _______  _____  __   _ _______ _____  ______
+#  |     | |_____] |     \       |       |     | | \  | |______   |   |  ____
+#  |_____| |       |_____/ _____ |_____  |_____| |  \_| |       __|__ |_____|
+#                                                                            
+# 
+
 def upd_config() :
 
-	broken  = {k: v for k, v in __main__.modList.items() if v['fileBad'] }
-	folder  = {k: v for k, v in __main__.modList.items() if v['isFolder'] }
-	missing = {k: v for k, v in __main__.modList.items() if v['isMissing'] }
+	broken  = {k for k, v in __main__.modList.items() if v['fileBad'] }
+	folder  = {k for k, v in __main__.modList.items() if v['isFolder'] }
+	missing = {k for k, v in __main__.modList.items() if v['isMissing'] }
 
 	__main__.modLabels["found"].config(text = len(__main__.modList.keys()))
 	__main__.modLabels["broke"].config(text = len(broken))
@@ -210,36 +199,37 @@ def upd_config() :
 
 
 
-"""
- 
-  _     _  _____  ______        ______   ______  _____  _     _ _______ __   _
-  |     | |_____] |     \       |_____] |_____/ |     | |____/  |______ | \  |
-  |_____| |       |_____/ _____ |_____] |    \_ |_____| |    \_ |______ |  \_|
-                                                                              
- 
-"""
-def upd_broken(garbageFiles) :
-	broken = {k: v for k, v in __main__.modList.items() if v['fileBad'] }
-	folder = {k: v for k, v in __main__.modList.items() if v['isFolder'] and not v['fileBad'] }
-	
 
-	for thisMod in sorted(broken.keys()) :
+# 
+#  _     _  _____  ______        ______   ______  _____  _     _ _______ __   _
+#  |     | |_____] |     \       |_____] |_____/ |     | |____/  |______ | \  |
+#  |_____| |       |_____/ _____ |_____] |    \_ |_____| |    \_ |______ |  \_|
+#                                                                              
+# 
+
+def upd_broken(garbageFiles) :
+	broken = {k for k, v in __main__.modList.items() if v['fileBad'] }
+	folder = {k for k, v in __main__.modList.items() if v['isFolder'] and not v['fileBad'] }
+	
+	__main__.brokenTree.delete(*__main__.brokenTree.get_children())
+	
+	for thisMod in sorted(broken) :
 		__main__.brokenTree.insert(
-			parent='',
-			index='end',
-			text=thisMod,
-			values=(
+			parent = '',
+			index  = 'end',
+			text   = thisMod,
+			values = (
 				thisMod,
 				"Folder" if __main__.modList[thisMod]["isFolder"] else "Zip File",
 				"Bad " + ("Folder" if __main__.modList[thisMod]["isFolder"] else "File") + " Name"
 			))
 
-	for thisMod in sorted(folder.keys()) :
+	for thisMod in sorted(folder) :
 		__main__.brokenTree.insert(
-			parent='',
-			index='end',
-			text=thisMod,
-			values=(
+			parent = '',
+			index  = 'end',
+			text   = thisMod,
+			values = (
 				thisMod,
 				"Folder",
 				"Needs Zipped"
@@ -247,27 +237,30 @@ def upd_broken(garbageFiles) :
 	
 	for thisFile in garbageFiles :
 		__main__.brokenTree.insert(
-			parent='',
-			index='end',
-			text=thisFile,
-			values=(
+			parent = '',
+			index  = 'end',
+			text   = thisFile,
+			values = (
 				thisFile,
 				"Garbage File",
 				"Needs Deleted"
 			))
 
 
-"""
- 
-  _     _  _____  ______        _______ _____ _______ _______ _____ __   _  ______
-  |     | |_____] |     \       |  |  |   |   |______ |______   |   | \  | |  ____
-  |_____| |       |_____/ _____ |  |  | __|__ ______| ______| __|__ |  \_| |_____|
-                                                                                  
- 
-"""
+
+# 
+#  _     _  _____  ______        _______ _____ _______ _______ _____ __   _  ______
+#  |     | |_____] |     \       |  |  |   |   |______ |______   |   | \  | |  ____
+#  |_____| |       |_____/ _____ |  |  | __|__ ______| ______| __|__ |  \_| |_____|
+#                                                                                  
+# 
+
 def upd_missing() :
 	missing = {k: v for k, v in __main__.modList.items() if v['isMissing'] }
 
+	# Clear out the tree first
+	__main__.missingTree.delete(*__main__.missingTree.get_children())
+	
 	for thisMod in sorted(missing.keys()) :
 		__main__.missingTree.insert(
 			parent='',
@@ -281,16 +274,19 @@ def upd_missing() :
 			))
 
 
-"""
- 
-  _     _  _____  ______        _____ __   _ _______ _______ _______ _____ _    _ _______
-  |     | |_____] |     \         |   | \  | |_____| |          |      |    \  /  |______
-  |_____| |       |_____/ _____ __|__ |  \_| |     | |_____     |    __|__   \/   |______
-                                                                                         
- 
-"""
+
+# 
+#  _     _  _____  ______        _____ __   _ _______ _______ _______ _____ _    _ _______
+#  |     | |_____] |     \         |   | \  | |_____| |          |      |    \  /  |______
+#  |_____| |       |_____/ _____ __|__ |  \_| |     | |_____     |    __|__   \/   |______
+#                                                                                         
+# 
+
 def upd_inactive() :
 	inactive = {k: v for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) == 0 and not v['fileBad']  }
+
+	# Clear out the tree first
+	__main__.inactiveTree.delete(*__main__.inactiveTree.get_children())
 
 	for thisMod in sorted(inactive.keys()) :
 		__main__.inactiveTree.insert(
@@ -302,16 +298,18 @@ def upd_inactive() :
 			))
 
 
-"""
- 
-  _     _  _____  ______        _     _ __   _ _     _ _______ _______ ______ 
-  |     | |_____] |     \       |     | | \  | |     | |______ |______ |     \
-  |_____| |       |_____/ _____ |_____| |  \_| |_____| ______| |______ |_____/
-                                                                              
- 
-"""
+
+# 
+#  _     _  _____  ______        _     _ __   _ _     _ _______ _______ ______ 
+#  |     | |_____] |     \       |     | | \  | |     | |______ |______ |     \
+#  |_____| |       |_____/ _____ |_____| |  \_| |_____| ______| |______ |_____/
+#                                                                              
+# 
+
 def upd_unused() :
 	unused = {k: v for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) > 0 and not v['fileBad']  }
+
+	__main__.unusedTree.delete(*__main__.unusedTree.get_children())
 
 	for thisMod in sorted(unused.keys()) :
 		__main__.unusedTree.insert(
@@ -325,29 +323,30 @@ def upd_unused() :
 			))
 
 
-"""
- 
-  _     _  _____  ______        _______  _____  __   _ _______        _____ _______ _______
-  |     | |_____] |     \       |       |     | | \  | |______ |        |   |          |   
-  |_____| |       |_____/ _____ |_____  |_____| |  \_| |       |_____ __|__ |_____     |   
-                                                                                           
- 
-"""
+
+# 
+#  _     _  _____  ______        _______  _____  __   _ _______        _____ _______ _______
+#  |     | |_____] |     \       |       |     | | \  | |______ |        |   |          |   
+#  |_____| |       |_____/ _____ |_____  |_____| |  \_| |       |_____ __|__ |_____     |   
+#                                                                                           
+# 
+
 def upd_conflict() :
 
-	
+	for widget in __main__.conflictFrame.winfo_children():
+		widget.destroy()
 
-	for thisMod in sorted(mod_checker_data.knownConflicts.keys()) :
+	for thisMod in sorted(__main__.knownConflicts.keys()) :
 		if thisMod in __main__.modList.keys():
 			ttk.Label(
 				__main__.conflictFrame,
-				text=thisMod,
-				anchor='w'
-			).pack(fill='x', padx=0,pady=(10,0))
+				text   = thisMod,
+				anchor = 'w'
+			).pack(fill = 'x', padx = 0, pady = (10,0))
 
 			ttk.Label(
 				__main__.conflictFrame,
-				text=mod_checker_data.knownConflicts[thisMod],
-				anchor='w',
-				wraplength=450
-			).pack(fill='x', pady=0,padx=(40,0))
+				text       = __main__.knownConflicts[thisMod],
+				anchor     = 'w',
+				wraplength = 450
+			).pack(fill = 'x', pady = 0, padx = (40,0))

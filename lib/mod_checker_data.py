@@ -58,6 +58,7 @@ knownScriptOnlyMods = [
 	"FS19_SleepAnytime",
 	"FS19_SleepAnywhere",
 	"FS19_StoreSales",
+	"FS19_StubbleCultivator",
 	"FS19_ToolsCombo",
 	"FS19_TrainStopMod",
 	"FS19_UnitConvertLite",
