@@ -55,7 +55,7 @@ n.add(tabConflict, text='Possible Conflicts')
 n.add(tabInactive, text='Inactive Mods')
 n.add(tabUnused,   text='Active, Un-Used Mods')
 
-n.pack(expand = 1, pady=(5,0), padx=5, fill ="both")
+n.pack(expand = 1, pady = (5,0), padx = 5, fill = "both")
 
 root.update()
 
@@ -118,11 +118,13 @@ ttk.Label(tabBroken, text="These mods have broken file names, and will not appea
 
 brokenTree = ttk.Treeview(tabBroken, selectmode='browse', columns=('Name','Type','Issue'))
 brokenTree.pack(expand=True, side='left', fill='both')
+
 brokenTree['show'] = 'headings'
-brokenTree.heading('#0', text='Label')
-brokenTree.heading('#1', text='Name')
-brokenTree.heading('#2', text='Type')
-brokenTree.heading('#3', text='Problem')
+
+brokenTree.heading('#0', text = 'Label')
+brokenTree.heading('#1', text = 'Name')
+brokenTree.heading('#2', text = 'Type')
+brokenTree.heading('#3', text = 'Problem')
 
 brokenTreevsb = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenTree.yview)
 brokenTreevsb.pack(side='right', fill='y')
@@ -143,13 +145,16 @@ ttk.Label(tabMissing, text="These mods are missing.  Those that are owned could 
 
 missingTree = ttk.Treeview(tabMissing, selectmode='browse', columns=('Name','Title','Purchased','Savegame'))
 missingTree.pack(expand=True, side='left', fill='both')
+
 missingTree['show'] = 'headings'
-missingTree.heading('#0', text='Label')
-missingTree.heading('#1', text='Name')
-missingTree.heading('#2', text='Title')
-missingTree.heading('#3', text='Owned?')
+
+missingTree.heading('#0', text = 'Label')
+missingTree.heading('#1', text = 'Name')
+missingTree.heading('#2', text = 'Title')
+missingTree.heading('#3', text = 'Owned?')
+missingTree.heading('#4', text = 'Savegame(s)')
+
 missingTree.column("#3", minwidth=0, width=50, stretch=NO) 
-missingTree.heading('#4', text='Savegame(s)')
 missingTree.column("#4", minwidth=0, width=100, stretch=NO) 
 
 missingTreevsb = ttk.Scrollbar(tabMissing, orient="vertical", command=missingTree.yview)
@@ -167,12 +172,12 @@ missingTree.configure(yscrollcommand=missingTreevsb.set)
 #                                                                                                  
 # 
 
-ttk.Label(tabConflict, text="These mods could potentially cause conflicts.").pack()
+ttk.Label(tabConflict, text = "These mods could potentially cause conflicts.").pack()
 
-ttk.Label(tabConflict, text="This should not be taken as a suggestion that these mods do not work.").pack(pady=(20, 0))
-ttk.Label(tabConflict, text="This is also not intended as a slight against the mod or author.").pack()
-ttk.Label(tabConflict, text="Many (most) times these mods will work as intended.").pack()
-ttk.Label(tabConflict, text="If you do experience in-game problems, this may be a good place to start testing.").pack(pady=(0,20))
+ttk.Label(tabConflict, text = "This should not be taken as a suggestion that these mods do not work.").pack(pady=(20, 0))
+ttk.Label(tabConflict, text = "This is also not intended as a slight against the mod or author.").pack()
+ttk.Label(tabConflict, text = "Many (most) times these mods will work as intended.").pack()
+ttk.Label(tabConflict, text = "If you do experience in-game problems, this may be a good place to start testing.").pack(pady=(0,20))
 
 conflictFrame = ttk.Frame(tabConflict, border=1, padding=(9,9,9,9))
 conflictFrame.pack(fill="x")
@@ -192,9 +197,10 @@ ttk.Label(tabInactive, text="These mods are never active.  Maybe you can save so
 
 inactiveTree = ttk.Treeview(tabInactive, selectmode='browse', columns=('Name'))
 inactiveTree.pack(expand=True, side='left', fill='both')
+
 inactiveTree['show'] = 'headings'
-inactiveTree.heading('#0', text='Label')
-inactiveTree.heading('#1', text='Name')
+inactiveTree.heading('#0', text = 'Label')
+inactiveTree.heading('#1', text = 'Name')
 
 inactiveTreevsb = ttk.Scrollbar(tabInactive, orient="vertical", command=inactiveTree.yview)
 inactiveTreevsb.pack(side='right', fill='y')
@@ -215,11 +221,13 @@ ttk.Label(tabUnused, text="These mods are active but not purchased. Maybe remove
 
 unusedTree = ttk.Treeview(tabUnused, selectmode='browse', columns=('Name','Title','Savegame'))
 unusedTree.pack(expand=True, side='left', fill='both')
+
 unusedTree['show'] = 'headings'
-unusedTree.heading('#0', text='Label')
-unusedTree.heading('#1', text='Name')
-unusedTree.heading('#2', text='Title')
-unusedTree.heading('#3', text='Savegame(s)')
+unusedTree.heading('#0', text = 'Label')
+unusedTree.heading('#1', text = 'Name')
+unusedTree.heading('#2', text = 'Title')
+unusedTree.heading('#3', text = 'Savegame(s)')
+
 unusedTree.column("#3", minwidth=0, width=100, stretch=NO) 
 
 unusedTreevsb = ttk.Scrollbar(tabUnused, orient="vertical", command=unusedTree.yview)

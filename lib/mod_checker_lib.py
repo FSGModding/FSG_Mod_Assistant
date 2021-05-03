@@ -13,12 +13,13 @@ Main library file
 from tkinter import * # pylint: disable=unused-wildcard-import
 from tkinter import ttk
 from distutils.util import strtobool
+from lxml import etree
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import os
 import re
 import glob
-from lxml import etree
+
 
 import __main__
 
@@ -187,9 +188,9 @@ def process_files(*args):
 
 def upd_config() :
 
-	broken  = {k for k, v in __main__.modList.items() if v['fileBad'] }
-	folder  = {k for k, v in __main__.modList.items() if v['isFolder'] }
-	missing = {k for k, v in __main__.modList.items() if v['isMissing'] }
+	broken  = { k for k, v in __main__.modList.items() if v['fileBad'] }
+	folder  = { k for k, v in __main__.modList.items() if v['isFolder'] }
+	missing = { k for k, v in __main__.modList.items() if v['isMissing'] }
 
 	__main__.modLabels["found"].config(text = len(__main__.modList.keys()))
 	__main__.modLabels["broke"].config(text = len(broken))
@@ -208,8 +209,8 @@ def upd_config() :
 # 
 
 def upd_broken(garbageFiles) :
-	broken = {k for k, v in __main__.modList.items() if v['fileBad'] }
-	folder = {k for k, v in __main__.modList.items() if v['isFolder'] and not v['fileBad'] }
+	broken = { k for k, v in __main__.modList.items() if v['fileBad'] }
+	folder = { k for k, v in __main__.modList.items() if v['isFolder'] and not v['fileBad'] }
 	
 	__main__.brokenTree.delete(*__main__.brokenTree.get_children())
 	
@@ -256,17 +257,17 @@ def upd_broken(garbageFiles) :
 # 
 
 def upd_missing() :
-	missing = {k: v for k, v in __main__.modList.items() if v['isMissing'] }
+	missing = { k for k, v in __main__.modList.items() if v['isMissing'] }
 
 	# Clear out the tree first
 	__main__.missingTree.delete(*__main__.missingTree.get_children())
 	
-	for thisMod in sorted(missing.keys()) :
+	for thisMod in sorted(missing) :
 		__main__.missingTree.insert(
-			parent='',
-			index='end',
-			text=thisMod,
-			values=(
+			parent = '',
+			index  = 'end',
+			text   = thisMod,
+			values = (
 				thisMod,
 				__main__.modList[thisMod]["name"],
 				"YES" if len(__main__.modList[thisMod]["usedIn"]) > 0 else "no",
@@ -283,17 +284,17 @@ def upd_missing() :
 # 
 
 def upd_inactive() :
-	inactive = {k: v for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) == 0 and not v['fileBad']  }
+	inactive = { k for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) == 0 and not v['fileBad']  }
 
 	# Clear out the tree first
 	__main__.inactiveTree.delete(*__main__.inactiveTree.get_children())
 
-	for thisMod in sorted(inactive.keys()) :
+	for thisMod in sorted(inactive) :
 		__main__.inactiveTree.insert(
-			parent='',
-			index='end',
-			text=thisMod,
-			values=(
+			parent = '',
+			index  = 'end',
+			text   = thisMod,
+			values = (
 				thisMod
 			))
 
@@ -307,19 +308,19 @@ def upd_inactive() :
 # 
 
 def upd_unused() :
-	unused = {k: v for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) > 0 and not v['fileBad']  }
+	unused = { k for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) > 0 and not v['fileBad']  }
 
 	__main__.unusedTree.delete(*__main__.unusedTree.get_children())
 
-	for thisMod in sorted(unused.keys()) :
+	for thisMod in sorted(unused) :
 		__main__.unusedTree.insert(
-			parent='',
-			index='end',
-			text=thisMod,
-			values=(
+			parent = '',
+			index  = 'end',
+			text   = thisMod,
+			values = (
 				thisMod,
 				__main__.modList[thisMod]["name"],
-				", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"]))
+				", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"]) )
 			))
 
 
