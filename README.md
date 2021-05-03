@@ -20,7 +20,7 @@ __This does not alter or delete any files on your computer at all__
 
 ## Usage:
 
-Coming soon, hopeing for an executable
+Run dist/FS19_Mod_Checker.exe - command line or explorer.
 
 ## What it looks like
 
