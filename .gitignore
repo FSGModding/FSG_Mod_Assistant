@@ -1,3 +1,2 @@
-
-FS19_Used_Mods_Log.txt
-.vscode/settings.json
+.vscode/
+__pycache__/

@@ -25,6 +25,13 @@ This little script will take a look at your mod install folder and inform you of
  C:\ > .\FS19_Mod_Checker.ps1
  ```
 
+ Note: this might not work by default.  Read this (https://adamtheautomator.com/run-powershell-script/)
+
+ ### EXE Usage
+
+ You can also just run the .exe file.  It will use the default save location, and parse all savegames.
+
+
 ## Output
 
 The output is both shown in the terminal, and saved to a log file in the same folder, ```FS19_Used_Mods_Log.txt```
@@ -43,7 +50,7 @@ ModChecker v1.0.0.0
 Usage:
  -savepath [Path to Save Files]  : Set path to save files
  -saveslot [1-20]                : Look at a single save game, by slot number
- -showonlyload                   : Show mods that are active but potentially unused
+ -hideonlyload                   : Do not show mods that are active but potentially unused
  -nolog                          : Do not write log file
  -quiet                          : Do not print output to terminal
  -help                           : Print this screen
@@ -55,8 +62,8 @@ Usage:
  * ```saveslot```
    * You can specify the numeric save slot you wish to look at [1-20], otherwise, all slots will be scanned.
 
- * ```showonlyload```
-   * This switch will show mods that are loaded (active) in your save game but do not appear to be used.  Note that there will be a bunch of false positives in this list - any script only mod, or vehicle add on, or pre-requisite script for another mod may appear on this list.  Be careful with what you remove.  Some script only mods have been added to the checker to cut down on false positives.
+ * ```hideonlyload```
+   * This switch will hide the display of mods that are loaded (active) in your save game but do not appear to be used.  Note that there will be a bunch of false positives in this list - any script only mod, or vehicle add on, or pre-requisite script for another mod may appear on this list.  Be careful with what you remove.  Some script only mods have been added to the checker to cut down on false positives.
 
  * ```nolog```
    * Prevent the script from writing a log file, display only on the screen
