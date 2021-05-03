@@ -18,10 +18,10 @@ import os
 import lib.mod_checker_lib as mod_checker_lib
 from lib.mod_checker_data import knownScriptOnlyMods, knownConflicts
 
-modList = {}
+modList        = {}
 mainConfigFile = ""
-# My debug.
-#mainConfigFile = "C:/Users/PC/Documents/My Games/FarmingSimulator2019/gameSettings.xml"
+masterLog      = []
+sepLine        = "   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---"
 
 
 # 
@@ -140,10 +140,10 @@ brokenTree.heading('#1', text = 'Name')
 brokenTree.heading('#2', text = 'Type')
 brokenTree.heading('#3', text = 'Problem')
 
-brokenTreevsb = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenTree.yview)
-brokenTreevsb.pack(side='right', fill='y')
+brokenTreeVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenTree.yview)
+brokenTreeVSB.pack(side='right', fill='y')
 
-brokenTree.configure(yscrollcommand=brokenTreevsb.set)
+brokenTree.configure(yscrollcommand=brokenTreeVSB.set)
 
 
 
@@ -171,10 +171,10 @@ missingTree.heading('#4', text = 'Savegame(s)')
 missingTree.column("#3", minwidth=0, width=50, stretch=NO) 
 missingTree.column("#4", minwidth=0, width=100, stretch=NO) 
 
-missingTreevsb = ttk.Scrollbar(tabMissing, orient="vertical", command=missingTree.yview)
-missingTreevsb.pack(side='right', fill='y')
+missingTreeVSB = ttk.Scrollbar(tabMissing, orient="vertical", command=missingTree.yview)
+missingTreeVSB.pack(side='right', fill='y')
 
-missingTree.configure(yscrollcommand=missingTreevsb.set)
+missingTree.configure(yscrollcommand=missingTreeVSB.set)
 
 
 
@@ -216,10 +216,10 @@ inactiveTree['show'] = 'headings'
 inactiveTree.heading('#0', text = 'Label')
 inactiveTree.heading('#1', text = 'Name')
 
-inactiveTreevsb = ttk.Scrollbar(tabInactive, orient="vertical", command=inactiveTree.yview)
-inactiveTreevsb.pack(side='right', fill='y')
+inactiveTreeVSB = ttk.Scrollbar(tabInactive, orient="vertical", command=inactiveTree.yview)
+inactiveTreeVSB.pack(side='right', fill='y')
 
-inactiveTree.configure(yscrollcommand=inactiveTreevsb.set)
+inactiveTree.configure(yscrollcommand=inactiveTreeVSB.set)
 
 
 
@@ -244,10 +244,10 @@ unusedTree.heading('#3', text = 'Savegame(s)')
 
 unusedTree.column("#3", minwidth=0, width=100, stretch=NO) 
 
-unusedTreevsb = ttk.Scrollbar(tabUnused, orient="vertical", command=unusedTree.yview)
-unusedTreevsb.pack(side='right', fill='y')
+unusedTreeVSB = ttk.Scrollbar(tabUnused, orient="vertical", command=unusedTree.yview)
+unusedTreeVSB.pack(side='right', fill='y')
 
-unusedTree.configure(yscrollcommand=unusedTreevsb.set)
+unusedTree.configure(yscrollcommand=unusedTreeVSB.set)
 
 
 

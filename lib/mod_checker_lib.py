@@ -14,6 +14,7 @@ from tkinter import * # pylint: disable=unused-wildcard-import
 from tkinter import ttk
 from distutils.util import strtobool
 from lxml import etree
+from datetime import date
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import os
@@ -169,12 +170,14 @@ def process_files(*args):
 		if thisMod in __main__.modList.keys():
 			__main__.modList[thisMod]["usedIn"].update(__main__.modList[thisMod]["activeIn"])
 
+	start_log()
 	upd_config()
 	upd_broken(modBadFiles)
 	upd_missing()
 	upd_inactive()
 	upd_unused()
 	upd_conflict()
+	end_log()
 
 
 
@@ -198,7 +201,11 @@ def upd_config() :
 	__main__.modLabels["folder"].config(text = len(folder))
 	__main__.modLabels["missing"].config(text = len(missing))
 
-
+	__main__.masterLog.append("Found Mods: {}".format(len(__main__.modList.keys())))
+	__main__.masterLog.append("Broken Mods: {0}".format(len(broken)))
+	__main__.masterLog.append("Unzipped Mods: {0}".format(len(folder)))
+	__main__.masterLog.append("Missing Mods: {0}".format(len(missing)))
+	__main__.masterLog.append(__main__.sepLine)
 
 
 
@@ -214,17 +221,25 @@ def upd_broken(garbageFiles) :
 	folder = { k for k, v in __main__.modList.items() if v['isFolder'] and not v['fileBad'] }
 	
 	__main__.brokenTree.delete(*__main__.brokenTree.get_children())
+	__main__.masterLog.append("Broken Mods:")
 	
 	for thisMod in sorted(broken) :
+		thisType = "Folder" if __main__.modList[thisMod]["isFolder"] else "Zip File"
+
 		__main__.brokenTree.insert(
 			parent = '',
 			index  = 'end',
 			text   = thisMod,
 			values = (
 				thisMod,
-				"Folder" if __main__.modList[thisMod]["isFolder"] else "Zip File",
-				"Bad " + ("Folder" if __main__.modList[thisMod]["isFolder"] else "File") + " Name"
+				thisType,
+				"Bad " + thisType + " Name"
 			))
+		__main__.masterLog.append("  {} ({}) - {}".format(
+			thisMod,
+			thisType,
+			"Bad " + thisType + " Name"
+		))
 
 	for thisMod in sorted(folder) :
 		__main__.brokenTree.insert(
@@ -236,6 +251,11 @@ def upd_broken(garbageFiles) :
 				"Folder",
 				"Needs Zipped"
 			))
+		__main__.masterLog.append("  {} ({}) - {}".format(
+			thisMod,
+			"Folder",
+			"Needs Zipped"
+		))
 	
 	for thisFile in garbageFiles :
 		__main__.brokenTree.insert(
@@ -247,6 +267,13 @@ def upd_broken(garbageFiles) :
 				"Garbage File",
 				"Needs Deleted"
 			))
+		__main__.masterLog.append("  {} ({}) - {}".format(
+			thisFile,
+			"Garbage File",
+			"Needs Deleted"
+		))
+
+	__main__.masterLog.append(__main__.sepLine)
 
 
 
@@ -262,6 +289,7 @@ def upd_missing() :
 
 	# Clear out the tree first
 	__main__.missingTree.delete(*__main__.missingTree.get_children())
+	__main__.masterLog.append("Missing Mods:")
 	
 	for thisMod in sorted(missing) :
 		__main__.missingTree.insert(
@@ -274,6 +302,14 @@ def upd_missing() :
 				"YES" if len(__main__.modList[thisMod]["usedIn"]) > 0 else "no",
 				", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"]))
 			))
+		__main__.masterLog.append("  {} ({}) - saves:{} {}".format(
+			thisMod,
+			__main__.modList[thisMod]["name"],
+			", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"])),
+			"OWNED" if len(__main__.modList[thisMod]["usedIn"]) > 0 else ""
+		))
+
+	__main__.masterLog.append(__main__.sepLine)
 
 
 
@@ -289,6 +325,7 @@ def upd_inactive() :
 
 	# Clear out the tree first
 	__main__.inactiveTree.delete(*__main__.inactiveTree.get_children())
+	__main__.masterLog.append("Inactive Mods:")
 
 	for thisMod in sorted(inactive) :
 		__main__.inactiveTree.insert(
@@ -298,7 +335,11 @@ def upd_inactive() :
 			values = (
 				thisMod
 			))
+		__main__.masterLog.append("  {}".format(
+			thisMod
+		))
 
+	__main__.masterLog.append(__main__.sepLine)
 
 
 # 
@@ -312,6 +353,7 @@ def upd_unused() :
 	unused = { k for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) > 0 and not v['fileBad']  }
 
 	__main__.unusedTree.delete(*__main__.unusedTree.get_children())
+	__main__.masterLog.append("Unused Mods:")
 
 	for thisMod in sorted(unused) :
 		__main__.unusedTree.insert(
@@ -323,6 +365,13 @@ def upd_unused() :
 				__main__.modList[thisMod]["name"],
 				", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"]) )
 			))
+		__main__.masterLog.append("  {} ({}) - saves:{}".format(
+			thisMod,
+			__main__.modList[thisMod]["name"],
+			", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"]))
+		))
+	
+	__main__.masterLog.append(__main__.sepLine)
 
 
 
@@ -403,7 +452,19 @@ def about() :
 # 
 
 def save_log() :
-	mb.showerror(title="Error", message="I didn't do this part yet.")
+	try:
+		fileWrite = fd.asksaveasfile(
+			mode        = "w", 
+			initialdir  = os.path.expanduser("~"),
+			initialfile = "FS19_Mod_Checker_log.txt",
+			title       = 'Save Log File...',
+			filetypes   = [("Text Documents", ".txt")]
+		)
+		fileWrite.write('\n'.join(__main__.masterLog))
+		fileWrite.close()
+		mb.showinfo(title="Saved", message="Log Saved")
+	except:
+		mb.showerror(title="Error", message="Unable to save log file")
 
 
 
@@ -423,3 +484,36 @@ def resource_path(relative_path):
 		base_path = os.path.abspath(".")
 
 	return os.path.join(base_path, relative_path)
+
+
+
+# 
+#  _______ _______ _______  ______ _______               _____   ______
+#  |______    |    |_____| |_____/    |          |      |     | |  ____
+#  ______|    |    |     | |    \_    |    _____ |_____ |_____| |_____|
+#                                                                      
+# 
+
+def start_log():
+	__main__.masterLog = [
+		" _______           __ ______ __                __               ",
+		"|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.",
+		"|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|",
+		"|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ",
+		"											  v1.0.0.0 by JTSage"
+	]
+	__main__.masterLog.append(__main__.sepLine)
+
+
+
+# 
+#  _______ __   _ ______                _____   ______
+#  |______ | \  | |     \       |      |     | |  ____
+#  |______ |  \_| |_____/ _____ |_____ |_____| |_____|
+#                                                     
+# 
+
+def end_log():
+	today = date.today()
+	__main__.masterLog.append("Report Generated on: {}".format(today))
+	__main__.masterLog.append(__main__.sepLine)

@@ -18,6 +18,8 @@ This program provides information only.
 
 __This does not alter or delete any files on your computer at all__
 
+You can, optionally, choose to save a log file from the File menu.
+
 ## Usage:
 
 Run dist/FS19_Mod_Checker.exe - command line or explorer.
@@ -43,15 +45,15 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 ![Active but Unused Mods](sshot/006-UnusedMods.png)
 
 
-## Development Requirments
+## Development Requirements
 
-Needs ```lxml```
+Needs the [lxml](https://lxml.de/installation.html) module installed
 
 
 ## Planned Improvements
 
  * Better suggestions for renaming/deleting bad mods based off of other files in folder. ___(Started)___
 
- * Create a short list of popular script-only mods and hide them from the "loaded but not used" list. (i.e. AutoDrive, Global Company, Courseplay, etc.) [GitHub Issue #4](https://github.com/jtsage/FS19_Mod_Checker/issues/4)
+ * Create a short list of popular script-only mods and hide them from the "loaded but not used" list. (i.e. AutoDrive, Global Company, Course Play, etc.) [GitHub Issue #4](https://github.com/jtsage/FS19_Mod_Checker/issues/4)
 
  * Note some of the more popular mod conflicts and suggest avoiding them: [GitHub Issue #2](https://github.com/jtsage/FS19_Mod_Checker/issues/2)
