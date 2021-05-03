@@ -36,8 +36,22 @@ root.title("FS19 Mod Checker")
 root.minsize(650, 500)
 
 
-# p1 = PhotoImage(file = 'mcicon.png')
-# root.iconphoto(False, p1)
+menubar = Menu(root)
+filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label="Save Log", command=mod_checker_lib.save_log)
+filemenu.add_separator()
+filemenu.add_command(label="Exit", command=root.quit)
+menubar.add_cascade(label="File", menu=filemenu)
+
+helpmenu = Menu(menubar, tearoff=0)
+helpmenu.add_command(label="About...", command=mod_checker_lib.about)
+menubar.add_cascade(label="Help", menu=helpmenu)
+
+root.config(menu=menubar)
+
+
+mainIconImage = PhotoImage(file = os.path.join(mod_checker_lib.resource_path("./lib/"), 'mcicon.png'))
+root.iconphoto(False, mainIconImage)
 
 n = ttk.Notebook(root)
 

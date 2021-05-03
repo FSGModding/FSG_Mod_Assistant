@@ -3,7 +3,7 @@
 |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
 |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
-                                              v1.0.0.0 by JTSage
+											  v1.0.0.0 by JTSage
 
 Main library file
 
@@ -17,6 +17,7 @@ from lxml import etree
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import os
+import sys
 import re
 import glob
 
@@ -351,3 +352,74 @@ def upd_conflict() :
 				anchor     = 'w',
 				wraplength = 450
 			).pack(fill = 'x', pady = 0, padx = (40,0))
+
+
+# 
+#  _______ ______   _____  _     _ _______
+#  |_____| |_____] |     | |     |    |   
+#  |     | |_____] |_____| |_____|    |   
+#                                         
+# 
+
+def about() :
+	aboutWindow = Toplevel(__main__.root)
+  
+	# sets the title of the
+	# Toplevel widget
+	aboutWindow.title("About FS19 Mod Checker")
+  
+	# sets the geometry of toplevel
+	aboutWindow.geometry("600x500")
+
+	ttk.Label(aboutWindow, text="FS19 Mod Checker", font='Helvetica 18 bold').pack()
+
+	ttk.Label(aboutWindow, text="This little program will take a look at your mod install folder and inform you of the following:", anchor = 'w', wraplength = 600).pack(fill = 'x', pady = 0, padx = (10,0))
+
+	ttk.Label(aboutWindow, text="If a mod file is named incorrectly and won't load in the game.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
+	ttk.Label(aboutWindow, text="If a mod is not properly zipped.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
+	ttk.Label(aboutWindow, text="If a mod is used in your save games, but does not appear to be installed.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
+	ttk.Label(aboutWindow, text="If a mod is not loaded or used in any of your save games", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
+	ttk.Label(aboutWindow, text="If a mod is loaded but unused in your save games.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
+
+	ttk.Label(aboutWindow, text="This program only offers suggestions, no files on your computer will be altered", font='Helvetica 9 bold', anchor='center', wraplength = 600).pack(fill = 'x', pady=(10,0) )
+
+	ttk.Label(aboutWindow, text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (20,0), padx = (20,0))
+	ttk.Label(aboutWindow, text="The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (10,0), padx = (20,0))
+	ttk.Label(aboutWindow, text="THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (10,0), padx = (20,0))
+
+	ttk.Button(aboutWindow, text="Close About Window", command=aboutWindow.destroy).pack()
+
+	aboutWindow.bind('<Escape>', lambda x: aboutWindow.destroy())
+	aboutWindow.iconphoto(False, __main__.mainIconImage)
+	aboutWindow.focus_force()
+
+
+
+# 
+#  _______ _______ _    _ _______               _____   ______
+#  |______ |_____|  \  /  |______       |      |     | |  ____
+#  ______| |     |   \/   |______ _____ |_____ |_____| |_____|
+#                                                             
+# 
+
+def save_log() :
+	mb.showerror(title="Error", message="I didn't do this part yet.")
+
+
+
+# 
+#   ______ _______ _______  _____  _     _  ______ _______ _______        _____  _______ _______ _     _
+#  |_____/ |______ |______ |     | |     | |_____/ |       |______       |_____] |_____|    |    |_____|
+#  |    \_ |______ ______| |_____| |_____| |    \_ |_____  |______ _____ |       |     |    |    |     |
+#                                                                                                       
+# 
+
+def resource_path(relative_path):
+	""" Get absolute path to resource, works for dev and for PyInstaller """
+	try:
+		# PyInstaller creates a temp folder and stores path in _MEIPASS
+		base_path = sys._MEIPASS # pylint: disable=no-member
+	except AttributeError:
+		base_path = os.path.abspath(".")
+
+	return os.path.join(base_path, relative_path)
