@@ -35,8 +35,8 @@ root.title("FS19 Mod Checker")
 root.minsize(650, 500)
 
 
-p1 = PhotoImage(file = 'mcicon.png')
-root.iconphoto(False, p1)
+# p1 = PhotoImage(file = 'mcicon.png')
+# root.iconphoto(False, p1)
 
 n = ttk.Notebook(root)
 
