@@ -91,8 +91,14 @@ knownConflicts = {
 		"The Global Company mod can conflict with Place Anywhere if both are loaded (and GC's extended placables is used)"
 	,
 	"FS19_REA" :
-		"The Added Realism For Vehicles mod can cause conflicts with improperly prepared vehicle mods."
+		"The Added Realism For Vehicles mod can cause conflicts with improperly prepared vehicle mods. If has also been reported to not work with CoursePlay"
 	,
 	"FS19_realMud" :
 		"The Real Mud mod can cause conflicts with improperly prepared vehicle mods."
+	,
+	"FS19_zzzSpeedControl" :
+		"Speed Control has been reported to not work with CoursePlay"
+	,
+	"FS19_Courseplay" :
+		"There are a number of mods that will not function correctly with courseplay.  A partial list is available in the pinned issue on the courseplay github."
 }

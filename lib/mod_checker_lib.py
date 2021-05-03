@@ -350,7 +350,7 @@ def upd_inactive() :
 # 
 
 def upd_unused() :
-	unused = { k for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) > 0 and not v['fileBad']  }
+	unused = { k for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) > 0 and not v['fileBad'] and not v['isMissing'] }
 
 	__main__.unusedTree.delete(*__main__.unusedTree.get_children())
 	__main__.masterLog.append("Unused Mods:")
