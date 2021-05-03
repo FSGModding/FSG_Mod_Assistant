@@ -25,22 +25,22 @@ Coming soon, hopeing for an executable
 ## What it looks like
 
 ### Configuration Screen, Mods Loaded
-![Configuration Screen, Mods Loaded](sshot/001-ConfigLoaded.png){:width="1400px"}
+![Configuration Screen, Mods Loaded](sshot/001-ConfigLoaded.png)
 
 ### Bad Mods, Unzipped Mods, Extra Files
-![Bad Mods, Unzipped Mods, Extra Files](sshot/002-BadMods.png){:width="1400px"}
+![Bad Mods, Unzipped Mods, Extra Files](sshot/002-BadMods.png)
 
 ### Missing Mods
-![Missing Mods](sshot/003-MissingMods.png){:width="1400px"}
+![Missing Mods](sshot/003-MissingMods.png)
 
 ### Possible Conflicts
-![Possible Conflicts](sshot/004-Conflicts.png){:width="1400px"}
+![Possible Conflicts](sshot/004-Conflicts.png)
 
 ### Inactive, Unused Mods
-![Inactive, Unused Mods](sshot/005-InactiveMods.png){:width="1400px"}
+![Inactive, Unused Mods](sshot/005-InactiveMods.png)
 
 ### Active but Unused Mods
-![Active but Unused Mods](sshot/006-UnusedMods.png){:width="1400px"}
+![Active but Unused Mods](sshot/006-UnusedMods.png)
 
 
 ## Development Requirments
