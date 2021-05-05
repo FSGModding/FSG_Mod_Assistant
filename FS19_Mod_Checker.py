@@ -3,7 +3,7 @@
 |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
 |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
-                                              v1.0.0.0 by JTSage
+                                            v1.0.0.0 by JTSage
 
 Main Program
 
@@ -18,10 +18,9 @@ import os
 import lib.mod_checker_lib as mod_checker_lib
 from lib.mod_checker_data import knownScriptOnlyMods, knownConflicts
 
-modList        = {}
+
 mainConfigFile = ""
 masterLog      = []
-sepLine        = "   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---"
 
 
 # 
@@ -130,22 +129,19 @@ for child in tabConfig.winfo_children():
 
 ttk.Label(tabBroken, text="These mods have broken file names, and will not appear in your game.  They need to be removed or renamed").pack()
 
-brokenTree = ttk.Treeview(tabBroken, selectmode='browse', columns=('Name','Type','Issue'))
+brokenTreeCols = ('Name','Type','Problem')
+
+brokenTree = ttk.Treeview(tabBroken, selectmode='browse', columns=brokenTreeCols, show='headings')
 brokenTree.pack(expand=True, side='left', fill='both')
-
-brokenTree['show'] = 'headings'
-
-brokenTree.heading('#0', text = 'Label')
-brokenTree.heading('#1', text = 'Name')
-brokenTree.heading('#2', text = 'Type')
-brokenTree.heading('#3', text = 'Problem')
 
 brokenTreeVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenTree.yview)
 brokenTreeVSB.pack(side='right', fill='y')
 
 brokenTree.configure(yscrollcommand=brokenTreeVSB.set)
 
-
+for col in brokenTreeCols:
+	brokenTree.heading(col, text=col, command=lambda _col=col: \
+				 treeview_sort_size_column(brokenTree, _col, False))
 
 
 # 
@@ -157,16 +153,10 @@ brokenTree.configure(yscrollcommand=brokenTreeVSB.set)
 
 ttk.Label(tabMissing, text="These mods are missing.  Those that are owned could cost you money").pack()
 
-missingTree = ttk.Treeview(tabMissing, selectmode='browse', columns=('Name','Title','Purchased','Savegame'))
+missingTreeCols = ('Name','Title','Purchased','Savegame')
+
+missingTree = ttk.Treeview(tabMissing, selectmode='browse', columns=missingTreeCols, show='headings')
 missingTree.pack(expand=True, side='left', fill='both')
-
-missingTree['show'] = 'headings'
-
-missingTree.heading('#0', text = 'Label')
-missingTree.heading('#1', text = 'Name')
-missingTree.heading('#2', text = 'Title')
-missingTree.heading('#3', text = 'Owned?')
-missingTree.heading('#4', text = 'Savegame(s)')
 
 missingTree.column("#3", minwidth=0, width=50, stretch=NO) 
 missingTree.column("#4", minwidth=0, width=100, stretch=NO) 
@@ -176,7 +166,9 @@ missingTreeVSB.pack(side='right', fill='y')
 
 missingTree.configure(yscrollcommand=missingTreeVSB.set)
 
-
+for col in missingTreeCols:
+	missingTree.heading(col, text=col, command=lambda _col=col: \
+				 treeview_sort_size_column(missingTree, _col, False))
 
 
 # 
@@ -209,18 +201,21 @@ conflictFrame.pack(fill="x")
 
 ttk.Label(tabInactive, text="These mods are never active.  Maybe you can save some room by getting rid of them?").pack()
 
-inactiveTree = ttk.Treeview(tabInactive, selectmode='browse', columns=('Name'))
+inactiveTreeCols = ('Name','Size')
+
+inactiveTree = ttk.Treeview(tabInactive, selectmode='browse', columns=inactiveTreeCols, show='headings')
 inactiveTree.pack(expand=True, side='left', fill='both')
 
-inactiveTree['show'] = 'headings'
-inactiveTree.heading('#0', text = 'Label')
-inactiveTree.heading('#1', text = 'Name')
+inactiveTree.column("#2", minwidth=0, width=100, stretch=NO, anchor='e') 
 
 inactiveTreeVSB = ttk.Scrollbar(tabInactive, orient="vertical", command=inactiveTree.yview)
 inactiveTreeVSB.pack(side='right', fill='y')
 
 inactiveTree.configure(yscrollcommand=inactiveTreeVSB.set)
 
+for col in inactiveTreeCols:
+	inactiveTree.heading(col, text=col, command=lambda _col=col: \
+				 treeview_sort_size_column(inactiveTree, _col, False))
 
 
 
@@ -233,21 +228,72 @@ inactiveTree.configure(yscrollcommand=inactiveTreeVSB.set)
 
 ttk.Label(tabUnused, text="These mods are active but not purchased. Maybe remove what you don't need?").pack()
 
-unusedTree = ttk.Treeview(tabUnused, selectmode='browse', columns=('Name','Title','Savegame'))
+
+unusedTreeCols = ('Name','Title','Savegame','Size')
+unusedTree = ttk.Treeview(tabUnused, selectmode='browse', columns=unusedTreeCols, show='headings')
 unusedTree.pack(expand=True, side='left', fill='both')
 
-unusedTree['show'] = 'headings'
-unusedTree.heading('#0', text = 'Label')
-unusedTree.heading('#1', text = 'Name')
-unusedTree.heading('#2', text = 'Title')
-unusedTree.heading('#3', text = 'Savegame(s)')
-
-unusedTree.column("#3", minwidth=0, width=100, stretch=NO) 
+unusedTree.column("#3", minwidth=0, width=120, stretch=NO)
+unusedTree.column("#4", minwidth=0, width=100, stretch=NO, anchor='e') 
 
 unusedTreeVSB = ttk.Scrollbar(tabUnused, orient="vertical", command=unusedTree.yview)
 unusedTreeVSB.pack(side='right', fill='y')
 
 unusedTree.configure(yscrollcommand=unusedTreeVSB.set)
+
+for col in unusedTreeCols:
+	unusedTree.heading(col, text=col, command=lambda _col=col: \
+				 treeview_sort_size_column(unusedTree, _col, False))
+
+
+
+def size_to_real_number(text) :
+	try :
+		num, ext = text.split()
+
+		if ext == "B":
+			return float(num)
+		if ext == "Kb" :
+			return float(num) * 1024
+		if ext == "Mb" :
+			return float(num) * 1024 * 1024
+		if ext == "Gb" :
+			return float(num) * 1024 * 1024 * 1024
+	
+	except ValueError :
+		return text
+
+	return text
+
+
+def treeview_sort_size_column(tv, col, reverse):
+	if ( col == "Size" ) :
+		l = [(size_to_real_number(tv.set(k, col)), k) for k in tv.get_children('')]
+	else :
+		l = [(tv.set(k, col), k) for k in tv.get_children('')]
+
+	l.sort(reverse=reverse)
+
+	# rearrange items in sorted positions
+	for index, (val, k) in enumerate(l): # pylint: disable=unused-variable
+		tv.move(k, '', index)
+
+	# reverse sort next time
+	tv.heading(col, text=col, command=lambda _col=col: \
+				 treeview_sort_size_column(tv, _col, not reverse))
+
+def treeview_sort_column(tv, col, reverse):
+	l = [(tv.set(k, col), k) for k in tv.get_children('')]
+	
+	l.sort(reverse=reverse)
+
+	# rearrange items in sorted positions
+	for index, (val, k) in enumerate(l): # pylint: disable=unused-variable
+		tv.move(k, '', index)
+
+	# reverse sort next time
+	tv.heading(col, text=col, command=lambda _col=col: \
+				 treeview_sort_column(tv, _col, not reverse))
 
 
 

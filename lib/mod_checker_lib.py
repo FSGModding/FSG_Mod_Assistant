@@ -3,7 +3,7 @@
 |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
 |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
-											  v1.0.0.0 by JTSage
+                                            v1.0.0.0 by JTSage
 
 Main library file
 
@@ -21,7 +21,8 @@ import os
 import sys
 import re
 import glob
-
+from .mod_checker_modClass import FSMod # pylint: disable=relative-beyond-top-level
+from .mod_checker_data import knownScriptOnlyMods, knownConflicts # pylint: disable=relative-beyond-top-level
 
 import __main__
 
@@ -85,36 +86,45 @@ def process_files(*args):
 
 	modsGlob = glob.glob(modDir + "/*")
 
-	modDirFiles = [os.path.basename(fn) for fn in modsGlob 
+	modDirFiles = [fn for fn in modsGlob 
 		if os.path.isdir(fn)]
-	modZipFiles = [os.path.splitext(os.path.basename(fn))[0] for fn in modsGlob 
+	modZipFiles = [fn for fn in modsGlob 
 		if os.path.basename(fn).endswith('.zip')]
 	modBadFiles = [os.path.basename(fn) for fn in modsGlob 
 		if not os.path.basename(fn).endswith('.zip') and not os.path.isdir(fn)]
 
-	# We should clear the modList in case this is a second run
-	__main__.modList = {}
+	# Define the full mod list.
+	fullModList = {}
+
+	# Special Case
+	fullModList["FS19_holmerPack"] = FSMod()
+	fullModList["FS19_holmerPack"].name("DLC Holmer Terra-Varient Pack")
+	fullModList["FS19_holmerPack"].size(133849603)
+
+
 
 	# Lets parse through the folders.
 	for thisMod in modDirFiles:
-		__main__.modList[thisMod] = {
-			"isFolder"  : True,
-			"fileBad"   : bool(re.search(r'\W', thisMod) or re.match(r'[0-9]', thisMod)),
-			"activeIn"  : set(),
-			"usedIn"    : set(),
-			"isMissing" : False,
-			"name"      : None
-		}
-	
+		modName = os.path.basename(thisMod)
+		
+		fullModList[modName] = FSMod()
+		fullModList[modName].isFolder(True)
+		fullModList[modName].size(-1)
+		fullModList[modName].fullPath(thisMod)
+
+		if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) ) :
+			fullModList[modName].isBad(True)
+		
+	# Next, the zip files
 	for thisMod in modZipFiles:
-		__main__.modList[thisMod] = {
-			"isFolder"  : False,
-			"fileBad"   : bool(re.search(r'\W', thisMod) or re.match(r'[0-9]', thisMod)),
-			"activeIn"  : set(),
-			"usedIn"    : set(),
-			"isMissing" : False,
-			"name"      : None
-		}
+		modName = os.path.splitext(os.path.basename(thisMod))[0]
+		
+		fullModList[modName] = FSMod()
+		fullModList[modName].fullPath(thisMod)
+		fullModList[modName].size(os.path.getsize(thisMod))
+
+		if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) ) :
+			fullModList[modName].isBad(True)
 
 
 	# Alright, lets look at careerSavegame
@@ -126,19 +136,21 @@ def process_files(*args):
 
 		for thisMod in theseMods:
 			if "modName" not in thisMod.attrib or thisMod.attrib["modName"].startswith("pdlc") :
+				""" Skip blanks and paid DLC content """
 				continue
-			if thisMod.attrib["modName"] in __main__.modList.keys() :
-				__main__.modList[thisMod.attrib["modName"]]["activeIn"].add(thisSavegame)
-				__main__.modList[thisMod.attrib["modName"]]["name"] = thisMod.attrib["title"]
 			else :
-				__main__.modList[thisMod.attrib["modName"]] = {
-					"isFolder"  : False,
-					"fileBad"   : False,
-					"activeIn"  : {thisSavegame},
-					"usedIn"    : set(),
-					"isMissing" : True,
-					"name"      : thisMod.attrib["title"]
-				}
+				thisModName = thisMod.attrib["modName"]
+
+			if thisModName in fullModList.keys() :
+				""" Existing mod, mark it active """
+				fullModList[thisModName].isActive(thisSavegame)
+				fullModList[thisModName].name(thisMod.attrib["title"])
+			else :
+				""" Missing Mod, we should add it to the list """
+				fullModList[thisModName] = FSMod()
+				fullModList[thisModName].isActive(thisSavegame)
+				fullModList[thisModName].isMissing(True)
+				fullModList[thisModName].name(thisMod.attrib["title"])
 		
 	#Next up, vehicles
 	for thisFile in filesVehicles:
@@ -150,8 +162,8 @@ def process_files(*args):
 		for thisMod in theseMods:
 			if "modName" not in thisMod.attrib or thisMod.attrib["modName"].startswith("pdlc") :
 				continue
-			if thisMod.attrib["modName"] in __main__.modList.keys() :
-				__main__.modList[thisMod.attrib["modName"]]["usedIn"].add(thisSavegame)
+			if thisMod.attrib["modName"] in fullModList.keys() :
+				fullModList[thisMod.attrib["modName"]].isUsed(thisSavegame)
 
 	# Finally, lets do items
 	for thisFile in filesItems:
@@ -162,21 +174,22 @@ def process_files(*args):
 		for thisMod in theseMods:
 			if "modName" not in thisMod.attrib or thisMod.attrib["modName"].startswith("pdlc") :
 				continue
-			if thisMod.attrib["modName"] in __main__.modList.keys() :
-				__main__.modList[thisMod.attrib["modName"]]["usedIn"].add(thisSavegame)
+			if thisMod.attrib["modName"] in fullModList.keys() :
+				fullModList[thisMod.attrib["modName"]].isUsed(thisSavegame)
 
 	#Deal with the script only mods
-	for thisMod in __main__.knownScriptOnlyMods:
-		if thisMod in __main__.modList.keys():
-			__main__.modList[thisMod]["usedIn"].update(__main__.modList[thisMod]["activeIn"])
+	for thisMod in knownScriptOnlyMods:
+		if thisMod in fullModList.keys():
+			fullModList[thisMod]._usedGames.update(fullModList[thisMod]._activeGames)
+
 
 	start_log()
-	upd_config()
-	upd_broken(modBadFiles)
-	upd_missing()
-	upd_inactive()
-	upd_unused()
-	upd_conflict()
+	upd_config(fullModList)
+	upd_broken(fullModList, modBadFiles)
+	upd_missing(fullModList)
+	upd_inactive(fullModList)
+	upd_unused(fullModList)
+	upd_conflict(fullModList)
 	end_log()
 
 
@@ -190,22 +203,22 @@ def process_files(*args):
 #                                                                            
 # 
 
-def upd_config() :
+def upd_config(fullModList) :
 
-	broken  = { k for k, v in __main__.modList.items() if v['fileBad'] }
-	folder  = { k for k, v in __main__.modList.items() if v['isFolder'] }
-	missing = { k for k, v in __main__.modList.items() if v['isMissing'] }
+	broken  = { k for k, v in fullModList.items() if v.isBad() }
+	folder  = { k for k, v in fullModList.items() if v.isFolder() }
+	missing = { k for k, v in fullModList.items() if v.isMissing() }
 
-	__main__.modLabels["found"].config(text = len(__main__.modList.keys()))
+	__main__.modLabels["found"].config(text = len(fullModList))
 	__main__.modLabels["broke"].config(text = len(broken))
 	__main__.modLabels["folder"].config(text = len(folder))
 	__main__.modLabels["missing"].config(text = len(missing))
 
-	__main__.masterLog.append("Found Mods: {}".format(len(__main__.modList.keys())))
-	__main__.masterLog.append("Broken Mods: {0}".format(len(broken)))
-	__main__.masterLog.append("Unzipped Mods: {0}".format(len(folder)))
-	__main__.masterLog.append("Missing Mods: {0}".format(len(missing)))
-	__main__.masterLog.append(__main__.sepLine)
+	write_log("Found Mods: {}".format(len(fullModList)))
+	write_log("Broken Mods: {0}".format(len(broken)))
+	write_log("Unzipped Mods: {0}".format(len(folder)))
+	write_log("Missing Mods: {0}".format(len(missing)))
+	write_log_sep()
 
 
 
@@ -216,15 +229,17 @@ def upd_config() :
 #                                                                              
 # 
 
-def upd_broken(garbageFiles) :
-	broken = { k for k, v in __main__.modList.items() if v['fileBad'] }
-	folder = { k for k, v in __main__.modList.items() if v['isFolder'] and not v['fileBad'] }
+def upd_broken(fullModList, garbageFiles) :
+	broken = { k for k, v in fullModList.items() if v.isBad() }
+	folder = { k for k, v in fullModList.items() if v.isFolder() and v.isGood() }
 	
 	__main__.brokenTree.delete(*__main__.brokenTree.get_children())
-	__main__.masterLog.append("Broken Mods:")
+
+	write_log("Broken Mods:")
 	
+	""" First, bad names, they won't load """
 	for thisMod in sorted(broken) :
-		thisType = "Folder" if __main__.modList[thisMod]["isFolder"] else "Zip File"
+		thisType = "Folder" if fullModList[thisMod].isFolder() else "Zip File"
 
 		__main__.brokenTree.insert(
 			parent = '',
@@ -235,12 +250,10 @@ def upd_broken(garbageFiles) :
 				thisType,
 				"Bad " + thisType + " Name"
 			))
-		__main__.masterLog.append("  {} ({}) - {}".format(
-			thisMod,
-			thisType,
-			"Bad " + thisType + " Name"
-		))
 
+		write_log("  {} ({}) - {}".format( thisMod, thisType, "Bad " + thisType + " Name" ))
+
+	""" Next, folders that should be zip files instead """
 	for thisMod in sorted(folder) :
 		__main__.brokenTree.insert(
 			parent = '',
@@ -251,12 +264,10 @@ def upd_broken(garbageFiles) :
 				"Folder",
 				"Needs Zipped"
 			))
-		__main__.masterLog.append("  {} ({}) - {}".format(
-			thisMod,
-			"Folder",
-			"Needs Zipped"
-		))
+
+		write_log("  {} (Folder) - Needs Zipped".format( thisMod ))
 	
+	""" Finally, trash that just shouldn't be there """
 	for thisFile in garbageFiles :
 		__main__.brokenTree.insert(
 			parent = '',
@@ -267,13 +278,10 @@ def upd_broken(garbageFiles) :
 				"Garbage File",
 				"Needs Deleted"
 			))
-		__main__.masterLog.append("  {} ({}) - {}".format(
-			thisFile,
-			"Garbage File",
-			"Needs Deleted"
-		))
 
-	__main__.masterLog.append(__main__.sepLine)
+		write_log("  {} (Garbage File) - Needs Deleted".format( thisFile ))
+
+	write_log_sep()
 
 
 
@@ -284,12 +292,13 @@ def upd_broken(garbageFiles) :
 #                                                                                  
 # 
 
-def upd_missing() :
-	missing = { k for k, v in __main__.modList.items() if v['isMissing'] }
+def upd_missing(fullModList) :
+	missing = { k for k, v in fullModList.items() if v.isMissing() }
 
 	# Clear out the tree first
 	__main__.missingTree.delete(*__main__.missingTree.get_children())
-	__main__.masterLog.append("Missing Mods:")
+
+	write_log("Missing Mods:")
 	
 	for thisMod in sorted(missing) :
 		__main__.missingTree.insert(
@@ -298,18 +307,19 @@ def upd_missing() :
 			text   = thisMod,
 			values = (
 				thisMod,
-				__main__.modList[thisMod]["name"],
-				"YES" if len(__main__.modList[thisMod]["usedIn"]) > 0 else "no",
-				", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"]))
+				fullModList[thisMod].name(),
+				"YES" if fullModList[thisMod].isUsed() else "no",
+				fullModList[thisMod].getAllActive()
 			))
-		__main__.masterLog.append("  {} ({}) - saves:{} {}".format(
+
+		write_log("  {} ({}) - saves:{} {}".format(
 			thisMod,
-			__main__.modList[thisMod]["name"],
-			", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"])),
-			"OWNED" if len(__main__.modList[thisMod]["usedIn"]) > 0 else ""
+			fullModList[thisMod].name(),
+			fullModList[thisMod].getAllActive(),
+			"OWNED" if fullModList[thisMod].isUsed() else ""
 		))
 
-	__main__.masterLog.append(__main__.sepLine)
+	write_log_sep()
 
 
 
@@ -320,12 +330,13 @@ def upd_missing() :
 #                                                                                         
 # 
 
-def upd_inactive() :
-	inactive = { k for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) == 0 and not v['fileBad']  }
+def upd_inactive(fullModList) :
+	inactive = { k for k, v in fullModList.items() if v.isNotUsed() and v.isNotActive() and v.isGood()  }
 
 	# Clear out the tree first
 	__main__.inactiveTree.delete(*__main__.inactiveTree.get_children())
-	__main__.masterLog.append("Inactive Mods:")
+
+	write_log("Inactive Mods:")
 
 	for thisMod in sorted(inactive) :
 		__main__.inactiveTree.insert(
@@ -333,13 +344,16 @@ def upd_inactive() :
 			index  = 'end',
 			text   = thisMod,
 			values = (
-				thisMod
+				thisMod,
+				fullModList[thisMod].size()
 			))
-		__main__.masterLog.append("  {}".format(
-			thisMod
+
+		write_log("  {} ({})".format(
+			thisMod,
+			fullModList[thisMod].size()
 		))
 
-	__main__.masterLog.append(__main__.sepLine)
+	write_log_sep()
 
 
 # 
@@ -349,11 +363,12 @@ def upd_inactive() :
 #                                                                              
 # 
 
-def upd_unused() :
-	unused = { k for k, v in __main__.modList.items() if len(v['usedIn']) == 0 and len(v['activeIn']) > 0 and not v['fileBad'] and not v['isMissing'] }
+def upd_unused(fullModList) :
+	unused = { k for k, v in fullModList.items() if v.isNotUsed() and v.isActive() and v.isGood() and v.isNotMissing() }
 
 	__main__.unusedTree.delete(*__main__.unusedTree.get_children())
-	__main__.masterLog.append("Unused Mods:")
+
+	write_log("Unused Mods:")
 
 	for thisMod in sorted(unused) :
 		__main__.unusedTree.insert(
@@ -362,16 +377,19 @@ def upd_unused() :
 			text   = thisMod,
 			values = (
 				thisMod,
-				__main__.modList[thisMod]["name"],
-				", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"]) )
+				fullModList[thisMod].name(),
+				fullModList[thisMod].getAllActive(),
+				fullModList[thisMod].size()
 			))
-		__main__.masterLog.append("  {} ({}) - saves:{}".format(
+
+		write_log("  {} ({}) - saves:{} ({})".format(
 			thisMod,
-			__main__.modList[thisMod]["name"],
-			", ".join( str(t) for t in sorted(__main__.modList[thisMod]["activeIn"]))
+			fullModList[thisMod].name(),
+			fullModList[thisMod].getAllActive(),
+			fullModList[thisMod].size()
 		))
 	
-	__main__.masterLog.append(__main__.sepLine)
+	write_log_sep()
 
 
 
@@ -382,13 +400,13 @@ def upd_unused() :
 #                                                                                           
 # 
 
-def upd_conflict() :
+def upd_conflict(fullModList) :
 
 	for widget in __main__.conflictFrame.winfo_children():
 		widget.destroy()
 
-	for thisMod in sorted(__main__.knownConflicts.keys()) :
-		if thisMod in __main__.modList.keys():
+	for thisMod in sorted(knownConflicts.keys()) :
+		if thisMod in fullModList.keys():
 			ttk.Label(
 				__main__.conflictFrame,
 				text   = thisMod,
@@ -397,7 +415,7 @@ def upd_conflict() :
 
 			ttk.Label(
 				__main__.conflictFrame,
-				text       = __main__.knownConflicts[thisMod],
+				text       = knownConflicts[thisMod],
 				anchor     = 'w',
 				wraplength = 450
 			).pack(fill = 'x', pady = 0, padx = (40,0))
@@ -500,9 +518,9 @@ def start_log():
 		"|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.",
 		"|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|",
 		"|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ",
-		"											  v1.0.0.0 by JTSage"
+		"                                            v1.0.0.0 by JTSage"
 	]
-	__main__.masterLog.append(__main__.sepLine)
+	write_log_sep()
 
 
 
@@ -515,5 +533,28 @@ def start_log():
 
 def end_log():
 	today = date.today()
-	__main__.masterLog.append("Report Generated on: {}".format(today))
-	__main__.masterLog.append(__main__.sepLine)
+	write_log("Report Generated on: {}".format(today))
+	write_log_sep()
+
+
+
+# 
+#  _  _  _  ______ _____ _______ _______               _____   ______
+#  |  |  | |_____/   |      |    |______       |      |     | |  ____
+#  |__|__| |    \_ __|__    |    |______ _____ |_____ |_____| |_____|
+#                                                                    
+# 
+
+def write_log(text) :
+	__main__.masterLog.append(text)
+
+
+# 
+#  _  _  _  ______ _____ _______ _______               _____   ______       _______ _______  _____ 
+#  |  |  | |_____/   |      |    |______       |      |     | |  ____       |______ |______ |_____]
+#  |__|__| |    \_ __|__    |    |______ _____ |_____ |_____| |_____| _____ ______| |______ |      
+#                                                                                                  
+# 
+
+def write_log_sep() :
+	write_log("   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
