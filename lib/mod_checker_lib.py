@@ -15,6 +15,7 @@ from tkinter import ttk
 from distutils.util import strtobool
 from lxml import etree
 from datetime import date
+from pathlib import Path
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import os
@@ -23,7 +24,6 @@ import re
 import glob
 from .mod_checker_modClass import FSMod # pylint: disable=relative-beyond-top-level
 from .mod_checker_data import knownScriptOnlyMods, knownConflicts # pylint: disable=relative-beyond-top-level
-
 
 
 # 
@@ -105,11 +105,12 @@ def process_files(log, changeables, *args):
 
 	# Lets parse through the folders.
 	for thisMod in modDirFiles:
-		modName = os.path.basename(thisMod)
-		
+		modName  = os.path.basename(thisMod)
+		this_dir = Path(thisMod)
+
 		fullModList[modName] = FSMod()
 		fullModList[modName].isFolder(True)
-		fullModList[modName].size(-1)
+		fullModList[modName].size(sum(f.stat().st_size for f in this_dir.glob('**/*') if f.is_file()))
 		fullModList[modName].fullPath(thisMod)
 
 		if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) ) :
@@ -215,9 +216,9 @@ def upd_config(log, changeables, fullModList) :
 	changeables["modLabels"]["missing"].config(text = len(missing))
 
 	write_log(log, "Found Mods: {}".format(len(fullModList)))
-	write_log(log, "Broken Mods: {0}".format(len(broken)))
-	write_log(log, "Unzipped Mods: {0}".format(len(folder)))
-	write_log(log, "Missing Mods: {0}".format(len(missing)))
+	write_log(log, "Broken Mods: {}".format(len(broken)))
+	write_log(log, "Unzipped Mods: {}".format(len(folder)))
+	write_log(log, "Missing Mods: {}".format(len(missing)))
 	write_log_sep(log)
 
 
@@ -233,53 +234,80 @@ def upd_broken(log, changeables, fullModList, garbageFiles) :
 	broken = { k for k, v in fullModList.items() if v.isBad() }
 	folder = { k for k, v in fullModList.items() if v.isFolder() and v.isGood() }
 	
-	changeables["brokenTree"].delete(*changeables["brokenTree"].get_children())
+	for widget in changeables["brokenFrame"].winfo_children():
+		widget.destroy()
 
 	write_log(log, "Broken Mods:")
 	
 	""" First, bad names, they won't load """
 	for thisMod in sorted(broken) :
-		thisType = "Folder" if fullModList[thisMod].isFolder() else "Zip File"
+		message = "This File or Folder is invalid"
+	
+		if ( re.match(r'[0-9]',thisMod) ) :
+			if fullModList[thisMod].isFolder() :
+				message = "Mod Folders cannot start with a digit.  Is this a collection of mods that should be moved to the root mods folder and then removed?"
+			else :
+				message = "Zip files cannot start with a digit.  Is this perhaps a collection of mods? If it is, extract the contents and delete this file."
+		else :
+			testWinCopy = re.search(r'(\w+) - .+', thisMod)
+			testDLCopy = re.search(r'(\w+) \(.+', thisMod)
+			goodName = False
+			if ( testWinCopy or testDLCopy ) :
+				if ( testWinCopy and testWinCopy[1] in fullModList.keys() ) :
+					goodName = testWinCopy[1]
+				if ( testDLCopy and testDLCopy[1] in fullModList.keys() ) :
+					goodName = testDLCopy[1]
 
-		changeables["brokenTree"].insert(
-			parent = '',
-			index  = 'end',
-			text   = thisMod,
-			values = (
-				thisMod,
-				thisType,
-				"Bad " + thisType + " Name"
-			))
+				if ( goodName ) :
+					message = "This looks like a copy of the {} mod and can probably be deleted.".format(goodName)
+				else :
+					message = "This looks like a copy, but the original wasn't found. Rename it?"
 
-		write_log(log, "  {} ({}) - {}".format( thisMod, thisType, "Bad " + thisType + " Name" ))
+			else :
+				if fullModList[thisMod].isFolder() :
+					message = "This folder is named incorrectly, but we didn't figure out what is wrong."
+				else :
+					message = "This ZIP file is named incorrectly, but we didn't figure out what is wrong."
+		
+		add_deflist(
+			changeables["brokenFrame"],
+			thisMod + fullModList[thisMod].getZip(),
+			message
+		)
+					
+		write_log(log, "  {} - {}".format(
+			thisMod + fullModList[thisMod].getZip(),
+			message
+		))
 
 	""" Next, folders that should be zip files instead """
 	for thisMod in sorted(folder) :
-		changeables["brokenTree"].insert(
-			parent = '',
-			index  = 'end',
-			text   = thisMod,
-			values = (
-				thisMod,
-				"Folder",
-				"Needs Zipped"
-			))
+		message = "Unzipped mods cannot be used in multiplayer, you should zip this folder"
 
-		write_log(log, "  {} (Folder) - Needs Zipped".format( thisMod ))
+		add_deflist(
+			changeables["brokenFrame"],
+			thisMod,
+			message
+		)
+		write_log(log, "  {} - {}".format(
+			thisMod,
+			message
+		))
+
 	
 	""" Finally, trash that just shouldn't be there """
 	for thisFile in garbageFiles :
-		changeables["brokenTree"].insert(
-			parent = '',
-			index  = 'end',
-			text   = thisFile,
-			values = (
-				thisFile,
-				"Garbage File",
-				"Needs Deleted"
-			))
+		message = "This file should not exist here, delete or move it."
 
-		write_log(log, "  {} (Garbage File) - Needs Deleted".format( thisFile ))
+		add_deflist(
+			changeables["brokenFrame"],
+			thisFile,
+			message
+		)
+		write_log(log, "  {} - {}".format(
+			thisFile,
+			message
+		))
 
 	write_log_sep(log)
 
@@ -407,18 +435,7 @@ def upd_conflict(log, changeables,fullModList) :
 
 	for thisMod in sorted(knownConflicts.keys()) :
 		if thisMod in fullModList.keys():
-			ttk.Label(
-				changeables["conflictFrame"],
-				text   = thisMod,
-				anchor = 'w'
-			).pack(fill = 'x', padx = 0, pady = (10,0))
-
-			ttk.Label(
-				changeables["conflictFrame"],
-				text       = knownConflicts[thisMod],
-				anchor     = 'w',
-				wraplength = 450
-			).pack(fill = 'x', pady = 0, padx = (40,0))
+			add_deflist(changeables["conflictFrame"], thisMod, knownConflicts[thisMod])
 
 
 
@@ -517,3 +534,29 @@ def write_log(log, text) :
 
 def write_log_sep(log) :
 	write_log(log, "   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
+
+
+
+
+
+# 
+#  _______ ______  ______        ______  _______ _______        _____ _______ _______
+#  |_____| |     \ |     \       |     \ |______ |______ |        |   |______    |   
+#  |     | |_____/ |_____/ _____ |_____/ |______ |       |_____ __|__ ______|    |   
+#                                                                                    
+# 
+
+def add_deflist(frame, term, desc) :
+	ttk.Label(
+		frame,
+		text   = term,
+		anchor = 'w',
+		font='Helvetica 9 bold'
+	).pack(fill = 'x', padx = 0, pady = (10,0))
+
+	ttk.Label(
+		frame,
+		text       = desc,
+		anchor     = 'w',
+		wraplength = 600-30-30-40
+	).pack(fill = 'x', pady = 0, padx = (40,0))

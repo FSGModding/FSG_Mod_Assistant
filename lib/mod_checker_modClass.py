@@ -29,14 +29,17 @@ class FSMod() :
 		else :
 			return self._folder
 
+	def getZip(self) :
+		if not self._folder:
+			return ".zip"
+		else :
+			return ""
+
 	def isZip(self, *args) :
 		if ( len(args) > 0 ) :
 			self._folder = not args[0]
 		else:
 			return not self._folder
-
-	# def isMissing(self, value) :
-	# 	self._fileExists = not value
 
 	def isMissing(self, *args) :
 		if ( len(args) > 0 ) :

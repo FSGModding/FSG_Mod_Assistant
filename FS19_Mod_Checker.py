@@ -131,23 +131,56 @@ for child in tabConfig.winfo_children():
 #                                                                                     
 # 
 
-ttk.Label(tabBroken, text="These mods have broken file names, and will not appear in your game.  They need to be removed or renamed").pack()
+ttk.Label(tabBroken, text="Broken Mods", font='Helvetica 12 bold').pack()
+ttk.Label(tabBroken, text="These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution", wraplength = 600).pack(fill='x')
 
-brokenTreeCols = ('Name','Type','Problem')
 
-brokenTree = ttk.Treeview(tabBroken, selectmode='browse', columns=brokenTreeCols, show='headings')
-brokenTree.pack(expand=True, side='left', fill='both')
 
-brokenTreeVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenTree.yview)
-brokenTreeVSB.pack(side='right', fill='y')
+brokenCanvas    = Canvas(tabBroken)
+brokenCanvasVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenCanvas.yview)
+brokenFrame     = ttk.Frame(brokenCanvas, border=1, padding=(30,0))
 
-brokenTree.configure(yscrollcommand=brokenTreeVSB.set)
+brokenFrame.bind(
+    "<Configure>",
+    lambda e: brokenCanvas.configure(
+        scrollregion=brokenCanvas.bbox("all")
+    )
+)
 
-for col in brokenTreeCols:
-	brokenTree.heading(col, text=col, command=lambda _col=col: \
-				 treeview_sort_size_column(brokenTree, _col, False))
+brokenCanvas.create_window((0, 0), window=brokenFrame, anchor="nw")
 
-changeables["brokenTree"] = brokenTree
+brokenCanvas.configure(yscrollcommand=brokenCanvasVSB.set)
+
+brokenCanvas.pack(side="left", fill="both", expand=True)
+brokenCanvasVSB.pack(side="right", fill="y")
+
+def bf_on_mousewheel(event):
+	brokenCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+def bf_bound_to_mousewheel(event):
+    brokenCanvas.bind_all("<MouseWheel>", bf_on_mousewheel)
+
+def bf_unbound_to_mousewheel(event):
+    brokenCanvas.unbind_all("<MouseWheel>")
+
+brokenFrame.bind('<Enter>', bf_bound_to_mousewheel)
+brokenFrame.bind('<Leave>', bf_unbound_to_mousewheel)
+
+# brokenTreeCols = ('Name','Type','Problem')
+
+# brokenTree = ttk.Treeview(tabBroken, selectmode='browse', columns=brokenTreeCols, show='headings')
+# brokenTree.pack(expand=True, side='left', fill='both', pady=(5,0))
+
+# brokenTreeVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenTree.yview)
+# brokenTreeVSB.pack(side='right', fill='y')
+
+# brokenTree.configure(yscrollcommand=brokenTreeVSB.set)
+
+# for col in brokenTreeCols:
+# 	brokenTree.heading(col, text=col, command=lambda _col=col: \
+# 				 treeview_sort_size_column(brokenTree, _col, False))
+
+changeables["brokenFrame"] = brokenFrame
 
 
 
@@ -158,14 +191,15 @@ changeables["brokenTree"] = brokenTree
 #                                                                                         
 # 
 
-ttk.Label(tabMissing, text="These mods are missing.  Those that are owned could cost you money").pack()
+ttk.Label(tabMissing, text="Missing Mods", font='Helvetica 12 bold').pack()
+ttk.Label(tabMissing, text="The scanner failed to find the mods below, however they are referenced in one or more savegames. For mods that have not been purchased, this is usually harmless.  For mods you have purchased, missing the mod file could cost you in-game money.  To correct this, re-download the mod from where you originally got it and place it in the mod folder.", wraplength = 600).pack(fill='x')
 
 missingTreeCols = ('Name','Title','Purchased','Savegame')
 
 missingTree = ttk.Treeview(tabMissing, selectmode='browse', columns=missingTreeCols, show='headings')
-missingTree.pack(expand=True, side='left', fill='both')
+missingTree.pack(expand=True, side='left', fill='both', pady=(5,0))
 
-missingTree.column("#3", minwidth=0, width=50, stretch=NO) 
+missingTree.column("#3", minwidth=0, width=75, stretch=NO) 
 missingTree.column("#4", minwidth=0, width=100, stretch=NO) 
 
 missingTreeVSB = ttk.Scrollbar(tabMissing, orient="vertical", command=missingTree.yview)
@@ -188,16 +222,44 @@ changeables["missingTree"] = missingTree
 #  |_____  |_____| |  \_| |       |_____ __|__ |_____     |         |  |  | |_____| |_____/ ______|
 #                                                                                                  
 # 
+ttk.Label(tabConflict, text = "Possible Conflicts", font='Helvetica 12 bold').pack()
+ttk.Label(tabConflict, text = "These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here", wraplength=600).pack(fill='x')
 
-ttk.Label(tabConflict, text = "These mods could potentially cause conflicts.").pack()
+ttk.Label(tabConflict, text = "\u2022 " + "This should not be taken as a suggestion that these mods do not work.", anchor='w').pack(pady=(20, 0), padx=(30,0), fill='x')
+ttk.Label(tabConflict, text = "\u2022 " + "This is also not intended as a slight against the mod or author.", anchor='w').pack(padx=(30,0), fill='x')
+ttk.Label(tabConflict, text = "\u2022 " + "Many (most) times these mods will work as intended.", anchor='w').pack(padx=(30,0), fill='x')
+ttk.Label(tabConflict, text = "\u2022 " + "If you do experience in-game problems, this may be a good place to start testing.", anchor='w').pack(pady=(0,10), padx=(30,0), fill='x')
 
-ttk.Label(tabConflict, text = "This should not be taken as a suggestion that these mods do not work.").pack(pady=(20, 0))
-ttk.Label(tabConflict, text = "This is also not intended as a slight against the mod or author.").pack()
-ttk.Label(tabConflict, text = "Many (most) times these mods will work as intended.").pack()
-ttk.Label(tabConflict, text = "If you do experience in-game problems, this may be a good place to start testing.").pack(pady=(0,20))
+conflictCanvas    = Canvas(tabConflict)
+conflictCanvasVSB = ttk.Scrollbar(tabConflict, orient="vertical", command=conflictCanvas.yview)
+conflictFrame     = ttk.Frame(conflictCanvas, border=1, padding=(30,0))
 
-conflictFrame = ttk.Frame(tabConflict, border=1, padding=(9,9,9,9))
-conflictFrame.pack(fill="x")
+conflictFrame.bind(
+    "<Configure>",
+    lambda e: conflictCanvas.configure(
+        scrollregion=conflictCanvas.bbox("all")
+    )
+)
+
+conflictCanvas.create_window((0, 0), window=conflictFrame, anchor="nw")
+
+conflictCanvas.configure(yscrollcommand=conflictCanvasVSB.set)
+
+conflictCanvas.pack(side="left", fill="both", expand=True)
+conflictCanvasVSB.pack(side="right", fill="y")
+
+def cf_on_mousewheel(event):
+	conflictCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+def cf_bound_to_mousewheel(event):
+    conflictCanvas.bind_all("<MouseWheel>", cf_on_mousewheel)
+
+def cf_unbound_to_mousewheel(event):
+    conflictCanvas.unbind_all("<MouseWheel>")
+
+conflictFrame.bind('<Enter>', cf_bound_to_mousewheel)
+conflictFrame.bind('<Leave>', cf_unbound_to_mousewheel)
+
 
 changeables["conflictFrame"] = conflictFrame
 
@@ -209,13 +271,13 @@ changeables["conflictFrame"] = conflictFrame
 #  __|__ |  \_| |     | |_____     |    __|__   \/   |______      |  |  | |_____| |_____/ ______|
 #                                                                                                
 # 
-
-ttk.Label(tabInactive, text="These mods are never active.  Maybe you can save some room by getting rid of them?").pack()
+ttk.Label(tabInactive, text="Inactive Mods", font='Helvetica 12 bold').pack()
+ttk.Label(tabInactive, text="These mods are not activated in any of your savegames.  If you would like to save space, and perhaps speed up FS19 starting, you could remove some or all of these.", wraplength = 600).pack(fill='x')
 
 inactiveTreeCols = ('Name','Size')
 
 inactiveTree = ttk.Treeview(tabInactive, selectmode='browse', columns=inactiveTreeCols, show='headings')
-inactiveTree.pack(expand=True, side='left', fill='both')
+inactiveTree.pack(expand=True, side='left', fill='both', pady=(5,0))
 
 inactiveTree.column("#2", minwidth=0, width=100, stretch=NO, anchor='e') 
 
@@ -238,13 +300,13 @@ changeables["inactiveTree"] = inactiveTree
 #  |_____| |  \_| |_____| ______| |______ |_____/      |  |  | |_____| |_____/ ______|
 #                                                                                     
 # 
-
-ttk.Label(tabUnused, text="These mods are active but not purchased. Maybe remove what you don't need?").pack()
+ttk.Label(tabUnused, text="Active, Unused Mods", font='Helvetica 12 bold').pack()
+ttk.Label(tabUnused, text="These mods are active in a savegame, but do not seem to be in use. If you do not plan on using them, you could possible remove them.  Please note that some script only or pre-requisite mods may appear here by mistake, so please use this list carefully.", wraplength = 600).pack(fill='x')
 
 
 unusedTreeCols = ('Name','Title','Savegame','Size')
 unusedTree = ttk.Treeview(tabUnused, selectmode='browse', columns=unusedTreeCols, show='headings')
-unusedTree.pack(expand=True, side='left', fill='both')
+unusedTree.pack(expand=True, side='left', fill='both', pady=(5,0))
 
 unusedTree.column("#3", minwidth=0, width=120, stretch=NO)
 unusedTree.column("#4", minwidth=0, width=100, stretch=NO, anchor='e') 
@@ -272,31 +334,30 @@ changeables["unusedTree"] = unusedTree
 def about() :
 	aboutWindow = Toplevel(root)
   
-	# sets the title of the
-	# Toplevel widget
+
 	aboutWindow.title("About FS19 Mod Checker")
-  
-	# sets the geometry of toplevel
-	aboutWindow.geometry("600x500")
+	aboutWindow.geometry("600x460")
 
 	ttk.Label(aboutWindow, text="FS19 Mod Checker", font='Helvetica 18 bold').pack()
 
 	ttk.Label(aboutWindow, text="This little program will take a look at your mod install folder and inform you of the following:", anchor = 'w', wraplength = 600).pack(fill = 'x', pady = 0, padx = (10,0))
 
-	ttk.Label(aboutWindow, text="If a mod file is named incorrectly and won't load in the game.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-	ttk.Label(aboutWindow, text="If a mod is not properly zipped.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-	ttk.Label(aboutWindow, text="If a mod is used in your save games, but does not appear to be installed.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-	ttk.Label(aboutWindow, text="If a mod is not loaded or used in any of your save games", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-	ttk.Label(aboutWindow, text="If a mod is loaded but unused in your save games.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
+	aboutBullets = [
+		"If a mod file is named incorrectly and won't load in the game.",
+		"If a mod is not properly zipped.",
+		"If a mod is used in your save games, but does not appear to be installed.",
+		"If a mod is not loaded or used in any of your save games",
+		"If a mod is loaded but unused in your save games."
+	]
+
+	for thisBullet in aboutBullets:
+		ttk.Label(aboutWindow, text="\u2022 " + thisBullet, anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))	
 
 	ttk.Label(aboutWindow, text="This program only offers suggestions, no files on your computer will be altered", font='Helvetica 9 bold', anchor='center', wraplength = 600).pack(fill = 'x', pady=(10,0) )
 
-	ttk.Label(aboutWindow, text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (20,0), padx = (20,0))
-	ttk.Label(aboutWindow, text="The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (10,0), padx = (20,0))
-	ttk.Label(aboutWindow, text="THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (10,0), padx = (20,0))
-
-	ttk.Button(aboutWindow, text="Close About Window", command=aboutWindow.destroy).pack()
-
+	MITLicenseText = "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+	ttk.Label(aboutWindow, text=MITLicenseText, anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (20,0), padx = (20,0))
+	
 	aboutWindow.bind('<Escape>', lambda x: aboutWindow.destroy())
 	aboutWindow.iconphoto(False, mainIconImage)
 	aboutWindow.focus_force()
