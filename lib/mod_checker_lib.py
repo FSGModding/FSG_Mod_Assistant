@@ -24,7 +24,6 @@ import glob
 from .mod_checker_modClass import FSMod # pylint: disable=relative-beyond-top-level
 from .mod_checker_data import knownScriptOnlyMods, knownConflicts # pylint: disable=relative-beyond-top-level
 
-import __main__
 
 
 # 
@@ -34,7 +33,7 @@ import __main__
 #                                                                                                                      
 # 
 
-def load_main_config(*args):
+def load_main_config(changeables, *args):
 
 	filename = fd.askopenfilename(
 		initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
@@ -44,10 +43,10 @@ def load_main_config(*args):
 	)
 
 	if filename: 
-		__main__.mainConfigFile = filename
+		changeables["mainConfigFile"] = filename
 
-		__main__.mainFileLabel.config(text = "Game Settings File: " + __main__.mainConfigFile)
-		__main__.processButton.state(['!disabled'])
+		changeables["mainFileLabel"].config(text = "Game Settings File: " + filename)
+		changeables["processButton"].state(['!disabled'])
 
 
 
@@ -58,8 +57,9 @@ def load_main_config(*args):
 #                                                                                                    
 # 
 
-def process_files(*args):
-	basePath  = __main__.mainConfigFile[0:-16]
+def process_files(log, changeables, *args):
+	
+	basePath  = changeables["mainConfigFile"][0:-16]
 	modDir    = basePath + "/mods"
 
 	# Find the savegame files
@@ -70,10 +70,10 @@ def process_files(*args):
 	# Load the config file.  We need to check for a different mod folder
 	# AND this will tell us if we are in the right folder.
 	try:
-		configFileTree = etree.parse(__main__.mainConfigFile)
+		configFileTree = etree.parse(changeables["mainConfigFile"])
 	except:
 		mb.showerror(title="Error", message="Cannot open main config file")
-		__main__.processButton.state(['disabled'])
+		changeables["processButton"].state(['disabled'])
 		return
 		
 	modFolderXML = configFileTree.xpath("/gameSettings/modsDirectoryOverride")
@@ -98,7 +98,7 @@ def process_files(*args):
 
 	# Special Case
 	fullModList["FS19_holmerPack"] = FSMod()
-	fullModList["FS19_holmerPack"].name("DLC Holmer Terra-Varient Pack")
+	fullModList["FS19_holmerPack"].name("DLC Holmer Terra-Variant Pack")
 	fullModList["FS19_holmerPack"].size(133849603)
 
 
@@ -183,14 +183,14 @@ def process_files(*args):
 			fullModList[thisMod]._usedGames.update(fullModList[thisMod]._activeGames)
 
 
-	start_log()
-	upd_config(fullModList)
-	upd_broken(fullModList, modBadFiles)
-	upd_missing(fullModList)
-	upd_inactive(fullModList)
-	upd_unused(fullModList)
-	upd_conflict(fullModList)
-	end_log()
+	start_log(log)
+	upd_config(log, changeables, fullModList)
+	upd_broken(log, changeables, fullModList, modBadFiles)
+	upd_missing(log, changeables, fullModList)
+	upd_inactive(log, changeables, fullModList)
+	upd_unused(log, changeables, fullModList)
+	upd_conflict(log, changeables, fullModList)
+	end_log(log)
 
 
 
@@ -203,22 +203,22 @@ def process_files(*args):
 #                                                                            
 # 
 
-def upd_config(fullModList) :
+def upd_config(log, changeables, fullModList) :
 
 	broken  = { k for k, v in fullModList.items() if v.isBad() }
 	folder  = { k for k, v in fullModList.items() if v.isFolder() }
 	missing = { k for k, v in fullModList.items() if v.isMissing() }
 
-	__main__.modLabels["found"].config(text = len(fullModList))
-	__main__.modLabels["broke"].config(text = len(broken))
-	__main__.modLabels["folder"].config(text = len(folder))
-	__main__.modLabels["missing"].config(text = len(missing))
+	changeables["modLabels"]["found"].config(text = len(fullModList))
+	changeables["modLabels"]["broke"].config(text = len(broken))
+	changeables["modLabels"]["folder"].config(text = len(folder))
+	changeables["modLabels"]["missing"].config(text = len(missing))
 
-	write_log("Found Mods: {}".format(len(fullModList)))
-	write_log("Broken Mods: {0}".format(len(broken)))
-	write_log("Unzipped Mods: {0}".format(len(folder)))
-	write_log("Missing Mods: {0}".format(len(missing)))
-	write_log_sep()
+	write_log(log, "Found Mods: {}".format(len(fullModList)))
+	write_log(log, "Broken Mods: {0}".format(len(broken)))
+	write_log(log, "Unzipped Mods: {0}".format(len(folder)))
+	write_log(log, "Missing Mods: {0}".format(len(missing)))
+	write_log_sep(log)
 
 
 
@@ -229,19 +229,19 @@ def upd_config(fullModList) :
 #                                                                              
 # 
 
-def upd_broken(fullModList, garbageFiles) :
+def upd_broken(log, changeables, fullModList, garbageFiles) :
 	broken = { k for k, v in fullModList.items() if v.isBad() }
 	folder = { k for k, v in fullModList.items() if v.isFolder() and v.isGood() }
 	
-	__main__.brokenTree.delete(*__main__.brokenTree.get_children())
+	changeables["brokenTree"].delete(*changeables["brokenTree"].get_children())
 
-	write_log("Broken Mods:")
+	write_log(log, "Broken Mods:")
 	
 	""" First, bad names, they won't load """
 	for thisMod in sorted(broken) :
 		thisType = "Folder" if fullModList[thisMod].isFolder() else "Zip File"
 
-		__main__.brokenTree.insert(
+		changeables["brokenTree"].insert(
 			parent = '',
 			index  = 'end',
 			text   = thisMod,
@@ -251,11 +251,11 @@ def upd_broken(fullModList, garbageFiles) :
 				"Bad " + thisType + " Name"
 			))
 
-		write_log("  {} ({}) - {}".format( thisMod, thisType, "Bad " + thisType + " Name" ))
+		write_log(log, "  {} ({}) - {}".format( thisMod, thisType, "Bad " + thisType + " Name" ))
 
 	""" Next, folders that should be zip files instead """
 	for thisMod in sorted(folder) :
-		__main__.brokenTree.insert(
+		changeables["brokenTree"].insert(
 			parent = '',
 			index  = 'end',
 			text   = thisMod,
@@ -265,11 +265,11 @@ def upd_broken(fullModList, garbageFiles) :
 				"Needs Zipped"
 			))
 
-		write_log("  {} (Folder) - Needs Zipped".format( thisMod ))
+		write_log(log, "  {} (Folder) - Needs Zipped".format( thisMod ))
 	
 	""" Finally, trash that just shouldn't be there """
 	for thisFile in garbageFiles :
-		__main__.brokenTree.insert(
+		changeables["brokenTree"].insert(
 			parent = '',
 			index  = 'end',
 			text   = thisFile,
@@ -279,9 +279,9 @@ def upd_broken(fullModList, garbageFiles) :
 				"Needs Deleted"
 			))
 
-		write_log("  {} (Garbage File) - Needs Deleted".format( thisFile ))
+		write_log(log, "  {} (Garbage File) - Needs Deleted".format( thisFile ))
 
-	write_log_sep()
+	write_log_sep(log)
 
 
 
@@ -292,16 +292,16 @@ def upd_broken(fullModList, garbageFiles) :
 #                                                                                  
 # 
 
-def upd_missing(fullModList) :
+def upd_missing(log, changeables, fullModList) :
 	missing = { k for k, v in fullModList.items() if v.isMissing() }
 
 	# Clear out the tree first
-	__main__.missingTree.delete(*__main__.missingTree.get_children())
+	changeables["missingTree"].delete(*changeables["missingTree"].get_children())
 
-	write_log("Missing Mods:")
+	write_log(log, "Missing Mods:")
 	
 	for thisMod in sorted(missing) :
-		__main__.missingTree.insert(
+		changeables["missingTree"].insert(
 			parent = '',
 			index  = 'end',
 			text   = thisMod,
@@ -312,14 +312,14 @@ def upd_missing(fullModList) :
 				fullModList[thisMod].getAllActive()
 			))
 
-		write_log("  {} ({}) - saves:{} {}".format(
+		write_log(log, "  {} ({}) - saves:{} {}".format(
 			thisMod,
 			fullModList[thisMod].name(),
 			fullModList[thisMod].getAllActive(),
 			"OWNED" if fullModList[thisMod].isUsed() else ""
 		))
 
-	write_log_sep()
+	write_log_sep(log)
 
 
 
@@ -330,16 +330,16 @@ def upd_missing(fullModList) :
 #                                                                                         
 # 
 
-def upd_inactive(fullModList) :
+def upd_inactive(log, changeables, fullModList) :
 	inactive = { k for k, v in fullModList.items() if v.isNotUsed() and v.isNotActive() and v.isGood()  }
 
 	# Clear out the tree first
-	__main__.inactiveTree.delete(*__main__.inactiveTree.get_children())
+	changeables["inactiveTree"].delete(*changeables["inactiveTree"].get_children())
 
-	write_log("Inactive Mods:")
+	write_log(log, "Inactive Mods:")
 
 	for thisMod in sorted(inactive) :
-		__main__.inactiveTree.insert(
+		changeables["inactiveTree"].insert(
 			parent = '',
 			index  = 'end',
 			text   = thisMod,
@@ -348,12 +348,12 @@ def upd_inactive(fullModList) :
 				fullModList[thisMod].size()
 			))
 
-		write_log("  {} ({})".format(
+		write_log(log, "  {} ({})".format(
 			thisMod,
 			fullModList[thisMod].size()
 		))
 
-	write_log_sep()
+	write_log_sep(log)
 
 
 # 
@@ -363,15 +363,15 @@ def upd_inactive(fullModList) :
 #                                                                              
 # 
 
-def upd_unused(fullModList) :
+def upd_unused(log, changeables, fullModList) :
 	unused = { k for k, v in fullModList.items() if v.isNotUsed() and v.isActive() and v.isGood() and v.isNotMissing() }
 
-	__main__.unusedTree.delete(*__main__.unusedTree.get_children())
+	changeables["unusedTree"].delete(*changeables["unusedTree"].get_children())
 
-	write_log("Unused Mods:")
+	write_log(log, "Unused Mods:")
 
 	for thisMod in sorted(unused) :
-		__main__.unusedTree.insert(
+		changeables["unusedTree"].insert(
 			parent = '',
 			index  = 'end',
 			text   = thisMod,
@@ -382,14 +382,14 @@ def upd_unused(fullModList) :
 				fullModList[thisMod].size()
 			))
 
-		write_log("  {} ({}) - saves:{} ({})".format(
+		write_log(log, "  {} ({}) - saves:{} ({})".format(
 			thisMod,
 			fullModList[thisMod].name(),
 			fullModList[thisMod].getAllActive(),
 			fullModList[thisMod].size()
 		))
 	
-	write_log_sep()
+	write_log_sep(log)
 
 
 
@@ -400,65 +400,25 @@ def upd_unused(fullModList) :
 #                                                                                           
 # 
 
-def upd_conflict(fullModList) :
+def upd_conflict(log, changeables,fullModList) :
 
-	for widget in __main__.conflictFrame.winfo_children():
+	for widget in changeables["conflictFrame"].winfo_children():
 		widget.destroy()
 
 	for thisMod in sorted(knownConflicts.keys()) :
 		if thisMod in fullModList.keys():
 			ttk.Label(
-				__main__.conflictFrame,
+				changeables["conflictFrame"],
 				text   = thisMod,
 				anchor = 'w'
 			).pack(fill = 'x', padx = 0, pady = (10,0))
 
 			ttk.Label(
-				__main__.conflictFrame,
+				changeables["conflictFrame"],
 				text       = knownConflicts[thisMod],
 				anchor     = 'w',
 				wraplength = 450
 			).pack(fill = 'x', pady = 0, padx = (40,0))
-
-
-# 
-#  _______ ______   _____  _     _ _______
-#  |_____| |_____] |     | |     |    |   
-#  |     | |_____] |_____| |_____|    |   
-#                                         
-# 
-
-def about() :
-	aboutWindow = Toplevel(__main__.root)
-  
-	# sets the title of the
-	# Toplevel widget
-	aboutWindow.title("About FS19 Mod Checker")
-  
-	# sets the geometry of toplevel
-	aboutWindow.geometry("600x500")
-
-	ttk.Label(aboutWindow, text="FS19 Mod Checker", font='Helvetica 18 bold').pack()
-
-	ttk.Label(aboutWindow, text="This little program will take a look at your mod install folder and inform you of the following:", anchor = 'w', wraplength = 600).pack(fill = 'x', pady = 0, padx = (10,0))
-
-	ttk.Label(aboutWindow, text="If a mod file is named incorrectly and won't load in the game.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-	ttk.Label(aboutWindow, text="If a mod is not properly zipped.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-	ttk.Label(aboutWindow, text="If a mod is used in your save games, but does not appear to be installed.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-	ttk.Label(aboutWindow, text="If a mod is not loaded or used in any of your save games", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-	ttk.Label(aboutWindow, text="If a mod is loaded but unused in your save games.", anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))
-
-	ttk.Label(aboutWindow, text="This program only offers suggestions, no files on your computer will be altered", font='Helvetica 9 bold', anchor='center', wraplength = 600).pack(fill = 'x', pady=(10,0) )
-
-	ttk.Label(aboutWindow, text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (20,0), padx = (20,0))
-	ttk.Label(aboutWindow, text="The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (10,0), padx = (20,0))
-	ttk.Label(aboutWindow, text="THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.", anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (10,0), padx = (20,0))
-
-	ttk.Button(aboutWindow, text="Close About Window", command=aboutWindow.destroy).pack()
-
-	aboutWindow.bind('<Escape>', lambda x: aboutWindow.destroy())
-	aboutWindow.iconphoto(False, __main__.mainIconImage)
-	aboutWindow.focus_force()
 
 
 
@@ -469,7 +429,7 @@ def about() :
 #                                                             
 # 
 
-def save_log() :
+def save_log(log) :
 	try:
 		fileWrite = fd.asksaveasfile(
 			mode        = "w", 
@@ -478,7 +438,7 @@ def save_log() :
 			title       = 'Save Log File...',
 			filetypes   = [("Text Documents", ".txt")]
 		)
-		fileWrite.write('\n'.join(__main__.masterLog))
+		fileWrite.write('\n'.join(log))
 		fileWrite.close()
 		mb.showinfo(title="Saved", message="Log Saved")
 	except:
@@ -512,15 +472,14 @@ def resource_path(relative_path):
 #                                                                      
 # 
 
-def start_log():
-	__main__.masterLog = [
-		" _______           __ ______ __                __               ",
-		"|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.",
-		"|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|",
-		"|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ",
-		"                                            v1.0.0.0 by JTSage"
-	]
-	write_log_sep()
+def start_log(log):
+	log.clear()
+	log.append(" _______           __ ______ __                __               ")
+	log.append("|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.")
+	log.append("|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|")
+	log.append("|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ")
+	log.append("                                            v1.0.0.0 by JTSage")
+	log.append("   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
 
 
 
@@ -531,10 +490,10 @@ def start_log():
 #                                                     
 # 
 
-def end_log():
+def end_log(log):
 	today = date.today()
-	write_log("Report Generated on: {}".format(today))
-	write_log_sep()
+	write_log(log, "Report Generated on: {}".format(today))
+	write_log_sep(log)
 
 
 
@@ -545,8 +504,8 @@ def end_log():
 #                                                                    
 # 
 
-def write_log(text) :
-	__main__.masterLog.append(text)
+def write_log(log, text) :
+	log.append(text)
 
 
 # 
@@ -556,5 +515,5 @@ def write_log(text) :
 #                                                                                                  
 # 
 
-def write_log_sep() :
-	write_log("   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
+def write_log_sep(log) :
+	write_log(log, "   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
