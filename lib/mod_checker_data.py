@@ -23,6 +23,7 @@ knownScriptOnlyMods = [
 	"FS19_CameraSuspension",
 	"FS19_categoryAdder",
 	"FS19_Courseplay",
+	"FS19_coverAddon",
 	"FS19_disableVehicleCameraCollision",
 	"FS19_EasyAutoLoad",
 	"FS19_Engine_Starter",
@@ -57,6 +58,7 @@ knownScriptOnlyMods = [
 	"FS19_RM_Seasons",
 	"FS19_SleepAnytime",
 	"FS19_SleepAnywhere",
+	"FS19_simpleIC",
 	"FS19_StoreSales",
 	"FS19_StubbleCultivator",
 	"FS19_ToolsCombo",
@@ -67,38 +69,71 @@ knownScriptOnlyMods = [
 	"FS19_vehicleDirtExtension",
 	"FS19_VehicleExplorer",
 	"FS19_VehicleStraps",
+	"FS19_waitingWorkers",
 	"FS19_zzzSpeedControl",
-	"VehicleInspector"
+	"VehicleInspector",
 ]
 
 knownConflicts = {
-	"FS19_InfoMenu" : 
-		"Some versions of Info Menu conflict with the Precision Farming DLC"
-	,
-	"FS19_UnitConvertLite" :
-		"Some versions of Unit Convert Lite conflict with the Precision Farming DLC"
-	,
-	"FS19_additionalFieldInfo" :
-		"Versions of Additional Field Info prior to 1.0.2.3 conflict with the Precision Farming DLC"
-	,
-	"FS19_towBar" :
-		"Old versions of the Tow Bar have been reported to be game breaking."
-	,
-	"FS19PlaceAnywhere" :
-		"The Place Anywhere mod can conflict with Global Company if both are loaded (and GC's extended placables is used)"
-	,
-	"FS19_GlobalCompany" :
-		"The Global Company mod can conflict with Place Anywhere if both are loaded (and GC's extended placables is used)"
-	,
-	"FS19_REA" :
-		"The Added Realism For Vehicles mod can cause conflicts with improperly prepared vehicle mods. If has also been reported to not work with CoursePlay"
-	,
-	"FS19_realMud" :
-		"The Real Mud mod can cause conflicts with improperly prepared vehicle mods."
-	,
-	"FS19_zzzSpeedControl" :
-		"Speed Control has been reported to not work with CoursePlay"
-	,
-	"FS19_Courseplay" :
-		"There are a number of mods that will not function correctly with courseplay.  A partial list is available in the pinned issue on the courseplay github."
+	"""
+	"modName" : {
+		"message"  : "Informational Message when found",
+		"confWith" : ["list", "of", "mods"] OR None
+	}
+	"""
+	"FS19_InfoMenu" : {
+		"message"  : "Some versions of Info Menu conflict with the Precision Farming DLC",
+		"confWith" : None
+	},
+	"FS19_UnitConvertLite" : {
+		"message"  : "Some versions of Unit Convert Lite conflict with the Precision Farming DLC",
+		"confWith" : None
+	},
+	"FS19_additionalFieldInfo" : {
+		"message"  : "Versions of Additional Field Info prior to 1.0.2.3 conflict with the Precision Farming DLC",
+		"confWith" : None
+	},
+	"FS19_towBar" : {
+		"message"  : "Old versions of the Tow Bar have been reported to be game breaking.",
+		"confWith" : None
+	},
+	"FS19PlaceAnywhere" : {
+		"message"  : "The Place Anywhere mod can conflict with Global Company if both are loaded (and GC's extended placables is used)",
+		"confWith" : [ "FS19_GlobalCompany"]
+	},
+	"FS19_GlobalCompany" : {
+		"message"  : "The Global Company mod can conflict with Place Anywhere if both are loaded (and GC's extended placables is used)",
+		"confWith" : ["FS19PlaceAnywhere"]
+	}, 
+	"FS19_REA" : {
+		"message"  : "The Added Realism For Vehicles mod can cause conflicts with improperly prepared vehicle mods. If has also been reported to not work with CoursePlay",
+		"confWith" : None
+	},
+	"FS19_realMud" : {
+		"message"  : "The Real Mud mod can cause conflicts with improperly prepared vehicle mods.",
+		"confWith": None
+	},
+	"FS19_zzzSpeedControl" : {
+		"message"  : "Speed Control has been reported to not work with CoursePlay",
+		"confWith": ["FS19_Courseplay"]
+	},
+	"FS19_waitingWorkers" : {
+		"message"  : "Waiting workers has been reported to not work with CoursePlay",
+		"confWith": ["FS19_Courseplay"]
+	},
+	"FS19_Courseplay" : {
+		"message"  : "There are a number of mods that will not function correctly with courseplay.  A partial list is available in the pinned issue on the courseplay github.",
+		"confWith" : [
+			"FS19_IMT_5360",
+			"FS_19_JohnDeere_540GIII_V1",
+			"FS19_MANMilk",
+			"FS19_waitingWorkers",
+			"FS19_STS_EU_Series",
+			"FS19_RealShovel",
+			"FS19_zzzSpeedControl",
+			"FS19_towBar",
+			"FS19_REA",
+			"FS19_coverAddon"
+		]
+	}
 }

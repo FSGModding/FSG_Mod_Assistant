@@ -113,7 +113,7 @@ def process_files(log, changeables, *args):
 		fullModList[modName].size(sum(f.stat().st_size for f in this_dir.glob('**/*') if f.is_file()))
 		fullModList[modName].fullPath(thisMod)
 
-		if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) ) :
+		if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) or re.search(r'unzip', modName, re.IGNORECASE)) :
 			fullModList[modName].isBad(True)
 		
 	# Next, the zip files
@@ -124,7 +124,7 @@ def process_files(log, changeables, *args):
 		fullModList[modName].fullPath(thisMod)
 		fullModList[modName].size(os.path.getsize(thisMod))
 
-		if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) ) :
+		if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) or re.search(r'unzip', modName, re.IGNORECASE) ) :
 			fullModList[modName].isBad(True)
 
 
@@ -243,7 +243,12 @@ def upd_broken(log, changeables, fullModList, garbageFiles) :
 	for thisMod in sorted(broken) :
 		message = "This File or Folder is invalid"
 	
-		if ( re.match(r'[0-9]',thisMod) ) :
+		if ( re.search(r'unzip', thisMod, re.IGNORECASE) ) :
+			if fullModList[thisMod].isFolder() :
+				message = "This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"
+			else :
+				message = "This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed."
+		elif ( re.match(r'[0-9]',thisMod) ) :
 			if fullModList[thisMod].isFolder() :
 				message = "Mod Folders cannot start with a digit.  Is this a collection of mods that should be moved to the root mods folder and then removed?"
 			else :
@@ -435,7 +440,18 @@ def upd_conflict(log, changeables,fullModList) :
 
 	for thisMod in sorted(knownConflicts.keys()) :
 		if thisMod in fullModList.keys():
-			add_deflist(changeables["conflictFrame"], thisMod, knownConflicts[thisMod])
+			if knownConflicts[thisMod]["confWith"] is None :
+				""" confWith is None, so it's a general warning """
+				add_deflist(changeables["conflictFrame"], thisMod, knownConflicts[thisMod]["message"])
+			else :
+				""" confWith is a list, so lets see if a conflicting mod is installed """
+				isConflicted = False
+				for confMod in knownConflicts[thisMod]["confWith"] :
+					if confMod in fullModList.keys() :
+						""" At least one conflicting mod is present """
+						isConflicted = True
+				if isConflicted :
+					add_deflist(changeables["conflictFrame"], thisMod, knownConflicts[thisMod]["message"])
 
 
 
