@@ -1,15 +1,19 @@
-"""
- _______           __ ______ __                __               
-|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
-|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
-|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
-                                            v1.0.0.0 by JTSage
+#  _______           __ ______ __                __               
+# |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
+# |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
+# |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
+#                                             v1.0.0.0 by JTSage
 
-External Data file
+# External Data file
 
-(c) 2021 JTSage.  MIT License.
-"""
+# (c) 2021 JTSage.  MIT License.
 
+
+# These are mods we are sure will (almost) never actually appear in the "used" section because
+# they don't have anything that you buy or place included in them.
+#
+# The big exception is Seasons, as it does have one or two placeables, but you don't have to use
+# them, so better to err on the side of caution. 
 knownScriptOnlyMods = [
 	"FS19_adjustWorkingSpeed",
 	"FS19_AdvancedStats",
@@ -74,13 +78,20 @@ knownScriptOnlyMods = [
 	"VehicleInspector",
 ]
 
+
+# These are mods that have often reported conflicts and we want to warn the user of that.
+#
+# This is really for the "big" or "common" conflicts.  One-off oddities is a waste of
+# maintainer time.
+#
+# List format:
+#
+#	"modName" : {
+#		"message"  : "Informational Message when found",
+#		"confWith" : ["list", "of", "mods"] OR None
+#	}
 knownConflicts = {
-	"""
-	"modName" : {
-		"message"  : "Informational Message when found",
-		"confWith" : ["list", "of", "mods"] OR None
-	}
-	"""
+
 	"FS19_InfoMenu" : {
 		"message"  : "Some versions of Info Menu conflict with the Precision Farming DLC",
 		"confWith" : None
@@ -98,11 +109,11 @@ knownConflicts = {
 		"confWith" : None
 	},
 	"FS19PlaceAnywhere" : {
-		"message"  : "The Place Anywhere mod can conflict with Global Company if both are loaded (and GC's extended placables is used)",
+		"message"  : "The Place Anywhere mod can conflict with Global Company if both are loaded (and Global Company's extended placeables is used)",
 		"confWith" : [ "FS19_GlobalCompany"]
 	},
 	"FS19_GlobalCompany" : {
-		"message"  : "The Global Company mod can conflict with Place Anywhere if both are loaded (and GC's extended placables is used)",
+		"message"  : "The Global Company mod can conflict with Place Anywhere if both are loaded (and Global Company's extended placeables is used)",
 		"confWith" : ["FS19PlaceAnywhere"]
 	}, 
 	"FS19_REA" : {

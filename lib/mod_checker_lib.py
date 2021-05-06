@@ -1,31 +1,30 @@
-"""
- _______           __ ______ __                __               
-|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
-|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
-|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
-                                            v1.0.0.0 by JTSage
+#  _______           __ ______ __                __               
+# |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
+# |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
+# |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
+#                                             v1.0.0.0 by JTSage
 
-Main library file
+# Main library file
 
-(c) 2021 JTSage.  MIT License.
-"""
+# (c) 2021 JTSage.  MIT License.
 
-from tkinter import * # pylint: disable=unused-wildcard-import
-from tkinter import ttk
-from distutils.util import strtobool
-from lxml import etree
-from datetime import date
-from pathlib import Path
+import tkinter as Tk
+import tkinter.ttk as ttk
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
 import os
 import sys
 import re
 import glob
+import datetime
+import pathlib
+import distutils.util as util
+import lxml.etree as etree
 from .mod_checker_modClass import FSMod # pylint: disable=relative-beyond-top-level
 from .mod_checker_data import knownScriptOnlyMods, knownConflicts # pylint: disable=relative-beyond-top-level
 
 
+mainLog = []
 # 
 #          _____  _______ ______        _______ _______ _____ __   _       _______  _____  __   _ _______ _____  ______
 #  |      |     | |_____| |     \       |  |  | |_____|   |   | \  |       |       |     | | \  | |______   |   |  ____
@@ -45,8 +44,10 @@ def load_main_config(changeables, *args):
 	if filename: 
 		changeables["mainConfigFile"] = filename
 
+		## Update the config tab to show the chosen filename, and re-enable the process button
 		changeables["mainFileLabel"].config(text = "Game Settings File: " + filename)
 		changeables["processButton"].state(['!disabled'])
+		changeables["processButton"].focus()
 
 
 
@@ -57,7 +58,7 @@ def load_main_config(changeables, *args):
 #                                                                                                    
 # 
 
-def process_files(log, changeables, *args):
+def process_files(changeables, *args):
 	
 	basePath  = changeables["mainConfigFile"][0:-16]
 	modDir    = basePath + "/mods"
@@ -78,7 +79,7 @@ def process_files(log, changeables, *args):
 		
 	modFolderXML = configFileTree.xpath("/gameSettings/modsDirectoryOverride")
 
-	if strtobool(modFolderXML[0].attrib["active"]) :
+	if util.strtobool(modFolderXML[0].attrib["active"]) :
 		modDir = modFolderXML[0].attrib["directory"]
 
 
@@ -106,7 +107,7 @@ def process_files(log, changeables, *args):
 	# Lets parse through the folders.
 	for thisMod in modDirFiles:
 		modName  = os.path.basename(thisMod)
-		this_dir = Path(thisMod)
+		this_dir = pathlib.Path(thisMod)
 
 		fullModList[modName] = FSMod()
 		fullModList[modName].isFolder(True)
@@ -137,22 +138,23 @@ def process_files(log, changeables, *args):
 
 		for thisMod in theseMods:
 			if "modName" not in thisMod.attrib or thisMod.attrib["modName"].startswith("pdlc") :
-				""" Skip blanks and paid DLC content """
+				# Skip blanks and paid DLC content
 				continue
 			else :
 				thisModName = thisMod.attrib["modName"]
 
 			if thisModName in fullModList.keys() :
-				""" Existing mod, mark it active """
+				# Existing mod, mark it active 
 				fullModList[thisModName].isActive(thisSavegame)
 				fullModList[thisModName].name(thisMod.attrib["title"])
 			else :
-				""" Missing Mod, we should add it to the list """
+				# Missing Mod, we should add it to the list
 				fullModList[thisModName] = FSMod()
 				fullModList[thisModName].isActive(thisSavegame)
 				fullModList[thisModName].isMissing(True)
 				fullModList[thisModName].name(thisMod.attrib["title"])
-		
+
+
 	#Next up, vehicles
 	for thisFile in filesVehicles:
 		thisXML = etree.parse(thisFile)
@@ -161,10 +163,12 @@ def process_files(log, changeables, *args):
 		theseMods = thisXML.xpath("/vehicles/vehicle")
 
 		for thisMod in theseMods:
+			# Trap for missing mods, but they should all be "found" by now
 			if "modName" not in thisMod.attrib or thisMod.attrib["modName"].startswith("pdlc") :
 				continue
 			if thisMod.attrib["modName"] in fullModList.keys() :
 				fullModList[thisMod.attrib["modName"]].isUsed(thisSavegame)
+
 
 	# Finally, lets do items
 	for thisFile in filesItems:
@@ -173,25 +177,29 @@ def process_files(log, changeables, *args):
 		theseMods    = thisXML.xpath("/items/item")
 
 		for thisMod in theseMods:
+			# Trap for missing mods, but they should all be "found" by now
 			if "modName" not in thisMod.attrib or thisMod.attrib["modName"].startswith("pdlc") :
 				continue
 			if thisMod.attrib["modName"] in fullModList.keys() :
 				fullModList[thisMod.attrib["modName"]].isUsed(thisSavegame)
 
-	#Deal with the script only mods
+	# Deal with the script only mods - any game they are active in, assume they are also used.
 	for thisMod in knownScriptOnlyMods:
 		if thisMod in fullModList.keys():
 			fullModList[thisMod]._usedGames.update(fullModList[thisMod]._activeGames)
 
 
-	start_log(log)
-	upd_config(log, changeables, fullModList)
-	upd_broken(log, changeables, fullModList, modBadFiles)
-	upd_missing(log, changeables, fullModList)
-	upd_inactive(log, changeables, fullModList)
-	upd_unused(log, changeables, fullModList)
-	upd_conflict(log, changeables, fullModList)
-	end_log(log)
+	start_log()
+	upd_config(changeables, fullModList, len(modBadFiles))
+	upd_broken(changeables, fullModList, modBadFiles)
+	upd_missing(changeables, fullModList)
+	upd_inactive(changeables, fullModList)
+	upd_unused(changeables, fullModList)
+	upd_conflict(changeables, fullModList)
+	end_log()
+
+	# Hack-ity hack hack to "un-focus" the process button
+	changeables["modLabels"]["found"].focus()
 
 
 
@@ -204,22 +212,23 @@ def process_files(log, changeables, *args):
 #                                                                            
 # 
 
-def upd_config(log, changeables, fullModList) :
+def upd_config(changeables, fullModList, numGarbageFiles) :
+	# Update the config screen - specifcally, the counts of mods found
 
 	broken  = { k for k, v in fullModList.items() if v.isBad() }
 	folder  = { k for k, v in fullModList.items() if v.isFolder() }
 	missing = { k for k, v in fullModList.items() if v.isMissing() }
 
 	changeables["modLabels"]["found"].config(text = len(fullModList))
-	changeables["modLabels"]["broke"].config(text = len(broken))
+	changeables["modLabels"]["broke"].config(text = len(broken) + numGarbageFiles)
 	changeables["modLabels"]["folder"].config(text = len(folder))
 	changeables["modLabels"]["missing"].config(text = len(missing))
 
-	write_log(log, "Found Mods: {}".format(len(fullModList)))
-	write_log(log, "Broken Mods: {}".format(len(broken)))
-	write_log(log, "Unzipped Mods: {}".format(len(folder)))
-	write_log(log, "Missing Mods: {}".format(len(missing)))
-	write_log_sep(log)
+	write_log("Found Mods: {}".format(len(fullModList)))
+	write_log("Broken Mods: {}".format(len(broken)))
+	write_log("Unzipped Mods: {}".format(len(folder)))
+	write_log("Missing Mods: {}".format(len(missing)))
+	write_log_sep()
 
 
 
@@ -230,37 +239,45 @@ def upd_config(log, changeables, fullModList) :
 #                                                                              
 # 
 
-def upd_broken(log, changeables, fullModList, garbageFiles) :
+def upd_broken(changeables, fullModList, garbageFiles) :
+	# Update the list of potentially broken mods
+
 	broken = { k for k, v in fullModList.items() if v.isBad() }
 	folder = { k for k, v in fullModList.items() if v.isFolder() and v.isGood() }
 	
 	for widget in changeables["brokenFrame"].winfo_children():
 		widget.destroy()
 
-	write_log(log, "Broken Mods:")
+	write_log("Broken Mods:")
 	
-	""" First, bad names, they won't load """
+	# First, bad names, they won't load
 	for thisMod in sorted(broken) :
+		# Trap message.  Should never display, but just in case.
 		message = "This File or Folder is invalid"
 	
 		if ( re.search(r'unzip', thisMod, re.IGNORECASE) ) :
+			# If it has "unzip" in the file/folder name, assume it is a pack or other mods.
 			if fullModList[thisMod].isFolder() :
 				message = "This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"
 			else :
 				message = "This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed."
 		elif ( re.match(r'[0-9]',thisMod) ) :
+			# If it starts with a digit, something went way wrong.  Might be a pack, or it might be garbage.
 			if fullModList[thisMod].isFolder() :
 				message = "Mod Folders cannot start with a digit.  Is this a collection of mods that should be moved to the root mods folder and then removed?"
 			else :
 				message = "Zip files cannot start with a digit.  Is this perhaps a collection of mods? If it is, extract the contents and delete this file."
 		else :
+			# Finally, test for the common copy/paste file names, and duplicate downloads.
 			testWinCopy = re.search(r'(\w+) - .+', thisMod)
 			testDLCopy = re.search(r'(\w+) \(.+', thisMod)
 			goodName = False
 			if ( testWinCopy or testDLCopy ) :
 				if ( testWinCopy and testWinCopy[1] in fullModList.keys() ) :
+					# Does the guessed "good name" already exist?
 					goodName = testWinCopy[1]
 				if ( testDLCopy and testDLCopy[1] in fullModList.keys() ) :
+					# Does the guessed "good name" already exist?
 					goodName = testDLCopy[1]
 
 				if ( goodName ) :
@@ -269,6 +286,7 @@ def upd_broken(log, changeables, fullModList, garbageFiles) :
 					message = "This looks like a copy, but the original wasn't found. Rename it?"
 
 			else :
+				# Trap for when we can't figure out what is wrong with it.
 				if fullModList[thisMod].isFolder() :
 					message = "This folder is named incorrectly, but we didn't figure out what is wrong."
 				else :
@@ -280,13 +298,18 @@ def upd_broken(log, changeables, fullModList, garbageFiles) :
 			message
 		)
 					
-		write_log(log, "  {} - {}".format(
+		write_log("  {} - {}".format(
 			thisMod + fullModList[thisMod].getZip(),
 			message
 		))
 
-	""" Next, folders that should be zip files instead """
+	# Next, unzipped folders that shouldn't be
 	for thisMod in sorted(folder) :
+		# No real logic here.  If it's a folder, suggest it be zipped.
+		#
+		# We have no real way of catching the case of a mod being unzipped directly to the root
+		# mods folder, there are far too many variations - and although many mods follow the 
+		# FS19 prefix convention, not all do, nor is it a requirement.
 		message = "Unzipped mods cannot be used in multiplayer, you should zip this folder"
 
 		add_deflist(
@@ -294,27 +317,36 @@ def upd_broken(log, changeables, fullModList, garbageFiles) :
 			thisMod,
 			message
 		)
-		write_log(log, "  {} - {}".format(
+		write_log("  {} - {}".format(
 			thisMod,
 			message
 		))
 
 	
-	""" Finally, trash that just shouldn't be there """
+	# Finally, trash that just shouldn't be there 
+	#
+	# This would be anything other than a folder or a zip file. We could take a guess at other
+	# archives, but thats about it.
 	for thisFile in garbageFiles :
 		message = "This file should not exist here, delete or move it."
+
+
+		for thisArchive in [ ".7z", ".rar" ] :
+			if thisFile.endswith(thisArchive) :
+				message = "This is an archive file.  It might be a mod pack which should be unpacked and then removed."
+
 
 		add_deflist(
 			changeables["brokenFrame"],
 			thisFile,
 			message
 		)
-		write_log(log, "  {} - {}".format(
+		write_log("  {} - {}".format(
 			thisFile,
 			message
 		))
 
-	write_log_sep(log)
+	write_log_sep()
 
 
 
@@ -325,13 +357,15 @@ def upd_broken(log, changeables, fullModList, garbageFiles) :
 #                                                                                  
 # 
 
-def upd_missing(log, changeables, fullModList) :
+def upd_missing(changeables, fullModList) :
+	# Update the display of missing mods
+
 	missing = { k for k, v in fullModList.items() if v.isMissing() }
 
 	# Clear out the tree first
 	changeables["missingTree"].delete(*changeables["missingTree"].get_children())
 
-	write_log(log, "Missing Mods:")
+	write_log("Missing Mods:")
 	
 	for thisMod in sorted(missing) :
 		changeables["missingTree"].insert(
@@ -345,14 +379,14 @@ def upd_missing(log, changeables, fullModList) :
 				fullModList[thisMod].getAllActive()
 			))
 
-		write_log(log, "  {} ({}) - saves:{} {}".format(
+		write_log("  {} ({}) - saves:{} {}".format(
 			thisMod,
 			fullModList[thisMod].name(),
 			fullModList[thisMod].getAllActive(),
 			"OWNED" if fullModList[thisMod].isUsed() else ""
 		))
 
-	write_log_sep(log)
+	write_log_sep()
 
 
 
@@ -363,13 +397,15 @@ def upd_missing(log, changeables, fullModList) :
 #                                                                                         
 # 
 
-def upd_inactive(log, changeables, fullModList) :
+def upd_inactive(changeables, fullModList) :
+	# Update the list of inactive mods
+
 	inactive = { k for k, v in fullModList.items() if v.isNotUsed() and v.isNotActive() and v.isGood()  }
 
 	# Clear out the tree first
 	changeables["inactiveTree"].delete(*changeables["inactiveTree"].get_children())
 
-	write_log(log, "Inactive Mods:")
+	write_log("Inactive Mods:")
 
 	for thisMod in sorted(inactive) :
 		changeables["inactiveTree"].insert(
@@ -381,12 +417,12 @@ def upd_inactive(log, changeables, fullModList) :
 				fullModList[thisMod].size()
 			))
 
-		write_log(log, "  {} ({})".format(
+		write_log("  {} ({})".format(
 			thisMod,
 			fullModList[thisMod].size()
 		))
 
-	write_log_sep(log)
+	write_log_sep()
 
 
 # 
@@ -396,12 +432,14 @@ def upd_inactive(log, changeables, fullModList) :
 #                                                                              
 # 
 
-def upd_unused(log, changeables, fullModList) :
+def upd_unused(changeables, fullModList) :
+	# Update the list of active but unused mods
+
 	unused = { k for k, v in fullModList.items() if v.isNotUsed() and v.isActive() and v.isGood() and v.isNotMissing() }
 
 	changeables["unusedTree"].delete(*changeables["unusedTree"].get_children())
 
-	write_log(log, "Unused Mods:")
+	write_log("Unused Mods:")
 
 	for thisMod in sorted(unused) :
 		changeables["unusedTree"].insert(
@@ -415,14 +453,14 @@ def upd_unused(log, changeables, fullModList) :
 				fullModList[thisMod].size()
 			))
 
-		write_log(log, "  {} ({}) - saves:{} ({})".format(
+		write_log("  {} ({}) - saves:{} ({})".format(
 			thisMod,
 			fullModList[thisMod].name(),
 			fullModList[thisMod].getAllActive(),
 			fullModList[thisMod].size()
 		))
 	
-	write_log_sep(log)
+	write_log_sep()
 
 
 
@@ -433,22 +471,27 @@ def upd_unused(log, changeables, fullModList) :
 #                                                                                           
 # 
 
-def upd_conflict(log, changeables,fullModList) :
-
+def upd_conflict(changeables,fullModList) :
+	# Update the conflicting mods display
 	for widget in changeables["conflictFrame"].winfo_children():
 		widget.destroy()
 
 	for thisMod in sorted(knownConflicts.keys()) :
 		if thisMod in fullModList.keys():
+			# Page through all known conflicts and compare it to the list
+			# of INSTALLED mods.  We are attempting to warn what COULD maybe
+			# happen, not what IS happening
+
 			if knownConflicts[thisMod]["confWith"] is None :
-				""" confWith is None, so it's a general warning """
+				# confWith is None, so it's a general warning
 				add_deflist(changeables["conflictFrame"], thisMod, knownConflicts[thisMod]["message"])
+
 			else :
-				""" confWith is a list, so lets see if a conflicting mod is installed """
+				# confWith is a list, so lets see if a conflicting mod is installed
 				isConflicted = False
 				for confMod in knownConflicts[thisMod]["confWith"] :
 					if confMod in fullModList.keys() :
-						""" At least one conflicting mod is present """
+						# At least one conflicting mod is present
 						isConflicted = True
 				if isConflicted :
 					add_deflist(changeables["conflictFrame"], thisMod, knownConflicts[thisMod]["message"])
@@ -462,7 +505,8 @@ def upd_conflict(log, changeables,fullModList) :
 #                                                             
 # 
 
-def save_log(log) :
+def save_log() :
+	# Save the log to a specified file. This is the only file WRITE action in this app.
 	try:
 		fileWrite = fd.asksaveasfile(
 			mode        = "w", 
@@ -471,7 +515,7 @@ def save_log(log) :
 			title       = 'Save Log File...',
 			filetypes   = [("Text Documents", ".txt")]
 		)
-		fileWrite.write('\n'.join(log))
+		fileWrite.write('\n'.join(mainLog))
 		fileWrite.close()
 		mb.showinfo(title="Saved", message="Log Saved")
 	except:
@@ -487,7 +531,9 @@ def save_log(log) :
 # 
 
 def resource_path(relative_path):
-	""" Get absolute path to resource, works for dev and for PyInstaller """
+	# Get absolute path to resource, works for dev and for PyInstaller
+	#
+	# This bit is needed for the created .EXE file
 	try:
 		# PyInstaller creates a temp folder and stores path in _MEIPASS
 		base_path = sys._MEIPASS # pylint: disable=no-member
@@ -505,14 +551,15 @@ def resource_path(relative_path):
 #                                                                      
 # 
 
-def start_log(log):
-	log.clear()
-	log.append(" _______           __ ______ __                __               ")
-	log.append("|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.")
-	log.append("|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|")
-	log.append("|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ")
-	log.append("                                            v1.0.0.0 by JTSage")
-	log.append("   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
+def start_log():
+	# Clear out the log "file" (actually just a ordered list) and add the header back
+	mainLog.clear()
+	mainLog.append(" _______           __ ______ __                __               ")
+	mainLog.append("|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.")
+	mainLog.append("|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|")
+	mainLog.append("|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ")
+	mainLog.append("                                            v1.0.0.0 by JTSage")
+	mainLog.append("   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
 
 
 
@@ -523,10 +570,11 @@ def start_log(log):
 #                                                     
 # 
 
-def end_log(log):
-	today = date.today()
-	write_log(log, "Report Generated on: {}".format(today))
-	write_log_sep(log)
+def end_log():
+	# Date stamp the log
+	today = datetime.date.today()
+	write_log("Report Generated on: {}".format(today))
+	write_log_sep()
 
 
 
@@ -537,8 +585,10 @@ def end_log(log):
 #                                                                    
 # 
 
-def write_log(log, text) :
-	log.append(text)
+def write_log(text) :
+	# This adds a line of text to the log.  Encapsulated for when I want to write a real
+	# log class.
+	mainLog.append(text)
 
 
 # 
@@ -548,8 +598,9 @@ def write_log(log, text) :
 #                                                                                                  
 # 
 
-def write_log_sep(log) :
-	write_log(log, "   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
+def write_log_sep() :
+	# Simple seperator line for the log.
+	write_log("   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
 
 
 
@@ -563,6 +614,8 @@ def write_log_sep(log) :
 # 
 
 def add_deflist(frame, term, desc) :
+	# Add an entry to the conflict or broken mod list as a definition list.
+	# This displays more or less like an HTML <dl><dt></dt><dd></dd></dl>
 	ttk.Label(
 		frame,
 		text   = term,

@@ -1,26 +1,18 @@
-"""
- _______           __ ______ __                __               
-|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
-|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
-|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
-                                            v1.0.0.0 by JTSage
+#  _______           __ ______ __                __               
+# |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
+# |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
+# |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
+#                                             v1.0.0.0 by JTSage
 
-Main Program
+# Main Program
 
-(c) 2021 JTSage.  MIT License.
-"""
+# (c) 2021 JTSage.  MIT License.
 
-from tkinter import * # pylint: disable=unused-wildcard-import
-from tkinter import ttk
-import tkinter.filedialog as fd
-import tkinter.messagebox as mb
+import tkinter as Tk
+import tkinter.ttk as ttk
 import os
 import lib.mod_checker_lib as mod_checker_lib
-from lib.mod_checker_data import knownScriptOnlyMods, knownConflicts
 
-
-mainConfigFile = ""
-masterLog      = []
 changeables    = {
 	"mainConfigFile" : ""
 }
@@ -33,28 +25,30 @@ changeables    = {
 #                                                                                
 # 
 
-root = Tk()
+root = Tk.Tk()
 root.title("FS19 Mod Checker")
 root.minsize(650, 500)
 
-
-menubar = Menu(root)
-filemenu = Menu(menubar, tearoff=0)
-filemenu.add_command(label="Save Log", command=lambda: mod_checker_lib.save_log(masterLog))
+# Set up the top menubar
+menubar = Tk.Menu(root)
+filemenu = Tk.Menu(menubar, tearoff=0)
+filemenu.add_command(label="Save Log", command=mod_checker_lib.save_log)
 filemenu.add_separator()
 filemenu.add_command(label="Exit", command=root.quit)
-menubar.add_cascade(label="File", menu=filemenu)
 
-helpmenu = Menu(menubar, tearoff=0)
+helpmenu = Tk.Menu(menubar, tearoff=0)
 helpmenu.add_command(label="About...", command=lambda: about())
+
+menubar.add_cascade(label="File", menu=filemenu)
 menubar.add_cascade(label="Help", menu=helpmenu)
 
 root.config(menu=menubar)
 
-
-mainIconImage = PhotoImage(file = os.path.join(mod_checker_lib.resource_path("./lib/"), 'mcicon.png'))
+# Set a window icon
+mainIconImage = Tk.PhotoImage(file = os.path.join(mod_checker_lib.resource_path("./lib/"), 'mcicon.png'))
 root.iconphoto(False, mainIconImage)
 
+# Set up the tab list in the main window
 n = ttk.Notebook(root)
 
 tabConfig   = ttk.Frame(n, padding=(9,9,9,9)) # Config Tab
@@ -64,12 +58,14 @@ tabConflict = ttk.Frame(n, padding=(9,9,9,9)) # Conflicts Tab
 tabInactive = ttk.Frame(n, padding=(9,9,9,9)) # Inactive Mods Tab
 tabUnused   = ttk.Frame(n, padding=(9,9,9,9)) # Active but Unused Mods Tab
 
-n.add(tabConfig,   text='Configuration')
-n.add(tabBroken,   text='Broken Mods')
-n.add(tabMissing,  text='Missing Mods')
-n.add(tabConflict, text='Possible Conflicts')
-n.add(tabInactive, text='Inactive Mods')
-n.add(tabUnused,   text='Active, Un-Used Mods')
+n.add(tabConfig,   underline=0, text='Configuration')
+n.add(tabBroken,   underline=0, text='Broken Mods')
+n.add(tabMissing,  underline=0, text='Missing Mods')
+n.add(tabConflict, underline=0, text='Possible Conflicts')
+n.add(tabInactive, underline=0, text='Inactive Mods')
+n.add(tabUnused,   underline=0, text='Active, Un-Used Mods')
+
+n.enable_traversal()
 
 n.pack(expand = 1, pady = (5,0), padx = 5, fill = "both")
 
@@ -87,25 +83,29 @@ root.update()
 tabConfig.columnconfigure(0, weight=1)
 tabConfig.columnconfigure(1, minsize=root.winfo_width()/2)
 
-ttk.Label(tabConfig, text="First, you need to point Mod Checker to your gameSettings.xml file" ).grid(column=0, columnspan=2, row=0, pady=6, sticky=(W,E))
+ttk.Label(tabConfig, text="First, you need to point Mod Checker to your gameSettings.xml file" ).grid(column=0, columnspan=2, row=0, pady=6, sticky=(Tk.W,Tk.E))
 
-ttk.Button(tabConfig, text="Load Settings", command=lambda: mod_checker_lib.load_main_config(changeables)).grid(column=0, row=1, columnspan=2, sticky=(W, E))
+loadButton = ttk.Button(tabConfig, text="Load Settings", command=lambda: mod_checker_lib.load_main_config(changeables))
+loadButton.grid(column=0, row=1, columnspan=2, sticky=(Tk.W,Tk.E))
+loadButton.bind('<Return>', lambda event=None: loadButton.invoke())
+loadButton.focus()
 
 changeables["mainFileLabel"] = ttk.Label(tabConfig, text="Game Settings File: [not set]" )
-changeables["mainFileLabel"].grid(column=0, columnspan=2, row=2, pady=6, sticky=(W,E))
+changeables["mainFileLabel"].grid(column=0, columnspan=2, row=2, pady=12, sticky=(Tk.W,Tk.E))
 
-ttk.Label(tabConfig, text="Next, click \"Check Mods\" to scan your collection" ).grid(column=0, columnspan=2, row=3, pady=6, sticky=(W,E))
+ttk.Label(tabConfig, text="Next, click \"Check Mods\" to scan your collection" ).grid(column=0, columnspan=2, row=3, pady=6, sticky=(Tk.W,Tk.E))
 
-processButton = ttk.Button(tabConfig, text="Check Mods", command=lambda: mod_checker_lib.process_files(masterLog, changeables))
+processButton = ttk.Button(tabConfig, text="Check Mods", command=lambda: mod_checker_lib.process_files(changeables))
 processButton.state(['disabled'])
-processButton.grid(column=0, row=4, columnspan=2, sticky=(W, E))
+processButton.grid(column=0, row=4, columnspan=2, pady=(0,40), sticky=(Tk.W,Tk.E))
+processButton.bind('<Return>', lambda event=None: processButton.invoke())
 
 changeables["processButton"] = processButton
 
-ttk.Label(tabConfig, text="Mods Found").grid(column=0, row=5, sticky=(E))
-ttk.Label(tabConfig, text="Broken Mods").grid(column=0, row=6, sticky=(E))
-ttk.Label(tabConfig, text="Folders Found").grid(column=0, row=7, sticky=(E))
-ttk.Label(tabConfig, text="Missing Mods").grid(column=0, row=8, sticky=(E))
+ttk.Label(tabConfig, text="Mods Found").grid(column=0, row=5, padx=(0,5), sticky=(Tk.E))
+ttk.Label(tabConfig, text="Broken Mods").grid(column=0, row=6, padx=(0,5), sticky=(Tk.E))
+ttk.Label(tabConfig, text="Folders Found").grid(column=0, row=7, padx=(0,5), sticky=(Tk.E))
+ttk.Label(tabConfig, text="Missing Mods").grid(column=0, row=8, padx=(0,5), sticky=(Tk.E))
 
 changeables["modLabels"] = {
 	"found"   : ttk.Label(tabConfig, text="0", font='Helvetica 18 bold'),
@@ -113,14 +113,14 @@ changeables["modLabels"] = {
 	"folder"  : ttk.Label(tabConfig, text="0", font='Helvetica 18 bold'),
 	"missing" : ttk.Label(tabConfig, text="0", font='Helvetica 18 bold')
 }
-changeables["modLabels"]["found"].grid(column=1, row=5, sticky=(W))
-changeables["modLabels"]["broke"].grid(column=1, row=6, sticky=(W))
-changeables["modLabels"]["folder"].grid(column=1, row=7, sticky=(W))
-changeables["modLabels"]["missing"].grid(column=1, row=8, sticky=(W))
+changeables["modLabels"]["found"].grid(column=1, row=5, sticky=(Tk.W))
+changeables["modLabels"]["broke"].grid(column=1, row=6, sticky=(Tk.W))
+changeables["modLabels"]["folder"].grid(column=1, row=7, sticky=(Tk.W))
+changeables["modLabels"]["missing"].grid(column=1, row=8, sticky=(Tk.W))
 
 
-for child in tabConfig.winfo_children(): 
-	child.grid_configure(padx=5, pady=5)
+# for child in tabConfig.winfo_children(): 
+# 	child.grid_configure(padx=5, pady=5)
 
 
 
@@ -136,7 +136,7 @@ ttk.Label(tabBroken, text="These mods have been detected to be a possible proble
 
 
 
-brokenCanvas    = Canvas(tabBroken)
+brokenCanvas    = Tk.Canvas(tabBroken)
 brokenCanvasVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenCanvas.yview)
 brokenFrame     = ttk.Frame(brokenCanvas, border=1, padding=(30,0))
 
@@ -166,20 +166,6 @@ def bf_unbound_to_mousewheel(event):
 brokenFrame.bind('<Enter>', bf_bound_to_mousewheel)
 brokenFrame.bind('<Leave>', bf_unbound_to_mousewheel)
 
-# brokenTreeCols = ('Name','Type','Problem')
-
-# brokenTree = ttk.Treeview(tabBroken, selectmode='browse', columns=brokenTreeCols, show='headings')
-# brokenTree.pack(expand=True, side='left', fill='both', pady=(5,0))
-
-# brokenTreeVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenTree.yview)
-# brokenTreeVSB.pack(side='right', fill='y')
-
-# brokenTree.configure(yscrollcommand=brokenTreeVSB.set)
-
-# for col in brokenTreeCols:
-# 	brokenTree.heading(col, text=col, command=lambda _col=col: \
-# 				 treeview_sort_size_column(brokenTree, _col, False))
-
 changeables["brokenFrame"] = brokenFrame
 
 
@@ -199,8 +185,8 @@ missingTreeCols = ('Name','Title','Purchased','Savegame')
 missingTree = ttk.Treeview(tabMissing, selectmode='browse', columns=missingTreeCols, show='headings')
 missingTree.pack(expand=True, side='left', fill='both', pady=(5,0))
 
-missingTree.column("#3", minwidth=0, width=75, stretch=NO) 
-missingTree.column("#4", minwidth=0, width=100, stretch=NO) 
+missingTree.column("#3", minwidth=0, width=75, stretch=Tk.NO) 
+missingTree.column("#4", minwidth=0, width=100, stretch=Tk.NO) 
 
 missingTreeVSB = ttk.Scrollbar(tabMissing, orient="vertical", command=missingTree.yview)
 missingTreeVSB.pack(side='right', fill='y')
@@ -230,7 +216,7 @@ ttk.Label(tabConflict, text = "\u2022 " + "This is also not intended as a slight
 ttk.Label(tabConflict, text = "\u2022 " + "Many (most) times these mods will work as intended.", anchor='w').pack(padx=(30,0), fill='x')
 ttk.Label(tabConflict, text = "\u2022 " + "If you do experience in-game problems, this may be a good place to start testing.", anchor='w').pack(pady=(0,10), padx=(30,0), fill='x')
 
-conflictCanvas    = Canvas(tabConflict)
+conflictCanvas    = Tk.Canvas(tabConflict)
 conflictCanvasVSB = ttk.Scrollbar(tabConflict, orient="vertical", command=conflictCanvas.yview)
 conflictFrame     = ttk.Frame(conflictCanvas, border=1, padding=(30,0))
 
@@ -279,7 +265,7 @@ inactiveTreeCols = ('Name','Size')
 inactiveTree = ttk.Treeview(tabInactive, selectmode='browse', columns=inactiveTreeCols, show='headings')
 inactiveTree.pack(expand=True, side='left', fill='both', pady=(5,0))
 
-inactiveTree.column("#2", minwidth=0, width=100, stretch=NO, anchor='e') 
+inactiveTree.column("#2", minwidth=0, width=100, stretch=Tk.NO, anchor='e') 
 
 inactiveTreeVSB = ttk.Scrollbar(tabInactive, orient="vertical", command=inactiveTree.yview)
 inactiveTreeVSB.pack(side='right', fill='y')
@@ -308,8 +294,8 @@ unusedTreeCols = ('Name','Title','Savegame','Size')
 unusedTree = ttk.Treeview(tabUnused, selectmode='browse', columns=unusedTreeCols, show='headings')
 unusedTree.pack(expand=True, side='left', fill='both', pady=(5,0))
 
-unusedTree.column("#3", minwidth=0, width=120, stretch=NO)
-unusedTree.column("#4", minwidth=0, width=100, stretch=NO, anchor='e') 
+unusedTree.column("#3", minwidth=0, width=120, stretch=Tk.NO)
+unusedTree.column("#4", minwidth=0, width=100, stretch=Tk.NO, anchor='e') 
 
 unusedTreeVSB = ttk.Scrollbar(tabUnused, orient="vertical", command=unusedTree.yview)
 unusedTreeVSB.pack(side='right', fill='y')
@@ -332,7 +318,7 @@ changeables["unusedTree"] = unusedTree
 # 
 
 def about() :
-	aboutWindow = Toplevel(root)
+	aboutWindow = Tk.Toplevel(root)
   
 
 	aboutWindow.title("About FS19 Mod Checker")
@@ -372,6 +358,7 @@ def about() :
 # 
 
 def size_to_real_number(text) :
+	# Convert a human-readable size back to something we can sort.
 	try :
 		num, ext = text.split()
 
@@ -399,6 +386,7 @@ def size_to_real_number(text) :
 # 
 
 def treeview_sort_size_column(tv, col, reverse):
+	# Sort a treeview by the chosen column
 	if ( col == "Size" ) :
 		l = [(size_to_real_number(tv.set(k, col)), k) for k in tv.get_children('')]
 	else :
