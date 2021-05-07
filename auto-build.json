@@ -60,6 +60,10 @@
   {
    "optionDest": "datas",
    "value": "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/lib/mcicon.png;lib"
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/locale;locale/"
   }
  ],
  "nonPyinstallerOptions": {

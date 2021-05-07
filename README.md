@@ -65,3 +65,7 @@ Needs the [lxml](https://lxml.de/installation.html) module installed
  ## A short note about the EXE
 
  So, the exe file (the preferred method of running this) is essentially a miniaturized copy of python with all of the required libraries.  It has been reported in the past the EXE's built with this fantastic package can occasionally cause false positives in virus software.  As of this writing, it looks like it is all good - but that could potentially change for the worst.  As always, the source code is available to peruse at your leisure or run directly. (For the python initiated, this uses auto-py-to-exe to build, the configuration json file is included - of course you will need to update paths to build yourself)
+
+ ### Developer Notes:
+
+ i10n POT command: ```python C:\Python39\Tools\i18n\pygettext.py -d fs19modcheck -o locale/fs19modcheck.pot .\FS19_Mod_Checker.py .\lib\mod_checker_lib.py```
