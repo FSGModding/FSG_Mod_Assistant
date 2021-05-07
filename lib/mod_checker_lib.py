@@ -189,7 +189,7 @@ def process_files(changeables, *args):
 			fullModList[thisMod]._usedGames.update(fullModList[thisMod]._activeGames)
 
 
-	start_log()
+	start_log(changeables["version"])
 	upd_config(changeables, fullModList, len(modBadFiles))
 	upd_broken(changeables, fullModList, modBadFiles)
 	upd_missing(changeables, fullModList)
@@ -251,7 +251,7 @@ def upd_broken(changeables, fullModList, garbageFiles) :
 	write_log("Broken Mods:")
 	
 	# First, bad names, they won't load
-	for thisMod in sorted(broken) :
+	for thisMod in sorted(broken, key=str.casefold) :
 		# Trap message.  Should never display, but just in case.
 		message = "This File or Folder is invalid"
 	
@@ -304,7 +304,7 @@ def upd_broken(changeables, fullModList, garbageFiles) :
 		))
 
 	# Next, unzipped folders that shouldn't be
-	for thisMod in sorted(folder) :
+	for thisMod in sorted(folder, key=str.casefold) :
 		# No real logic here.  If it's a folder, suggest it be zipped.
 		#
 		# We have no real way of catching the case of a mod being unzipped directly to the root
@@ -367,7 +367,7 @@ def upd_missing(changeables, fullModList) :
 
 	write_log("Missing Mods:")
 	
-	for thisMod in sorted(missing) :
+	for thisMod in sorted(missing, key=str.casefold) :
 		changeables["missingTree"].insert(
 			parent = '',
 			index  = 'end',
@@ -407,7 +407,7 @@ def upd_inactive(changeables, fullModList) :
 
 	write_log("Inactive Mods:")
 
-	for thisMod in sorted(inactive) :
+	for thisMod in sorted(inactive, key=str.casefold) :
 		changeables["inactiveTree"].insert(
 			parent = '',
 			index  = 'end',
@@ -441,7 +441,7 @@ def upd_unused(changeables, fullModList) :
 
 	write_log("Unused Mods:")
 
-	for thisMod in sorted(unused) :
+	for thisMod in sorted(unused, key=str.casefold) :
 		changeables["unusedTree"].insert(
 			parent = '',
 			index  = 'end',
@@ -476,7 +476,7 @@ def upd_conflict(changeables,fullModList) :
 	for widget in changeables["conflictFrame"].winfo_children():
 		widget.destroy()
 
-	for thisMod in sorted(knownConflicts.keys()) :
+	for thisMod in sorted(knownConflicts.keys(), key=str.casefold) :
 		if thisMod in fullModList.keys():
 			# Page through all known conflicts and compare it to the list
 			# of INSTALLED mods.  We are attempting to warn what COULD maybe
@@ -551,14 +551,14 @@ def resource_path(relative_path):
 #                                                                      
 # 
 
-def start_log():
+def start_log(version):
 	# Clear out the log "file" (actually just a ordered list) and add the header back
 	mainLog.clear()
 	mainLog.append(" _______           __ ______ __                __               ")
 	mainLog.append("|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.")
 	mainLog.append("|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|")
 	mainLog.append("|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ")
-	mainLog.append("                                            v1.0.0.0 by JTSage")
+	mainLog.append("                                            v" + version  + " by JTSage")
 	mainLog.append("   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
 
 

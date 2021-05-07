@@ -13,8 +13,12 @@ import tkinter.ttk as ttk
 import os
 import lib.mod_checker_lib as mod_checker_lib
 
+
+VERSION = "1.0.0.0"
+
 changeables    = {
-	"mainConfigFile" : ""
+	"mainConfigFile" : "",
+	"version"        : VERSION
 }
 
 
@@ -26,8 +30,12 @@ changeables    = {
 # 
 
 root = Tk.Tk()
-root.title("FS19 Mod Checker")
+root.title("FS19 Mod Checker v" + VERSION)
 root.minsize(650, 500)
+
+# Change the theme.
+style = ttk.Style()
+style.theme_use('clam')
 
 # Set up the top menubar
 menubar = Tk.Menu(root)
@@ -67,7 +75,7 @@ n.add(tabUnused,   underline=0, text='Active, Un-Used Mods')
 
 n.enable_traversal()
 
-n.pack(expand = 1, pady = (5,0), padx = 5, fill = "both")
+n.pack(expand = 1, pady = 0, padx = 0, fill = "both")
 
 root.update()
 
@@ -118,12 +126,6 @@ changeables["modLabels"]["broke"].grid(column=1, row=6, sticky=(Tk.W))
 changeables["modLabels"]["folder"].grid(column=1, row=7, sticky=(Tk.W))
 changeables["modLabels"]["missing"].grid(column=1, row=8, sticky=(Tk.W))
 
-
-# for child in tabConfig.winfo_children(): 
-# 	child.grid_configure(padx=5, pady=5)
-
-
-
 # 
 #  ______   ______  _____  _     _ _______ __   _      _______  _____  ______  _______
 #  |_____] |_____/ |     | |____/  |______ | \  |      |  |  | |     | |     \ |______
@@ -132,7 +134,7 @@ changeables["modLabels"]["missing"].grid(column=1, row=8, sticky=(Tk.W))
 # 
 
 ttk.Label(tabBroken, text="Broken Mods", font='Helvetica 12 bold').pack()
-ttk.Label(tabBroken, text="These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution", wraplength = 600).pack(fill='x')
+ttk.Label(tabBroken, text="These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution", wraplength = 600).pack(fill='x', pady=(0,5))
 
 
 
@@ -319,14 +321,16 @@ changeables["unusedTree"] = unusedTree
 
 def about() :
 	aboutWindow = Tk.Toplevel(root)
-  
 
 	aboutWindow.title("About FS19 Mod Checker")
 	aboutWindow.geometry("600x460")
 
-	ttk.Label(aboutWindow, text="FS19 Mod Checker", font='Helvetica 18 bold').pack()
+	aboutFrame = ttk.Frame(aboutWindow, padding=(0,0,0,0))
+	aboutFrame.pack(pady=(5,0), padx=5, fill="both")
 
-	ttk.Label(aboutWindow, text="This little program will take a look at your mod install folder and inform you of the following:", anchor = 'w', wraplength = 600).pack(fill = 'x', pady = 0, padx = (10,0))
+	ttk.Label(aboutFrame, text="FS19 Mod Checker v" + VERSION, font='Helvetica 18 bold').pack()
+
+	ttk.Label(aboutFrame, text="This little program will take a look at your mod install folder and inform you of the following:", anchor = 'w', wraplength = 600).pack(fill = 'x', pady = 0, padx = (10,0))
 
 	aboutBullets = [
 		"If a mod file is named incorrectly and won't load in the game.",
@@ -337,12 +341,12 @@ def about() :
 	]
 
 	for thisBullet in aboutBullets:
-		ttk.Label(aboutWindow, text="\u2022 " + thisBullet, anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))	
+		ttk.Label(aboutFrame, text="\u2022 " + thisBullet, anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))	
 
-	ttk.Label(aboutWindow, text="This program only offers suggestions, no files on your computer will be altered", font='Helvetica 9 bold', anchor='center', wraplength = 600).pack(fill = 'x', pady=(10,0) )
+	ttk.Label(aboutFrame, text="This program only offers suggestions, no files on your computer will be altered", font='Helvetica 9 bold', anchor='center', wraplength = 600).pack(fill = 'x', pady=(10,0) )
 
 	MITLicenseText = "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-	ttk.Label(aboutWindow, text=MITLicenseText, anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (20,0), padx = (20,0))
+	ttk.Label(aboutFrame, text=MITLicenseText, anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (20,0), padx = (20,0))
 	
 	aboutWindow.bind('<Escape>', lambda x: aboutWindow.destroy())
 	aboutWindow.iconphoto(False, mainIconImage)
@@ -384,15 +388,23 @@ def size_to_real_number(text) :
 #     |    |    \_ |______ |______ _____ ______| |_____| |    \_    |   
 #                                                                       
 # 
+def lower_if_possible(x):
+	try:
+		return x.lower()
+	except AttributeError:
+		return x
 
 def treeview_sort_size_column(tv, col, reverse):
 	# Sort a treeview by the chosen column
 	if ( col == "Size" ) :
 		l = [(size_to_real_number(tv.set(k, col)), k) for k in tv.get_children('')]
+		l.sort(reverse = reverse)
 	else :
 		l = [(tv.set(k, col), k) for k in tv.get_children('')]
-
-	l.sort(reverse=reverse)
+		l.sort(
+			key=lambda t : tuple(lower_if_possible(t[0])),
+			reverse=reverse
+		)
 
 	# rearrange items in sorted positions
 	for index, (val, k) in enumerate(l): # pylint: disable=unused-variable

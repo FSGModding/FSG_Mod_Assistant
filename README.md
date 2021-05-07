@@ -3,14 +3,20 @@
 This little program will take a look at your mod install folder and inform you of the following
 
  * If a mod file is named incorrectly and won't load in the game.
+   * Suggest it might be a copy if the name looks like a copy (and note if you already have it)
+   * Suggest you extract it if it looks like a collection of mods
 
  * If a mod is not properly zipped.
+   * Suggest that you zip it up
 
  * If a mod is used in your save games, but does not appear to be installed.
 
  * If a mod is not loaded or used in any of your save games
 
  * If a mod is loaded but unused in your save games.
+
+ * If a mod you have possibly conflicts with another mod you have.
+
 
 ## What this does
 
@@ -50,10 +56,12 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 Needs the [lxml](https://lxml.de/installation.html) module installed
 
 
-## Planned Improvements
-
- * Better suggestions for renaming/deleting bad mods based off of other files in folder. ___(Started)___
+## In-Progress Improvements
 
  * Create a short list of popular script-only mods and hide them from the "loaded but not used" list. (i.e. AutoDrive, Global Company, Course Play, etc.) [GitHub Issue #4](https://github.com/jtsage/FS19_Mod_Checker/issues/4)
 
  * Note some of the more popular mod conflicts and suggest avoiding them: [GitHub Issue #2](https://github.com/jtsage/FS19_Mod_Checker/issues/2)
+
+ ## A short note about the EXE
+
+ So, the exe file (the preferred method of running this) is essentially a miniaturized copy of python with all of the required libraries.  It has been reported in the past the EXE's built with this fantastic package can occasionally cause false positives in virus software.  As of this writing, it looks like it is all good - but that could potentially change for the worst.  As always, the source code is available to peruse at your leisure or run directly. (For the python initiated, this uses auto-py-to-exe to build, the configuration json file is included - of course you will need to update paths to build yourself)
