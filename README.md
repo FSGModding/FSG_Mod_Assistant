@@ -50,6 +50,7 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 ### Active but Unused Mods
 ![Active but Unused Mods](sshot/006-UnusedMods.png)
 
+__Note__: Screenshots report the size of most files as 14 Bytes because I've created a special test set of mods to trigger behavior that doesn't happen with my actual mod set.  The size will be correctly reported on your computer.
 
 ## Development Requirements
 
