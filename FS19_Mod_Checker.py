@@ -12,6 +12,7 @@ import tkinter as Tk
 import tkinter.ttk as ttk
 import os
 import lib.mod_checker_lib as mod_checker_lib
+import gettext
 
 
 VERSION = "1.0.0.0"
@@ -21,6 +22,7 @@ changeables    = {
 	"version"        : VERSION
 }
 
+gettext.install('fs19modcheck', mod_checker_lib.resource_path("./locale"))
 
 # 
 #  _______ _______ _____ __   _      _  _  _ _____ __   _ ______   _____  _  _  _
@@ -40,15 +42,15 @@ style.theme_use('clam')
 # Set up the top menubar
 menubar = Tk.Menu(root)
 filemenu = Tk.Menu(menubar, tearoff=0)
-filemenu.add_command(label="Save Log", command=mod_checker_lib.save_log)
+filemenu.add_command(label=_("Save Log"), command=mod_checker_lib.save_log)
 filemenu.add_separator()
-filemenu.add_command(label="Exit", command=root.quit)
+filemenu.add_command(label=_("Exit"), command=root.quit)
 
 helpmenu = Tk.Menu(menubar, tearoff=0)
-helpmenu.add_command(label="About...", command=lambda: about())
+helpmenu.add_command(label=_("About"), command=lambda: about())
 
-menubar.add_cascade(label="File", menu=filemenu)
-menubar.add_cascade(label="Help", menu=helpmenu)
+menubar.add_cascade(label=_("File"), menu=filemenu)
+menubar.add_cascade(label=_("Help"), menu=helpmenu)
 
 root.config(menu=menubar)
 
@@ -66,12 +68,13 @@ tabConflict = ttk.Frame(n, padding=(9,9,9,9)) # Conflicts Tab
 tabInactive = ttk.Frame(n, padding=(9,9,9,9)) # Inactive Mods Tab
 tabUnused   = ttk.Frame(n, padding=(9,9,9,9)) # Active but Unused Mods Tab
 
-n.add(tabConfig,   underline=0, text='Configuration')
-n.add(tabBroken,   underline=0, text='Broken Mods')
-n.add(tabMissing,  underline=0, text='Missing Mods')
-n.add(tabConflict, underline=0, text='Possible Conflicts')
-n.add(tabInactive, underline=0, text='Inactive Mods')
-n.add(tabUnused,   underline=0, text='Active, Un-Used Mods')
+n.add(tabConfig,   underline=0, text=_('Configuration'))
+n.add(tabBroken,   underline=0, text=_('Broken Mods'))
+n.add(tabMissing,  underline=0, text=_('Missing Mods'))
+n.add(tabConflict, underline=0, text=_('Possible Conflicts'))
+n.add(tabInactive, underline=0, text=_('Inactive Mods'))
+n.add(tabUnused,   underline=0, text=_('Active, Un-Used Mods'))
+
 
 n.enable_traversal()
 
@@ -91,29 +94,29 @@ root.update()
 tabConfig.columnconfigure(0, weight=1)
 tabConfig.columnconfigure(1, minsize=root.winfo_width()/2)
 
-ttk.Label(tabConfig, text="First, you need to point Mod Checker to your gameSettings.xml file" ).grid(column=0, columnspan=2, row=0, pady=6, sticky=(Tk.W,Tk.E))
+ttk.Label(tabConfig, text=_("First, you need to point Mod Checker to your gameSettings.xml file") ).grid(column=0, columnspan=2, row=0, pady=6, sticky=(Tk.W,Tk.E))
 
-loadButton = ttk.Button(tabConfig, text="Load Settings", command=lambda: mod_checker_lib.load_main_config(changeables))
+loadButton = ttk.Button(tabConfig, text=_("Load Settings"), command=lambda: mod_checker_lib.load_main_config(changeables))
 loadButton.grid(column=0, row=1, columnspan=2, sticky=(Tk.W,Tk.E))
 loadButton.bind('<Return>', lambda event=None: loadButton.invoke())
 loadButton.focus()
 
-changeables["mainFileLabel"] = ttk.Label(tabConfig, text="Game Settings File: [not set]" )
+changeables["mainFileLabel"] = ttk.Label(tabConfig, text=_("Game Settings File: {filename}").format(filename = "[not set]") )
 changeables["mainFileLabel"].grid(column=0, columnspan=2, row=2, pady=12, sticky=(Tk.W,Tk.E))
 
-ttk.Label(tabConfig, text="Next, click \"Check Mods\" to scan your collection" ).grid(column=0, columnspan=2, row=3, pady=6, sticky=(Tk.W,Tk.E))
+ttk.Label(tabConfig, text=_('Next, click "Check Mods" to scan your collection') ).grid(column=0, columnspan=2, row=3, pady=6, sticky=(Tk.W,Tk.E))
 
-processButton = ttk.Button(tabConfig, text="Check Mods", command=lambda: mod_checker_lib.process_files(changeables))
+processButton = ttk.Button(tabConfig, text=_("Check Mods"), command=lambda: mod_checker_lib.process_files(changeables))
 processButton.state(['disabled'])
 processButton.grid(column=0, row=4, columnspan=2, pady=(0,40), sticky=(Tk.W,Tk.E))
 processButton.bind('<Return>', lambda event=None: processButton.invoke())
 
 changeables["processButton"] = processButton
 
-ttk.Label(tabConfig, text="Mods Found").grid(column=0, row=5, padx=(0,5), sticky=(Tk.E))
-ttk.Label(tabConfig, text="Broken Mods").grid(column=0, row=6, padx=(0,5), sticky=(Tk.E))
-ttk.Label(tabConfig, text="Folders Found").grid(column=0, row=7, padx=(0,5), sticky=(Tk.E))
-ttk.Label(tabConfig, text="Missing Mods").grid(column=0, row=8, padx=(0,5), sticky=(Tk.E))
+ttk.Label(tabConfig, text=_("Mods Found")+":").grid(column=0, row=5, padx=(0,5), sticky=(Tk.E))
+ttk.Label(tabConfig, text=_("Broken Mods")+":").grid(column=0, row=6, padx=(0,5), sticky=(Tk.E))
+ttk.Label(tabConfig, text=_("Folders Found")+":").grid(column=0, row=7, padx=(0,5), sticky=(Tk.E))
+ttk.Label(tabConfig, text=_("Missing Mods")+":").grid(column=0, row=8, padx=(0,5), sticky=(Tk.E))
 
 changeables["modLabels"] = {
 	"found"   : ttk.Label(tabConfig, text="0", font='Helvetica 18 bold'),
@@ -133,8 +136,8 @@ changeables["modLabels"]["missing"].grid(column=1, row=8, sticky=(Tk.W))
 #                                                                                     
 # 
 
-ttk.Label(tabBroken, text="Broken Mods", font='Helvetica 12 bold').pack()
-ttk.Label(tabBroken, text="These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution", wraplength = 600).pack(fill='x', pady=(0,5))
+ttk.Label(tabBroken, text=_("Broken Mods"), font='Helvetica 12 bold').pack()
+ttk.Label(tabBroken, text=_("These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution"), wraplength = 600).pack(fill='x', pady=(0,5))
 
 
 
@@ -143,10 +146,10 @@ brokenCanvasVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenCanv
 brokenFrame     = ttk.Frame(brokenCanvas, border=1, padding=(30,0))
 
 brokenFrame.bind(
-    "<Configure>",
-    lambda e: brokenCanvas.configure(
-        scrollregion=brokenCanvas.bbox("all")
-    )
+	"<Configure>",
+	lambda e: brokenCanvas.configure(
+		scrollregion=brokenCanvas.bbox("all")
+	)
 )
 
 brokenCanvas.create_window((0, 0), window=brokenFrame, anchor="nw")
@@ -160,10 +163,10 @@ def bf_on_mousewheel(event):
 	brokenCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
 def bf_bound_to_mousewheel(event):
-    brokenCanvas.bind_all("<MouseWheel>", bf_on_mousewheel)
+	brokenCanvas.bind_all("<MouseWheel>", bf_on_mousewheel)
 
 def bf_unbound_to_mousewheel(event):
-    brokenCanvas.unbind_all("<MouseWheel>")
+	brokenCanvas.unbind_all("<MouseWheel>")
 
 brokenFrame.bind('<Enter>', bf_bound_to_mousewheel)
 brokenFrame.bind('<Leave>', bf_unbound_to_mousewheel)
@@ -179,10 +182,15 @@ changeables["brokenFrame"] = brokenFrame
 #                                                                                         
 # 
 
-ttk.Label(tabMissing, text="Missing Mods", font='Helvetica 12 bold').pack()
-ttk.Label(tabMissing, text="The scanner failed to find the mods below, however they are referenced in one or more savegames. For mods that have not been purchased, this is usually harmless.  For mods you have purchased, missing the mod file could cost you in-game money.  To correct this, re-download the mod from where you originally got it and place it in the mod folder.", wraplength = 600).pack(fill='x')
+ttk.Label(tabMissing, text=_("Missing Mods"), font='Helvetica 12 bold').pack()
+ttk.Label(tabMissing, text=_("The scanner failed to find the mods below, however they are referenced in one or more savegames. For mods that have not been purchased, this is usually harmless.  For mods you have purchased, missing the mod file could cost you in-game money.  To correct this, re-download the mod from where you originally got it and place it in the mod folder."), wraplength = 600).pack(fill='x')
 
-missingTreeCols = ('Name','Title','Purchased','Savegame')
+missingTreeCols = [
+	('#1', _("Name")),
+	('#2', _("Title")),
+	('#3', _("Purchased")),
+	('#4', _("Savegame"))
+]
 
 missingTree = ttk.Treeview(tabMissing, selectmode='browse', columns=missingTreeCols, show='headings')
 missingTree.pack(expand=True, side='left', fill='both', pady=(5,0))
@@ -195,8 +203,8 @@ missingTreeVSB.pack(side='right', fill='y')
 
 missingTree.configure(yscrollcommand=missingTreeVSB.set)
 
-for col in missingTreeCols:
-	missingTree.heading(col, text=col, command=lambda _col=col: \
+for col,name in missingTreeCols:
+	missingTree.heading(col, text=name, command=lambda _col=col: \
 				 treeview_sort_size_column(missingTree, _col, False))
 
 
@@ -210,23 +218,23 @@ changeables["missingTree"] = missingTree
 #  |_____  |_____| |  \_| |       |_____ __|__ |_____     |         |  |  | |_____| |_____/ ______|
 #                                                                                                  
 # 
-ttk.Label(tabConflict, text = "Possible Conflicts", font='Helvetica 12 bold').pack()
-ttk.Label(tabConflict, text = "These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here", wraplength=600).pack(fill='x')
+ttk.Label(tabConflict, text = _("Possible Conflicts"), font='Helvetica 12 bold').pack()
+ttk.Label(tabConflict, text = _("These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here"), wraplength=600).pack(fill='x')
 
-ttk.Label(tabConflict, text = "\u2022 " + "This should not be taken as a suggestion that these mods do not work.", anchor='w').pack(pady=(20, 0), padx=(30,0), fill='x')
-ttk.Label(tabConflict, text = "\u2022 " + "This is also not intended as a slight against the mod or author.", anchor='w').pack(padx=(30,0), fill='x')
-ttk.Label(tabConflict, text = "\u2022 " + "Many (most) times these mods will work as intended.", anchor='w').pack(padx=(30,0), fill='x')
-ttk.Label(tabConflict, text = "\u2022 " + "If you do experience in-game problems, this may be a good place to start testing.", anchor='w').pack(pady=(0,10), padx=(30,0), fill='x')
+ttk.Label(tabConflict, text = "\u2022 " + _("This should not be taken as a suggestion that these mods do not work."), anchor='w').pack(pady=(20, 0), padx=(30,0), fill='x')
+ttk.Label(tabConflict, text = "\u2022 " + _("This is also not intended as a slight against the mod or author."), anchor='w').pack(padx=(30,0), fill='x')
+ttk.Label(tabConflict, text = "\u2022 " + _("Many (most) times these mods will work as intended."), anchor='w').pack(padx=(30,0), fill='x')
+ttk.Label(tabConflict, text = "\u2022 " + _("If you do experience in-game problems, this may be a good place to start testing."), anchor='w').pack(pady=(0,10), padx=(30,0), fill='x')
 
 conflictCanvas    = Tk.Canvas(tabConflict)
 conflictCanvasVSB = ttk.Scrollbar(tabConflict, orient="vertical", command=conflictCanvas.yview)
 conflictFrame     = ttk.Frame(conflictCanvas, border=1, padding=(30,0))
 
 conflictFrame.bind(
-    "<Configure>",
-    lambda e: conflictCanvas.configure(
-        scrollregion=conflictCanvas.bbox("all")
-    )
+	"<Configure>",
+	lambda e: conflictCanvas.configure(
+		scrollregion=conflictCanvas.bbox("all")
+	)
 )
 
 conflictCanvas.create_window((0, 0), window=conflictFrame, anchor="nw")
@@ -240,10 +248,10 @@ def cf_on_mousewheel(event):
 	conflictCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
 def cf_bound_to_mousewheel(event):
-    conflictCanvas.bind_all("<MouseWheel>", cf_on_mousewheel)
+	conflictCanvas.bind_all("<MouseWheel>", cf_on_mousewheel)
 
 def cf_unbound_to_mousewheel(event):
-    conflictCanvas.unbind_all("<MouseWheel>")
+	conflictCanvas.unbind_all("<MouseWheel>")
 
 conflictFrame.bind('<Enter>', cf_bound_to_mousewheel)
 conflictFrame.bind('<Leave>', cf_unbound_to_mousewheel)
@@ -259,10 +267,14 @@ changeables["conflictFrame"] = conflictFrame
 #  __|__ |  \_| |     | |_____     |    __|__   \/   |______      |  |  | |_____| |_____/ ______|
 #                                                                                                
 # 
-ttk.Label(tabInactive, text="Inactive Mods", font='Helvetica 12 bold').pack()
-ttk.Label(tabInactive, text="These mods are not activated in any of your savegames.  If you would like to save space, and perhaps speed up FS19 starting, you could remove some or all of these.", wraplength = 600).pack(fill='x')
+ttk.Label(tabInactive, text=_("Inactive Mods"), font='Helvetica 12 bold').pack()
+ttk.Label(tabInactive, text=_("These mods are not activated in any of your savegames.  If you would like to save space, and perhaps speed up FS19 starting, you could remove some or all of these."), wraplength = 600).pack(fill='x')
 
-inactiveTreeCols = ('Name','Size')
+
+inactiveTreeCols = [
+	('#1', _("Name")),
+	('#2', _("Size"))
+]
 
 inactiveTree = ttk.Treeview(tabInactive, selectmode='browse', columns=inactiveTreeCols, show='headings')
 inactiveTree.pack(expand=True, side='left', fill='both', pady=(5,0))
@@ -274,8 +286,8 @@ inactiveTreeVSB.pack(side='right', fill='y')
 
 inactiveTree.configure(yscrollcommand=inactiveTreeVSB.set)
 
-for col in inactiveTreeCols:
-	inactiveTree.heading(col, text=col, command=lambda _col=col: \
+for col,name in inactiveTreeCols:
+	inactiveTree.heading(col, text=name, command=lambda _col=col: \
 				 treeview_sort_size_column(inactiveTree, _col, False))
 
 changeables["inactiveTree"] = inactiveTree
@@ -288,11 +300,16 @@ changeables["inactiveTree"] = inactiveTree
 #  |_____| |  \_| |_____| ______| |______ |_____/      |  |  | |_____| |_____/ ______|
 #                                                                                     
 # 
-ttk.Label(tabUnused, text="Active, Unused Mods", font='Helvetica 12 bold').pack()
-ttk.Label(tabUnused, text="These mods are active in a savegame, but do not seem to be in use. If you do not plan on using them, you could possible remove them.  Please note that some script only or pre-requisite mods may appear here by mistake, so please use this list carefully.", wraplength = 600).pack(fill='x')
+ttk.Label(tabUnused, text=_("Active, Unused Mods"), font='Helvetica 12 bold').pack()
+ttk.Label(tabUnused, text=_("These mods are active in a savegame, but do not seem to be in use. If you do not plan on using them, you could possible remove them.  Please note that some script only or pre-requisite mods may appear here by mistake, so please use this list carefully."), wraplength = 600).pack(fill='x')
 
+unusedTreeCols = [
+	('#1', _("Name")),
+	('#2', _("Title")),
+	('#3', _("Savegame")),
+	('#4', _("Size"))
+]
 
-unusedTreeCols = ('Name','Title','Savegame','Size')
 unusedTree = ttk.Treeview(tabUnused, selectmode='browse', columns=unusedTreeCols, show='headings')
 unusedTree.pack(expand=True, side='left', fill='both', pady=(5,0))
 
@@ -304,8 +321,8 @@ unusedTreeVSB.pack(side='right', fill='y')
 
 unusedTree.configure(yscrollcommand=unusedTreeVSB.set)
 
-for col in unusedTreeCols:
-	unusedTree.heading(col, text=col, command=lambda _col=col: \
+for col,name in unusedTreeCols:
+	unusedTree.heading(col, text=name, command=lambda _col=col: \
 				 treeview_sort_size_column(unusedTree, _col, False))
 
 changeables["unusedTree"] = unusedTree
@@ -322,29 +339,30 @@ changeables["unusedTree"] = unusedTree
 def about() :
 	aboutWindow = Tk.Toplevel(root)
 
-	aboutWindow.title("About FS19 Mod Checker")
+	aboutWindow.title(_("About FS19 Mod Checker"))
 	aboutWindow.geometry("600x460")
 
 	aboutFrame = ttk.Frame(aboutWindow, padding=(0,0,0,0))
 	aboutFrame.pack(pady=(5,0), padx=5, fill="both")
 
-	ttk.Label(aboutFrame, text="FS19 Mod Checker v" + VERSION, font='Helvetica 18 bold').pack()
+	ttk.Label(aboutFrame, text=_("FS19 Mod Checker") + " v" + VERSION, font='Helvetica 18 bold').pack()
 
-	ttk.Label(aboutFrame, text="This little program will take a look at your mod install folder and inform you of the following:", anchor = 'w', wraplength = 600).pack(fill = 'x', pady = 0, padx = (10,0))
+	ttk.Label(aboutFrame, text=_("This little program will take a look at your mod install folder and inform you of the following:"), anchor = 'w', wraplength = 600).pack(fill = 'x', pady = 0, padx = (10,0))
 
 	aboutBullets = [
-		"If a mod file is named incorrectly and won't load in the game.",
-		"If a mod is not properly zipped.",
-		"If a mod is used in your save games, but does not appear to be installed.",
-		"If a mod is not loaded or used in any of your save games",
-		"If a mod is loaded but unused in your save games."
+		_("If a mod file is named incorrectly and won't load in the game."),
+		_("If a mod is not properly zipped."),
+		_("If a mod is used in your save games, but does not appear to be installed."),
+		_("If a mod is not loaded or used in any of your save games"),
+		_("If a mod is loaded but unused in your save games.")
 	]
 
 	for thisBullet in aboutBullets:
 		ttk.Label(aboutFrame, text="\u2022 " + thisBullet, anchor = 'w', wraplength = 520).pack(fill = 'x', pady = (5,0), padx = (40,0))	
 
-	ttk.Label(aboutFrame, text="This program only offers suggestions, no files on your computer will be altered", font='Helvetica 9 bold', anchor='center', wraplength = 600).pack(fill = 'x', pady=(10,0) )
+	ttk.Label(aboutFrame, text=_("This program only offers suggestions, no files on your computer will be altered"), font='Helvetica 9 bold', anchor='center', wraplength = 600).pack(fill = 'x', pady=(10,0) )
 
+	# i10n Note: don't translate the license, there is not an "official" copy of it other than english.
 	MITLicenseText = "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 	ttk.Label(aboutFrame, text=MITLicenseText, anchor = 'w', wraplength = 560).pack(fill = 'x', pady = (20,0), padx = (20,0))
 	
@@ -389,29 +407,29 @@ def size_to_real_number(text) :
 #                                                                       
 # 
 def lower_if_possible(x):
-	try:
-		return x.lower()
-	except AttributeError:
+	if isinstance(x[0], float) :
 		return x
+	else :
+		try:
+			return (x[0].lower(), x[1])
+		except AttributeError:
+			return x
 
 def treeview_sort_size_column(tv, col, reverse):
 	# Sort a treeview by the chosen column
-	if ( col == "Size" ) :
-		l = [(size_to_real_number(tv.set(k, col)), k) for k in tv.get_children('')]
-		l.sort(reverse = reverse)
-	else :
-		l = [(tv.set(k, col), k) for k in tv.get_children('')]
-		l.sort(
-			key=lambda t : tuple(lower_if_possible(t[0])),
-			reverse=reverse
-		)
+
+	l = [(size_to_real_number(tv.set(k, col)), k) for k in tv.get_children('')]
+	l.sort(
+		key=lambda t : lower_if_possible(t),
+		reverse=reverse
+	)		
 
 	# rearrange items in sorted positions
 	for index, (val, k) in enumerate(l): # pylint: disable=unused-variable
 		tv.move(k, '', index)
 
 	# reverse sort next time
-	tv.heading(col, text=col, command=lambda _col=col: \
+	tv.heading(col, command=lambda _col=col: \
 				 treeview_sort_size_column(tv, _col, not reverse))
 
 

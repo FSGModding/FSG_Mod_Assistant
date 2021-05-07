@@ -32,20 +32,21 @@ mainLog = []
 #                                                                                                                      
 # 
 
+
 def load_main_config(changeables, *args):
 
 	filename = fd.askopenfilename(
 		initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
 		initialfile = "gameSettings.xml",
-		title       = 'Select gameSettings.xml',
-		filetypes   = [("XML Settings", "gameSettings.xml")]
+		title       = _('Select gameSettings.xml'),
+		filetypes   = [(_("XML Settings"), "gameSettings.xml")]
 	)
 
 	if filename: 
 		changeables["mainConfigFile"] = filename
 
 		## Update the config tab to show the chosen filename, and re-enable the process button
-		changeables["mainFileLabel"].config(text = "Game Settings File: " + filename)
+		changeables["mainFileLabel"].config(text = _("Game Settings File : {filename}").format(filename = filename))
 		changeables["processButton"].state(['!disabled'])
 		changeables["processButton"].focus()
 
@@ -73,7 +74,7 @@ def process_files(changeables, *args):
 	try:
 		configFileTree = etree.parse(changeables["mainConfigFile"])
 	except:
-		mb.showerror(title="Error", message="Cannot open main config file")
+		mb.showerror(title="Error", message=_("Cannot open main config file"))
 		changeables["processButton"].state(['disabled'])
 		return
 		
@@ -224,10 +225,10 @@ def upd_config(changeables, fullModList, numGarbageFiles) :
 	changeables["modLabels"]["folder"].config(text = len(folder))
 	changeables["modLabels"]["missing"].config(text = len(missing))
 
-	write_log("Found Mods: {}".format(len(fullModList)))
-	write_log("Broken Mods: {}".format(len(broken)))
-	write_log("Unzipped Mods: {}".format(len(folder)))
-	write_log("Missing Mods: {}".format(len(missing)))
+	write_log(_("Found Mods") + ": {}".format(len(fullModList)))
+	write_log(_("Broken Mods") + ": {}".format(len(broken) + numGarbageFiles))
+	write_log(_("Unzipped Mods") + ": {}".format(len(folder)))
+	write_log(_("Missing Mods") + ": {}".format(len(missing)))
 	write_log_sep()
 
 
@@ -248,25 +249,25 @@ def upd_broken(changeables, fullModList, garbageFiles) :
 	for widget in changeables["brokenFrame"].winfo_children():
 		widget.destroy()
 
-	write_log("Broken Mods:")
+	write_log(_("Broken Mods") + ":")
 	
 	# First, bad names, they won't load
 	for thisMod in sorted(broken, key=str.casefold) :
 		# Trap message.  Should never display, but just in case.
-		message = "This File or Folder is invalid"
+		message = _("This File or Folder is invalid")
 	
 		if ( re.search(r'unzip', thisMod, re.IGNORECASE) ) :
 			# If it has "unzip" in the file/folder name, assume it is a pack or other mods.
 			if fullModList[thisMod].isFolder() :
-				message = "This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"
+				message = _("This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed")
 			else :
-				message = "This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed."
+				message = _("This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed.")
 		elif ( re.match(r'[0-9]',thisMod) ) :
 			# If it starts with a digit, something went way wrong.  Might be a pack, or it might be garbage.
 			if fullModList[thisMod].isFolder() :
-				message = "Mod Folders cannot start with a digit.  Is this a collection of mods that should be moved to the root mods folder and then removed?"
+				message = _("Mod Folders cannot start with a digit.  Is this a collection of mods that should be moved to the root mods folder and then removed?")
 			else :
-				message = "Zip files cannot start with a digit.  Is this perhaps a collection of mods? If it is, extract the contents and delete this file."
+				message = _("Zip files cannot start with a digit.  Is this perhaps a collection of mods? If it is, extract the contents and delete this file.")
 		else :
 			# Finally, test for the common copy/paste file names, and duplicate downloads.
 			testWinCopy = re.search(r'(\w+) - .+', thisMod)
@@ -281,16 +282,16 @@ def upd_broken(changeables, fullModList, garbageFiles) :
 					goodName = testDLCopy[1]
 
 				if ( goodName ) :
-					message = "This looks like a copy of the {} mod and can probably be deleted.".format(goodName)
+					message = _("This looks like a copy of the {guessedModName} mod and can probably be deleted.").format(guessedModName = goodName)
 				else :
-					message = "This looks like a copy, but the original wasn't found. Rename it?"
+					message = _("This looks like a copy, but the original wasn't found. Rename it?")
 
 			else :
 				# Trap for when we can't figure out what is wrong with it.
 				if fullModList[thisMod].isFolder() :
-					message = "This folder is named incorrectly, but we didn't figure out what is wrong."
+					message = _("This folder is named incorrectly, but we didn't figure out what is wrong.")
 				else :
-					message = "This ZIP file is named incorrectly, but we didn't figure out what is wrong."
+					message = _("This ZIP file is named incorrectly, but we didn't figure out what is wrong.")
 		
 		add_deflist(
 			changeables["brokenFrame"],
@@ -310,7 +311,7 @@ def upd_broken(changeables, fullModList, garbageFiles) :
 		# We have no real way of catching the case of a mod being unzipped directly to the root
 		# mods folder, there are far too many variations - and although many mods follow the 
 		# FS19 prefix convention, not all do, nor is it a requirement.
-		message = "Unzipped mods cannot be used in multiplayer, you should zip this folder"
+		message = _("Unzipped mods cannot be used in multiplayer, you should zip this folder")
 
 		add_deflist(
 			changeables["brokenFrame"],
@@ -328,12 +329,12 @@ def upd_broken(changeables, fullModList, garbageFiles) :
 	# This would be anything other than a folder or a zip file. We could take a guess at other
 	# archives, but thats about it.
 	for thisFile in garbageFiles :
-		message = "This file should not exist here, delete or move it."
+		message = _("This file should not exist here, delete or move it.")
 
 
 		for thisArchive in [ ".7z", ".rar" ] :
 			if thisFile.endswith(thisArchive) :
-				message = "This is an archive file.  It might be a mod pack which should be unpacked and then removed."
+				message = _("This is an archive file.  It might be a mod pack which should be unpacked and then removed.")
 
 
 		add_deflist(
@@ -365,7 +366,7 @@ def upd_missing(changeables, fullModList) :
 	# Clear out the tree first
 	changeables["missingTree"].delete(*changeables["missingTree"].get_children())
 
-	write_log("Missing Mods:")
+	write_log(_("Missing Mods") + ":")
 	
 	for thisMod in sorted(missing, key=str.casefold) :
 		changeables["missingTree"].insert(
@@ -375,15 +376,15 @@ def upd_missing(changeables, fullModList) :
 			values = (
 				thisMod,
 				fullModList[thisMod].name(),
-				"YES" if fullModList[thisMod].isUsed() else "no",
+				_("YES") if fullModList[thisMod].isUsed() else _("no"),
 				fullModList[thisMod].getAllActive()
 			))
 
-		write_log("  {} ({}) - saves:{} {}".format(
-			thisMod,
-			fullModList[thisMod].name(),
-			fullModList[thisMod].getAllActive(),
-			"OWNED" if fullModList[thisMod].isUsed() else ""
+		write_log("  " + _("{modName} ({modTitle}) - saves:{savegames} {isOwned}").format(
+			modName   = thisMod,
+			modTitle  = fullModList[thisMod].name(),
+			savegames = fullModList[thisMod].getAllActive(),
+			isOwned   = _("OWNED") if fullModList[thisMod].isUsed() else ""
 		))
 
 	write_log_sep()
@@ -405,7 +406,7 @@ def upd_inactive(changeables, fullModList) :
 	# Clear out the tree first
 	changeables["inactiveTree"].delete(*changeables["inactiveTree"].get_children())
 
-	write_log("Inactive Mods:")
+	write_log(_("Inactive Mods")+":")
 
 	for thisMod in sorted(inactive, key=str.casefold) :
 		changeables["inactiveTree"].insert(
@@ -439,7 +440,7 @@ def upd_unused(changeables, fullModList) :
 
 	changeables["unusedTree"].delete(*changeables["unusedTree"].get_children())
 
-	write_log("Unused Mods:")
+	write_log(_("Unused Mods")+":")
 
 	for thisMod in sorted(unused, key=str.casefold) :
 		changeables["unusedTree"].insert(
@@ -453,11 +454,11 @@ def upd_unused(changeables, fullModList) :
 				fullModList[thisMod].size()
 			))
 
-		write_log("  {} ({}) - saves:{} ({})".format(
-			thisMod,
-			fullModList[thisMod].name(),
-			fullModList[thisMod].getAllActive(),
-			fullModList[thisMod].size()
+		write_log("  " + _("{modName} ({modTitle}) - saves:{savegames} ({modFileSize})").format(
+			modName     = thisMod,
+			modTitle    = fullModList[thisMod].name(),
+			savegames   = fullModList[thisMod].getAllActive(),
+			modFileSize = fullModList[thisMod].size()
 		))
 	
 	write_log_sep()
@@ -511,15 +512,15 @@ def save_log() :
 		fileWrite = fd.asksaveasfile(
 			mode        = "w", 
 			initialdir  = os.path.expanduser("~"),
-			initialfile = "FS19_Mod_Checker_log.txt",
-			title       = 'Save Log File...',
-			filetypes   = [("Text Documents", ".txt")]
+			initialfile = _("FS19_Mod_Checker_log.txt"),
+			title       = _('Save Log File...'),
+			filetypes   = [(_("Text Documents"), ".txt")]
 		)
 		fileWrite.write('\n'.join(mainLog))
 		fileWrite.close()
-		mb.showinfo(title="Saved", message="Log Saved")
+		mb.showinfo(title="Saved", message=_("Log Saved Successfully"))
 	except:
-		mb.showerror(title="Error", message="Unable to save log file")
+		mb.showerror(title="Error", message=_("Unable to save log file"))
 
 
 
@@ -573,7 +574,7 @@ def start_log(version):
 def end_log():
 	# Date stamp the log
 	today = datetime.date.today()
-	write_log("Report Generated on: {}".format(today))
+	write_log(_("Report Generated on: {dateToday}").format(dateToday = today))
 	write_log_sep()
 
 
