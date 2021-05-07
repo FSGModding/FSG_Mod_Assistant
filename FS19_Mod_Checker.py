@@ -11,8 +11,10 @@
 import tkinter as Tk
 import tkinter.ttk as ttk
 import os
+import sys
 import lib.mod_checker_lib as mod_checker_lib
 import gettext
+
 
 
 VERSION = "1.0.0.0"
@@ -21,6 +23,14 @@ changeables    = {
 	"mainConfigFile" : "",
 	"version"        : VERSION
 }
+
+# This might not be needed, python might just do this now.  But it probably 
+# can't hurt.
+if sys.platform.startswith('win'):
+	import locale
+	if os.getenv('LANG') is None:
+		lang, enc = locale.getdefaultlocale()
+		os.environ['LANG'] = lang
 
 gettext.install('fs19modcheck', mod_checker_lib.resource_path("./locale"))
 
