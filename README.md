@@ -55,6 +55,9 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 
 Needs the [lxml](https://lxml.de/installation.html) module installed
 
+## Translation Effort
+
+Sadly, the primary developer only understands English.  If you'd like to contribute a translation, and already know how gettext .pot/.po files work, check out the locale folder.  If not, you may find a web interface simpler: https://crowdin.com/project/fs19-mod-checker
 
 ## In-Progress Improvements
 
