@@ -16,7 +16,7 @@ import gettext
 
 
 
-VERSION = "1.0.0.1"
+VERSION = "1.0.0.2"
 
 changeables    = {
 	"mainConfigFile" : "",
@@ -46,7 +46,7 @@ root.minsize(650, 500)
 
 # Change the theme.
 style = ttk.Style()
-style.theme_use('clam')
+style.theme_use('winnative')
 
 # Set up the top menubar
 menubar = Tk.Menu(root)
@@ -150,7 +150,7 @@ ttk.Label(tabBroken, text=_("These mods have been detected to be a possible prob
 
 
 
-brokenCanvas    = Tk.Canvas(tabBroken)
+brokenCanvas    = Tk.Canvas(tabBroken, bd=2, relief='ridge')
 brokenCanvasVSB = ttk.Scrollbar(tabBroken, orient="vertical", command=brokenCanvas.yview)
 brokenFrame     = ttk.Frame(brokenCanvas, border=1, padding=(30,0))
 
@@ -208,7 +208,7 @@ missingTree.column("#3", minwidth=0, width=75, stretch=Tk.NO)
 missingTree.column("#4", minwidth=0, width=100, stretch=Tk.NO) 
 
 missingTreeVSB = ttk.Scrollbar(tabMissing, orient="vertical", command=missingTree.yview)
-missingTreeVSB.pack(side='right', fill='y')
+missingTreeVSB.pack(side='right', fill='y', pady=(25,2))
 
 missingTree.configure(yscrollcommand=missingTreeVSB.set)
 
@@ -235,7 +235,7 @@ ttk.Label(tabConflict, text = "\u2022 " + _("This is also not intended as a slig
 ttk.Label(tabConflict, text = "\u2022 " + _("Many (most) times these mods will work as intended."), anchor='w').pack(padx=(30,0), fill='x')
 ttk.Label(tabConflict, text = "\u2022 " + _("If you do experience in-game problems, this may be a good place to start testing."), anchor='w').pack(pady=(0,10), padx=(30,0), fill='x')
 
-conflictCanvas    = Tk.Canvas(tabConflict)
+conflictCanvas    = Tk.Canvas(tabConflict, bd=2, relief='ridge')
 conflictCanvasVSB = ttk.Scrollbar(tabConflict, orient="vertical", command=conflictCanvas.yview)
 conflictFrame     = ttk.Frame(conflictCanvas, border=1, padding=(30,0))
 
@@ -291,7 +291,7 @@ inactiveTree.pack(expand=True, side='left', fill='both', pady=(5,0))
 inactiveTree.column("#2", minwidth=0, width=100, stretch=Tk.NO, anchor='e') 
 
 inactiveTreeVSB = ttk.Scrollbar(tabInactive, orient="vertical", command=inactiveTree.yview)
-inactiveTreeVSB.pack(side='right', fill='y')
+inactiveTreeVSB.pack(side='right', fill='y', pady=(25,2))
 
 inactiveTree.configure(yscrollcommand=inactiveTreeVSB.set)
 
@@ -326,7 +326,7 @@ unusedTree.column("#3", minwidth=0, width=120, stretch=Tk.NO)
 unusedTree.column("#4", minwidth=0, width=100, stretch=Tk.NO, anchor='e') 
 
 unusedTreeVSB = ttk.Scrollbar(tabUnused, orient="vertical", command=unusedTree.yview)
-unusedTreeVSB.pack(side='right', fill='y')
+unusedTreeVSB.pack(side='right', fill='y', pady=(25,2))
 
 unusedTree.configure(yscrollcommand=unusedTreeVSB.set)
 

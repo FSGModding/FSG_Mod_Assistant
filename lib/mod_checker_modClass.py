@@ -84,7 +84,7 @@ class FSMod() :
 
 	def getAllActive(self) :
 		# Return a string of all the savegames this mod is active in
-		return ", ".join( str(t) for t in sorted(self._activeGames) )
+		return ", ".join( str(t) for t in sorted(self._activeGames, key = lambda item : int(item)) )
 
 	def isUsed(self, *args) :
 		# Boolean "is this mod used", also takes an integer to mark active in savegame #
@@ -99,7 +99,7 @@ class FSMod() :
 
 	def getAllUsed(self) :
 		# Return a string of all the savegames this mod is used in
-		return ", ".join( str(t) for t in sorted(self._usedGames) )
+		return ", ".join( str(t) for t in sorted(self._usedGames, key = lambda item : int(item)) )
 
 	def size(self, *args) :
 		# Return a human readable string of the mod file/folder size, allow setting the same

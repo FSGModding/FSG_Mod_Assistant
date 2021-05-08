@@ -45,7 +45,7 @@ def load_main_config(changeables, *args):
 		changeables["mainConfigFile"] = filename
 
 		## Update the config tab to show the chosen filename, and re-enable the process button
-		changeables["mainFileLabel"].config(text = _("Game Settings File : {filename}").format(filename = filename))
+		changeables["mainFileLabel"].config(text = _("Game Settings File: {filename}").format(filename = filename))
 		changeables["processButton"].state(['!disabled'])
 		changeables["processButton"].focus()
 
@@ -132,8 +132,8 @@ def process_files(changeables, *args):
 	# Alright, lets look at careerSavegame
 	for thisFile in filesCareer:
 		thisXML = etree.parse(thisFile)
-		thisSavegame = re.search(r'savegame([\d+])', thisFile)[1]
-	
+		thisSavegame = re.search(r'savegame(\d+)', thisFile)[1]
+		
 		theseMods = thisXML.xpath("/careerSavegame/mod")
 
 		for thisMod in theseMods:
@@ -158,7 +158,7 @@ def process_files(changeables, *args):
 	#Next up, vehicles
 	for thisFile in filesVehicles:
 		thisXML = etree.parse(thisFile)
-		thisSavegame = re.search(r'savegame([\d+])', thisFile)[1]
+		thisSavegame = re.search(r'savegame(\d+)', thisFile)[1]
 	
 		theseMods = thisXML.xpath("/vehicles/vehicle")
 
@@ -173,7 +173,7 @@ def process_files(changeables, *args):
 	# Finally, lets do items
 	for thisFile in filesItems:
 		thisXML      = etree.parse(thisFile)
-		thisSavegame = re.search(r'savegame([\d+])', thisFile)[1]
+		thisSavegame = re.search(r'savegame(\d+)', thisFile)[1]
 		theseMods    = thisXML.xpath("/items/item")
 
 		for thisMod in theseMods:
