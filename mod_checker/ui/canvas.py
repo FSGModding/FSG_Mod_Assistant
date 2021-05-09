@@ -3,7 +3,7 @@
 # |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 # |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
 
-# Re-Usable UI Elements
+# Re-Usable UI Elements - Canvas Tab
 
 # (c) 2021 JTSage.  MIT License.
 import tkinter as Tk

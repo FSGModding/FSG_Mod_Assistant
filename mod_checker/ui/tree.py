@@ -1,3 +1,11 @@
+#  _______           __ ______ __                __               
+# |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
+# |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
+# |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
+
+# Re-Usable UI Elements - Treeview Tab
+
+# (c) 2021 JTSage.  MIT License.
 
 import tkinter as Tk
 import tkinter.ttk as ttk
