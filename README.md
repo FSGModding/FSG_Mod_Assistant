@@ -50,6 +50,14 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 ### Active but Unused Mods
 ![Active but Unused Mods](sshot/006-UnusedMods.png)
 
+### About Tab
+![About Tab](sshot/007-About.png)
+
+### Detail Popup - Missing Mod
+![Missing Detail](sshot/010-DetailMissing.png)
+
+### Detail Popup - Found Mod
+![Full Detail](sshot/011-DetailFull.png)
 __Note__: Screenshots report the size of most files as 14 Bytes because I've created a special test set of mods to trigger behavior that doesn't happen with my actual mod set.  The size will be correctly reported on your computer.
 
 ## Development Requirements
@@ -72,4 +80,4 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 
  ### Developer Notes:
 
- i10n POT command: ```python C:\Python39\Tools\i18n\pygettext.py -d fs19modcheck -o locale/fs19modcheck.pot .\FS19_Mod_Checker.py .\lib\mod_checker_lib.py```
+ i10n POT command: ```python C:\Python39\Tools\i18n\pygettext.py -d fs19modcheck -o locale/fs19modcheck.pot .\FS19_Mod_Checker.py```
