@@ -83,6 +83,7 @@ class FSMod() :
 	 	return ( len(self._activeGames) == 0 )
 
 	def getAllActiveHR(self, short = False) :
+		# Return a string of all the savegames this mod is active in - human readable
 		if self.isNotActive() :
 			return "--"
 		else :
@@ -107,6 +108,7 @@ class FSMod() :
 	 	return ( len(self._usedGames) == 0 )
 
 	def getAllUsedHR(self, short = False) :
+		# Return a string of all the savegames this mod is used in - human readable
 		if self.isNotUsed() :
 			return "--"
 		else :
@@ -120,6 +122,7 @@ class FSMod() :
 			return ", ".join( str(t) for t in sorted(self._usedGames, key = lambda item : int(item)) )
 
 	def setUsedToActive(self) :
+		# Normalize the games this mod is used in the it's active games
 		self._usedGames.update(self._activeGames)
 
 	def size(self, *args) :

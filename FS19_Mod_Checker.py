@@ -22,11 +22,10 @@ import mod_checker.data.util as ModCheckUtil
 
 VERSION = "1.0.0.5"
 
-# This might not be needed, python might just do this now.  But it probably 
-# can't hurt.
+# This might not be needed, python might just do this now.  But it probably can't hurt.
 ModCheckUtil.set_win32_lang()
 
-
+# Lets do i10n for this app.
 gettext.install('fs19modcheck', ModCheckUtil.get_resource_path("./locale"))
 
 # 
@@ -51,6 +50,7 @@ rootWindow.makeMenuBar({
 	"exit-program"  : _("Exit")
 })
 
+# These strings are used in lots of places.  Hopefully they are somewhat clear.
 rootWindow.addIOStrings({
 	"error-open-settings" : _("Error Opening Settings File {filename}"),
 	"error-not-settings"  : _("This is not a valid FS19 game settings file"),
@@ -65,8 +65,8 @@ rootWindow.addIOStrings({
 	"save-log-filename"   : _("FS19_Mod_Checker_Log.txt"),
 	"mod-file-not-found"  : _("This mod file is missing on disk"),
 	"size-on-disk"        : _("Size on disk"),
-	"active-in"           : _("Mod Active in"),
-	"used-in"             : _("Mod Used in"),
+	"active-in"           : _("Mod Active In Savegame(s)"),
+	"used-in"             : _("Mod Used In Savegame(s)"),
 	"ok-button-label"     : _("OK")
 })
 
@@ -79,6 +79,7 @@ rootWindow.addIOStrings({
 
 rootWindow.addTab("tabConfig",   underline=0, text=_('Configuration'))
 
+# These strings are used on the config tab exclusively
 rootWindow.makeConfigTab(strings = {
 	"info-ask-for-file"    : _("First, you need to point Mod Checker to your gameSettings.xml file"),
 	"load-button-label"    : _("Load Settings"),
@@ -102,6 +103,7 @@ rootWindow.makeConfigTab(strings = {
 
 rootWindow.addTab("tabBroken",   underline=0, text=_('Broken Mods'))
 
+# These strings descripe the nature of how a mod is broken
 rootWindow.addBrokenStrings({
 	"default"         : _("This File or Folder is invalid"),
 	"unzip-folder"    : _("This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"),
@@ -250,27 +252,6 @@ rootWindow.tabContent["tabAbout"] = ModCheckCanvasTab(
 	
 )
 
-
-
-
-
-# # 
-# #  _______  _____  __   _ _______ _____  ______      _______ _______ ______ 
-# #  |       |     | | \  | |______   |   |  ____         |    |_____| |_____]
-# #  |_____  |_____| |  \_| |       __|__ |_____|         |    |     | |_____]
-# #                                                                           
-# # 
-strings = {
-	"info-ask-for-file"    : _("First, you need to point Mod Checker to your gameSettings.xml file"),
-	"load-button-label"    : _("Load Settings"),
-	"info-game-settings"   : _("Game Settings File: {filename}"),
-	"info-ask-process"     : _("Next, click \"{process_button_label}\" to scan your collection"),
-	"process-button-label" : _("Check Mods"),
-	"info-mods-found"      : _("Mods Found"),
-	"info-mods-broken"     : _("Broken Mods"),
-	"info-mods-folders"    : _("Folders Found"),
-	"info-mods-missing"    : _("Missing Mods")
-}
 
 
 #  _______ _______ _____ __   _              _____   _____   _____ 

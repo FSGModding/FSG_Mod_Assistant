@@ -6,6 +6,14 @@ import locale
 class ModCheckTreeTab() :
 
 	def __init__(self, parent, title, description, columns, base, columnExtra=None) :
+		""" Build a ttk.TreeView tab
+			* parent      - Parent element
+			* title       - Title of this tab (display label)
+			* description - Description of this tab
+			* columns     - Simple list of columns
+			* base        - Root window object
+			* columnExtra - kwargs for each column, if needed.
+		""" 
 		self._parent      = parent
 		self._UIParts     = {}
 		self.title        = title
@@ -18,6 +26,7 @@ class ModCheckTreeTab() :
 		self._build()
 
 	def _build(self) :
+		""" Build the treeview inside of _parent """
 		ttk.Label(self._parent, text=self.title, font='Helvetica 12 bold').pack()
 		ttk.Label(self._parent, text=self._description, wraplength = 600).pack(fill='x')
 
@@ -40,6 +49,7 @@ class ModCheckTreeTab() :
 		self._UIParts["tree"].bind("<Double-1>", self._on_double_click)
 
 	def _on_double_click(self, event):
+		""" On double-click of a mod, display some information """
 		thisItem    = self._UIParts["tree"].identify('item',event.x,event.y)
 		thisModName = self._UIParts["tree"].item(thisItem,"text")
 		thisMod     = self._base._modList[thisModName]
@@ -73,9 +83,11 @@ class ModCheckTreeTab() :
 		thisInfoBox.bind("<Escape>", lambda x: thisInfoBox.destroy())
 
 	def clear_items(self) :
+		""" Empty the tree """
 		self._UIParts["tree"].delete(*self._UIParts["tree"].get_children())
 
 	def add_item(self, name, values):
+		""" Add an item to the tree """
 		self._UIParts["tree"].insert(
 			parent = '',
 			index  = 'end',
@@ -83,6 +95,7 @@ class ModCheckTreeTab() :
 			values = values)
 
 	def _treeview_sort(self, tv, col, reverse):
+		""" Sort a tree column numerically or alphabetically """
 		l = [(self._size_to_real_num(tv.set(k, col)), k) for k in tv.get_children('')]
 
 		l.sort(
@@ -99,6 +112,7 @@ class ModCheckTreeTab() :
 				 self._treeview_sort(tv, _col, not reverse))
 
 	def _size_to_real_num(self, text) :
+		""" Turn the size column back into a number for sorting """
 		try :
 			num, ext = text.split()
 
@@ -117,6 +131,7 @@ class ModCheckTreeTab() :
 		return text
 
 	def _lower_if_possible(self, x):
+		""" Normalize to lowercase for sorting, if possible """
 		if isinstance(x[0], float) :
 			return x
 		else :

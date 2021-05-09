@@ -20,6 +20,15 @@ import lxml.etree as etree
 class ModCheckRoot() :
 
 	def __init__(self, version, logger, icon, modClass, scriptMods, conflictMods) :
+		""" Build the app
+
+		 * version      - current version string
+		 * logger       - an instance of mod_checker.data.logger.ModCheckLog()
+		 * icon         - Path to icon file, string
+		 * modClass     - the FSMod class from mod_checker.data.mods
+		 * scriptMods   - list of known script mods
+		 * conflictMods - dictionary of known conflicting mods
+		"""
 		self._version        = version
 		self._logger         = logger
 		self._configFileName = None
@@ -56,9 +65,11 @@ class ModCheckRoot() :
 		self._badMods = None
 		
 	def mainloop(self) :
+		""" Run the mainloop (Tk) """
 		self._root.mainloop()
 
 	def makeMenuBar(self, strings) :
+		""" Create a menu bar """
 		menubar  = Tk.Menu(self._root)
 		filemenu = Tk.Menu(menubar, tearoff=0)
 
@@ -71,6 +82,7 @@ class ModCheckRoot() :
 		self._root.config(menu=menubar)
 
 	def addTab(self, name, **kwargs) :
+		""" Add a tab to the main window"""
 		self.tabFrame[name] = ttk.Frame(self._tabNotebook, padding=(9,9,9,9))
 
 		self._tabNotebook.add(self.tabFrame[name], **kwargs)
@@ -78,23 +90,19 @@ class ModCheckRoot() :
 		self._root.update()
 
 	def makeConfigTab(self, strings) :
+		""" Create the content for the Configuration tab """
 		self._configStrings = strings
 
 		ttk.Label(self.tabFrame["tabConfig"], text=strings['info-ask-for-file'] ).pack(fill='x', pady=(6,20))
 
-		self._loadButtonLabel = strings['load-button-label']
 		loadButton = ttk.Button(self.tabFrame["tabConfig"], text=strings['load-button-label'], command=self._load_main_config)
 		loadButton.pack(fill='x')
 		loadButton.bind('<Return>', lambda event=None: loadButton.invoke())
 		loadButton.focus()
 
-		self._configLabels["filename_label"] = strings["info-game-settings"]
-
 		self._configLabels["filename"] = ttk.Label(self.tabFrame["tabConfig"], text=strings["info-game-settings"].format(filename = "--"), anchor="center" )
 		self._configLabels["filename"].pack(fill='x', pady=(20,0))
-		
-		self._configLabels["folder_label"] = strings["info-mod-folder"]
-		
+			
 		self._configLabels["foldername"] = ttk.Label(self.tabFrame["tabConfig"], text=strings["info-mod-folder"].format(folder = "--"), anchor="center" )
 		self._configLabels["foldername"].pack(fill='x', pady=(0,20))
 		
@@ -130,22 +138,26 @@ class ModCheckRoot() :
 		self._updateConfigNumbers()
 
 	def addBrokenStrings(self, strings) :
+		""" Add broken strings to class """
 		self._brokenStrings = strings
 
 	def addIOStrings(self, strings) :
+		""" Add common IO strings to class """
 		self._IOStrings = strings
 	
 	def _updateConfigNumbers(self, found = 0, broke = 0, missing = 0, folder = 0) :
+		""" Update the number counts on the config tab """
 		self._configLabels["found"].config(text = str(found))
 		self._configLabels["broke"].config(text = str(broke))
 		self._configLabels["folder"].config(text = str(folder))
 		self._configLabels["missing"].config(text = str(missing))
 
 	def _load_main_config(self) :
+		""" Load and open the main config file, set the mod folder """
 		filename = fd.askopenfilename(
 			initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
 			initialfile = "gameSettings.xml",
-			title       = self._loadButtonLabel + " : gameSettings.xml",
+			title       = self._configStrings["load-button-label"] + " : gameSettings.xml",
 			filetypes   = [(self._IOStrings["xml-file-type"], "gameSettings.xml")]
 		)
 
@@ -181,6 +193,7 @@ class ModCheckRoot() :
 
 
 	def _process_button(self) :
+		""" Run the "Process Mods" button """
 		self._read_mods_from_folder()
 		self._read_mods_from_saves()
 		self._read_script_mod()
@@ -197,9 +210,12 @@ class ModCheckRoot() :
 	
 		self._logger.footer()
 
-		#changeables["modLabels"]["found"].focus()
+		# Hackish way to un-focus the process button
+		self._configLabels["found"].focus()
+		
 		
 	def _save_log(self) :
+		""" Save the log to a file on disk (button) """
 		try:
 			fileWrite = fd.asksaveasfile(
 				mode        = "w", 
@@ -216,6 +232,7 @@ class ModCheckRoot() :
 		
 
 	def _read_mods_from_folder(self) :
+		""" Read the mods that are in the mods folder """
 		modsGlob = glob.glob(os.path.join(self._modDir, "*"))
 
 		modDirFiles   = [fn for fn in modsGlob 
@@ -260,6 +277,7 @@ class ModCheckRoot() :
 				self._modList[modName].isBad(True)
 
 	def _read_mods_from_saves(self) :
+		""" Read the mods that are referenced in the savegames """
 		filesVehicles = glob.glob(os.path.join(self._basePath, "savegame*/vehicles.xml"))
 		filesCareer   = glob.glob(os.path.join(self._basePath, "savegame*/careerSavegame.xml"))
 		filesItems    = glob.glob(os.path.join(self._basePath, "savegame*/items.xml"))
@@ -332,12 +350,13 @@ class ModCheckRoot() :
 					self._modList[thisMod.attrib["modName"]].isUsed(thisSavegame)
 
 	def _read_script_mod(self) :
-		# Deal with the script only mods - any game they are active in, assume they are also used.
+		"""Deal with the script only mods - any game they are active in, assume they are also used. """
 		for thisMod in self._scriptMods:
 			if thisMod in self._modList.keys():
 				self._modList[thisMod].setUsedToActive()
 
 	def _update_tab_config(self) :
+		""" Update the configuration tab """
 		broken  = { k for k, v in self._modList.items() if v.isBad() }
 		folder  = { k for k, v in self._modList.items() if v.isFolder() }
 		missing = { k for k, v in self._modList.items() if v.isMissing() }
@@ -358,6 +377,7 @@ class ModCheckRoot() :
 		self._logger.line()
 
 	def _update_tab_broken(self) :
+		""" Update the broken mods list """
 		broken = { k for k, v in self._modList.items() if v.isBad() }
 		folder = { k for k, v in self._modList.items() if v.isFolder() and v.isGood() }
 
@@ -451,6 +471,7 @@ class ModCheckRoot() :
 		self._logger.line()
 
 	def _update_tab_missing(self) :
+		""" Update the missing mods list """
 		missing = { k for k, v in self._modList.items() if v.isMissing() }
 
 		# Clear out the tree first
@@ -477,6 +498,7 @@ class ModCheckRoot() :
 		self._logger.line()
 
 	def _update_tab_inactive(self) :
+		""" Update the inactive mods list """
 		inactive = { k for k, v in self._modList.items() if v.isNotUsed() and v.isNotActive() and v.isGood()  }
 
 		# Clear out the tree first
@@ -498,6 +520,7 @@ class ModCheckRoot() :
 		self._logger.line()
 
 	def _update_tab_unused(self) :
+		""" Update the active but un-used mods list """
 		unused = { k for k, v in self._modList.items() if v.isNotUsed() and v.isActive() and v.isGood() and v.isNotMissing() }
 
 		self.tabContent["tabUnused"].clear_items()
@@ -523,6 +546,7 @@ class ModCheckRoot() :
 		self._logger.line()
 
 	def _update_tab_conflict(self):
+		""" Update the possible conflicts tab """
 		self.tabContent["tabConflict"].clear_items()
 	
 		for thisMod in sorted(self._conflictMods.keys(), key=str.casefold) :

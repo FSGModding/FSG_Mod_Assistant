@@ -10,6 +10,7 @@ import sys
 import os
 
 def set_win32_lang() :
+	""" For windows, i10n is a mess.  This should help with that """
 	if sys.platform.startswith('win'):
 		import locale
 		if os.getenv('LANG') is None:
@@ -18,11 +19,12 @@ def set_win32_lang() :
 		locale.setlocale(locale.LC_ALL, '')
 
 def get_resource_path(relative_path) :
-	# Get absolute path to resource, works for dev and for PyInstaller
-	#
-	# This bit is needed for the created .EXE file
+	"""
+	Get absolute path to resource, works for dev and for PyInstaller
+	
+	This bit is needed for the created .EXE file
+	"""
 	try:
-		# PyInstaller creates a temp folder and stores path in _MEIPASS
 		base_path = sys._MEIPASS # pylint: disable=no-member
 	except AttributeError:
 		base_path = os.path.abspath(".")

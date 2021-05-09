@@ -12,6 +12,13 @@ import tkinter.ttk as ttk
 class ModCheckCanvasTab() :
 
 	def __init__(self, parent, title, description, extraText=None, hideCanvas = False) :
+		""" Build a ttk.Canvas (scrollable) tab
+			* parent      - Parent element
+			* title       - Title of this tab (display label)
+			* description - Description of this tab
+			* extraText   - Extra info to add to window
+			* hideCanvas  - Only use this as an info tab, don't produce the canvas
+		""" 
 		self._parent      = parent
 		self._UIParts     = {}
 		self.title        = title
@@ -23,6 +30,7 @@ class ModCheckCanvasTab() :
 
 
 	def _build(self) :
+		""" Build the canvas inside _parent """
 		ttk.Label(self._parent, text=self.title, font='Helvetica 12 bold').pack()
 		ttk.Label(self._parent, text=self._description, wraplength = 600).pack(fill='x')
 
@@ -55,19 +63,24 @@ class ModCheckCanvasTab() :
 			self._UIParts["frame"].bind('<Leave>', self._unbound_to_mousewheel)
 
 	def _on_mousewheel(self, event):
+		""" Handle mousewheel events """
 		self._UIParts["canvas"].yview_scroll(int(-1*(event.delta/120)), "units")
 
 	def _bound_to_mousewheel(self, event):
+		""" Bind mousewheel events """
 		self._UIParts["canvas"].bind_all("<MouseWheel>", self._on_mousewheel)
 
 	def _unbound_to_mousewheel(self, event):
+		""" Unbind mousewheel events """
 		self._UIParts["canvas"].unbind_all("<MouseWheel>")
 
 	def clear_items(self) :
+		""" Clear the canvas of data items """
 		for widget in self._UIParts["frame"].winfo_children():
 			widget.destroy()
 
 	def add_item(self, term, desc) :
+		""" Add data item to canvas """
 		ttk.Label(
 			self._UIParts["frame"],
 			text   = term,
