@@ -15,6 +15,7 @@ def set_win32_lang() :
 		if os.getenv('LANG') is None:
 			lang, enc = locale.getdefaultlocale() # pylint: disable=unused-variable
 			os.environ['LANG'] = lang
+		locale.setlocale(locale.LC_ALL, '')
 
 def get_resource_path(relative_path) :
 	# Get absolute path to resource, works for dev and for PyInstaller

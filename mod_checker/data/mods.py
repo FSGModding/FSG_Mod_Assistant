@@ -6,7 +6,7 @@
 # Individual Mod Record (class)
 
 # (c) 2021 JTSage.  MIT License.
-
+import os
 
 class FSMod() :
 	# This class holds all of the information about a mod we would want to know
@@ -82,6 +82,12 @@ class FSMod() :
 		# Boolean "is this mod not active"
 	 	return ( len(self._activeGames) == 0 )
 
+	def getAllActiveHR(self, short = False) :
+		if self.isNotActive() :
+			return "--"
+		else :
+			return self.getAllActive(short)
+
 	def getAllActive(self, short = False) :
 		# Return a string of all the savegames this mod is active in
 		if short :
@@ -99,6 +105,12 @@ class FSMod() :
 	def isNotUsed(self) :
 		# Boolean "is this mod not used"
 	 	return ( len(self._usedGames) == 0 )
+
+	def getAllUsedHR(self, short = False) :
+		if self.isNotUsed() :
+			return "--"
+		else :
+			return self.getAllUsed(short)
 
 	def getAllUsed(self, short = False) :
 		# Return a string of all the savegames this mod is used in
@@ -138,6 +150,10 @@ class FSMod() :
 		# Return the full file path to the mod, allow setting the same
 		if ( len(args) > 0 ) :
 			self._fullPath = args[0]
+
 		else :
-			return self._fullPath
+			if self._fullPath is not None:
+				return os.path.normpath(self._fullPath)
+			else :
+				return None
 

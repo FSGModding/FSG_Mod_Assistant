@@ -62,7 +62,12 @@ rootWindow.addIOStrings({
 	"save-log-title"      : _("Save Log File..."),
 	"save-log-ok"         : _("Log File Saved Successfully"),
 	"save-log-error"      : _("Unable to save the log file"),
-	"save-log-filename"   : _("FS19_Mod_Checker_Log.txt")
+	"save-log-filename"   : _("FS19_Mod_Checker_Log.txt"),
+	"mod-file-not-found"  : _("This mod file is missing on disk"),
+	"size-on-disk"        : _("Size on disk"),
+	"active-in"           : _("Mod Active in"),
+	"used-in"             : _("Mod Used in"),
+	"ok-button-label"     : _("OK")
 })
 
 
@@ -138,6 +143,7 @@ rootWindow.tabContent["tabMissing"] = ModCheckTreeTab(
 		_("Purchased"),
 		_("Savegame")
 	],
+	base = rootWindow, 
 	columnExtra = {
 		"#3": {"minwidth": 0, "width": 75, "stretch": 0},
 		"#4": {"minwidth": 0, "width":100, "stretch": 0}
@@ -184,6 +190,7 @@ rootWindow.tabContent["tabInactive"] = ModCheckTreeTab(
 		_("Name"),
 		_("Size"),
 	],
+	base = rootWindow,
 	columnExtra = {
 		"#2": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
 	}
@@ -208,6 +215,7 @@ rootWindow.tabContent["tabUnused"] = ModCheckTreeTab(
 		_("Savegame"),
 		_("Size")
 	],
+	base = rootWindow,
 	columnExtra = {
 		"#3": {"minwidth": 0, "width":120, "stretch": 0},
 		"#4": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
