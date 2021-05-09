@@ -549,28 +549,3 @@ def resource_path(relative_path):
 
 
 
-
-
-# 
-#  _______ ______  ______        ______  _______ _______        _____ _______ _______
-#  |_____| |     \ |     \       |     \ |______ |______ |        |   |______    |   
-#  |     | |_____/ |_____/ _____ |_____/ |______ |       |_____ __|__ ______|    |   
-#                                                                                    
-# 
-
-def add_deflist(frame, term, desc) :
-	# Add an entry to the conflict or broken mod list as a definition list.
-	# This displays more or less like an HTML <dl><dt></dt><dd></dd></dl>
-	ttk.Label(
-		frame,
-		text   = term,
-		anchor = 'w',
-		font='Helvetica 9 bold'
-	).pack(fill = 'x', padx = 0, pady = (10,0))
-
-	ttk.Label(
-		frame,
-		text       = desc,
-		anchor     = 'w',
-		wraplength = 600-30-30-40
-	).pack(fill = 'x', pady = 0, padx = (40,0))
