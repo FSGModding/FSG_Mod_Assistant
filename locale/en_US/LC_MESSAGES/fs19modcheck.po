@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FS19 Mod Checker\n"
-"POT-Creation-Date: 2021-05-07 13:25-0400\n"
-"PO-Revision-Date: 2021-05-07 16:31-0400\n"
-"Language-Team: jtsage@gmail.com\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-05-09 16:16-0400\n"
+"PO-Revision-Date: 2021-05-09 16:18-0400\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,265 +17,131 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: en_US\n"
 
-#: .\FS19_Mod_Checker.py:45
-msgid "Save Log"
-msgstr "Save Log"
-
-#: .\FS19_Mod_Checker.py:47
-msgid "Exit"
-msgstr "Exit"
-
-#: .\FS19_Mod_Checker.py:50
-msgid "About"
-msgstr "About"
-
-#: .\FS19_Mod_Checker.py:52
+#: .\FS19_Mod_Checker.py:48
 msgid "File"
 msgstr "File"
 
-#: .\FS19_Mod_Checker.py:53
-msgid "Help"
-msgstr "Help"
+#: .\FS19_Mod_Checker.py:49
+msgid "Save Log"
+msgstr "Save Log"
 
-#: .\FS19_Mod_Checker.py:71
+#: .\FS19_Mod_Checker.py:50
+msgid "Exit"
+msgstr "Exit"
+
+#: .\FS19_Mod_Checker.py:55
+msgid "Error Opening Settings File {filename}"
+msgstr "Error Opening Settings File {filename}"
+
+#: .\FS19_Mod_Checker.py:56
+msgid "This is not a valid FS19 game settings file"
+msgstr "This is not a valid FS19 game settings file"
+
+#: .\FS19_Mod_Checker.py:57
+msgid "XML Settings File"
+msgstr "XML Settings File"
+
+#: .\FS19_Mod_Checker.py:58
+msgid "Text Document"
+msgstr "Text Document"
+
+#: .\FS19_Mod_Checker.py:59
+msgid "YES"
+msgstr "YES"
+
+#: .\FS19_Mod_Checker.py:60
+msgid "no"
+msgstr "no"
+
+#: .\FS19_Mod_Checker.py:61
+msgid "OWNED"
+msgstr "OWNED"
+
+#: .\FS19_Mod_Checker.py:62
+msgid "Save Log File..."
+msgstr "Save Log File..."
+
+#: .\FS19_Mod_Checker.py:63
+msgid "Log File Saved Successfully"
+msgstr "Log File Saved Successfully"
+
+#: .\FS19_Mod_Checker.py:64
+msgid "Unable to save the log file"
+msgstr "Unable to save the log file"
+
+#: .\FS19_Mod_Checker.py:65
+msgid "FS19_Mod_Checker_Log.txt"
+msgstr "FS19_Mod_Checker_Log.txt"
+
+#: .\FS19_Mod_Checker.py:66
+msgid "This mod file is missing on disk"
+msgstr "This mod file is missing on disk"
+
+#: .\FS19_Mod_Checker.py:67
+msgid "Size on disk"
+msgstr "Size on disk"
+
+#: .\FS19_Mod_Checker.py:68
+msgid "Mod Active In Savegame(s)"
+msgstr "Mod Active In Savegame(s)"
+
+#: .\FS19_Mod_Checker.py:69
+msgid "Mod Used In Savegame(s)"
+msgstr "Mod Used In Savegame(s)"
+
+#: .\FS19_Mod_Checker.py:70
+msgid "OK"
+msgstr "OK"
+
+#: .\FS19_Mod_Checker.py:80
 msgid "Configuration"
 msgstr "Configuration"
 
-#: .\FS19_Mod_Checker.py:72 .\FS19_Mod_Checker.py:117 .\FS19_Mod_Checker.py:139
-#: .\lib\mod_checker_lib.py:229 .\lib\mod_checker_lib.py:252
-msgid "Broken Mods"
-msgstr "Broken Mods"
-
-#: .\FS19_Mod_Checker.py:73 .\FS19_Mod_Checker.py:119 .\FS19_Mod_Checker.py:185
-#: .\lib\mod_checker_lib.py:231 .\lib\mod_checker_lib.py:369
-msgid "Missing Mods"
-msgstr "Missing Mods"
-
-#: .\FS19_Mod_Checker.py:74 .\FS19_Mod_Checker.py:221
-msgid "Possible Conflicts"
-msgstr "Possible Conflicts"
-
-#: .\FS19_Mod_Checker.py:75 .\FS19_Mod_Checker.py:270
-#: .\lib\mod_checker_lib.py:409
-msgid "Inactive Mods"
-msgstr "Inactive Mods"
-
-#: .\FS19_Mod_Checker.py:76
-msgid "Active, Un-Used Mods"
-msgstr "Active, Un-Used Mods"
-
-#: .\FS19_Mod_Checker.py:97
+#: .\FS19_Mod_Checker.py:84
 msgid "First, you need to point Mod Checker to your gameSettings.xml file"
 msgstr "First, you need to point Mod Checker to your gameSettings.xml file"
 
-#: .\FS19_Mod_Checker.py:99
+#: .\FS19_Mod_Checker.py:85
 msgid "Load Settings"
-msgstr "Load The Settings"
+msgstr "Load Settings"
 
-#: .\FS19_Mod_Checker.py:104
+#: .\FS19_Mod_Checker.py:86
 msgid "Game Settings File: {filename}"
 msgstr "Game Settings File: {filename}"
 
-#: .\FS19_Mod_Checker.py:107
-msgid "Next, click \"Check Mods\" to scan your collection"
-msgstr "Next, click \"Check Mods\" to scan your collection"
+#: .\FS19_Mod_Checker.py:87
+msgid "Mod Folder: {folder}"
+msgstr "Mod Folder: {folder}"
 
-#: .\FS19_Mod_Checker.py:109
+#: .\FS19_Mod_Checker.py:88
+msgid "Next, click \"{process_button_label}\" to scan your collection"
+msgstr "Next, click \"{process_button_label}\" to scan your collection"
+
+#: .\FS19_Mod_Checker.py:89
 msgid "Check Mods"
 msgstr "Check Mods"
 
-#: .\FS19_Mod_Checker.py:116
+#: .\FS19_Mod_Checker.py:90
 msgid "Mods Found"
 msgstr "Mods Found"
 
-#: .\FS19_Mod_Checker.py:118
+#: .\FS19_Mod_Checker.py:91 .\FS19_Mod_Checker.py:104 .\FS19_Mod_Checker.py:124
+msgid "Broken Mods"
+msgstr "Broken Mods"
+
+#: .\FS19_Mod_Checker.py:92
 msgid "Folders Found"
 msgstr "Folders Found"
 
-#: .\FS19_Mod_Checker.py:140
-msgid ""
-"These mods have been detected to be a possible problem.  ZIP Files or "
-"Folders with any non-alphanumeric character other than \"_\" will not be "
-"loaded by the game.  Mods that are not compressed as a ZIP file cannot be "
-"used in multiplayer games.  Finally, the mod folder should only contain "
-"mods, no other files.  Below, there is a list of problem files, and a "
-"suggested solution"
-msgstr ""
-"These mods have been detected to be a possible problem.  ZIP Files or "
-"Folders with any non-alphanumeric character other than \"_\" will not be "
-"loaded by the game.  Mods that are not compressed as a ZIP file cannot be "
-"used in multiplayer games.  Finally, the mod folder should only contain "
-"mods, no other files.  Below, there is a list of problem files, and a "
-"suggested solution"
+#: .\FS19_Mod_Checker.py:93 .\FS19_Mod_Checker.py:136 .\FS19_Mod_Checker.py:140
+msgid "Missing Mods"
+msgstr "Missing Mods"
 
-#: .\FS19_Mod_Checker.py:186
-msgid ""
-"The scanner failed to find the mods below, however they are referenced in "
-"one or more savegames. For mods that have not been purchased, this is "
-"usually harmless.  For mods you have purchased, missing the mod file could "
-"cost you in-game money.  To correct this, re-download the mod from where you "
-"originally got it and place it in the mod folder."
-msgstr ""
-"The scanner failed to find the mods below, however they are referenced in "
-"one or more savegames. For mods that have not been purchased, this is "
-"usually harmless.  For mods you have purchased, missing the mod file could "
-"cost you in-game money.  To correct this, re-download the mod from where you "
-"originally got it and place it in the mod folder."
-
-#: .\FS19_Mod_Checker.py:189 .\FS19_Mod_Checker.py:275
-#: .\FS19_Mod_Checker.py:307
-msgid "Name"
-msgstr "Name"
-
-#: .\FS19_Mod_Checker.py:190 .\FS19_Mod_Checker.py:308
-msgid "Title"
-msgstr "Title"
-
-#: .\FS19_Mod_Checker.py:191
-msgid "Purchased"
-msgstr "Purchased"
-
-#: .\FS19_Mod_Checker.py:192 .\FS19_Mod_Checker.py:309
-msgid "Savegame"
-msgstr "Savegame"
-
-#: .\FS19_Mod_Checker.py:222
-msgid ""
-"These mods were detected in your mod folder.  In some specific cases, they "
-"can cause conflicts with other mods, causing your game to either not work or "
-"behave strangely. This display is for informational purposes, and should not "
-"be taken a suggestion not to use anything listed here"
-msgstr ""
-"These mods were detected in your mod folder.  In some specific cases, they "
-"can cause conflicts with other mods, causing your game to either not work or "
-"behave strangely. This display is for informational purposes, and should not "
-"be taken a suggestion not to use anything listed here"
-
-#: .\FS19_Mod_Checker.py:224
-msgid "This should not be taken as a suggestion that these mods do not work."
-msgstr "This should not be taken as a suggestion that these mods do not work."
-
-#: .\FS19_Mod_Checker.py:225
-msgid "This is also not intended as a slight against the mod or author."
-msgstr "This is also not intended as a slight against the mod or author."
-
-#: .\FS19_Mod_Checker.py:226
-msgid "Many (most) times these mods will work as intended."
-msgstr "Many (most) times these mods will work as intended."
-
-#: .\FS19_Mod_Checker.py:227
-msgid ""
-"If you do experience in-game problems, this may be a good place to start "
-"testing."
-msgstr ""
-"If you do experience in-game problems, this may be a good place to start "
-"testing."
-
-#: .\FS19_Mod_Checker.py:271
-msgid ""
-"These mods are not activated in any of your savegames.  If you would like to "
-"save space, and perhaps speed up FS19 starting, you could remove some or all "
-"of these."
-msgstr ""
-"These mods are not activated in any of your savegames.  If you would like to "
-"save space, and perhaps speed up FS19 starting, you could remove some or all "
-"of these."
-
-#: .\FS19_Mod_Checker.py:276 .\FS19_Mod_Checker.py:310
-msgid "Size"
-msgstr "Size"
-
-#: .\FS19_Mod_Checker.py:303
-msgid "Active, Unused Mods"
-msgstr "Active, Unused Mods"
-
-#: .\FS19_Mod_Checker.py:304
-msgid ""
-"These mods are active in a savegame, but do not seem to be in use. If you do "
-"not plan on using them, you could possible remove them.  Please note that "
-"some script only or pre-requisite mods may appear here by mistake, so please "
-"use this list carefully."
-msgstr ""
-"These mods are active in a savegame, but do not seem to be in use. If you do "
-"not plan on using them, you could possible remove them.  Please note that "
-"some script only or pre-requisite mods may appear here by mistake, so please "
-"use this list carefully."
-
-#: .\FS19_Mod_Checker.py:342
-msgid "About FS19 Mod Checker"
-msgstr "About FS19 Mod Checker"
-
-#: .\FS19_Mod_Checker.py:348
-msgid "FS19 Mod Checker"
-msgstr "FS19 Mod Checker"
-
-#: .\FS19_Mod_Checker.py:350
-msgid ""
-"This little program will take a look at your mod install folder and inform "
-"you of the following:"
-msgstr ""
-"This little program will take a look at your mod install folder and inform "
-"you of the following:"
-
-#: .\FS19_Mod_Checker.py:353
-msgid "If a mod file is named incorrectly and won't load in the game."
-msgstr "If a mod file is named incorrectly and won't load in the game."
-
-#: .\FS19_Mod_Checker.py:354
-msgid "If a mod is not properly zipped."
-msgstr "If a mod is not properly zipped."
-
-#: .\FS19_Mod_Checker.py:355
-msgid ""
-"If a mod is used in your save games, but does not appear to be installed."
-msgstr ""
-"If a mod is used in your save games, but does not appear to be installed."
-
-#: .\FS19_Mod_Checker.py:356
-msgid "If a mod is not loaded or used in any of your save games"
-msgstr "If a mod is not loaded or used in any of your save games"
-
-#: .\FS19_Mod_Checker.py:357
-msgid "If a mod is loaded but unused in your save games."
-msgstr "If a mod is loaded but unused in your save games."
-
-#: .\FS19_Mod_Checker.py:363
-msgid ""
-"This program only offers suggestions, no files on your computer will be "
-"altered"
-msgstr ""
-"This program only offers suggestions, no files on your computer will be "
-"altered"
-
-#: .\lib\mod_checker_lib.py:41
-msgid "Select gameSettings.xml"
-msgstr "Select gameSettings.xml"
-
-#: .\lib\mod_checker_lib.py:42
-msgid "XML Settings"
-msgstr "XML Settings"
-
-#: .\lib\mod_checker_lib.py:49
-msgid "Game Settings File : {filename}"
-msgstr "Game Settings File : {filename}"
-
-#: .\lib\mod_checker_lib.py:77
-msgid "Cannot open main config file"
-msgstr "Cannot open main config file"
-
-#: .\lib\mod_checker_lib.py:228
-msgid "Found Mods"
-msgstr "Found Mods"
-
-#: .\lib\mod_checker_lib.py:230
-msgid "Unzipped Mods"
-msgstr "Unzipped Mods"
-
-#: .\lib\mod_checker_lib.py:257
+#: .\FS19_Mod_Checker.py:108
 msgid "This File or Folder is invalid"
 msgstr "This File or Folder is invalid"
 
-#: .\lib\mod_checker_lib.py:262
+#: .\FS19_Mod_Checker.py:109
 msgid ""
 "This folder appears to be the contents of a zipped modpack.  The contents "
 "should be moved into the main mods folder, and this folder removed"
@@ -283,7 +149,7 @@ msgstr ""
 "This folder appears to be the contents of a zipped modpack.  The contents "
 "should be moved into the main mods folder, and this folder removed"
 
-#: .\lib\mod_checker_lib.py:264
+#: .\FS19_Mod_Checker.py:110
 msgid ""
 "This file appears to be a zipped modpack.  The contents should be extracted "
 "to the main mod folder, and this file removed."
@@ -291,7 +157,7 @@ msgstr ""
 "This file appears to be a zipped modpack.  The contents should be extracted "
 "to the main mod folder, and this file removed."
 
-#: .\lib\mod_checker_lib.py:268
+#: .\FS19_Mod_Checker.py:111
 msgid ""
 "Mod Folders cannot start with a digit.  Is this a collection of mods that "
 "should be moved to the root mods folder and then removed?"
@@ -299,7 +165,7 @@ msgstr ""
 "Mod Folders cannot start with a digit.  Is this a collection of mods that "
 "should be moved to the root mods folder and then removed?"
 
-#: .\lib\mod_checker_lib.py:270
+#: .\FS19_Mod_Checker.py:112
 msgid ""
 "Zip files cannot start with a digit.  Is this perhaps a collection of mods? "
 "If it is, extract the contents and delete this file."
@@ -307,7 +173,7 @@ msgstr ""
 "Zip files cannot start with a digit.  Is this perhaps a collection of mods? "
 "If it is, extract the contents and delete this file."
 
-#: .\lib\mod_checker_lib.py:285
+#: .\FS19_Mod_Checker.py:113
 msgid ""
 "This looks like a copy of the {guessedModName} mod and can probably be "
 "deleted."
@@ -315,32 +181,32 @@ msgstr ""
 "This looks like a copy of the {guessedModName} mod and can probably be "
 "deleted."
 
-#: .\lib\mod_checker_lib.py:287
+#: .\FS19_Mod_Checker.py:114
 msgid "This looks like a copy, but the original wasn't found. Rename it?"
 msgstr "This looks like a copy, but the original wasn't found. Rename it?"
 
-#: .\lib\mod_checker_lib.py:292
+#: .\FS19_Mod_Checker.py:115
 msgid ""
 "This folder is named incorrectly, but we didn't figure out what is wrong."
 msgstr ""
 "This folder is named incorrectly, but we didn't figure out what is wrong."
 
-#: .\lib\mod_checker_lib.py:294
+#: .\FS19_Mod_Checker.py:116
 msgid ""
 "This ZIP file is named incorrectly, but we didn't figure out what is wrong."
 msgstr ""
 "This ZIP file is named incorrectly, but we didn't figure out what is wrong."
 
-#: .\lib\mod_checker_lib.py:314
+#: .\FS19_Mod_Checker.py:117
 msgid "Unzipped mods cannot be used in multiplayer, you should zip this folder"
 msgstr ""
 "Unzipped mods cannot be used in multiplayer, you should zip this folder"
 
-#: .\lib\mod_checker_lib.py:332
+#: .\FS19_Mod_Checker.py:118
 msgid "This file should not exist here, delete or move it."
 msgstr "This file should not exist here, delete or move it."
 
-#: .\lib\mod_checker_lib.py:337
+#: .\FS19_Mod_Checker.py:119
 msgid ""
 "This is an archive file.  It might be a mod pack which should be unpacked "
 "and then removed."
@@ -348,50 +214,169 @@ msgstr ""
 "This is an archive file.  It might be a mod pack which should be unpacked "
 "and then removed."
 
-#: .\lib\mod_checker_lib.py:379
-msgid "YES"
-msgstr "YES"
+#: .\FS19_Mod_Checker.py:125
+msgid ""
+"These mods have been detected to be a possible problem.  ZIP Files or "
+"Folders with any non-alphanumeric character other than \"_\" will not be "
+"loaded by the game.  Mods that are not compressed as a ZIP file cannot be "
+"used in multiplayer games.  Finally, the mod folder should only contain "
+"mods, no other files.  Below, there is a list of problem files, and a "
+"suggested solution"
+msgstr ""
+"These mods have been detected to be a possible problem.  ZIP Files or "
+"Folders with any non-alphanumeric character other than \"_\" will not be "
+"loaded by the game.  Mods that are not compressed as a ZIP file cannot be "
+"used in multiplayer games.  Finally, the mod folder should only contain "
+"mods, no other files.  Below, there is a list of problem files, and a "
+"suggested solution"
 
-#: .\lib\mod_checker_lib.py:379
-msgid "no"
-msgstr "no"
+#: .\FS19_Mod_Checker.py:141
+msgid ""
+"The scanner failed to find the mods below, however they are referenced in "
+"one or more savegames. For mods that have not been purchased, this is "
+"usually harmless.  For mods you have purchased, missing the mod file could "
+"cost you in-game money.  To correct this, re-download the mod from where you "
+"originally got it and place it in the mod folder."
+msgstr ""
+"The scanner failed to find the mods below, however they are referenced in "
+"one or more savegames. For mods that have not been purchased, this is "
+"usually harmless.  For mods you have purchased, missing the mod file could "
+"cost you in-game money.  To correct this, re-download the mod from where you "
+"originally got it and place it in the mod folder."
 
-#: .\lib\mod_checker_lib.py:383
-msgid "{modName} ({modTitle}) - saves:{savegames} {isOwned}"
-msgstr "{modName} ({modTitle}) - saves:{savegames} {isOwned}"
+#: .\FS19_Mod_Checker.py:143 .\FS19_Mod_Checker.py:192
+#: .\FS19_Mod_Checker.py:215
+msgid "Name"
+msgstr "Name"
 
-#: .\lib\mod_checker_lib.py:387
-msgid "OWNED"
-msgstr "OWNED"
+#: .\FS19_Mod_Checker.py:144 .\FS19_Mod_Checker.py:216
+msgid "Title"
+msgstr "Title"
 
-#: .\lib\mod_checker_lib.py:443
-msgid "Unused Mods"
-msgstr "Unused Mods"
+#: .\FS19_Mod_Checker.py:145
+msgid "Purchased"
+msgstr "Purchased"
 
-#: .\lib\mod_checker_lib.py:457
-msgid "{modName} ({modTitle}) - saves:{savegames} ({modFileSize})"
-msgstr "{modName} ({modTitle}) - saves:{savegames} ({modFileSize})"
+#: .\FS19_Mod_Checker.py:146 .\FS19_Mod_Checker.py:217
+msgid "Savegame"
+msgstr "Savegame"
 
-#: .\lib\mod_checker_lib.py:515
-msgid "FS19_Mod_Checker_log.txt"
-msgstr "FS19_Mod_Checker_log.txt"
+#: .\FS19_Mod_Checker.py:163 .\FS19_Mod_Checker.py:167
+msgid "Possible Conflicts"
+msgstr "Possible Conflicts"
 
-#: .\lib\mod_checker_lib.py:516
-msgid "Save Log File..."
-msgstr "Save Log File..."
+#: .\FS19_Mod_Checker.py:168
+msgid ""
+"These mods were detected in your mod folder.  In some specific cases, they "
+"can cause conflicts with other mods, causing your game to either not work or "
+"behave strangely. This display is for informational purposes, and should not "
+"be taken a suggestion not to use anything listed here"
+msgstr ""
+"These mods were detected in your mod folder.  In some specific cases, they "
+"can cause conflicts with other mods, causing your game to either not work or "
+"behave strangely. This display is for informational purposes, and should not "
+"be taken a suggestion not to use anything listed here"
 
-#: .\lib\mod_checker_lib.py:517
-msgid "Text Documents"
-msgstr "Text Documents"
+#: .\FS19_Mod_Checker.py:170
+msgid "This should not be taken as a suggestion that these mods do not work."
+msgstr "This should not be taken as a suggestion that these mods do not work."
 
-#: .\lib\mod_checker_lib.py:521
-msgid "Log Saved Successfully"
-msgstr "Log Saved Successfully"
+#: .\FS19_Mod_Checker.py:171
+msgid "This is also not intended as a slight against the mod or author."
+msgstr "This is also not intended as a slight against the mod or author."
 
-#: .\lib\mod_checker_lib.py:523
-msgid "Unable to save log file"
-msgstr "Unable to save log file"
+#: .\FS19_Mod_Checker.py:172
+msgid "Many (most) times these mods will work as intended."
+msgstr "Many (most) times these mods will work as intended."
 
-#: .\lib\mod_checker_lib.py:577
-msgid "Report Generated on: {dateToday}"
-msgstr "Report Generated on: {dateToday}"
+#: .\FS19_Mod_Checker.py:173
+msgid ""
+"If you do experience in-game problems, this may be a good place to start "
+"testing."
+msgstr ""
+"If you do experience in-game problems, this may be a good place to start "
+"testing."
+
+#: .\FS19_Mod_Checker.py:185 .\FS19_Mod_Checker.py:189
+msgid "Inactive Mods"
+msgstr "Inactive Mods"
+
+#: .\FS19_Mod_Checker.py:190
+msgid ""
+"These mods are not activated in any of your savegames.  If you would like to "
+"save space, and perhaps speed up FS19 starting, you could remove some or all "
+"of these."
+msgstr ""
+"These mods are not activated in any of your savegames.  If you would like to "
+"save space, and perhaps speed up FS19 starting, you could remove some or all "
+"of these."
+
+#: .\FS19_Mod_Checker.py:193 .\FS19_Mod_Checker.py:218
+msgid "Size"
+msgstr "Size"
+
+#: .\FS19_Mod_Checker.py:208 .\FS19_Mod_Checker.py:212
+msgid "Active, Un-Used Mods"
+msgstr "Active, Un-Used Mods"
+
+#: .\FS19_Mod_Checker.py:213
+msgid ""
+"These mods are active in a savegame, but do not seem to be in use. If you do "
+"not plan on using them, you could possible remove them.  Please note that "
+"some script only or pre-requisite mods may appear here by mistake, so please "
+"use this list carefully."
+msgstr ""
+"These mods are active in a savegame, but do not seem to be in use. If you do "
+"not plan on using them, you could possible remove them.  Please note that "
+"some script only or pre-requisite mods may appear here by mistake, so please "
+"use this list carefully."
+
+#: .\FS19_Mod_Checker.py:234
+msgid "About"
+msgstr "About"
+
+#: .\FS19_Mod_Checker.py:239
+msgid "About FS19 Mod Checker"
+msgstr "About FS19 Mod Checker"
+
+#: .\FS19_Mod_Checker.py:240
+msgid ""
+"This little program will take a look at your mod install folder and inform "
+"you of the following:"
+msgstr ""
+"This little program will take a look at your mod install folder and inform "
+"you of the following:"
+
+#: .\FS19_Mod_Checker.py:242
+msgid "If a mod file is named incorrectly and won't load in the game."
+msgstr "If a mod file is named incorrectly and won't load in the game."
+
+#: .\FS19_Mod_Checker.py:243
+msgid "If a mod is not properly zipped."
+msgstr "If a mod is not properly zipped."
+
+#: .\FS19_Mod_Checker.py:244
+msgid ""
+"If a mod is used in your save games, but does not appear to be installed."
+msgstr ""
+"If a mod is used in your save games, but does not appear to be installed."
+
+#: .\FS19_Mod_Checker.py:245
+msgid "If a mod is not loaded or used in any of your save games"
+msgstr "If a mod is not loaded or used in any of your save games"
+
+#: .\FS19_Mod_Checker.py:246
+msgid "If a mod is loaded but unused in your save games."
+msgstr "If a mod is loaded but unused in your save games."
+
+#: .\FS19_Mod_Checker.py:248
+msgid ""
+"This program only offers suggestions, no files on your computer will be "
+"altered"
+msgstr ""
+"This program only offers suggestions, no files on your computer will be "
+"altered"
+
+#: .\FS19_Mod_Checker.py:250
+msgid "For the latest version, see https://github.com/jtsage/FS19_Mod_Checker"
+msgstr "For the latest version, see https://github.com/jtsage/FS19_Mod_Checker"
