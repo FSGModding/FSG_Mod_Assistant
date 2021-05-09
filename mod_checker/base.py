@@ -19,7 +19,7 @@ import lxml.etree as etree
 
 class ModCheckRoot() :
 
-	def __init__(self, version, logger, icon, modClass, scriptMods, conflictMods) :
+	def __init__(self, version, logger, icon, modClass, scriptMods, conflictMods, updater) :
 		""" Build the app
 
 		 * version      - current version string
@@ -28,6 +28,7 @@ class ModCheckRoot() :
 		 * modClass     - the FSMod class from mod_checker.data.mods
 		 * scriptMods   - list of known script mods
 		 * conflictMods - dictionary of known conflicting mods
+		 * updater      - the ModCheckUpdater class.
 		"""
 		self._version        = version
 		self._logger         = logger
@@ -37,6 +38,7 @@ class ModCheckRoot() :
 		self._FSMod          = modClass
 		self._scriptMods     = scriptMods
 		self._conflictMods   = conflictMods
+		self._updater        = updater(self)
 
 		self._root = Tk.Tk()
 		self._root.title("FS19 Mod Checker v" + self._version)
@@ -135,7 +137,7 @@ class ModCheckRoot() :
 		externalFrame.pack(fill="both", expand=True)
 		internalFrame.place(in_=externalFrame, anchor="c", relx=.5, rely=.5)
 
-		self._updateConfigNumbers()
+		self._updater._updateConfigNumbers()
 
 	def addBrokenStrings(self, strings) :
 		""" Add broken strings to class """
@@ -144,13 +146,6 @@ class ModCheckRoot() :
 	def addIOStrings(self, strings) :
 		""" Add common IO strings to class """
 		self._IOStrings = strings
-	
-	def _updateConfigNumbers(self, found = 0, broke = 0, missing = 0, folder = 0) :
-		""" Update the number counts on the config tab """
-		self._configLabels["found"].config(text = str(found))
-		self._configLabels["broke"].config(text = str(broke))
-		self._configLabels["folder"].config(text = str(folder))
-		self._configLabels["missing"].config(text = str(missing))
 
 	def _load_main_config(self) :
 		""" Load and open the main config file, set the mod folder """
@@ -201,12 +196,12 @@ class ModCheckRoot() :
 		self._logger.empty()
 		self._logger.header()
 
-		self._update_tab_config()
-		self._update_tab_broken()
-		self._update_tab_missing()
-		self._update_tab_conflict()
-		self._update_tab_inactive()
-		self._update_tab_unused()
+		self._updater._update_tab_config()
+		self._updater._update_tab_broken()
+		self._updater._update_tab_missing()
+		self._updater._update_tab_conflict()
+		self._updater._update_tab_inactive()
+		self._updater._update_tab_unused()
 	
 		self._logger.footer()
 
@@ -355,216 +350,4 @@ class ModCheckRoot() :
 			if thisMod in self._modList.keys():
 				self._modList[thisMod].setUsedToActive()
 
-	def _update_tab_config(self) :
-		""" Update the configuration tab """
-		broken  = { k for k, v in self._modList.items() if v.isBad() }
-		folder  = { k for k, v in self._modList.items() if v.isFolder() }
-		missing = { k for k, v in self._modList.items() if v.isMissing() }
-
-		self._updateConfigNumbers(
-			found   = len(self._modList),
-			broke   = len(broken) + len(self._badMods),
-			folder  = len(folder),
-			missing = len(missing)
-		)
-
-		self._logger.write([
-			self._configStrings["info-mods-found"] + ": {}".format(len(self._modList)),
-			self._configStrings["info-mods-broken"] + ": {}".format(len(broken) + len(self._badMods)),
-			self._configStrings["info-mods-folders"] + ": {}".format(len(folder)),
-			self._configStrings["info-mods-missing"] + ": {}".format(len(missing)),
-		])
-		self._logger.line()
-
-	def _update_tab_broken(self) :
-		""" Update the broken mods list """
-		broken = { k for k, v in self._modList.items() if v.isBad() }
-		folder = { k for k, v in self._modList.items() if v.isFolder() and v.isGood() }
-
-		self.tabContent["tabBroken"].clear_items()
 	
-		self._logger.write(self.tabContent["tabBroken"].title + ":")
-	
-		# First, bad names, they won't load
-		for thisMod in sorted(broken, key=str.casefold) :
-			# Trap message.  Should never display, but just in case.
-			message = self._brokenStrings["default"]
-		
-			if ( re.search(r'unzip', thisMod, re.IGNORECASE) ) :
-				# If it has "unzip" in the file/folder name, assume it is a pack or other mods.
-				message = self._brokenStrings["unzip-folder"] if self._modList[thisMod].isFolder() else self._brokenStrings["unzip-zipfile"]
-			elif ( re.match(r'[0-9]',thisMod) ) :
-				# If it starts with a digit, something went way wrong.  Might be a pack, or it might be garbage.
-				message = self._brokenStrings["digit-folder"] if self._modList[thisMod].isFolder() else self._brokenStrings["digit-zipfile"]
-			else :
-				# Finally, test for the common copy/paste file names, and duplicate downloads.
-				testWinCopy = re.search(r'(\w+) - .+', thisMod)
-				testDLCopy = re.search(r'(\w+) \(.+', thisMod)
-				goodName = False
-				if ( testWinCopy or testDLCopy ) :
-					if ( testWinCopy and testWinCopy[1] in self._modList.keys() ) :
-						# Does the guessed "good name" already exist?
-						goodName = testWinCopy[1]
-					if ( testDLCopy and testDLCopy[1] in self._modList.keys() ) :
-						# Does the guessed "good name" already exist?
-						goodName = testDLCopy[1]
-
-					if ( goodName ) :
-						message = self._brokenStrings["duplicate-have"].format(guessedModName = goodName)
-					else :
-						message = self._brokenStrings["duplicate-miss"]
-
-				else :
-					# Trap for when we can't figure out what is wrong with it.
-					message = self._brokenStrings["unknown-folder"] if self._modList[thisMod].isFolder() else self._brokenStrings["unknown-zipfile"]
-			
-			self.tabContent["tabBroken"].add_item(
-				thisMod + self._modList[thisMod].getZip(),
-				message
-			)
-						
-			self._logger.write("  {} - {}".format(
-				thisMod + self._modList[thisMod].getZip(),
-				message
-			))
-
-		# Next, unzipped folders that shouldn't be
-		for thisMod in sorted(folder, key=str.casefold) :
-			# No real logic here.  If it's a folder, suggest it be zipped.
-			#
-			# We have no real way of catching the case of a mod being unzipped directly to the root
-			# mods folder, there are far too many variations - and although many mods follow the 
-			# FS19 prefix convention, not all do, nor is it a requirement.
-
-			self.tabContent["tabBroken"].add_item(
-				thisMod,
-				self._brokenStrings["must-be-zipped"]
-			)
-			self._logger.write("  {} - {}".format(
-				thisMod,
-				self._brokenStrings["must-be-zipped"]
-			))
-
-	
-		# Finally, trash that just shouldn't be there 
-		#
-		# This would be anything other than a folder or a zip file. We could take a guess at other
-		# archives, but thats about it.
-		for thisFile in self._badMods :
-			message = self._brokenStrings["garbage-default"]
-
-
-			for thisArchive in [ ".7z", ".rar" ] :
-				if thisFile.endswith(thisArchive) :
-					message = self._brokenStrings["garbage-archive"]
-
-
-			self.tabContent["tabBroken"].add_item(
-				thisFile,
-				message
-			)
-			self._logger.write("  {} - {}".format(
-				thisFile,
-				message
-			))
-
-		self._logger.line()
-
-	def _update_tab_missing(self) :
-		""" Update the missing mods list """
-		missing = { k for k, v in self._modList.items() if v.isMissing() }
-
-		# Clear out the tree first
-		self.tabContent["tabMissing"].clear_items()
-
-		self._logger.write(self.tabContent["tabMissing"].title + ":")
-
-	
-		for thisMod in sorted(missing, key=str.casefold) :
-			self.tabContent["tabMissing"].add_item(thisMod, (
-				thisMod,
-				self._modList[thisMod].name(),
-				self._IOStrings["YES"] if self._modList[thisMod].isUsed() else self._IOStrings["no"],
-				self._modList[thisMod].getAllActive()
-			))
-
-			self._logger.write("  " + "{modName} ({modTitle}) [{savegames}] {isOwned}".format(
-				modName   = thisMod,
-				modTitle  = self._modList[thisMod].name(),
-				savegames = self._modList[thisMod].getAllActive(True),
-				isOwned   = ("(" + self._IOStrings["OWNED"] + ")") if self._modList[thisMod].isUsed() else ""
-			))
-
-		self._logger.line()
-
-	def _update_tab_inactive(self) :
-		""" Update the inactive mods list """
-		inactive = { k for k, v in self._modList.items() if v.isNotUsed() and v.isNotActive() and v.isGood()  }
-
-		# Clear out the tree first
-		self.tabContent["tabInactive"].clear_items()
-	
-		self._logger.write(self.tabContent["tabInactive"].title+":")
-
-		for thisMod in sorted(inactive, key=str.casefold) :
-			self.tabContent["tabInactive"].add_item(thisMod, (
-				thisMod,
-				self._modList[thisMod].size()
-			))
-
-			self._logger.write("  {} ({})".format(
-				thisMod,
-				self._modList[thisMod].size()
-			))
-
-		self._logger.line()
-
-	def _update_tab_unused(self) :
-		""" Update the active but un-used mods list """
-		unused = { k for k, v in self._modList.items() if v.isNotUsed() and v.isActive() and v.isGood() and v.isNotMissing() }
-
-		self.tabContent["tabUnused"].clear_items()
-	
-		self._logger.write(self.tabContent["tabUnused"].title+":")
-
-
-		for thisMod in sorted(unused, key=str.casefold) :
-			self.tabContent["tabUnused"].add_item(thisMod, (
-				thisMod,
-				self._modList[thisMod].name(),
-				self._modList[thisMod].getAllActive(),
-				self._modList[thisMod].size()
-			))
-
-			self._logger.write("  " + "{modName} ({modTitle}) [{savegames}] ({modFileSize})".format(
-				modName     = thisMod,
-				modTitle    = self._modList[thisMod].name(),
-				savegames   = self._modList[thisMod].getAllActive(True),
-				modFileSize = self._modList[thisMod].size()
-			))
-		
-		self._logger.line()
-
-	def _update_tab_conflict(self):
-		""" Update the possible conflicts tab """
-		self.tabContent["tabConflict"].clear_items()
-	
-		for thisMod in sorted(self._conflictMods.keys(), key=str.casefold) :
-			if thisMod in self._modList.keys():
-				# Page through all known conflicts and compare it to the list
-				# of INSTALLED mods.  We are attempting to warn what COULD maybe
-				# happen, not what IS happening
-
-				if self._conflictMods[thisMod]["confWith"] is None :
-					# confWith is None, so it's a general warning
-					self.tabContent["tabConflict"].add_item(thisMod, self._conflictMods[thisMod]["message"])
-
-				else :
-					# confWith is a list, so lets see if a conflicting mod is installed
-					isConflicted = False
-					for confMod in self._conflictMods[thisMod]["confWith"] :
-						if confMod in self._modList.keys() :
-							# At least one conflicting mod is present
-							isConflicted = True
-					if isConflicted :
-						self.tabContent["tabConflict"].add_item(thisMod, self._conflictMods[thisMod]["message"])

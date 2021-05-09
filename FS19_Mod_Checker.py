@@ -13,6 +13,7 @@ from mod_checker.ui.tree import ModCheckTreeTab
 from mod_checker.ui.canvas import ModCheckCanvasTab
 from mod_checker.data.logger import ModCheckLog
 from mod_checker.base import ModCheckRoot
+from mod_checker.updater import ModCheckUpdater
 from mod_checker.data.mods import FSMod
 
 import mod_checker.data.conflict_mods as conflictMods
@@ -41,7 +42,8 @@ rootWindow = ModCheckRoot(
 	icon         = ModCheckUtil.get_resource_path("./lib/") + 'mcicon.png',
 	modClass     = FSMod,
 	scriptMods   = scriptMods.mods,
-	conflictMods = conflictMods.mods
+	conflictMods = conflictMods.mods,
+	updater      = ModCheckUpdater
 )
 
 rootWindow.makeMenuBar({
