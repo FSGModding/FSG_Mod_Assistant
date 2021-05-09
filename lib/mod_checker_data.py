@@ -68,6 +68,7 @@ knownScriptOnlyMods = [
 	"FS19_TrainStopMod",
 	"FS19_UnitConvertLite",
 	"FS19_UniversalPassenger",
+	"FS19_Variable_Spray_Usage",
 	"FS19_VehicleControlAddon",
 	"FS19_vehicleDirtExtension",
 	"FS19_VehicleExplorer",
@@ -101,6 +102,10 @@ knownConflicts = {
 	},
 	"FS19_additionalFieldInfo" : {
 		"message"  : "Versions of Additional Field Info prior to 1.0.2.3 conflict with the Precision Farming DLC",
+		"confWith" : None
+	},
+	"FS19_Variable_Spray_Usage" : {
+		"message"  : "Variable Spray Usage conflicts with the Precision Farming DLC",
 		"confWith" : None
 	},
 	"FS19_towBar" : {
