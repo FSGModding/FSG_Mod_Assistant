@@ -7,27 +7,20 @@
 
 # (c) 2021 JTSage.  MIT License.
 
-import tkinter as Tk
-import tkinter.ttk as ttk
-import os
-import sys
-import lib.mod_checker_lib as mod_checker_lib
 import gettext
 
 from mod_checker.ui.tree import ModCheckTreeTab
 from mod_checker.ui.canvas import ModCheckCanvasTab
 from mod_checker.data.logger import ModCheckLog
 from mod_checker.base import ModCheckRoot
+from mod_checker.data.mods import FSMod
 
+import mod_checker.data.conflict_mods as conflictMods
+import mod_checker.data.script_mods as scriptMods
 import mod_checker.data.util as ModCheckUtil
 
 
-VERSION = "1.0.0.2"
-
-changeables    = {
-	"mainConfigFile" : "",
-	"version"        : VERSION
-}
+VERSION = "1.0.0.5"
 
 # This might not be needed, python might just do this now.  But it probably 
 # can't hurt.
@@ -44,9 +37,12 @@ gettext.install('fs19modcheck', ModCheckUtil.get_resource_path("./locale"))
 # 
 
 rootWindow = ModCheckRoot(
-	version = VERSION,
-	logger  = ModCheckLog(),
-	icon    = ModCheckUtil.get_resource_path("./lib/") + 'mcicon.png'
+	version      = VERSION,
+	logger       = ModCheckLog(),
+	icon         = ModCheckUtil.get_resource_path("./lib/") + 'mcicon.png',
+	modClass     = FSMod,
+	scriptMods   = scriptMods.mods,
+	conflictMods = conflictMods.mods
 )
 
 rootWindow.makeMenuBar({
@@ -55,6 +51,19 @@ rootWindow.makeMenuBar({
 	"exit-program"  : _("Exit")
 })
 
+rootWindow.addIOStrings({
+	"error-open-settings" : _("Error Opening Settings File {filename}"),
+	"error-not-settings"  : _("This is not a valid FS19 game settings file"),
+	"xml-file-type"       : _("XML Settings File"),
+	"txt-file-type"       : _("Text Document"),
+	"YES"                 : _("YES"),
+	"no"                  : _("no"),
+	"OWNED"               : _("OWNED"),
+	"save-log-title"      : _("Save Log File..."),
+	"save-log-ok"         : _("Log File Saved Successfully"),
+	"save-log-error"      : _("Unable to save the log file"),
+	"save-log-filename"   : _("FS19_Mod_Checker_Log.txt")
+})
 
 
 
@@ -87,6 +96,21 @@ rootWindow.makeConfigTab(strings = {
 #                                                                                     
 
 rootWindow.addTab("tabBroken",   underline=0, text=_('Broken Mods'))
+
+rootWindow.addBrokenStrings({
+	"default"         : _("This File or Folder is invalid"),
+	"unzip-folder"    : _("This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"),
+	"unzip-zipfile"   : _("This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed."),
+	"digit-folder"    : _("Mod Folders cannot start with a digit.  Is this a collection of mods that should be moved to the root mods folder and then removed?"),
+	"digit-zipfile"   : _("Zip files cannot start with a digit.  Is this perhaps a collection of mods? If it is, extract the contents and delete this file."),
+	"duplicate-have"  : _("This looks like a copy of the {guessedModName} mod and can probably be deleted."),
+	"duplicate-miss"  : _("This looks like a copy, but the original wasn't found. Rename it?"),
+	"unknown-folder"  : _("This folder is named incorrectly, but we didn't figure out what is wrong."),
+	"unknown-zipfile" : _("This ZIP file is named incorrectly, but we didn't figure out what is wrong."),
+	"must-be-zipped"  : _("Unzipped mods cannot be used in multiplayer, you should zip this folder"),
+	"garbage-default" : _("This file should not exist here, delete or move it."),
+	"garbage-archive" : _("This is an archive file.  It might be a mod pack which should be unpacked and then removed.")
+})
 
 rootWindow.tabContent["tabBroken"] = ModCheckCanvasTab(
 	parent      = rootWindow.tabFrame["tabBroken"],
@@ -130,7 +154,7 @@ rootWindow.tabContent["tabMissing"] = ModCheckTreeTab(
 
 rootWindow.addTab("tabConflict", underline=0, text=_('Possible Conflicts'))
 
-rootWindow.tabFrame["tabConflict"] = ModCheckCanvasTab(
+rootWindow.tabContent["tabConflict"] = ModCheckCanvasTab(
 	parent      = rootWindow.tabFrame["tabConflict"],
 	title       = _("Possible Conflicts"),
 	description = _("These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here"),
@@ -152,7 +176,7 @@ rootWindow.tabFrame["tabConflict"] = ModCheckCanvasTab(
 
 rootWindow.addTab("tabInactive", underline=0, text=_('Inactive Mods'))
 
-rootWindow.tabFrame["tabInactive"] = ModCheckTreeTab(
+rootWindow.tabContent["tabInactive"] = ModCheckTreeTab(
 	parent = rootWindow.tabFrame["tabInactive"],
 	title  = _("Inactive Mods"),
 	description = _("These mods are not activated in any of your savegames.  If you would like to save space, and perhaps speed up FS19 starting, you could remove some or all of these."),
@@ -174,7 +198,7 @@ rootWindow.tabFrame["tabInactive"] = ModCheckTreeTab(
 
 rootWindow.addTab("tabUnused",   underline=0, text=_('Active, Un-Used Mods'))
 
-rootWindow.tabFrame["tabUnused"] = ModCheckTreeTab(
+rootWindow.tabContent["tabUnused"] = ModCheckTreeTab(
 	parent = rootWindow.tabFrame["tabUnused"],
 	title  = _("Active, Un-Used Mods"),
 	description = _("These mods are active in a savegame, but do not seem to be in use. If you do not plan on using them, you could possible remove them.  Please note that some script only or pre-requisite mods may appear here by mistake, so please use this list carefully."),
@@ -199,7 +223,7 @@ rootWindow.tabFrame["tabUnused"] = ModCheckTreeTab(
 
 rootWindow.addTab("tabAbout",    text=_('About'))
 
-rootWindow.tabFrame["tabAbout"] = ModCheckCanvasTab(
+rootWindow.tabContent["tabAbout"] = ModCheckCanvasTab(
 	parent      = rootWindow.tabFrame["tabAbout"],
 	hideCanvas  = True,
 	title       = _("About FS19 Mod Checker"),
@@ -239,59 +263,11 @@ strings = {
 	"info-mods-folders"    : _("Folders Found"),
 	"info-mods-missing"    : _("Missing Mods")
 }
-# tabConfig.columnconfigure(0, weight=1)
-# tabConfig.columnconfigure(1, minsize=root.winfo_width()/2)
-
-# ttk.Label(tabConfig, text=_("First, you need to point Mod Checker to your gameSettings.xml file") ).grid(column=0, columnspan=2, row=0, pady=6, sticky=(Tk.W,Tk.E))
-
-# loadButton = ttk.Button(tabConfig, text=, command=lambda: mod_checker_lib.load_main_config(changeables))
-# loadButton.grid(column=0, row=1, columnspan=2, sticky=(Tk.W,Tk.E))
-# loadButton.bind('<Return>', lambda event=None: loadButton.invoke())
-# loadButton.focus()
-
-# changeables["mainFileLabel"] = ttk.Label(tabConfig, text=_("Game Settings File: {filename}").format(filename = "[not set]") )
-# changeables["mainFileLabel"].grid(column=0, columnspan=2, row=2, pady=12, sticky=(Tk.W,Tk.E))
-
-# ttk.Label(tabConfig, text=_('Next, click "Check Mods" to scan your collection') ).grid(column=0, columnspan=2, row=3, pady=6, sticky=(Tk.W,Tk.E))
-
-# processButton = ttk.Button(tabConfig, text=_("Check Mods"), command=lambda: mod_checker_lib.process_files(changeables))
-# processButton.state(['disabled'])
-# processButton.grid(column=0, row=4, columnspan=2, pady=(0,40), sticky=(Tk.W,Tk.E))
-# processButton.bind('<Return>', lambda event=None: processButton.invoke())
-
-# changeables["processButton"] = processButton
-
-# ttk.Label(tabConfig, text=_("Mods Found")+":").grid(column=0, row=5, padx=(0,5), sticky=(Tk.E))
-# ttk.Label(tabConfig, text=_("Broken Mods")+":").grid(column=0, row=6, padx=(0,5), sticky=(Tk.E))
-# ttk.Label(tabConfig, text=_("Folders Found")+":").grid(column=0, row=7, padx=(0,5), sticky=(Tk.E))
-# ttk.Label(tabConfig, text=_("Missing Mods")+":").grid(column=0, row=8, padx=(0,5), sticky=(Tk.E))
-
-# changeables["modLabels"] = {
-# 	"found"   : ttk.Label(tabConfig, text="0", font='Helvetica 18 bold'),
-# 	"broke"   : ttk.Label(tabConfig, text="0", font='Helvetica 18 bold'),
-# 	"folder"  : ttk.Label(tabConfig, text="0", font='Helvetica 18 bold'),
-# 	"missing" : ttk.Label(tabConfig, text="0", font='Helvetica 18 bold')
-# }
-# changeables["modLabels"]["found"].grid(column=1, row=5, sticky=(Tk.W))
-# changeables["modLabels"]["broke"].grid(column=1, row=6, sticky=(Tk.W))
-# changeables["modLabels"]["folder"].grid(column=1, row=7, sticky=(Tk.W))
-# changeables["modLabels"]["missing"].grid(column=1, row=8, sticky=(Tk.W))
 
 
-
-
-
-
-
-
-
-
-
-# 
 #  _______ _______ _____ __   _              _____   _____   _____ 
 #  |  |  | |_____|   |   | \  |      |      |     | |     | |_____]
 #  |  |  | |     | __|__ |  \_|      |_____ |_____| |_____| |      
 #                                                                  
-# 
 
 rootWindow.mainloop()

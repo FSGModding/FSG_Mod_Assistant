@@ -34,8 +34,8 @@ class ModCheckLog() :
 		self.line()
 
 	def footer(self) :
-		today = datetime.date.today()
-		self.write(_("Report Generated on: {dateToday}").format(dateToday = today))
+		today = datetime.datetime.now()
+		self.write("{nowTime}".format(nowTime = today.strftime("%Y-%m-%d %H:%M")))
 		self.line()
 
 	def readAll(self):

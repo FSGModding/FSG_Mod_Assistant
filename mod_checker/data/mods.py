@@ -107,6 +107,9 @@ class FSMod() :
 		else :
 			return ", ".join( str(t) for t in sorted(self._usedGames, key = lambda item : int(item)) )
 
+	def setUsedToActive(self) :
+		self._usedGames.update(self._activeGames)
+
 	def size(self, *args) :
 		# Return a human readable string of the mod file/folder size, allow setting the same
 		if ( len(args) > 0 ) :

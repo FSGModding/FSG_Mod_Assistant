@@ -7,7 +7,7 @@ class ModCheckTreeTab() :
 	def __init__(self, parent, title, description, columns, columnExtra=None) :
 		self._parent      = parent
 		self._UIParts     = {}
-		self._title       = title
+		self.title        = title
 		self._description = description
 
 		self._columns     = [("#"+str(i),j) for i,j in zip(range(1,len(columns)+1), columns)]
@@ -16,7 +16,7 @@ class ModCheckTreeTab() :
 		self._build()
 
 	def _build(self) :
-		ttk.Label(self._parent, text=self._title, font='Helvetica 12 bold').pack()
+		ttk.Label(self._parent, text=self.title, font='Helvetica 12 bold').pack()
 		ttk.Label(self._parent, text=self._description, wraplength = 600).pack(fill='x')
 
 		self._UIParts["tree"] = ttk.Treeview(self._parent, selectmode='browse', columns=self._columns, show='headings')
