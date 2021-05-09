@@ -137,7 +137,7 @@ class ModCheckRoot() :
 		externalFrame.pack(fill="both", expand=True)
 		internalFrame.place(in_=externalFrame, anchor="c", relx=.5, rely=.5)
 
-		self._updater._updateConfigNumbers()
+		self._updater.updateConfigNumbers()
 
 	def addBrokenStrings(self, strings) :
 		""" Add broken strings to class """
@@ -196,12 +196,12 @@ class ModCheckRoot() :
 		self._logger.empty()
 		self._logger.header()
 
-		self._updater._update_tab_config()
-		self._updater._update_tab_broken()
-		self._updater._update_tab_missing()
-		self._updater._update_tab_conflict()
-		self._updater._update_tab_inactive()
-		self._updater._update_tab_unused()
+		self._updater.update_tab_config()
+		self._updater.update_tab_broken()
+		self._updater.update_tab_missing()
+		self._updater.update_tab_conflict()
+		self._updater.update_tab_inactive()
+		self._updater.update_tab_unused()
 	
 		self._logger.footer()
 

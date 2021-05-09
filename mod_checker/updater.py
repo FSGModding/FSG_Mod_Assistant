@@ -19,21 +19,21 @@ class ModCheckUpdater() :
 		"""
 		self._rootWindow = rootWindow
 		
-	def _updateConfigNumbers(self, found = 0, broke = 0, missing = 0, folder = 0) :
+	def updateConfigNumbers(self, found = 0, broke = 0, missing = 0, folder = 0) :
 		""" Update the number counts on the config tab """
 		self._rootWindow._configLabels["found"].config(text = str(found))
 		self._rootWindow._configLabels["broke"].config(text = str(broke))
 		self._rootWindow._configLabels["folder"].config(text = str(folder))
 		self._rootWindow._configLabels["missing"].config(text = str(missing))
 
-	def _update_tab_config(self) :
+	def update_tab_config(self) :
 		""" Update the configuration tab """
 		root = self._rootWindow
 		broken  = { k for k, v in root._modList.items() if v.isBad() }
 		folder  = { k for k, v in root._modList.items() if v.isFolder() }
 		missing = { k for k, v in root._modList.items() if v.isMissing() }
 
-		self._updateConfigNumbers(
+		self.updateConfigNumbers(
 			found   = len(root._modList),
 			broke   = len(broken) + len(root._badMods),
 			folder  = len(folder),
@@ -48,7 +48,7 @@ class ModCheckUpdater() :
 		])
 		root._logger.line()
 
-	def _update_tab_broken(self) :
+	def update_tab_broken(self) :
 		""" Update the broken mods list """
 		root = self._rootWindow
 
@@ -144,7 +144,7 @@ class ModCheckUpdater() :
 
 		root._logger.line()
 
-	def _update_tab_missing(self) :
+	def update_tab_missing(self) :
 		""" Update the missing mods list """
 		root = self._rootWindow
 
@@ -173,7 +173,7 @@ class ModCheckUpdater() :
 
 		root._logger.line()
 
-	def _update_tab_inactive(self) :
+	def update_tab_inactive(self) :
 		""" Update the inactive mods list """
 		root = self._rootWindow
 
@@ -197,7 +197,7 @@ class ModCheckUpdater() :
 
 		root._logger.line()
 
-	def _update_tab_unused(self) :
+	def update_tab_unused(self) :
 		""" Update the active but un-used mods list """
 		root = self._rootWindow
 
@@ -225,7 +225,7 @@ class ModCheckUpdater() :
 		
 		root._logger.line()
 
-	def _update_tab_conflict(self):
+	def update_tab_conflict(self):
 		""" Update the possible conflicts tab """
 		root = self._rootWindow
 
