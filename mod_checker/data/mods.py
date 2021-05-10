@@ -170,7 +170,7 @@ class FSMod() :
 
 		WARNING: don't do this for every mod, IO *expensive*
 		"""
-		if self.isMissing() :
+		if self.isMissing() or self._fullPath is None :
 			return False
 		
 		if self.isZip() :
@@ -186,7 +186,7 @@ class FSMod() :
 
 		WARNING: don't do this for every mod, IO *expensive*
 		"""
-		if self.isMissing() : 
+		if self.isMissing() or self._fullPath is None: 
 			return None
 
 		if self.isZip() :
