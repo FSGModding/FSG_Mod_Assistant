@@ -64,7 +64,7 @@ class ModCheckTreeTab() :
 		thisInfoBox = Tk.Toplevel(self._parent.winfo_toplevel())
 
 		thisInfoBox.title(thisModName)
-		thisInfoBox.geometry("650x250")
+		thisInfoBox.geometry("650x450")
 	
 		ttk.Label(thisInfoBox, text=thisModName, font='Helvetica 14 bold', anchor='center').pack(fill='x', pady=(10,10))
 
@@ -72,6 +72,16 @@ class ModCheckTreeTab() :
 			ttk.Label(thisInfoBox, font='Helvetica 12', text=thisMod.name(), anchor='center').pack(fill='x')
 
 		ttk.Label(thisInfoBox, text="", anchor='center').pack(fill='x')
+
+		thisIconImage = thisMod.getIconFile(thisInfoBox)
+		
+		if thisIconImage is not None:
+			thisIconLabel = Tk.Label(thisInfoBox)
+			thisIconLabel.image = thisIconImage  # <== this is were we anchor the img object
+			thisIconLabel.configure(image=thisIconImage)
+			thisIconLabel.pack(fill='x')
+
+			ttk.Label(thisInfoBox, text="", anchor='center').pack(fill='x')
 
 		if thisMod.isNotMissing() :
 			ttk.Label(thisInfoBox, text=thisMod.fullPath(), anchor='center').pack(fill='x')

@@ -7,6 +7,11 @@
 
 # (c) 2021 JTSage.  MIT License.
 import os
+import zipfile
+import lxml.etree as etree
+import PIL.Image as Image
+import PIL.ImageTk as ImageTk
+import io
 
 class FSMod() :
 	# This class holds all of the information about a mod we would want to know
@@ -159,4 +164,69 @@ class FSMod() :
 				return os.path.normpath(self._fullPath)
 			else :
 				return None
+
+	def hasModDesc(self) :
+		""" Check to see if the mod has a modDesc.xml file.
+
+		WARNING: don't do this for every mod, IO *expensive*
+		"""
+		if self.isMissing() :
+			return False
+		
+		if self.isZip() :
+			thisZip = zipfile.ZipFile(self._fullPath)
+
+			return  'modDesc.xml' in thisZip.namelist()
+				
+		else :
+			return os.path.exists(os.path.join(self._fullPath, "modDesc.xml"))
+			
+	def getIconFile(self, window) :
+		""" Get a Tk.PhotoImage icon from the mod, if it exists.
+
+		WARNING: don't do this for every mod, IO *expensive*
+		"""
+		if self.isMissing() : 
+			return None
+
+		if self.isZip() :
+			thisZip = zipfile.ZipFile(self._fullPath)
+
+			if 'modDesc.xml' in thisZip.namelist() :
+				thisModDesc = thisZip.read('modDesc.xml')
+
+				try:
+					configFileTree = etree.fromstring(thisModDesc)
+					iconFileName   = configFileTree.findtext('iconFilename')
+
+					if iconFileName is None: return None
+
+					iconFileData = thisZip.read(iconFileName)
+					iconImagePIL = Image.open(io.BytesIO(iconFileData))
+
+					iconImageTk  = ImageTk.PhotoImage(iconImagePIL.resize((150,150)), master=window)
+
+					return iconImageTk
+				except:
+					return None
+			else :
+				return None
+
+		else :
+			try:
+				configFileTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
+				iconFileName   = configFileTree.findtext('iconFilename')
+
+				if iconFileName is None: return None
+
+				
+				iconImagePIL = Image.open(os.path.join(self._fullPath, iconFileName))				
+				iconImageTk  = ImageTk.PhotoImage(iconImagePIL.resize((150,150)), master=window)
+
+				return iconImageTk
+			except:
+				return None
+
+			
+
 

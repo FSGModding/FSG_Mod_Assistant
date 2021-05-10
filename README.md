@@ -62,7 +62,8 @@ __Note__: Screenshots report the size of most files as 14 Bytes because I've cre
 
 ## Development Requirements
 
-Needs the [lxml](https://lxml.de/installation.html) module installed
+ * [lxml](https://lxml.de/installation.html) module installed
+ * [Pillow](https://pillow.readthedocs.io/en/latest/installation.html) module installed
 
 ## Translation Effort
 
@@ -76,7 +77,7 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 
  ## A short note about the EXE
 
- So, the exe file (the preferred method of running this) is essentially a miniaturized copy of python with all of the required libraries.  It has been reported in the past the EXE's built with this fantastic package can occasionally cause false positives in virus software.  As of this writing, it looks like it is all good - but that could potentially change for the worst.  As always, the source code is available to peruse at your leisure or run directly. (For the python initiated, this uses auto-py-to-exe to build, the configuration json file is included - of course you will need to update paths to build yourself)
+ So, the EXE file (the preferred method of running this) is essentially a miniaturized copy of python with all of the required libraries.  It has been reported in the past that EXE files built with this fantastic package can occasionally cause false positives in virus software.  As of this writing, it looks like it is all good - but that could potentially change for the worst.  As always, the source code is available to peruse at your leisure or run directly. (For the python initiated, this uses auto-py-to-exe to build, the configuration json file is included - of course you will need to update paths to build yourself)
 
  ### Developer Notes:
 
