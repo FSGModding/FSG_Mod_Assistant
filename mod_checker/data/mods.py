@@ -25,6 +25,11 @@ class FSMod() :
 		self._fileSize    = 0
 		self._activeGames = set()
 		self._usedGames   = set()
+		self._thisZIP     = None
+		self._modDescTree = None
+		self._modDescC    = False
+		self._iconImageTk = None
+		self._iconImageC  = False
 	
 	def isFolder(self, *args) :
 		# Boolean "is this a folder", allow setting the same
@@ -165,68 +170,129 @@ class FSMod() :
 			else :
 				return None
 
+	def getModDesc(self) :
+		""" Check to see if the mod has a modDesc.xml file (and parse it)
+
+		WARNING: don't do this for every mod, IO *expensive*
+		"""
+		if self._modDescC or self._modDescTree is not None:
+			return self._modDescTree
+
+
+		if self.isMissing() or self._fullPath is None :
+			return None
+		
+		self._modDescC = True # Cache results
+
+		if self.isZip() :
+			self._thisZIP = zipfile.ZipFile(self._fullPath)
+
+			if 'modDesc.xml' in self._thisZIP.namelist() :
+				try:
+					thisModDesc = self._thisZIP.read('modDesc.xml')
+					self._modDescTree = etree.fromstring(thisModDesc)
+					return self._modDescTree
+				except:
+					return None
+		else :
+			if os.path.exists(os.path.join(self._fullPath, "modDesc.xml")) :
+				try:
+					self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
+					return self._modDescTree
+				except :
+					return None
+
+		return None
+
+
+
 	def hasModDesc(self) :
-		""" Check to see if the mod has a modDesc.xml file.
+		""" Check to see if the mod has a modDesc.xml file. (cached)
 
 		WARNING: don't do this for every mod, IO *expensive*
 		"""
 		if self.isMissing() or self._fullPath is None :
 			return False
 		
-		if self.isZip() :
-			thisZip = zipfile.ZipFile(self._fullPath)
-
-			return  'modDesc.xml' in thisZip.namelist()
-				
+		if self._modDescTree is not None or self.getModDesc() is not None:
+			return True
 		else :
-			return os.path.exists(os.path.join(self._fullPath, "modDesc.xml"))
-			
+			return False
+		
+	
+	# def getDescTitle(self) :
+	# 	if self.isMissing() or self._fullPath is None: 
+	# 		return None
+
+	# 	if self.isZip() :
+	# 		thisZip = zipfile.ZipFile(self._fullPath)
+
 	def getIconFile(self, window) :
 		""" Get a Tk.PhotoImage icon from the mod, if it exists.
 
 		WARNING: don't do this for every mod, IO *expensive*
 		"""
+		if self._iconImageC or self._iconImageTk is not None:
+			""" Cache results.  Only read this once """
+			return self._iconImageTk
+
 		if self.isMissing() or self._fullPath is None: 
 			return None
 
+		self._iconImageC = True # Cache results
+
+		if ( self._modDescTree is None ) :
+			self.getModDesc()
+
+		configFileTree = self._modDescTree
+		iconFileName   = self._normalize_icon_name(configFileTree.findtext('iconFilename'))
+		
+		if iconFileName is None:
+			self._iconImageTk = False
+			return None
+
 		if self.isZip() :
-			thisZip = zipfile.ZipFile(self._fullPath)
-
-			if 'modDesc.xml' in thisZip.namelist() :
-				thisModDesc = thisZip.read('modDesc.xml')
-
-				try:
-					configFileTree = etree.fromstring(thisModDesc)
-					iconFileName   = configFileTree.findtext('iconFilename')
-
-					if iconFileName is None: return None
-
-					iconFileData = thisZip.read(iconFileName)
-					iconImagePIL = Image.open(io.BytesIO(iconFileData))
-
-					iconImageTk  = ImageTk.PhotoImage(iconImagePIL.resize((150,150)), master=window)
-
-					return iconImageTk
-				except:
-					return None
-			else :
-				return None
-
-		else :
 			try:
-				configFileTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
-				iconFileName   = configFileTree.findtext('iconFilename')
-
-				if iconFileName is None: return None
-
-				
-				iconImagePIL = Image.open(os.path.join(self._fullPath, iconFileName))				
-				iconImageTk  = ImageTk.PhotoImage(iconImagePIL.resize((150,150)), master=window)
-
-				return iconImageTk
+				iconFileData = self._thisZIP.read(iconFileName)
+				iconImagePIL = Image.open(io.BytesIO(iconFileData))
 			except:
 				return None
+		else :
+			try:				
+				iconImagePIL = Image.open(os.path.join(self._fullPath, iconFileName))
+			except :
+				return None
 
-			
+		try :
+			self._iconImageTk = ImageTk.PhotoImage(iconImagePIL.resize((150,150)), master=window)
+		except :
+			return None
+
+		return self._iconImageTk
+
+	def _normalize_icon_name(self, givenName) :
+		if givenName is None : return None
+
+		if ( self.isZip() ) :
+			if givenName in self._thisZIP.namelist() :
+				return givenName
+			if givenName.endswith(".png") :
+				tempName = givenName[0:-4] + ".dds"
+				if tempName in self._thisZIP.namelist() :
+					return tempName
+				else :
+					return None
+		else :
+			if os.path.exists(os.path.join(self._fullPath, givenName)) :
+				return givenName
+			if givenName.endswith(".png") :
+				tempName = givenName[0:-4] + ".dds"
+				if os.path.exists(os.path.join(self._fullPath, tempName)) :
+					return tempName
+				else :
+					return None
+
+		return None
+
 
 
