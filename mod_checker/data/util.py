@@ -9,14 +9,40 @@
 import sys
 import os
 
-def set_win32_lang() :
-	""" For windows, i10n is a mess.  This should help with that """
-	if sys.platform.startswith('win'):
-		import locale
-		if os.getenv('LANG') is None:
-			lang, enc = locale.getdefaultlocale() # pylint: disable=unused-variable
-			os.environ['LANG'] = lang
-		locale.setlocale(locale.LC_ALL, '')
+# cSpell:disable
+# Added most languages FS19 seems to support.  Un-commented as translations
+# become available
+langList = {
+	'English'             : "en",
+	'Deutsch'             : "de",
+	# 'Nederlands'          : "nl",
+	# 'Français'            : "fr",
+	# 'Español'             : "es",
+	# 'Italiano'            : "it",
+	# 'Magyar'              : "hu",
+	# 'Português'           : "pt",
+	# '中国人'               : "cs",
+	# 'Português Brasileiro': "br",
+	# 'Türk'                : "tr",
+	# 'Română'              : "ro",
+	# '日本語'               : "jp",
+	# 'русский'             : "ru",
+	# 'Polski'              : "pl",
+	# 'Čeština'             : "cz",
+	# '한국어'               : "ko",
+	# 'Slovenščina'         : "sl",
+}
+# cSpell:enable
+
+def set_locale(thisLocale) :
+	import locale
+	locale.setlocale(locale.LC_ALL, thisLocale)
+
+def get_lang_list() :
+	return [x for x in langList.keys()]
+
+def get_lang_code(lang) :
+	return langList[lang]
 
 def get_resource_path(relative_path) :
 	"""

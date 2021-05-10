@@ -6,12 +6,15 @@
 # Individual Mod Record (class)
 
 # (c) 2021 JTSage.  MIT License.
+
+# preferred lang -> en -> de -> first -> hard fail
 import os
 import zipfile
 import lxml.etree as etree
 import PIL.Image as Image
 import PIL.ImageTk as ImageTk
 import io
+import locale
 
 class FSMod() :
 	# This class holds all of the information about a mod we would want to know
@@ -144,13 +147,12 @@ class FSMod() :
 				return "0 B"
 			else :
 				size           = self._fileSize
-				decimal_places = 2
 
 				for unit in ['B', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb']:
 					if size < 1024.0 or unit == 'Pb':
 						break
 					size /= 1024.0
-				return f"{size:.{decimal_places}f} {unit}"
+				return locale.format('%.2f', size, True) + " " + unit
 
 	def name(self, *args) :
 		# Return the name of the mod (title), allow setting the same

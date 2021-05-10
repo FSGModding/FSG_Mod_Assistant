@@ -100,7 +100,7 @@ class ModCheckRoot() :
 		loadButton = ttk.Button(self.tabFrame["tabConfig"], text=strings['load-button-label'], command=self._load_main_config)
 		loadButton.pack(fill='x')
 		loadButton.bind('<Return>', lambda event=None: loadButton.invoke())
-		loadButton.focus()
+		loadButton.focus_force()
 
 		self._configLabels["filename"] = ttk.Label(self.tabFrame["tabConfig"], text=strings["info-game-settings"].format(filename = "--"), anchor="center" )
 		self._configLabels["filename"].pack(fill='x', pady=(20,0))
