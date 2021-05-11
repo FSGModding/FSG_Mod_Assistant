@@ -19,13 +19,14 @@ import lxml.etree as etree
 
 class ModCheckRoot() :
 
-	def __init__(self, version, logger, icon, modClass, scriptMods, conflictMods, updater) :
+	def __init__(self, version, logger, icon, modClass, badClass, scriptMods, conflictMods, updater) :
 		""" Build the app
 
 		 * version      - current version string
 		 * logger       - an instance of mod_checker.data.logger.ModCheckLog()
 		 * icon         - Path to icon file, string
 		 * modClass     - the FSMod class from mod_checker.data.mods
+		 * badClass     - the class to diagnose a bad file
 		 * scriptMods   - list of known script mods
 		 * conflictMods - dictionary of known conflicting mods
 		 * updater      - the ModCheckUpdater class.
@@ -36,6 +37,7 @@ class ModCheckRoot() :
 		self._basePath       = None
 		self._modDir         = None
 		self._FSMod          = modClass
+		self._FSBadFile      = badClass
 		self._scriptMods     = scriptMods
 		self._conflictMods   = conflictMods
 		self._updater        = updater(self)
@@ -64,7 +66,8 @@ class ModCheckRoot() :
 		self._IOStrings     = {}
 
 		self._modList = {}
-		self._badMods = None
+		self._badList = {}
+		#self._badMods = None
 		
 	def mainloop(self) :
 		""" Run the mainloop (Tk) """
@@ -150,7 +153,8 @@ class ModCheckRoot() :
 	def _load_main_config(self) :
 		""" Load and open the main config file, set the mod folder """
 		filename = fd.askopenfilename(
-			initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
+			#initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
+			initialdir  = os.path.expanduser("~") + "/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder",
 			initialfile = "gameSettings.xml",
 			title       = self._configStrings["load-button-label"] + " : gameSettings.xml",
 			filetypes   = [(self._IOStrings["xml-file-type"], "gameSettings.xml")]
@@ -204,7 +208,6 @@ class ModCheckRoot() :
 		self._updater.update_tab_unused()
 	
 		self._logger.footer()
-
 		# Hackish way to un-focus the process button
 		self._configLabels["found"].focus()
 		
@@ -234,9 +237,12 @@ class ModCheckRoot() :
 			if os.path.isdir(fn)]
 		modZipFiles   = [fn for fn in modsGlob 
 			if os.path.basename(fn).endswith('.zip')]
-		self._badMods = [os.path.basename(fn) for fn in modsGlob 
-			if not os.path.basename(fn).endswith('.zip') and not os.path.isdir(fn)]
 
+		
+		for fn in modsGlob:
+			if not os.path.basename(fn).endswith('.zip') and not os.path.isdir(fn):
+				# Invalid file, add to bad List
+				self._badList[os.path.basename(fn)] = self._FSBadFile(fn, self._brokenStrings)
 
 		# Empty the mod list for scan or re-scan
 		self._modList.clear()
@@ -257,12 +263,20 @@ class ModCheckRoot() :
 			self._modList[modName].size(sum(f.stat().st_size for f in this_dir.glob('**/*') if f.is_file()))
 			self._modList[modName].fullPath(thisMod)
 
+			self._badList[modName] = self._FSBadFile(thisMod, self._brokenStrings)
+			self._badList[modName].isFolder(True)
+			self._badList[modName].size(sum(f.stat().st_size for f in this_dir.glob('**/*') if f.is_file()))
+
 			if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) or re.search(r'unzip', modName, re.IGNORECASE)) :
 				self._modList[modName].isBad(True)
+			else :
+				self._badList[modName].isGood(True)
+
 		
 		# Next, the zip files
 		for thisMod in modZipFiles:
-			modName = os.path.splitext(os.path.basename(thisMod))[0]
+			modName    = os.path.splitext(os.path.basename(thisMod))[0]
+			badModName = os.path.basename(thisMod)
 		
 			self._modList[modName] = self._FSMod()
 			self._modList[modName].fullPath(thisMod)
@@ -270,6 +284,8 @@ class ModCheckRoot() :
 
 			if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) or re.search(r'unzip', modName, re.IGNORECASE) ) :
 				self._modList[modName].isBad(True)
+				self._badList[badModName] = self._FSBadFile(thisMod, self._brokenStrings)
+				self._badList[badModName].size(os.path.getsize(thisMod))
 
 	def _read_mods_from_saves(self) :
 		""" Read the mods that are referenced in the savegames """

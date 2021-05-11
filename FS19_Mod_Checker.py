@@ -18,17 +18,15 @@ from mod_checker.data.logger import ModCheckLog
 from mod_checker.base import ModCheckRoot
 from mod_checker.updater import ModCheckUpdater
 from mod_checker.data.mods import FSMod
+from mod_checker.data.badfile import FSBadFile
 
 import mod_checker.data.conflict_mods as conflictMods
 import mod_checker.data.script_mods as scriptMods
 import mod_checker.data.util as ModCheckUtil
 
 
-VERSION = "1.0.0.5"
+VERSION = "1.0.0.6"
 
-
-# This might not be needed, python might just do this now.  But it probably can't hurt.
-#ModCheckUtil.set_win32_lang()
 
 #         _______ __   _  ______       _____  _____ _______ _     _ _______  ______
 #  |      |_____| | \  | |  ____      |_____]   |   |       |____/  |______ |_____/
@@ -82,6 +80,7 @@ def makeRootWindow(langWindow) :
 		logger       = ModCheckLog(),
 		icon         = ModCheckUtil.get_resource_path("./lib/") + 'mcicon.png',
 		modClass     = FSMod,
+		badClass     = FSBadFile,
 		scriptMods   = scriptMods.mods,
 		conflictMods = conflictMods.mods,
 		updater      = ModCheckUpdater
@@ -91,6 +90,26 @@ def makeRootWindow(langWindow) :
 		"file-menu"     : _("File"),
 		"save-log-file" : _("Save Log"),
 		"exit-program"  : _("Exit")
+	})
+
+	
+	# These strings descripe the nature of how a mod is broken
+	rootWindow.addBrokenStrings({
+		"default"         : _("This File or Folder is invalid, and we have no idea why.  If you have time, please send the file to the developer so we can catch this case in the future. jtsage+fsmodcheck@gmail.com"),
+		"unzip-folder"    : _("This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"),
+		"unzip-zipfile"   : _("This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed."),
+		"digit-folder"    : _("Mod Folders cannot start with a digit.  This is a valid mod with a bad name"),
+		"digit-zipfile"   : _("Zip files cannot start with a digit.  This is a valid mod with a bad name"),
+		"duplicate-have"  : _("This looks like a copy of the {guessedModName} mod and can probably be deleted."),
+		"duplicate-miss"  : _("This looks like a copy, but the original wasn't found. Rename it?"),
+		"unknown-folder"  : _("This valid mod folder is named incorrectly, but we didn't figure out what is wrong."),
+		"unknown-zipfile" : _("This valid mod ZIP file is named incorrectly, but we didn't figure out what is wrong."),
+		"must-be-zipped"  : _("Unzipped mods cannot be used in multiplayer, you should zip this folder"),
+		"garbage-default" : _("This file should not exist here, delete or move it."),
+		"garbage-archive" : _("This is an archive file.  It might be a mod pack which should be unpacked and then removed."),
+		"folder-not-mod"  : _("This folder shouldn't be here, it is not a valid mod"),
+		"zipfile-not-mod" : _("This zip file is not a mod. It might be a modpack. (unzip it?)"),
+		"invalid-zipfile" : _("This zip file is not readable.  Delete this"),
 	})
 
 	# These strings are used in lots of places.  Hopefully they are somewhat clear.
@@ -149,22 +168,6 @@ def makeRootWindow(langWindow) :
 	#                                                                                     
 
 	rootWindow.addTab("tabBroken",   underline=0, text=_('Broken Mods'))
-
-	# These strings descripe the nature of how a mod is broken
-	rootWindow.addBrokenStrings({
-		"default"         : _("This File or Folder is invalid"),
-		"unzip-folder"    : _("This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"),
-		"unzip-zipfile"   : _("This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed."),
-		"digit-folder"    : _("Mod Folders cannot start with a digit.  Is this a collection of mods that should be moved to the root mods folder and then removed?"),
-		"digit-zipfile"   : _("Zip files cannot start with a digit.  Is this perhaps a collection of mods? If it is, extract the contents and delete this file."),
-		"duplicate-have"  : _("This looks like a copy of the {guessedModName} mod and can probably be deleted."),
-		"duplicate-miss"  : _("This looks like a copy, but the original wasn't found. Rename it?"),
-		"unknown-folder"  : _("This folder is named incorrectly, but we didn't figure out what is wrong."),
-		"unknown-zipfile" : _("This ZIP file is named incorrectly, but we didn't figure out what is wrong."),
-		"must-be-zipped"  : _("Unzipped mods cannot be used in multiplayer, you should zip this folder"),
-		"garbage-default" : _("This file should not exist here, delete or move it."),
-		"garbage-archive" : _("This is an archive file.  It might be a mod pack which should be unpacked and then removed.")
-	})
 
 	rootWindow.tabContent["tabBroken"] = ModCheckCanvasTab(
 		parent      = rootWindow.tabFrame["tabBroken"],
