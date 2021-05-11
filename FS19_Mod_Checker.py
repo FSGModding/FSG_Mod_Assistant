@@ -6,6 +6,9 @@
 # Main Program
 
 # (c) 2021 JTSage.  MIT License.
+#
+# GetText:
+# python C:\Python39\Tools\i18n\pygettext.py -d fs19modcheck -o locale/fs19modcheck.pot .\FS19_Mod_Checker.py
 
 import gettext
 import tkinter as Tk
