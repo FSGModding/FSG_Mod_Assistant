@@ -13,6 +13,7 @@ import tkinter.ttk as ttk
 
 from mod_checker.ui.tree import ModCheckTreeTab
 from mod_checker.ui.canvas import ModCheckCanvasTab
+from mod_checker.ui.detail import ModCheckDetailWin
 from mod_checker.data.logger import ModCheckLog
 from mod_checker.base import ModCheckRoot
 from mod_checker.updater import ModCheckUpdater
@@ -191,7 +192,8 @@ def makeRootWindow(langWindow) :
 			_("Purchased"),
 			_("Savegame")
 		],
-		base = rootWindow, 
+		base = rootWindow,
+		detail = ModCheckDetailWin,
 		columnExtra = {
 			"#3": {"minwidth": 0, "width": 75, "stretch": 0},
 			"#4": {"minwidth": 0, "width":100, "stretch": 0}
@@ -239,6 +241,7 @@ def makeRootWindow(langWindow) :
 			_("Size"),
 		],
 		base = rootWindow,
+		detail = ModCheckDetailWin,
 		columnExtra = {
 			"#2": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
 		}
@@ -264,6 +267,7 @@ def makeRootWindow(langWindow) :
 			_("Size")
 		],
 		base = rootWindow,
+		detail = ModCheckDetailWin,
 		columnExtra = {
 			"#3": {"minwidth": 0, "width":120, "stretch": 0},
 			"#4": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
