@@ -212,6 +212,27 @@ class FSMod() :
 
 		return None
 
+	def simpleTestZip (self) :
+		if self.isFolder() : return None
+
+		""" Catch bad zips """
+		try :
+			localZIP = zipfile.ZipFile(self._fullPath)
+		except zipfile.BadZipFile :
+			return False
+
+		if 'modDesc.xml' in localZIP.namelist() :
+			try:
+				thisModDesc = localZIP.read('modDesc.xml')
+				etree.fromstring(thisModDesc)
+				localZIP.close()
+				return True
+			except:
+				localZIP.close()
+				return False
+		else :
+			return False
+
 	def hasModDesc(self) :
 		""" Check to see if the mod has a modDesc.xml file. (cached)
 

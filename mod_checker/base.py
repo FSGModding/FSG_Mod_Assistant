@@ -265,7 +265,6 @@ class ModCheckRoot() :
 
 			self._badList[modName] = self._FSBadFile(thisMod, self._brokenStrings)
 			self._badList[modName].isFolder(True)
-			self._badList[modName].size(sum(f.stat().st_size for f in this_dir.glob('**/*') if f.is_file()))
 
 			if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) or re.search(r'unzip', modName, re.IGNORECASE)) :
 				self._modList[modName].isBad(True)
@@ -285,7 +284,10 @@ class ModCheckRoot() :
 			if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) or re.search(r'unzip', modName, re.IGNORECASE) ) :
 				self._modList[modName].isBad(True)
 				self._badList[badModName] = self._FSBadFile(thisMod, self._brokenStrings)
-				self._badList[badModName].size(os.path.getsize(thisMod))
+			else :
+				if not self._modList[modName].simpleTestZip():
+					self._modList[modName].isBad(True)
+					self._badList[badModName] = self._FSBadFile(thisMod, self._brokenStrings)
 
 	def _read_mods_from_saves(self) :
 		""" Read the mods that are referenced in the savegames """

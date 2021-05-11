@@ -93,25 +93,6 @@ def makeRootWindow(langWindow) :
 	})
 
 	
-	# These strings descripe the nature of how a mod is broken
-	rootWindow.addBrokenStrings({
-		"default"         : _("This File or Folder is invalid, and we have no idea why.  If you have time, please send the file to the developer so we can catch this case in the future. jtsage+fsmodcheck@gmail.com"),
-		"unzip-folder"    : _("This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"),
-		"unzip-zipfile"   : _("This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed."),
-		"digit-folder"    : _("Mod Folders cannot start with a digit.  This is a valid mod with a bad name"),
-		"digit-zipfile"   : _("Zip files cannot start with a digit.  This is a valid mod with a bad name"),
-		"duplicate-have"  : _("This looks like a copy of the {guessedModName} mod and can probably be deleted."),
-		"duplicate-miss"  : _("This looks like a copy, but the original wasn't found. Rename it?"),
-		"unknown-folder"  : _("This valid mod folder is named incorrectly, but we didn't figure out what is wrong."),
-		"unknown-zipfile" : _("This valid mod ZIP file is named incorrectly, but we didn't figure out what is wrong."),
-		"must-be-zipped"  : _("Unzipped mods cannot be used in multiplayer, you should zip this folder"),
-		"garbage-default" : _("This file should not exist here, delete or move it."),
-		"garbage-archive" : _("This is an archive file.  It might be a mod pack which should be unpacked and then removed."),
-		"folder-not-mod"  : _("This folder shouldn't be here, it is not a valid mod"),
-		"zipfile-not-mod" : _("This zip file is not a mod. It might be a modpack. (unzip it?)"),
-		"invalid-zipfile" : _("This zip file is not readable.  Delete this"),
-	})
-
 	# These strings are used in lots of places.  Hopefully they are somewhat clear.
 	rootWindow.addIOStrings({
 		"error-open-settings" : _("Error Opening Settings File {filename}"),
@@ -175,6 +156,24 @@ def makeRootWindow(langWindow) :
 		description = _("These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution")
 	)
 
+	# These strings describe the nature of how a mod is broken
+	rootWindow.addBrokenStrings({
+		"default"         : _("This File or Folder is invalid, and we have no idea why.  If you have time, please send the file to the developer so we can catch this case in the future. jtsage+fsmodcheck@gmail.com"),
+		"unzip-folder"    : _("This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed"),
+		"unzip-zipfile"   : _("This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed."),
+		"digit-folder"    : _("Mod Folders cannot start with a digit.  This is a valid mod with a bad name"),
+		"digit-zipfile"   : _("Zip files cannot start with a digit.  This is a valid mod with a bad name"),
+		"duplicate-have"  : _("This looks like a copy of the {guessedModName} mod and can probably be deleted."),
+		"duplicate-miss"  : _("This looks like a copy, but the original wasn't found. Rename it?"),
+		"unknown-folder"  : _("This valid mod folder is named incorrectly, but we didn't figure out what is wrong."),
+		"unknown-zipfile" : _("This valid mod ZIP file is named incorrectly, but we didn't figure out what is wrong."),
+		"must-be-zipped"  : _("Unzipped mods cannot be used in multiplayer, you should zip this folder"),
+		"garbage-default" : _("This file should not exist here, delete or move it."),
+		"garbage-archive" : _("This is an archive file.  It might be a mod pack which should be unpacked and then removed."),
+		"folder-not-mod"  : _("This folder shouldn't be here, it is not a valid mod."),
+		"zipfile-not-mod" : _("This zip file is not a mod. It might be a modpack. (unzip it?)"),
+		"invalid-zipfile" : _("This zip file is not readable.  Delete this"),
+	})
 
 
 

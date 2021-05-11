@@ -11,7 +11,6 @@ import os
 import re
 import zipfile
 import lxml.etree as etree
-import locale
 
 class FSBadFile() :
 	# This class holds all of the information about a mod we would want to know
@@ -27,7 +26,6 @@ class FSBadFile() :
 		self._folder        = False
 		self._fullPath      = fullPath
 		self._filename      = os.path.basename(fullPath)
-		self._fileSize      = 0
 		self._filenameOK    = False
 		self._thisZIP       = None
 		self._modDesc       = None
@@ -95,22 +93,6 @@ class FSBadFile() :
 			self._filenameOK = not args[0]
 		else:
 			return not self._filenameOK
-
-	def size(self, *args) :
-		# Return a human readable string of the mod file/folder size, allow setting the same
-		if ( len(args) > 0 ) :
-			self._fileSize = args[0]
-		else:
-			if self._fileSize  < 1 :
-				return "0 B"
-			else :
-				size           = self._fileSize
-
-				for unit in ['B', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb']:
-					if size < 1024.0 or unit == 'Pb':
-						break
-					size /= 1024.0
-				return locale.format('%.2f', size, True) + " " + unit
 
 	def fullPath(self, *args) :
 		# Return the full file path to the mod, allow setting the same
