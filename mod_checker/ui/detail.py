@@ -20,7 +20,7 @@ class ModCheckDetailWin() :
 			* modName     - Text name of the mod
 			* modClass    - Details of the mod
 		""" 
-		
+
 		self._parent      = parent
 		self._modName     = modName
 		self._theMod      = modClass
@@ -33,6 +33,7 @@ class ModCheckDetailWin() :
 		self._title()
 		self._logo_and_detail()
 		self._canvas_desc()
+		self._theMod.closeZIP()
 
 	def _title(self) :
 		self._thisWindow.title(self._modName)

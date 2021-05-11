@@ -7,7 +7,6 @@
 
 # (c) 2021 JTSage.  MIT License.
 
-# preferred lang -> en -> de -> first -> hard fail
 import os
 import zipfile
 import lxml.etree as etree
@@ -344,5 +343,8 @@ class FSMod() :
 				return fallback
 		return None
 
+	def closeZIP(self) :
+		if self.isZip() and self._thisZIP is not None:
+			self._thisZIP.close()
 
 
