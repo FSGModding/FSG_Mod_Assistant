@@ -32,37 +32,39 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 
 ## What it looks like
 
+### Language Choice Screen
+![Language Choice Screen](screen_shots/000-LangPick.png)
+
 ### Configuration Screen, Mods Loaded
-![Configuration Screen, Mods Loaded](sshot/001-ConfigLoaded.png)
+![Configuration Screen, Mods Loaded](screen_shots/001-ConfigLoaded.png)
 
 ### Bad Mods, Unzipped Mods, Extra Files
-![Bad Mods, Unzipped Mods, Extra Files](sshot/002-BadMods.png)
+![Bad Mods, Unzipped Mods, Extra Files](screen_shots/002-BadMods.png)
 
 ### Missing Mods
-![Missing Mods](sshot/003-MissingMods.png)
+![Missing Mods](screen_shots/003-MissingMods.png)
 
 ### Possible Conflicts
-![Possible Conflicts](sshot/004-Conflicts.png)
+![Possible Conflicts](screen_shots/004-Conflicts.png)
 
 ### Inactive, Unused Mods
-![Inactive, Unused Mods](sshot/005-InactiveMods.png)
+![Inactive, Unused Mods](screen_shots/005-InactiveMods.png)
 
 ### Active but Unused Mods
-![Active but Unused Mods](sshot/006-UnusedMods.png)
+![Active but Unused Mods](screen_shots/006-UnusedMods.png)
 
 ### About Tab
-![About Tab](sshot/007-About.png)
+![About Tab](screen_shots/007-About.png)
 
-### Detail Popup - Missing Mod
-![Missing Detail](sshot/010-DetailMissing.png)
 
-### Detail Popup - Found Mod
-![Full Detail](sshot/011-DetailFull.png)
-__Note__: Screenshots report the size of most files as 14 Bytes because I've created a special test set of mods to trigger behavior that doesn't happen with my actual mod set.  The size will be correctly reported on your computer.
+### Detail Popup
+![Full Detail](screen_shots/011-DetailFull.png)
+
 
 ## Development Requirements
 
-Needs the [lxml](https://lxml.de/installation.html) module installed
+ * [lxml](https://lxml.de/installation.html) module installed
+ * [Pillow](https://pillow.readthedocs.io/en/latest/installation.html) module installed
 
 ## Translation Effort
 
@@ -76,8 +78,5 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 
  ## A short note about the EXE
 
- So, the exe file (the preferred method of running this) is essentially a miniaturized copy of python with all of the required libraries.  It has been reported in the past the EXE's built with this fantastic package can occasionally cause false positives in virus software.  As of this writing, it looks like it is all good - but that could potentially change for the worst.  As always, the source code is available to peruse at your leisure or run directly. (For the python initiated, this uses auto-py-to-exe to build, the configuration json file is included - of course you will need to update paths to build yourself)
+ So, the EXE file (the preferred method of running this) is essentially a miniaturized copy of python with all of the required libraries.  It has been reported in the past that EXE files built with this fantastic package can occasionally cause false positives in virus software.  As of this writing, it looks like it is all good - but that could potentially change for the worst.  As always, the source code is available to peruse at your leisure or run directly. (For the python initiated, this uses auto-py-to-exe to build, the configuration json file is included - of course you will need to update paths to build yourself)
 
- ### Developer Notes:
-
- i10n POT command: ```python C:\Python39\Tools\i18n\pygettext.py -d fs19modcheck -o locale/fs19modcheck.pot .\FS19_Mod_Checker.py```
