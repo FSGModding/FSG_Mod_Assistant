@@ -3,16 +3,19 @@
 |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
-Mods Found: 191
-Broken Mods: 4
+Mods Found: 195
+Broken Mods: 8
 Folders Found: 2
-Missing Mods: 38
+Missing Mods: 36
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
 Broken Mods:
-  FS19_9RT_Series - Copy.zip - This looks like a copy of the FS19_9RT_Series mod and can probably be deleted.
-  FS19_SteelSilo_Placeable - Copy.zip - This looks like a copy of the FS19_SteelSilo_Placeable mod and can probably be deleted.
-  FS19_This_Folder_Named_Poorly - Copy - This looks like a copy, but the original wasn't found. Rename it?
-  FS19_Good_Folder_Name - Unzipped mods cannot be used in multiplayer, you should zip this folder
+  FS19_Engine_Starter - Unzipped mods cannot be used in multiplayer, you should zip this folder
+  FS19_MoneyTool - Copy.zip - This looks like a copy of the FS19_MoneyTool mod and can probably be deleted.
+  FS19_borderStoneSet (1).zip - This looks like a copy, but the original wasn't found. Rename it?
+  Invalid_Mod_Folder - This folder shouldn't be here, it is not a valid mod.
+  Mod_Pack - Poorly Named.zip - This zip file is not a mod. It might be a modpack. (unzip it?)
+  Mod_Pack_UNZIP - This folder appears to be the contents of a zipped modpack.  The contents should be moved into the main mods folder, and this folder removed
+  Mod_Pack_UNZIPv1.0.zip - This file appears to be a zipped modpack.  The contents should be extracted to the main mod folder, and this file removed.
   random_text_document.txt - This file should not exist here, delete or move it.
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
 Missing Mods:
@@ -30,14 +33,12 @@ Missing Mods:
   FS19_CLAAS_Xerion_5000_G1 (CLAAS Xerion 4000/5000 Series) [3] 
   FS19_Fendt900Vario_S5_PC (Fendt Vario 900 Gen6 (MY 2020)) [2,3,10] 
   FS19_FI_FeedMixers (Animal Feed Mixers) [7] 
-  FS19_FI_FermentingSilo (Fermenting Silo T800) [6] 
   FS19_ForestryDiscMulcher (Forestry Disc Mulcher) [3] (OWNED)
   FS19_FST99Service (Field Service Trailer) [2,3,10] (OWNED)
   FS19_GlobalCompanyPlaceable_BaleDrayer (GlobalCompany - Bale Drayer) [7] 
   FS19_GlobalCompanyPlaceable_Dryer (GSI Grain Complex) [4] 
   FS19_GlobalCompanyPlaceable_HayDrayer (GlobalCompany - Hay Dryer) [6] 
   FS19_hauerSnowPack (Hauer Snow Pack) [3,4,6] 
-  FS19_InnomadeCombriRollSW3000 (Innomade CombriRoll SW3000) [2,3,10] 
   FS19_Inspector (Fruchtzwerg's (JTSage) Inspector) [4,6] (OWNED)
   FS19_JohnDeere_645FD (John Deere 645FD) [3] 
   FS19_KAMAZ_45143_AMKAR (Kamaz 45143 Amkar) [2,10] 
@@ -56,46 +57,50 @@ Missing Mods:
   FS19_URAL_Tankcar (URAL 4320-60 ACV/ATZ) [2,3,4,10] (OWNED)
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
 Inactive Mods:
-  FS19_2150_Series (14.00 B)
-  FS19_AdditionalGameSettings (14.00 B)
-  FS19_BigFieldsFarm (14.00 B)
-  FS19_CallContractors (14.00 B)
-  FS19_EasyDevControls (14.00 B)
-  FS19_FrontLifter (14.00 B)
-  FS19_Good_Folder_Name (0 B)
-  FS19_GreenRiver2019 (14.00 B)
-  FS19_GreenRiver2019_FarmingAgency_Edition (14.00 B)
-  FS19_InfoMenu (24.00 B)
-  FS19_JD_1720 (14.00 B)
-  FS19_JD_DB120 (14.00 B)
-  FS19_JohnDeere1990ccs (14.00 B)
-  FS19_Lime_Station_Placeable (14.00 B)
-  FS19_Lizard_Thunder (14.00 B)
-  FS19_MAD_Washer (14.00 B)
-  FS19_MANMilk (24.00 B)
-  FS19_metalworx_HFP23 (14.00 B)
-  FS19_MountableAttacher (14.00 B)
-  FS19_Pickup_Hitch_For_Claas_Forager (14.00 B)
-  FS19_Riverbird (14.00 B)
-  FS19PlaceAnywhere (24.00 B)
+  FS19_2150_Series (22.99 Mb)
+  FS19_AdditionalGameSettings (36.39 Kb)
+  FS19_BigFieldsFarm (49.88 Mb)
+  FS19_CallContractors (78.08 Kb)
+  FS19_EasyDevControls (60.90 Kb)
+  FS19_fixAttacherJointRot (21.47 Kb)
+  FS19_FrontLifter (1.46 Mb)
+  FS19_GreenRiver2019 (227.95 Mb)
+  FS19_GreenRiver2019_FarmingAgency_Edition (315.76 Mb)
+  FS19_Harvestore (1.69 Mb)
+  FS19_InfoMenu (19.94 Kb)
+  FS19_JD_1720 (25.09 Mb)
+  FS19_JD_DB120 (28.02 Mb)
+  FS19_JohnDeere1990ccs (11.31 Mb)
+  FS19_Lime_Station_Placeable (460.71 Kb)
+  FS19_Lizard_Thunder (8.24 Mb)
+  FS19_MAD_Washer (323.32 Kb)
+  FS19_MANMilk (10.99 Mb)
+  FS19_metalworx_HFP23 (2.86 Mb)
+  FS19_MountableAttacher (404.60 Kb)
+  FS19_Pickup_Hitch_For_Claas_Forager (4.11 Mb)
+  FS19_Riverbird (153.33 Mb)
+  FS19PlaceAnywhere (10.33 Kb)
+  Invalid_Mod_Folder (0 B)
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
 Active, Un-Used Mods:
-  FS19_82s_TLX2020_Series (TLX 2020 Series) [3] (14.00 B)
-  FS19_BigBaleStorage (Big Bale Storage Pack) [1,7,9] (14.00 B)
-  FS19_CaseIH_Magnum_US_Series (Case IH Magnum US Series) [5] (14.00 B)
-  FS19_CM_9R_Series (JOHN DEERE 9R Series) [1,7,9] (14.00 B)
-  FS19_CM_9RX_Series (JOHN DEERE 9RX Series) [7,9] (14.00 B)
-  FS19_FlieglTimberRunnerWideAutoloadWood (Fliegl Timber Runner Wide With Autoload Wood) [1,3,9] (14.00 B)
+  FS19_82s_TLX2020_Series (TLX 2020 Series) [3] (45.72 Mb)
+  FS19_BigBaleStorage (Big Bale Storage Pack) [1,7,9] (14.05 Mb)
+  FS19_CaseIH_Magnum_US_Series (Case IH Magnum US Series) [5] (16.19 Mb)
+  FS19_CM_9R_Series (JOHN DEERE 9R Series) [1,7,9] (101.33 Mb)
+  FS19_CM_9RX_Series (JOHN DEERE 9RX Series) [7,9] (91.85 Mb)
+  FS19_FI_FermentingSilo (Fermenting Silo T800) [6] (6.47 Mb)
+  FS19_FlieglTimberRunnerWideAutoloadWood (Fliegl Timber Runner Wide With Autoload Wood) [1,3,9] (6.40 Mb)
   FS19_holmerPack (HOLMER Terra Variant DLC) [1,2,3,4,5,10] (127.65 Mb)
-  FS19_ITS_JD_Haecksler (ITS JD_9000 PRO-Series) [1,7] (14.00 B)
-  FS19_kemperPack (Kemper Pack) [1,7,9] (14.00 B)
-  FS19_Liebherr_622A (Crawler Loader LIEBHERR 622 Pack) [1,5,9] (14.00 B)
-  FS19_Lizard_HarrowWing (Lizard Harrow Wing 16) [5,7,9] (14.00 B)
-  FS19_Lizard_Mks33 (LIZARD MKS 33) [2,5,10] (14.00 B)
-  FS19_Quadtrac_Series (Case IH Quadtrac Series) [2,10] (14.00 B)
-  FS19_snowMeltingStation (Snow Melting Station) [1,7] (14.00 B)
-  FS19_StrawBlower_Big_Confort (Straw Blower Gyrax BIG CONFORT) [1,7] (14.00 B)
-  FS19_TigerMate255 (Case IH Tiger-Mate 255 Field Cultivator) [9] (14.00 B)
+  FS19_InnomadeCombriRollSW3000 (Innomade CombriRoll SW3000) [2,3,10] (2.08 Mb)
+  FS19_ITS_JD_Haecksler (ITS JD_9000 PRO-Series) [1,7] (89.63 Mb)
+  FS19_kemperPack (Kemper Pack) [1,7,9] (94.95 Mb)
+  FS19_Liebherr_622A (Crawler Loader LIEBHERR 622 Pack) [1,5,9] (13.20 Mb)
+  FS19_Lizard_HarrowWing (Lizard Harrow Wing 16) [5,7,9] (9.99 Mb)
+  FS19_Lizard_Mks33 (LIZARD MKS 33) [2,5,10] (3.61 Mb)
+  FS19_Quadtrac_Series (Case IH Quadtrac Series) [2,10] (5.75 Mb)
+  FS19_snowMeltingStation (Snow Melting Station) [1,7] (13.36 Mb)
+  FS19_StrawBlower_Big_Confort (Straw Blower Gyrax BIG CONFORT) [1,7] (6.11 Mb)
+  FS19_TigerMate255 (Case IH Tiger-Mate 255 Field Cultivator) [9] (19.76 Mb)
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
-2021-05-09 16:03
+2021-05-11 17:01
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
