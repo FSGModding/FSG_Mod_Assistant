@@ -8,7 +8,6 @@
 # (c) 2021 JTSage.  MIT License.
 import tkinter as Tk
 import tkinter.ttk as ttk
-import re
 
 class ModCheckUpdater() :
 

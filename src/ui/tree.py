@@ -9,7 +9,6 @@
 
 import tkinter as Tk
 import tkinter.ttk as ttk
-import locale
 
 class ModCheckTreeTab() :
 

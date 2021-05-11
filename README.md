@@ -33,32 +33,30 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 ## What it looks like
 
 ### Configuration Screen, Mods Loaded
-![Configuration Screen, Mods Loaded](sshot/001-ConfigLoaded.png)
+![Configuration Screen, Mods Loaded](screen_shots/001-ConfigLoaded.png)
 
 ### Bad Mods, Unzipped Mods, Extra Files
-![Bad Mods, Unzipped Mods, Extra Files](sshot/002-BadMods.png)
+![Bad Mods, Unzipped Mods, Extra Files](screen_shots/002-BadMods.png)
 
 ### Missing Mods
-![Missing Mods](sshot/003-MissingMods.png)
+![Missing Mods](screen_shots/003-MissingMods.png)
 
 ### Possible Conflicts
-![Possible Conflicts](sshot/004-Conflicts.png)
+![Possible Conflicts](screen_shots/004-Conflicts.png)
 
 ### Inactive, Unused Mods
-![Inactive, Unused Mods](sshot/005-InactiveMods.png)
+![Inactive, Unused Mods](screen_shots/005-InactiveMods.png)
 
 ### Active but Unused Mods
-![Active but Unused Mods](sshot/006-UnusedMods.png)
+![Active but Unused Mods](screen_shots/006-UnusedMods.png)
 
 ### About Tab
-![About Tab](sshot/007-About.png)
+![About Tab](screen_shots/007-About.png)
 
-### Detail Popup - Missing Mod
-![Missing Detail](sshot/010-DetailMissing.png)
 
-### Detail Popup - Found Mod
-![Full Detail](sshot/011-DetailFull.png)
-__Note__: Screenshots report the size of most files as 14 Bytes because I've created a special test set of mods to trigger behavior that doesn't happen with my actual mod set.  The size will be correctly reported on your computer.
+### Detail Popup
+![Full Detail](screen_shots/011-DetailFull.png)
+
 
 ## Development Requirements
 

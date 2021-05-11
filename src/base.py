@@ -23,9 +23,9 @@ class ModCheckRoot() :
 		""" Build the app
 
 		 * version      - current version string
-		 * logger       - an instance of mod_checker.data.logger.ModCheckLog()
+		 * logger       - an instance of src.data.logger.ModCheckLog()
 		 * icon         - Path to icon file, string
-		 * modClass     - the FSMod class from mod_checker.data.mods
+		 * modClass     - the FSMod class from src.data.mods
 		 * badClass     - the class to diagnose a bad file
 		 * scriptMods   - list of known script mods
 		 * conflictMods - dictionary of known conflicting mods
@@ -153,8 +153,8 @@ class ModCheckRoot() :
 	def _load_main_config(self) :
 		""" Load and open the main config file, set the mod folder """
 		filename = fd.askopenfilename(
-			#initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
-			initialdir  = os.path.expanduser("~") + "/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder",
+			initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
+			#initialdir  = os.path.expanduser("~") + "/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder",
 			initialfile = "gameSettings.xml",
 			title       = self._configStrings["load-button-label"] + " : gameSettings.xml",
 			filetypes   = [(self._IOStrings["xml-file-type"], "gameSettings.xml")]

@@ -14,18 +14,18 @@ import gettext
 import tkinter as Tk
 import tkinter.ttk as ttk
 
-from mod_checker.ui.tree import ModCheckTreeTab
-from mod_checker.ui.canvas import ModCheckCanvasTab
-from mod_checker.ui.detail import ModCheckDetailWin
-from mod_checker.data.logger import ModCheckLog
-from mod_checker.base import ModCheckRoot
-from mod_checker.updater import ModCheckUpdater
-from mod_checker.data.mods import FSMod
-from mod_checker.data.badfile import FSBadFile
+from src.ui.tree import ModCheckTreeTab
+from src.ui.canvas import ModCheckCanvasTab
+from src.ui.detail import ModCheckDetailWin
+from src.data.logger import ModCheckLog
+from src.base import ModCheckRoot
+from src.updater import ModCheckUpdater
+from src.data.mods import FSMod
+from src.data.badfile import FSBadFile
 
-import mod_checker.data.conflict_mods as conflictMods
-import mod_checker.data.script_mods as scriptMods
-import mod_checker.data.util as ModCheckUtil
+import src.data.conflict_mods as conflictMods
+import src.data.script_mods as scriptMods
+import src.data.util as ModCheckUtil
 
 
 VERSION = "1.0.0.6"
@@ -81,7 +81,7 @@ def makeRootWindow(langWindow) :
 	rootWindow = ModCheckRoot(
 		version      = VERSION,
 		logger       = ModCheckLog(),
-		icon         = ModCheckUtil.get_resource_path("./lib/") + 'mcicon.png',
+		icon         = ModCheckUtil.get_resource_path("./icon/") + 'mcicon.png',
 		modClass     = FSMod,
 		badClass     = FSBadFile,
 		scriptMods   = scriptMods.mods,

@@ -19,7 +19,7 @@
   },
   {
    "optionDest": "icon_file",
-   "value": "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/lib/mcicon.ico"
+   "value": "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/icon/mcicon.ico"
   },
   {
    "optionDest": "ascii",
@@ -59,7 +59,7 @@
   },
   {
    "optionDest": "datas",
-   "value": "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/lib/mcicon.png;lib"
+   "value": "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/icon/mcicon.png;icon"
   },
   {
    "optionDest": "datas",
