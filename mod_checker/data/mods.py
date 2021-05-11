@@ -19,6 +19,13 @@ import locale
 class FSMod() :
 	# This class holds all of the information about a mod we would want to know
 
+	langCode = ["en"]
+
+	def setLangCode(self, code):
+		""" I do not wanna talk about it. This is program-wide"""
+		self.langCode.clear()
+		self.langCode.append(code)
+
 	def __init__(self) :
 		self._folder      = False
 		self._filenameOK  = True
@@ -172,7 +179,7 @@ class FSMod() :
 			else :
 				return None
 
-	def getModDesc(self) :
+	def _getModDesc(self) :
 		""" Check to see if the mod has a modDesc.xml file (and parse it)
 
 		WARNING: don't do this for every mod, IO *expensive*
@@ -206,8 +213,6 @@ class FSMod() :
 
 		return None
 
-
-
 	def hasModDesc(self) :
 		""" Check to see if the mod has a modDesc.xml file. (cached)
 
@@ -216,15 +221,38 @@ class FSMod() :
 		if self.isMissing() or self._fullPath is None :
 			return False
 		
-		if self._modDescTree is not None or self.getModDesc() is not None:
+		if self._modDescTree is not None or self._getModDesc() is not None:
 			return True
 		else :
 			return False
 		
-	
-	# def getDescTitle(self) :
-	# 	if self.isMissing() or self._fullPath is None: 
-	# 		return None
+	def getModDescDescription(self) :
+		if self.isMissing() or self._fullPath is None: 
+			return None
+
+		if ( self._modDescTree is None ) :
+			self._getModDesc()
+
+		if ( self._modDescTree is not None ) :
+			return self._getI10nFromXPath(self._modDescTree.xpath("/modDesc/description"))
+		else :
+			return None
+
+	def getModDescName(self) :
+		if self.isMissing() or self._fullPath is None: 
+			return None
+
+		if ( self._modDescTree is None ) :
+			self._getModDesc()
+
+		if ( self._modDescTree is not None ) :
+			nameTry = self._getI10nFromXPath(self._modDescTree.xpath("/modDesc/title"))
+
+			if nameTry is not None:
+				self._name = nameTry
+
+		return self._name
+
 
 	# 	if self.isZip() :
 	# 		thisZip = zipfile.ZipFile(self._fullPath)
@@ -244,7 +272,10 @@ class FSMod() :
 		self._iconImageC = True # Cache results
 
 		if ( self._modDescTree is None ) :
-			self.getModDesc()
+			self._getModDesc()
+
+		if ( self._modDescTree is None ) :
+			return None
 
 		configFileTree = self._modDescTree
 		iconFileName   = self._normalize_icon_name(configFileTree.findtext('iconFilename'))
@@ -294,6 +325,23 @@ class FSMod() :
 				else :
 					return None
 
+		return None
+
+	def _getI10nFromXPath(self, xPathLookup) :
+		fallbacks = [None, None, None]
+
+		for parentElement in xPathLookup:
+			for childElement in parentElement:
+				fallbacks[2] = childElement.text
+				if childElement.tag == self.langCode[0] :
+					return childElement.text
+				if childElement.tag == "en":
+					fallbacks[0] = childElement.text
+				if childElement.tag == "de":
+					fallbacks[1] = childElement.text
+		for fallback in fallbacks:
+			if fallback is not None:
+				return fallback
 		return None
 
 

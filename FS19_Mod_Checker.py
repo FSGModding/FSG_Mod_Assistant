@@ -69,6 +69,10 @@ def makeRootWindow(langWindow) :
 	# Lets do i10n for this app.
 	thisUserLang = ModCheckUtil.get_lang_code(userLang.get())
 	ModCheckUtil.set_locale(thisUserLang)
+	garbageMod = FSMod()
+	garbageMod.setLangCode(thisUserLang)
+	del garbageMod
+
 	gtUserLang = gettext.translation('fs19modcheck', ModCheckUtil.get_resource_path("./locale"), languages=[thisUserLang], fallback=True)
 	gtUserLang.install()
 
@@ -101,11 +105,15 @@ def makeRootWindow(langWindow) :
 		"save-log-ok"         : _("Log File Saved Successfully"),
 		"save-log-error"      : _("Unable to save the log file"),
 		"save-log-filename"   : _("FS19_Mod_Checker_Log.txt"),
-		"mod-file-not-found"  : _("This mod file is missing on disk"),
+		
 		"size-on-disk"        : _("Size on disk"),
 		"active-in"           : _("Mod Active In Savegame(s)"),
 		"used-in"             : _("Mod Used In Savegame(s)"),
-		"ok-button-label"     : _("OK")
+		"ok-button-label"     : _("OK"),
+		"type-zip-file"       : _("ZIP File"),
+		"type-folder"         : _("Folder"),
+		"type-missing"        : _("Mod is Missing"),
+		"type-title"          : _("Mod Type")
 	})
 
 

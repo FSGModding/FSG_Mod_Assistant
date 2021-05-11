@@ -65,36 +65,79 @@ class ModCheckTreeTab() :
 
 		thisInfoBox.title(thisModName)
 		thisInfoBox.geometry("650x450")
-	
-		ttk.Label(thisInfoBox, text=thisModName, font='Helvetica 14 bold', anchor='center').pack(fill='x', pady=(10,10))
 
-		if thisMod.name() is not None:
-			ttk.Label(thisInfoBox, font='Helvetica 12', text=thisMod.name(), anchor='center').pack(fill='x')
+		if thisMod.name() is None:
+			thisMod.getModDescName()
 
-		ttk.Label(thisInfoBox, text="", anchor='center').pack(fill='x')
+		thisModTitle = thisMod.name() or thisModName
+
+		ttk.Label(thisInfoBox, font='Helvetica 12 bold', text=thisModTitle, anchor='center').pack(fill='x', pady=(10,5))
+		
+		mainFrame = Tk.Frame(thisInfoBox)
+		mainFrame.pack(fill='x', anchor='center', padx=10, pady=(0,10), expand=True)
+		
+		Tk.Grid.columnconfigure(mainFrame, 0, weight=1)
+		Tk.Grid.columnconfigure(mainFrame, 1, weight=1)
 
 		thisIconImage = thisMod.getIconFile(thisInfoBox)
 		
 		if thisIconImage is not None:
-			thisIconLabel = Tk.Label(thisInfoBox)
+			thisIconLabel = Tk.Label(mainFrame, anchor='nw')
 			thisIconLabel.image = thisIconImage  # <== this is were we anchor the img object
 			thisIconLabel.configure(image=thisIconImage)
-			thisIconLabel.pack(fill='x')
+			thisIconLabel.grid(column=0, row=0)
 
-			ttk.Label(thisInfoBox, text="", anchor='center').pack(fill='x')
+		subFrame = Tk.Frame(mainFrame)
+		subFrame.grid(column=1, row=0, sticky='ew')
+
+		Tk.Grid.columnconfigure(subFrame, 0, weight=1)
+		Tk.Grid.columnconfigure(subFrame, 1, weight=1)
+
+		typeString = self._base._IOStrings["type-zip-file"]
+		if thisMod.isMissing() :
+			typeString = self._base._IOStrings["type-missing"]
+		if thisMod.isFolder() :
+			typeString = self._base._IOStrings["type-folder"]
+
+		infoDetails = [
+			[
+				self._base._IOStrings["type-title"],
+				typeString
+			],
+			[
+				self._base._IOStrings["active-in"],
+				thisMod.getAllActiveHR()
+			],
+			[
+				self._base._IOStrings["used-in"],
+				thisMod.getAllUsedHR()
+			]
+		]
 
 		if thisMod.isNotMissing() :
-			ttk.Label(thisInfoBox, text=thisMod.fullPath(), anchor='center').pack(fill='x')
-			ttk.Label(thisInfoBox, text=self._base._IOStrings["size-on-disk"] + ": " + str(locale.format_string("%d", thisMod._fileSize, grouping=True)) + " (" + thisMod.size() + ")", anchor='center').pack(fill='x', pady=(5,0))
-		else :
-			ttk.Label(thisInfoBox, text=self._base._IOStrings["mod-file-not-found"], anchor='center').pack(fill='x')
-		
-		ttk.Label(thisInfoBox, text=self._base._IOStrings["active-in"] + ": " + thisMod.getAllActiveHR(), anchor='center').pack(fill='x', pady=(10,0))
-		ttk.Label(thisInfoBox, text=self._base._IOStrings["used-in"] + ": " + thisMod.getAllUsedHR(), anchor='center').pack(fill='x', pady=(10,0))
+			infoDetails.insert(1, [
+				self._base._IOStrings["size-on-disk"],
+				str(locale.format_string("%d", thisMod._fileSize, grouping=True)) + " (" + thisMod.size() + ")"
+			])
 
-		thisOkButton = ttk.Button(thisInfoBox, text=self._base._IOStrings["ok-button-label"], command=thisInfoBox.destroy)
+		for rowCount, thisDetail in enumerate(infoDetails, start=0):
+			ttk.Label(subFrame, text=thisDetail[0], font='Helvetica 8 bold').grid(column=0, row=rowCount, padx=5, sticky='e')
+			ttk.Label(subFrame, text=thisDetail[1]).grid(column=1, row=rowCount, padx=5, sticky='w')
 		
-		thisOkButton.pack(side="bottom", fill='x', padx=40, pady=(0,20))
+		canvasParts = {}
+		canvasParts["canvas"] = Tk.Canvas(thisInfoBox, bd=2, relief='ridge')
+		canvasParts["VSB"]    = ttk.Scrollbar(thisInfoBox, orient="vertical", command=canvasParts["canvas"].yview)
+		canvasParts["frame"]  = ttk.Frame(canvasParts["canvas"], border=1, padding=(30,0))
+		canvasParts["frame"].bind("<Configure>", lambda e: canvasParts["canvas"].configure( scrollregion=canvasParts["canvas"].bbox("all") ) )
+		canvasParts["canvas"].create_window((0, 0), window=canvasParts["frame"], anchor="nw")
+		canvasParts["canvas"].configure(yscrollcommand=canvasParts["VSB"].set)
+		canvasParts["canvas"].pack(side="left", fill="both", expand=True)
+		canvasParts["VSB"].pack(side="right", fill="y")
+
+		ttk.Label( canvasParts["frame"], text = thisMod.getModDescDescription(), anchor = 'w', wraplength = 590).pack(fill = 'x', pady = 0, padx=0)
+
+		thisOkButton = ttk.Button(subFrame, text=self._base._IOStrings["ok-button-label"], command=thisInfoBox.destroy)
+		thisOkButton.grid(column = 0, columnspan = 2, row = len(infoDetails), pady=5, sticky='ew')
 		thisOkButton.bind('<Return>', lambda event=None: thisOkButton.invoke())
 		thisOkButton.focus()
 
@@ -157,4 +200,6 @@ class ModCheckTreeTab() :
 				return (x[0].lower(), x[1])
 			except AttributeError:
 				return x
+
+
 	
