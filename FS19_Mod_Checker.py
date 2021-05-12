@@ -140,7 +140,9 @@ def makeRootWindow(langWindow) :
 		"info-mods-found"      : _("Mods Found"),
 		"info-mods-broken"     : _("Broken Mods"),
 		"info-mods-folders"    : _("Folders Found"),
-		"info-mods-missing"    : _("Missing Mods")
+		"info-mods-missing"    : _("Missing Mods"),
+		"program-description"  : _("This little program will take a look at your mod install folder and inform you of any potential problems that it finds."),
+		"latest-version"       : _("For the latest version, visit us at")
 	})
 
 
@@ -151,7 +153,7 @@ def makeRootWindow(langWindow) :
 	#  |_____] |    \_ |_____| |    \_ |______ |  \_|      |  |  | |_____| |_____/ ______|
 	#                                                                                     
 
-	rootWindow.addTab("tabBroken",   underline=0, text=_('Broken Mods'))
+	rootWindow.addTab("tabBroken",   underline=0, text=_('Broken Files'))
 
 	rootWindow.tabContent["tabBroken"] = ModCheckCanvasTab(
 		parent      = rootWindow.tabFrame["tabBroken"],
@@ -178,6 +180,26 @@ def makeRootWindow(langWindow) :
 		"invalid-zipfile" : _("This zip file is not readable.  Delete this"),
 	})
 
+
+
+	#  _______  _____  __   _ _______        _____ _______ _______      _______  _____  ______  _______
+	#  |       |     | | \  | |______ |        |   |          |         |  |  | |     | |     \ |______
+	#  |_____  |_____| |  \_| |       |_____ __|__ |_____     |         |  |  | |_____| |_____/ ______|
+	#                                                                                                  
+
+	rootWindow.addTab("tabConflict", underline=0, text=_('Conflicts'))
+
+	rootWindow.tabContent["tabConflict"] = ModCheckCanvasTab(
+		parent      = rootWindow.tabFrame["tabConflict"],
+		title       = _("Possible Conflicts"),
+		description = _("These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here"),
+		extraText   = [
+			"\u2022 " + _("This should not be taken as a suggestion that these mods do not work."),
+			"\u2022 " + _("This is also not intended as a slight against the mod or author."),
+			"\u2022 " + _("Many (most) times these mods will work as intended."),
+			"\u2022 " + _("If you do experience in-game problems, this may be a good place to start testing.")
+		]
+	)
 
 
 	#  _______ _____ _______ _______ _____ __   _  ______      _______  _____  ______  _______
@@ -208,24 +230,6 @@ def makeRootWindow(langWindow) :
 
 
 
-	#  _______  _____  __   _ _______        _____ _______ _______      _______  _____  ______  _______
-	#  |       |     | | \  | |______ |        |   |          |         |  |  | |     | |     \ |______
-	#  |_____  |_____| |  \_| |       |_____ __|__ |_____     |         |  |  | |_____| |_____/ ______|
-	#                                                                                                  
-
-	rootWindow.addTab("tabConflict", underline=0, text=_('Possible Conflicts'))
-
-	rootWindow.tabContent["tabConflict"] = ModCheckCanvasTab(
-		parent      = rootWindow.tabFrame["tabConflict"],
-		title       = _("Possible Conflicts"),
-		description = _("These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here"),
-		extraText   = [
-			"\u2022 " + _("This should not be taken as a suggestion that these mods do not work."),
-			"\u2022 " + _("This is also not intended as a slight against the mod or author."),
-			"\u2022 " + _("Many (most) times these mods will work as intended."),
-			"\u2022 " + _("If you do experience in-game problems, this may be a good place to start testing.")
-		]
-	)
 
 
 
@@ -259,12 +263,12 @@ def makeRootWindow(langWindow) :
 	#  |_____| |  \_| |_____| ______| |______ |_____/      |  |  | |_____| |_____/ ______|
 	#                                                                                     
 
-	rootWindow.addTab("tabUnused",   underline=0, text=_('Active, Un-Used Mods'))
+	rootWindow.addTab("tabUnused",   underline=0, text=_('Active & Un-Used Mods'))
 
 	rootWindow.tabContent["tabUnused"] = ModCheckTreeTab(
 		parent = rootWindow.tabFrame["tabUnused"],
 		title  = _("Active, Un-Used Mods"),
-		description = _("These mods are active in a savegame, but do not seem to be in use. If you do not plan on using them, you could possible remove them.  Please note that some script only or pre-requisite mods may appear here by mistake, so please use this list carefully."),
+		description = _("These mods are active in a savegame, but do not seem to be in use. If you do not plan on using them, you could possibly remove them.  Please note that some script only or pre-requisite mods may appear here by mistake, so please use this list carefully."),
 		columns = [
 			_("Name"),
 			_("Title"),
@@ -281,31 +285,33 @@ def makeRootWindow(langWindow) :
 
 
 
-	#  _______ ______   _____  _     _ _______
-	#  |_____| |_____] |     | |     |    |   
-	#  |     | |_____] |_____| |_____|    |   
-	#                                         
+	#   ______  _____   _____  ______       _______  _____  ______  _______
+	#  |  ____ |     | |     | |     \      |  |  | |     | |     \ |______
+	#  |_____| |_____| |_____| |_____/      |  |  | |_____| |_____/ ______|
+	#                                                                      
 
-	rootWindow.addTab("tabAbout",    text=_('About'))
+	rootWindow.addTab("tabGood",   underline=0, text=_('Good Mods'))
 
-	rootWindow.tabContent["tabAbout"] = ModCheckCanvasTab(
-		parent      = rootWindow.tabFrame["tabAbout"],
-		hideCanvas  = True,
-		title       = _("About FS19 Mod Checker"),
-		description = _("This little program will take a look at your mod install folder and inform you of the following:"),
-		extraText   = [
-			"\u2022 " + _("If a mod file is named incorrectly and won't load in the game."),
-			"\u2022 " + _("If a mod is not properly zipped."),
-			"\u2022 " + _("If a mod is used in your save games, but does not appear to be installed."),
-			"\u2022 " + _("If a mod is not loaded or used in any of your save games"),
-			"\u2022 " + _("If a mod is loaded but unused in your save games."),
-			" ",
-			_("This program only offers suggestions, no files on your computer will be altered"),
-			" ",
-			_("For the latest version, see https://github.com/jtsage/FS19_Mod_Checker")
-		]
-		
+	rootWindow.tabContent["tabGood"] = ModCheckTreeTab(
+		parent = rootWindow.tabFrame["tabGood"],
+		title  = _("Good Mods"),
+		description = _("These mods are active and used in a savegame, and in good working order.  They are listed here for convenience, you do not need to do anything with these mods."),
+		columns = [
+			_("Name"),
+			_("Title"),
+			_("Savegame"),
+			_("Size")
+		],
+		base = rootWindow,
+		detail = ModCheckDetailWin,
+		columnExtra = {
+			"#3": {"minwidth": 0, "width":120, "stretch": 0},
+			"#4": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
+		}
 	)
+
+
+
 
 
 

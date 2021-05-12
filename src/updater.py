@@ -28,7 +28,6 @@ class ModCheckUpdater() :
 	def update_tab_config(self) :
 		""" Update the configuration tab """
 		root = self._rootWindow
-		#broken  = { k for k, v in root._modList.items() if v.isBad() }
 		folder  = { k for k, v in root._modList.items() if v.isFolder() }
 		missing = { k for k, v in root._modList.items() if v.isMissing() }
 
@@ -159,8 +158,25 @@ class ModCheckUpdater() :
 		
 		root._logger.closeSection()
 
+	def update_tab_good(self) :
+		""" Update the good mods list (don't log)"""
+		root = self._rootWindow
+
+		good = { k for k, v in root._modList.items() if v.isUsed() and v.isActive() and v.isGood() and v.isNotMissing() }
+
+		root.tabContent["tabGood"].clear_items()
+	
+		for thisMod in sorted(good, key=str.casefold) :
+			root.tabContent["tabGood"].add_item(thisMod, (
+				thisMod,
+				root._modList[thisMod].name(),
+				root._modList[thisMod].getAllActive(),
+				root._modList[thisMod].size()
+			))
+
+
 	def update_tab_conflict(self):
-		""" Update the possible conflicts tab """
+		""" Update the possible conflicts tab (don't log) """
 		root = self._rootWindow
 
 		root.tabContent["tabConflict"].clear_items()

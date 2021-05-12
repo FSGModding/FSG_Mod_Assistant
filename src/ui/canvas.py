@@ -32,7 +32,7 @@ class ModCheckCanvasTab() :
 	def _build(self) :
 		""" Build the canvas inside _parent """
 		ttk.Label(self._parent, text=self.title, font='Helvetica 12 bold').pack()
-		ttk.Label(self._parent, text=self._description, wraplength = 600).pack(fill='x')
+		ttk.Label(self._parent, text=self._description, wraplength = 640).pack(fill='x')
 
 		if self._extraText is not None :
 			ttk.Label(self._parent, text=" ", anchor='w').pack(padx=(30,0), fill='x')
@@ -92,7 +92,7 @@ class ModCheckCanvasTab() :
 			self._UIParts["frame"],
 			text       = desc,
 			anchor     = 'w',
-			wraplength = 600-30-30-40
+			wraplength = 640-30-30-40
 		).pack(fill = 'x', pady = 0, padx = (40,0))
 
 

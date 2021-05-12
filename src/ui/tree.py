@@ -37,7 +37,7 @@ class ModCheckTreeTab() :
 	def _build(self) :
 		""" Build the treeview inside of _parent """
 		ttk.Label(self._parent, text=self.title, font='Helvetica 12 bold').pack()
-		ttk.Label(self._parent, text=self._description, wraplength = 600).pack(fill='x')
+		ttk.Label(self._parent, text=self._description, wraplength = 640).pack(fill='x')
 
 		self._UIParts["tree"] = ttk.Treeview(self._parent, selectmode='browse', columns=self._columns, show='headings')
 		self._UIParts["tree"].pack(expand=True, side='left', fill='both', pady=(5,0))
