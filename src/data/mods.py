@@ -39,6 +39,8 @@ class FSMod() :
 		self._modDescC    = False
 		self._iconImageTk = None
 		self._iconImageC  = False
+
+		self.modVersion   = "0.0.0.0"
 	
 	def isFolder(self, *args) :
 		# Boolean "is this a folder", allow setting the same
@@ -224,7 +226,8 @@ class FSMod() :
 		if 'modDesc.xml' in localZIP.namelist() :
 			try:
 				thisModDesc = localZIP.read('modDesc.xml')
-				etree.fromstring(thisModDesc)
+				localTree = etree.fromstring(thisModDesc)
+				self.modVersion = localTree.findtext("version")
 				localZIP.close()
 				return True
 			except:

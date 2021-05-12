@@ -55,7 +55,7 @@ class ModCheckUpdater() :
 		root._logger.openSection(root.tabContent["tabBroken"].title + ":")
 	
 		initCompList = root._FSBadFile(".", [])
-		initCompList.setFullModList(root._modList.keys())
+		initCompList.setFullModList(root._modList.keys(), root._modList)
 		del initCompList
 
 		for thisBadMod in sorted(root._badList.keys()) :

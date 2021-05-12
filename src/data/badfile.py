@@ -16,10 +16,13 @@ class FSBadFile() :
 	# This class holds all of the information about a mod we would want to know
 
 	fullModList = []
+	fullModListObj = {}
 
-	def setFullModList(self, keylist):
+	def setFullModList(self, keylist, theObject):
 		self.fullModList.clear()
 		self.fullModList.extend(keylist)
+		self.fullModListObj.clear()
+		self.fullModListObj.update(theObject)
 
 	def __init__(self, fullPath, strings) :
 		self._brokenStrings = strings
@@ -30,6 +33,7 @@ class FSBadFile() :
 		self._thisZIP       = None
 		self._modDesc       = None
 		self._modDescTree   = None
+		self.modVersion     = "0.0.0.0"
 		
 	def isFolder(self, *args) :
 		# Boolean "is this a folder", allow setting the same
@@ -114,6 +118,7 @@ class FSBadFile() :
 				try:
 					thisModDesc = self._thisZIP.read('modDesc.xml')
 					self._modDescTree = etree.fromstring(thisModDesc)
+					self.modVersion = self._modDescTree.findtext("version")
 					return True
 				except:
 					return False
@@ -124,6 +129,7 @@ class FSBadFile() :
 			if os.path.exists(os.path.join(self._fullPath, "modDesc.xml")) :
 				try:
 					self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
+					self.modVersion = self._modDescTree.findtext("version")
 					return True
 				except :
 					return False
@@ -172,7 +178,14 @@ class FSBadFile() :
 			if amICopied[0] :
 				if amICopied[1] :
 					""" Duplicate, other exists """
-					return self._brokenStrings["duplicate-have"].format(guessedModName=amICopied[1])
+					if self.modVersion == self.fullModListObj[amICopied[1]].modVersion :
+						return self._brokenStrings["duplicate-have"].format(guessedModName=amICopied[1])
+					else :
+						return self._brokenStrings["duplicate-diff"].format(
+							guessedModName = amICopied[1],
+							goodVer        = self.fullModListObj[amICopied[1]].modVersion,
+							badVer         = self.modVersion
+						)
 				else :
 					""" Duplicate check passed, original not found """
 					return self._brokenStrings["duplicate-miss"]
@@ -210,7 +223,14 @@ class FSBadFile() :
 				""" We are a copy! """
 				if amICopied[1] :
 					""" Duplicate, other exists """
-					return self._brokenStrings["duplicate-have"].format(guessedModName=amICopied[1])
+					if self.modVersion == self.fullModListObj[amICopied[1]].modVersion :
+						return self._brokenStrings["duplicate-have"].format(guessedModName=amICopied[1])
+					else :
+						return self._brokenStrings["duplicate-diff"].format(
+							guessedModName = amICopied[1],
+							goodVer        = self.fullModListObj[amICopied[1]].modVersion,
+							badVer         = self.modVersion
+						)
 				else :
 					""" Duplicate check passed, original not found """
 					return self._brokenStrings["duplicate-miss"]

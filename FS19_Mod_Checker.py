@@ -169,6 +169,7 @@ def makeRootWindow(langWindow) :
 		"digit-folder"    : _("Mod Folders cannot start with a digit.  This is a valid mod with a bad name"),
 		"digit-zipfile"   : _("Zip files cannot start with a digit.  This is a valid mod with a bad name"),
 		"duplicate-have"  : _("This looks like a copy of the {guessedModName} mod and can probably be deleted."),
+		"duplicate-diff"  : _("This looks like a copy of the {guessedModName} mod, however, they are different versions. Good File: {goodVer}, Bad File: {badVer}"),
 		"duplicate-miss"  : _("This looks like a copy, but the original wasn't found. Rename it?"),
 		"unknown-folder"  : _("This valid mod folder is named incorrectly, but we didn't figure out what is wrong."),
 		"unknown-zipfile" : _("This valid mod ZIP file is named incorrectly, but we didn't figure out what is wrong."),
