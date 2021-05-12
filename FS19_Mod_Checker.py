@@ -28,7 +28,7 @@ import src.data.script_mods as scriptMods
 import src.data.util as ModCheckUtil
 
 
-VERSION = "1.0.0.6"
+VERSION = "1.0.0.7"
 
 
 #         _______ __   _  ______       _____  _____ _______ _     _ _______  ______
