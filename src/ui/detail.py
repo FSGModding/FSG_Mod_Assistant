@@ -82,6 +82,10 @@ class ModCheckDetailWin() :
 				typeString
 			],
 			[
+				self._base._IOStrings['mod-version'],
+				self._theMod.modVersion
+			],
+			[
 				self._base._IOStrings["active-in"],
 				self._theMod.getAllActiveHR()
 			],

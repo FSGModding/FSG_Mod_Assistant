@@ -111,6 +111,7 @@ def makeRootWindow(langWindow) :
 		"save-log-filename"   : _("FS19_Mod_Checker_Log.txt"),
 		
 		"size-on-disk"        : _("Size on disk"),
+		"mod-version"         : _("Mod Version"),
 		"active-in"           : _("Mod Active In Savegame(s)"),
 		"used-in"             : _("Mod Used In Savegame(s)"),
 		"ok-button-label"     : _("OK"),
