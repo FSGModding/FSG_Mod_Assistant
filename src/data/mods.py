@@ -14,6 +14,7 @@ import PIL.Image as Image
 import PIL.ImageTk as ImageTk
 import io
 import locale
+import itertools
 
 class FSMod() :
 	# This class holds all of the information about a mod we would want to know
@@ -110,8 +111,10 @@ class FSMod() :
 		else :
 			return self.getAllActive(short)
 
-	def getAllActive(self, short = False) :
+	def getAllActive(self, short = False, veryShort = False) :
 		# Return a string of all the savegames this mod is active in
+		if veryShort :
+			return self._getShortSortSet(self._activeGames)
 		if short :
 			return ",".join( str(t) for t in sorted(self._activeGames, key = lambda item : int(item)) )
 		else :
@@ -135,8 +138,10 @@ class FSMod() :
 		else :
 			return self.getAllUsed(short)
 
-	def getAllUsed(self, short = False) :
+	def getAllUsed(self, short = False, veryShort = False) :
 		# Return a string of all the savegames this mod is used in
+		if veryShort :
+			return self._getShortSortSet(self._usedGames)
 		if short :
 			return ",".join( str(t) for t in sorted(self._usedGames, key = lambda item : int(item)) )
 		else :
@@ -366,6 +371,27 @@ class FSMod() :
 			if fallback is not None:
 				return fallback
 		return None
+
+	def _to_ranges(self, iterable) :
+		iterable = sorted(set(iterable))
+		for key, group in itertools.groupby(enumerate(iterable), lambda t: t[1] - t[0]) : # pylint: disable=unused-variable
+			group = list(group)
+			yield group[0][1], group[-1][1]
+
+	def _getShortSortSet(self, iterable) :
+		returnList = []
+		startList = [int(x) for x in iterable]
+		for item in self._to_ranges(startList) :
+			if item is None:
+				continue
+			if item[0] == item[1]:
+				returnList.append(str(item[0]))
+			elif item[0]+1 == item[1]:
+				returnList.append(str(item[0]))
+				returnList.append(str(item[1]))
+			else :
+				returnList.append(str(item[0]) + "-" + str(item[1]))
+		return ", ".join(returnList)
 
 	def closeZIP(self) :
 		if self.isZip() and self._thisZIP is not None:

@@ -65,7 +65,7 @@ class ModCheckUpdater() :
 			root._badList[thisBadMod].done() # Close any open files.
 
 			root.tabContent["tabBroken"].add_item(
-				thisBadMod,
+				thisBadMod + ( "\\" if root._badList[thisBadMod].isFolder() else "" ),
 				message
 			)
 
@@ -94,7 +94,7 @@ class ModCheckUpdater() :
 				thisMod,
 				root._modList[thisMod].name(),
 				root._IOStrings["YES"] if root._modList[thisMod].isUsed() else root._IOStrings["no"],
-				root._modList[thisMod].getAllActive()
+				root._modList[thisMod].getAllActive(veryShort=True)
 			))
 
 			root._logger.write("{modName} ({modTitle}) [{savegames}] {isOwned}".format(
@@ -145,7 +145,7 @@ class ModCheckUpdater() :
 			root.tabContent["tabUnused"].add_item(thisMod, (
 				thisMod,
 				root._modList[thisMod].name(),
-				root._modList[thisMod].getAllActive(),
+				root._modList[thisMod].getAllActive(veryShort=True),
 				root._modList[thisMod].size()
 			))
 
@@ -170,7 +170,7 @@ class ModCheckUpdater() :
 			root.tabContent["tabGood"].add_item(thisMod, (
 				thisMod,
 				root._modList[thisMod].name(),
-				root._modList[thisMod].getAllActive(),
+				root._modList[thisMod].getAllActive(veryShort=True),
 				root._modList[thisMod].size()
 			))
 
