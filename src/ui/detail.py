@@ -87,10 +87,6 @@ class ModCheckDetailWin() :
 				typeString
 			],
 			[
-				self._base._IOStrings['mod-version'],
-				self._theMod.modVersion
-			],
-			[
 				self._base._IOStrings["active-in"],
 				self._theMod.getAllActive(showNone = True)
 			],
@@ -99,6 +95,12 @@ class ModCheckDetailWin() :
 				self._theMod.getAllUsed(showNone = True)
 			]
 		]
+
+		if self._theMod.modVersion is not None:
+			infoDetails.insert(1, [
+				self._base._IOStrings['mod-version'],
+				self._theMod.modVersion
+			])
 
 		if self._theMod.isNotMissing() :
 			infoDetails.insert(1, [

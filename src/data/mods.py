@@ -39,7 +39,7 @@ class FSMod() :
 		self._modDescTree = None
 		self._iconImage   = None
 
-		self.modVersion   = "0.0.0.0"
+		self.modVersion   = None
 	
 	def isFolder(self, *args) :
 		""" Boolean "is this a folder", allow setting the same """
