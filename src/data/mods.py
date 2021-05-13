@@ -114,7 +114,7 @@ class FSMod() :
 	def getAllActive(self, short = False, veryShort = False) :
 		# Return a string of all the savegames this mod is active in
 		if veryShort :
-			return self._getShortSortSet(self._activeGames)
+			return ", ".join(list(self._to_ranges(self._activeGames)))
 		if short :
 			return ",".join( str(t) for t in sorted(self._activeGames, key = lambda item : int(item)) )
 		else :
@@ -141,7 +141,7 @@ class FSMod() :
 	def getAllUsed(self, short = False, veryShort = False) :
 		# Return a string of all the savegames this mod is used in
 		if veryShort :
-			return self._getShortSortSet(self._usedGames)
+			return ", ".join(list(self._to_ranges(self._activeGames)))
 		if short :
 			return ",".join( str(t) for t in sorted(self._usedGames, key = lambda item : int(item)) )
 		else :
@@ -373,25 +373,17 @@ class FSMod() :
 		return None
 
 	def _to_ranges(self, iterable) :
-		iterable = sorted(set(iterable))
+		iterable = sorted(int(x) for x in set(iterable))
 		for key, group in itertools.groupby(enumerate(iterable), lambda t: t[1] - t[0]) : # pylint: disable=unused-variable
 			group = list(group)
-			yield group[0][1], group[-1][1]
 
-	def _getShortSortSet(self, iterable) :
-		returnList = []
-		startList = [int(x) for x in iterable]
-		for item in self._to_ranges(startList) :
-			if item is None:
-				continue
-			if item[0] == item[1]:
-				returnList.append(str(item[0]))
-			elif item[0]+1 == item[1]:
-				returnList.append(str(item[0]))
-				returnList.append(str(item[1]))
-			else :
-				returnList.append(str(item[0]) + "-" + str(item[1]))
-		return ", ".join(returnList)
+			if group[0][1] == group[-1][1]:
+				yield str(group[0][1])
+			elif group[0][1]+1 == group[-1][1]:
+				yield str(group[0][1])
+				yield str(group[-1][1])
+			else:
+				yield str(group[0][1]) + "-" + str(group[-1][1])
 
 	def closeZIP(self) :
 		if self.isZip() and self._thisZIP is not None:
