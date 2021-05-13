@@ -31,15 +31,16 @@ class ModCheckTreeTab() :
 
 		self._columns     = [("#"+str(i),j) for i,j in zip(range(1,len(columns)+1), columns)]
 		self._columnExtra = columnExtra
+		self._isOdd       = True
 
 		self._build()
 
 	def _build(self) :
 		""" Build the treeview inside of _parent """
-		ttk.Label(self._parent, text=self.title, font='Helvetica 12 bold').pack()
+		ttk.Label(self._parent, text=self.title, font='Calibri 12 bold').pack()
 		ttk.Label(self._parent, text=self._description, wraplength = 640).pack(fill='x')
 
-		self._UIParts["tree"] = ttk.Treeview(self._parent, selectmode='browse', columns=self._columns, show='headings')
+		self._UIParts["tree"] = ttk.Treeview(self._parent, selectmode='browse', columns=self._columns, show='headings', style="modCheck.Treeview")
 		self._UIParts["tree"].pack(expand=True, side='left', fill='both', pady=(5,0))
 
 		if self._columnExtra is not None :
@@ -56,6 +57,8 @@ class ModCheckTreeTab() :
  				 self._treeview_sort(self._UIParts["tree"], _col, False))
 
 		self._UIParts["tree"].bind("<Double-1>", self._on_double_click)
+
+		self._UIParts["tree"].tag_configure('even', background='#E8E8E8')
 
 	def _on_double_click(self, event):
 		""" On double-click of a mod, display some information """
@@ -75,11 +78,16 @@ class ModCheckTreeTab() :
 
 	def add_item(self, name, values):
 		""" Add an item to the tree """
+
 		self._UIParts["tree"].insert(
 			parent = '',
 			index  = 'end',
 			text   = name,
-			values = values)
+			values = values,
+			tags   = ('odd' if self._isOdd else 'even')
+		)
+
+		self._isOdd = not self._isOdd
 
 	def _treeview_sort(self, tv, col, reverse):
 		""" Sort a tree column numerically or alphabetically """

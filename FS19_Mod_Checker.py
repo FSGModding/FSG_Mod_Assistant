@@ -39,12 +39,13 @@ VERSION = "1.0.0.7"
 langPick = Tk.Tk()
 langPick.title("FS19 Mod Checker v" + VERSION)
 langPick.minsize(350, 150)
+langPick.option_add( "*font", "Calibri 10" )
 
 # Change the theme.
 style = ttk.Style()
 style.theme_use('winnative')
 
-ttk.Label(langPick, text="Choose Language", font='Helvetica 15 bold', anchor='center').pack(fill='x', pady=(5,0))
+ttk.Label(langPick, text="Choose Language", font='Calibri 15 bold', anchor='center').pack(fill='x', pady=(5,0))
 userLang = Tk.StringVar()
 
 langPicker = ttk.Combobox(langPick, textvariable=userLang)

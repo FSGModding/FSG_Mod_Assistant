@@ -44,7 +44,7 @@ class ModCheckDetailWin() :
 
 		modTitle = self._theMod.name() or self._modName
 
-		ttk.Label(self._thisWindow, font='Helvetica 12 bold', text=modTitle, anchor='center').pack(fill='x', pady=(10,5))
+		ttk.Label(self._thisWindow, font='Calibri 12 bold', text=modTitle, anchor='center').pack(fill='x', pady=(10,5))
 
 		self._thisWindow.bind("<Escape>", lambda x: self._thisWindow.destroy())
 		
@@ -102,7 +102,7 @@ class ModCheckDetailWin() :
 			])
 
 		for rowCount, thisDetail in enumerate(infoDetails, start=0):
-			ttk.Label(subFrame, text=thisDetail[0], font='Helvetica 8 bold').grid(column=0, row=rowCount, padx=5, sticky='e')
+			ttk.Label(subFrame, text=thisDetail[0], font='Calibri 8 bold').grid(column=0, row=rowCount, padx=5, sticky='e')
 			ttk.Label(subFrame, text=thisDetail[1]).grid(column=1, row=rowCount, padx=5, sticky='w')
 
 		self._UIParts["thisOkButton"] = ttk.Button(subFrame, text=self._base._IOStrings["ok-button-label"], command=self._thisWindow.destroy)

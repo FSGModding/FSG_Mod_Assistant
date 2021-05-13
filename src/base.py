@@ -46,10 +46,18 @@ class ModCheckRoot() :
 		self._root = Tk.Tk()
 		self._root.title("FS19 Mod Checker v" + self._version)
 		self._root.minsize(670, 500)
+		self._root.option_add( "*font", "Calibri 10" )
 
 		# Change the theme.
 		style = ttk.Style()
 		style.theme_use('winnative')
+
+		style.map("Treeview",
+			foreground=self.fixed_map(style, "foreground"),
+			background=self.fixed_map(style, "background"))
+
+		style.configure("modCheck.Treeview", highlightthickness=0, bd=0, font=('Calibri', 10))
+		style.configure("modCheck.Treeview.Heading", font=('Calibri', 11,'bold'))
 
 		self._mainIconImage = Tk.PhotoImage(file = icon)
 		self._root.iconphoto(False, self._mainIconImage)
@@ -69,7 +77,17 @@ class ModCheckRoot() :
 		self._modList = {}
 		self._badList = {}
 		#self._badMods = None
-		
+	
+	def fixed_map(self, style, option):
+		# Returns the style map for 'option' with any styles starting with
+		# ("!disabled", "!selected", ...) filtered out
+
+		# style.map() returns an empty list for missing options, so this should
+		# be future-safe
+		return [elm for elm in style.map("Treeview", query_opt=option)
+				if elm[:2] != ("!disabled", "!selected")]
+
+
 	def mainloop(self) :
 		""" Run the mainloop (Tk) """
 		self._root.mainloop()
@@ -99,7 +117,7 @@ class ModCheckRoot() :
 		""" Create the content for the Configuration tab """
 		self._configStrings = strings
 
-		ttk.Label(self.tabFrame["tabConfig"], text=strings['program-description'], wraplength=570, font='Helvetica 10 bold', anchor='center' ).pack(fill='x', padx=30, pady=(6,10))
+		ttk.Label(self.tabFrame["tabConfig"], text=strings['program-description'], wraplength=570, font='Calibri 10 bold', anchor='center' ).pack(fill='x', padx=30, pady=(6,10))
 		
 
 		ttk.Label(self.tabFrame["tabConfig"], text=strings['info-ask-for-file'] ).pack(fill='x', pady=(0,12))
@@ -131,10 +149,10 @@ class ModCheckRoot() :
 		ttk.Label(internalFrame, text=strings["info-mods-folders"]+":").grid(column=0, row=2, padx=(0,5), sticky=(Tk.E))
 		ttk.Label(internalFrame, text=strings["info-mods-missing"]+":").grid(column=0, row=3, padx=(0,5), sticky=(Tk.E))
 
-		self._configLabels["found"]   = ttk.Label(internalFrame, text="", font='Helvetica 18 bold')
-		self._configLabels["broke"]   = ttk.Label(internalFrame, text="", font='Helvetica 18 bold')
-		self._configLabels["folder"]  = ttk.Label(internalFrame, text="", font='Helvetica 18 bold')
-		self._configLabels["missing"] = ttk.Label(internalFrame, text="", font='Helvetica 18 bold')
+		self._configLabels["found"]   = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
+		self._configLabels["broke"]   = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
+		self._configLabels["folder"]  = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
+		self._configLabels["missing"] = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
 
 		self._configLabels["found"].grid(column=1, row=0, sticky=(Tk.W))
 		self._configLabels["broke"].grid(column=1, row=1, sticky=(Tk.W))

@@ -31,7 +31,7 @@ class ModCheckCanvasTab() :
 
 	def _build(self) :
 		""" Build the canvas inside _parent """
-		ttk.Label(self._parent, text=self.title, font='Helvetica 12 bold').pack()
+		ttk.Label(self._parent, text=self.title, font='Calibri 12 bold').pack()
 		ttk.Label(self._parent, text=self._description, wraplength = 640).pack(fill='x')
 
 		if self._extraText is not None :
@@ -83,9 +83,9 @@ class ModCheckCanvasTab() :
 		""" Add data item to canvas """
 		ttk.Label(
 			self._UIParts["frame"],
-			text   = term,
+			text   = "\u2022 " + term,
 			anchor = 'w',
-			font='Helvetica 9 bold'
+			font='Calibri 9 bold'
 		).pack(fill = 'x', padx = 0, pady = (10,0))
 
 		ttk.Label(
