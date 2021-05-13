@@ -262,7 +262,7 @@ class FSMod() :
 
 	def quickTest (self) :
 		""" Perform a self-test on the mod.  Return pass/fail.  Cache modDesc and icon """
-		if self.isFolder() : 
+		if self.isFolder() :
 			return self._fileIOReadFolder()
 		else :
 			return self._fileIOReadZip()

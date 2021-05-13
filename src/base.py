@@ -179,8 +179,8 @@ class ModCheckRoot() :
 	def _load_main_config(self) :
 		""" Load and open the main config file, set the mod folder """
 		filename = fd.askopenfilename(
-			initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
-			#initialdir  = os.path.expanduser("~") + "/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder",
+			#initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
+			initialdir  = os.path.expanduser("~") + "/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder",
 			initialfile = "gameSettings.xml",
 			title       = self._configStrings["load-button-label"] + " : gameSettings.xml",
 			filetypes   = [(self._IOStrings["xml-file-type"], "gameSettings.xml")]
@@ -316,7 +316,7 @@ class ModCheckRoot() :
 				self._modList[modName].isBad(True)
 			else :
 				if self._modList[modName].quickTest():
-					self._modList[modName].isGood(True)
+					self._badList[modName].isGood(True)
 
 		
 		# Next, the zip files
