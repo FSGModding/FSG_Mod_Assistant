@@ -17,12 +17,12 @@ import locale
 import itertools
 
 class FSMod() :
-	# This class holds all of the information about a mod we would want to know
+	""" This class holds all of the information about a mod we would want to know """
 
 	langCode = ["en"]
 
 	def setLangCode(self, code):
-		""" I do not wanna talk about it. This is program-wide"""
+		""" Set preferred language as class-shared. """
 		self.langCode.clear()
 		self.langCode.append(code)
 
@@ -35,84 +35,76 @@ class FSMod() :
 		self._fileSize    = 0
 		self._activeGames = set()
 		self._usedGames   = set()
-		self._thisZIP     = None
+
 		self._modDescTree = None
-		self._modDescC    = False
-		self._iconImageTk = None
-		self._iconImageC  = False
+		self._iconImage   = None
 
 		self.modVersion   = "0.0.0.0"
 	
 	def isFolder(self, *args) :
-		# Boolean "is this a folder", allow setting the same
+		""" Boolean "is this a folder", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._folder = args[0]
 		else :
 			return self._folder
 
 	def getZip(self) :
-		# If this is a zip file, return the extension, otherwise do nothing.
+		""" If this is a zip file, return the extension, otherwise do nothing. """
 		if not self._folder:
 			return ".zip"
 		else :
 			return ""
 
 	def isZip(self, *args) :
-		# Boolean "is this a zip file", allow setting the same
+		""" Boolean "is this a zip file", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._folder = not args[0]
 		else:
 			return not self._folder
 
 	def isMissing(self, *args) :
-		# Boolean "does this file/folder NOT exist", allow setting the same
+		""" Boolean "does this file/folder NOT exist", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._fileExists = not args[0]
 		else:
 			return not self._fileExists
 
 	def isNotMissing(self, *args) :
-		# Boolean "does this file/folder exist", allow setting the same
+		""" Boolean "does this file/folder exist", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._fileExists = args[0]
 		else:
 			return self._fileExists
 
-
 	def isGood(self, *args) :
-		# Boolean "is this named correctly", allow setting the same
+		""" Boolean "is this named correctly", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._filenameOK = args[0]
 		else:
 			return self._filenameOK
 
 	def isBad(self, *args) :
-		# Boolean "is this named INCORRECTLY", allow setting the same
+		""" Boolean "is this named INCORRECTLY", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._filenameOK = not args[0]
 		else:
 			return not self._filenameOK
 
 	def isActive(self, *args) :
-		# Boolean "is this mod active", also takes an integer to mark active in savegame #
+		""" Boolean "is this mod active", also takes an integer to mark active in savegame # """
 		if ( len(args) > 0 ) :
 			self._activeGames.add(args[0])
 		else: 
 			return ( len(self._activeGames) > 0 )
 
 	def isNotActive(self) :
-		# Boolean "is this mod not active"
-	 	return ( len(self._activeGames) == 0 )
+		""" Boolean "is this mod not active" """
+		return ( len(self._activeGames) == 0 )
 
-	def getAllActiveHR(self, short = False) :
-		# Return a string of all the savegames this mod is active in - human readable
-		if self.isNotActive() :
+	def getAllActive(self, short = False, veryShort = False, showNone = False) :
+		""" Return a string of all the savegames this mod is active in """
+		if showNone and self.isNotActive() :
 			return "--"
-		else :
-			return self.getAllActive(short)
-
-	def getAllActive(self, short = False, veryShort = False) :
-		# Return a string of all the savegames this mod is active in
 		if veryShort :
 			return ", ".join(list(self._to_ranges(self._activeGames)))
 		if short :
@@ -121,25 +113,20 @@ class FSMod() :
 			return ", ".join( str(t) for t in sorted(self._activeGames, key = lambda item : int(item)) )
 
 	def isUsed(self, *args) :
-		# Boolean "is this mod used", also takes an integer to mark active in savegame #
+		""" Boolean "is this mod used", also takes an integer to mark active in savegame # """
 		if ( len(args) > 0 ) :
 			self._usedGames.add(args[0])
 		else: 
 			return ( len(self._usedGames) > 0 )
 
 	def isNotUsed(self) :
-		# Boolean "is this mod not used"
-	 	return ( len(self._usedGames) == 0 )
+		""" Boolean "is this mod not used" """
+		return ( len(self._usedGames) == 0 )
 
-	def getAllUsedHR(self, short = False) :
-		# Return a string of all the savegames this mod is used in - human readable
-		if self.isNotUsed() :
+	def getAllUsed(self, short = False, veryShort = False, showNone = False) :
+		""" Return a string of all the savegames this mod is used in """
+		if showNone and self.isNotUsed() :
 			return "--"
-		else :
-			return self.getAllUsed(short)
-
-	def getAllUsed(self, short = False, veryShort = False) :
-		# Return a string of all the savegames this mod is used in
 		if veryShort :
 			return ", ".join(list(self._to_ranges(self._activeGames)))
 		if short :
@@ -148,34 +135,34 @@ class FSMod() :
 			return ", ".join( str(t) for t in sorted(self._usedGames, key = lambda item : int(item)) )
 
 	def setUsedToActive(self) :
-		# Normalize the games this mod is used in the it's active games
+		""" Normalize the games this mod is used in the it's active games """
 		self._usedGames.update(self._activeGames)
 
 	def size(self, *args) :
-		# Return a human readable string of the mod file/folder size, allow setting the same
+		""" Return a human readable string of the mod file/folder size, allow setting the same """
 		if ( len(args) > 0 ) :
 			self._fileSize = args[0]
 		else:
 			if self._fileSize  < 1 :
 				return "0 B"
 			else :
-				size           = self._fileSize
+				size = self._fileSize
 
-				for unit in ['B', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb']:
-					if size < 1024.0 or unit == 'Pb':
+				for unit in ['B', 'Kb', 'Mb', 'Gb']:
+					if size < 1024.0 or unit == 'Gb':
 						break
 					size /= 1024.0
 				return locale.format('%.2f', size, True) + " " + unit
 
 	def name(self, *args) :
-		# Return the name of the mod (title), allow setting the same
+		""" Return the name of the mod (title), allow setting the same """
 		if ( len(args) > 0 ) :
 			self._name = args[0]
 		else :
 			return self._name
 
 	def fullPath(self, *args) :
-		# Return the full file path to the mod, allow setting the same
+		""" Return the full file path to the mod, allow setting the same """
 		if ( len(args) > 0 ) :
 			self._fullPath = args[0]
 
@@ -185,95 +172,111 @@ class FSMod() :
 			else :
 				return None
 
-	def _getModDesc(self) :
-		""" Check to see if the mod has a modDesc.xml file (and parse it)
-
-		WARNING: don't do this for every mod, IO *expensive*
-		"""
-		if self._modDescC or self._modDescTree is not None:
-			return self._modDescTree
-
-
-		if self.isMissing() or self._fullPath is None :
-			return None
-		
-		self._modDescC = True # Cache results
-
-		if self.isZip() :
-			self._thisZIP = zipfile.ZipFile(self._fullPath)
-
-			if 'modDesc.xml' in self._thisZIP.namelist() :
-				try:
-					thisModDesc = self._thisZIP.read('modDesc.xml')
-					self._modDescTree = etree.fromstring(thisModDesc)
-					return self._modDescTree
-				except:
-					return None
-		else :
-			if os.path.exists(os.path.join(self._fullPath, "modDesc.xml")) :
-				try:
-					self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
-					return self._modDescTree
-				except :
-					return None
-
-		return None
-
-	def simpleTestZip (self) :
-		if self.isFolder() : return None
-
-		""" Catch bad zips """
+	def _fileIOReadZip(self) :
+		""" Read the zip file, get whatever we need for later (test it) """
 		try :
-			localZIP = zipfile.ZipFile(self._fullPath)
-		except zipfile.BadZipFile :
+			zipFileData  = zipfile.ZipFile(self._fullPath)
+			zipFileFiles = zipFileData.namelist()
+		except (zipfile.BadZipFile, PermissionError) :
+			""" Can't read the zip file """
+			self._modDescTree = False # We will never get the modDesc
+			self._iconImage   = False # We will never get an icon
 			return False
 
-		if 'modDesc.xml' in localZIP.namelist() :
+		if 'modDesc.xml' in zipFileFiles :
 			try:
-				thisModDesc = localZIP.read('modDesc.xml')
-				localTree = etree.fromstring(thisModDesc)
-				self.modVersion = localTree.findtext("version")
-				localZIP.close()
-				return True
-			except:
-				localZIP.close()
+				modDescFileData = zipFileData.read('modDesc.xml')
+				self._modDescTree = etree.fromstring(modDescFileData)
+			except :
+				""" Can't find / read modDesc """
+				self._modDescTree = False # Never get it now
+				self._iconImage   = False # No icon either
 				return False
-		else :
-			return False
 
-	def hasModDesc(self) :
-		""" Check to see if the mod has a modDesc.xml file. (cached)
+			iconFileNameGiven = self._modDescTree.findtext('iconFilename')
+			iconFileNameFound = None
 
-		WARNING: don't do this for every mod, IO *expensive*
-		"""
-		if self.isMissing() or self._fullPath is None :
-			return False
+			if iconFileNameGiven in zipFileFiles :
+				iconFileNameFound = iconFileNameGiven
+			elif iconFileNameGiven.endswith(".png") :
+				iconFileNameTemp = iconFileNameGiven[0:-4] + ".dds"
+				if iconFileNameTemp in zipFileFiles :
+					iconFileNameFound = iconFileNameTemp
+				else :
+					iconFileNameFound = None
+
+			if iconFileNameFound is not None:
+				try :
+					iconFileData    = zipFileData.read(iconFileNameFound)
+					iconImagePIL    = Image.open(io.BytesIO(iconFileData))
+					self._iconImage = iconImagePIL.resize((150,150))
+				except :
+					""" Can't read icon file """
+					self._iconImage = False
+						
+			self.modVersion = self._modDescTree.findtext("version")
+
+			return True
 		
-		if self._modDescTree is not None or self._getModDesc() is not None:
+	def _fileIOReadFolder(self) :
+		""" Read the folder, get whatever we need for later (test it) """
+		if os.path.exists(os.path.join(self._fullPath, "modDesc.xml")) :
+			""" modDesc exists """
+			try:
+				self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
+			except :
+				""" Can't find / read modDesc """
+				self._modDescTree = False # Never get it now
+				self._iconImage   = False # No icon either
+				return False
+
+
+			iconFileNameGiven = self._modDescTree.findtext('iconFilename')
+			iconFileNameFound = None
+
+			if os.path.exists(os.path.join(self._fullPath, iconFileNameGiven)) :
+				iconFileNameFound = iconFileNameGiven
+			elif iconFileNameGiven.endswith(".png") :
+				iconFileNameTemp = iconFileNameGiven[0:-4] + ".dds"
+				if os.path.exists(os.path.join(self._fullPath, iconFileNameTemp)) :
+					iconFileNameFound = iconFileNameTemp
+				else :
+					iconFileNameFound = None
+
+			if iconFileNameFound is not None:
+				try :
+					iconImagePIL    = Image.open(os.path.join(self._fullPath, iconFileNameFound))
+					self._iconImage = iconImagePIL.resize((150,150))
+				except :
+					""" Can't read icon file """
+					self._iconImage = False
+						
+			self.modVersion = self._modDescTree.findtext("version")
+
 			return True
 		else :
+			""" No Mod Desc """
+			self._modDescTree = False # We will never get the modDesc
+			self._iconImage   = False # We will never get an icon
 			return False
-		
+
+	def quickTest (self) :
+		""" Perform a self-test on the mod.  Return pass/fail.  Cache modDesc and icon """
+		if self.isFolder() : 
+			return self._fileIOReadFolder()
+		else :
+			return self._fileIOReadZip()
+
 	def getModDescDescription(self) :
-		if self.isMissing() or self._fullPath is None: 
-			return None
-
-		if ( self._modDescTree is None ) :
-			self._getModDesc()
-
-		if ( self._modDescTree is not None ) :
+		""" Get the description from modDesc - assume loaded, as we do that in the test phase """
+		if isinstance(self._modDescTree, etree._Element) :
 			return self._getI10nFromXPath(self._modDescTree.xpath("/modDesc/description"))
 		else :
 			return None
 
 	def getModDescName(self) :
-		if self.isMissing() or self._fullPath is None: 
-			return None
-
-		if ( self._modDescTree is None ) :
-			self._getModDesc()
-
-		if ( self._modDescTree is not None ) :
+		""" Get the name from the modDesc if possible. Otherwise, just return the current name """
+		if isinstance(self._modDescTree, etree._Element) :
 			nameTry = self._getI10nFromXPath(self._modDescTree.xpath("/modDesc/title"))
 
 			if nameTry is not None:
@@ -281,81 +284,18 @@ class FSMod() :
 
 		return self._name
 
-
-	# 	if self.isZip() :
-	# 		thisZip = zipfile.ZipFile(self._fullPath)
-
 	def getIconFile(self, window) :
-		""" Get a Tk.PhotoImage icon from the mod, if it exists.
-
-		WARNING: don't do this for every mod, IO *expensive*
-		"""
-		if self._iconImageC or self._iconImageTk is not None:
-			""" Cache results.  Only read this once """
-			return self._iconImageTk
-
-		if self.isMissing() or self._fullPath is None: 
+		""" Get the icon file, in the calling window """
+		if not self._iconImage:
 			return None
-
-		self._iconImageC = True # Cache results
-
-		if ( self._modDescTree is None ) :
-			self._getModDesc()
-
-		if ( self._modDescTree is None ) :
-			return None
-
-		configFileTree = self._modDescTree
-		iconFileName   = self._normalize_icon_name(configFileTree.findtext('iconFilename'))
-		
-		if iconFileName is None:
-			self._iconImageTk = False
-			return None
-
-		if self.isZip() :
-			try:
-				iconFileData = self._thisZIP.read(iconFileName)
-				iconImagePIL = Image.open(io.BytesIO(iconFileData))
-			except:
-				return None
-		else :
-			try:				
-				iconImagePIL = Image.open(os.path.join(self._fullPath, iconFileName))
-			except :
-				return None
 
 		try :
-			self._iconImageTk = ImageTk.PhotoImage(iconImagePIL.resize((150,150)), master=window)
+			return ImageTk.PhotoImage(self._iconImage, master=window)
 		except :
 			return None
 
-		return self._iconImageTk
-
-	def _normalize_icon_name(self, givenName) :
-		if givenName is None : return None
-
-		if ( self.isZip() ) :
-			if givenName in self._thisZIP.namelist() :
-				return givenName
-			if givenName.endswith(".png") :
-				tempName = givenName[0:-4] + ".dds"
-				if tempName in self._thisZIP.namelist() :
-					return tempName
-				else :
-					return None
-		else :
-			if os.path.exists(os.path.join(self._fullPath, givenName)) :
-				return givenName
-			if givenName.endswith(".png") :
-				tempName = givenName[0:-4] + ".dds"
-				if os.path.exists(os.path.join(self._fullPath, tempName)) :
-					return tempName
-				else :
-					return None
-
-		return None
-
 	def _getI10nFromXPath(self, xPathLookup) :
+		""" Get localized text from the modDesc, with fallbacks (en->de->first seen) """
 		fallbacks = [None, None, None]
 
 		for parentElement in xPathLookup:
@@ -373,6 +313,7 @@ class FSMod() :
 		return None
 
 	def _to_ranges(self, iterable) :
+		""" Turn a set into ranges - i.e. 1,2,3,4,6,8 -> 1-4,6,8 """
 		iterable = sorted(int(x) for x in set(iterable))
 		for key, group in itertools.groupby(enumerate(iterable), lambda t: t[1] - t[0]) : # pylint: disable=unused-variable
 			group = list(group)
@@ -385,8 +326,5 @@ class FSMod() :
 			else:
 				yield str(group[0][1]) + "-" + str(group[-1][1])
 
-	def closeZIP(self) :
-		if self.isZip() and self._thisZIP is not None:
-			self._thisZIP.close()
 
 

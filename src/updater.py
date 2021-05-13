@@ -10,12 +10,15 @@ import tkinter as Tk
 import tkinter.ttk as ttk
 
 class ModCheckUpdater() :
+	"""
+	Update the tabs
+
+	Keyword Arguments:
+	  rootWindow   -- inherit the base class
+	"""
 
 	def __init__(self, rootWindow) :
-		""" Update the tabs
-
-		 * rootWindow   - inherit the base class
-		"""
+		
 		self._rootWindow = rootWindow
 		
 	def updateConfigNumbers(self, found = 0, broke = 0, missing = 0, folder = 0) :
@@ -100,7 +103,7 @@ class ModCheckUpdater() :
 			root._logger.write("{modName} ({modTitle}) [{savegames}] {isOwned}".format(
 				modName   = thisMod,
 				modTitle  = root._modList[thisMod].name(),
-				savegames = root._modList[thisMod].getAllActive(True),
+				savegames = root._modList[thisMod].getAllActive(short=True),
 				isOwned   = ("(" + root._IOStrings["OWNED"] + ")") if root._modList[thisMod].isUsed() else ""
 			))
 
@@ -152,7 +155,7 @@ class ModCheckUpdater() :
 			root._logger.write("{modName} ({modTitle}) [{savegames}] ({modFileSize})".format(
 				modName     = thisMod,
 				modTitle    = root._modList[thisMod].name(),
-				savegames   = root._modList[thisMod].getAllActive(True),
+				savegames   = root._modList[thisMod].getAllActive(short=True),
 				modFileSize = root._modList[thisMod].size()
 			))
 		

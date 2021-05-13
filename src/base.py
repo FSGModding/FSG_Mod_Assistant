@@ -19,19 +19,22 @@ import lxml.etree as etree
 import webbrowser
 
 class ModCheckRoot() :
+	"""
+	Build the app
+
+	Keyword Arguments:
+	  version      -- current version string
+	  logger       -- class ModCheckLog from src.data.logger instance
+	  icon         -- Path to program icon file, string
+	  modClass     -- Base class FSMod from src.data.mods
+	  badClass     -- Base class FSBadFile from src.data.badfile
+	  scriptMods   -- list of known script mods
+	  conflictMods -- dict of known conflicting mods
+	  updater      -- Base class ModCheckUpdater from src.updater
+	"""
 
 	def __init__(self, version, logger, icon, modClass, badClass, scriptMods, conflictMods, updater) :
-		""" Build the app
-
-		 * version      - current version string
-		 * logger       - an instance of src.data.logger.ModCheckLog()
-		 * icon         - Path to icon file, string
-		 * modClass     - the FSMod class from src.data.mods
-		 * badClass     - the class to diagnose a bad file
-		 * scriptMods   - list of known script mods
-		 * conflictMods - dictionary of known conflicting mods
-		 * updater      - the ModCheckUpdater class.
-		"""
+		
 		self._version        = version
 		self._logger         = logger
 		self._configFileName = None
@@ -76,14 +79,11 @@ class ModCheckRoot() :
 
 		self._modList = {}
 		self._badList = {}
-		#self._badMods = None
 	
 	def fixed_map(self, style, option):
-		# Returns the style map for 'option' with any styles starting with
-		# ("!disabled", "!selected", ...) filtered out
-
-		# style.map() returns an empty list for missing options, so this should
-		# be future-safe
+		""" This is a workaround for background color not working in treeview on current 
+		version of Tk included with python.  Presumably, this gets nuked sometime soon. 2021-05-13
+		"""
 		return [elm for elm in style.map("Treeview", query_opt=option)
 				if elm[:2] != ("!disabled", "!selected")]
 
@@ -122,10 +122,10 @@ class ModCheckRoot() :
 
 		ttk.Label(self.tabFrame["tabConfig"], text=strings['info-ask-for-file'] ).pack(fill='x', pady=(0,12))
 
-		loadButton = ttk.Button(self.tabFrame["tabConfig"], text=strings['load-button-label'], command=self._load_main_config)
-		loadButton.pack(fill='x')
-		loadButton.bind('<Return>', lambda event=None: loadButton.invoke())
-		loadButton.focus_force()
+		self._loadButton = ttk.Button(self.tabFrame["tabConfig"], text=strings['load-button-label'], command=self._load_main_config)
+		self._loadButton.pack(fill='x')
+		self._loadButton.bind('<Return>', lambda event=None: self._loadButton.invoke())
+		self._loadButton.focus_force()
 
 		self._configLabels["filename"] = ttk.Label(self.tabFrame["tabConfig"], text=strings["info-game-settings"].format(filename = "--"), anchor="center" )
 		self._configLabels["filename"].pack(fill='x', pady=(20,0))
@@ -219,6 +219,17 @@ class ModCheckRoot() :
 
 	def _process_button(self) :
 		""" Run the "Process Mods" button """
+
+		# Disable the buttons while we run
+		currentButtonText = self._processButton["text"]
+		self._configLabels["found"].focus()
+		self._processButton["text"] = self._IOStrings["working-pause"]
+		self._processButton.state(['disabled'])
+		self._loadButton.state(['disabled'])
+		self._root.config(cursor="watch")
+		self._root.update()
+		
+		
 		self._read_mods_from_folder()
 		self._read_mods_from_saves()
 		self._read_script_mod()
@@ -235,8 +246,13 @@ class ModCheckRoot() :
 		self._updater.update_tab_good()
 	
 		self._logger.footer()
-		# Hackish way to un-focus the process button
+
+		# Undo the GUI changes when done processing
+		self._processButton["text"] = currentButtonText
+		self._processButton.state(['!disabled'])
+		self._loadButton.state(['!disabled'])
 		self._configLabels["found"].focus()
+		self._root.config(cursor="")
 		
 		
 	def _save_log(self) :
@@ -258,6 +274,9 @@ class ModCheckRoot() :
 
 	def _read_mods_from_folder(self) :
 		""" Read the mods that are in the mods folder """
+		
+
+		
 		modsGlob = glob.glob(os.path.join(self._modDir, "*"))
 
 		modDirFiles   = [fn for fn in modsGlob 
@@ -296,7 +315,8 @@ class ModCheckRoot() :
 			if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) or re.search(r'unzip', modName, re.IGNORECASE)) :
 				self._modList[modName].isBad(True)
 			else :
-				self._badList[modName].isGood(True)
+				if self._modList[modName].quickTest():
+					self._modList[modName].isGood(True)
 
 		
 		# Next, the zip files
@@ -312,9 +332,10 @@ class ModCheckRoot() :
 				self._modList[modName].isBad(True)
 				self._badList[badModName] = self._FSBadFile(thisMod, self._brokenStrings)
 			else :
-				if not self._modList[modName].simpleTestZip():
+				if not self._modList[modName].quickTest():
 					self._modList[modName].isBad(True)
 					self._badList[badModName] = self._FSBadFile(thisMod, self._brokenStrings)
+ 
 
 	def _read_mods_from_saves(self) :
 		""" Read the mods that are referenced in the savegames """
@@ -397,6 +418,7 @@ class ModCheckRoot() :
 
 
 class Link(Tk.Label):
+	""" Real simple Tk.label hyperlink class """
 	
 	def __init__(self, master=None, link=None, fg='grey', font=('Arial', 10), *args, **kwargs):
 		super().__init__(master, *args, **kwargs)

@@ -8,11 +8,16 @@
 # (c) 2021 JTSage.  MIT License.
 
 
-# These are mods we are sure will (almost) never actually appear in the "used" section because
-# they don't have anything that you buy or place included in them.
-#
-# The big exception is Seasons, as it does have one or two placeables, but you don't have to use
-# them, so better to err on the side of caution. 
+"""
+These are mods we are sure will (almost) never actually
+appear in the "used" section because they don't have
+anything that you buy or place included in them.
+
+The big exception is Seasons, as it does have one
+or two placeables, but you don't have to use
+them, so better to err on the side of caution. 
+"""
+
 mods = [
 	"FS19_adjustWorkingSpeed",
 	"FS19_AdvancedStats",

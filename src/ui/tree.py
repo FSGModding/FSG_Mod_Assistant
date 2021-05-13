@@ -11,17 +11,20 @@ import tkinter as Tk
 import tkinter.ttk as ttk
 
 class ModCheckTreeTab() :
+	""" 
+	Build a ttk.TreeView tab
+
+	Keyword arguments:
+	  parent      -- Parent element
+	  title       -- str Title of this tab (display label)
+	  description -- str Description of this tab
+	  columns     -- list of columns
+	  base        -- Root window object
+	  columnExtra -- dict of kwargs for each column, if needed.
+	  detail      -- Base class ModCheckDetailWin from src.ui.detail
+	""" 
 
 	def __init__(self, parent, title, description, columns, base, detail, columnExtra=None) :
-		""" Build a ttk.TreeView tab
-			* parent      - Parent element
-			* title       - Title of this tab (display label)
-			* description - Description of this tab
-			* columns     - Simple list of columns
-			* base        - Root window object
-			* columnExtra - kwargs for each column, if needed.
-			* detail      - Detail window class
-		""" 
 		self._parent      = parent
 		self._UIParts     = {}
 		self.title        = title

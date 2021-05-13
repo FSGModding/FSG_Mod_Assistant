@@ -10,15 +10,19 @@ import tkinter as Tk
 import tkinter.ttk as ttk
 
 class ModCheckCanvasTab() :
+	"""
+	Build a ttk.Canvas (scrollable) tab
+
+	Keywork Arguments:
+
+	  parent      -- Parent element
+	  title       -- str Title of this tab (display label)
+	  description -- str Description of this tab
+	  extraText   -- list Extra info to add to window
+	  hideCanvas  -- bool Skip production of the scrollable frame
+	""" 
 
 	def __init__(self, parent, title, description, extraText=None, hideCanvas = False) :
-		""" Build a ttk.Canvas (scrollable) tab
-			* parent      - Parent element
-			* title       - Title of this tab (display label)
-			* description - Description of this tab
-			* extraText   - Extra info to add to window
-			* hideCanvas  - Only use this as an info tab, don't produce the canvas
-		""" 
 		self._parent      = parent
 		self._UIParts     = {}
 		self.title        = title

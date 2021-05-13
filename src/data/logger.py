@@ -11,7 +11,8 @@ import datetime
 class ModCheckLog() :
 	""" Log class
 
-	BIG NOTE: this is a *shared* log, the log contents are deliberately not instanced
+	BIG NOTE: this is a *shared* log, the log contents
+	are deliberately not instanced
 	"""
 
 	LogText = []

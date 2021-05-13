@@ -12,14 +12,18 @@ import tkinter.ttk as ttk
 import locale
 
 class ModCheckDetailWin() :
+	"""
+	Make the details window for a specific mod
+
+	Keyword Arguments:
+	  base        -- Root window object
+	  parent      -- Parent element
+	  modName     -- str Name of the mod
+	  modClass    -- class src.data.mods instance
+	""" 
 
 	def __init__(self, base, parent, modName, modClass) :
-		""" Build a ttk.TreeView tab
-			* parent      - Parent element
-			* base        - Root window object
-			* modName     - Text name of the mod
-			* modClass    - Details of the mod
-		""" 
+		
 
 		self._parent      = parent
 		self._modName     = modName
@@ -33,9 +37,9 @@ class ModCheckDetailWin() :
 		self._title()
 		self._logo_and_detail()
 		self._canvas_desc()
-		self._theMod.closeZIP()
 
 	def _title(self) :
+		""" Create window, set title, bind <esc> to close """
 		self._thisWindow.title(self._modName)
 		self._thisWindow.geometry("650x450")
 
@@ -49,6 +53,7 @@ class ModCheckDetailWin() :
 		self._thisWindow.bind("<Escape>", lambda x: self._thisWindow.destroy())
 		
 	def _logo_and_detail(self) :
+		""" Do the mod logo, and the list of details we know about the mod """
 
 		mainFrame = Tk.Frame(self._thisWindow)
 		mainFrame.pack(fill='x', anchor='center', padx=10, pady=(0,10), expand=True)
@@ -87,11 +92,11 @@ class ModCheckDetailWin() :
 			],
 			[
 				self._base._IOStrings["active-in"],
-				self._theMod.getAllActiveHR()
+				self._theMod.getAllActive(showNone = True)
 			],
 			[
 				self._base._IOStrings["used-in"],
-				self._theMod.getAllUsedHR()
+				self._theMod.getAllUsed(showNone = True)
 			]
 		]
 
@@ -111,6 +116,7 @@ class ModCheckDetailWin() :
 		self._UIParts["thisOkButton"].focus()
 
 	def _canvas_desc(self):	
+		""" Set up and populate a scrollable frame with the description in it """
 		self._UIParts["canvas"] = Tk.Canvas(self._thisWindow, bd=2, relief='ridge')
 		self._UIParts["VSB"]    = ttk.Scrollbar(self._thisWindow, orient="vertical", command=self._UIParts["canvas"].yview)
 		self._UIParts["frame"]  = ttk.Frame(self._UIParts["canvas"], border=1, padding=(30,0))

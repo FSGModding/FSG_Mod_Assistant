@@ -13,12 +13,13 @@ import zipfile
 import lxml.etree as etree
 
 class FSBadFile() :
-	# This class holds all of the information about a mod we would want to know
+	""" This class holds all of the information about a mod we would want to know """
 
 	fullModList = []
 	fullModListObj = {}
 
 	def setFullModList(self, keylist, theObject):
+		""" Use a class-global copt of the modlist (keys) and objects """
 		self.fullModList.clear()
 		self.fullModList.extend(keylist)
 		self.fullModListObj.clear()
@@ -33,28 +34,37 @@ class FSBadFile() :
 		self._thisZIP       = None
 		self._modDesc       = None
 		self._modDescTree   = None
+		self._whatWrong     = None
 		self.modVersion     = "0.0.0.0"
 		
 	def isFolder(self, *args) :
-		# Boolean "is this a folder", allow setting the same
+		""" Boolean "is this a folder", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._folder = args[0]
 		else :
 			return self._folder
 
 	def isGarbage(self) :
+		""" Is this not possibly a valid file? """
 		return not self.isFolderOrZip()
 
 	def isFolderOrZip(self) :
+		""" Is a folder or a zip / inverse of isGarbage() """
 		return (self._folder or self._fullPath.endswith(".zip"))
 
 	def nameIsUnzip(self) :
+		""" Filename contains the "unzip" string """
 		return re.search(r'unzip', self._filename, re.IGNORECASE)
 
 	def nameStartsDigit(self) :
+		""" Filename starts with a digit """
 		return re.match(r'[0-9]',self._filename)
 
 	def isCopy(self) :
+		""" Is this a likely copy of another mod? 
+		Return tuple :
+			(bool Answer, str Good Name Guess)
+		"""
 		windowsCopyName = re.search(r'(\w+) - .+', self._filename)
 		browserDLCopyName = re.search(r'(\w+) \(.+', self._filename)
 
@@ -74,6 +84,7 @@ class FSBadFile() :
 		return (False,False)
 
 	def isValidZip(self) :
+		""" Test is the zip actually opens as a zip """
 		if self._folder : return False
 
 		if not self._fullPath.endswith(".zip") : return False
@@ -85,21 +96,21 @@ class FSBadFile() :
 			return False
 
 	def isGood(self, *args) :
-		# Boolean "is this named correctly", allow setting the same
+		""" Boolean "is this named correctly", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._filenameOK = args[0]
 		else:
 			return self._filenameOK
 
 	def isBad(self, *args) :
-		# Boolean "is this named INCORRECTLY", allow setting the same
+		""" Boolean "is this named INCORRECTLY", allow setting the same """
 		if ( len(args) > 0 ) :
 			self._filenameOK = not args[0]
 		else:
 			return not self._filenameOK
 
 	def fullPath(self, *args) :
-		# Return the full file path to the mod, allow setting the same
+		""" Return the full file path to the mod, allow setting the same """
 		if ( len(args) > 0 ) :
 			self._fullPath = args[0]
 
@@ -140,6 +151,7 @@ class FSBadFile() :
 		return False
 
 	def isGarbageArchive(self) :
+		""" Is this an archive FS can't open? """
 		knownArcs = [".7z", ".rar"]
 
 		for thisArchive in knownArcs :
@@ -149,11 +161,19 @@ class FSBadFile() :
 		return False
 
 	def done(self) :
-	 	if self._thisZIP is not None:
-	 		self._thisZIP.close()
-
+		""" Explicit file close (zip) """
+		if self._thisZIP is not None:
+			self._thisZIP.close()
 
 	def diagnose(self) :
+		""" Cache diagnosis. We don't need this *yet*, but might someday soon """
+		if self._whatWrong is None:
+			self._whatWrong = self._diagnose()
+
+		return self._whatWrong
+
+	def _diagnose(self) :
+		""" Diagnose what is wrong with this file/mod """
 		if self.isGarbage() :
 			if self.isGarbageArchive() :
 				return self._brokenStrings["garbage-archive"]

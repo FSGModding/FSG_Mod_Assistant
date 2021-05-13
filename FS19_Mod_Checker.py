@@ -119,7 +119,8 @@ def makeRootWindow(langWindow) :
 		"type-zip-file"       : _("ZIP File"),
 		"type-folder"         : _("Folder"),
 		"type-missing"        : _("Mod is Missing"),
-		"type-title"          : _("Mod Type")
+		"type-title"          : _("Mod Type"),
+		"working-pause"       : _("Working...")
 	})
 
 
