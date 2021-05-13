@@ -3,13 +3,14 @@
 |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
-Mods Found: 195
-Broken Mods: 8
+Mods Found: 196
+Broken Mods: 9
 Folders Found: 2
 Missing Mods: 36
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
 Broken Mods:
   FS19_Engine_Starter - Unzipped mods cannot be used in multiplayer, you should zip this folder
+  FS19_MoneyTool - Copy 2.zip - This looks like a copy of the FS19_MoneyTool mod, however, they are different versions. Good File: 1.0.0.0, Bad File: 1.0.0.1
   FS19_MoneyTool - Copy.zip - This looks like a copy of the FS19_MoneyTool mod and can probably be deleted.
   FS19_borderStoneSet (1).zip - This looks like a copy, but the original wasn't found. Rename it?
   Invalid_Mod_Folder - This folder shouldn't be here, it is not a valid mod.
@@ -102,5 +103,5 @@ Active, Un-Used Mods:
   FS19_StrawBlower_Big_Confort (Straw Blower Gyrax BIG CONFORT) [1,7] (6.11 Mb)
   FS19_TigerMate255 (Case IH Tiger-Mate 255 Field Cultivator) [9] (19.76 Mb)
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
-2021-05-11 17:01
+2021-05-13 13:54
    ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---
