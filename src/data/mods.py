@@ -15,6 +15,7 @@ import PIL.ImageTk as ImageTk
 import io
 import locale
 import itertools
+import hashlib
 
 class FSMod() :
 	""" This class holds all of the information about a mod we would want to know """
@@ -38,6 +39,7 @@ class FSMod() :
 
 		self._modDescTree = None
 		self._iconImage   = None
+		self._sha256hash  = None
 
 		self.modVersion   = None
 	
@@ -259,6 +261,26 @@ class FSMod() :
 			self._modDescTree = False # We will never get the modDesc
 			self._iconImage   = False # We will never get an icon
 			return False
+
+	def sha256sum(self):
+		""" Compute SHA256 hash of this mod """
+		if self._sha256hash is not None:
+			return self._sha256hash
+		if self._fullPath is None:
+			return None
+		if self.isFolder() :
+			""" Overload the return for folders, we do not want to hash a folder """
+			return False
+
+		h  = hashlib.sha256()
+		b  = bytearray(128*1024)
+		mv = memoryview(b)
+		with open(self._fullPath, 'rb', buffering=0) as f:
+			for n in iter(lambda : f.readinto(mv), 0):
+				h.update(mv[:n])
+
+		self._sha256hash = h.hexdigest()
+		return self._sha256hash
 
 	def quickTest (self) :
 		""" Perform a self-test on the mod.  Return pass/fail.  Cache modDesc and icon """

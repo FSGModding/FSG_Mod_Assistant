@@ -11,6 +11,7 @@ import os
 import re
 import zipfile
 import lxml.etree as etree
+import hashlib
 
 class FSBadFile() :
 	""" This class holds all of the information about a mod we would want to know """
@@ -160,6 +161,21 @@ class FSBadFile() :
 		
 		return False
 
+	def sha256sum(self):
+		""" Compute SHA256 hash of this mod """
+		if self.isFolder() :
+			return None
+
+		h  = hashlib.sha256()
+		b  = bytearray(128*1024)
+		mv = memoryview(b)
+		with open(self._fullPath, 'rb', buffering=0) as f:
+			for n in iter(lambda : f.readinto(mv), 0):
+				h.update(mv[:n])
+
+		return h.hexdigest()
+
+
 	def done(self) :
 		""" Explicit file close (zip) """
 		if self._thisZIP is not None:
@@ -197,10 +213,12 @@ class FSBadFile() :
 
 			if amICopied[0] :
 				if amICopied[1] :
-					""" Duplicate, other exists """
+					""" Duplicate, other can be guessed and found """
 					if self.modVersion == self.fullModListObj[amICopied[1]].modVersion :
+						""" Yep, guessed name exists """
 						return self._brokenStrings["duplicate-have"].format(guessedModName=amICopied[1])
 					else :
+						""" Different versions """
 						return self._brokenStrings["duplicate-diff"].format(
 							guessedModName = amICopied[1],
 							goodVer        = self.fullModListObj[amICopied[1]].modVersion,
@@ -242,10 +260,17 @@ class FSBadFile() :
 			if amICopied[0]:
 				""" We are a copy! """
 				if amICopied[1] :
-					""" Duplicate, other exists """
+					""" Duplicate, other guessed and found """
 					if self.modVersion == self.fullModListObj[amICopied[1]].modVersion :
-						return self._brokenStrings["duplicate-have"].format(guessedModName=amICopied[1])
+						""" Same version """
+						if self.sha256sum() == self.fullModListObj[amICopied[1]].sha256sum() :
+							""" Same SHA256 sum (identical) """
+							return self._brokenStrings["duplicate-have"].format(guessedModName=amICopied[1])
+						else :
+							""" Same versions, different sum - somebody altered it """
+							return self._brokenStrings["duplicate-sha"].format(guessedModName=amICopied[1])
 					else :
+						""" Different versions """
 						return self._brokenStrings["duplicate-diff"].format(
 							guessedModName = amICopied[1],
 							goodVer        = self.fullModListObj[amICopied[1]].modVersion,
