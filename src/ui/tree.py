@@ -140,14 +140,10 @@ class ModCheckTreeTab() :
 			try :
 				num, ext = text.split()
 
-				multiplyer = 1
-
-				if ext == "Kb" :
-					multiplyer = 1024
-				if ext == "Mb" :
-					multiplyer = 1024 * 1024
-				if ext == "Gb" :
-					multiplyer = 1024 * 1024 * 1024
+				try:
+					multiplyer = {"Kb" : 1024, "Mb" : 1048576, "Gb" : 1073741824}[ext]
+				except KeyError:
+					multiplyer = 1
 
 				return int(float(num) * multiplyer)
 		
@@ -155,8 +151,4 @@ class ModCheckTreeTab() :
 				""" Not a size number """
 				pass
 
-		if isinstance(text, str) :
-			return text.lower()
-		else :
-			""" This should never happen, but... """
-			return text
+		return text.lower()
