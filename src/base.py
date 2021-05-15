@@ -158,16 +158,16 @@ class ModCheckRoot() :
 		externalFrame = ttk.Frame(self.tabFrame["tabConfig"])
 		internalFrame = ttk.Frame()
 
-		counts = {
-			"found" : strings["info-mods-found"],
-			"broke" : strings["info-mods-broken"],
-			"missing" : strings["info-mods-missing"]
-		}
+		counts = [
+			["found",   strings["info-mods-found"]],
+			["broke",   strings["info-mods-broken"]],
+			["missing", strings["info-mods-missing"]]
+		]
 
-		for rowIdx, (key, value) in enumerate(counts.items()):
-			ttk.Label(internalFrame, text=value+":").grid(column=0, row=rowIdx, padx=(0,5), sticky=(Tk.E))
-			self._configLabels[key]   = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
-			self._configLabels[key].grid(column=1, row=rowIdx, sticky=(Tk.W))
+		for rowIdx, detail in enumerate(counts, start=0):
+			ttk.Label(internalFrame, text=detail[1]+":").grid(column=0, row=rowIdx, padx=(0,5), sticky=(Tk.E))
+			self._configLabels[detail[0]]   = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
+			self._configLabels[detail[0]].grid(column=1, row=rowIdx, sticky=(Tk.W))
 		
 		externalFrame.pack(fill="both", expand=True)
 		internalFrame.place(in_=externalFrame, anchor="c", relx=.5, rely=.5)
