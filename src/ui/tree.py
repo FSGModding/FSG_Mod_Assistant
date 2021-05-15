@@ -11,20 +11,20 @@ import tkinter as Tk
 import tkinter.ttk as ttk
 
 class ModCheckTreeTab() :
-	""" 
-	Build a ttk.TreeView tab
+	"""Build a ttk.TreeView tab	
 
-	Keyword arguments:
-	  parent      -- Parent element
-	  title       -- str Title of this tab (display label)
-	  description -- str Description of this tab
-	  columns     -- list of columns
-	  base        -- Root window object
-	  columnExtra -- dict of kwargs for each column, if needed.
-	  detail      -- Base class ModCheckDetailWin from src.ui.detail
-	""" 
+	Args:
+		parent (object): Parent element
+		title (str): Title of this tab
+		description (str): Description of this tab
+		columns (list): Columns for view
+		base (object): Root window element
+		detail (class): src.ui.detail ModCheckDetailWin or API compatable
+		columnExtra (dict, optional): kwargs to each column. Defaults to None.
+	"""
 
 	def __init__(self, parent, title, description, columns, base, detail, columnExtra=None) :
+		
 		self._parent      = parent
 		self._UIParts     = {}
 		self.title        = title
@@ -64,7 +64,11 @@ class ModCheckTreeTab() :
 		self._UIParts["tree"].tag_configure('even', background='#E8E8E8')
 
 	def _on_double_click(self, event):
-		""" On double-click of a mod, display some information """
+		"""On double-click of a mod, display some information
+
+		Args:
+			event (tkinter.Event): The event that just happened (a double click)
+		"""
 		thisItem    = self._UIParts["tree"].identify('item',event.x,event.y)
 		thisModName = self._UIParts["tree"].item(thisItem,"text")
 
@@ -80,7 +84,12 @@ class ModCheckTreeTab() :
 		self._UIParts["tree"].delete(*self._UIParts["tree"].get_children())
 
 	def add_item(self, name, values):
-		""" Add an item to the tree """
+		"""Add an item to the tree
+
+		Args:
+			name (str): Name column (hidden/descriptor only)
+			values (list): Values for shown columns.
+		"""
 
 		self._UIParts["tree"].insert(
 			parent = '',
@@ -93,7 +102,13 @@ class ModCheckTreeTab() :
 		self._isOdd = not self._isOdd
 
 	def _treeview_sort(self, tv, col, reverse):
-		""" Sort a tree column numerically or alphabetically """
+		""" Sort a tree column numerically or alphabetically
+
+		Args:
+			tv (ttk.Treeview): The treeview
+			col (str): Column descriptor
+			reverse (bool): a->z or z->a (True)
+		"""
 		l = [(self._size_to_real_num(tv.set(k, col)), k) for k in tv.get_children('')]
 
 		l.sort(
@@ -103,6 +118,7 @@ class ModCheckTreeTab() :
 
 		# rearrange items in sorted positions
 		for index, (val, k) in enumerate(l): # pylint: disable=unused-variable
+			tv.item(k, tags= ("even" if ( index % 2 == 0 ) else "odd" ) )
 			tv.move(k, '', index)
 
 		# reverse sort next time
@@ -110,7 +126,14 @@ class ModCheckTreeTab() :
 				 self._treeview_sort(tv, _col, not reverse))
 
 	def _size_to_real_num(self, text) :
-		""" Turn the size column back into a number for sorting """
+		"""Turn the size column back into a number for sorting
+
+		Args:
+			text (str): Human readable file size
+
+		Returns:
+			float: File size as an float
+		"""
 		try :
 			num, ext = text.split()
 
@@ -129,7 +152,14 @@ class ModCheckTreeTab() :
 		return text
 
 	def _lower_if_possible(self, x):
-		""" Normalize to lowercase for sorting, if possible """
+		"""Normalize to lowercase for sorting, if possible
+
+		Args:
+			x (tuple): Tuple of (text,location) from treeview
+
+		Returns:
+			tuple: (text,location) where text is lowercase
+		"""
 		if isinstance(x[0], float) :
 			return x
 		else :
