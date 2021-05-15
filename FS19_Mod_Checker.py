@@ -214,17 +214,17 @@ def makeRootWindow(langWindow) :
 	rootWindow.addTab("tabMissing",  underline=0, text=_('Missing Mods'))
 
 	rootWindow.tabContent["tabMissing"] = ModCheckTreeTab(
-		parent = rootWindow.tabFrame["tabMissing"],
-		title  = _("Missing Mods"),
+		notebookTab = rootWindow.tabFrame["tabMissing"],
+		title       = _("Missing Mods"),
 		description = _("The scanner failed to find the mods below, however they are referenced in one or more savegames. For mods that have not been purchased, this is usually harmless.  For mods you have purchased, missing the mod file could cost you in-game money.  To correct this, re-download the mod from where you originally got it and place it in the mod folder."),
-		columns = [
+		columns     = [
 			_("Name"),
 			_("Title"),
 			_("Purchased"),
 			_("Savegame")
 		],
-		base = rootWindow,
-		detail = ModCheckDetailWin,
+		rootWindow  = rootWindow,
+		detailClass = ModCheckDetailWin,
 		columnExtra = {
 			"#3": {"minwidth": 0, "width": 75, "stretch": 0},
 			"#4": {"minwidth": 0, "width":100, "stretch": 0}
@@ -246,16 +246,16 @@ def makeRootWindow(langWindow) :
 	rootWindow.addTab("tabInactive", underline=0, text=_('Inactive Mods'))
 
 	rootWindow.tabContent["tabInactive"] = ModCheckTreeTab(
-		parent = rootWindow.tabFrame["tabInactive"],
-		title  = _("Inactive Mods"),
+		notebookTab = rootWindow.tabFrame["tabInactive"],
+		title       = _("Inactive Mods"),
 		description = _("These mods are not activated in any of your savegames.  If you would like to save space, and perhaps speed up FS19 starting, you could remove some or all of these."),
-		columns = [
+		columns     = [
 			_("Name"),
 			_("Title"),
 			_("Size"),
 		],
-		base = rootWindow,
-		detail = ModCheckDetailWin,
+		rootWindow  = rootWindow,
+		detailClass = ModCheckDetailWin,
 		columnExtra = {
 			"#3": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
 		}
@@ -271,17 +271,17 @@ def makeRootWindow(langWindow) :
 	rootWindow.addTab("tabUnused",   underline=0, text=_('Active & Un-Used Mods'))
 
 	rootWindow.tabContent["tabUnused"] = ModCheckTreeTab(
-		parent = rootWindow.tabFrame["tabUnused"],
-		title  = _("Active, Un-Used Mods"),
+		notebookTab = rootWindow.tabFrame["tabUnused"],
+		title       = _("Active, Un-Used Mods"),
 		description = _("These mods are active in a savegame, but do not seem to be in use. If you do not plan on using them, you could possibly remove them.  Please note that some script only or pre-requisite mods may appear here by mistake, so please use this list carefully."),
-		columns = [
+		columns     = [
 			_("Name"),
 			_("Title"),
 			_("Savegame"),
 			_("Size")
 		],
-		base = rootWindow,
-		detail = ModCheckDetailWin,
+		rootWindow  = rootWindow,
+		detailClass = ModCheckDetailWin,
 		columnExtra = {
 			"#3": {"minwidth": 0, "width":120, "stretch": 0},
 			"#4": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
@@ -298,17 +298,17 @@ def makeRootWindow(langWindow) :
 	rootWindow.addTab("tabGood",   underline=0, text=_('Good Mods'))
 
 	rootWindow.tabContent["tabGood"] = ModCheckTreeTab(
-		parent = rootWindow.tabFrame["tabGood"],
-		title  = _("Good Mods"),
+		notebookTab = rootWindow.tabFrame["tabGood"],
+		title       = _("Good Mods"),
 		description = _("These mods are active and used in a savegame, and in good working order.  They are listed here for convenience, you do not need to do anything with these mods."),
-		columns = [
+		columns     = [
 			_("Name"),
 			_("Title"),
 			_("Savegame"),
 			_("Size")
 		],
-		base = rootWindow,
-		detail = ModCheckDetailWin,
+		rootWindow  = rootWindow,
+		detailClass = ModCheckDetailWin,
 		columnExtra = {
 			"#3": {"minwidth": 0, "width":120, "stretch": 0},
 			"#4": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}

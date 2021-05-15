@@ -14,23 +14,25 @@ class ModCheckTreeTab() :
 	"""Build a ttk.TreeView tab	
 
 	Args:
-		parent (object): Parent element
+		notebookTab (object): Notebook tab Frame
 		title (str): Title of this tab
 		description (str): Description of this tab
 		columns (list): Columns for view
-		base (object): Root window element
-		detail (class): src.ui.detail ModCheckDetailWin or API compatable
+		rootWindow (object): Root window element
+		detailClass (class): src.ui.detail ModCheckDetailWin or API compatable
 		columnExtra (dict, optional): kwargs to each column. Defaults to None.
 	"""
 
-	def __init__(self, parent, title, description, columns, base, detail, columnExtra=None) :
-		
-		self._parent      = parent
-		self._UIParts     = {}
+	def __init__(self, notebookTab, title, description, columns, rootWindow, detailClass, columnExtra=None) :
 		self.title        = title
+
+		self._notebookTab = notebookTab
 		self._description = description
-		self._base        = base
-		self._detailWin   = detail
+		self._rootWindow  = rootWindow
+		self._detailWin   = detailClass
+
+		self._treeview      = None
+		self._vertScrollbar = None
 
 		self._columns     = [("#"+str(i),j) for i,j in zip(range(1,len(columns)+1), columns)]
 		self._columnExtra = columnExtra
@@ -39,29 +41,29 @@ class ModCheckTreeTab() :
 		self._build()
 
 	def _build(self) :
-		""" Build the treeview inside of _parent """
-		ttk.Label(self._parent, text=self.title, font='Calibri 12 bold').pack()
-		ttk.Label(self._parent, text=self._description, wraplength = 640).pack(fill='x')
+		""" Build the treeview inside of _notebookTab """
+		ttk.Label(self._notebookTab, text=self.title, font='Calibri 12 bold').pack()
+		ttk.Label(self._notebookTab, text=self._description, wraplength = 640).pack(fill='x')
 
-		self._UIParts["tree"] = ttk.Treeview(self._parent, selectmode='browse', columns=self._columns, show='headings', style="modCheck.Treeview")
-		self._UIParts["tree"].pack(expand=True, side='left', fill='both', pady=(5,0))
+		self._treeview = ttk.Treeview(self._notebookTab, selectmode='browse', columns=self._columns, show='headings', style="modCheck.Treeview")
+		self._treeview.pack(expand=True, side='left', fill='both', pady=(5,0))
 
 		if self._columnExtra is not None :
-			for thisExtraKey in self._columnExtra.keys():
-				self._UIParts["tree"].column(thisExtraKey, **self._columnExtra[thisExtraKey])
+			for thisExtraKey, thisExtraKwargs in self._columnExtra.items():
+				self._treeview.column(thisExtraKey, **thisExtraKwargs)
 
-		self._UIParts["VSB"] = ttk.Scrollbar(self._parent, orient="vertical", command=self._UIParts["tree"].yview)
-		self._UIParts["VSB"].pack(side='right', fill='y', pady=(25,2))
+		self._vertScrollbar = ttk.Scrollbar(self._notebookTab, orient="vertical", command=self._treeview.yview)
+		self._vertScrollbar.pack(side='right', fill='y', pady=(25,2))
 
-		self._UIParts["tree"].configure(yscrollcommand=self._UIParts["VSB"].set)
+		self._treeview.configure(yscrollcommand=self._vertScrollbar.set)
 
 		for col,name in self._columns:
-			self._UIParts["tree"].heading(col, text=name, command=lambda _col=col: \
- 				 self._treeview_sort(self._UIParts["tree"], _col, False))
+			self._treeview.heading(col, text=name, command=lambda _col=col: \
+ 				 self._treeview_sort(self._treeview, _col, False))
 
-		self._UIParts["tree"].bind("<Double-1>", self._on_double_click)
+		self._treeview.bind("<Double-1>", self._on_double_click)
 
-		self._UIParts["tree"].tag_configure('even', background='#E8E8E8')
+		self._treeview.tag_configure('even', background='#E8E8E8')
 
 	def _on_double_click(self, event):
 		"""On double-click of a mod, display some information
@@ -69,19 +71,20 @@ class ModCheckTreeTab() :
 		Args:
 			event (tkinter.Event): The event that just happened (a double click)
 		"""
-		thisItem    = self._UIParts["tree"].identify('item',event.x,event.y)
-		thisModName = self._UIParts["tree"].item(thisItem,"text")
+		thisItem    = self._treeview.identify('item',event.x,event.y)
+		thisModName = self._treeview.item(thisItem,"text")
 
-		self._detailWin(
-			base     = self._base,
-			parent   = self._parent,
-			modName  = thisModName,
-			modClass = self._base._modList[thisModName]
-		)
+		if thisModName :
+			self._detailWin(
+				base     = self._rootWindow,
+				parent   = self._notebookTab,
+				modName  = thisModName,
+				modClass = self._rootWindow._modList[thisModName]
+			)
 
 	def clear_items(self) :
 		""" Empty the tree """
-		self._UIParts["tree"].delete(*self._UIParts["tree"].get_children())
+		self._treeview.delete(*self._treeview.get_children())
 
 	def add_item(self, name, values):
 		"""Add an item to the tree
@@ -91,7 +94,7 @@ class ModCheckTreeTab() :
 			values (list): Values for shown columns.
 		"""
 
-		self._UIParts["tree"].insert(
+		self._treeview.insert(
 			parent = '',
 			index  = 'end',
 			text   = name,
@@ -109,12 +112,9 @@ class ModCheckTreeTab() :
 			col (str): Column descriptor
 			reverse (bool): a->z or z->a (True)
 		"""
-		l = [(self._size_to_real_num(tv.set(k, col)), k) for k in tv.get_children('')]
+		l = [(self._fix_sort_order(tv.set(k, col)), k) for k in tv.get_children('')]
 
-		l.sort(
-			key=lambda t : self._lower_if_possible(t),
-			reverse=reverse
-		)		
+		l.sort(reverse=reverse)		
 
 		# rearrange items in sorted positions
 		for index, (val, k) in enumerate(l): # pylint: disable=unused-variable
@@ -125,48 +125,40 @@ class ModCheckTreeTab() :
 		tv.heading(col, command=lambda _col=col: \
 				 self._treeview_sort(tv, _col, not reverse))
 
-	def _size_to_real_num(self, text) :
-		"""Turn the size column back into a number for sorting
+	def _fix_sort_order(self, text) :
+		"""Turn the size column back into a number, lowercase any text
 
 		Args:
-			text (str): Human readable file size
+			text (str): Text to process
 
 		Returns:
-			float: File size as an float
+			int_or_str: File size as an int or lowercase str
 		"""
-		try :
-			num, ext = text.split()
-
-			if ext == "B":
-				return float(num)
-			if ext == "Kb" :
-				return float(num) * 1024
-			if ext == "Mb" :
-				return float(num) * 1024 * 1024
-			if ext == "Gb" :
-				return float(num) * 1024 * 1024 * 1024
-		
-		except ValueError :
+		if not isinstance(text, str) :
+			""" Trap not-strings.  Can't happen, but completness."""
 			return text
 
-		return text
+		if text[0].isdigit() :
+			try :
+				num, ext = text.split()
 
-	def _lower_if_possible(self, x):
-		"""Normalize to lowercase for sorting, if possible
+				multiplyer = 1
 
-		Args:
-			x (tuple): Tuple of (text,location) from treeview
+				if ext == "Kb" :
+					multiplyer = 1024
+				if ext == "Mb" :
+					multiplyer = 1024 * 1024
+				if ext == "Gb" :
+					multiplyer = 1024 * 1024 * 1024
 
-		Returns:
-			tuple: (text,location) where text is lowercase
-		"""
-		if isinstance(x[0], float) :
-			return x
+				return int(float(num) * multiplyer)
+		
+			except ValueError :
+				""" Not a size number """
+				pass
+
+		if isinstance(text, str) :
+			return text.lower()
 		else :
-			try:
-				return (x[0].lower(), x[1])
-			except AttributeError:
-				return x
-
-
-	
+			""" This should never happen, but... """
+			return text
