@@ -23,7 +23,6 @@ class ModCheckRoot() :
 
 	Args:
 		logger (class): src.data.logger.ModCheckLog instance
-		icon (str): Path to program icon
 		modClass (class): src.data.mods.FSMod
 		badClass (class): src.data.badfile.FSBadFile
 		scriptMods (list): Known script mods
@@ -31,7 +30,7 @@ class ModCheckRoot() :
 		updater (class): src.updater.ModCheckUpdater
 	"""	
 
-	def __init__(self, logger, icon, modClass, badClass, scriptMods, conflictMods, updater) :
+	def __init__(self, logger, modClass, badClass, scriptMods, conflictMods, updater) :
 		self._logger         = logger
 		self._configFileName = None
 		self._basePath       = None
@@ -57,9 +56,6 @@ class ModCheckRoot() :
 
 		style.configure("modCheck.Treeview", highlightthickness=0, bd=0, font=('Calibri', 10))
 		style.configure("modCheck.Treeview.Heading", font=('Calibri', 11,'bold'))
-
-		self._mainIconImage = Tk.PhotoImage(file = icon)
-		self._root.iconphoto(False, self._mainIconImage)
 
 		self._tabNotebook = ttk.Notebook(self._root)
 		self._tabNotebook.enable_traversal()

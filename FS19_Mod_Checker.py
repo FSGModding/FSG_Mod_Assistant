@@ -40,6 +40,7 @@ langPick = Tk.Tk()
 langPick.title("FS19 Mod Checker")
 langPick.minsize(350, 150)
 langPick.option_add( "*font", "Calibri 10" )
+langPick.iconphoto(True, Tk.PhotoImage(file = ModCheckUtil.get_resource_path("./icon/") + 'mcicon.png'))
 
 # Change the theme.
 style = ttk.Style()
@@ -81,7 +82,6 @@ def makeRootWindow(langWindow) :
 
 	rootWindow = ModCheckRoot(
 		logger       = ModCheckLog(),
-		icon         = ModCheckUtil.get_resource_path("./icon/") + 'mcicon.png',
 		modClass     = FSMod,
 		badClass     = FSBadFile,
 		scriptMods   = scriptMods.mods,
