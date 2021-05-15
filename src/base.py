@@ -327,10 +327,15 @@ class ModCheckRoot() :
 			self._badList[modName].isFolder(True)
 
 			if ( re.search(r'\W', modName) or re.match(r'[0-9]', modName) or re.search(r'unzip', modName, re.IGNORECASE)) :
+				""" Bad name can't be good """
 				self._modList[modName].isBad(True)
 			else :
 				if self._modList[modName].quickTest():
+					""" Passed the test, only in the bad list because it is unzipped """
 					self._badList[modName].isGood(True)
+				else :
+					""" Failed the test, mark it bad in the mod list """
+					self._modList[modName].isBad(True)
 
 		
 		# Next, the zip files
