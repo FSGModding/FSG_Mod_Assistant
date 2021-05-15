@@ -22,7 +22,6 @@ class ModCheckRoot() :
 	"""Build the app
 
 	Args:
-		version (str): Current version
 		logger (class): src.data.logger.ModCheckLog instance
 		icon (str): Path to program icon
 		modClass (class): src.data.mods.FSMod
@@ -32,8 +31,7 @@ class ModCheckRoot() :
 		updater (class): src.updater.ModCheckUpdater
 	"""	
 
-	def __init__(self, version, logger, icon, modClass, badClass, scriptMods, conflictMods, updater) :
-		self._version        = version
+	def __init__(self, logger, icon, modClass, badClass, scriptMods, conflictMods, updater) :
 		self._logger         = logger
 		self._configFileName = None
 		self._basePath       = None
@@ -45,7 +43,7 @@ class ModCheckRoot() :
 		self._updater        = updater(self)
 
 		self._root = Tk.Tk()
-		self._root.title("FS19 Mod Checker v" + self._version)
+		self._root.title("FS19 Mod Checker")
 		self._root.minsize(670, 500)
 		self._root.option_add( "*font", "Calibri 10" )
 

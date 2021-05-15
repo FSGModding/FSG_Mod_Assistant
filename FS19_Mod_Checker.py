@@ -37,7 +37,7 @@ VERSION = "1.0.0.8"
 #                                                                                  
 
 langPick = Tk.Tk()
-langPick.title("FS19 Mod Checker v" + VERSION)
+langPick.title("FS19 Mod Checker")
 langPick.minsize(350, 150)
 langPick.option_add( "*font", "Calibri 10" )
 
@@ -80,7 +80,6 @@ def makeRootWindow(langWindow) :
 	gtUserLang.install()
 
 	rootWindow = ModCheckRoot(
-		version      = VERSION,
 		logger       = ModCheckLog(),
 		icon         = ModCheckUtil.get_resource_path("./icon/") + 'mcicon.png',
 		modClass     = FSMod,
@@ -145,7 +144,7 @@ def makeRootWindow(langWindow) :
 		"info-mods-folders"    : _("Folders Found"),
 		"info-mods-missing"    : _("Missing Mods"),
 		"program-description"  : _("This little program will take a look at your mod install folder and inform you of any potential problems that it finds."),
-		"latest-version"       : _("For the latest version, visit us at")
+		"latest-version"       : _("This is version v{version} - For updates, visit us at").format(version = VERSION)
 	})
 
 
