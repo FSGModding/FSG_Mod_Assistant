@@ -36,29 +36,30 @@ VERSION = "1.0.0.9"
 #  |_____ |     | |  \_| |_____|      |       __|__ |_____  |    \_ |______ |    \_
 #                                                                                  
 
-langPick = Tk.Tk()
-langPick.title("FS19 Mod Checker")
-langPick.minsize(350, 150)
-langPick.option_add( "*font", "Calibri 10" )
-langPick.iconphoto(True, Tk.PhotoImage(file = ModCheckUtil.get_resource_path("./icon/") + 'mcicon.png'))
+languageWindow = Tk.Tk()
+languageWindow.title("FS19 Mod Checker")
+languageWindow.minsize(350, 150)
+languageWindow.option_add( "*font", "Calibri 10" )
+languageWindow.iconphoto(True, Tk.PhotoImage(file = ModCheckUtil.get_resource_path("./icon/") + 'mcicon.png'))
 
 # Change the theme.
 style = ttk.Style()
 style.theme_use('winnative')
 
-ttk.Label(langPick, text="Choose Language", font='Calibri 15 bold', anchor='center').pack(fill='x', pady=(5,0))
-userLang = Tk.StringVar()
+ttk.Label(languageWindow, text="Choose Language", font='Calibri 15 bold', anchor='center').pack(fill='x', pady=(5,0))
+userPickedLanguage = Tk.StringVar(value=ModCheckUtil.get_lang_list()[0])
 
-langPicker = ttk.Combobox(langPick, textvariable=userLang)
-langPicker['values'] = ModCheckUtil.get_lang_list()
-langPicker.state(["readonly"])
-langPicker.current(0)
-langPicker.pack(fill='x', padx=20, pady=20)
+ttk.Combobox(
+	languageWindow,
+	textvariable = userPickedLanguage,
+	state        = ["readonly"],
+	values       = ModCheckUtil.get_lang_list()
+).pack(fill='x', padx=20, pady=20)
 
-langButton = ttk.Button(langPick, text="OK", command=lambda langWindow = langPick: makeRootWindow(langWindow))
-langButton.pack(fill='x', padx=20)
-langButton.bind('<Return>', lambda event=None: langButton.invoke())
-langButton.focus()
+languageOKButton = ttk.Button(languageWindow, text="OK", command=lambda languageWindow = languageWindow: makeRootWindow(languageWindow))
+languageOKButton.pack(fill='x', padx=20)
+languageOKButton.bind('<Return>', lambda event=None: languageOKButton.invoke())
+languageOKButton.focus()
 
 
 # 
@@ -67,12 +68,14 @@ langButton.focus()
 #  |  |  | |     | __|__ |  \_|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
 #                                                                                
 # 
-def makeRootWindow(langWindow) :
-	langWindow.destroy()
+def makeRootWindow(languageWindow) :
+	languageWindow.destroy()
 
 	# Lets do i10n for this app.
-	thisUserLang = ModCheckUtil.get_lang_code(userLang.get())
+	thisUserLang = ModCheckUtil.get_lang_code(userPickedLanguage.get())
+
 	ModCheckUtil.set_locale(thisUserLang)
+	
 	garbageMod = FSMod()
 	garbageMod.setLangCode(thisUserLang)
 	del garbageMod

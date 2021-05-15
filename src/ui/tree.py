@@ -76,10 +76,8 @@ class ModCheckTreeTab() :
 
 		if thisModName :
 			self._detailWin(
-				base     = self._rootWindow,
-				parent   = self._notebookTab,
-				modName  = thisModName,
-				modClass = self._rootWindow._modList[thisModName]
+				rootWindow  = self._rootWindow,
+				mod         = thisModName
 			)
 
 	def clear_items(self) :
