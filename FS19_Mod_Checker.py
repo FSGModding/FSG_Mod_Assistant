@@ -28,7 +28,7 @@ import src.data.script_mods as scriptMods
 import src.data.util as ModCheckUtil
 
 
-VERSION = "1.0.0.9"
+VERSION = "1.0.1.0"
 
 
 #         _______ __   _  ______       _____  _____ _______ _     _ _______  ______
@@ -75,7 +75,7 @@ def makeRootWindow(languageWindow) :
 	thisUserLang = ModCheckUtil.get_lang_code(userPickedLanguage.get())
 
 	ModCheckUtil.set_locale(thisUserLang)
-	
+
 	garbageMod = FSMod()
 	garbageMod.setLangCode(thisUserLang)
 	del garbageMod
