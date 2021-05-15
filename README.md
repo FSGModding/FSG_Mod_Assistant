@@ -1,5 +1,7 @@
 # FS19 Mod Install Checker
 
+[Demo Video](https://streamable.com/wi4u04)
+
 This little program will take a look at your mod install folder and inform you of the following
 
  * If a mod file is named incorrectly and won't load in the game.
