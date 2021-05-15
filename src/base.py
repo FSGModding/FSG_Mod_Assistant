@@ -148,6 +148,9 @@ class ModCheckRoot() :
 		
 		self._processButton.bind('<Return>', lambda event=None: self._processButton.invoke())
 
+		self._progressBar = ttk.Progressbar(self.tabFrame["tabConfig"])
+		self._progressBar.pack(fill='x', pady=(10,0))
+
 		externalFrame = ttk.Frame(self.tabFrame["tabConfig"])
 		internalFrame = ttk.Frame()
 
@@ -223,9 +226,18 @@ class ModCheckRoot() :
 			## Update the config tab to show the chosen filename, and enable the process button
 			self._configLabels["filename"].config(text = self._configStrings["info-game-settings"].format(filename = self._configFileName))
 			self._configLabels["foldername"].config(text = self._configStrings["info-mod-folder"].format(folder = self._modDir))
+			self._set_progress(0)
 			self._processButton.state(['!disabled'])
 			self._processButton.focus()
 
+	def _set_progress(self, value) :
+		"""Update progress bar and refresh UI
+
+		Args:
+			value (int): Progress percentage
+		"""
+		self._progressBar["value"] = value
+		self._progressBar.update()
 
 	def _process_button(self) :
 		""" Run the "Process Mods" button """
@@ -245,24 +257,32 @@ class ModCheckRoot() :
 		self._root.update()
 
 		# Read Mods
+		self._set_progress(5)
 		self._read_mods_from_folder()
+		self._set_progress(60)
 		self._read_mods_from_saves()
+		self._set_progress(80)
 		self._read_script_mod()
+		self._set_progress(85)
 
 		# Update UI with found mods
 		self._logger.start()
-
+		
 		self._updater.update_tab_config()
+		self._set_progress(90)
 		self._updater.update_tab_broken()
+		self._set_progress(95)
 		self._updater.update_tab_missing()
 		self._updater.update_tab_conflict()
 		self._updater.update_tab_inactive()
 		self._updater.update_tab_unused()
 		self._updater.update_tab_good()
+		
 	
 		self._logger.end()
 
 		# Undo the GUI changes when done processing
+		self._set_progress(100)
 		self._processButton["text"] = currentProcButtonText
 		self._loadButton["text"]    = currentLoadButtonText
 
@@ -312,9 +332,11 @@ class ModCheckRoot() :
 		self._modList["FS19_holmerPack"].name("DLC Holmer Terra-Variant Pack")
 		self._modList["FS19_holmerPack"].size(133849603)
 
-
+		self._set_progress(10)
 		# Lets parse through the folders.
-		for thisMod in modDirFiles:
+		for idx, thisMod in enumerate(modDirFiles, start = 1):
+			self._set_progress(10 + int(25 * (idx / len(modDirFiles))))
+
 			modName  = os.path.basename(thisMod)
 			this_dir = pathlib.Path(thisMod)
 
@@ -339,7 +361,10 @@ class ModCheckRoot() :
 
 		
 		# Next, the zip files
-		for thisMod in modZipFiles:
+		self._set_progress(35)
+		for idx, thisMod in enumerate(modZipFiles, start = 1):
+			self._set_progress(35 + int(25 * (idx / len(modZipFiles))))
+
 			modName    = os.path.splitext(os.path.basename(thisMod))[0]
 			badModName = os.path.basename(thisMod)
 		
@@ -394,6 +419,7 @@ class ModCheckRoot() :
 
 
 		#Next up, vehicles
+		self._set_progress(66)
 		for thisFile in filesVehicles:
 			try:
 				thisXML = etree.parse(thisFile)
@@ -413,6 +439,7 @@ class ModCheckRoot() :
 
 
 		# Finally, lets do items
+		self._set_progress(74)
 		for thisFile in filesItems:
 			try:
 				thisXML = etree.parse(thisFile)

@@ -61,8 +61,7 @@ class ModCheckUpdater() :
 		initCompList.setFullModList(root._modList.keys(), root._modList)
 		del initCompList
 
-		for thisBadMod in sorted(root._badList.keys()) :
-
+		for idx, thisBadMod in enumerate(sorted(root._badList.keys()), start=1) :
 			root._badList[thisBadMod].diagnose() # Diagnose the problem (cached)
 			root._badList[thisBadMod].done() # Close any open files.
 
@@ -70,6 +69,8 @@ class ModCheckUpdater() :
 				root._badList[thisBadMod].getHRFilename(),
 				root._badList[thisBadMod].diagnose()
 			)
+
+			root._set_progress(90 + int(5 * (idx / len(root._badList))))
 
 			root._logger.write(str(root._badList[thisBadMod]))
 
