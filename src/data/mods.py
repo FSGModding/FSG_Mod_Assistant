@@ -18,12 +18,23 @@ import itertools
 import hashlib
 
 class FSMod() :
-	""" This class holds all of the information about a mod we would want to know """
+	"""Holds all the details of found mod files
 
+	Returns:
+		None: n/a
+
+	Yields:
+		None: n/a
+	"""
+	
 	langCode = ["en"]
 
 	def setLangCode(self, code):
-		""" Set preferred language as class-shared. """
+		"""Set the class-global language code for l10n lookups
+
+		Args:
+			code (str): Language code
+		"""
 		self.langCode.clear()
 		self.langCode.append(code)
 
@@ -43,107 +54,197 @@ class FSMod() :
 
 		self.modVersion   = None
 	
-	def isFolder(self, *args) :
-		""" Boolean "is this a folder", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._folder = args[0]
-		else :
-			return self._folder
+	def isFolder(self, setTo = None) :
+		"""Is this mod a folder?
+
+		Args:
+			setTo (bool, optional): Set to True/False. Defaults to None.
+
+		Returns:
+			bool: The mod is a folder (True)
+		"""
+
+		if setTo is not None:
+			self._folder = setTo
+		
+		return self._folder
 
 	def getZip(self) :
-		""" If this is a zip file, return the extension, otherwise do nothing. """
+		"""Get ZIP file suffix
+
+		Returns:
+			str: ".zip" for ZIP files, otherwise empty
+		"""
 		if not self._folder:
 			return ".zip"
 		else :
 			return ""
 
-	def isZip(self, *args) :
-		""" Boolean "is this a zip file", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._folder = not args[0]
-		else:
-			return not self._folder
+	def isZip(self, setTo = None) :
+		"""Is this a zip file
 
-	def isMissing(self, *args) :
-		""" Boolean "does this file/folder NOT exist", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._fileExists = not args[0]
-		else:
-			return not self._fileExists
+		Args:
+			setTo (bool, optional): Set to True/False. Defaults to None.
 
-	def isNotMissing(self, *args) :
-		""" Boolean "does this file/folder exist", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._fileExists = args[0]
-		else:
-			return self._fileExists
+		Returns:
+			bool: The mod is a zip file (True)
+		"""
+		if setTo is not None :
+			self._folder = not setTo
+		
+		return not self._folder
 
-	def isGood(self, *args) :
-		""" Boolean "is this named correctly", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._filenameOK = args[0]
-		else:
-			return self._filenameOK
+	def isMissing(self, setTo = None) :
+		"""Does the file exist?
 
-	def isBad(self, *args) :
-		""" Boolean "is this named INCORRECTLY", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._filenameOK = not args[0]
-		else:
-			return not self._filenameOK
+		Args:
+			setTo (bool, optional): Set the file existence. Defaults to None.
 
-	def isActive(self, *args) :
-		""" Boolean "is this mod active", also takes an integer to mark active in savegame # """
-		if ( len(args) > 0 ) :
-			self._activeGames.add(args[0])
-		else: 
-			return ( len(self._activeGames) > 0 )
+		Returns:
+			bool: The file does NOT exist (True)
+		"""
+		if setTo is not None :
+			self._fileExists = not setTo
+		
+		return not self._fileExists
+
+	def isNotMissing(self, setTo  = None) :
+		"""Does the file exist
+
+		Args:
+			setTo (bool, optional): Set the file existence. Defaults to None.
+
+		Returns:
+			bool: The file DOES exist (True)
+		"""
+		if setTo is not None :
+			self._fileExists = setTo
+		
+		return self._fileExists
+
+	def isGood(self, setTo = None) :
+		"""Is this mod name valid
+
+		Args:
+			setTo (bool, optional): Set mod name validity. Defaults to None.
+
+		Returns:
+			bool: The mod name IS valid (True)
+		"""
+		if setTo is not None :
+			self._filenameOK = setTo
+		
+		return self._filenameOK
+
+	def isBad(self, setTo = None) :
+		"""Is this mod name valid
+
+		Args:
+			setTo (bool, optional): Set the mod name validity. Defaults to None.
+
+		Returns:
+			bool: The mod not is NOT valid (True)
+		"""
+
+		if setTo is not None :
+			self._filenameOK = not setTo
+		
+		return not self._filenameOK
+
+	def isActive(self, inGame = None) :
+		"""Is this mod active / make it active
+
+		Args:
+			inGame (int, optional): Savegame to toggle to True. Defaults to None.
+
+		Returns:
+			bool: Mod IS active (True)
+		"""
+		if inGame is not None :
+			self._activeGames.add(inGame)
+		
+		return ( len(self._activeGames) > 0 )
 
 	def isNotActive(self) :
-		""" Boolean "is this mod not active" """
+		"""Is this mod active
+
+		Returns:
+			bool: Mod is NOT active (True)
+		"""
 		return ( len(self._activeGames) == 0 )
 
 	def getAllActive(self, short = False, veryShort = False, showNone = False) :
-		""" Return a string of all the savegames this mod is active in """
+		"""Get all active games
+
+		Args:
+			short (bool, optional): Short mode, no spaces. Defaults to False.
+			veryShort (bool, optional): Very short mode - 1,2,3,4 becomes 1-4. Defaults to False.
+			showNone (bool, optional): Show pair of dashes if not active. Defaults to False.
+
+		Returns:
+			str: List of games
+		"""
 		if showNone and self.isNotActive() :
 			return "--"
-		if veryShort :
-			return ", ".join(list(self._to_ranges(self._activeGames)))
-		if short :
-			return ",".join( str(t) for t in sorted(self._activeGames, key = lambda item : int(item)) )
-		else :
-			return ", ".join( str(t) for t in sorted(self._activeGames, key = lambda item : int(item)) )
 
-	def isUsed(self, *args) :
-		""" Boolean "is this mod used", also takes an integer to mark active in savegame # """
-		if ( len(args) > 0 ) :
-			self._usedGames.add(args[0])
-		else: 
-			return ( len(self._usedGames) > 0 )
+		returnList = list(self._to_ranges(self._activeGames)) if veryShort else list(str(t) for t in sorted(self._activeGames, key = lambda item : int(item)))
+		returnSep  = "," if short else ", "
+		
+		return returnSep.join(returnList)
+
+	def isUsed(self, inGame = None) :
+		"""Is this mod in use / set as used
+
+		Args:
+			inGame (int, optional): Savegame to toggle used status to True. Defaults to None.
+
+		Returns:
+			bool: This mod IS used (True)
+		"""
+		if inGame is not None :
+			self._usedGames.add(inGame)
+		
+		return ( len(self._usedGames) > 0 )
 
 	def isNotUsed(self) :
 		""" Boolean "is this mod not used" """
 		return ( len(self._usedGames) == 0 )
 
 	def getAllUsed(self, short = False, veryShort = False, showNone = False) :
-		""" Return a string of all the savegames this mod is used in """
+		"""Get all used games
+
+		Args:
+			short (bool, optional): Short mode, no spaces. Defaults to False.
+			veryShort (bool, optional): Very short mode - 1,2,3,4 becomes 1-4. Defaults to False.
+			showNone (bool, optional): Show pair of dashes if not used. Defaults to False.
+
+		Returns:
+			str: List of games
+		"""
 		if showNone and self.isNotUsed() :
 			return "--"
-		if veryShort :
-			return ", ".join(list(self._to_ranges(self._activeGames)))
-		if short :
-			return ",".join( str(t) for t in sorted(self._usedGames, key = lambda item : int(item)) )
-		else :
-			return ", ".join( str(t) for t in sorted(self._usedGames, key = lambda item : int(item)) )
+
+		returnList = list(self._to_ranges(self._usedGames)) if veryShort else list(str(t) for t in sorted(self._usedGames, key = lambda item : int(item)))
+		returnSep  = "," if short else ", "
+		
+		return returnSep.join(returnList)
 
 	def setUsedToActive(self) :
-		""" Normalize the games this mod is used in the it's active games """
+		"""Set list of used games to the list of active games
+		"""
 		self._usedGames.update(self._activeGames)
 
-	def size(self, *args) :
-		""" Return a human readable string of the mod file/folder size, allow setting the same """
-		if ( len(args) > 0 ) :
-			self._fileSize = args[0]
+	def size(self, setTo = None) :
+		"""How big is the mod on disk
+
+		Args:
+			setTo (int, optional): Size of the mod, in bytes. Defaults to None.
+
+		Returns:
+			str: Human readable size of the mod
+		"""
+		if setTo is not None :
+			self._fileSize = setTo
 		else:
 			if self._fileSize  < 1 :
 				return "0 B"
@@ -156,17 +257,31 @@ class FSMod() :
 					size /= 1024.0
 				return locale.format('%.2f', size, True) + " " + unit
 
-	def name(self, *args) :
-		""" Return the name of the mod (title), allow setting the same """
-		if ( len(args) > 0 ) :
-			self._name = args[0]
-		else :
-			return self._name
+	def name(self, setTo = None) :
+		"""The name of the mod
 
-	def fullPath(self, *args) :
-		""" Return the full file path to the mod, allow setting the same """
-		if ( len(args) > 0 ) :
-			self._fullPath = args[0]
+		Args:
+			setTo (str, optional): Name of the mod. Defaults to None.
+
+		Returns:
+			str: Name of the mod (filename)
+		"""
+		if setTo is not None :
+			self._name = setTo
+		
+		return self._name
+
+	def fullPath(self, setTo = None) :
+		"""Where is the mod
+
+		Args:
+			setTo (str, optional): Full path on disk to the mod. Defaults to None.
+
+		Returns:
+			str: System normalized full path to the mod (with filename)
+		"""
+		if setTo is not None :
+			self._fullPath = setTo
 
 		else :
 			if self._fullPath is not None:
@@ -307,7 +422,14 @@ class FSMod() :
 		return self._name
 
 	def getIconFile(self, window) :
-		""" Get the icon file, in the calling window """
+		"""Get the icon file, in the calling window
+
+		Args:
+			window (tkinter.Tk): Window object of the calling window
+
+		Returns:
+			ImageTK.PhotoImage: image file, or None
+		"""
 		if not self._iconImage:
 			return None
 
