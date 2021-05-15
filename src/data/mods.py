@@ -33,7 +33,7 @@ class FSMod() :
 		self.langCode.append(code)
 
 	def __init__(self, modName = None) :
-		self._modName     = modName
+		self.modName      = modName
 		self._folder      = False
 		self._filenameOK  = True
 		self._fileExists  = True
@@ -57,7 +57,7 @@ class FSMod() :
 		"""
 		if self._fileSize > 0 :
 			return "{modName} ({modTitle}) [{saveactive}]/[{saveused}] ({modFileSize})".format(
-				modName     = self._modName,
+				modName     = self.modName,
 				modTitle    = self.name(),
 				saveactive  = self.getAllActive(showNone = True, short=True),
 				saveused    = self.getAllUsed(showNone = True, short=True),
@@ -65,7 +65,7 @@ class FSMod() :
 			)
 		else :
 			return "{modName} ({modTitle}) [{saveactive}]/[{saveused}]".format(
-				modName    = self._modName,
+				modName    = self.modName,
 				modTitle   = self.name(),
 				saveactive = self.getAllActive(showNone = True, short=True),
 				saveused   = self.getAllUsed(showNone = True, short=True),
