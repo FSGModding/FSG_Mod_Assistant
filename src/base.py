@@ -14,7 +14,6 @@ import os
 import re
 import glob
 import pathlib
-import distutils.util as util
 import lxml.etree as etree
 import webbrowser
 
@@ -212,7 +211,7 @@ class ModCheckRoot() :
 			try:
 				modFolderXML = configFileTree.xpath("/gameSettings/modsDirectoryOverride")
 
-				if util.strtobool(modFolderXML[0].attrib["active"]) :
+				if str(modFolderXML[0].attrib["active"]).lower() == "true":
 					self._modDir = modFolderXML[0].attrib["directory"]
 			except IndexError :
 				mb.showerror(title="Error", message=self._IOStrings["error-not-settings"])
