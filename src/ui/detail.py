@@ -73,10 +73,10 @@ class ModCheckDetailWin() :
 		Tk.Grid.columnconfigure(subFrame, 1, weight=1)
 
 		typeString = self._base._IOStrings["type-zip-file"]
-		if self._theMod.isMissing() :
-			typeString = self._base._IOStrings["type-missing"]
 		if self._theMod.isFolder() :
 			typeString = self._base._IOStrings["type-folder"]
+		if self._theMod.isMissing() :
+			typeString = self._base._IOStrings["type-missing"]
 
 		infoDetails = [
 			[
