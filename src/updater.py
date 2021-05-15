@@ -33,7 +33,7 @@ class ModCheckUpdater() :
 
 	def update_tab_config(self) :
 		""" Update the configuration tab """
-		root = self._rootWindow
+		root    = self._rootWindow
 		missing = { k for k, v in root._modList.items() if v.isMissing() }
 
 		self.updateConfigNumbers(
