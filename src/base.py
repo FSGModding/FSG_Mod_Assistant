@@ -19,22 +19,20 @@ import lxml.etree as etree
 import webbrowser
 
 class ModCheckRoot() :
-	"""
-	Build the app
+	"""Build the app
 
-	Keyword Arguments:
-	  version      -- current version string
-	  logger       -- class ModCheckLog from src.data.logger instance
-	  icon         -- Path to program icon file, string
-	  modClass     -- Base class FSMod from src.data.mods
-	  badClass     -- Base class FSBadFile from src.data.badfile
-	  scriptMods   -- list of known script mods
-	  conflictMods -- dict of known conflicting mods
-	  updater      -- Base class ModCheckUpdater from src.updater
-	"""
+	Args:
+		version (str): Current version
+		logger (class): src.data.logger.ModCheckLog instance
+		icon (str): Path to program icon
+		modClass (class): src.data.mods.FSMod
+		badClass (class): src.data.badfile.FSBadFile
+		scriptMods (list): Known script mods
+		conflictMods (dict): Known conflicting mods
+		updater (class): src.updater.ModCheckUpdater
+	"""	
 
 	def __init__(self, version, logger, icon, modClass, badClass, scriptMods, conflictMods, updater) :
-		
 		self._version        = version
 		self._logger         = logger
 		self._configFileName = None
@@ -81,19 +79,28 @@ class ModCheckRoot() :
 		self._badList = {}
 	
 	def fixed_map(self, style, option):
-		""" This is a workaround for background color not working in treeview on current 
-		version of Tk included with python.  Presumably, this gets nuked sometime soon. 2021-05-13
-		"""
+		"""Treeview background color workaround (fixed upstream)
+
+		Args:
+			style (ttk.Style): tkinter current style
+			option (str): Option name
+
+		Returns:
+			list: Option style options, with !disabled and !selected removed.
+		"""		
 		return [elm for elm in style.map("Treeview", query_opt=option)
 				if elm[:2] != ("!disabled", "!selected")]
-
 
 	def mainloop(self) :
 		""" Run the mainloop (Tk) """
 		self._root.mainloop()
 
 	def makeMenuBar(self, strings) :
-		""" Create a menu bar """
+		"""Create the menu bar
+
+		Args:
+			strings (list): Menu bar titles
+		"""
 		menubar  = Tk.Menu(self._root)
 		filemenu = Tk.Menu(menubar, tearoff=0)
 
@@ -106,7 +113,11 @@ class ModCheckRoot() :
 		self._root.config(menu=menubar)
 
 	def addTab(self, name, **kwargs) :
-		""" Add a tab to the main window"""
+		"""Add a tab to the main window
+
+		Args:
+			name (str): Name of the tab
+		"""
 		self.tabFrame[name] = ttk.Frame(self._tabNotebook, padding=(9,9,9,9))
 
 		self._tabNotebook.add(self.tabFrame[name], **kwargs)
@@ -114,12 +125,15 @@ class ModCheckRoot() :
 		self._root.update()
 
 	def makeConfigTab(self, strings) :
-		""" Create the content for the Configuration tab """
+		"""Create the content for the Configuration tab
+
+		Args:
+			strings (list): Strings used in this window display
+		"""
 		self._configStrings = strings
 
 		ttk.Label(self.tabFrame["tabConfig"], text=strings['program-description'], wraplength=570, font='Calibri 10 bold', anchor='center' ).pack(fill='x', padx=30, pady=(6,10))
 		
-
 		ttk.Label(self.tabFrame["tabConfig"], text=strings['info-ask-for-file'] ).pack(fill='x', pady=(0,12))
 
 		self._loadButton = ttk.Button(self.tabFrame["tabConfig"], text=strings['load-button-label'], command=self._load_main_config)
@@ -144,36 +158,39 @@ class ModCheckRoot() :
 		externalFrame = ttk.Frame(self.tabFrame["tabConfig"])
 		internalFrame = ttk.Frame()
 
-		ttk.Label(internalFrame, text=strings["info-mods-found"]+":").grid(column=0, row=0, padx=(0,5), sticky=(Tk.E))
-		ttk.Label(internalFrame, text=strings["info-mods-broken"]+":").grid(column=0, row=1, padx=(0,5), sticky=(Tk.E))
-		ttk.Label(internalFrame, text=strings["info-mods-folders"]+":").grid(column=0, row=2, padx=(0,5), sticky=(Tk.E))
-		ttk.Label(internalFrame, text=strings["info-mods-missing"]+":").grid(column=0, row=3, padx=(0,5), sticky=(Tk.E))
+		counts = {
+			"found" : strings["info-mods-found"],
+			"broke" : strings["info-mods-broken"],
+			"missing" : strings["info-mods-missing"]
+		}
 
-		self._configLabels["found"]   = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
-		self._configLabels["broke"]   = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
-		self._configLabels["folder"]  = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
-		self._configLabels["missing"] = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
-
-		self._configLabels["found"].grid(column=1, row=0, sticky=(Tk.W))
-		self._configLabels["broke"].grid(column=1, row=1, sticky=(Tk.W))
-		self._configLabels["folder"].grid(column=1, row=2, sticky=(Tk.W))
-		self._configLabels["missing"].grid(column=1, row=3, sticky=(Tk.W))
-
+		for rowIdx, (key, value) in enumerate(counts.items()):
+			ttk.Label(internalFrame, text=value+":").grid(column=0, row=rowIdx, padx=(0,5), sticky=(Tk.E))
+			self._configLabels[key]   = ttk.Label(internalFrame, text="", font='Calibri 18 bold')
+			self._configLabels[key].grid(column=1, row=rowIdx, sticky=(Tk.W))
+		
 		externalFrame.pack(fill="both", expand=True)
 		internalFrame.place(in_=externalFrame, anchor="c", relx=.5, rely=.5)
 
 		ttk.Label(self.tabFrame["tabConfig"], text=strings['latest-version'], wraplength=570, anchor='center' ).pack(fill='x', padx=30, pady=(6,0))
-		# cspell: disable-next-line 
 		Link(self.tabFrame["tabConfig"], "https://github.com/jtsage/FS19_Mod_Checker/releases", text="github.com/jtsage/FS19_Mod_Checker").pack(fill='x', padx=30, pady=(0,10))
 
 		self._updater.updateConfigNumbers()
 
 	def addBrokenStrings(self, strings) :
-		""" Add broken strings to class """
+		"""Add broken file explanation strings
+
+		Args:
+			strings (list): Broken file descriptions
+		"""		
 		self._brokenStrings = strings
 
 	def addIOStrings(self, strings) :
-		""" Add common IO strings to class """
+		"""Add common file I/O explanation strings
+
+		Args:
+			strings (list): common IO descriptions (and some misc)
+		"""
 		self._IOStrings = strings
 
 	def _load_main_config(self) :
@@ -221,14 +238,19 @@ class ModCheckRoot() :
 		""" Run the "Process Mods" button """
 
 		# Disable the buttons while we run
-		currentButtonText = self._processButton["text"]
+		currentProcButtonText = self._processButton["text"]
+		currentLoadButtonText = self._loadButton["text"]
+
 		self._configLabels["found"].focus()
+
 		self._processButton["text"] = self._IOStrings["working-pause"]
+		self._loadButton["text"]    = self._IOStrings["working-pause"]
+
 		self._processButton.state(['disabled'])
 		self._loadButton.state(['disabled'])
-		self._root.config(cursor="watch")
+
 		self._root.update()
-		
+
 		
 		self._read_mods_from_folder()
 		self._read_mods_from_saves()
@@ -248,12 +270,13 @@ class ModCheckRoot() :
 		self._logger.footer()
 
 		# Undo the GUI changes when done processing
-		self._processButton["text"] = currentButtonText
+		self._processButton["text"] = currentProcButtonText
+		self._loadButton["text"]    = currentLoadButtonText
+
 		self._processButton.state(['!disabled'])
 		self._loadButton.state(['!disabled'])
+
 		self._configLabels["found"].focus()
-		self._root.config(cursor="")
-		
 		
 	def _save_log(self) :
 		""" Save the log to a file on disk (button) """
@@ -275,23 +298,21 @@ class ModCheckRoot() :
 	def _read_mods_from_folder(self) :
 		""" Read the mods that are in the mods folder """
 		
+		# Clear the lists to be sure
+		self._modList.clear()
+		self._badList.clear()
 
-		
 		modsGlob = glob.glob(os.path.join(self._modDir, "*"))
 
 		modDirFiles   = [fn for fn in modsGlob 
 			if os.path.isdir(fn)]
+
 		modZipFiles   = [fn for fn in modsGlob 
 			if os.path.basename(fn).endswith('.zip')]
 
-		
 		for fn in modsGlob:
 			if not os.path.basename(fn).endswith('.zip') and not os.path.isdir(fn):
-				# Invalid file, add to bad List
 				self._badList[os.path.basename(fn)] = self._FSBadFile(fn, self._brokenStrings)
-
-		# Empty the mod list for scan or re-scan
-		self._modList.clear()
 
 		# Special Case
 		self._modList["FS19_holmerPack"] = self._FSMod()
@@ -418,9 +439,17 @@ class ModCheckRoot() :
 
 
 class Link(Tk.Label):
-	""" Real simple Tk.label hyperlink class """
+	"""Make a clickable hyperlink label
+
+	Args:
+		master (object, optional): tkinter object parent. Defaults to None.
+		link (str, optional): Link URL. Defaults to None.
+		fg (str, optional): Foreground color (inactive). Defaults to 'black'.
+		font (tuple, optional): Font of the link. Defaults to ('Calibri', 10).
+		text (str): Passed to label, text to display
+	"""	
 	
-	def __init__(self, master=None, link=None, fg='grey', font=('Arial', 10), *args, **kwargs):
+	def __init__(self, master=None, link=None, fg='black', font=('Calibri', 10), *args, **kwargs):
 		super().__init__(master, *args, **kwargs)
 		self.master = master
 		self.default_color = fg # keeping track of the default color 

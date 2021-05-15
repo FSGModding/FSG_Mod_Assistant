@@ -10,41 +10,41 @@ import tkinter as Tk
 import tkinter.ttk as ttk
 
 class ModCheckUpdater() :
-	"""
-	Update the tabs
+	"""Update the tabs
 
-	Keyword Arguments:
-	  rootWindow   -- inherit the base class
-	"""
+	Args:
+		rootWindow (object): Root window object (base)
+	"""	
 
 	def __init__(self, rootWindow) :
-		
 		self._rootWindow = rootWindow
 		
-	def updateConfigNumbers(self, found = 0, broke = 0, missing = 0, folder = 0) :
-		""" Update the number counts on the config tab """
+	def updateConfigNumbers(self, found = 0, broke = 0, missing = 0) :
+		"""Update the number of mods found
+
+		Args:
+			found (int, optional): Found mods count. Defaults to 0.
+			broke (int, optional): Broken files count. Defaults to 0.
+			missing (int, optional): Missing mods count. Defaults to 0.
+		"""
 		self._rootWindow._configLabels["found"].config(text = str(found))
 		self._rootWindow._configLabels["broke"].config(text = str(broke))
-		self._rootWindow._configLabels["folder"].config(text = str(folder))
 		self._rootWindow._configLabels["missing"].config(text = str(missing))
 
 	def update_tab_config(self) :
 		""" Update the configuration tab """
 		root = self._rootWindow
-		folder  = { k for k, v in root._modList.items() if v.isFolder() }
 		missing = { k for k, v in root._modList.items() if v.isMissing() }
 
 		self.updateConfigNumbers(
 			found   = len(root._modList),
 			broke   = len(root._badList),
-			folder  = len(folder),
 			missing = len(missing)
 		)
 
 		root._logger.write([
 			root._configStrings["info-mods-found"] + ": {}".format(len(root._modList)),
 			root._configStrings["info-mods-broken"] + ": {}".format(len(root._badList)),
-			root._configStrings["info-mods-folders"] + ": {}".format(len(folder)),
 			root._configStrings["info-mods-missing"] + ": {}".format(len(missing)),
 		])
 		root._logger.line()
@@ -91,7 +91,6 @@ class ModCheckUpdater() :
 
 		root._logger.openSection(root.tabContent["tabMissing"].title + ":")
 
-	
 		for thisMod in sorted(missing, key=str.casefold) :
 			root.tabContent["tabMissing"].add_item(thisMod, (
 				thisMod,
@@ -142,7 +141,6 @@ class ModCheckUpdater() :
 		root.tabContent["tabUnused"].clear_items()
 	
 		root._logger.openSection(root.tabContent["tabUnused"].title+":")
-
 
 		for thisMod in sorted(unused, key=str.casefold) :
 			root.tabContent["tabUnused"].add_item(thisMod, (
