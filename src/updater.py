@@ -63,20 +63,15 @@ class ModCheckUpdater() :
 
 		for thisBadMod in sorted(root._badList.keys()) :
 
-			message = root._badList[thisBadMod].diagnose()
-			
+			root._badList[thisBadMod].diagnose() # Diagnose the problem (cached)
 			root._badList[thisBadMod].done() # Close any open files.
 
 			root.tabContent["tabBroken"].add_item(
-				thisBadMod + ( "\\" if root._badList[thisBadMod].isFolder() else "" ),
-				message
+				root._badList[thisBadMod].getHRFilename(),
+				root._badList[thisBadMod].diagnose()
 			)
 
-			root._logger.write("{} - {}".format(
-				thisBadMod,
-				message
-			))
-
+			root._logger.write(str(root._badList[thisBadMod]))
 
 		root._logger.closeSection()
 
@@ -176,8 +171,8 @@ class ModCheckUpdater() :
 		for thisMod in sorted(root._conflictMods.keys(), key=str.casefold) :
 			if thisMod in root._modList.keys():
 				# Page through all known conflicts and compare it to the list
-				# of INSTALLED mods.  We are attempting to warn what COULD maybe
-				# happen, not what IS happening
+				# of detected (INSTALLED or MISSING) mods.  We are attempting
+				# to warn what COULD maybe happen, not what IS happening
 
 				if root._conflictMods[thisMod]["confWith"] is None :
 					# confWith is None, so it's a general warning

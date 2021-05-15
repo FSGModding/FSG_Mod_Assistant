@@ -48,6 +48,28 @@ class FSBadFile() :
 		self._whatWrong     = None
 		self._shaHash       = None
 		self.modVersion     = "0.0.0.0"
+
+	def __str__(self):
+		"""String representation of bad file
+
+		Returns:
+			str: Representation
+		"""
+		return "{modFile} - {message}".format(
+			modFile = self.getHRFilename(),
+			message = self.diagnose()
+		)
+
+	def getHRFilename(self) :
+		"""Get human readable filename (seperator after folder if folder)
+
+		Returns:
+			str: Filename
+		"""
+		return "{modFile}{seperator}".format(
+			modFile   = self._filename,
+			seperator = os.path.sep if self.isFolder() else ""
+		)
 		
 	def isFolder(self, setTo = None) :
 		"""Is this a folder
