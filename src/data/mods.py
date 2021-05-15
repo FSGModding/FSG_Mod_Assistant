@@ -19,12 +19,6 @@ import hashlib
 
 class FSMod() :
 	"""Holds all the details of found mod files
-
-	Returns:
-		None: n/a
-
-	Yields:
-		None: n/a
 	"""
 	
 	langCode = ["en"]

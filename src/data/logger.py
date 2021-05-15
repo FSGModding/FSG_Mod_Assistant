@@ -22,7 +22,12 @@ class ModCheckLog() :
 		self._sectionLead = ""
 
 	def openSection(self, title = None) :
-		""" Basic indentation - open section """
+		"""Basic indentation - Add indent
+
+		Args:
+			title (str, optional): Title for this indented section. Defaults to None.
+		"""
+		
 		if title is not None:
 			self.write(title)
 		
@@ -30,14 +35,19 @@ class ModCheckLog() :
 		self._sectionLead   = self._sectionLead + "  "
 
 	def closeSection(self) :
-		""" Basic indentation - close section """
+		"""Basic indentation - Remove indent
+		"""
 		if self._sectionsOpen > 0 :
 			self._sectionsOpen -= 1
 			self._sectionLead   = self._sectionLead[0:-2]
 			self.line()
 
 	def write(self, value) :
-		""" Write a log entry, string of iterable type"""
+		"""Write a log entry
+
+		Args:
+			value (str, list): Value to add to the log
+		"""
 		if ( isinstance(value, str)) :
 			self.LogText.append(self._sectionLead + value)
 		else :

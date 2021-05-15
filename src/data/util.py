@@ -38,7 +38,14 @@ langList = {
 # cSpell:enable
 
 def set_locale(thisLocale) :
-	""" Set the chosen locale for the locale package (number formats) """
+	"""Set the chosen locale for the locale package (number formats)
+
+	Args:
+		thisLocale (str): String locale, probably 2-letter that matches FS19 language code
+
+	Issues:
+		This is going to break if/when we have a Brazillian Portuguese translation. "br" is *not* the Brazillian locale, but we might get away with it because the number format might be right anyway.
+	"""
 	import locale
 	locale.setlocale(locale.LC_ALL, thisLocale)
 
@@ -47,14 +54,24 @@ def get_lang_list() :
 	return [x for x in langList.keys()]
 
 def get_lang_code(lang) :
-	""" Get language code from text language name """
+	"""Get language code from text language name
+
+	Args:
+		lang (str): Full language name
+
+	Returns:
+		str: Language code
+	"""
 	return langList[lang]
 
 def get_resource_path(relative_path) :
-	"""
-	Get absolute path to resource, works for dev and for PyInstaller
-	
-	This bit is needed for the created .EXE file
+	"""Get absolute path to resource, works for dev and for PyInstaller
+
+	Args:
+		relative_path (str): String path
+
+	Returns:
+		str: String path, normailzed or MEIPASS prefixed.
 	"""
 	try:
 		base_path = sys._MEIPASS # pylint: disable=no-member

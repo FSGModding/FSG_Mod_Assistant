@@ -14,13 +14,23 @@ import lxml.etree as etree
 import hashlib
 
 class FSBadFile() :
-	""" This class holds all of the information about a mod we would want to know """
+	""" Bad files found information object
+
+	Args:
+		fullPath (str): Full path to the bad file
+		strings (list): Strings of the problems we can detect
+	"""
 
 	fullModList = []
 	fullModListObj = {}
 
 	def setFullModList(self, keylist, theObject):
-		""" Use a class-global copt of the modlist (keys) and objects """
+		"""Use a class-global copy of the modlist
+
+		Args:
+			keylist (list): List of mod names
+			theObject (dict): Dict of mod names -> src.data.mods instance
+		"""
 		self.fullModList.clear()
 		self.fullModList.extend(keylist)
 		self.fullModListObj.clear()
@@ -36,36 +46,61 @@ class FSBadFile() :
 		self._modDesc       = None
 		self._modDescTree   = None
 		self._whatWrong     = None
+		self._shaHash       = None
 		self.modVersion     = "0.0.0.0"
 		
-	def isFolder(self, *args) :
-		""" Boolean "is this a folder", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._folder = args[0]
-		else :
-			return self._folder
+	def isFolder(self, setTo = None) :
+		"""Is this a folder
+
+		Args:
+			setTo (bool, optional): This IS a folder (True). Defaults to None.
+
+		Returns:
+			bool: This IS a folder (True)
+		"""
+		if setTo is not None :
+			self._folder = setTo
+
+		return self._folder
 
 	def isGarbage(self) :
-		""" Is this not possibly a valid file? """
+		"""Is this not possibly a valid file?
+
+		Returns:
+			bool: This CANNOT BE a valid mod (True)
+		"""
 		return not self.isFolderOrZip()
 
 	def isFolderOrZip(self) :
-		""" Is a folder or a zip / inverse of isGarbage() """
+		"""Is this not possibly a valid file?
+
+		Returns:
+			bool: This COULD BE a valid mod (True)
+		"""
 		return (self._folder or self._fullPath.endswith(".zip"))
 
 	def nameIsUnzip(self) :
-		""" Filename contains the "unzip" string """
+		"""File is a mod pack
+
+		Returns:
+			bool: Filename contains the "unzip" string, likely a pack
+		"""
 		return re.search(r'unzip', self._filename, re.IGNORECASE)
 
 	def nameStartsDigit(self) :
-		""" Filename starts with a digit """
+		"""Filename starts with a digit
+
+		Returns:
+			bool: Filename DOES start with a digit (True)
+		"""
 		return re.match(r'[0-9]',self._filename)
 
 	def isCopy(self) :
-		""" Is this a likely copy of another mod? 
-		Return tuple :
-			(bool Answer, str Good Name Guess)
-		"""
+		"""Is this a likely copy of another mod? 
+
+		Returns:
+			tuple: (bool_likely_IS_copy, str_or_False_name_of_original)
+		"""			
 		windowsCopyName = re.search(r'(\w+) - .+', self._filename)
 		browserDLCopyName = re.search(r'(\w+) \(.+', self._filename)
 
@@ -85,7 +120,11 @@ class FSBadFile() :
 		return (False,False)
 
 	def isValidZip(self) :
-		""" Test is the zip actually opens as a zip """
+		"""Test is the zip actually opens as a zip
+
+		Returns:
+			bool: Zip file IS readable (True)
+		"""
 		if self._folder : return False
 
 		if not self._fullPath.endswith(".zip") : return False
@@ -96,24 +135,45 @@ class FSBadFile() :
 		except zipfile.BadZipFile :
 			return False
 
-	def isGood(self, *args) :
-		""" Boolean "is this named correctly", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._filenameOK = args[0]
-		else:
-			return self._filenameOK
+	def isGood(self, setTo = None) :
+		"""File is a valid mod name?
 
-	def isBad(self, *args) :
-		""" Boolean "is this named INCORRECTLY", allow setting the same """
-		if ( len(args) > 0 ) :
-			self._filenameOK = not args[0]
-		else:
-			return not self._filenameOK
+		Args:
+			setTo (bool, optional): File IS a valid name. Defaults to None.
 
-	def fullPath(self, *args) :
-		""" Return the full file path to the mod, allow setting the same """
-		if ( len(args) > 0 ) :
-			self._fullPath = args[0]
+		Returns:
+			bool: File IS a valid name (True)
+		"""
+		if setTo is not None :
+			self._filenameOK = setTo
+
+		return self._filenameOK
+
+	def isBad(self, setTo = None) :
+		"""File is NOT a valid mod name?
+
+		Args:
+			setTo (bool, optional): File is NOT a valid name. Defaults to None.
+
+		Returns:
+			bool: File is NOT a valid name (True)
+		"""
+		if setTo is not None :
+			self._filenameOK = not setTo
+
+		return not self._filenameOK
+
+	def fullPath(self, setTo = None) :
+		"""Full path to the file (with filename)
+
+		Args:
+			setTo (str, optional): Set the full path to the file. Defaults to None.
+
+		Returns:
+			str: Full path to the file, system normalized
+		"""
+		if setTo is not None :
+			self._fullPath = setTo
 
 		else :
 			if self._fullPath is not None:
@@ -122,7 +182,14 @@ class FSBadFile() :
 				return None
 
 	def hasReadableModDesc(self) :
-		""" Is a zip file, and valid (check earlier) """
+		"""Has a parseable modDesc.xml
+
+		Returns:
+			bool: file/folder DOES have a parseable modDesc.xml
+
+		Notes:
+			If a zip file, file must already be in memory. Call isValidZip() first.
+		"""
 		if self.isGarbage() : return False
 
 		if self._filename.endswith(".zip") and self._thisZIP is not None :
@@ -152,7 +219,11 @@ class FSBadFile() :
 		return False
 
 	def isGarbageArchive(self) :
-		""" Is this an archive FS can't open? """
+		"""Is this an archive FS can't open?
+
+		Returns:
+			bool: File IS a known archive the game cannot read (probably a mod pack)
+		"""		
 		knownArcs = [".7z", ".rar"]
 
 		for thisArchive in knownArcs :
@@ -162,10 +233,25 @@ class FSBadFile() :
 		return False
 
 	def sha256sum(self):
-		""" Compute SHA256 hash of this mod """
+		"""Get SHA256 Hash of the file (cached)
+
+		Returns:
+			str: SHA256 of the file (folder = None)
+		"""
 		if self.isFolder() :
 			return None
 
+		if self._shaHash is None:
+			self._shaHash = self._sha256sum()
+
+		return self._shaHash
+
+	def _sha256sum(self):
+		"""Get the SHA256 Hash of the file (bypass cache)
+
+		Returns:
+			str: SHA256 of the file
+		"""
 		h  = hashlib.sha256()
 		b  = bytearray(128*1024)
 		mv = memoryview(b)
@@ -175,21 +261,28 @@ class FSBadFile() :
 
 		return h.hexdigest()
 
-
 	def done(self) :
 		""" Explicit file close (zip) """
 		if self._thisZIP is not None:
 			self._thisZIP.close()
 
 	def diagnose(self) :
-		""" Cache diagnosis. We don't need this *yet*, but might someday soon """
+		"""Diagnose file problem, cache result
+
+		Returns:
+			str: Problem with file
+		"""
 		if self._whatWrong is None:
 			self._whatWrong = self._diagnose()
 
 		return self._whatWrong
 
 	def _diagnose(self) :
-		""" Diagnose what is wrong with this file/mod """
+		"""Diagnose file problem, cache result (actual work)
+
+		Returns:
+			str: Problem with file
+		"""
 		if self.isGarbage() :
 			if self.isGarbageArchive() :
 				return self._brokenStrings["garbage-archive"]

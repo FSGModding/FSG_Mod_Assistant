@@ -3,7 +3,7 @@
 # |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 # |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
 
-# Re-Usable UI Elements - Canvas Tab
+# Re-Usable UI Elements - Scrollable Canvas Tab
 
 # (c) 2021 JTSage.  MIT License.
 import tkinter as Tk
@@ -13,13 +13,12 @@ class ModCheckCanvasTab() :
 	"""
 	Build a ttk.Canvas (scrollable) tab
 
-	Keywork Arguments:
-
-	  parent      -- Parent element
-	  title       -- str Title of this tab (display label)
-	  description -- str Description of this tab
-	  extraText   -- list Extra info to add to window
-	  hideCanvas  -- bool Skip production of the scrollable frame
+	Args:
+		parent (object): Parent Element
+		title (str): Title of this tab
+		description (str): Description of this tab
+		extraText (list, optional): Extra info to display. Defaults to None.
+		hideCanvas (bool, optional): Set to True to hide the scrollable canvas. Defaults to False.
 	""" 
 
 	def __init__(self, parent, title, description, extraText=None, hideCanvas = False) :
@@ -34,7 +33,7 @@ class ModCheckCanvasTab() :
 
 
 	def _build(self) :
-		""" Build the canvas inside _parent """
+		"""Build the canvas inside _parent """
 		ttk.Label(self._parent, text=self.title, font='Calibri 12 bold').pack()
 		ttk.Label(self._parent, text=self._description, wraplength = 640).pack(fill='x')
 
@@ -79,12 +78,17 @@ class ModCheckCanvasTab() :
 		self._UIParts["canvas"].unbind_all("<MouseWheel>")
 
 	def clear_items(self) :
-		""" Clear the canvas of data items """
+		"""Clear the canvas of data items """
 		for widget in self._UIParts["frame"].winfo_children():
 			widget.destroy()
 
 	def add_item(self, term, desc) :
-		""" Add data item to canvas """
+		"""Add an item to the scrollable canvas
+
+		Args:
+			term (str): Title of the item (bold, bulleted)
+			desc (str): Description text (normal, indented)
+		"""
 		ttk.Label(
 			self._UIParts["frame"],
 			text   = "\u2022 " + term,
