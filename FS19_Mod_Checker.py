@@ -158,7 +158,7 @@ def makeRootWindow(langWindow) :
 	rootWindow.addTab("tabBroken",   underline=0, text=_('Broken Files'))
 
 	rootWindow.tabContent["tabBroken"] = ModCheckCanvasTab(
-		parent      = rootWindow.tabFrame["tabBroken"],
+		notebookTab = rootWindow.tabFrame["tabBroken"],
 		title       = _("Broken Mods"),
 		description = _("These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution")
 	)
@@ -194,7 +194,7 @@ def makeRootWindow(langWindow) :
 	rootWindow.addTab("tabConflict", underline=0, text=_('Conflicts'))
 
 	rootWindow.tabContent["tabConflict"] = ModCheckCanvasTab(
-		parent      = rootWindow.tabFrame["tabConflict"],
+		notebookTab = rootWindow.tabFrame["tabConflict"],
 		title       = _("Possible Conflicts"),
 		description = _("These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here"),
 		extraText   = [

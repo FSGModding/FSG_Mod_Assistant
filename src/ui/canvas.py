@@ -14,72 +14,81 @@ class ModCheckCanvasTab() :
 	Build a ttk.Canvas (scrollable) tab
 
 	Args:
-		parent (object): Parent Element
+		notebookTab (object): Parent Element
 		title (str): Title of this tab
 		description (str): Description of this tab
 		extraText (list, optional): Extra info to display. Defaults to None.
 		hideCanvas (bool, optional): Set to True to hide the scrollable canvas. Defaults to False.
 	""" 
 
-	def __init__(self, parent, title, description, extraText=None, hideCanvas = False) :
-		self._parent      = parent
-		self._UIParts     = {}
+
+	def __init__(self, notebookTab, title, description, extraText=None, hideCanvas = False) :
 		self.title        = title
+		self._notebookTab = notebookTab
 		self._description = description
 		self._extraText   = extraText
 		self._hideCanvas  = hideCanvas
 
-		self._build()
+		self._vertScrollbar = None
+		self._scrollCanvas  = None
+		self._inCanvasFrame = None
 
+		self._build()
 
 	def _build(self) :
 		"""Build the canvas inside _parent """
-		ttk.Label(self._parent, text=self.title, font='Calibri 12 bold').pack()
-		ttk.Label(self._parent, text=self._description, wraplength = 640).pack(fill='x')
+
+		ttk.Label(self._notebookTab, text=self.title, font='Calibri 12 bold').pack()
+		ttk.Label(self._notebookTab, text=self._description, wraplength = 640).pack(fill='x')
 
 		if self._extraText is not None :
-			ttk.Label(self._parent, text=" ", anchor='w').pack(padx=(30,0), fill='x')
-			for thisText in self._extraText :
-				ttk.Label(self._parent, text=thisText, anchor='w').pack(padx=(30,0), fill='x')
-			ttk.Label(self._parent, text=" ", anchor='w').pack(padx=(30,0), fill='x')
+
+			for idx, thisText in enumerate(self._extraText, start=1) :
+				padY = (
+					10 if idx == 1 else 0,
+					10 if idx == len(self._extraText) else 0
+				)
+
+				ttk.Label(self._notebookTab, text=thisText, anchor='w').pack(padx=(30,0), pady=padY, fill='x')
+
 
 		if ( not self._hideCanvas ) :
-			self._UIParts["canvas"] = Tk.Canvas(self._parent, bd=2, relief='ridge')
-			self._UIParts["VSB"]    = ttk.Scrollbar(self._parent, orient="vertical", command=self._UIParts["canvas"].yview)
-			self._UIParts["frame"]  = ttk.Frame(self._UIParts["canvas"], border=1, padding=(30,0))
 
-			self._UIParts["frame"].bind(
+			self._scrollCanvas   = Tk.Canvas(self._notebookTab, bd=2, relief='ridge')
+			self._vertScrollbar  = ttk.Scrollbar(self._notebookTab, orient="vertical", command=self._scrollCanvas.yview)
+			self._inCanvasFrame  = ttk.Frame(self._scrollCanvas, border=1, padding=(30,0))
+
+			self._inCanvasFrame.bind(
 				"<Configure>",
-				lambda e: self._UIParts["canvas"].configure(
-					scrollregion=self._UIParts["canvas"].bbox("all")
+				lambda e: self._scrollCanvas.configure(
+					scrollregion=self._scrollCanvas.bbox("all")
 				)
 			)
 
-			self._UIParts["canvas"].create_window((0, 0), window=self._UIParts["frame"], anchor="nw")
+			self._scrollCanvas.create_window((0, 0), window=self._inCanvasFrame, anchor="nw")
+			self._scrollCanvas.configure(yscrollcommand=self._vertScrollbar.set)
+			self._scrollCanvas.pack(side="left", fill="both", expand=True)
 
-			self._UIParts["canvas"].configure(yscrollcommand=self._UIParts["VSB"].set)
+			self._vertScrollbar.pack(side="right", fill="y")
 
-			self._UIParts["canvas"].pack(side="left", fill="both", expand=True)
-			self._UIParts["VSB"].pack(side="right", fill="y")
-
-			self._UIParts["frame"].bind('<Enter>', self._bound_to_mousewheel)
-			self._UIParts["frame"].bind('<Leave>', self._unbound_to_mousewheel)
+			self._inCanvasFrame.bind('<Enter>', self._bound_to_mousewheel)
+			self._inCanvasFrame.bind('<Leave>', self._unbound_to_mousewheel)
 
 	def _on_mousewheel(self, event):
 		""" Handle mousewheel events """
-		self._UIParts["canvas"].yview_scroll(int(-1*(event.delta/120)), "units")
+		self._scrollCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
 	def _bound_to_mousewheel(self, event):
 		""" Bind mousewheel events """
-		self._UIParts["canvas"].bind_all("<MouseWheel>", self._on_mousewheel)
+		self._scrollCanvas.bind_all("<MouseWheel>", self._on_mousewheel)
 
 	def _unbound_to_mousewheel(self, event):
 		""" Unbind mousewheel events """
-		self._UIParts["canvas"].unbind_all("<MouseWheel>")
+		self._scrollCanvas.unbind_all("<MouseWheel>")
 
 	def clear_items(self) :
 		"""Clear the canvas of data items """
-		for widget in self._UIParts["frame"].winfo_children():
+		for widget in self._inCanvasFrame.winfo_children():
 			widget.destroy()
 
 	def add_item(self, term, desc) :
@@ -89,18 +98,19 @@ class ModCheckCanvasTab() :
 			term (str): Title of the item (bold, bulleted)
 			desc (str): Description text (normal, indented)
 		"""
+
 		ttk.Label(
-			self._UIParts["frame"],
+			self._inCanvasFrame,
 			text   = "\u2022 " + term,
 			anchor = 'w',
-			font='Calibri 9 bold'
+			font   = 'Calibri 9 bold'
 		).pack(fill = 'x', padx = 0, pady = (10,0))
 
 		ttk.Label(
-			self._UIParts["frame"],
+			self._inCanvasFrame,
 			text       = desc,
 			anchor     = 'w',
-			wraplength = 640-30-30-40
+			wraplength = 540 # (640-30-30-40)
 		).pack(fill = 'x', pady = 0, padx = (40,0))
 
 
