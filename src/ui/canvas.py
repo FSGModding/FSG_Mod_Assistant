@@ -21,7 +21,6 @@ class ModCheckCanvasTab() :
 		hideCanvas (bool, optional): Set to True to hide the scrollable canvas. Defaults to False.
 	""" 
 
-
 	def __init__(self, notebookTab, title, description, extraText=None, hideCanvas = False) :
 		self.title        = title
 		self._notebookTab = notebookTab

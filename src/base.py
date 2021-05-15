@@ -245,13 +245,13 @@ class ModCheckRoot() :
 
 		self._root.update()
 
-		
+		# Read Mods
 		self._read_mods_from_folder()
 		self._read_mods_from_saves()
 		self._read_script_mod()
 
-		self._logger.empty()
-		self._logger.header()
+		# Update UI with found mods
+		self._logger.start()
 
 		self._updater.update_tab_config()
 		self._updater.update_tab_broken()
@@ -261,7 +261,7 @@ class ModCheckRoot() :
 		self._updater.update_tab_unused()
 		self._updater.update_tab_good()
 	
-		self._logger.footer()
+		self._logger.end()
 
 		# Undo the GUI changes when done processing
 		self._processButton["text"] = currentProcButtonText
@@ -309,7 +309,7 @@ class ModCheckRoot() :
 				self._badList[os.path.basename(fn)] = self._FSBadFile(fn, self._brokenStrings)
 
 		# Special Case
-		self._modList["FS19_holmerPack"] = self._FSMod()
+		self._modList["FS19_holmerPack"] = self._FSMod("FS19_holmerPack")
 		self._modList["FS19_holmerPack"].name("DLC Holmer Terra-Variant Pack")
 		self._modList["FS19_holmerPack"].size(133849603)
 
@@ -319,7 +319,7 @@ class ModCheckRoot() :
 			modName  = os.path.basename(thisMod)
 			this_dir = pathlib.Path(thisMod)
 
-			self._modList[modName] = self._FSMod()
+			self._modList[modName] = self._FSMod(modName)
 			self._modList[modName].isFolder(True)
 			self._modList[modName].size(sum(f.stat().st_size for f in this_dir.glob('**/*') if f.is_file()))
 			self._modList[modName].fullPath(thisMod)
@@ -339,7 +339,7 @@ class ModCheckRoot() :
 			modName    = os.path.splitext(os.path.basename(thisMod))[0]
 			badModName = os.path.basename(thisMod)
 		
-			self._modList[modName] = self._FSMod()
+			self._modList[modName] = self._FSMod(modName)
 			self._modList[modName].fullPath(thisMod)
 			self._modList[modName].size(os.path.getsize(thisMod))
 
@@ -383,7 +383,7 @@ class ModCheckRoot() :
 					self._modList[thisModName].name(thisMod.attrib["title"])
 				else :
 					# Missing Mod, we should add it to the list
-					self._modList[thisModName] = self._FSMod()
+					self._modList[thisModName] = self._FSMod(thisModName)
 					self._modList[thisModName].isActive(thisSavegame)
 					self._modList[thisModName].isMissing(True)
 					self._modList[thisModName].name(thisMod.attrib["title"])

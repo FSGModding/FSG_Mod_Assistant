@@ -251,12 +251,13 @@ def makeRootWindow(langWindow) :
 		description = _("These mods are not activated in any of your savegames.  If you would like to save space, and perhaps speed up FS19 starting, you could remove some or all of these."),
 		columns = [
 			_("Name"),
+			_("Title"),
 			_("Size"),
 		],
 		base = rootWindow,
 		detail = ModCheckDetailWin,
 		columnExtra = {
-			"#2": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
+			"#3": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
 		}
 	)
 

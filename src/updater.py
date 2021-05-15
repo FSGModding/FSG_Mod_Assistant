@@ -99,11 +99,9 @@ class ModCheckUpdater() :
 				root._modList[thisMod].getAllActive(veryShort=True)
 			))
 
-			root._logger.write("{modName} ({modTitle}) [{savegames}] {isOwned}".format(
-				modName   = thisMod,
-				modTitle  = root._modList[thisMod].name(),
-				savegames = root._modList[thisMod].getAllActive(short=True),
-				isOwned   = ("(" + root._IOStrings["OWNED"] + ")") if root._modList[thisMod].isUsed() else ""
+			root._logger.write("{mod}{isOwned}".format(
+				mod     = str(root._modList[thisMod]),
+				isOwned = (" (" + root._IOStrings["OWNED"] + ")") if root._modList[thisMod].isUsed() else ""
 			))
 
 		root._logger.closeSection()
@@ -122,13 +120,11 @@ class ModCheckUpdater() :
 		for thisMod in sorted(inactive, key=str.casefold) :
 			root.tabContent["tabInactive"].add_item(thisMod, (
 				thisMod,
+				root._modList[thisMod].name(),
 				root._modList[thisMod].size()
 			))
 
-			root._logger.write("{} ({})".format(
-				thisMod,
-				root._modList[thisMod].size()
-			))
+			root._logger.write(str(root._modList[thisMod]))
 
 		root._logger.closeSection()
 
@@ -150,12 +146,7 @@ class ModCheckUpdater() :
 				root._modList[thisMod].size()
 			))
 
-			root._logger.write("{modName} ({modTitle}) [{savegames}] ({modFileSize})".format(
-				modName     = thisMod,
-				modTitle    = root._modList[thisMod].name(),
-				savegames   = root._modList[thisMod].getAllActive(short=True),
-				modFileSize = root._modList[thisMod].size()
-			))
+			root._logger.write(str(root._modList[thisMod]))
 		
 		root._logger.closeSection()
 

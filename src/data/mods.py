@@ -32,7 +32,8 @@ class FSMod() :
 		self.langCode.clear()
 		self.langCode.append(code)
 
-	def __init__(self) :
+	def __init__(self, modName = None) :
+		self._modName     = modName
 		self._folder      = False
 		self._filenameOK  = True
 		self._fileExists  = True
@@ -47,6 +48,28 @@ class FSMod() :
 		self._sha256hash  = None
 
 		self.modVersion   = None
+
+	def __str__(self) :
+		"""String representation of the mod
+
+		Returns:
+			str: Description of the mod
+		"""
+		if self._fileSize > 0 :
+			return "{modName} ({modTitle}) [{saveactive}]/[{saveused}] ({modFileSize})".format(
+				modName     = self._modName,
+				modTitle    = self.name(),
+				saveactive  = self.getAllActive(showNone = True, short=True),
+				saveused    = self.getAllUsed(showNone = True, short=True),
+				modFileSize = self.size()
+			)
+		else :
+			return "{modName} ({modTitle}) [{saveactive}]/[{saveused}]".format(
+				modName    = self._modName,
+				modTitle   = self.name(),
+				saveactive = self.getAllActive(showNone = True, short=True),
+				saveused   = self.getAllUsed(showNone = True, short=True),
+			)
 	
 	def isFolder(self, setTo = None) :
 		"""Is this mod a folder?
@@ -304,6 +327,9 @@ class FSMod() :
 				self._iconImage   = False # No icon either
 				return False
 
+			if self._name is None:
+				self.getModDescName()
+
 			iconFileNameGiven = self._modDescTree.findtext('iconFilename')
 			iconFileNameFound = None
 
@@ -341,6 +367,8 @@ class FSMod() :
 				self._iconImage   = False # No icon either
 				return False
 
+			if self._name is None:
+				self.getModDescName()
 
 			iconFileNameGiven = self._modDescTree.findtext('iconFilename')
 			iconFileNameFound = None
@@ -411,7 +439,7 @@ class FSMod() :
 			nameTry = self._getI10nFromXPath(self._modDescTree.xpath("/modDesc/title"))
 
 			if nameTry is not None:
-				self._name = nameTry
+				self._name = nameTry.strip()
 
 		return self._name
 

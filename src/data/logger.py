@@ -19,7 +19,7 @@ class ModCheckLog() :
 
 	def __init__(self) :
 		self._sectionsOpen = 0
-		self._sectionLead = ""
+		self._sectionLead  = ""
 
 	def openSection(self, title = None) :
 		"""Basic indentation - Add indent
@@ -58,9 +58,12 @@ class ModCheckLog() :
 		""" Write a seperator line """
 		self.LogText.append("   ---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=---")
 
-	def empty(self) :
+	def start(self) :
 		""" Empty the log """
 		self.LogText.clear()
+		self._sectionsOpen = 0
+		self._sectionLead  = ""
+		self.header()
 
 	def header(self) :
 		""" Write the log header """
@@ -72,9 +75,11 @@ class ModCheckLog() :
 		])
 		self.line()
 
-	def footer(self) :
+	def end(self) :
 		""" Put a date stamp at the end of the log """
 		today = datetime.datetime.now()
+		self._sectionsOpen = 0
+		self._sectionLead  = ""
 		self.write("{nowTime}".format(nowTime = today.strftime("%Y-%m-%d %H:%M")))
 		self.line()
 
