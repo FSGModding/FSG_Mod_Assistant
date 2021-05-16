@@ -3,3 +3,4 @@ __pycache__/
 build/
 testFolder/
 dist/FS19_Mod-Checker.zip
+.vscodecounter/
