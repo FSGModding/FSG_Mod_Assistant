@@ -45,6 +45,10 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 
 ![Language Choice Screen](screen_shots/000-LangPick.png)
 
+### Configuration Screen, Mods Loading
+
+![Configuration Screen, Mods Loading](screen_shots/001-ConfigLoading.png)
+
 ### Configuration Screen, Mods Loaded
 
 ![Configuration Screen, Mods Loaded](screen_shots/001-ConfigLoaded.png)
