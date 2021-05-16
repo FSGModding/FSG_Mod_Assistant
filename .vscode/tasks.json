@@ -8,7 +8,7 @@
 			"type": "shell",
 			"command": "auto-py-to-exe.exe",
 			"args": [
-				"-c", "${workspaceFolder}/auto-build.json",
+				"-c", "${workspaceFolder}/.vscode/auto-build.json",
 				"-o", "${workspaceFolder}/dist"
 			],
 			"problemMatcher": [],
