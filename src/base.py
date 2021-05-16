@@ -60,7 +60,7 @@ class ModCheckRoot() :
 		self._tabNotebook.enable_traversal()
 		self._tabNotebook.pack(expand = 1, pady = 0, padx = 0, fill = "both")
 
-		self.tabFrame = {}
+		self.tabFrame   = {}
 		self.tabContent = {}
 
 		self._configLabels  = {}
@@ -193,7 +193,6 @@ class ModCheckRoot() :
 		""" Load and open the main config file, set the mod folder """
 		filename = fd.askopenfilename(
 			initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
-			#initialdir  = os.path.expanduser("~") + "/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder",
 			initialfile = "gameSettings.xml",
 			title       = self._configStrings["load-button-label"] + " : gameSettings.xml",
 			filetypes   = [(self._IOStrings["xml-file-type"], "gameSettings.xml")]
@@ -255,13 +254,19 @@ class ModCheckRoot() :
 		self._loadButton.state(['disabled'])
 
 		self._root.update()
+		self._set_progress(5)
 
 		# Read Mods
-		self._set_progress(5)
+
+		## Glob Files = 5%, Read folders = 25%, Read files = 25%
 		self._read_mods_from_folder()
 		self._set_progress(60)
+
+		## Each CareerSavegame, Vehicles, Items category = 6%
 		self._read_mods_from_saves()
 		self._set_progress(80)
+
+		## 5%. Likely over-stated.
 		self._read_script_mod()
 		self._set_progress(85)
 
@@ -270,15 +275,17 @@ class ModCheckRoot() :
 		
 		self._updater.update_tab_config()
 		self._set_progress(90)
+
+		# 5%. Should be in-expensive, except for really bad collections.
 		self._updater.update_tab_broken()
 		self._set_progress(95)
+
 		self._updater.update_tab_missing()
 		self._updater.update_tab_conflict()
 		self._updater.update_tab_inactive()
 		self._updater.update_tab_unused()
 		self._updater.update_tab_good()
 		
-	
 		self._logger.end()
 
 		# Undo the GUI changes when done processing
@@ -335,7 +342,8 @@ class ModCheckRoot() :
 		self._set_progress(10)
 		# Lets parse through the folders.
 		for idx, thisMod in enumerate(modDirFiles, start = 1):
-			self._set_progress(10 + int(25 * (idx / len(modDirFiles))))
+			# 10% @start + 20% divided between each folder found.
+			self._set_progress(10 + int(20 * (idx / len(modDirFiles))))
 
 			modName  = os.path.basename(thisMod)
 			this_dir = pathlib.Path(thisMod)
@@ -361,9 +369,10 @@ class ModCheckRoot() :
 
 		
 		# Next, the zip files
-		self._set_progress(35)
+		self._set_progress(30)
 		for idx, thisMod in enumerate(modZipFiles, start = 1):
-			self._set_progress(35 + int(25 * (idx / len(modZipFiles))))
+			# 30% @ start, +30% divided between each zip file.
+			self._set_progress(30 + int(30 * (idx / len(modZipFiles))))
 
 			modName    = os.path.splitext(os.path.basename(thisMod))[0]
 			badModName = os.path.basename(thisMod)
@@ -456,6 +465,7 @@ class ModCheckRoot() :
 				if thisMod.attrib["modName"] in self._modList.keys() :
 					self._modList[thisMod.attrib["modName"]].isUsed(thisSavegame)
 
+
 	def _read_script_mod(self) :
 		"""Deal with the script only mods - any game they are active in, assume they are also used. """
 		for thisMod in self._scriptMods:
@@ -476,37 +486,27 @@ class Link(Tk.Label):
 	
 	def __init__(self, master=None, link=None, fg='black', font=('Calibri', 10), *args, **kwargs):
 		super().__init__(master, *args, **kwargs)
-		self.master = master
-		self.default_color = fg # keeping track of the default color 
-		self.color = 'blue'   # the color of the link after hovering over it 
-		self.default_font = font    # keeping track of the default font
-		self.link = link 
+		self.master           = master
+		self._color_mouse_off = fg
+		self._color_mouse_on  = "blue"
+		self._font_mouse_off  = font
+		self._font_mouse_on   = font + ('underline',)
+		self._link            = link
 
-		""" setting the fonts as assigned by the user or by the init function  """
-		self['fg'] = fg
-		self['font'] = font 
+		self['fg']   = self._color_mouse_off
+		self['font'] = self._font_mouse_off
 
-		""" Assigning the events to private functions of the class """
-
-		self.bind('<Enter>', self._mouse_on)    # hovering over 
-		self.bind('<Leave>', self._mouse_out)   # away from the link
-		self.bind('<Button-1>', self._callback) # clicking the link
+		self.bind('<Enter>',    self._mouse_on)
+		self.bind('<Leave>',    self._mouse_out)
+		self.bind('<Button-1>', self._callback)
 
 	def _mouse_on(self, *args):
-		""" 
-			if mouse on the link then we must give it the blue color and an 
-			underline font to look like a normal link
-		"""
-		self['fg'] = self.color
-		self['font'] = self.default_font + ('underline', )
+		self['fg']   = self._color_mouse_on
+		self['font'] = self._font_mouse_on
 
 	def _mouse_out(self, *args):
-		""" 
-			if mouse goes away from our link we must reassign 
-			the default color and font we kept track of   
-		"""
-		self['fg'] = self.default_color
-		self['font'] = self.default_font
+		self['fg']   = self._color_mouse_off
+		self['font'] = self._font_mouse_off
 
 	def _callback(self, *args):
-		webbrowser.open_new(self.link)
+		webbrowser.open_new(self._link)
