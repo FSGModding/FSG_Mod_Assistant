@@ -1,4 +1,4 @@
-.vscode/
+.vscode/settings.json
 __pycache__/
 build/
 testFolder/
