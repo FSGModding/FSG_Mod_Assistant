@@ -1,7 +1,5 @@
 # FS19 Mod Install Checker
 
-[Demo Video](https://streamable.com/wi4u04)
-
 This little program will take a look at your mod install folder and inform you of the following
 
 * If a mod file is named incorrectly and won't load in the game.
@@ -27,6 +25,10 @@ This little program will take a look at your mod install folder and inform you o
 
 * If a mod you have possibly conflicts with another mod you have.
 
+## Demo Video
+
+[Demo Video](https://streamable.com/wi4u04)
+
 ## What this does
 
 This program provides information only.
@@ -43,43 +45,63 @@ Run dist/FS19_Mod_Checker.exe - command line or explorer.
 
 ### Language Choice Screen
 
-![Language Choice Screen](screen_shots/000-LangPick.png)
+<p align="center">
+  <img width="350" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/000-LangPick.png">
+</p>
 
 ### Configuration Screen, Mods Loading
 
-![Configuration Screen, Mods Loading](screen_shots/001-ConfigLoading.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/001-ConfigLoading.png">
+</p>
 
 ### Configuration Screen, Mods Loaded
 
-![Configuration Screen, Mods Loaded](screen_shots/001-ConfigLoaded.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/001-ConfigLoaded.png">
+</p>
 
 ### Bad Mods, Unzipped Mods, Extra Files
 
-![Bad Mods, Unzipped Mods, Extra Files](screen_shots/002-BadMods.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/002-BadMods.png">
+</p>
 
 ### Possible Conflicts
 
-![Possible Conflicts](screen_shots/003-Conflicts.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/003-Conflicts.png">
+</p>
 
 ### Missing Mods
 
-![Missing Mods](screen_shots/004-MissingMods.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/004-MissingMods.png">
+</p>
 
 ### Inactive, Unused Mods
 
-![Inactive, Unused Mods](screen_shots/005-InactiveMods.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/005-InactiveMods.png">
+</p>
 
 ### Active but Unused Mods
 
-![Active but Unused Mods](screen_shots/006-UnusedMods.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/006-UnusedMods.png">
+</p>
 
 ### Good Mods
 
-![About Tab](screen_shots/007-GoodMods.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/007-GoodMods.png">
+</p>
 
 ### Detail Popup
 
-![Full Detail](screen_shots/010-DetailFull.png)
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/010-DetailFull.png">
+</p>
 
 ## Development Requirements
 
