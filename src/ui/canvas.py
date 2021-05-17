@@ -38,24 +38,25 @@ class ModCheckCanvasTab() :
 		"""Build the canvas inside _parent """
 
 		ttk.Label(self._notebookTab, text=self.title, font='Calibri 12 bold').pack()
-		ttk.Label(self._notebookTab, text=self._description, wraplength = 640).pack(fill='x')
+		ttk.Label(self._notebookTab, text=self._description, wraplength = 640).pack(fill='x', pady=(0,10))
 
 		if self._extraText is not None :
 
 			for idx, thisText in enumerate(self._extraText, start=1) :
 				padY = (
-					10 if idx == 1 else 0,
+					0,
 					10 if idx == len(self._extraText) else 0
 				)
-
 				ttk.Label(self._notebookTab, text=thisText, anchor='w').pack(padx=(30,0), pady=padY, fill='x')
 
 
 		if ( not self._hideCanvas ) :
+			self._outsideFrame   = Tk.Frame(self._notebookTab, bd = 2, relief="groove")
+			self._outsideFrame.pack(expand=True, fill="both")
 
-			self._scrollCanvas   = Tk.Canvas(self._notebookTab, bd=2, relief='ridge')
-			self._vertScrollbar  = ttk.Scrollbar(self._notebookTab, orient="vertical", command=self._scrollCanvas.yview)
-			self._inCanvasFrame  = ttk.Frame(self._scrollCanvas, border=1, padding=(30,0))
+			self._scrollCanvas   = Tk.Canvas(self._outsideFrame, bd=0)
+			self._vertScrollbar  = ttk.Scrollbar(self._outsideFrame, orient="vertical", command=self._scrollCanvas.yview)
+			self._inCanvasFrame  = ttk.Frame(self._scrollCanvas, border=0, padding=(30,0))
 
 			self._inCanvasFrame.bind(
 				"<Configure>",
@@ -103,14 +104,14 @@ class ModCheckCanvasTab() :
 			text   = "\u2022 " + term,
 			anchor = 'w',
 			font   = 'Calibri 9 bold'
-		).pack(fill = 'x', padx = 0, pady = (10,0))
+		).pack(fill = 'x', padx = 0, pady = 0)
 
 		ttk.Label(
 			self._inCanvasFrame,
 			text       = desc,
 			anchor     = 'w',
 			wraplength = 540 # (640-30-30-40)
-		).pack(fill = 'x', pady = 0, padx = (40,0))
+		).pack(fill = 'x', pady = (0,10), padx = (40,0))
 
 
 	
