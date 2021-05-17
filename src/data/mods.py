@@ -327,8 +327,9 @@ class FSMod() :
 
 		if 'modDesc.xml' in zipFileFiles :
 			try:
-				modDescFileData = zipFileData.read('modDesc.xml')
-				self._modDescTree = etree.fromstring(modDescFileData)
+				modDescFileData   = zipFileData.read('modDesc.xml')
+				parser            = etree.XMLParser(recover=True)
+				self._modDescTree = etree.fromstring(modDescFileData, parser)
 			except :
 				""" Can't find / read modDesc """
 				self._modDescTree = False # Never get it now
@@ -378,7 +379,8 @@ class FSMod() :
 		if os.path.exists(os.path.join(self._fullPath, "modDesc.xml")) :
 			""" modDesc exists """
 			try:
-				self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
+				parser = etree.XMLParser(recover=True)
+				self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"), parser)
 			except :
 				""" Can't find / read modDesc """
 				self._modDescTree = False # Never get it now

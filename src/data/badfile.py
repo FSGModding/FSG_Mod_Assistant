@@ -219,7 +219,8 @@ class FSBadFile() :
 			if 'modDesc.xml' in self._thisZIP.namelist() :
 				try :
 					thisModDesc = self._thisZIP.read('modDesc.xml')
-					self._modDescTree = etree.fromstring(thisModDesc)
+					parser      = etree.XMLParser(recover=True)
+					self._modDescTree = etree.fromstring(thisModDesc, parser)
 					self.modVersion   = self._modDescTree.findtext("version")
 					try :
 						self.descVersion  = int(self._modDescTree.get('descVersion'))
@@ -234,7 +235,8 @@ class FSBadFile() :
 		if self.isFolder() :
 			if os.path.exists(os.path.join(self._fullPath, "modDesc.xml")) :
 				try:
-					self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
+					parser = etree.XMLParser(recover=True)
+					self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"), parser)
 					self.modVersion = self._modDescTree.findtext("version")
 					root = self._modDescTree.getroot()
 
