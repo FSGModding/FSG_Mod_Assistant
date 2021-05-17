@@ -203,6 +203,7 @@ def makeRootWindow(languageWindow) :
 		"zipfile-not-mod" : _("This zip file is not a mod. It might be a modpack. (unzip it?)"),
 		"invalid-zipfile" : _("This zip file is not readable.  Delete this"),
 		"too-old"         : _("This mod is not for FS19, the modDesc.xml descVersion is either too old or not present"),
+		"zip-and-folder"  : _("This mod exists as both a zip file AND a folder. The game will load the zip file, so if you have made changes to the folder version, be sure to move them back to the zip version."),
 	})
 
 

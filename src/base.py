@@ -383,7 +383,10 @@ class ModCheckRoot() :
 			modName    = os.path.splitext(os.path.basename(thisMod))[0]
 			badModName = os.path.basename(thisMod)
 		
+			alreadyFound = True if modName in self._modList.keys()  else False
+			
 			self._modList[modName] = self._FSMod(modName)
+			self._modList[modName].bothFolderAndZip = alreadyFound	
 			self._modList[modName].fullPath(thisMod)
 			self._modList[modName].size(os.path.getsize(thisMod))
 

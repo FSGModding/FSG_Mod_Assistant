@@ -139,7 +139,7 @@ class ModCheckCanvasTab() :
 			thisFrame,
 			text       = desc,
 			anchor     = 'w',
-			wraplength = 540, # (640-30-30-40)
+			wraplength = 520, # (640-30-30-40)
 			background = bgColor
 		).pack(fill = 'x', pady = (0,padY[1]), padx = (70,30))
 		

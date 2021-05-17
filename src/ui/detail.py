@@ -80,6 +80,8 @@ class ModCheckDetailWin() :
 		Tk.Grid.columnconfigure(subFrame, 1, weight=1)
 
 		typeString = self._rootWindow._IOStrings["type-zip-file"]
+		if self._theMod.bothFolderAndZip :
+			typeString += " & " + self._rootWindow._IOStrings["type-folder"]
 		if self._theMod.isFolder() :
 			typeString = self._rootWindow._IOStrings["type-folder"]
 		if self._theMod.isMissing() :
@@ -99,6 +101,7 @@ class ModCheckDetailWin() :
 				self._theMod.getAllUsed(showNone = True)
 			]
 		]
+
 
 		if self._theMod.modVersion is not None:
 			infoDetails.insert(1, [

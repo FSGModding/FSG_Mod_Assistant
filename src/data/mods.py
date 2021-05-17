@@ -48,6 +48,8 @@ class FSMod() :
 		self._sha256hash  = None
 		self._storeItems  = 0
 
+		self.bothFolderAndZip = False
+
 		self.modVersion   = None
 		self.descVersion  = 0
 

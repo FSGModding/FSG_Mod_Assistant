@@ -193,6 +193,11 @@ class ModCheckUpdater() :
 		root = self._rootWindow
 
 		root.tabContent["tabConflict"].clear_items()
+
+		bothZipFolder = { k for k,v in root._modList.items() if v.bothFolderAndZip }
+
+		for thisMod in sorted(bothZipFolder) :
+			root.tabContent["tabConflict"].add_item(thisMod, root._brokenStrings["zip-and-folder"])
 	
 		for thisMod in sorted(root._conflictMods.keys(), key=str.casefold) :
 			if thisMod in root._modList.keys():
