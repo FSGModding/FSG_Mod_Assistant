@@ -138,6 +138,7 @@ def makeRootWindow(languageWindow) :
 		"load-button-label"    : _("Load Settings"),
 		"info-game-settings"   : _("Game Settings File: {filename}"),
 		"info-mod-folder"      : _("Mod Folder: {folder}"),
+		"warn-unpacked"        : _("Warn when a good mod file is not zipped (Unusable for multiplayer)"),
 		"info-ask-process"     : _("Next, click \"{process_button_label}\" to scan your collection"),
 		"process-button-label" : _("Check Mods"),
 		"info-mods-found"      : _("Mods Found"),

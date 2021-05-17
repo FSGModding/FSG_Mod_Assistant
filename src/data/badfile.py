@@ -300,23 +300,24 @@ class FSBadFile() :
 		if self._thisZIP is not None:
 			self._thisZIP.close()
 
-	def diagnose(self) :
+	def diagnose(self, ignoreUnpacked = False) :
 		"""Diagnose file problem, cache result
 
 		Returns:
 			str: Problem with file
 		"""
 		if self._whatWrong is None:
-			self._whatWrong = self._diagnose()
+			self._whatWrong = self._diagnose(ignoreUnpacked)
 
 		return self._whatWrong
 
-	def _diagnose(self) :
+	def _diagnose(self, ignoreUnpacked = False) :
 		"""Diagnose file problem, cache result (actual work)
-
+		
 		Returns:
 			str: Problem with file
 		"""
+
 		if self.isGarbage() :
 			if self.isGarbageArchive() :
 				return self._brokenStrings["garbage-archive"]
@@ -336,7 +337,10 @@ class FSBadFile() :
 
 			if self.isGood() :
 				""" We are a mod, the name is good, suggest zipping! """
-				return self._brokenStrings["must-be-zipped"]
+				if not ignoreUnpacked :
+					return self._brokenStrings["must-be-zipped"]
+				else :
+					return False
 
 			if self.descVersion < 40 :
 				return self._brokenStrings["too-old"]

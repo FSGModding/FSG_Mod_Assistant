@@ -36,9 +36,14 @@ class ModCheckUpdater() :
 		root    = self._rootWindow
 		missing = { k for k, v in root._modList.items() if v.isMissing() }
 
+		skipBads = 0
+
+		if root.warnUnpacked.get() == 0:
+			skipBads = len({ k for k, v in root._badList.items() if v.isGood() })
+
 		self.updateConfigNumbers(
 			found   = len(root._modList),
-			broke   = len(root._badList),
+			broke   = (len(root._badList) - skipBads),
 			missing = len(missing)
 		)
 
@@ -62,8 +67,11 @@ class ModCheckUpdater() :
 		del initCompList
 
 		for idx, thisBadMod in enumerate(sorted(root._badList.keys()), start=1) :
-			root._badList[thisBadMod].diagnose() # Diagnose the problem (cached)
+			root._badList[thisBadMod].diagnose(ignoreUnpacked = (False if root.warnUnpacked.get() == 1 else True)) # Diagnose the problem (cached)
 			root._badList[thisBadMod].done() # Close any open files.
+
+			if root._badList[thisBadMod].diagnose() is False:
+				continue
 
 			root.tabContent["tabBroken"].add_item(
 				root._badList[thisBadMod].getHRFilename(),
