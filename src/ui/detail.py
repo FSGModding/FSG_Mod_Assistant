@@ -10,7 +10,6 @@
 import tkinter as Tk
 import tkinter.ttk as ttk
 import locale
-import webbrowser
 
 class ModCheckDetailWin() :
 	"""Make the details window for a specific mod
@@ -172,5 +171,5 @@ class ModCheckDetailWin() :
 			self._scrollCanvas.unbind_all("<MouseWheel>")
 		except AttributeError:
 			pass
-		
+
 		self._thisWindow.destroy()

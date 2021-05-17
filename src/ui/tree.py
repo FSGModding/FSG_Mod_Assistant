@@ -122,7 +122,9 @@ class ModCheckTreeTab() :
 			treeCurWidth = 0
 			treeWinWidth = self._treeview.winfo_width() - 5
 
-			for thisCol in self._treeview["displaycolumns"] :
+			visibleColumns = self._treeview["displaycolumns"] if len(self._treeview["displaycolumns"]) > 1 else self._columns
+
+			for thisCol in visibleColumns :
 				treeCurWidth += self._treeview.column(thisCol, "width")
 
 			if treeCurWidth < treeWinWidth :
