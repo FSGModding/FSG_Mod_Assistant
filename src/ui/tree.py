@@ -34,7 +34,10 @@ class ModCheckTreeTab() :
 		self._treeview      = None
 		self._vertScrollbar = None
 
-		self._columns     = [("#"+str(i),j) for i,j in zip(range(1,len(columns)+1), columns)]
+		#self._columns     = [("#"+str(i),j) for i,j in zip(range(1,len(columns)+1), columns)]
+		
+		self._columnNames = { x: y for (x,y) in columns}
+		self._columns     = list(self._columnNames.keys())
 		self._columnExtra = columnExtra
 		self._isOdd       = True
 
@@ -57,7 +60,7 @@ class ModCheckTreeTab() :
 
 		self._treeview.configure(yscrollcommand=self._vertScrollbar.set)
 
-		for col,name in self._columns:
+		for col,name in self._columnNames.items():
 			self._treeview.heading(col, text=name, command=lambda _col=col: \
  				 self._treeview_sort(self._treeview, _col, False))
 
@@ -110,7 +113,10 @@ class ModCheckTreeTab() :
 			col (str): Column descriptor
 			reverse (bool): a->z or z->a (True)
 		"""
-		l = [(self._fix_sort_order(tv.set(k, col)), k) for k in tv.get_children('')]
+		if col == "size" :
+			l = [(self._str_size_to_num(tv.set(k, col)), k) for k in tv.get_children('')]
+		else :
+			l = [(str(tv.set(k, col)).lower(), k) for k in tv.get_children('')]
 
 		l.sort(reverse=reverse)		
 
@@ -123,7 +129,7 @@ class ModCheckTreeTab() :
 		tv.heading(col, command=lambda _col=col: \
 				 self._treeview_sort(tv, _col, not reverse))
 
-	def _fix_sort_order(self, text) :
+	def _str_size_to_num(self, text) :
 		"""Turn the size column back into a number, lowercase any text
 
 		Args:
@@ -151,4 +157,4 @@ class ModCheckTreeTab() :
 				""" Not a size number """
 				pass
 
-		return text.lower()
+		return text

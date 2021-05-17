@@ -233,16 +233,16 @@ def makeRootWindow(languageWindow) :
 		title       = _("Missing Mods"),
 		description = _("The scanner failed to find the mods below, however they are referenced in one or more savegames. For mods that have not been purchased, this is usually harmless.  For mods you have purchased, missing the mod file could cost you in-game money.  To correct this, re-download the mod from where you originally got it and place it in the mod folder."),
 		columns     = [
-			_("Name"),
-			_("Title"),
-			_("Purchased"),
-			_("Savegame")
+			("name", _("Name")),
+			("title", _("Title")),
+			("owned", _("Purchased")),
+			("saves", _("Savegame"))
 		],
 		rootWindow  = rootWindow,
 		detailClass = ModCheckDetailWin,
 		columnExtra = {
-			"#3": {"minwidth": 0, "width": 75, "stretch": 0},
-			"#4": {"minwidth": 0, "width":100, "stretch": 0}
+			"owned" : {"minwidth": 0, "width": 75, "stretch": 0},
+			"saves" : {"minwidth": 0, "width":100, "stretch": 0}
 		}
 	)
 
@@ -265,14 +265,14 @@ def makeRootWindow(languageWindow) :
 		title       = _("Inactive Mods"),
 		description = _("These mods are not activated in any of your savegames.  If you would like to save space, and perhaps speed up FS19 starting, you could remove some or all of these."),
 		columns     = [
-			_("Name"),
-			_("Title"),
-			_("Size"),
+			("name", _("Name")),
+			("title", _("Title")),
+			("size", _("Size")),
 		],
 		rootWindow  = rootWindow,
 		detailClass = ModCheckDetailWin,
 		columnExtra = {
-			"#3": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
+			"size" : {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
 		}
 	)
 
@@ -290,16 +290,16 @@ def makeRootWindow(languageWindow) :
 		title       = _("Active, Un-Used Mods"),
 		description = _("These mods are active in a savegame, but do not seem to be in use. If you do not plan on using them, you could possibly remove them.  Please note that some script only or pre-requisite mods may appear here by mistake, so please use this list carefully."),
 		columns     = [
-			_("Name"),
-			_("Title"),
-			_("Savegame"),
-			_("Size")
+			("name", _("Name")),
+			("title", _("Title")),
+			("saves", _("Savegame")),
+			("size", _("Size"))
 		],
 		rootWindow  = rootWindow,
 		detailClass = ModCheckDetailWin,
 		columnExtra = {
-			"#3": {"minwidth": 0, "width":120, "stretch": 0},
-			"#4": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
+			"saves" : {"minwidth": 0, "width":120, "stretch": 0},
+			"size"  : {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
 		}
 	)
 
@@ -317,16 +317,16 @@ def makeRootWindow(languageWindow) :
 		title       = _("Good Mods"),
 		description = _("These mods are active and used in a savegame, and in good working order.  They are listed here for convenience, you do not need to do anything with these mods."),
 		columns     = [
-			_("Name"),
-			_("Title"),
-			_("Savegame"),
-			_("Size")
+			("name", _("Name")),
+			("title", _("Title")),
+			("saves", _("Savegame")),
+			("size", _("Size"))
 		],
 		rootWindow  = rootWindow,
 		detailClass = ModCheckDetailWin,
 		columnExtra = {
-			"#3": {"minwidth": 0, "width":120, "stretch": 0},
-			"#4": {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
+			"saves" : {"minwidth": 0, "width":120, "stretch": 0},
+			"size"  : {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
 		}
 	)
 
