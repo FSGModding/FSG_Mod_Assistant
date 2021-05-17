@@ -46,6 +46,7 @@ class FSMod() :
 		self._modDescTree = None
 		self._iconImage   = None
 		self._sha256hash  = None
+		self._storeItems  = 0
 
 		self.modVersion   = None
 		self.descVersion  = 0
@@ -222,11 +223,17 @@ class FSMod() :
 		if inGame is not None :
 			self._usedGames.add(inGame)
 		
-		return ( len(self._usedGames) > 0 )
+		if self._storeItems > 0 :
+			return ( len(self._usedGames) > 0 )
+		else :
+			return ( len(self._activeGames) > 0 )
 
 	def isNotUsed(self) :
 		""" Boolean "is this mod not used" """
-		return ( len(self._usedGames) == 0 )
+		if self._storeItems > 0:
+			return ( len(self._usedGames) == 0 )
+		else :
+			return ( len(self._activeGames) == 0 )
 
 	def getAllUsed(self, short = False, veryShort = False, showNone = False) :
 		"""Get all used games
@@ -269,8 +276,8 @@ class FSMod() :
 			else :
 				size = self._fileSize
 
-				for unit in ['B', 'Kb', 'Mb', 'Gb']:
-					if size < 1024.0 or unit == 'Gb':
+				for unit in ['B', 'KB', 'MB', 'GB']:
+					if size < 1024.0 or unit == 'GB':
 						break
 					size /= 1024.0
 				return locale.format('%.2f', size, True) + " " + unit
@@ -336,6 +343,8 @@ class FSMod() :
 			if self.descVersion < 40:
 				return False
 
+			self._storeItems = len(self._modDescTree.findall(".//storeItem"))
+
 			if self._name is None:
 				self.getModDescName()
 
@@ -385,6 +394,8 @@ class FSMod() :
 
 			if self.descVersion < 40:
 				return False
+
+			self._storeItems = len(self._modDescTree.findall(".//storeItem"))
 
 			if self._name is None:
 				self.getModDescName()

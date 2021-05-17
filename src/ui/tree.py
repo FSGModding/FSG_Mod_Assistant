@@ -141,7 +141,7 @@ class ModCheckTreeTab() :
 				num, ext = text.split()
 
 				try:
-					multiplyer = {"Kb" : 1024, "Mb" : 1048576, "Gb" : 1073741824}[ext]
+					multiplyer = {"KB" : 1024, "MB" : 1048576, "GB" : 1073741824}[ext]
 				except KeyError:
 					multiplyer = 1
 
