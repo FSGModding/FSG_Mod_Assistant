@@ -149,6 +149,7 @@ def makeRootWindow(languageWindow) :
 		"info-mods-missing"    : _("Missing Mods"),
 		"program-description"  : _("This little program will take a look at your mod install folder and inform you of any potential problems that it finds."),
 		"latest-version"       : _("This is version v{version} - For updates, visit us at").format(version = VERSION),
+		"attempt-google"       : _("Google search the official Mod Hub in order to attempt to find this missing mod file"),
 	})
 
 

@@ -10,6 +10,7 @@
 import tkinter as Tk
 import tkinter.ttk as ttk
 import locale
+import webbrowser
 
 class ModCheckDetailWin() :
 	"""Make the details window for a specific mod
@@ -48,7 +49,7 @@ class ModCheckDetailWin() :
 
 		ttk.Label(self._thisWindow, font='Calibri 12 bold', text=modTitle, anchor='center').pack(fill='x', pady=(10,5))
 
-		self._thisWindow.bind("<Escape>", lambda x: self._thisWindow.destroy())
+		self._thisWindow.bind("<Escape>", self._clean_close)
 		
 	def _logo_and_detail(self) :
 		"""Do the mod logo, and the list of details we know about the mod """
@@ -119,16 +120,28 @@ class ModCheckDetailWin() :
 			ttk.Label(subFrame, text=thisDetail[0], font='Calibri 8 bold').grid(column=0, row=rowCount, padx=5, sticky='e')
 			ttk.Label(subFrame, text=thisDetail[1]).grid(column=1, row=rowCount, padx=5, sticky='w')
 
-		self._okButton = ttk.Button(subFrame, text=self._rootWindow._IOStrings["ok-button-label"], command=self._thisWindow.destroy)
+		self._okButton = ttk.Button(subFrame, text=self._rootWindow._IOStrings["ok-button-label"], command=self._clean_close)
 		self._okButton.grid(column = 0, columnspan = 2, row = len(infoDetails), pady=5, sticky='ew')
-		self._okButton.bind('<Return>', lambda event=None: self._okButton.invoke())
+		self._okButton.bind('<Return>', self._clean_close)
 		self._okButton.focus()
+
+		if self._theMod.isMissing() :
+			ttk.Label( subFrame, text = self._rootWindow._configStrings["attempt-google"] + ":", anchor='center').grid(column=0, columnspan=2, pady=(10,5), row=len(infoDetails)+1)
+			self._rootWindow.Link(
+				subFrame,
+				"https://www.google.com/search?q=site%3Awww.farming-simulator.com+%22" + self._theMod.name() + "\"",
+				fg = "grey",
+				text = "Google - site:www.farming-simulator.com \"{}\"".format(self._theMod.name())
+			).grid(column=0, columnspan=2, row=len(infoDetails)+2)
 
 	def _canvas_desc(self):	
 		"""Set up and populate a scrollable frame with the description in it """
-		self._scrollCanvas  = Tk.Canvas(self._thisWindow, bd=2, relief='ridge')
-		self._vertScrollbar = ttk.Scrollbar(self._thisWindow, orient="vertical", command=self._scrollCanvas.yview)
-		self._inCanvasFrame  = ttk.Frame(self._scrollCanvas, border=1, padding=(30,0))
+		self._outsideFrame   = Tk.Frame(self._thisWindow, bd = 2, relief="groove")
+		self._outsideFrame.pack(expand=True, padx = 5, pady=(0,5), fill="both")
+
+		self._scrollCanvas  = Tk.Canvas(self._outsideFrame, bd=0)
+		self._vertScrollbar = ttk.Scrollbar(self._outsideFrame, orient="vertical", command=self._scrollCanvas.yview)
+		self._inCanvasFrame = ttk.Frame(self._scrollCanvas, border=1, padding=(15,5))
 
 		self._scrollCanvas.create_window((0, 0), window=self._inCanvasFrame, anchor="nw")
 		self._scrollCanvas.configure(yscrollcommand=self._vertScrollbar.set)
@@ -140,7 +153,7 @@ class ModCheckDetailWin() :
 		self._inCanvasFrame.bind('<Enter>', self._bound_to_mousewheel)
 		self._inCanvasFrame.bind('<Leave>', self._unbound_to_mousewheel)
 
-		ttk.Label( self._inCanvasFrame, text = str(self._theMod.getModDescDescription()).rstrip(), anchor = 'w', wraplength = 590).pack(fill = 'x', pady = 0, padx=0)
+		ttk.Label( self._inCanvasFrame, text = str(self._theMod.getModDescDescription()).lstrip(), anchor = 'w', wraplength = 590).pack(fill = 'x', pady = 0, padx=0)
 
 	def _on_mousewheel(self, event):
 		""" Handle mousewheel events """
@@ -153,6 +166,11 @@ class ModCheckDetailWin() :
 	def _unbound_to_mousewheel(self, event):
 		""" Unbind mousewheel events """
 		self._scrollCanvas.unbind_all("<MouseWheel>")
-
-
 	
+	def _clean_close(self, event=None):
+		try :
+			self._scrollCanvas.unbind_all("<MouseWheel>")
+		except AttributeError:
+			pass
+		
+		self._thisWindow.destroy()

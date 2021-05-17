@@ -175,7 +175,7 @@ class ModCheckRoot() :
 		internalFrame.place(in_=externalFrame, anchor="c", relx=.5, rely=.5)
 
 		ttk.Label(self.tabFrame["tabConfig"], text=strings['latest-version'], wraplength=570, anchor='center' ).pack(fill='x', padx=30, pady=(6,0))
-		Link(self.tabFrame["tabConfig"], "https://github.com/jtsage/FS19_Mod_Checker/releases", text="github.com/jtsage/FS19_Mod_Checker").pack(fill='x', padx=30, pady=(0,10))
+		self.Link(self.tabFrame["tabConfig"], "https://github.com/jtsage/FS19_Mod_Checker/releases", text="github.com/jtsage/FS19_Mod_Checker").pack(fill='x', padx=30, pady=(0,10))
 
 		self._updater.updateConfigNumbers()
 
@@ -482,40 +482,40 @@ class ModCheckRoot() :
 				self._modList[thisMod].setUsedToActive()
 
 
-class Link(Tk.Label):
-	"""Make a clickable hyperlink label
+	class Link(Tk.Label):
+		"""Make a clickable hyperlink label
 
-	Args:
-		master (object, optional): tkinter object parent. Defaults to None.
-		link (str, optional): Link URL. Defaults to None.
-		fg (str, optional): Foreground color (inactive). Defaults to 'black'.
-		font (tuple, optional): Font of the link. Defaults to ('Calibri', 10).
-		text (str): Passed to label, text to display
-	"""	
-	
-	def __init__(self, master=None, link=None, fg='black', font=('Calibri', 10), *args, **kwargs):
-		super().__init__(master, *args, **kwargs)
-		self.master           = master
-		self._color_mouse_off = fg
-		self._color_mouse_on  = "blue"
-		self._font_mouse_off  = font
-		self._font_mouse_on   = font + ('underline',)
-		self._link            = link
+		Args:
+			master (object, optional): tkinter object parent. Defaults to None.
+			link (str, optional): Link URL. Defaults to None.
+			fg (str, optional): Foreground color (inactive). Defaults to 'black'.
+			font (tuple, optional): Font of the link. Defaults to ('Calibri', 10).
+			text (str): Passed to label, text to display
+		"""	
+		
+		def __init__(self, master=None, link=None, fg='black', font=('Calibri', 10), *args, **kwargs):
+			super().__init__(master, *args, **kwargs)
+			self.master           = master
+			self._color_mouse_off = fg
+			self._color_mouse_on  = "blue"
+			self._font_mouse_off  = font
+			self._font_mouse_on   = font + ('underline',)
+			self._link            = link
 
-		self['fg']   = self._color_mouse_off
-		self['font'] = self._font_mouse_off
+			self['fg']   = self._color_mouse_off
+			self['font'] = self._font_mouse_off
 
-		self.bind('<Enter>',    self._mouse_on)
-		self.bind('<Leave>',    self._mouse_out)
-		self.bind('<Button-1>', self._callback)
+			self.bind('<Enter>',    self._mouse_on)
+			self.bind('<Leave>',    self._mouse_out)
+			self.bind('<Button-1>', self._callback)
 
-	def _mouse_on(self, *args):
-		self['fg']   = self._color_mouse_on
-		self['font'] = self._font_mouse_on
+		def _mouse_on(self, *args):
+			self['fg']   = self._color_mouse_on
+			self['font'] = self._font_mouse_on
 
-	def _mouse_out(self, *args):
-		self['fg']   = self._color_mouse_off
-		self['font'] = self._font_mouse_off
+		def _mouse_out(self, *args):
+			self['fg']   = self._color_mouse_off
+			self['font'] = self._font_mouse_off
 
-	def _callback(self, *args):
-		webbrowser.open_new(self._link)
+		def _callback(self, *args):
+			webbrowser.open_new(self._link)
