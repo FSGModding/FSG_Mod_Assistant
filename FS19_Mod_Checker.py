@@ -22,7 +22,7 @@ from src.data.mods import FSMod
 from src.data.badfile import FSBadFile
 
 import src.data.conflict_mods as conflictMods
-import src.data.script_mods as scriptMods
+import src.data.false_unused as falseUnusedMods
 import src.data.util as ModCheckUtil
 
 
@@ -82,12 +82,12 @@ def makeRootWindow(languageWindow) :
 	gtUserLang.install()
 
 	rootWindow = ModCheckRoot(
-		logger       = ModCheckLog(),
-		modClass     = FSMod,
-		badClass     = FSBadFile,
-		scriptMods   = scriptMods.mods,
-		conflictMods = conflictMods.mods,
-		updater      = ModCheckUpdater
+		logger          = ModCheckLog(),
+		modClass        = FSMod,
+		badClass        = FSBadFile,
+		falseUnusedMods = falseUnusedMods.mods,
+		conflictMods    = conflictMods.mods,
+		updater         = ModCheckUpdater
 	)
 
 	rootWindow.makeMenuBar({

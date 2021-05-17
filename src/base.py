@@ -29,16 +29,16 @@ class ModCheckRoot() :
 		updater (class): src.updater.ModCheckUpdater
 	"""	
 
-	def __init__(self, logger, modClass, badClass, scriptMods, conflictMods, updater) :
-		self._logger         = logger
-		self._configFileName = None
-		self._basePath       = None
-		self._modDir         = None
-		self._FSMod          = modClass
-		self._FSBadFile      = badClass
-		self._scriptMods     = scriptMods
-		self._conflictMods   = conflictMods
-		self._updater        = updater(self)
+	def __init__(self, logger, modClass, badClass, falseUnusedMods, conflictMods, updater) :
+		self._logger          = logger
+		self._configFileName  = None
+		self._basePath        = None
+		self._modDir          = None
+		self._FSMod           = modClass
+		self._FSBadFile       = badClass
+		self._falseUnusedMods = falseUnusedMods
+		self._conflictMods    = conflictMods
+		self._updater         = updater(self)
 
 		self._root = Tk.Tk()
 		self._root.title("FS19 Mod Checker")
@@ -468,7 +468,7 @@ class ModCheckRoot() :
 
 	def _read_script_mod(self) :
 		"""Deal with the script only mods - any game they are active in, assume they are also used. """
-		for thisMod in self._scriptMods:
+		for thisMod in self._falseUnusedMods:
 			if thisMod in self._modList.keys():
 				self._modList[thisMod].setUsedToActive()
 
