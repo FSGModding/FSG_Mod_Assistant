@@ -115,6 +115,8 @@ class ModCheckUpdater() :
 				isOwned = (" (" + root._IOStrings["OWNED"] + ")") if root._modList[thisMod].isUsed() else ""
 			))
 
+		root.tabContent["tabMissing"].update_column_width()
+
 		root._logger.closeSection()
 
 	def update_tab_inactive(self) :
@@ -132,10 +134,13 @@ class ModCheckUpdater() :
 			root.tabContent["tabInactive"].add_item(thisMod, (
 				thisMod,
 				root._modList[thisMod].name(),
+				root._modList[thisMod].modVersion,
 				root._modList[thisMod].size()
 			))
 
 			root._logger.write(str(root._modList[thisMod]))
+
+		root.tabContent["tabInactive"].update_column_width()
 
 		root._logger.closeSection()
 
@@ -154,10 +159,13 @@ class ModCheckUpdater() :
 				thisMod,
 				root._modList[thisMod].name(),
 				root._modList[thisMod].getAllActive(veryShort=True),
+				root._modList[thisMod].modVersion,
 				root._modList[thisMod].size()
 			))
 
 			root._logger.write(str(root._modList[thisMod]))
+
+		root.tabContent["tabUnused"].update_column_width()
 		
 		root._logger.closeSection()
 
@@ -174,9 +182,11 @@ class ModCheckUpdater() :
 				thisMod,
 				root._modList[thisMod].name(),
 				root._modList[thisMod].getAllActive(veryShort=True),
+				root._modList[thisMod].modVersion,
 				root._modList[thisMod].size()
 			))
 
+		root.tabContent["tabGood"].update_column_width()
 
 	def update_tab_conflict(self):
 		""" Update the possible conflicts tab (don't log) """

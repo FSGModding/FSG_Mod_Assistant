@@ -120,7 +120,8 @@ def makeRootWindow(languageWindow) :
 		"type-folder"         : _("Folder"),
 		"type-missing"        : _("Mod is Missing"),
 		"type-title"          : _("Mod Type"),
-		"working-pause"       : _("Working...")
+		"working-pause"       : _("Working..."),
+		"show-mod-versions"   : _("Show Mod Versions"),
 	})
 
 
@@ -147,7 +148,7 @@ def makeRootWindow(languageWindow) :
 		"info-mods-present"    : _("Mods on Disk"),
 		"info-mods-missing"    : _("Missing Mods"),
 		"program-description"  : _("This little program will take a look at your mod install folder and inform you of any potential problems that it finds."),
-		"latest-version"       : _("This is version v{version} - For updates, visit us at").format(version = VERSION)
+		"latest-version"       : _("This is version v{version} - For updates, visit us at").format(version = VERSION),
 	})
 
 
@@ -157,6 +158,10 @@ def makeRootWindow(languageWindow) :
 	#  |_____] |_____/ |     | |____/  |______ | \  |      |  |  | |     | |     \ |______
 	#  |_____] |    \_ |_____| |    \_ |______ |  \_|      |  |  | |_____| |_____/ ______|
 	#                                                                                     
+
+	def brokenCheckboxChange() :
+		rootWindow._updater.update_tab_broken()
+		rootWindow._updater.update_tab_config()
 
 	rootWindow.addTab("tabBroken",   underline=0, text=_('Broken Files'))
 
@@ -172,7 +177,7 @@ def makeRootWindow(languageWindow) :
 					"variable" : rootWindow.warnUnpacked,
 					"onvalue"  : 1,
 					"offvalue" : 0,
-					"command"  : rootWindow._updater.update_tab_broken
+					"command"  : brokenCheckboxChange
 				}
 			}
 		]
@@ -239,17 +244,8 @@ def makeRootWindow(languageWindow) :
 			("saves", _("Savegame"))
 		],
 		rootWindow  = rootWindow,
-		detailClass = ModCheckDetailWin,
-		columnExtra = {
-			"owned" : {"minwidth": 0, "width": 75, "stretch": 0},
-			"saves" : {"minwidth": 0, "width":100, "stretch": 0}
-		}
+		detailClass = ModCheckDetailWin
 	)
-
-
-
-
-
 
 
 
@@ -267,13 +263,16 @@ def makeRootWindow(languageWindow) :
 		columns     = [
 			("name", _("Name")),
 			("title", _("Title")),
+			("version", _("Version")),
 			("size", _("Size")),
 		],
 		rootWindow  = rootWindow,
 		detailClass = ModCheckDetailWin,
 		columnExtra = {
-			"size" : {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
-		}
+			"version" : {"anchor": "e"},
+			"size"    : {"anchor": "e"}
+		},
+		hasVersionToggle = True
 	)
 
 
@@ -293,14 +292,16 @@ def makeRootWindow(languageWindow) :
 			("name", _("Name")),
 			("title", _("Title")),
 			("saves", _("Savegame")),
+			("version", _("Version")),
 			("size", _("Size"))
 		],
 		rootWindow  = rootWindow,
 		detailClass = ModCheckDetailWin,
 		columnExtra = {
-			"saves" : {"minwidth": 0, "width":120, "stretch": 0},
-			"size"  : {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
-		}
+			"version" : {"anchor": "e"},
+			"size"    : {"anchor": "e"}
+		},
+		hasVersionToggle = True
 	)
 
 
@@ -320,14 +321,16 @@ def makeRootWindow(languageWindow) :
 			("name", _("Name")),
 			("title", _("Title")),
 			("saves", _("Savegame")),
+			("version", _("Version")),
 			("size", _("Size"))
 		],
 		rootWindow  = rootWindow,
 		detailClass = ModCheckDetailWin,
 		columnExtra = {
-			"saves" : {"minwidth": 0, "width":120, "stretch": 0},
-			"size"  : {"minwidth": 0, "width":100, "stretch": 0, "anchor": "e"}
-		}
+			"version" : {"anchor": "e"},
+			"size"    : {"anchor": "e"}
+		},
+		hasVersionToggle = True
 	)
 
 

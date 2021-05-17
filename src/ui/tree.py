@@ -23,23 +23,27 @@ class ModCheckTreeTab() :
 		columnExtra (dict, optional): kwargs to each column. Defaults to None.
 	"""
 
-	def __init__(self, notebookTab, title, description, columns, rootWindow, detailClass, columnExtra=None) :
+	def __init__(self, notebookTab, title, description, columns, rootWindow, detailClass, hasVersionToggle = False, columnExtra=None) :
 		self.title        = title
 
-		self._notebookTab = notebookTab
-		self._description = description
-		self._rootWindow  = rootWindow
-		self._detailWin   = detailClass
+		self._notebookTab  = notebookTab
+		self._description  = description
+		self._rootWindow   = rootWindow
+		self._detailWin    = detailClass
+		self._hasVerToggle = hasVersionToggle
 
 		self._treeview      = None
 		self._vertScrollbar = None
 
-		#self._columns     = [("#"+str(i),j) for i,j in zip(range(1,len(columns)+1), columns)]
-		
 		self._columnNames = { x: y for (x,y) in columns}
 		self._columns     = list(self._columnNames.keys())
 		self._columnExtra = columnExtra
+		self._columnSize  = [0] * len(columns)
+
 		self._isOdd       = True
+
+		if ( self._hasVerToggle ) :
+			self._verToggleInt = Tk.IntVar(value = 0)
 
 		self._build()
 
@@ -48,17 +52,46 @@ class ModCheckTreeTab() :
 		ttk.Label(self._notebookTab, text=self.title, font='Calibri 12 bold').pack()
 		ttk.Label(self._notebookTab, text=self._description, wraplength = 640).pack(fill='x')
 
-		self._treeview = ttk.Treeview(self._notebookTab, selectmode='browse', columns=self._columns, show='headings', style="modCheck.Treeview")
-		self._treeview.pack(expand=True, side='left', fill='both', pady=(5,0))
+		self._treeFrame = Tk.Frame(self._notebookTab, bd=0)
+		self._treeFrame.pack(fill='both', expand="True")
+
+		if self._hasVerToggle:
+			Tk.Checkbutton(
+				self._notebookTab,
+				text     = self._rootWindow._IOStrings["show-mod-versions"],
+				variable = self._verToggleInt,
+				onvalue  = 1,
+				offvalue = 0,
+				command  = self._toggle_version
+			).pack(fill='x', pady=(5,0))
+
+		self._treeFrame.grid_columnconfigure(0, weight=1)
+		self._treeFrame.grid_rowconfigure(0, weight=1)
+
+		self._treeview = ttk.Treeview(self._treeFrame, selectmode='browse', columns=self._columns, show='headings', style="modCheck.Treeview")
+		self._treeview.grid(column = 0, row = 0, sticky="nsew")
+
+		for thisCol in self._columns:
+			self._treeview.column(thisCol, width=1)
+		
+		self._rootWindow._root.update()
 
 		if self._columnExtra is not None :
 			for thisExtraKey, thisExtraKwargs in self._columnExtra.items():
 				self._treeview.column(thisExtraKey, **thisExtraKwargs)
 
-		self._vertScrollbar = ttk.Scrollbar(self._notebookTab, orient="vertical", command=self._treeview.yview)
-		self._vertScrollbar.pack(side='right', fill='y', pady=(25,2))
+		for idx, thisCol in enumerate(self._columns):
+			self._columnSize[idx] = (len(self._columnNames[thisCol]) * 9) + 10
+			self._treeview.column(thisCol, width=self._columnSize[idx])
+
+		self._vertScrollbar = ttk.Scrollbar(self._treeFrame, orient="vertical", command=self._treeview.yview)
+		self._horzScrollbar = ttk.Scrollbar(self._treeFrame, orient="horizontal", command=self._treeview.xview)
+
+		self._vertScrollbar.grid(column = 1, row =0, sticky='ns')
+		self._horzScrollbar.grid(column = 0, row =1, sticky='ew')
 
 		self._treeview.configure(yscrollcommand=self._vertScrollbar.set)
+		self._treeview.configure(xscrollcommand=self._horzScrollbar.set)
 
 		for col,name in self._columnNames.items():
 			self._treeview.heading(col, text=name, command=lambda _col=col: \
@@ -67,6 +100,35 @@ class ModCheckTreeTab() :
 		self._treeview.bind("<Double-1>", self._on_double_click)
 
 		self._treeview.tag_configure('even', background='#E8E8E8')
+
+		if self._hasVerToggle:
+			self._toggle_version()
+
+
+	def _toggle_version(self) :
+		""" Toggle version column on and off by checkbox value """
+		shouldWeShow  = True if self._verToggleInt.get() == 1 else False
+		noVersionCols = [x for x in self._columns if not x == "version" ]
+
+		self._treeview["displaycolumns"] = self._columns if shouldWeShow else noVersionCols
+
+		self.update_column_width()
+
+	def update_column_width(self) :
+		for idx, thisCol in enumerate(self._columns) :
+			self._treeview.column(thisCol, width= self._columnSize[idx])
+		
+		if ( self._treeview.winfo_width() > 1 ) :
+			treeCurWidth = 0
+			treeWinWidth = self._treeview.winfo_width() - 5
+
+			for thisCol in self._treeview["displaycolumns"] :
+				treeCurWidth += self._treeview.column(thisCol, "width")
+
+			if treeCurWidth < treeWinWidth :
+				self._treeview.column("title", width = self._treeview.column("title", "width") + (treeWinWidth - treeCurWidth))
+		
+		self._rootWindow._root.update()
 
 	def _on_double_click(self, event):
 		"""On double-click of a mod, display some information
@@ -94,6 +156,11 @@ class ModCheckTreeTab() :
 			name (str): Name column (hidden/descriptor only)
 			values (list): Values for shown columns.
 		"""
+		for idx, thisVal in enumerate(values):
+			thisWidth = (len(str(thisVal)) * 7) + 10
+			
+			if thisWidth > self._columnSize[idx] :
+				self._columnSize[idx] = thisWidth
 
 		self._treeview.insert(
 			parent = '',

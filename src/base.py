@@ -40,8 +40,11 @@ class ModCheckRoot() :
 		self._conflictMods    = conflictMods
 		self._updater         = updater(self)
 
+		self.winSize = "670x530"
+
 		self._root = Tk.Tk()
 		self._root.title("FS19 Mod Checker")
+		self._root.geometry(self.winSize)
 		self._root.minsize(670, 530)
 		self._root.option_add( "*font", "Calibri 10" )
 
