@@ -143,8 +143,6 @@ class ModCheckRoot() :
 		self._configLabels["foldername"].pack(fill='x', pady=(0,20))
 
 		ttk.Label(self.tabFrame["tabConfig"], text=strings["info-ask-process"].format(process_button_label = strings["process-button-label"]) ).pack(fill='x')
-
-		Tk.Checkbutton(self.tabFrame["tabConfig"], text=strings["warn-unpacked"], variable=self.warnUnpacked, onvalue=1, offvalue=0,).pack(fill='x')
 		
 		self._processButton = ttk.Button(self.tabFrame["tabConfig"], text=strings["process-button-label"], command=self._process_button)
 		self._processButton.state(['disabled'])

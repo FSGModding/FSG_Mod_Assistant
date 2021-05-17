@@ -71,7 +71,10 @@ class ModCheckUpdater() :
 		del initCompList
 
 		for idx, thisBadMod in enumerate(sorted(root._badList.keys()), start=1) :
-			root._badList[thisBadMod].diagnose(ignoreUnpacked = (False if root.warnUnpacked.get() == 1 else True)) # Diagnose the problem (cached)
+			root._badList[thisBadMod].diagnose(
+				forceDiagnose  = True,
+				ignoreUnpacked = (False if root.warnUnpacked.get() == 1 else True)
+			) # Diagnose the problem (cached)
 			root._badList[thisBadMod].done() # Close any open files.
 
 			if root._badList[thisBadMod].diagnose() is False:

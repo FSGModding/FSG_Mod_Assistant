@@ -302,13 +302,13 @@ class FSBadFile() :
 		if self._thisZIP is not None:
 			self._thisZIP.close()
 
-	def diagnose(self, ignoreUnpacked = False) :
+	def diagnose(self, forceDiagnose = False, ignoreUnpacked = False) :
 		"""Diagnose file problem, cache result
 
 		Returns:
 			str: Problem with file
 		"""
-		if self._whatWrong is None:
+		if forceDiagnose or self._whatWrong is None:
 			self._whatWrong = self._diagnose(ignoreUnpacked)
 
 		return self._whatWrong

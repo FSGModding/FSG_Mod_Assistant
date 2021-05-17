@@ -161,9 +161,21 @@ def makeRootWindow(languageWindow) :
 	rootWindow.addTab("tabBroken",   underline=0, text=_('Broken Files'))
 
 	rootWindow.tabContent["tabBroken"] = ModCheckCanvasTab(
-		notebookTab = rootWindow.tabFrame["tabBroken"],
-		title       = _("Broken Mods"),
-		description = _("These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution")
+		notebookTab   = rootWindow.tabFrame["tabBroken"],
+		title         = _("Broken Mods"),
+		description   = _("These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution"),
+		extraControls = [
+			{ 
+				"type" : "checkbox",
+				"kwargs" : {
+					"text"     : rootWindow._configStrings["warn-unpacked"],
+					"variable" : rootWindow.warnUnpacked,
+					"onvalue"  : 1,
+					"offvalue" : 0,
+					"command"  : rootWindow._updater.update_tab_broken
+				}
+			}
+		]
 	)
 
 	# These strings describe the nature of how a mod is broken
@@ -187,7 +199,6 @@ def makeRootWindow(languageWindow) :
 		"invalid-zipfile" : _("This zip file is not readable.  Delete this"),
 		"too-old"         : _("This mod is not for FS19, the modDesc.xml descVersion is either too old or not present"),
 	})
-
 
 
 	#  _______  _____  __   _ _______        _____ _______ _______      _______  _____  ______  _______

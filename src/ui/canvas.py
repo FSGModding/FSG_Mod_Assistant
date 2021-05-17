@@ -21,16 +21,20 @@ class ModCheckCanvasTab() :
 		hideCanvas (bool, optional): Set to True to hide the scrollable canvas. Defaults to False.
 	""" 
 
-	def __init__(self, notebookTab, title, description, extraText=None, hideCanvas = False) :
+	def __init__(self, notebookTab, title, description, extraText=None, extraControls=None, hideCanvas = False) :
 		self.title        = title
 		self._notebookTab = notebookTab
 		self._description = description
 		self._extraText   = extraText
+		self._extraControls = extraControls
 		self._hideCanvas  = hideCanvas
 
 		self._vertScrollbar = None
 		self._scrollCanvas  = None
 		self._inCanvasFrame = None
+
+		self._isOdd = True
+		self._isFirstChild = True
 
 		self._build()
 
@@ -39,6 +43,11 @@ class ModCheckCanvasTab() :
 
 		ttk.Label(self._notebookTab, text=self.title, font='Calibri 12 bold').pack()
 		ttk.Label(self._notebookTab, text=self._description, wraplength = 640).pack(fill='x', pady=(0,10))
+
+		if self._extraControls is not None:
+			for thisControl in self._extraControls :
+				if thisControl["type"] == "checkbox" :
+					Tk.Checkbutton(self._notebookTab, **thisControl["kwargs"]).pack(fill='x', pady=(0,10))
 
 		if self._extraText is not None :
 
@@ -54,9 +63,9 @@ class ModCheckCanvasTab() :
 			self._outsideFrame   = Tk.Frame(self._notebookTab, bd = 2, relief="groove")
 			self._outsideFrame.pack(expand=True, fill="both")
 
-			self._scrollCanvas   = Tk.Canvas(self._outsideFrame, bd=0)
+			self._scrollCanvas   = Tk.Canvas(self._outsideFrame, bd=0, bg='white')
 			self._vertScrollbar  = ttk.Scrollbar(self._outsideFrame, orient="vertical", command=self._scrollCanvas.yview)
-			self._inCanvasFrame  = ttk.Frame(self._scrollCanvas, border=0, padding=(30,0))
+			self._inCanvasFrame  = Tk.Frame(self._scrollCanvas, bd=0, bg='white')
 
 			self._inCanvasFrame.bind(
 				"<Configure>",
@@ -64,8 +73,15 @@ class ModCheckCanvasTab() :
 					scrollregion=self._scrollCanvas.bbox("all")
 				)
 			)
+			self._scrollCanvas.bind(
+				"<Configure>",
+				lambda e: self._scrollCanvas.itemconfig(
+					self._scrollFrameWin,
+					width = e.width
+				)
+			)
 
-			self._scrollCanvas.create_window((0, 0), window=self._inCanvasFrame, anchor="nw")
+			self._scrollFrameWin = self._scrollCanvas.create_window((0, 0), window=self._inCanvasFrame, anchor="nw")
 			self._scrollCanvas.configure(yscrollcommand=self._vertScrollbar.set)
 			self._scrollCanvas.pack(side="left", fill="both", expand=True)
 
@@ -98,20 +114,36 @@ class ModCheckCanvasTab() :
 			term (str): Title of the item (bold, bulleted)
 			desc (str): Description text (normal, indented)
 		"""
+		if not self._isFirstChild :
+			ttk.Separator(self._inCanvasFrame,orient='horizontal').pack(fill='x')
+			padY = [5,5]
+		else :
+			self._isFirstChild = False
+			padY = [0,5]
+			
+		bgColor = "#E8E8E8" if self._isOdd else 'white'
+		self._isOdd = not self._isOdd
+
+		thisFrame = Tk.Frame(self._inCanvasFrame, bg=bgColor)
+		thisFrame.pack(fill='x', expand=True)
 
 		ttk.Label(
-			self._inCanvasFrame,
-			text   = "\u2022 " + term,
-			anchor = 'w',
-			font   = 'Calibri 9 bold'
-		).pack(fill = 'x', padx = 0, pady = 0)
+			thisFrame,
+			text       = "\u2022 " + term,
+			anchor     = 'w',
+			font       = 'Calibri 9 bold',
+			background = bgColor
+		).pack(fill = 'x', padx = (30,30), pady = (padY[0], 0))
 
 		ttk.Label(
-			self._inCanvasFrame,
+			thisFrame,
 			text       = desc,
 			anchor     = 'w',
-			wraplength = 540 # (640-30-30-40)
-		).pack(fill = 'x', pady = (0,10), padx = (40,0))
+			wraplength = 540, # (640-30-30-40)
+			background = bgColor
+		).pack(fill = 'x', pady = (0,padY[1]), padx = (70,30))
+		
+		
 
 
 	
