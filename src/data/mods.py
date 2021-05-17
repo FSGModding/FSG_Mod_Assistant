@@ -225,7 +225,7 @@ class FSMod() :
 		if inGame is not None :
 			self._usedGames.add(inGame)
 		
-		if self._storeItems > 0 :
+		if self._storeItems > 0 or self.isMissing() :
 			return ( len(self._usedGames) > 0 )
 		else :
 			return ( len(self._activeGames) > 0 )
