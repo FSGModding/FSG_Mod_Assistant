@@ -42,7 +42,7 @@ class ModCheckRoot() :
 
 		self._root = Tk.Tk()
 		self._root.title("FS19 Mod Checker")
-		self._root.minsize(670, 500)
+		self._root.minsize(670, 530)
 		self._root.option_add( "*font", "Calibri 10" )
 
 		# Change the theme.
@@ -161,6 +161,7 @@ class ModCheckRoot() :
 		counts = [
 			["found",   strings["info-mods-found"]],
 			["broke",   strings["info-mods-broken"]],
+			["present", strings["info-mods-present"]],
 			["missing", strings["info-mods-missing"]]
 		]
 

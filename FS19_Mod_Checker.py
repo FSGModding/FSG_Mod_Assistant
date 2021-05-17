@@ -141,9 +141,10 @@ def makeRootWindow(languageWindow) :
 		"warn-unpacked"        : _("Warn when a good mod file is not zipped (Unusable for multiplayer)"),
 		"info-ask-process"     : _("Next, click \"{process_button_label}\" to scan your collection"),
 		"process-button-label" : _("Check Mods"),
-		"info-mods-found"      : _("Mods Found"),
-		"info-mods-broken"     : _("Broken Mods"),
+		"info-mods-found"      : _("Mods Processed"),
+		"info-mods-broken"     : _("Broken Mods / Files"),
 		"info-mods-folders"    : _("Folders Found"),
+		"info-mods-present"    : _("Mods on Disk"),
 		"info-mods-missing"    : _("Missing Mods"),
 		"program-description"  : _("This little program will take a look at your mod install folder and inform you of any potential problems that it finds."),
 		"latest-version"       : _("This is version v{version} - For updates, visit us at").format(version = VERSION)

@@ -19,7 +19,7 @@ class ModCheckUpdater() :
 	def __init__(self, rootWindow) :
 		self._rootWindow = rootWindow
 		
-	def updateConfigNumbers(self, found = 0, broke = 0, missing = 0) :
+	def updateConfigNumbers(self, found = 0, broke = 0, present = 0, missing = 0) :
 		"""Update the number of mods found
 
 		Args:
@@ -29,12 +29,14 @@ class ModCheckUpdater() :
 		"""
 		self._rootWindow._configLabels["found"].config(text = str(found))
 		self._rootWindow._configLabels["broke"].config(text = str(broke))
+		self._rootWindow._configLabels["present"].config(text = str(present))
 		self._rootWindow._configLabels["missing"].config(text = str(missing))
 
 	def update_tab_config(self) :
 		""" Update the configuration tab """
 		root    = self._rootWindow
 		missing = { k for k, v in root._modList.items() if v.isMissing() }
+		
 
 		skipBads = 0
 
@@ -44,12 +46,14 @@ class ModCheckUpdater() :
 		self.updateConfigNumbers(
 			found   = len(root._modList),
 			broke   = (len(root._badList) - skipBads),
+			present = (len(root._modList) - len(missing)),
 			missing = len(missing)
 		)
 
 		root._logger.write([
 			root._configStrings["info-mods-found"] + ": {}".format(len(root._modList)),
-			root._configStrings["info-mods-broken"] + ": {}".format(len(root._badList)),
+			root._configStrings["info-mods-broken"] + ": {}".format((len(root._badList) - skipBads)),
+			root._configStrings["info-mods-present"] + ": {}".format((len(root._modList) - len(missing))),
 			root._configStrings["info-mods-missing"] + ": {}".format(len(missing)),
 		])
 		root._logger.line()
