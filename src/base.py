@@ -199,7 +199,7 @@ class ModCheckRoot() :
 			initialdir  = os.path.expanduser("~") + "/Documents/My Games/FarmingSimulator2019",
 			initialfile = "gameSettings.xml",
 			title       = self._configStrings["load-button-label"] + " : gameSettings.xml",
-			filetypes   = [(self._IOStrings["xml-file-type"], "gameSettings.xml")]
+			filetypes   = [(self._IOStrings["xml-file-type"], ".xml")]
 		)
 
 		if filename : 
