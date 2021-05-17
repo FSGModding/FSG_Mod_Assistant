@@ -48,6 +48,7 @@ class FSBadFile() :
 		self._whatWrong     = None
 		self._shaHash       = None
 		self.modVersion     = "0.0.0.0"
+		self.descVersion    = 0
 
 	def __str__(self):
 		"""String representation of bad file
@@ -216,12 +217,16 @@ class FSBadFile() :
 
 		if self._filename.endswith(".zip") and self._thisZIP is not None :
 			if 'modDesc.xml' in self._thisZIP.namelist() :
-				try:
+				try :
 					thisModDesc = self._thisZIP.read('modDesc.xml')
 					self._modDescTree = etree.fromstring(thisModDesc)
-					self.modVersion = self._modDescTree.findtext("version")
+					self.modVersion   = self._modDescTree.findtext("version")
+					try :
+						self.descVersion  = int(self._modDescTree.get('descVersion'))
+					except TypeError:
+						pass
 					return True
-				except:
+				except :
 					return False
 			else :
 				return False
@@ -231,6 +236,13 @@ class FSBadFile() :
 				try:
 					self._modDescTree = etree.parse(os.path.join(self._fullPath, "modDesc.xml"))
 					self.modVersion = self._modDescTree.findtext("version")
+					root = self._modDescTree.getroot()
+
+					try :
+						self.descVersion = int(root.get('descVersion'))
+					except TypeError :
+						pass
+
 					return True
 				except :
 					return False
@@ -326,6 +338,9 @@ class FSBadFile() :
 				""" We are a mod, the name is good, suggest zipping! """
 				return self._brokenStrings["must-be-zipped"]
 
+			if self.descVersion < 40 :
+				return self._brokenStrings["too-old"]
+
 			if amICopied[0] :
 				if amICopied[1] :
 					""" Duplicate, other can be guessed and found """
@@ -370,6 +385,9 @@ class FSBadFile() :
 
 			""" Ok, so we *are* a mod, but with a bad name. """
 
+			if self.descVersion < 40 :
+				return self._brokenStrings["too-old"]
+				
 			amICopied = self.isCopy()
 
 			if amICopied[0]:

@@ -48,6 +48,7 @@ class FSMod() :
 		self._sha256hash  = None
 
 		self.modVersion   = None
+		self.descVersion  = 0
 
 	def __str__(self) :
 		"""String representation of the mod
@@ -327,6 +328,14 @@ class FSMod() :
 				self._iconImage   = False # No icon either
 				return False
 
+			try :
+				self.descVersion = int(self._modDescTree.get('descVersion'))
+			except TypeError :
+				pass
+
+			if self.descVersion < 40:
+				return False
+
 			if self._name is None:
 				self.getModDescName()
 
@@ -365,6 +374,16 @@ class FSMod() :
 				""" Can't find / read modDesc """
 				self._modDescTree = False # Never get it now
 				self._iconImage   = False # No icon either
+				return False
+
+			root = self._modDescTree.getroot()
+
+			try :
+				self.descVersion = int(root.get('descVersion'))
+			except TypeError :
+				pass
+
+			if self.descVersion < 40:
 				return False
 
 			if self._name is None:

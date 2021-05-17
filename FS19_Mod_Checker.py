@@ -26,7 +26,7 @@ import src.data.script_mods as scriptMods
 import src.data.util as ModCheckUtil
 
 
-VERSION = "1.0.1.1"
+VERSION = "1.0.1.2"
 
 
 #         _______ __   _  ______       _____  _____ _______ _     _ _______  ______
@@ -183,6 +183,7 @@ def makeRootWindow(languageWindow) :
 		"folder-not-mod"  : _("This folder shouldn't be here, it is not a valid mod."),
 		"zipfile-not-mod" : _("This zip file is not a mod. It might be a modpack. (unzip it?)"),
 		"invalid-zipfile" : _("This zip file is not readable.  Delete this"),
+		"too-old"         : _("This mod is not for FS19, the modDesc.xml descVersion is either too old or not present"),
 	})
 
 

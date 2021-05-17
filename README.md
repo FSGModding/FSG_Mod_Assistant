@@ -14,6 +14,9 @@ This little program will take a look at your mod install folder and inform you o
   * Suggest you move the contents of the folder if it looks like a mod pack
   * Suggest you remove the folder if it looks like garbage
 
+* If a mod is not intended for FS19 (i.e. FS17 mods)
+  * Warn that you can't use it with this version
+
 * If a file exists that is not a mod at all
   * Suggest you remove the file
 
