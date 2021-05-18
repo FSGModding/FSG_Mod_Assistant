@@ -26,7 +26,7 @@ import src.data.false_unused as falseUnusedMods
 import src.data.util as ModCheckUtil
 
 
-VERSION = "1.0.1.2"
+VERSION = "1.0.1.3"
 
 
 #         _______ __   _  ______       _____  _____ _______ _     _ _______  ______
