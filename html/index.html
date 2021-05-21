@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>FS19 Mod Folder Checker</title>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<script src="../bower_components/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="ui.js"></script>
+	
+	
+</head>
+<body>
+	
+	<div class="container-fluid pt-2 px-1 user-select-none">
+		<h2 class="i18n" data-i18n="title"></h2>
+	
+		<ul class="nav nav-tabs" id="mainTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link active i18n" data-i18n="tab_config" id="tab_config" data-bs-toggle="tab" data-bs-target="#tab_config_content" type="button" role="tab" aria-selected="true" aria-controls="tab_config_content"></button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link i18n" data-i18n="tab_broken" id="tab_broken" data-bs-toggle="tab" data-bs-target="#tab_broken_content" type="button" role="tab" aria-selected="false" aria-controls="tab_broken_content"></button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link i18n" data-i18n="tab_conflict" id="tab_conflict" data-bs-toggle="tab" data-bs-target="#tab_conflict_content" type="button" role="tab" aria-selected="false" aria-controls="tab_conflict_content"></button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link i18n" data-i18n="tab_explore" id="tab_explore" data-bs-toggle="tab" data-bs-target="#tab_explore_content" type="button" role="tab" aria-selected="false" aria-controls="tab_explore_content"></button>
+			</li>
+		</ul>
+
+		  <div class="tab-content pt-3" id="mainTabContent">
+			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
+				<p class="text-center i18n" data-i18n="config_blurb"></p>
+				<p class="text-center fw-lighter fst-italic i18n" data-i18n="config_load_button_blurb"></p>
+				<button type="button" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_load_button"></button>
+			</div>
+
+			<div class="tab-pane fade" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
+					....
+			</div>
+
+			<div class="tab-pane fade" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
+				....
+			</div>
+
+			<div class="tab-pane fade" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
+				....
+			</div>
+		  </div>
+
+
+	</div>
+
+</body>
+</html>

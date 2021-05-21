@@ -1,0 +1,24 @@
+{
+  "name": "fs19-mod-checker-electron",
+  "version": "1.0.0",
+  "description": "FS19 Mod Folder Checker",
+  "main": "main.js",
+  "keywords": [],
+  "author": "JTSage",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^12.0.8",
+    "eslint": "^7.26.0"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.5",
+    "glob": "^7.1.7",
+    "jquery": "^3.6.0",
+    "md5-file": "^5.0.0",
+    "merge-options": "^3.0.4",
+    "xml2js": "^0.4.23"
+  }
+}
