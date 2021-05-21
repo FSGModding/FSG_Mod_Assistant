@@ -1,6 +1,14 @@
+//  _______           __ ______ __                __               
+// |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
+// |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
+// |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
+
+// i18n Translator function (simple string mapping with "en" fallback)
+
+// (c) 2021 JTSage.  MIT License.
 const fs      = require('fs');
 const path    = require('path');
-const glob    = require("glob");
+const glob    = require('glob');
 
 module.exports = class translator {
 	myLocale = null;

@@ -1,7 +1,15 @@
+//  _______           __ ______ __                __               
+// |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
+// |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
+// |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
+
+// Mod File Parser - Mod Storage Class (collection)
+
+// (c) 2021 JTSage.  MIT License.
 const fs           = require('fs');
 const path         = require('path');
 const mergeOptions = require('merge-options').bind({ignoreUndefined: true});
-const glob         = require("glob");
+const glob         = require('glob');
 const xml2js       = require('xml2js');
 const modFile      = require('./file-record.js');
 
@@ -155,15 +163,13 @@ module.exports = class modFileSlurp {
 	get BrokenList() {
 		return this.search({
 			columns: ["shortName"],
-			terms : ["didTestingFail"],
-			allTerms : false
+			terms : ["didTestingFail"]
 		});
 	}
 	get MissingList() {
 		return this.search({
 			columns: ["shortName"],
-			terms : ["isMissing"],
-			allTerms : false
+			terms : ["isMissing"]
 		});
 	}
 

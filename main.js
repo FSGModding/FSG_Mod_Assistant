@@ -1,14 +1,19 @@
+//  _______           __ ______ __                __               
+// |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
+// |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
+// |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
+
+// Main Program
+
+// (c) 2021 JTSage.  MIT License.
+
 const { app, BrowserWindow } = require('electron')
-const path = require('path')
-const {ipcMain} = require('electron')  
-const modReader = require('./fs-mod-parse/mod-reader');
+const path       = require('path')
+const {ipcMain}  = require('electron')  
 const translator = require('./translations/translate.js');
+const modReader  = require('./fs-mod-parse/mod-reader');
 
 let myTranslator = new translator("de");
-
-function _(stringID){	
-	myTranslator.stringLookup(stringID);
-}
 
 function createWindow () {
 	const win = new BrowserWindow({
@@ -33,12 +38,6 @@ ipcMain.on('i18n-translate', (event, arg) => {
 })
 
 
-
-// ipcMain.handle('i18n-translate', async (event, ...args) => {
-// 	console.log(...args);
-	
-// 	return _(...args);
-// });
 
 app.whenReady().then(() => {
 	createWindow()

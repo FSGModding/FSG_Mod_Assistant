@@ -1,11 +1,19 @@
+//  _______           __ ______ __                __               
+// |   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.
+// |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
+// |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
+
+// Mod File Parser - Mod Storage Class (individual)
+
+// (c) 2021 JTSage.  MIT License.
+
 const AdmZip  = require('adm-zip');
 const fs      = require('fs');
 const path    = require('path');
 const xml2js  = require('xml2js');
 const md5File = require('md5-file');
-const glob    = require("glob");
+const glob    = require('glob');
 const badFile = require('./file-diagnostic.js');
-
 
 module.exports = class modFile {
 	shortName = false;
@@ -17,12 +25,12 @@ module.exports = class modFile {
 	#fileExists         = true;
 	#isBothFolderAndZip = false;
 
-	#fileSize   = 0;
-	#storeItems = 0;
+	#fileSize    = 0;
+	#storeItems  = 0;
 	#scriptFiles = 0;
 
-	#iconRelFile = false;
-	#iconImage   = false;
+	#iconRelFile   = false;
+	#iconImage     = false;
 	#iconImageFail = false;
 
 	#activeGames = new Set();
@@ -36,7 +44,7 @@ module.exports = class modFile {
 
 	#fail = new badFile();
 
-	#copy_guess_name      = false;
+	#copy_guess_name = false;
 
 	#current_locale = null;
 
@@ -62,10 +70,10 @@ module.exports = class modFile {
 		if ( this.isNameOK && this.#fileExists && !this.#fail.garbage_file ) {
 			if ( !this.#isFolder && !this.#fail.garbage_file ) {
 				this.#testOK = this.#testZip();
-				/* Load zip icon here */
+				/* TODO: Load zip icon here */
 			} else {
 				this.#testOK = this.#testFolder();
-				/* load folder icon here*/
+				/* TODO: load folder icon here*/
 			}
 		}	
 	}
@@ -209,7 +217,7 @@ module.exports = class modFile {
 
 	#getCopyName() {
 		var winCopy = this.shortName.match(/^([a-zA-Z][a-zA-Z0-9_]+) - .+$/);
-		var dlCopy = this.shortName.match(/^([a-zA-Z][a-zA-Z0-9_]+) \(.+$/);
+		var dlCopy  = this.shortName.match(/^([a-zA-Z][a-zA-Z0-9_]+) \(.+$/);
 
 		if ( winCopy !== null ) {
 			this.#fail.probable_copy = true;
