@@ -20,9 +20,10 @@ module.exports = class modFileSlurp {
 	activeGames = new Set();
 	defaultColumns = ["shortName" , "title"];
 
-	constructor(gameFolder, modFolder, locale = "en") {
+	constructor(gameFolder, modFolder, eventEmitter = false, locale = "en") {
 		this.gameFolder = gameFolder;
 		this.modFolder  = modFolder;
+		this.eventEmitter = eventEmitter;
 		this.locale     = locale;
 
 		if ( ! fs.existsSync(this.modFolder) ) {
@@ -32,10 +33,17 @@ module.exports = class modFileSlurp {
 			throw new Error("Unable to open game saves folder");
 		}
 
+		this.statusUpdate(10);
 		this.readFiles();
 
 		if ( gameFolder !== false ) {
 			this.readSaves();
+		}
+	}
+
+	statusUpdate(newStatus) {
+		if ( this.eventEmitter !== false ) {
+			this.eventEmitter(newStatus);
 		}
 	}
 
@@ -175,16 +183,24 @@ module.exports = class modFileSlurp {
 
 
 	readFiles() {
+		var folderPercentage = [50,70];
+		var filePercentage = [10,50];
+
 		var modFolderFiles = fs.readdirSync(this.modFolder);
+
+		var currentFile = 1;
 		modFolderFiles.forEach((thisFile) =>{
+			currentFile++;
 			if ( ! fs.lstatSync(path.join(this.modFolder,thisFile)).isDirectory() ) {
 				var myShortName = path.parse(thisFile).name;
 				this.add(myShortName, new modFile(myShortName, path.join(this.modFolder,thisFile), this.locale));
+				this.statusUpdate(filePercentage[0] + Math.floor((filePercentage[1] - filePercentage[0]) * (currentFile / (modFolderFiles.length+1))));
 			}
 		});
 
-		
+		currentFile = 1;
 		modFolderFiles.forEach((thisFile) =>{
+			currentFile++;
 			if ( fs.lstatSync(path.join(this.modFolder,thisFile)).isDirectory() ) {
 				var myShortName = path.parse(thisFile).name;
 				if ( this.contains(myShortName) ) {
@@ -192,11 +208,13 @@ module.exports = class modFileSlurp {
 				} else {
 					this.add(myShortName, new modFile(myShortName, path.join(this.modFolder,thisFile), this.locale, true));
 				}
+				this.statusUpdate(folderPercentage[0] + Math.floor((folderPercentage[1] - folderPercentage[0]) * (currentFile / (modFolderFiles.length+1))));
 			}
 		});
 	}
 
 	readSaves() {
+		this.statusUpdate(70);
 		var XMLOptions = {strict : true, async: false, normalizeTags: true, attrNameProcessors : [function(name) { return name.toUpperCase();} ]};
 
 		var filesCareer   = glob.sync(path.join(this.gameFolder, "savegame*", "careerSavegame.xml"));
@@ -234,6 +252,7 @@ module.exports = class modFileSlurp {
 		})
 
 		/* Next up, vehicles */
+		this.statusUpdate(80);
 		filesVehicles.forEach( (thisFile) => {
 			var strictXMLParser = new xml2js.Parser(XMLOptions);
 
@@ -255,6 +274,7 @@ module.exports = class modFileSlurp {
 		});
 
 		/* Finally, items */
+		this.statusUpdate(90);
 		filesItems.forEach( (thisFile) => {
 			var strictXMLParser = new xml2js.Parser(XMLOptions);
 
@@ -274,5 +294,6 @@ module.exports = class modFileSlurp {
 				}
 			});
 		});
+		this.statusUpdate(100);
 	}
 }

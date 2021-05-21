@@ -8,13 +8,25 @@
 // (c) 2021 JTSage.  MIT License.
 
 const modReader = require('./fs-mod-parse/mod-reader');
+const EventEmitter = require('events');
 
 const gameFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder";
 //const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/modtiny";
 const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/mods";
 
+class StatusEmitter extends EventEmitter {}
+const statusEmitter = new StatusEmitter();
 
-modList = new modReader(gameFolder, fileFolder, "en");
+var statFunc = (newStatus) => {
+	statusEmitter.emit("updateStatus", newStatus);
+	//console.log(newStatus);
+}
+
+statusEmitter.on('updateStatus', function(newPercentage) {
+	console.log("new:", newPercentage);
+});
+
+modList = new modReader(gameFolder, fileFolder, statFunc, "en");
 
 
 //for (const [key, value] of Object.entries(modList.fullList)) {
