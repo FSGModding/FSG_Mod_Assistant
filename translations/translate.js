@@ -20,6 +20,14 @@ module.exports = class translator {
 		this.loadStrings();
 	}
 
+	get getLangs() {
+		var returnArray = [];
+		Object.keys(this.strings).forEach((key) => {
+			returnArray.push([this.strings[key].language_code, this.strings[key].language_name]);
+		});
+		return returnArray;
+	}
+
 	stringLookup(stringID) {
 		stringID = stringID.toLowerCase();
 

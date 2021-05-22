@@ -8,33 +8,35 @@
 // (c) 2021 JTSage.  MIT License.
 
 const {ipcRenderer} = require('electron');
+const byId = function( id ) { return document.getElementById( id ); }
 
 ipcRenderer.on('trigger-i18n', () => { doI18n(); });
-ipcRenderer.on('statusUpdate', (event, arg) => { document.getElementById("process_percentage_bar").style.width = arg + "%"; });
+ipcRenderer.on('trigger-i18n-select', (event, langList, locale) => { doLangList(langList, locale); });
+ipcRenderer.on('statusUpdate', (event, arg) => { byId("process_percentage_bar").style.width = arg + "%"; });
 ipcRenderer.on('processModsDone', (event, arg) => {
-	document.getElementById("process_percentage").classList.add("d-none");
-	document.getElementById("process_percentage_done").classList.remove("d-none");
-	document.getElementById("button_process").classList.remove("disabled");
-	document.getElementById("button_load").classList.remove("disabled");
+	byId("process_percentage").classList.add("d-none");
+	byId("process_percentage_done").classList.remove("d-none");
+	byId("button_process").classList.remove("disabled");
+	byId("button_load").classList.remove("disabled");
 	// TODO: update all the data now!
 });
 
 ipcRenderer.on('newFileConfig', (event, arg) => {
 	if ( arg.error ) {
-		document.getElementById("load_error").classList.remove("d-none");
+		byId("load_error").classList.remove("d-none");
 	} else {
-		document.getElementById("load_error").classList.add("d-none");
+		byId("load_error").classList.add("d-none");
 	}
 	if ( arg.valid ) {
-		document.getElementById("button_process").classList.remove("disabled");
+		byId("button_process").classList.remove("disabled");
 	} else {
-		document.getElementById("button_process").classList.add("disabled");
+		byId("button_process").classList.add("disabled");
 	}
 	
-	document.getElementById("location_savegame_folder").innerHTML = arg.saveDir;
-	document.getElementById("location_mod_folder").innerHTML = arg.modDir;
-	document.getElementById("process_percentage_done").classList.add("d-none");
-	document.getElementById("process_percentage").classList.add("d-none");
+	byId("location_savegame_folder").innerHTML = arg.saveDir;
+	byId("location_mod_folder").innerHTML = arg.modDir;
+	byId("process_percentage_done").classList.add("d-none");
+	byId("process_percentage").classList.add("d-none");
 });
 
 doI18n = function() {
@@ -42,13 +44,24 @@ doI18n = function() {
 		item.innerHTML = ipcRenderer.sendSync('i18n-translate', item.getAttribute('data-i18n'));
 	}
 }
+doLangList = function(allLangs, locale) {
+	var newOptions = ""
+	allLangs.forEach((lang) => {
+		newOptions += "<option value=\"" + lang[0] + "\"" + ((locale == lang[0]) ? " selected" : "") + ">"  + lang[1] + "</option>";
+	})
+	byId("language_select").innerHTML = newOptions;
+}
+
+changeLangList = () => {
+	ipcRenderer.send("i18n-change-locale", byId("language_select").value);
+}
 
 processButton = () => {
 	ipcRenderer.send('processMods');
-	document.getElementById("button_process").classList.add("disabled");
-	document.getElementById("button_load").classList.add("disabled");
-	document.getElementById("process_percentage_done").classList.add("d-none");
-	document.getElementById("process_percentage").classList.remove("d-none");
+	byId("button_process").classList.add("disabled");
+	byId("button_load").classList.add("disabled");
+	byId("process_percentage_done").classList.add("d-none");
+	byId("process_percentage").classList.remove("d-none");
 }
 
 loadButton = () => { ipcRenderer.send('openConfigFile'); }

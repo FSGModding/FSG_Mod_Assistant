@@ -14,7 +14,7 @@ const xml2js     = require('xml2js');
 const translator = require('./translations/translate.js');
 const modReader  = require('./fs-mod-parse/mod-reader');
 
-let myTranslator = new translator("de");
+let myTranslator = new translator("en");
 var location_savegame;
 var location_modfolder;
 var location_valid = false;
@@ -22,25 +22,31 @@ var modList;
 
 function createWindow () {
 	const win = new BrowserWindow({
-		width: 1000,
-		height: 700,
-		webPreferences: {
-			nodeIntegration: true,
-			contextIsolation: false,
-			preload: path.join(__dirname, 'preload.js')
+		width          : 1000,
+		height         : 700,
+		webPreferences : {
+			nodeIntegration  : true,
+			contextIsolation : false,
+			preload          : path.join(__dirname, 'preload.js')
 		}
-	})
+	});
 
-	win.loadFile(path.join(__dirname, 'html', 'index.html'))
+	win.loadFile(path.join(__dirname, 'html', 'index.html'));
 
-	win.webContents.on('did-finish-load', (e) => {
-		e.sender.send('trigger-i18n');
-	})
+	win.webContents.on('did-finish-load', (event) => {
+		event.sender.send('trigger-i18n');
+		event.sender.send('trigger-i18n-select', myTranslator.getLangs, myTranslator.myLocale);
+	});
 }
 
 ipcMain.on('i18n-translate', (event, arg) => {
 	event.returnValue = myTranslator.stringLookup(arg);
-})
+});
+
+ipcMain.on('i18n-change-locale', (event, arg) => {
+	myTranslator.myLocale = arg;
+	event.sender.send("trigger-i18n");
+});
 
 ipcMain.on('openConfigFile', (event, arg) => {
 	const {dialog} = require('electron') 
@@ -89,8 +95,8 @@ ipcMain.on('openConfigFile', (event, arg) => {
 		}
 	}).catch(err => {
 		console.log(err)
-	})
-})
+	});
+});
 
 ipcMain.on('processMods', (event, arg) => {
 	if ( location_valid ) {
@@ -114,11 +120,11 @@ app.whenReady().then(() => {
 		if (BrowserWindow.getAllWindows().length === 0) {
 			createWindow()
 		}
-	})
-})
+	});
+});
 
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit()
 	}
-})
+});
