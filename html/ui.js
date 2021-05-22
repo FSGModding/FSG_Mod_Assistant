@@ -10,7 +10,7 @@
 const {ipcRenderer} = require('electron');
 const byId = function( id ) { return document.getElementById( id ); }
 
-ipcRenderer.on('trigger-i18n', () => { doI18n(); });
+ipcRenderer.on('trigger-i18n', () => { doI18n(); }); // TODO: CRITICAL: this needs to be async
 ipcRenderer.on('trigger-i18n-select', (event, langList, locale) => { doLangList(langList, locale); });
 ipcRenderer.on('statusUpdate', (event, arg) => { byId("process_percentage_bar").style.width = arg + "%"; });
 ipcRenderer.on('processModsDone', (event, arg) => {
@@ -49,7 +49,7 @@ doLangList = function(allLangs, locale) {
 	allLangs.forEach((lang) => {
 		newOptions += "<option value=\"" + lang[0] + "\"" + ((locale == lang[0]) ? " selected" : "") + ">"  + lang[1] + "</option>";
 	})
-	byId("language_select").innerHTML = newOptions;
+	byId("language_select").innerHTML = newOptions
 }
 
 changeLangList = () => {

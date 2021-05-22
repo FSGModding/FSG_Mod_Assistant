@@ -6,45 +6,64 @@
 // i18n Translator function (simple string mapping with "en" fallback)
 
 // (c) 2021 JTSage.  MIT License.
-const fs      = require('fs');
-const path    = require('path');
-const glob    = require('glob');
+const fs   = require('fs');
+const path = require('path');
 
 module.exports = class translator {
-	myLocale = null;
-
-	strings = [];
+	#currentLocale     = null;
+	#translatorStrings = [];
+	#langPromise       = null;
 
 	constructor(locale = "en") {
-		this.myLocale = locale;
-		this.loadStrings();
+		this.#currentLocale = locale;
+
+		this.#langPromise = this.loadLanguages();
 	}
 
-	get getLangs() {
-		var returnArray = [];
-		Object.keys(this.strings).forEach((key) => {
-			returnArray.push([this.strings[key].language_code, this.strings[key].language_name]);
+	get currentLocale() { return this.#currentLocale; }
+	set currentLocale(value) { 
+		if ( value in this.#translatorStrings ) {
+			this.#currentLocale = value;
+		}
+	}
+
+	sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms))
+	}
+
+	async loadLanguages() {
+		
+		let langJSON = fs.readdirSync(__dirname);
+
+		langJSON.forEach( (thisFile) => {		
+			if ( path.extname(thisFile) === ".json" ) {
+				let thisLang = JSON.parse(fs.readFileSync(path.join(__dirname, thisFile)))
+				this.#translatorStrings[thisLang.language_code] = thisLang;
+			}
 		});
-		return returnArray;
 	}
 
-	stringLookup(stringID) {
-		stringID = stringID.toLowerCase();
-
-		if ( this.myLocale in this.strings && stringID in this.strings[this.myLocale] ) {
-			return this.strings[this.myLocale][stringID];
-		}
-		if ( stringID in this.strings["en"] ) {
-			return this.strings["en"][stringID];
-		}
-		return stringID;
+	async getLangList() {
+		return await this.#langPromise.then(() => {
+			let returnArray = [];
+			Object.keys(this.#translatorStrings).forEach((key) => {
+				returnArray.push([key, this.#translatorStrings[key].language_name]);
+			});
+			return returnArray;
+		});
 	}
-	
-	loadStrings() {
-		var langJSON = glob.sync(path.join(__dirname, "*.json"));
 
-		langJSON.forEach( (thisFile) => {
-			this.strings[path.basename(thisFile, ".json")] = JSON.parse(fs.readFileSync(thisFile));
+	async stringLookup(stringID) {
+		return await this.#langPromise.then(() => {
+			stringID = stringID.toLowerCase();
+
+			if ( this.#currentLocale in this.#translatorStrings && stringID in this.#translatorStrings[this.#currentLocale] ) {
+				return this.#translatorStrings[this.#currentLocale][stringID];
+			}
+			if ( stringID in this.#translatorStrings["en"] ) {
+				return this.#translatorStrings["en"][stringID];
+			}
+			return stringID;
 		});
 	}
 }

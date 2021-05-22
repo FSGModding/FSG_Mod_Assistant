@@ -20,16 +20,14 @@ const statusEmitter = new StatusEmitter();
 const translator = require('./translations/translate.js');
 let myTranslator = new translator("de");
 
-console.log(myTranslator.getLangs);
-make_lang_select();
-function make_lang_select() {
-	newOptions = ""
-	myTranslator.getLangs.forEach((lang) => {
-		newOptions += "<option value=\"" + lang[0] + "\"" + ((myTranslator.myLocale == lang[0]) ? " selected" : "") + ">"  + lang[1] + "</option>";
-	})
-	console.log(newOptions);
-	//console.log(myTranslator.getLangs);
-}
+
+myTranslator.getLangList().then((data) => { 
+	console.log("getlangs:", data);
+} );
+
+myTranslator.stringLookup("config_working_status").then((data) => {
+	console.log(data);
+});
 
 
 var statFunc = (newStatus) => {

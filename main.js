@@ -14,7 +14,7 @@ const xml2js     = require('xml2js');
 const translator = require('./translations/translate.js');
 const modReader  = require('./fs-mod-parse/mod-reader');
 
-let myTranslator = new translator("en");
+let myTranslator = new translator("de");
 var location_savegame;
 var location_modfolder;
 var location_valid = false;
@@ -35,12 +35,14 @@ function createWindow () {
 
 	win.webContents.on('did-finish-load', (event) => {
 		event.sender.send('trigger-i18n');
-		event.sender.send('trigger-i18n-select', myTranslator.getLangs, myTranslator.myLocale);
+		myTranslator.getLangList().then((langList) => {
+			event.sender.send('trigger-i18n-select', langList, myTranslator.currentLocale);
+		});
 	});
 }
 
-ipcMain.on('i18n-translate', (event, arg) => {
-	event.returnValue = myTranslator.stringLookup(arg);
+ipcMain.on('i18n-translate', async (event, arg) => {
+	event.returnValue = await myTranslator.stringLookup(arg);
 });
 
 ipcMain.on('i18n-change-locale', (event, arg) => {
