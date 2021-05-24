@@ -5,6 +5,7 @@
 	"title" : "Farming Simulator 19 Mod Folder Checker",
 	"tab_config" : "Configuration",
 	"tab_broken" : "Broken Files",
+	"tab_missing" : "Missing Mods",
 	"tab_conflict" : "Possible Conflicts",
 	"tab_explore" : "Explore Mods",
 	"config_blurb" : "This little program will take a look at your mod install folder and inform you of any potential problems that it finds.",
@@ -18,6 +19,7 @@
 	"config_working_status" : "Working...",
 	"config_working_done" : "Done!",
 	"broken_blurb" : "These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution",
+	"missing_blurb" : "The scanner failed to find the mods below, however they are referenced in one or more save games. For mods that have not been purchased, this is usually harmless.  For mods you have purchased, missing the mod file could cost you in-game money.  To correct this, re-download the mod from where you originally got it and place it in the mod folder.",
 	"conflict_blurb" : "These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here",
 	"explore_blurb" : "Below, you will find a list of all mods detected in your mod folder or in your save games.  Use the provided options to see specific sets of mods including missing mods, mods that are never loaded in a save, or mods that are loaded but not used in a save"
 }

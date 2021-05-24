@@ -7,51 +7,35 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const modReader = require('./fs-mod-parse/mod-reader');
-const EventEmitter = require('events');
+const gameFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder"
+//const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/modtiny"
+const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/mods"
 
-const gameFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder";
-//const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/modtiny";
-const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/mods";
+const modReader = require('./mod-checker')
+const translator = require('./translate.js')
+const myTranslator = new translator("de")
 
-class StatusEmitter extends EventEmitter {}
-const statusEmitter = new StatusEmitter();
 
-const translator = require('./translations/translate.js');
-let myTranslator = new translator("de");
 
+modList = new modReader(gameFolder, fileFolder, myTranslator.deferCurrentLocale)
+
+
+modList.readAll().then((args) => {
+	console.log("File Read Done, Testing Proceeding Async - Calling First Search")
+	modList.search({
+ 		columns : ["shortName", "title", "mod_version"],
+ 		terms : ["didTestingPass"],
+	}).then(searchResults => { console.log(searchResults) })
+})
+
+/* Race the parser!! We initialized in "de", changing to "en" to get the list from the search
+above in english.  As long as this line is run before the search can return, we should see english
+This is a deliberate race condition to make sure async is working. */
+myTranslator.currentLocale = "en"
 
 myTranslator.getLangList().then((data) => { 
-	console.log("getlangs:", data);
-} );
-
-myTranslator.stringLookup("config_working_status").then((data) => {
-	console.log(data);
-});
+	console.log("Languages List (async loading):", data)
+})
 
 
-var statFunc = (newStatus) => {
-	statusEmitter.emit("updateStatus", newStatus);
-	//console.log(newStatus);
-}
-
-statusEmitter.on('updateStatus', function(newPercentage) {
-	console.log("new:", newPercentage);
-});
-
-//modList = new modReader(gameFolder, fileFolder, statFunc, "en");
-
-
-//for (const [key, value] of Object.entries(modList.fullList)) {
-//	console.log(`KEY: ${key} VAL: ${value.descDescription}`);
-//}
-
-
-// console.log(modList.search({
-// 	columns : ["shortName"],
-// 	usedGame : 10
-// 	//terms : ["didTestingFail"],
-// }));
-
-
-console.log("end-program-file");
+console.log("End File Code. There may still be running async processes (should be)")

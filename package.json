@@ -16,7 +16,6 @@
   "dependencies": {
     "adm-zip": "^0.5.5",
     "glob": "^7.1.7",
-    "jquery": "^3.6.0",
     "md5-file": "^5.0.0",
     "merge-options": "^3.0.4",
     "xml2js": "^0.4.23"

@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>FS19 Mod Folder Checker</title>
-	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<!--meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" /-->
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="ui.js"></script>
@@ -26,8 +26,9 @@
 						</svg></label>
 					</div>
 					<div class="col-auto">
-						<select onchange="changeLangList()" class="form-select" id="language_select">
+						<select onchange="ipc.changeLangList()" class="form-select" id="language_select">
 						</select>
+						<!-- en=English de=German fr=French es=Spanish ru=Russian pl=Polish it=Italian br=Brazilian-Portuguese cs=Chinese(Simplified) ct=Chinese(Traditional) cz=Czech nl=Netherlands hu=Hungary jp=Japanese kr=Korean pt=Portuguese ro=Romanian tr=Turkish -->
 					</div>
 				</div>
 			</div>
@@ -42,6 +43,9 @@
 				<button class="link-dark nav-link i18n" data-i18n="tab_broken" id="tab_broken" data-bs-toggle="tab" data-bs-target="#tab_broken_content" type="button" role="tab" aria-selected="false" aria-controls="tab_broken_content"></button>
 			</li>
 			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link i18n" data-i18n="tab_missing" id="tab_missing" data-bs-toggle="tab" data-bs-target="#tab_missing_content" type="button" role="tab" aria-selected="false" aria-controls="tab_missing_content"></button>
+			</li>
+			<li class="nav-item" role="presentation">
 				<button class="link-dark nav-link i18n" data-i18n="tab_conflict" id="tab_conflict" data-bs-toggle="tab" data-bs-target="#tab_conflict_content" type="button" role="tab" aria-selected="false" aria-controls="tab_conflict_content"></button>
 			</li>
 			<li class="nav-item" role="presentation">
@@ -53,7 +57,7 @@
 			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
 				<p class="text-center i18n" data-i18n="config_blurb"></p>
 				<p class="text-center fw-lighter fst-italic i18n" data-i18n="config_load_button_blurb"></p>
-				<button type="button" onclick="loadButton()" id="button_load" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_load_button"></button>
+				<button type="button" onclick="ipc.loadButton()" id="button_load" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_load_button"></button>
 				<div id="load_error" class="alert alert-danger w-50 mx-auto mt-2 text-center d-none" role="alert">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="align-text-top bi bi-exclamation-diamond-fill" viewBox="0 0 16 16">
 						<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
@@ -74,18 +78,22 @@
 					</tr>
 				</table>
 				<p class="text-center fw-lighter fst-italic i18n mt-5" data-i18n="config_process_button_blurb"></p>
-				<button type="button" id="button_process" onclick="processButton()" class="disabled btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_process_button"></button>
+				<button type="button" id="button_process" onclick="ipc.processButton()" class="disabled btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_process_button"></button>
 
-				<div class="progress w-75 mt-5 mx-auto d-none" id="process_percentage">
-					<div id="process_percentage_bar" class="progress-bar progress-bar-striped progress-bar-animated i18n" data-i18n="config_working_status" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+				<div class="progress w-75 mt-5 mx-auto d-none" id="process_bar_working">
+					<div class="progress-bar progress-bar-striped progress-bar-animated i18n" data-i18n="config_working_status" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 				</div>
-				<div class="progress w-75 mt-5 mx-auto d-none"id="process_percentage_done">
+				<div class="progress w-75 mt-5 mx-auto d-none"id="process_bar_done">
 					<div class="progress-bar progress-bar-striped bg-success i18n" data-i18n="config_working_done" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 				</div>
 			</div>
 
 			<div class="tab-pane fade" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
 				<p class="text-center i18n px-4" data-i18n="broken_blurb"></p>
+			</div>
+
+			<div class="tab-pane fade" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
+				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
 			</div>
 
 			<div class="tab-pane fade" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
