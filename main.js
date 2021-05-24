@@ -26,7 +26,9 @@ function createWindow () {
 		width          : 1000,
 		height         : 700,
 		webPreferences : {
-			preload          : path.join(__dirname, 'preload.js')
+			nodeIntegration  : false, // is default value after Electron v5
+			contextIsolation : true,
+			preload          : path.join(app.getAppPath(), 'preload.js')
 		}
 	})
 
@@ -38,6 +40,8 @@ function createWindow () {
 			event.sender.send('trigger-i18n-select', langList, myTranslator.currentLocale)
 		})
 	})
+	
+	win.webContents.openDevTools()
 }
 
 ipcMain.on('i18n-translate', async (event, arg) => {
