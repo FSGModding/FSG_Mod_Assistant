@@ -76,7 +76,9 @@ module.exports = class modFileSlurp {
 			sortColumn : 0,
 			allTerms : false,
 			activeGame : 0,
-			usedGame : 0
+			usedGame : 0,
+			useIsActiveIsUsed: true,
+			forceIsActiveIsUsed: false
 		}, options)
 		
 
@@ -136,6 +138,19 @@ module.exports = class modFileSlurp {
 				}
 			})
 
+			if ( myOptions.activeGame === 0 && myOptions.usedGame === 0 && myOptions.forceIsActiveIsUsed ) {
+				arrayPart.push(value.activeGame[0])
+				arrayPart.push(value.usedGame[0])
+			}
+			if ( myOptions.activeGame > 0 && myOptions.useIsActiveIsUsed ) {
+				arrayPart.push(true)
+				arrayPart.push(value.usedGame[myOptions.activeGame])
+			}
+			if ( myOptions.usedGame > 0 && myOptions.useIsActiveIsUsed ) {
+				arrayPart.push(true)
+				arrayPart.push(true)
+			}
+
 			returnList.push(arrayPart)
 		}
 
@@ -185,11 +200,13 @@ module.exports = class modFileSlurp {
 			if ( ! thisFile.isDirectory() ) {
 				let shortName = path.parse(thisFile.name).name
 				this.fullList[shortName] = new modFile(
+					this,
 					shortName,
 					path.join(this.modFolder,thisFile.name),
 					this.locale,
 					thisFile.isDirectory()
 				)
+				this.fullList[shortName].fileSize = fs.statSync(path.join(this.modFolder,thisFile.name)).size
 			}
 		})
 
@@ -200,20 +217,22 @@ module.exports = class modFileSlurp {
 					this.fullList[shortName].isFileAndFolder = true
 				} else {
 					this.fullList[shortName] = new modFile(
+						this,
 						shortName,
 						path.join(this.modFolder,thisFile.name),
 						this.locale,
 						thisFile.isDirectory()
 					)
 				}
+				// TODO: calculate folder size.
 			}
 		})
 		
 		this.#modsTesting.length = 0 // Clear the promise array from old runs.
 
-		Object.keys(this.fullList).forEach((thisFile) => {
+		for ( const thisFile of Object.keys(this.fullList) ) {
 			this.#modsTesting.push(this.fullList[thisFile].test())
-		})
+		}
 	}
 
 	async readSaves() {
@@ -246,6 +265,7 @@ module.exports = class modFileSlurp {
 								}
 							} else {
 								this.fullList[thisModName] = new modFile(
+									this,
 									thisModName,
 									false,
 									this.locale
@@ -332,11 +352,14 @@ class modFile {
 
 	#fail = new badFile()
 
+	#modList         = null
 	#copy_guess_name = false
 
 	#current_locale = null
+	#md5cache       = null
 
-	constructor(shortName, path, locale, isFolder = false) {
+	constructor(parent, shortName, path, locale, isFolder = false) {
+		this.#modList        = parent
 		this.shortName       = shortName
 		this.#isFolder       = isFolder
 		this.#current_locale = locale
@@ -359,10 +382,12 @@ class modFile {
 	get didTestingPass()         { return this.#fail.isGood }
 	get didTestingFail()         { return this.#fail.isBad }
 	get didTestingFailNotFatal() { return ( ! this.#fail.isFatal && this.#fail.isBad ) }
-	get didTestingFailFatal()    { return this.#fail.isFatal } // TODO: add #fail.isFatal
+	get didTestingFailFatal()    { return this.#fail.isFatal }
+	get didTestingPassEnough()   { return this.#fail.isOK}
 	get failedTestList()         { return this.#fail.diagnoseMessage }
 
-	get filename() { return path.basename(this.fullPath) }
+	get filename()      { return path.basename(this.fullPath) }
+	get filenameSlash() { return this.filename + (( this.isFolder ) ? "\\" : "") }
 
 	get title()         { 
 		const tempTitle = this.#getLocalString("title")
@@ -408,6 +433,9 @@ class modFile {
 	get hasNoScripts() { return (( this.#scriptFiles > 0 ) ? false : true ) }
 	get countScripts() { return this.#scriptFiles }
 
+	get fileSizeMap() {
+		return [this.fileSizeString, this.fileSize]
+	}
 	get fileSizeString() {
 		if ( this.#fileSize < 1024 ) {
 			return "0 KB"
@@ -416,33 +444,49 @@ class modFile {
 		}
 	}
 
-	get copyName() { return this.#copy_guess_name }
+	get copyName() { 
+		if ( this.#copy_guess_name === false || this.#copy_guess_name === "" ) {
+			return null
+		}
+		let copyExists = this.#modList.contains(this.#copy_guess_name)
+		let sameFile = false
+
+		if ( copyExists ) {
+			sameFile = ( this.md5Sum === this.#modList.fullList[this.#copy_guess_name].md5Sum )
+		}
+		return [this.#copy_guess_name, copyExists, sameFile]
+	}
 
 	get md5Sum() {
 		if ( !this.#isFolder && !this.#fail.garbage_file ) {
-			return md5File.sync(this.fullPath)
+			if ( this.#md5cache === null ) {
+				this.#md5cache = md5File.sync(this.fullPath)
+			}
+			return this.#md5cache
 		}
 		return null
 	}
 
 	set activeGame(value) { this.#activeGames.add(parseInt(value)) }
 	get activeGame() { 
-		const retArr = [( this.#activeGames.size == 0 )]
+		const retArr = [( this.#activeGames.size > 0 )]
 		
 		for ( let idx = 1; idx < 21; idx++) {
 			retArr.push(this.#activeGames.has(idx))
 		}
 		return retArr
 	}
-	get activeGames() { return Array.from(this.#activeGames).sort().join(", ") }
-	
+	get activeGames() { return Array.from(this.#activeGames).sort((a, b) => a - b).join(", ") }
+
 	set usedGame(value) { this.#usedGames.add(parseInt(value)) }
 	get usedGame() { 
-		if ( this.#storeItems == 0 && this.#usedGames.size == 0 ) {
+		if ( this.isNotMissing && this.#storeItems == 0 && this.#usedGames.size == 0 ) {
+			// Not missing, no store items means it's a script probably. This might
+			// mess up on seasons if you haven't bought the testing tool. Not sure.
 			return this.activeGame
 		}
 
-		const retArr = [( this.#usedGames.size == 0 )]
+		const retArr = [( this.#usedGames.size > 0 )]
 		
 		for ( let idx = 1; idx < 21; idx++) {
 			retArr.push(this.#usedGames.has(idx))
@@ -450,9 +494,9 @@ class modFile {
 		return retArr
 	}
 	get usedGames() { 
-		return ( this.#storeItems == 0 && this.#usedGames.size == 0 ) ?
+		return ( this.isNotMissing && this.#storeItems == 0 && this.#usedGames.size == 0 ) ?
 			this.activeGames :
-			Array.from(this.#usedGames).sort().join(", ")
+			Array.from(this.#usedGames).sort((a, b) => a - b).join(", ")
 	}
 
 	async test() {
@@ -710,8 +754,14 @@ class badFile {
 		folder_and_zip     : "CONFLICT_ERROR_FOLDER_AND_FILE",
 	}
 
+	#passFlags = [
+		"bad_modDesc",
+		"folder_and_zip"
+	]
+
 	#fatalFlags = [
 		"name_failed",
+		"garbage_file",
 		"bad_zip",
 		"no_modDesc",
 		"bad_modDesc_no_rec",
@@ -763,13 +813,25 @@ class badFile {
 	set folder_and_zip(value) { this.failFlags["folder_and_zip"] = realBool(value) }
 
 	get isFatal() {
-		this.#fatalFlags.forEach((fatalFlag) => {
+		for ( const fatalFlag of this.#fatalFlags ) {
 			if ( this.failFlags[fatalFlag] ) {
 				return true
 			}
-		})
+		}
 		return false
 	}
+
+	get isOK() {
+		const newTestArray = Object.keys(this.failFlags).filter(word => !this.#passFlags.includes(word))
+
+		for ( const thisTest of newTestArray ) {
+			if (this.failFlags[thisTest] === true) {
+				return false
+			}
+		}
+		return true
+	}
+
 
 	get isBad() {
 		for (const [key, value] of Object.entries(this.failFlags)) {

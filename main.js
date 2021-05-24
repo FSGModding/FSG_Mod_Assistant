@@ -7,9 +7,9 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, BrowserWindow } = require('electron')
+const { app, Menu, BrowserWindow, ipcMain, clipboard } = require('electron')
 const path       = require('path')
-const {ipcMain}  = require('electron')
+//const {ipcMain}  = require('electron')
 const xml2js     = require('xml2js')
 const translator = require('./translate.js')
 const modReader  = require('./mod-checker.js')
@@ -41,8 +41,39 @@ function createWindow () {
 		})
 	})
 	
+	
 	win.webContents.openDevTools()
 }
+
+ipcMain.on('show-context-menu-broken', async (event, modDomID, fullPath) => {
+	const template = [
+		{
+			label: await myTranslator.stringLookup("menu-copy-full-path"),
+			click: () => { clipboard.writeText(fullPath) }
+		},
+		{
+			label: await myTranslator.stringLookup("menu-hide-entry"),
+			click: () => { event.sender.send("hideByID", modDomID) }
+		}
+	]
+	const menu = Menu.buildFromTemplate(template)
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
+
+ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
+	let template = []
+	const copyString = await myTranslator.stringLookup("menu-copy-general")
+
+	for ( let i = 0; i < theseHeaders.length; i++ ) {
+		template.push({
+			label: copyString + theseHeaders[i],
+			click: () => { clipboard.writeText(theseValues[i]) }
+		})
+	}
+
+	const menu = Menu.buildFromTemplate(template)
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
 
 ipcMain.on('i18n-translate', async (event, arg) => {
 	myTranslator.stringLookup(arg).then((text) => { 
@@ -106,17 +137,54 @@ ipcMain.on('openConfigFile', (event, arg) => {
 })
 
 ipcMain.on('processMods', (event, arg) => {
-	// if ( location_valid ) {
-	// 	modList = new modReader(
-	// 		location_savegame,
-	// 		location_modfolder,
-	// 		myTranslator.deferCurrentLocale)
-	// } else {
-	// 	console.log("Something Went Wrong") // TODO: handle UI got process, was not ready
-	// }
+	if ( location_valid ) {
+		modList = new modReader(
+			location_savegame,
+			location_modfolder,
+			myTranslator.deferCurrentLocale)
 
-	// event.sender.send("processModsDone") // TODO: reading went wrong somehow?  catch errors?
+		modList.readAll().then((args) => {
+			event.sender.send("processModsDone")
+		}).catch((args) => {
+			event.sender.send("newFileConfig", {valid: false, error:true, saveDir:"--", modDir:"--"})
+		})
+	} else {
+		console.log("Something Went Wrong") // TODO: handle UI got process, was not ready
+	}
 })
+
+ipcMain.on("askBrokenList", (event) => {
+	modList.search({
+		columns : ["filenameSlash", "fullPath", "failedTestList", "copyName"],
+		terms : ["didTestingFail"],
+	}).then(searchResults => { event.sender.send("gotBrokenList", searchResults) })
+})
+
+ipcMain.on("askMissingList", (event) => {
+	modList.search({
+		columns : ["shortName", "title", "activeGames", "usedGames"],
+		terms : ["isMissing"],
+	}).then(searchResults => { event.sender.send("gotMissingList", searchResults) })
+})
+
+ipcMain.on("askMissingList", (event, activeGame) => {
+	modList.search({
+		columns : [
+			"shortName",
+			"title",
+			"mod_version",
+			"fileSizeMap",
+			"activeGames",
+			"usedGames",
+			"fullPath",
+		],
+		activeGame: activeGame,
+		forceIsActiveIsUsed: true,
+		allTerms : true,
+		terms : ["isNotMissing", "didTestingPassEnough"],
+	}).then(searchResults => { event.sender.send("gotExploreList", searchResults) })
+})
+
 
 
 app.whenReady().then(() => {
@@ -134,3 +202,7 @@ app.on('window-all-closed', () => {
 		app.quit()
 	}
 })
+
+// TODO: catch reload, do something intelligent.
+// TODO: sub-window for details
+// TODO: BIG ONE: Icons still.

@@ -6,6 +6,13 @@
 // i18n Translator function (simple string mapping with "en" fallback)
 
 // (c) 2021 JTSage.  MIT License.
+
+// Giants' Version of Country Codes:
+// en=English de=German fr=French es=Spanish ru=Russian pl=Polish it=Italian
+// br=Brazilian-Portuguese cs=Chinese(Simplified) ct=Chinese(Traditional) 
+// cz=Czech nl=Netherlands hu=Hungary jp=Japanese kr=Korean pt=Portuguese
+// ro=Romanian tr=Turkish 
+
 const fs   = require('fs')
 const path = require('path')
 
@@ -52,6 +59,8 @@ module.exports = class translator {
 
 	async stringLookup(stringID) {
 		return await this.#langPromise.then(() => {
+			if ( stringID === null ) { return null }
+
 			stringID = stringID.toLowerCase()
 
 			if ( this.#currentLocale in this.#translatorStrings && stringID in this.#translatorStrings[this.#currentLocale] ) {

@@ -7,8 +7,36 @@
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="inc/sortable.min.js"></script>
 	<script src="ui.js"></script>
-	
+	<style>
+		.sortable th:hover::after {
+			color: inherit;
+			font-size: 1.2em;
+			content: ' \025B8';
+		}
+		.sortable th::after {
+			font-size: 1.2em;
+			color: transparent;
+			content: ' \025B8';
+		}
+		.sortable th.dir-d::after {
+			color: inherit;
+			content: ' \025BE';
+		}
+		.sortable th.dir-u::after {
+			color: inherit;
+			content: ' \025B4';
+		}
+
+		td.col_mod_version, td.col_mod_size {
+			text-align: right;
+		}
+		.col_mod_is_active, .col_mod_is_used {
+			text-align: center;
+		}
+
+	</style>
 	
 </head>
 <body>
@@ -26,9 +54,7 @@
 						</svg></label>
 					</div>
 					<div class="col-auto">
-						<select onchange="ipc.changeLangList()" class="form-select" id="language_select">
-						</select>
-						<!-- en=English de=German fr=French es=Spanish ru=Russian pl=Polish it=Italian br=Brazilian-Portuguese cs=Chinese(Simplified) ct=Chinese(Traditional) cz=Czech nl=Netherlands hu=Hungary jp=Japanese kr=Korean pt=Portuguese ro=Romanian tr=Turkish -->
+						<select onchange="ipc.changeLangList()" class="form-select" id="language_select"></select>
 					</div>
 				</div>
 			</div>
@@ -53,7 +79,8 @@
 			</li>
 		</ul>
 
-		  <div class="tab-content pt-3" id="mainTabContent">
+		<div class="tab-content pt-3" id="mainTabContent">
+
 			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
 				<p class="text-center i18n" data-i18n="config_blurb"></p>
 				<p class="text-center fw-lighter fst-italic i18n" data-i18n="config_load_button_blurb"></p>
@@ -90,20 +117,107 @@
 
 			<div class="tab-pane fade" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
 				<p class="text-center i18n px-4" data-i18n="broken_blurb"></p>
+				<ul class="list-group mx-4 mb-4" id="broken_list"></ul>
+				<button type="button" id="button_un_hide_broken" onclick="unHideAllBroken()" class="d-none btn mb-4 btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="broken_un_hide_button"></button>
 			</div>
 
 			<div class="tab-pane fade" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
 				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
+				<div class="mx-3">
+					<table class="table table-responsive table-striped table-hover sortable">
+						<thead>
+							<tr>
+								<th class="i18n" data-i18n="header_mod_name"></th>
+								<th class="i18n" data-i18n="header_mod_title"></th>
+								<th class="i18n" data-i18n="header_mod_active_games"></th>
+								<th class="i18n" data-i18n="header_mod_used_games"></th>
+							</tr>
+						</thead>
+						<tbody id="table_missing">
+						</tbody>
+					</table>
+				</div>
 			</div>
 
 			<div class="tab-pane fade" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
 				<p class="text-center i18n px-4" data-i18n="conflict_blurb"></p>
+				<ul class="list-group mx-4 mb-4" id="conflict_list"></ul>
+				<button type="button" id="button_un_hide_conflict" onclick="unHideAllConflict()" class="d-none btn mb-4 btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="conflict_un_hide_button"></button>
 			</div>
 
 			<div class="tab-pane fade" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
 				<p class="text-center i18n px-4" data-i18n="explore_blurb"></p>
+				<button class="w-75 mx-auto btn btn-primary btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
+				<table class="table table-responsive table-striped table-hover sortable" id="table_explore_parent">
+					<thead>
+						<tr>
+							<th class="i18n col_mod_name" data-i18n="header_mod_name"></th>
+							<th class="i18n col_mod_title" data-i18n="header_mod_title"></th>
+							<th class="i18n col_mod_version" data-i18n="header_mod_version"></th>
+							<th class="i18n col_mod_size" data-i18n="header_mod_size"></th>
+							<th class="i18n col_mod_active_games" data-i18n="header_mod_active_games"></th>
+							<th class="i18n col_mod_used_games" data-i18n="header_mod_used_games"></th>
+							<th class="i18n col_mod_full_path" data-i18n="header_mod_full_path"></th>
+							<th class="i18n col_mod_is_active" data-i18n="header_mod_is_active"></th>
+							<th class="i18n col_mod_is_used" data-i18n="header_mod_is_used"></th>
+						</tr>
+					</thead>
+					<tbody id="table_explore">
+					</tbody>
+				</table>
 			</div>
-		  </div>
+
+			<div class="offcanvas offcanvas-start" tabindex="-1" id="exploreOptions">
+				<div class="offcanvas-header">
+					<h5 class="offcanvas-title i18n" data-i18n="explore_options_title"></h5>
+					<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<div class="offcanvas-body">
+					<div class="i18n" data-i18n="explore_options_blurb mb-4"></div>
+
+					<h6 class="i18n" data-i18n="explore_options_column_visibility"></h6>
+
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_name_switch" checked>
+						<label class="form-check-label i18n" data-i18n="header_mod_name" for="col_mod_name_switch"></label>
+					</div>
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_title_switch" checked>
+						<label class="form-check-label i18n" data-i18n="header_mod_title" for="col_mod_title_switch"></label>
+					</div>
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_version_switch" checked>
+						<label class="form-check-label i18n" data-i18n="header_mod_version" for="col_mod_version_switch"></label>
+					</div>
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_size_switch" checked>
+						<label class="form-check-label i18n" data-i18n="header_mod_size" for="col_mod_size_switch"></label>
+					</div>
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_active_switch" checked>
+						<label class="form-check-label i18n" data-i18n="header_mod_is_active" for="col_mod_is_active_switch"></label>
+					</div>
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_active_games_switch">
+						<label class="form-check-label i18n" data-i18n="header_mod_active_games" for="col_mod_active_games_switch"></label>
+					</div>
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_used_switch" checked>
+						<label class="form-check-label i18n" data-i18n="header_mod_is_used" for="col_mod_is_used_switch"></label>
+					</div>
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_used_games_switch">
+						<label class="form-check-label i18n" data-i18n="header_mod_used_games" for="col_mod_used_games_switch"></label>
+					</div>
+					<div class="form-check form-switch">
+						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_full_path_switch">
+						<label class="form-check-label i18n" data-i18n="header_mod_full_path" for="col_mod_full_path_switch"></label>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
 
 
 	</div>

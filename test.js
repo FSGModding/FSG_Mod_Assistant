@@ -8,8 +8,8 @@
 // (c) 2021 JTSage.  MIT License.
 
 const gameFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder"
-//const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/modtiny"
-const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/mods"
+const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/modtiny"
+//const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/mods"
 
 const modReader = require('./mod-checker')
 const translator = require('./translate.js')
@@ -22,9 +22,23 @@ modList = new modReader(gameFolder, fileFolder, myTranslator.deferCurrentLocale)
 
 modList.readAll().then((args) => {
 	console.log("File Read Done, Testing Proceeding Async - Calling First Search")
+
 	modList.search({
- 		columns : ["shortName", "title", "mod_version"],
- 		terms : ["didTestingPass"],
+		columns : [
+			"shortName",
+			"isNotMissing",
+			"didTestingPassEnough"
+			// "title",
+			// "mod_version",
+			// "fileSizeMap",
+			// "activeGames",
+			// "usedGames",
+			// "fullPath",
+		],
+		activeGame: 0,
+		forceIsActiveIsUsed: true,
+		allTerms : true,
+		terms : ["isNotMissing", "didTestingPassEnough"],
 	}).then(searchResults => { console.log(searchResults) })
 })
 
