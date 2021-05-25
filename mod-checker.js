@@ -13,8 +13,10 @@ const path         = require('path')
 const mergeOptions = require('merge-options').bind({ignoreUndefined: true})
 const glob         = require('glob')
 const xml2js       = require('xml2js')
-const AdmZip       = require('adm-zip')
+const StreamZip    = require('node-stream-zip');
 const md5File      = require('md5-file')
+
+const conflictListData = require('./mod-checker-conflicts')
 
 const realBool = function(input) {
 	return ( input === true || input === false ) ?
@@ -22,19 +24,24 @@ const realBool = function(input) {
 		( ( input ) ? true : false )
 }
 
+/* False "isUsed" negatives.  They are really script mods, but have some optional storeItems */
+const falseIsUsedNegatives = ["FS19_buyableLargeStackBales","FS19_RM_Seasons","FS19_GlobalCompany"]
+
 module.exports = class modFileSlurp {
 	modFolder         = null
 	gameFolder        = null
 	fullList          = {}
 	activeGames       = new Set()
 	defaultColumns    = ["shortName" , "title"]
-	#modsTesting      = []
+	#modsTesting      = [] // Promise array for testing
+	#conflictReady    = false // loaded at least names
 	locale            = "en"
 
 	constructor(gameFolder, modFolder, locale = "en") {
-		this.gameFolder   = gameFolder
-		this.modFolder    = modFolder
-		this.locale       = locale
+		this.gameFolder     = gameFolder
+		this.modFolder      = modFolder
+		this.locale         = locale
+		this.#conflictReady = false
 
 		if ( ! fs.existsSync(this.modFolder) ) {
 			throw new Error("Unable to open mod folder")
@@ -47,6 +54,8 @@ module.exports = class modFileSlurp {
 	async readAll() {
 		return this.readFiles().then((pass1) => { 
 			this.readSaves().then((pass2) => {
+				// We have loaded all names, we don't care about testing for conflict display
+				this.#conflictReady = true
 				return pass2
 			})
 		})
@@ -54,6 +63,66 @@ module.exports = class modFileSlurp {
 
 	contains(name) {
 		return this.fullList.hasOwnProperty(name)
+	}
+
+	#safeL10n(tree) {
+		if (tree.hasOwnProperty[this.locale()] ) {
+			return tree[this.locale()]
+		} else {
+			return tree.en
+		}
+	}
+
+	async conflictList(folderFileText) {
+		return Promise.allSettled(this.#modsTesting).then((args) => {
+			const returnArray = []
+			const checkList = Object.keys(this.fullList)
+
+			for (const [key, modRecord] of Object.entries(this.fullList)) {
+				if ( modRecord.isFileAndFolder ) {
+					returnArray.push([
+						modRecord.shortName,
+						modRecord.title,
+						folderFileText,
+						modRecord.fullPath
+					])
+				}
+			}
+			
+			for ( const [modName, conflictDetails] of Object.entries(conflictListData.conflictMods)) {
+				if ( checkList.includes(modName) ) {
+					let doesConflict = false;
+					if ( conflictDetails.confWith === null ) {
+						doesConflict = true
+					} else {
+						for ( const confWithName of conflictDetails.confWith ) {
+							if ( checkList.includes(confWithName) ) {
+								doesConflict = true;
+								break
+							}
+						}
+					}
+					if ( doesConflict ) {
+						returnArray.push([
+							this.fullList[modName].shortName,
+							this.fullList[modName].title,
+							this.#safeL10n(conflictDetails.message),
+							this.fullList[modName].fullPath,
+						])
+					}
+				}
+			}
+			returnArray.sort((a,b) => {
+				let x = a[0].toUpperCase()
+				let y = b[0].toUpperCase()
+	
+				if (x < y) return -1
+				if (x > y) return 1
+				return 0
+			})
+
+			return returnArray
+		})
 	}
 
 	async search(options = {} ) {
@@ -76,19 +145,19 @@ module.exports = class modFileSlurp {
 	#search(options = {} ) {
 		const returnList = []
 		const myOptions  = mergeOptions({
-			terms : [],
-			columns : this.defaultColumns,
+			terms        : [],
+			columns      : this.defaultColumns,
 			includeTerms : false,
-			sortColumn : 0,
-			allTerms : false,
-			activeGame : 0,
-			usedGame : 0,
-			useIsActiveIsUsed: true,
-			forceIsActiveIsUsed: false
+			sortColumn   : 0,
+			allTerms     : false,
+			activeGame   : 0,
+			usedGame     : 0
 		}, options)
 		
 
 		if ( myOptions.usedGame > 0 ) { myOptions.activeGame = 0 }
+
+		const gameFilter = ( myOptions.usedGame > myOptions.activeGame ) ? myOptions.usedGame : myOptions.activeGame
 
 		if ( myOptions.includeTerms ) { myOptions.columns.push(...myOptions.terms) }
 
@@ -137,25 +206,18 @@ module.exports = class modFileSlurp {
 			let arrayPart = []
 
 			myOptions.columns.forEach((keyName) => {
-				if ( ! keyName in value ) {
-					arrayPart.push(null)
+				if ( keyName === "isActive" ) {
+					arrayPart.push(value.activeGame[gameFilter])
+				} else if ( keyName === "isUsed" ) {
+					arrayPart.push(value.usedGame[gameFilter])
 				} else {
-					arrayPart.push(value[keyName])
+					if ( ! keyName in value ) {
+						arrayPart.push(null)
+					} else {
+						arrayPart.push(value[keyName])
+					}
 				}
 			})
-
-			if ( myOptions.activeGame === 0 && myOptions.usedGame === 0 && myOptions.forceIsActiveIsUsed ) {
-				arrayPart.push(value.activeGame[0])
-				arrayPart.push(value.usedGame[0])
-			}
-			if ( myOptions.activeGame > 0 && myOptions.useIsActiveIsUsed ) {
-				arrayPart.push(true)
-				arrayPart.push(value.usedGame[myOptions.activeGame])
-			}
-			if ( myOptions.usedGame > 0 && myOptions.useIsActiveIsUsed ) {
-				arrayPart.push(true)
-				arrayPart.push(true)
-			}
 
 			returnList.push(arrayPart)
 		}
@@ -364,6 +426,9 @@ class modFile {
 	#current_locale = null
 	#md5cache       = null
 
+	#zipTestingNow    = false
+	#zipTestingStatus = false
+
 	constructor(parent, shortName, path, locale, isFolder = false) {
 		this.#modList        = parent
 		this.shortName       = shortName
@@ -378,7 +443,8 @@ class modFile {
 			this.fullPath = path
 		}
 
-		this.#fail.name_failed = !(this.#testName())
+		this.#fail.name_failed      = !(this.#testName())
+		this.#fail.folder_needs_zip = isFolder
 
 		if ( this.#fail.name_failed && ! this.#fail.first_digit && ! this.#fail.garbage_file ) {
 			this.#copy_guess_name = this.#getCopyName()
@@ -442,12 +508,23 @@ class modFile {
 	get fileSizeMap() {
 		return [this.fileSizeString, this.fileSize]
 	}
-	get fileSizeString() {
-		if ( this.#fileSize < 1024 ) {
-			return "0 KB"
-		} else {
-			return ( this.#fileSize / 1024 ).toLocaleString( this.#current_locale(), { minimumFractionDigits: 2, maximumFractionDigits: 2 } ) + " KB"
+	get fileSizeString() {	
+		let bytes = this.fileSize
+
+		if (Math.abs(this.fileSize) < 1024) {
+			return '0 kB';
 		}
+
+		const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+		let u = -1;
+		const r = 10**2;
+
+		do {
+			bytes /= 1024;
+			++u;
+		} while (Math.round(Math.abs(bytes) * r) / r >= 1024 && u < units.length - 1);
+
+		return bytes.toLocaleString( this.#current_locale(), { minimumFractionDigits: 2, maximumFractionDigits: 2 } ) + ' ' + units[u]
 	}
 
 	get copyName() { 
@@ -486,6 +563,9 @@ class modFile {
 
 	set usedGame(value) { this.#usedGames.add(parseInt(value)) }
 	get usedGame() { 
+		if ( falseIsUsedNegatives.includes(this.shortName) ) {
+			return this.activeGame
+		}
 		if ( this.isNotMissing && this.#storeItems == 0 && this.#usedGames.size == 0 ) {
 			// Not missing, no store items means it's a script probably. This might
 			// mess up on seasons if you haven't bought the testing tool. Not sure.
@@ -499,7 +579,10 @@ class modFile {
 		}
 		return retArr
 	}
-	get usedGames() { 
+	get usedGames() {
+		if ( falseIsUsedNegatives.includes(this.shortName) ) {
+			return this.activeGames
+		}
 		return ( this.isNotMissing && this.#storeItems == 0 && this.#usedGames.size == 0 ) ?
 			this.activeGames :
 			Array.from(this.#usedGames).sort((a, b) => a - b).join(", ")
@@ -582,31 +665,50 @@ class modFile {
 	}
 
 	async #testZip() {
-		try {
-			var zip = new AdmZip(this.fullPath)
-		} catch {
+		this.#zipTestingNow = true
+
+		const zip = new StreamZip({ file: this.fullPath });
+
+		zip.on("error", (err) => {
 			this.#fail.bad_zip = true
+			this.#zipTestingNow = false
 			return false
-		}
-
-		const modDescEntry = zip.getEntry("modDesc.xml")
-
-		if ( modDescEntry === null ) {
-			this.#fail.no_modDesc = true
-			return false
-		}
-
-		this.XMLDocument = modDescEntry.getData().toString('utf8')
-
-		const zipFileList = zip.getEntries()
-
-		zipFileList.forEach( (arcFile) => {
-			if ( arcFile.name.endsWith(".lua") ) {
-				this.#scriptFiles++
-			}
 		})
 
-		return await this.#testXML()
+		zip.on("ready", () => {
+			for (const entry of Object.values(zip.entries())) {
+				if ( entry.name.endsWith(".lua") ) {
+					this.#scriptFiles++
+				}
+			}
+
+			zip.stream('modDesc.xml', (err, stm) => {
+				if ( err ) {
+					this.#fail.no_modDesc = true
+					this.#zipTestingNow = false
+					return false
+				} else {
+					this.XMLDocument = ""
+					stm.on('data', (chunk) => { this.XMLDocument += chunk.toString() });
+					stm.on('end', () => {
+						zip.close()
+						this.#zipTestingStatus = this.#testXML()
+						this.#zipTestingNow = false
+						return true
+					});
+				}
+			});
+		})
+
+		return new Promise(async (resolve, reject) => {
+			while (true) {
+				await new Promise(resolve => setTimeout(resolve, 50))
+				if ( this.#zipTestingNow === false ) {
+					resolve(this.#zipTestingStatus)
+					break
+				}
+			}
+		})
 	}
 
 	async #testFolder() {
@@ -626,10 +728,10 @@ class modFile {
 		const fileList = glob.sync(path.join(this.fullPath, "**", "*.lua"))
 		this.#scriptFiles = fileList.length
 
-		return await this.#testXML()
+		this.#testXML()
 	}
 
-	async #testXML() {
+	#testXML() {
 		const XMLOptions = {strict : true, async: false, normalizeTags: true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
 		const strictXMLParser = new xml2js.Parser(XMLOptions)
 		
@@ -637,6 +739,7 @@ class modFile {
 		strictXMLParser.parseString(this.XMLDocument, (err, result) => {
 			if ( err !== null ) {
 				/* XML Parse failed, lets try to recover */
+				// console.debug("XML Error:", err)
 				this.#fail.bad_modDesc = true
 				XMLOptions["strict"] = false
 				var looseXMLParser = new xml2js.Parser(XMLOptions)
@@ -742,6 +845,7 @@ class badFile {
 		no_modVer          : false,
 		no_modIcon         : false,
 		folder_and_zip     : false,
+		folder_needs_zip   : false,
 	}
 	#failMessages = {
 		first_digit        : "FILE_ERROR_NAME_STARTS_DIGIT",
@@ -758,11 +862,13 @@ class badFile {
 		no_modVer          : "MOD_ERROR_NO_MOD_VERSION",
 		no_modIcon         : "MOD_ERROR_NO_MOD_ICON",
 		folder_and_zip     : "CONFLICT_ERROR_FOLDER_AND_FILE",
+		folder_needs_zip   : "INFO_NO_MULTIPLAYER_UNZIPPED",
 	}
 
 	#passFlags = [
 		"bad_modDesc",
-		"folder_and_zip"
+		"folder_and_zip",
+		"folder_needs_zip"
 	]
 
 	#fatalFlags = [
@@ -817,6 +923,9 @@ class badFile {
 
 	get folder_and_zip()      { return this.failFlags["folder_and_zip"] }
 	set folder_and_zip(value) { this.failFlags["folder_and_zip"] = realBool(value) }
+
+	get folder_needs_zip()      { return this.failFlags["folder_needs_zip"] }
+	set folder_needs_zip(value) { this.failFlags["folder_needs_zip"] = realBool(value) }
 
 	get isFatal() {
 		for ( const fatalFlag of this.#fatalFlags ) {

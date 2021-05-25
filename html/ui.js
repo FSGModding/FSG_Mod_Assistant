@@ -9,17 +9,17 @@
 
 const byId = function( id ) { return document.getElementById( id ) }
 
-function unHideAllBroken () {
-	let hiddenList = byId("broken_list").querySelectorAll(".d-none")
-	hiddenList.forEach((node) => { node.classList.remove("d-none") })
-}
-function unHideAllConflict () {
-	let hiddenList = byId("conflict_list").querySelectorAll(".d-none")
-	hiddenList.forEach((node) => { node.classList.remove("d-none") })
-}
+function toggleHideFolderOnlyError() {
+	const folderOnly = byId("broken_list").querySelectorAll(".just-folder-error")
+	const status     = byId("zip_folder_switch").checked
 
-function changeActiveGame() {
-	// TODO: add the select, make this do something
+	folderOnly.forEach((thisBroken) => {
+		if ( status ) {
+			thisBroken.classList.add("d-none")
+		} else {
+			thisBroken.classList.remove("d-none")
+		}
+	})
 }
 
 function toggleExploreColumns () {
@@ -33,6 +33,7 @@ function toggleExploreColumns () {
 		"mod_is_used",
 		"mod_used_games",
 		"mod_full_path",
+		"mod_has_scripts",
 	]
 	columns.forEach((thisCol) => {
 		const theseItems = byId("table_explore_parent").querySelectorAll(".col_"+thisCol)

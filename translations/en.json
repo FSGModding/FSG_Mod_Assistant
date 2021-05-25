@@ -19,7 +19,7 @@
 	"config_working_status"            : "Working...",
 	"config_working_done"              : "Done!",
 	"broken_blurb"                     : "These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution",
-	"broken_un_hide_button"            : "Un-Hide previously hidden entries (reset view)",
+	"broken_options_hide_unzipped"     : "Hide mods that only have multiplayer \"needs zipped\" warning.",
 	"missing_blurb"                    : "The scanner failed to find the mods below, however they are referenced in one or more save games. For mods that have not been purchased, this is usually harmless.  For mods you have purchased, missing the mod file could cost you in-game money.  To correct this, re-download the mod from where you originally got it and place it in the mod folder.",
 	"conflict_blurb"                   : "These mods were detected in your mod folder.  In some specific cases, they can cause conflicts with other mods, causing your game to either not work or behave strangely. This display is for informational purposes, and should not be taken a suggestion not to use anything listed here",
 	"explore_blurb"                    : "Below, you will find a list of all mods detected in your mod folder or in your save games.  Use the provided options to see specific sets of mods including missing mods, mods that are never loaded in a save, or mods that are loaded but not used in a save",
@@ -32,8 +32,7 @@
 	"filter_savegame"                  : "Save Game Slot #",
 
 	"menu_copy_general"   : "Copy : ",
-	"menu_copy_full_path" : "Copy full mod path",
-	"menu_hide_entry"     : "Remove / Hide this entry",
+	"menu_copy_full_path" : "Copy : Full File Path",
 
 	"header_mod_name"        : "Name",
 	"header_mod_title"       : "Title",
@@ -44,6 +43,7 @@
 	"header_mod_is_used"     : "Is Used",
 	"header_mod_used_games"  : "Used In Saves",
 	"header_mod_full_path"   : "Full Path",
+	"header_mod_has_scripts" : "Uses Scripts",
 
 	"file_error_name_starts_digit"          : "This file starts with a digit. FS19 requires that mods start with a letter.",
 	"file_error_likely_copy"                : "This file name suggests that it is a duplicate copy of another mod.",
@@ -59,6 +59,7 @@
 	"mod_error_no_mod_version"              : "This mod lacks a readable version. FS19 will likely reject this mod or behave inconsistently.",
 	"mod_error_no_mod_icon"                 : "This mod does not have an icon file. FS19 will reject mods without valid icons.",
 	"conflict_error_folder_and_file"        : "This mod exists as both a zip file and a folder.  FS19 will prefer the zip file when loading mods, so if you have made changes to the folder version, those changes will be ignored.",
+	"info_no_multiplayer_unzipped"          : "Unzipped mods cannot be used in multiplayer. If you don't intend to use this mod in a multiplayer game, you can ignore this message.",
 	"file_error_copy_name"                  : "This file should be renamed or removed as it appears to be a copy of :",
 	"file_error_copy_exists"                : "The original file exists.",
 	"file_error_copy_missing"               : "The original file DOES NOT exist.",

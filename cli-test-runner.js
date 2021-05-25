@@ -6,31 +6,34 @@
 // Test Runner CLI. May become a straight to log version.
 
 // (c) 2021 JTSage.  MIT License.
+const homedir  = require('os').homedir()
+const path     = require('path')
+const { exit } = require('process')
 
-const gameFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder"
-const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/modtiny"
-//const fileFolder = "C:/Users/PC/Desktop/GitHub Projects/FS19_Mod_Checker/testFolder/mods"
+//const gameFolder = path.join(homedir, "Documents" , "My Games", "FarmingSimulator2019" )
+const gameFolder = path.join(__dirname, "testFolder")
+const fileFolder = path.join(gameFolder, "mods")
 
 const modReader = require('./mod-checker')
 const translator = require('./translate.js')
-const myTranslator = new translator("de")
-
-
+const myTranslator = new translator.translator(translator.getSystemLocale())
 
 modList = new modReader(gameFolder, fileFolder, myTranslator.deferCurrentLocale)
 
 
 modList.readAll().then((args) => {
-	console.log("File Read Done, Testing Proceeding Async - Calling First Search")
+	console.log("File Read Done, Testing Proceeding Async - Calling First Search, will return when testing is complete.")
 
 	modList.search({
 		columns : [
 			"shortName",
-			"isNotMissing",
-			"didTestingPassEnough"
+			"isActive",
+			"isUsed",
+			//"isNotMissing",
+			//"didTestingPassEnough"
 			// "title",
 			// "mod_version",
-			// "fileSizeMap",
+			"fileSizeMap",
 			// "activeGames",
 			// "usedGames",
 			// "fullPath",
@@ -39,7 +42,9 @@ modList.readAll().then((args) => {
 		forceIsActiveIsUsed: true,
 		allTerms : true,
 		terms : ["isNotMissing", "didTestingPassEnough"],
-	}).then(searchResults => { console.log(searchResults) })
+	}).then(searchResults => {
+		console.log("test.js results:", searchResults)
+	})
 })
 
 /* Race the parser!! We initialized in "de", changing to "en" to get the list from the search
@@ -48,8 +53,8 @@ This is a deliberate race condition to make sure async is working. */
 myTranslator.currentLocale = "en"
 
 myTranslator.getLangList().then((data) => { 
-	console.log("Languages List (async loading):", data)
+	console.log("Languages List (async loading - likely returning before file load is done):", data)
 })
 
 
-console.log("End File Code. There may still be running async processes (should be)")
+console.log("End File Code. There may (should!) still be running async processes")

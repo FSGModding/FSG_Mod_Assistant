@@ -13,19 +13,20 @@ const xml2js     = require('xml2js')
 const translator = require('./translate.js')
 const modReader  = require('./mod-checker.js')
 
-let myTranslator = new translator("de")
-let location_savegame = null
+const myTranslator     = new translator.translator(translator.getSystemLocale())
+let location_savegame  = null
 let location_modfolder = null
-let location_valid = false
+let location_valid     = false
 
 var modList
 
 function createWindow () {
 	const win = new BrowserWindow({
+		icon           : path.join(app.getAppPath(), 'build', 'icon.png'),
 		width          : 1000,
 		height         : 700,
 		webPreferences : {
-			nodeIntegration  : false, // is default value after Electron v5
+			nodeIntegration  : false,
 			contextIsolation : true,
 			preload          : path.join(app.getAppPath(), 'preload.js')
 		}
@@ -39,20 +40,22 @@ function createWindow () {
 			event.sender.send('trigger-i18n-select', langList, myTranslator.currentLocale)
 		})
 	})
-	
-	
-	win.webContents.openDevTools()
 }
 
-ipcMain.on('show-context-menu-broken', async (event, modDomID, fullPath) => {
+
+
+
+/*
+  _____  _____  _______   _______ _______ __   _ _     _ _______
+    |   |_____] |       . |  |  | |______ | \  | |     | |______
+  __|__ |       |_____  . |  |  | |______ |  \_| |_____| ______|
+                                                                
+*/
+ipcMain.on('show-context-menu-broken', async (event, fullPath) => {
 	const template = [
 		{
 			label: await myTranslator.stringLookup("menu_copy_full_path"),
 			click: () => { clipboard.writeText(fullPath) }
-		},
-		{
-			label: await myTranslator.stringLookup("menu_hide_entry"),
-			click: () => { event.sender.send("hideByID", modDomID) }
 		}
 	]
 	const menu = Menu.buildFromTemplate(template)
@@ -61,19 +64,31 @@ ipcMain.on('show-context-menu-broken', async (event, modDomID, fullPath) => {
 
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	let template = []
+	const blackListColumns = ["header_mod_is_used", "header_mod_is_active", "header_mod_has_scripts"]
 	const copyString = await myTranslator.stringLookup("menu_copy_general")
 
 	for ( let i = 0; i < theseHeaders.length; i++ ) {
+		if ( blackListColumns.includes(theseHeaders[i][1]) ) { continue }
 		template.push({
-			label: copyString + theseHeaders[i],
+			label: copyString + theseHeaders[i][0],
 			click: () => { clipboard.writeText(theseValues[i]) }
 		})
+		
 	}
 
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 
+
+
+
+/*
+  _____  _____  _______   _______  ______ _______ __   _ _______        _______ _______ _______
+    |   |_____] |       .    |    |_____/ |_____| | \  | |______ |      |_____|    |    |______
+  __|__ |       |_____  .    |    |    \_ |     | |  \_| ______| |_____ |     |    |    |______
+                                                                                               
+*/
 ipcMain.on('i18n-translate', async (event, arg) => {
 	myTranslator.stringLookup(arg).then((text) => { 
 		event.sender.send('i18n-translate-return', arg, text)
@@ -83,9 +98,19 @@ ipcMain.on('i18n-translate', async (event, arg) => {
 ipcMain.on('i18n-change-locale', (event, arg) => {
 	myTranslator.currentLocale = arg
 	event.sender.send("trigger-i18n")
+	event.sender.send("trigger-i18n-on-data")
 })
 
-ipcMain.on('openConfigFile', (event, arg) => {
+
+
+
+/*
+  _____  _____  _______   _______  _____  __   _ _______ _____  ______
+    |   |_____] |       . |       |     | | \  | |______   |   |  ____
+  __|__ |       |_____  . |_____  |_____| |  \_| |       __|__ |_____|
+                                                                      
+*/
+ipcMain.on('openConfigFile', (event) => {
 	const {dialog} = require('electron') 
 	const fs       = require('fs')
 	const homedir  = require('os').homedir()
@@ -141,7 +166,15 @@ ipcMain.on('openConfigFile', (event, arg) => {
 	})
 })
 
-ipcMain.on('processMods', (event, arg) => {
+
+
+/*
+  _____  _____  _______    _____   ______  _____  _______ _______ _______ _______
+    |   |_____] |       . |_____] |_____/ |     | |       |______ |______ |______
+  __|__ |       |_____  . |       |    \_ |_____| |_____  |______ ______| ______|
+                                                                                 
+*/
+ipcMain.on('processMods', (event) => {
 	if ( location_valid ) {
 		modList = new modReader(
 			location_savegame,
@@ -158,6 +191,15 @@ ipcMain.on('processMods', (event, arg) => {
 	}
 })
 
+
+
+
+/*
+  _____  _____  _______   ______   ______  _____  _     _ _______ __   _
+    |   |_____] |       . |_____] |_____/ |     | |____/  |______ | \  |
+  __|__ |       |_____  . |_____] |    \_ |_____| |    \_ |______ |  \_|
+                                                                        
+*/
 ipcMain.on("askBrokenList", (event) => {
 	modList.search({
 		columns : ["filenameSlash", "fullPath", "failedTestList", "copyName"],
@@ -165,6 +207,32 @@ ipcMain.on("askBrokenList", (event) => {
 	}).then(searchResults => { event.sender.send("gotBrokenList", searchResults) })
 })
 
+
+
+
+/*
+  _____  _____  _______   _______  _____  __   _ _______        _____ _______ _______ _______
+    |   |_____] |       . |       |     | | \  | |______ |        |   |          |    |______
+  __|__ |       |_____  . |_____  |_____| |  \_| |       |_____ __|__ |_____     |    ______|
+                                                                                             
+*/
+ipcMain.on("askConflictList", async (event) => {
+	const folderAndZipText = await myTranslator.stringLookup("conflict_error_folder_and_file")
+
+	modList.conflictList(folderAndZipText).then((searchResults) => {
+		event.sender.send("gotConflictList", searchResults)
+	})
+})
+
+
+
+
+/*
+  _____  _____  _______   _______ _____ _______ _______ _____ __   _  ______
+    |   |_____] |       . |  |  |   |   |______ |______   |   | \  | |  ____
+  __|__ |       |_____  . |  |  | __|__ ______| ______| __|__ |  \_| |_____|
+                                                                            
+*/
 ipcMain.on("askMissingList", (event) => {
 	modList.search({
 		columns : ["shortName", "title", "activeGames", "usedGames"],
@@ -172,6 +240,14 @@ ipcMain.on("askMissingList", (event) => {
 	}).then(searchResults => { event.sender.send("gotMissingList", searchResults) })
 })
 
+
+
+/*
+  _____  _____  _______   _______ _______ _______ _____ _    _ _______
+    |   |_____] |       . |_____| |          |      |    \  /  |______
+  __|__ |       |_____  . |     | |_____     |    __|__   \/   |______
+                                                                      
+*/
 ipcMain.on("askGamesActive", (event) => {
 	modList.getActive().then(async (activeSet) => {
 		event.sender.send(
@@ -183,10 +259,20 @@ ipcMain.on("askGamesActive", (event) => {
 	})
 })
 
+
+
+/*
+  _____  _____  _______   _______ _     _  _____          _____   ______ _______
+    |   |_____] |       . |______  \___/  |_____] |      |     | |_____/ |______
+  __|__ |       |_____  . |______ _/   \_ |       |_____ |_____| |    \_ |______
+                                                                                
+*/
 ipcMain.on("askExploreList", (event, activeGame) => {
 	modList.search({
 		columns             : [
-			"shortName", "title", "mod_version", "fileSizeMap", "activeGames", "usedGames", "fullPath",
+			"shortName", "title", "mod_version", "fileSizeMap",
+			"isActive", "activeGames", "isUsed", "usedGames",
+			"fullPath", "hasScripts"
 		],
 		activeGame          : parseInt(activeGame),
 		forceIsActiveIsUsed : true,

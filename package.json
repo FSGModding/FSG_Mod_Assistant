@@ -14,10 +14,10 @@
     "eslint": "^7.26.0"
   },
   "dependencies": {
-    "adm-zip": "^0.5.5",
     "glob": "^7.1.7",
     "md5-file": "^5.0.0",
     "merge-options": "^3.0.4",
+    "node-stream-zip": "^1.13.4",
     "xml2js": "^0.4.23"
   }
 }

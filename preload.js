@@ -19,6 +19,8 @@ const iconRedX = "<span class=\"text-danger\"><svg xmlns=\"http://www.w3.org/200
 	"<path d=\"M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z\"/>" +
 	"</svg></span>"
 
+let dataIsLoaded = false
+
 const byId     = (domID) => { return document.getElementById(domID) }
 const classAdd = (domID, className) => { 
 	/* Add a class <className> to <domID> */
@@ -74,11 +76,12 @@ const buildTableRow = (columnValues, colNames = []) => {
 
 const buildBrokenList = (name, path, bullets, copyName) => {
 	/* Build the broken list (multi level UL) */
-	let safeID = name.replace(/\W/g, "-")
+	const onlyFolderClass = ( bullets.length === 1 && bullets[0] === "INFO_NO_MULTIPLAYER_UNZIPPED" ) ? "just-folder-error" : ""
+
 	let thisListItem = "" +
-		`<li id=\"broken_${safeID}\" data-path=\"${path}\" class=\"mod-record list-group-item d-flex justify-content-between align-items-start\">` +
+		`<li data-path=\"${path}\" class=\"${onlyFolderClass} mod-record list-group-item d-flex justify-content-between align-items-start\">` +
 		"<div class=\"ms-2 me-auto\">" +
-		`<div><span class=\"fw-bold\">${name}</span> <span class=\"small fst-italic\">${path}</span></div>` +
+		`<div><strong>${name}</strong> <em class=\"small\">${path}</em></div>` +
 		"<ul style=\"list-style: disc\">"
 
 	if ( copyName !== null ) {
@@ -96,13 +99,42 @@ const buildBrokenList = (name, path, bullets, copyName) => {
 	return thisListItem += "</ul></div></li>"
 }
 
+const buildConflictList = (name, title, message, path) => {
+	/* Build the conflict list (multi level UL) */
+	
+	return "" +
+		`<li data-path=\"${path}\" class=\"mod-record list-group-item d-flex justify-content-between align-items-start\">` +
+		"<div class=\"ms-2 me-auto\">" +
+		`<div><strong>${name}</strong> <em class=\"small\">${title}</em></div>` +
+		"<ul style=\"list-style: disc\">" +
+		`<li>${message}</li>` +
+		"</ul></div></li>"
+}
 
+
+
+
+/*
+  _____  _____  _______   _______  ______ _______ __   _ _______        _______ _______ _______
+    |   |_____] |       .    |    |_____/ |_____| | \  | |______ |      |_____|    |    |______
+  __|__ |       |_____  .    |    |    \_ |     | |  \_| ______| |_____ |     |    |    |______
+                                                                                               
+*/
 ipcRenderer.on('trigger-i18n-select', (event, langList, locale) => {
 	/* Load language options into language pick list */
-	// TODO: Figure out how to pull a sane default language
 	const newOpts = langList.map((x) => { return buildOpt(x[0], x[1], locale) })
 
 	byId("language_select").innerHTML = newOpts.join("")
+})
+
+ipcRenderer.on('trigger-i18n-on-data', () => {
+	if ( dataIsLoaded ) {
+		ipcRenderer.send('askBrokenList')
+		ipcRenderer.send('askMissingList')
+		ipcRenderer.send('askConflictList')
+		ipcRenderer.send('askExploreList', 0)
+		ipcRenderer.send('askGamesActive')
+	}
 })
 
 ipcRenderer.on('trigger-i18n', () => {
@@ -124,6 +156,15 @@ ipcRenderer.on('i18n-translate-return', (event, dataPoint, newText) => {
 	})
 })
 
+
+
+
+/*
+  _____  _____  _______   _______  _____  __   _ _______ _____  ______
+    |   |_____] |       . |       |     | | \  | |______   |   |  ____
+  __|__ |       |_____  . |_____  |_____| |  \_| |       __|__ |_____|
+                                                                      
+*/
 ipcRenderer.on('newFileConfig', (event, arg) => {
 	/* Get notification of loading a new config file */
 	if ( arg.error ) {
@@ -142,21 +183,41 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 	byId("location_mod_folder").innerHTML      = arg.modDir
 
 	classAdd(["process_bar_working", "process_bar_done"], "d-none")
+	byId("button_process").focus()
 })
 
-ipcRenderer.on('processModsDone', (event, arg) => {
- 	classAdd("process_bar_working","d-none")
- 	classRem("process_bar_done", "d-none")
- 	classRem(["button_process","button_load"], "disabled")
- 	// TODO: still need conflicts.  And the subsystem for that.
+
+/*
+  _____  _____  _______    _____   ______  _____  _______ _______ _______ _______
+    |   |_____] |       . |_____] |_____/ |     | |       |______ |______ |______
+  __|__ |       |_____  . |       |    \_ |_____| |_____  |______ ______| ______|
+                                                                                 
+*/
+ipcRenderer.on('processModsDone', () => {
+	classAdd("process_bar_working","d-none")
+	classRem("process_bar_done", "d-none")
+	classRem(["button_process","button_load"], "disabled")
+	
+	// Fuzzy logic.  Used to request reload of display data when changing l10n setting.
+	dataIsLoaded = true
+
 	ipcRenderer.send('askBrokenList')
 	ipcRenderer.send('askMissingList')
+	ipcRenderer.send('askConflictList')
 	ipcRenderer.send('askExploreList', 0)
 	ipcRenderer.send('askGamesActive')
 })
 
+
+
+/*
+  _____  _____  _______   ______   ______  _____  _     _ _______ __   _
+    |   |_____] |       . |_____] |_____/ |     | |____/  |______ | \  |
+  __|__ |       |_____  . |_____] |    \_ |_____| |    \_ |______ |  \_|
+                                                                        
+*/
 ipcRenderer.on('gotBrokenList', (event, list) => {
-	const newContent = list.map((x) => { return buildBrokenList(x[0], x[1], x[2], x[3]) })
+	const newContent = list.map((x) => { return buildBrokenList(...x) })
 	byId("broken_list").innerHTML = newContent.join("")
 
 	let sendSet = new Set()
@@ -166,27 +227,54 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 	sendSet.forEach( (thisStringID ) => {
 		ipcRenderer.send('i18n-translate', thisStringID)
 	})
-	classRem("button_un_hide_broken", "d-none")
 })
 
 
+
+/*
+  _____  _____  _______   _______  _____  __   _ _______        _____ _______ _______ _______
+    |   |_____] |       . |       |     | | \  | |______ |        |   |          |    |______
+  __|__ |       |_____  . |_____  |_____| |  \_| |       |_____ __|__ |_____     |    ______|
+                                                                                             
+*/
+ipcRenderer.on('gotConflictList', (event, list) => {
+	const newContent = list.map((x) => { return buildConflictList(...x) })
+	byId("conflict_list").innerHTML = newContent.join("")
+})
+
+
+
+/*
+  _____  _____  _______   _______ _____ _______ _______ _____ __   _  ______
+    |   |_____] |       . |  |  |   |   |______ |______   |   | \  | |  ____
+  __|__ |       |_____  . |  |  | __|__ ______| ______| __|__ |  \_| |_____|
+                                                                            
+*/
 ipcRenderer.on('gotMissingList', (event, list) => {
 	const newContent = list.map((x) => { return buildTableRow(x) })
 	
 	byId("table_missing").innerHTML = newContent.join("")
 })
 
+
+/*
+  _____  _____  _______   _______ _     _  _____          _____   ______ _______
+    |   |_____] |       . |______  \___/  |_____] |      |     | |_____/ |______
+  __|__ |       |_____  . |______ _/   \_ |       |_____ |_____| |    \_ |______
+                                                                                
+*/
 ipcRenderer.on('gotExploreList', (event, list) => {
 	const colNames = [
 		"col_mod_name",
 		"col_mod_title",
 		"col_mod_version",
 		"col_mod_size",
+		"col_mod_is_active",
 		"col_mod_active_games",
+		"col_mod_is_used",
 		"col_mod_used_games",
 		"col_mod_full_path",
-		"col_mod_is_active",
-		"col_mod_is_used",
+		"col_mod_has_scripts"
 	]
 
 	const newContent = list.map((x) => { return buildTableRow(x, colNames) })
@@ -196,6 +284,15 @@ ipcRenderer.on('gotExploreList', (event, list) => {
 	byId("col_mod_name_switch").dispatchEvent(new Event('change'))
 })
 
+
+
+
+/*
+  _____  _____  _______   _______ _______ _______ _____ _    _ _______
+    |   |_____] |       . |_____| |          |      |    \  /  |______
+  __|__ |       |_____  . |     | |_____     |    __|__   \/   |______
+                                                                      
+*/
 ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 	/* Change explore list based on save game filter */
 	let newOptions = buildOpt(0, allText, 0)
@@ -216,14 +313,16 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 })
 
 
-ipcRenderer.on('hideByID', (event, id) => {
-	/* Hide a row by ID */
-	classAdd(id, "d-none")
-})
 
 
 
-/* Functions that are exposed to the UI renderer process */
+/*
+  _______ _     _  _____   _____  _______ _______ ______       _______  _____  _____
+  |______  \___/  |_____] |     | |______ |______ |     \      |_____| |_____]   |  
+  |______ _/   \_ |       |_____| ______| |______ |_____/      |     | |       __|__
+                                                                                    
+Functions that are exposed to the UI renderer process
+*/
 contextBridge.exposeInMainWorld(
 	'ipc', 
 	{
@@ -232,6 +331,7 @@ contextBridge.exposeInMainWorld(
 		},
 		loadButton : () => {
 			ipcRenderer.send('openConfigFile')
+			dataIsLoaded = false
 		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
@@ -247,7 +347,13 @@ contextBridge.exposeInMainWorld(
 
 
 
-/* Listeners on the renderer that need privileged execution (ipc usually) */
+/*
+  _______ _______ __   _ _     _ _______
+  |  |  | |______ | \  | |     | |______
+  |  |  | |______ |  \_| |_____| ______|
+                                        
+Listeners on the renderer that need privileged execution (ipc usually)
+*/
 
 window.addEventListener('DOMContentLoaded', () => {
 	byId("broken_list").addEventListener('contextmenu', (e) => {
@@ -257,7 +363,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		const closestEntry = e.target.closest(".mod-record")
 		
 		if ( closestEntry !== null ) {
-			ipcRenderer.send('show-context-menu-broken', closestEntry.id, closestEntry.getAttribute("data-path"))
+			ipcRenderer.send('show-context-menu-broken', closestEntry.getAttribute("data-path"))
 		}
 	})
 
@@ -268,7 +374,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		if ( e.target.matches("td") ) {
 			const theseHeaders = Array.from(
 				byId("table_missing").parentNode.firstElementChild.querySelectorAll("th.i18n"),
-				th => th.innerText
+				th => [th.innerText, th.getAttribute("data-i18n") ]
 			)
 			const theseValues = Array.from(
 				e.target.parentNode.childNodes,
@@ -285,7 +391,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		if ( e.target.matches("td") ) {
 			const theseHeaders = Array.from(
 				byId("table_explore").parentNode.firstElementChild.querySelectorAll("th.i18n"),
-				th => th.innerText
+				th => [th.innerText, th.getAttribute("data-i18n") ]
 			)
 			const theseValues = Array.from(
 				e.target.parentNode.childNodes,

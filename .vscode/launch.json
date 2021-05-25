@@ -2,26 +2,26 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Tester",
-			"program": "${workspaceFolder}/test.js",
+			"name": "Debug - CLI Tester",
+			"program": "${workspaceFolder}/cli-test-runner.js",
+			"cwd": "${workspaceFolder}",
 			"request": "launch",
 			"skipFiles": [
 				"<node_internals>/**"
 			],
 			"type": "pwa-node"
 		},
-
-	  {
-		"name": "Debug Main Process",
-		"type": "node",
-		"request": "launch",
-		"cwd": "${workspaceFolder}",
-		"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-		"windows": {
-		  "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-		},
-		"args" : ["."],
-		"outputCapture": "std"
-	  }
+		{
+			"name": "Debug - Electron Main Process",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"windows": {
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+			},
+			"args" : ["."],
+			"outputCapture": "std"
+		}
 	]
 }

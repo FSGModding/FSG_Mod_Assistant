@@ -16,7 +16,34 @@
 const fs   = require('fs')
 const path = require('path')
 
-module.exports = class translator {
+module.exports.getSystemLocale = function () {
+	const systemLocale = Intl.DateTimeFormat().resolvedOptions().locale
+	switch ( systemLocale ) {
+		case "pt-BR" :
+			return "br"
+		case "zh-CHT":
+		case "zh-Hant":
+		case "zh-HK":
+		case "zh-MO":
+		case "zh-TW":
+			return "ct"
+		case "zh":
+		case "zh-CHS":
+		case "zh-Hans":
+		case "zh-CN":
+		case "zh-SG":
+			return "cs"
+		case "cs":
+			return "cz"
+		case "ja":
+			return "jp"
+		case "ko":
+			return "kr"
+		default :
+			return systemLocale.slice(0,2)
+	}
+}
+module.exports.translator = class translator {
 	#currentLocale     = null
 	#translatorStrings = []
 	#langPromise       = null
