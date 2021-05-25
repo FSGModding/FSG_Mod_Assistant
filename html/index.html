@@ -124,7 +124,7 @@
 			<div class="tab-pane fade" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
 				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
 				<div class="mx-3">
-					<table class="table table-responsive table-striped table-hover sortable">
+					<table class="table table-responsive table-striped table-hover sortable" id="table_missing_parent">
 						<thead>
 							<tr>
 								<th class="i18n" data-i18n="header_mod_name"></th>
@@ -173,7 +173,7 @@
 					<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 				</div>
 				<div class="offcanvas-body">
-					<div class="i18n" data-i18n="explore_options_blurb mb-4"></div>
+					<div class="i18n mb-4" data-i18n="explore_options_blurb"></div>
 
 					<h6 class="i18n" data-i18n="explore_options_column_visibility"></h6>
 
@@ -213,6 +213,9 @@
 						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_full_path_switch">
 						<label class="form-check-label i18n" data-i18n="header_mod_full_path" for="col_mod_full_path_switch"></label>
 					</div>
+
+					<h6 class="i18n mt-5" data-i18n="explore_options_savegame_select"></h6>
+					<select onchange="ipc.changeExplore()" class="form-select" id="savegame_select"></select>
 				</div>
 			</div>
 

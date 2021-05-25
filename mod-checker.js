@@ -67,6 +67,12 @@ module.exports = class modFileSlurp {
 		})
 	}
 
+	async getActive() {
+		return Promise.allSettled(this.#modsTesting).then((args) => {
+			return Array.from(this.activeGames).sort((a, b) => a - b)
+		})
+	}
+
 	#search(options = {} ) {
 		const returnList = []
 		const myOptions  = mergeOptions({

@@ -27,10 +27,13 @@
 	"explore_options_title"            : "Explore Mods Options",
 	"explore_options_blurb"            : "Here you can set what is displayed in the \"Explore Mods\" table, including column visibility and some filters",
 	"explore_options_column_visibility": "Column Visibility",
+	"explore_options_savegame_select"  : "Filter to only savegame:",
+	"filter_savegame_all"              : "All Save Game Slots",
+	"filter_savegame"                  : "Save Game Slot #",
 
-	"menu-copy-general"   : "Copy : ",
-	"menu-copy-full-path" : "Copy full mod path",
-	"menu-hide-entry"     : "Remove / Hide this entry",
+	"menu_copy_general"   : "Copy : ",
+	"menu_copy_full_path" : "Copy full mod path",
+	"menu_hide_entry"     : "Remove / Hide this entry",
 
 	"header_mod_name"        : "Name",
 	"header_mod_title"       : "Title",

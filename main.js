@@ -9,7 +9,6 @@
 
 const { app, Menu, BrowserWindow, ipcMain, clipboard } = require('electron')
 const path       = require('path')
-//const {ipcMain}  = require('electron')
 const xml2js     = require('xml2js')
 const translator = require('./translate.js')
 const modReader  = require('./mod-checker.js')
@@ -48,11 +47,11 @@ function createWindow () {
 ipcMain.on('show-context-menu-broken', async (event, modDomID, fullPath) => {
 	const template = [
 		{
-			label: await myTranslator.stringLookup("menu-copy-full-path"),
+			label: await myTranslator.stringLookup("menu_copy_full_path"),
 			click: () => { clipboard.writeText(fullPath) }
 		},
 		{
-			label: await myTranslator.stringLookup("menu-hide-entry"),
+			label: await myTranslator.stringLookup("menu_hide_entry"),
 			click: () => { event.sender.send("hideByID", modDomID) }
 		}
 	]
@@ -62,7 +61,7 @@ ipcMain.on('show-context-menu-broken', async (event, modDomID, fullPath) => {
 
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	let template = []
-	const copyString = await myTranslator.stringLookup("menu-copy-general")
+	const copyString = await myTranslator.stringLookup("menu_copy_general")
 
 	for ( let i = 0; i < theseHeaders.length; i++ ) {
 		template.push({
@@ -93,7 +92,7 @@ ipcMain.on('openConfigFile', (event, arg) => {
 
 	dialog.showOpenDialog({
 		properties: ['openFile'],
-		defaultPath: path.join(homedir, "Documents" , "My Games", "FarmingSimulator2019" ),
+		defaultPath: path.join(homedir, "Documents" , "My Games", "FarmingSimulator2019", "gameSettings.xml" ),
 		filters: [
 			{ name: 'XML', extensions: ['xml'] },
 			{ name: 'All', extensions: ['*'] }
@@ -101,9 +100,9 @@ ipcMain.on('openConfigFile', (event, arg) => {
 	}).then(result => {
 		if ( result.canceled ) {
 			location_valid = false
-			event.sender.send("newFileConfig", {valid: false, error: false, saveDir:"--", modDir:"--"})
+			event.sender.send("newFileConfig", { valid : false, error : false, saveDir : "--", modDir : "--" })
 		} else {
-			const XMLOptions = {strict : true, async: false, normalizeTags: true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
+			const XMLOptions = {strict: true, async: false, normalizeTags: true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
 			const strictXMLParser = new xml2js.Parser(XMLOptions)
 
 			location_savegame = path.dirname(result.filePaths[0])
@@ -116,7 +115,7 @@ ipcMain.on('openConfigFile', (event, arg) => {
 				} catch {
 					overrideAttr   = false
 					location_valid = false
-					event.sender.send("newFileConfig", {valid: false, error:true, saveDir:"--", modDir:"--"})
+					event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" } )
 				}
 
 				if ( overrideAttr !== false ) {
@@ -127,7 +126,13 @@ ipcMain.on('openConfigFile', (event, arg) => {
 					}
 
 					location_valid = true
-					event.sender.send("newFileConfig", {valid: true, error:false, saveDir:location_savegame, modDir:location_modfolder })
+
+					event.sender.send("newFileConfig", {
+						valid   : true,
+						error   : false,
+						saveDir : location_savegame,
+						modDir  : location_modfolder
+					})
 				}
 			})
 		}
@@ -146,7 +151,7 @@ ipcMain.on('processMods', (event, arg) => {
 		modList.readAll().then((args) => {
 			event.sender.send("processModsDone")
 		}).catch((args) => {
-			event.sender.send("newFileConfig", {valid: false, error:true, saveDir:"--", modDir:"--"})
+			event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" })
 		})
 	} else {
 		console.log("Something Went Wrong") // TODO: handle UI got process, was not ready
@@ -156,32 +161,37 @@ ipcMain.on('processMods', (event, arg) => {
 ipcMain.on("askBrokenList", (event) => {
 	modList.search({
 		columns : ["filenameSlash", "fullPath", "failedTestList", "copyName"],
-		terms : ["didTestingFail"],
+		terms   : ["didTestingFail"],
 	}).then(searchResults => { event.sender.send("gotBrokenList", searchResults) })
 })
 
 ipcMain.on("askMissingList", (event) => {
 	modList.search({
 		columns : ["shortName", "title", "activeGames", "usedGames"],
-		terms : ["isMissing"],
+		terms   : ["isMissing"],
 	}).then(searchResults => { event.sender.send("gotMissingList", searchResults) })
 })
 
-ipcMain.on("askMissingList", (event, activeGame) => {
+ipcMain.on("askGamesActive", (event) => {
+	modList.getActive().then(async (activeSet) => {
+		event.sender.send(
+			"gotGamesActive",
+			activeSet,
+			await myTranslator.stringLookup("filter_savegame"),
+			await myTranslator.stringLookup("filter_savegame_all")
+		)
+	})
+})
+
+ipcMain.on("askExploreList", (event, activeGame) => {
 	modList.search({
-		columns : [
-			"shortName",
-			"title",
-			"mod_version",
-			"fileSizeMap",
-			"activeGames",
-			"usedGames",
-			"fullPath",
+		columns             : [
+			"shortName", "title", "mod_version", "fileSizeMap", "activeGames", "usedGames", "fullPath",
 		],
-		activeGame: activeGame,
-		forceIsActiveIsUsed: true,
-		allTerms : true,
-		terms : ["isNotMissing", "didTestingPassEnough"],
+		activeGame          : parseInt(activeGame),
+		forceIsActiveIsUsed : true,
+		allTerms            : true,
+		terms               : ["isNotMissing", "didTestingPassEnough"],
 	}).then(searchResults => { event.sender.send("gotExploreList", searchResults) })
 })
 
