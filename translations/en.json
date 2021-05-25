@@ -31,6 +31,7 @@
 	"filter_savegame_all"              : "All Save Game Slots",
 	"filter_savegame"                  : "Save Game Slot #",
 
+	"menu_details"        : "Open Mod Detail",
 	"menu_copy_general"   : "Copy : ",
 	"menu_copy_full_path" : "Copy : Full File Path",
 

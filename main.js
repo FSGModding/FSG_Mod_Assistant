@@ -18,7 +18,7 @@ let location_savegame  = null
 let location_modfolder = null
 let location_valid     = false
 
-var modList
+var modList = null
 
 function createWindow () {
 	const win = new BrowserWindow({
@@ -35,6 +35,13 @@ function createWindow () {
 	win.loadFile(path.join(__dirname, 'html', 'index.html'))
 
 	win.webContents.on('did-finish-load', (event) => {
+		if ( modList !== null ) {
+			modList.safeResend().then((isIt) => {
+				if ( isIt ) {
+					event.sender.send("processModsDone")
+				}
+			})
+		}
 		event.sender.send('trigger-i18n')
 		myTranslator.getLangList().then((langList) => {
 			event.sender.send('trigger-i18n-select', langList, myTranslator.currentLocale)
@@ -63,7 +70,12 @@ ipcMain.on('show-context-menu-broken', async (event, fullPath) => {
 })
 
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
-	let template = []
+	let template = [
+		{
+			label: await myTranslator.stringLookup("menu_details"),
+			click: () => { openDetailWindow(modList.fullList[theseValues[0]]) }
+		}
+	]
 	const blackListColumns = ["header_mod_is_used", "header_mod_is_active", "header_mod_has_scripts"]
 	const copyString = await myTranslator.stringLookup("menu_copy_general")
 
@@ -181,13 +193,15 @@ ipcMain.on('processMods', (event) => {
 			location_modfolder,
 			myTranslator.deferCurrentLocale)
 
-		modList.readAll().then((args) => {
+		modList.readAll().then(() => {
 			event.sender.send("processModsDone")
-		}).catch((args) => {
+		}).catch(() => {
 			event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" })
 		})
 	} else {
-		console.log("Something Went Wrong") // TODO: handle UI got process, was not ready
+		// This should be unreachable.  But it means that the process button was clicked before loading
+		// a valid config.  Let's just start over with empty entries.
+		event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" })
 	}
 })
 
@@ -282,6 +296,51 @@ ipcMain.on("askExploreList", (event, activeGame) => {
 })
 
 
+var detailWindow = null
+
+function openDetailWindow(thisModRecord) {
+	if (detailWindow) {
+		detailWindow.focus()
+		return
+	}
+
+	detailWindow = new BrowserWindow({
+		icon           : path.join(app.getAppPath(), 'build', 'icon.png'),
+		width          : 800,
+		height         : 500,
+		title          : thisModRecord.title,
+		minimizable    : false,
+		maximizable    : false,
+		fullscreenable : false,
+		webPreferences : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(app.getAppPath(), 'detail-preload.js')
+		}
+	})
+
+	detailWindow.webContents.on('did-finish-load', (event) => {
+		const sendData = {
+			title       : thisModRecord.title,
+			version     : thisModRecord.mod_version,
+			filesize    : thisModRecord.fileSizeString,
+			active_games: thisModRecord.activeGames,
+			used_games  : thisModRecord.usedGames,
+			has_scripts : ((thisModRecord.hasScripts) ? true : false),
+			description : thisModRecord.descDescription,
+		}
+		event.sender.send('mod-record', sendData)
+		event.sender.send('trigger-i18n')
+	})
+
+	detailWindow.loadFile(path.join(__dirname, 'html', 'detail.html'))
+
+	detailWindow.webContents.openDevTools()
+
+	detailWindow.on('closed', function() {
+		newWindow = null
+	})
+}
 
 app.whenReady().then(() => {
 	createWindow()
@@ -299,6 +358,4 @@ app.on('window-all-closed', () => {
 	}
 })
 
-// TODO: catch reload, do something intelligent.
-// TODO: sub-window for details
 // TODO: BIG ONE: Icons still.

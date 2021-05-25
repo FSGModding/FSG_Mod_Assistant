@@ -8,13 +8,14 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const fs           = require('fs')
-const path         = require('path')
-const mergeOptions = require('merge-options').bind({ignoreUndefined: true})
-const glob         = require('glob')
-const xml2js       = require('xml2js')
-const StreamZip    = require('node-stream-zip');
-const md5File      = require('md5-file')
+const fs             = require('fs')
+const path           = require('path')
+const mergeOptions   = require('merge-options').bind({ignoreUndefined: true})
+const glob           = require('glob')
+const xml2js         = require('xml2js')
+const StreamZip      = require('node-stream-zip')
+const md5File        = require('md5-file')
+const fastFolderSize = require('fast-folder-size')
 
 const conflictListData = require('./mod-checker-conflicts')
 
@@ -122,6 +123,11 @@ module.exports = class modFileSlurp {
 			})
 
 			return returnArray
+		})
+	}
+	async safeResend() {
+		return Promise.allSettled(this.#modsTesting).then((args) => {
+			return true;
 		})
 	}
 
@@ -292,7 +298,15 @@ module.exports = class modFileSlurp {
 						thisFile.isDirectory()
 					)
 				}
-				// TODO: calculate folder size.
+				fastFolderSize(path.join(this.modFolder,thisFile.name), (err, bytes) => {
+					// BUG: with enough folders, there is a slim chance you could
+					// get as far as requesting data before all of these finish.
+					// Probably wont-fix as it would be murder to test, and it'll hold
+					// the whole parser up.
+					if (!err) {
+						this.fullList[shortName].fileSize = bytes
+					}
+				})
 			}
 		})
 		
@@ -567,8 +581,6 @@ class modFile {
 			return this.activeGame
 		}
 		if ( this.isNotMissing && this.#storeItems == 0 && this.#usedGames.size == 0 ) {
-			// Not missing, no store items means it's a script probably. This might
-			// mess up on seasons if you haven't bought the testing tool. Not sure.
 			return this.activeGame
 		}
 
