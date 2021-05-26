@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>FS19 Mod Folder Checker</title>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="inc/sortable.min.js"></script>
+	<script src="ui.js"></script>
+	<style>
+		.sortable th:hover::after {
+			color: inherit;
+			font-size: 1.2em;
+			content: ' \025B8';
+		}
+		.sortable th::after {
+			font-size: 1.2em;
+			color: transparent;
+			content: ' \025B8';
+		}
+		.sortable th.dir-d::after {
+			color: inherit;
+			content: ' \025BE';
+		}
+		.sortable th.dir-u::after {
+			color: inherit;
+			content: ' \025B4';
+		}
+
+		td.col_mod_version, td.col_mod_size {
+			text-align: right;
+		}
+		td.col_mod_size {
+			white-space: nowrap;
+		}
+		td.col_mod_name {
+			word-break: break-word;
+		}
+		.col_mod_is_active, .col_mod_is_used, .col_mod_has_scripts {
+			text-align: center;
+		}
+
+	</style>
+	
+</head>
+<body>
+	
+	<div class="container-fluid pt-2 px-1 user-select-none">
+		<div class="row w-100 mb-2">
+			<div class="col-9 border-bottom">
+				<h2><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
+			</div>
+			<div class="col-3">
+				<div class="row float-end">
+					<div class="col-auto">
+						<label for="language_select" class="pt-1 col-form-label"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-globe2" viewBox="0 0 16 16">
+							<path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855-.143.268-.276.56-.395.872.705.157 1.472.257 2.282.287V1.077zM4.249 3.539c.142-.384.304-.744.481-1.078a6.7 6.7 0 0 1 .597-.933A7.01 7.01 0 0 0 3.051 3.05c.362.184.763.349 1.198.49zM3.509 7.5c.036-1.07.188-2.087.436-3.008a9.124 9.124 0 0 1-1.565-.667A6.964 6.964 0 0 0 1.018 7.5h2.49zm1.4-2.741a12.344 12.344 0 0 0-.4 2.741H7.5V5.091c-.91-.03-1.783-.145-2.591-.332zM8.5 5.09V7.5h2.99a12.342 12.342 0 0 0-.399-2.741c-.808.187-1.681.301-2.591.332zM4.51 8.5c.035.987.176 1.914.399 2.741A13.612 13.612 0 0 1 7.5 10.91V8.5H4.51zm3.99 0v2.409c.91.03 1.783.145 2.591.332.223-.827.364-1.754.4-2.741H8.5zm-3.282 3.696c.12.312.252.604.395.872.552 1.035 1.218 1.65 1.887 1.855V11.91c-.81.03-1.577.13-2.282.287zm.11 2.276a6.696 6.696 0 0 1-.598-.933 8.853 8.853 0 0 1-.481-1.079 8.38 8.38 0 0 0-1.198.49 7.01 7.01 0 0 0 2.276 1.522zm-1.383-2.964A13.36 13.36 0 0 1 3.508 8.5h-2.49a6.963 6.963 0 0 0 1.362 3.675c.47-.258.995-.482 1.565-.667zm6.728 2.964a7.009 7.009 0 0 0 2.275-1.521 8.376 8.376 0 0 0-1.197-.49 8.853 8.853 0 0 1-.481 1.078 6.688 6.688 0 0 1-.597.933zM8.5 11.909v3.014c.67-.204 1.335-.82 1.887-1.855.143-.268.276-.56.395-.872A12.63 12.63 0 0 0 8.5 11.91zm3.555-.401c.57.185 1.095.409 1.565.667A6.963 6.963 0 0 0 14.982 8.5h-2.49a13.36 13.36 0 0 1-.437 3.008zM14.982 7.5a6.963 6.963 0 0 0-1.362-3.675c-.47.258-.995.482-1.565.667.248.92.4 1.938.437 3.008h2.49zM11.27 2.461c.177.334.339.694.482 1.078a8.368 8.368 0 0 0 1.196-.49 7.01 7.01 0 0 0-2.275-1.52c.218.283.418.597.597.932zm-.488 1.343a7.765 7.765 0 0 0-.395-.872C9.835 1.897 9.17 1.282 8.5 1.077V4.09c.81-.03 1.577-.13 2.282-.287z"/>
+						</svg></label>
+					</div>
+					<div class="col-auto">
+						<select onchange="ipc.changeLangList()" class="form-select" id="language_select"></select>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	
+		<ul class="nav nav-tabs" id="mainTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link active i18n" data-i18n="tab_config" id="tab_config" data-bs-toggle="tab" data-bs-target="#tab_config_content" type="button" role="tab" aria-selected="true" aria-controls="tab_config_content"></button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link i18n" data-i18n="tab_broken" id="tab_broken" data-bs-toggle="tab" data-bs-target="#tab_broken_content" type="button" role="tab" aria-selected="false" aria-controls="tab_broken_content"></button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link i18n" data-i18n="tab_missing" id="tab_missing" data-bs-toggle="tab" data-bs-target="#tab_missing_content" type="button" role="tab" aria-selected="false" aria-controls="tab_missing_content"></button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link i18n" data-i18n="tab_conflict" id="tab_conflict" data-bs-toggle="tab" data-bs-target="#tab_conflict_content" type="button" role="tab" aria-selected="false" aria-controls="tab_conflict_content"></button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="link-dark nav-link i18n" data-i18n="tab_explore" id="tab_explore" data-bs-toggle="tab" data-bs-target="#tab_explore_content" type="button" role="tab" aria-selected="false" aria-controls="tab_explore_content"></button>
+			</li>
+		</ul>
+
+		<div class="tab-content pt-3" id="mainTabContent">
+
+			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
+				<p class="text-center i18n" data-i18n="config_blurb"></p>
+				<p class="text-center i18n fst-italic" data-i18n="config_blurb2"></p>
+				<p class="text-center fw-lighter fst-italic i18n mt-4" data-i18n="config_load_button_blurb"></p>
+				<button type="button" onclick="ipc.loadButton()" id="button_load" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_load_button"></button>
+				<div id="load_error" class="alert alert-danger w-50 mx-auto mt-2 text-center d-none" role="alert">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="align-text-top bi bi-exclamation-diamond-fill" viewBox="0 0 16 16">
+						<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+					</svg>
+					<span class="i18n" data-i18n="user_error_open_settings"></span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="align-text-top bi bi-exclamation-diamond-fill" viewBox="0 0 16 16">
+						<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+					</svg>
+				</div>
+				<table class="table w-75 mx-auto table-sm mt-3">
+					<tr>
+						<th class="i18n" data-i18n="location_savegame_folder"></th>
+						<td class="fw-lighter fst-italic" id="location_savegame_folder">--</td>
+					</tr>
+					<tr>
+						<th class="i18n" data-i18n="location_mod_folder"></th>
+						<td class="fw-lighter fst-italic" id="location_mod_folder">--</td>
+					</tr>
+				</table>
+				<p class="text-center fw-lighter fst-italic i18n mt-5" data-i18n="config_process_button_blurb"></p>
+				<button type="button" id="button_process" onclick="ipc.processButton()" class="disabled btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_process_button"></button>
+
+				<div class="progress w-75 mt-5 mx-auto d-none" id="process_bar_working">
+					<div class="progress-bar progress-bar-striped progress-bar-animated i18n" data-i18n="config_working_status" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+				</div>
+				<div class="progress w-75 mt-5 mx-auto d-none" id="process_bar_done">
+					<div class="progress-bar progress-bar-striped bg-success i18n" data-i18n="config_working_done" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+				</div>
+				<div class="alert alert-info mt-5 mx-4 text-center" role="alert">
+					<span class="i18n" data-i18n="latest_version_link_blurb"></span> <a target="_blank" class="alert-link" href="https://github.com/jtsage/FS19_Mod_Checker/releases">github.com/jtsage/FS19_Mod_Checker</a>
+				</div>
+			</div>
+
+			<div class="tab-pane fade" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
+				<p class="text-center i18n" data-i18n="broken_blurb"></p>
+				<div class="text-center my-3">
+					<div class="form-check form-switch form-check-inline">
+						<input onchange="toggleHideFolderOnlyError()" class="form-check-input" type="checkbox" id="zip_folder_switch">
+						<label class="form-check-label i18n" data-i18n="broken_options_hide_unzipped" for="zip_folder_switch"></label>
+					</div>
+				</div>
+				<ul class="list-group mx-4 mb-4" id="broken_list"></ul>
+			</div>
+
+			<div class="tab-pane fade" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
+				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
+				<div class="mx-3 table-responsive">
+					<table class="table table-striped table-hover sortable" id="table_missing_parent">
+						<thead>
+							<tr>
+								<th class="i18n" data-i18n="header_mod_name"></th>
+								<th class="i18n" data-i18n="header_mod_title"></th>
+								<th class="i18n" data-i18n="header_mod_active_games"></th>
+								<th class="i18n" data-i18n="header_mod_used_games"></th>
+							</tr>
+						</thead>
+						<tbody id="table_missing">
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="tab-pane fade" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
+				<p class="text-center i18n px-4" data-i18n="conflict_blurb"></p>
+				<ul class="list-group mx-4 mb-4" id="conflict_list"></ul>
+				<button type="button" id="button_un_hide_conflict" onclick="unHideAllConflict()" class="d-none btn mb-4 btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="conflict_un_hide_button"></button>
+			</div>
+
+			<div class="tab-pane fade" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
+				<p class="text-center i18n px-4" data-i18n="explore_blurb"></p>
+				
+				<div class="input-group input-group-sm mb-3 w-75 mx-auto">
+					<span class="border-secondary input-group-text" id="search-addon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></span>
+					<input type="text" id="explore-search" onkeyup="searchExploreTable()" class="border-secondary form-control" aria-describedby="search-addon">
+					<button class="btn btn-outline-secondary" onclick="searchExploreClear()" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+						<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+					</svg></button>
+				</div>
+
+				<button class="w-75 mx-auto btn btn-primary btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
+				<div class="mx-3 table-responsive">
+					<table class="table table-striped table-hover sortable" id="table_explore_parent">
+						<thead>
+							<tr>
+								<th class="i18n col_mod_name" data-i18n="header_mod_name"></th>
+								<th class="i18n col_mod_title" data-i18n="header_mod_title"></th>
+								<th class="i18n col_mod_version" data-i18n="header_mod_version"></th>
+								<th class="i18n col_mod_size" data-i18n="header_mod_size"></th>
+								<th class="i18n col_mod_is_active" data-i18n="header_mod_is_active"></th>
+								<th class="i18n col_mod_active_games" data-i18n="header_mod_active_games"></th>
+								<th class="i18n col_mod_is_used" data-i18n="header_mod_is_used"></th>
+								<th class="i18n col_mod_used_games" data-i18n="header_mod_used_games"></th>
+								<th class="i18n col_mod_full_path" data-i18n="header_mod_full_path"></th>
+								<th class="i18n col_mod_has_scripts" data-i18n="header_mod_has_scripts"></th>
+							</tr>
+						</thead>
+						<tbody id="table_explore">
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="offcanvas offcanvas-start" tabindex="-1" id="exploreOptions">
+				<div class="offcanvas-header">
+					<h5 class="offcanvas-title i18n" data-i18n="explore_options_title"></h5>
+					<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<div class="offcanvas-body">
+					<div class="i18n mb-4" data-i18n="explore_options_blurb"></div>
+
+					<h6 class="i18n" data-i18n="explore_options_column_visibility"></h6>
+					<div class="ms-3">
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_name_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_name" for="col_mod_name_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_title_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_title" for="col_mod_title_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_version_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_version" for="col_mod_version_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_size_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_size" for="col_mod_size_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_active_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_is_active" for="col_mod_is_active_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_active_games_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_active_games" for="col_mod_active_games_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_used_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_is_used" for="col_mod_is_used_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_used_games_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_used_games" for="col_mod_used_games_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_full_path_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_full_path" for="col_mod_full_path_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_has_scripts_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_has_scripts" for="col_mod_has_scripts_switch"></label>
+						</div>
+					</div>
+
+					<h6 class="i18n mt-5" data-i18n="explore_options_savegame_select"></h6>
+					<select onchange="ipc.changeExplore()" class="form-select mx-auto w-75" id="savegame_select"></select>
+
+					<h6 class="i18n mt-5" data-i18n="explore_options_special_lists"></h6>
+					<button type="button" onclick="ipc.changeExploreInActive()" id="special_inactive" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_inactive"></button>
+					<button type="button" onclick="ipc.changeExploreActiveUnused()" id="special_unused" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_unused"></button>
+					<button type="button" onclick="ipc.changeExploreScripts()" id="special_scripts" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_scripts"></button>
+				</div>
+			</div>
+
+
+		</div>
+
+
+	</div>
+
+</body>
+</html>

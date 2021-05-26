@@ -1,0 +1,71 @@
+{
+  "name": "fs19-mod-checker",
+  "version": "1.9.9",
+  "description": "FS19 Mod Folder Checker",
+  "main": "main.js",
+  "homepage": "https://github.com/jtsage/FS19_Mod_Checker#readme",
+  "keywords": [],
+  "author": "J.T.Sage <jtsage+datebox@gmail.com (http://jtsage.dev)",
+  "license": "ISC",
+  "bugs" : {
+      "url" : "https://github.com/jtsage/FS19_Mod_Checker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jtsage/FS19_Mod_Checker.git"
+  },
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.57",
+    "@electron-forge/maker-deb": "^6.0.0-beta.57",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.57",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.57",
+    "@electron-forge/maker-zip": "^6.0.0-beta.57",
+    "electron": "^12.0.8",
+    "eslint": "^7.26.0"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
+    "glob": "^7.1.7",
+    "node-stream-zip": "^1.13.4",
+    "xml2js": "^0.4.23"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "ignore": "(cli-test-runner.js|screen_shots/*|.vscode/*|.github/*|dist/*|.eslintrc.json|.gitattributes|.gitignore)",
+        "icon": "./build/icon",
+        "name": "FS19ModChecker"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "FS19ModChecker",
+            "iconUrl" : "https://jtsage.dev/fsmcicon.ico",
+            "setupExe" : "FSModCheck-Setup.exe",
+            "setupIcon" : "./build/icon.ico"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  }
+}

@@ -1,6 +1,7 @@
 .vscode/settings.json
-__pycache__/
-build/
 testFolder/
-dist/FS19_Mod-Checker.zip
 .vscodecounter/
+node_modules
+translations/gr.json
+
+out/

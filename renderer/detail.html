@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+	
+	<div class="container-fluid pt-2 px-1 user-select-none">
+		<div class="row w-100">
+			<div class="col-9 border-bottom">
+				<h2><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
+			</div>
+		</div>
+		<h3 class="text-center my-3" id="title"></h3>
+
+		<div class="row mx-4">
+			<!--div class="col-4"><div id="icon">ICON</div></div-->
+			<div class="col-8 mx-auto">
+				<table class="table">
+					<tr><th class="i18n" data-i18n="header_mod_version"></th><td class="text-end" id="version"></td></tr>
+					<tr><th class="i18n" data-i18n="header_mod_size"></th><td class="text-end" id="filesize"></td></tr>
+					<tr><th class="i18n" data-i18n="header_mod_active_games"></th><td class="text-end" id="active_games"></td></tr>
+					<tr><th class="i18n" data-i18n="header_mod_used_games"></th><td class="text-end" id="used_games"></td></tr>
+					<tr><th class="i18n" data-i18n="header_mod_has_scripts"></th><td class="text-center" id="has_scripts"></td></tr>
+				</table>
+			</div>
+		</div>
+		<div style="white-space: pre-wrap" class="px-5" id="description"></div>
+	</div>
+
+</body>
+</html>
