@@ -14,6 +14,7 @@
 	"config_load_button"               : "Load Settings",
 	"config_process_button_blurb"      : "Next, click the \"Scan\" button to process your mods and save game files.",
 	"config_process_button"            : "Scan Mods and Save Games",
+	"latest_version_link_blurb"        : "Get the latest version at:",
 	"user_error_open_settings"         : "Your selected game settings file is invalid or unreadable!",
 	"location_savegame_folder"         : "Save Game Files",
 	"location_mod_folder"              : "Mod Files",

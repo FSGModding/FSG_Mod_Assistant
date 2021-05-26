@@ -36,6 +36,7 @@ function createWindow () {
 		}
 	})
 
+	win.removeMenu()
 	win.loadFile(path.join(__dirname, 'renderer', 'main.html'))
 
 	win.webContents.on('did-finish-load', (event) => {
@@ -51,6 +52,10 @@ function createWindow () {
 			event.sender.send('trigger-i18n-select', langList, myTranslator.currentLocale)
 		})
 	})
+	win.webContents.setWindowOpenHandler(({ url }) => {
+		require('electron').shell.openExternal(url);
+		return { action: 'deny' };
+	});
 }
 
 
@@ -336,6 +341,7 @@ function openDetailWindow(thisModRecord) {
 		}
 	})
 
+	detailWindow.removeMenu()
 	detailWindow.webContents.on('did-finish-load', (event) => {
 		const sendData = {
 			title       : thisModRecord.title,
