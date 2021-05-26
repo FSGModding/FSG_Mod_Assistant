@@ -46,11 +46,11 @@ const buildOpt = (value, text, selected) => {
 
 const buildTableRow = (columnValues, colNames = []) => {
 	/* Build a table row for display */
-	let thisRow = "<tr>"
+	let thisRow = ""
 
 	for ( let i = 0; i < columnValues.length; i++ ) {
-		let sort = ""
-		let text = ""
+		let sort = null
+		let text = null
 		let cssClass = ""
 
 		if ( colNames.length > 0 ) { cssClass = colNames[i] }
@@ -71,7 +71,7 @@ const buildTableRow = (columnValues, colNames = []) => {
 
 		thisRow += `<td class=\"${cssClass}\" data-sort=\"${sort}\">${text}</td>`
 	}
-	return thisRow + "</tr>"
+	return  "<tr>" + thisRow + "</tr>"
 }
 
 const buildBrokenList = (name, path, bullets, copyName) => {
@@ -86,9 +86,9 @@ const buildBrokenList = (name, path, bullets, copyName) => {
 
 	if ( copyName !== null ) {
 		const existence = ( copyName[1] ) ? "file_error_copy_exists" : "file_error_copy_missing"
+		const identCopy = ( copyName[2] ) ? "<span class=\"i18n\" data-i18n=\"file_error_copy_identical\"></span>" : ""
 		thisListItem += `<li><span class=\"i18n\" data-i18n=\"file_error_copy_name\"></span> <span class=\"fst-italic fw-bold\">${copyName[0]}</span>.`
-		thisListItem += ` <span class=\"i18n\" data-i18n=\"${existence}\"></span>`
-		thisListItem += (copyName[2]) ? " <span class=\"i18n\" data-i18n=\"file_error_copy_identical\"></span>" : ""
+		thisListItem += ` <span class=\"i18n\" data-i18n=\"${existence}\"></span> ${identCopy}`
 		thisListItem += "</li>"
 	}
 
@@ -104,11 +104,8 @@ const buildConflictList = (name, title, message, path) => {
 	
 	return "" +
 		`<li data-path=\"${path}\" class=\"mod-record list-group-item d-flex justify-content-between align-items-start\">` +
-		"<div class=\"ms-2 me-auto\">" +
-		`<div><strong>${name}</strong> <em class=\"small\">${title}</em></div>` +
-		"<ul style=\"list-style: disc\">" +
-		`<li>${message}</li>` +
-		"</ul></div></li>"
+		`<div class=\"ms-2 me-auto\"><div><strong>${name}</strong> <em class=\"small\">${title}</em></div>` +
+		`<ul style=\"list-style: disc\"><li>${message}</li></ul></div></li>`
 }
 
 
@@ -341,6 +338,16 @@ contextBridge.exposeInMainWorld(
 		},
 		changeExplore : () => {
 			ipcRenderer.send('askExploreList', byId("savegame_select").value)
+		},
+		changeExploreActiveUnused : () => {
+			ipcRenderer.send('askExploreList', 0, -1)
+		},
+		changeExploreInActive : () => {
+			ipcRenderer.send('askExploreList', -1)
+		},
+		changeExploreScripts : () => {
+			ipcRenderer.send('askScriptList')
+			byId("col_mod_has_scripts_switch").checked = true
 		}
 	}
 )

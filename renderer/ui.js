@@ -9,6 +9,8 @@
 
 const byId = function( id ) { return document.getElementById( id ) }
 
+// TODO: search feature on explore.
+
 function toggleHideFolderOnlyError() {
 	const folderOnly = byId("broken_list").querySelectorAll(".just-folder-error")
 	const status     = byId("zip_folder_switch").checked

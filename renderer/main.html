@@ -227,6 +227,11 @@
 
 					<h6 class="i18n mt-5" data-i18n="explore_options_savegame_select"></h6>
 					<select onchange="ipc.changeExplore()" class="form-select" id="savegame_select"></select>
+
+					<h6 class="i18n mt-5" data-i18n="explore_options_special_lists"></h6>
+					<button type="button" onclick="ipc.changeExploreInActive()" id="special_inactive" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_inactive"></button>
+					<button type="button" onclick="ipc.changeExploreActiveUnused()" id="special_unused" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_unused"></button>
+					<button type="button" onclick="ipc.changeExploreScripts()" id="special_scripts" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_scripts"></button>
 				</div>
 			</div>
 

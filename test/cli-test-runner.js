@@ -32,15 +32,15 @@ modList.readAll().then((args) => {
 			//"didTestingPassEnough"
 			// "title",
 			// "mod_version",
-			"fileSizeMap",
-			// "activeGames",
-			// "usedGames",
+			//"fileSizeMap",
+			"activeGames",
+			"usedGames",
 			// "fullPath",
 		],
-		activeGame: 0,
-		forceIsActiveIsUsed: true,
+		usedGame: -1,
 		allTerms : true,
 		terms : ["isNotMissing", "didTestingPassEnough"],
+		debug : true
 	}).then(searchResults => {
 		console.log("test.js results:", searchResults)
 	})

@@ -29,6 +29,10 @@
 	"explore_options_blurb"            : "Here you can set what is displayed in the \"Explore Mods\" table, including column visibility and some filters",
 	"explore_options_column_visibility": "Column Visibility",
 	"explore_options_savegame_select"  : "Filter to only savegame:",
+	"explore_options_special_lists"    : "Special Lists",
+	"explore_options_special_inactive" : "Inactive Mods",
+	"explore_options_special_unused"   : "Active but Unused Mods",
+	"explore_options_special_scripts"  : "Mods that use LUA scripting",
 	"filter_savegame_all"              : "All Save Game Slots",
 	"filter_savegame"                  : "Save Game Slot #",
 

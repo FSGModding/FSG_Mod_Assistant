@@ -268,6 +268,7 @@ ipcMain.on("askMissingList", (event) => {
     |   |_____] |       . |_____| |          |      |    \  /  |______
   __|__ |       |_____  . |     | |_____     |    __|__   \/   |______
                                                                       
+  This is a form control we are populating.
 */
 ipcMain.on("askGamesActive", (event) => {
 	modList.getActive().then(async (activeSet) => {
@@ -288,7 +289,7 @@ ipcMain.on("askGamesActive", (event) => {
   __|__ |       |_____  . |______ _/   \_ |       |_____ |_____| |    \_ |______
                                                                                 
 */
-ipcMain.on("askExploreList", (event, activeGame) => {
+ipcMain.on("askExploreList", (event, activeGame, usedGame = 0) => {
 	modList.search({
 		columns             : [
 			"shortName", "title", "mod_version", "fileSizeMap",
@@ -296,9 +297,22 @@ ipcMain.on("askExploreList", (event, activeGame) => {
 			"fullPath", "hasScripts"
 		],
 		activeGame          : parseInt(activeGame),
-		forceIsActiveIsUsed : true,
+		usedGame            : parseInt(usedGame),
 		allTerms            : true,
 		terms               : ["isNotMissing", "didTestingPassEnough"],
+	}).then(searchResults => { event.sender.send("gotExploreList", searchResults) })
+})
+/* Subset of askExploreList, easier to just call it again rather than further overloading
+   "askExploreList".  Set the tone for additional lists. */
+ipcMain.on("askScriptList", (event) => {
+	modList.search({
+		columns             : [
+			"shortName", "title", "mod_version", "fileSizeMap",
+			"isActive", "activeGames", "isUsed", "usedGames",
+			"fullPath", "hasScripts"
+		],
+		allTerms            : true,
+		terms               : ["isNotMissing", "didTestingPassEnough", "hasScripts"],
 	}).then(searchResults => { event.sender.send("gotExploreList", searchResults) })
 })
 
