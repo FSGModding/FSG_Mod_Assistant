@@ -47,7 +47,6 @@
           "config": {
             "name": "FS19ModChecker",
             "iconUrl" : "https://jtsage.dev/fsmcicon.ico",
-            "setupExe" : "FSModCheck-Setup.exe",
             "setupIcon" : "./build/icon.ico"
           }
         },
