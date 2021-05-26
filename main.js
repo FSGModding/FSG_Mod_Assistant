@@ -8,10 +8,13 @@
 // (c) 2021 JTSage.  MIT License.
 
 const { app, Menu, BrowserWindow, ipcMain, clipboard } = require('electron')
+
+if (require('electron-squirrel-startup')) return app.quit();
+
 const path       = require('path')
 const xml2js     = require('xml2js')
-const translator = require('./translate.js')
-const modReader  = require('./mod-checker.js')
+const translator = require('./lib/translate.js')
+const modReader  = require('./lib/mod-checker.js')
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 let location_savegame  = null
@@ -29,11 +32,11 @@ function createWindow () {
 		webPreferences : {
 			nodeIntegration  : false,
 			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'preload.js')
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload-main.js')
 		}
 	})
 
-	win.loadFile(path.join(__dirname, 'html', 'index.html'))
+	win.loadFile(path.join(__dirname, 'renderer', 'main.html'))
 
 	win.webContents.on('did-finish-load', (event) => {
 		if ( modList !== null ) {
@@ -320,7 +323,7 @@ function openDetailWindow(thisModRecord) {
 		webPreferences : {
 			nodeIntegration  : false,
 			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'detail-preload.js')
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload-detail.js')
 		}
 	})
 
@@ -338,7 +341,7 @@ function openDetailWindow(thisModRecord) {
 		event.sender.send('trigger-i18n')
 	})
 
-	detailWindow.loadFile(path.join(__dirname, 'html', 'detail.html'))
+	detailWindow.loadFile(path.join(__dirname, 'renderer', 'detail.html'))
 
 	// detailWindow.webContents.openDevTools()
 

@@ -8,10 +8,9 @@
 // (c) 2021 JTSage.  MIT License.
 const homedir  = require('os').homedir()
 const path     = require('path')
-const { exit } = require('process')
 
 //const gameFolder = path.join(homedir, "Documents" , "My Games", "FarmingSimulator2019" )
-const gameFolder = path.join(__dirname, "testFolder")
+const gameFolder = path.join(__dirname, "..", "testFolder")
 const fileFolder = path.join(gameFolder, "mods")
 
 const modReader = require('./mod-checker')
