@@ -11,12 +11,17 @@ const { app, Menu, BrowserWindow, ipcMain, clipboard } = require('electron')
 
 if (require('electron-squirrel-startup')) return app.quit();
 
+const devDebug   = false //true
+
 const path       = require('path')
 const xml2js     = require('xml2js')
 const translator = require('./lib/translate.js')
 const modReader  = require('./lib/mod-checker.js')
+const mcDetail   = require('./package.json')
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
+myTranslator.mcVersion = mcDetail.version
+
 let location_savegame  = null
 let location_modfolder = null
 let location_valid     = false
@@ -28,7 +33,7 @@ function createWindow () {
 		icon           : path.join(app.getAppPath(), 'build', 'icon.png'),
 		width          : 1000,
 		height         : 700,
-		autoHideMenuBar: true,
+		autoHideMenuBar: !devDebug,
 		webPreferences : {
 			nodeIntegration  : false,
 			contextIsolation : true,
@@ -36,7 +41,8 @@ function createWindow () {
 		}
 	})
 
-	win.removeMenu()
+	if ( !devDebug ) { win.removeMenu() }
+
 	win.loadFile(path.join(__dirname, 'renderer', 'main.html'))
 
 	win.webContents.on('did-finish-load', (event) => {
@@ -49,7 +55,7 @@ function createWindow () {
 		}
 		event.sender.send('trigger-i18n')
 		myTranslator.getLangList().then((langList) => {
-			event.sender.send('trigger-i18n-select', langList, myTranslator.currentLocale)
+			event.sender.send('trigger-i18n-select', langList, myTranslator.deferCurrentLocale())
 		})
 	})
 	win.webContents.setWindowOpenHandler(({ url }) => {
@@ -333,15 +339,15 @@ function openDetailWindow(thisModRecord) {
 		minimizable    : false,
 		maximizable    : false,
 		fullscreenable : false,
-		autoHideMenuBar: true,
+		autoHideMenuBar: !devDebug,
 		webPreferences : {
 			nodeIntegration  : false,
 			contextIsolation : true,
 			preload          : path.join(app.getAppPath(), 'renderer', 'preload-detail.js')
 		}
 	})
+	if ( !devDebug ) { detailWindow.removeMenu() }
 
-	detailWindow.removeMenu()
 	detailWindow.webContents.on('did-finish-load', (event) => {
 		const sendData = {
 			title       : thisModRecord.title,

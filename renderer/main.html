@@ -50,7 +50,7 @@
 	<div class="container-fluid pt-2 px-1 user-select-none">
 		<div class="row w-100 mb-2">
 			<div class="col-9 border-bottom">
-				<h2 class="i18n" data-i18n="title"></h2>
+				<h2><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
 			</div>
 			<div class="col-3">
 				<div class="row float-end">
@@ -138,8 +138,8 @@
 
 			<div class="tab-pane fade" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
 				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
-				<div class="mx-3">
-					<table class="table table-responsive table-striped table-hover sortable" id="table_missing_parent">
+				<div class="mx-3 table-responsive">
+					<table class="table table-striped table-hover sortable" id="table_missing_parent">
 						<thead>
 							<tr>
 								<th class="i18n" data-i18n="header_mod_name"></th>
@@ -163,16 +163,16 @@
 			<div class="tab-pane fade" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
 				<p class="text-center i18n px-4" data-i18n="explore_blurb"></p>
 				
-				<div class="input-group mb-3 w-75 mx-auto">
-					<span class="input-group-text" id="search-addon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></span>
-					<input type="text" id="explore-search" onkeyup="searchExploreTable()" class="form-control" aria-describedby="search-addon">
-					<button class="btn btn-outline-secondary" onclick="searchExploreClear()" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-						<path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/>
-					  </svg></button>
+				<div class="input-group input-group-sm mb-3 w-75 mx-auto">
+					<span class="border-secondary input-group-text" id="search-addon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></span>
+					<input type="text" id="explore-search" onkeyup="searchExploreTable()" class="border-secondary form-control" aria-describedby="search-addon">
+					<button class="btn btn-outline-secondary" onclick="searchExploreClear()" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+						<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+					</svg></button>
 				</div>
 
 				<button class="w-75 mx-auto btn btn-primary btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
-				<div class="table-responsive">
+				<div class="mx-3 table-responsive">
 					<table class="table table-striped table-hover sortable" id="table_explore_parent">
 						<thead>
 							<tr>
@@ -203,50 +203,51 @@
 					<div class="i18n mb-4" data-i18n="explore_options_blurb"></div>
 
 					<h6 class="i18n" data-i18n="explore_options_column_visibility"></h6>
-
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_name_switch" checked>
-						<label class="form-check-label i18n" data-i18n="header_mod_name" for="col_mod_name_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_title_switch" checked>
-						<label class="form-check-label i18n" data-i18n="header_mod_title" for="col_mod_title_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_version_switch" checked>
-						<label class="form-check-label i18n" data-i18n="header_mod_version" for="col_mod_version_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_size_switch" checked>
-						<label class="form-check-label i18n" data-i18n="header_mod_size" for="col_mod_size_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_active_switch" checked>
-						<label class="form-check-label i18n" data-i18n="header_mod_is_active" for="col_mod_is_active_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_active_games_switch">
-						<label class="form-check-label i18n" data-i18n="header_mod_active_games" for="col_mod_active_games_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_used_switch" checked>
-						<label class="form-check-label i18n" data-i18n="header_mod_is_used" for="col_mod_is_used_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_used_games_switch">
-						<label class="form-check-label i18n" data-i18n="header_mod_used_games" for="col_mod_used_games_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_full_path_switch">
-						<label class="form-check-label i18n" data-i18n="header_mod_full_path" for="col_mod_full_path_switch"></label>
-					</div>
-					<div class="form-check form-switch">
-						<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_has_scripts_switch">
-						<label class="form-check-label i18n" data-i18n="header_mod_has_scripts" for="col_mod_has_scripts_switch"></label>
+					<div class="ms-3">
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_name_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_name" for="col_mod_name_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_title_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_title" for="col_mod_title_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_version_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_version" for="col_mod_version_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_size_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_size" for="col_mod_size_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_active_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_is_active" for="col_mod_is_active_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_active_games_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_active_games" for="col_mod_active_games_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_used_switch" checked>
+							<label class="form-check-label i18n" data-i18n="header_mod_is_used" for="col_mod_is_used_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_used_games_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_used_games" for="col_mod_used_games_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_full_path_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_full_path" for="col_mod_full_path_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_has_scripts_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_has_scripts" for="col_mod_has_scripts_switch"></label>
+						</div>
 					</div>
 
 					<h6 class="i18n mt-5" data-i18n="explore_options_savegame_select"></h6>
-					<select onchange="ipc.changeExplore()" class="form-select" id="savegame_select"></select>
+					<select onchange="ipc.changeExplore()" class="form-select mx-auto w-75" id="savegame_select"></select>
 
 					<h6 class="i18n mt-5" data-i18n="explore_options_special_lists"></h6>
 					<button type="button" onclick="ipc.changeExploreInActive()" id="special_inactive" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_inactive"></button>
