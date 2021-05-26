@@ -92,13 +92,13 @@ module.exports = class modFileSlurp {
 			
 			for ( const [modName, conflictDetails] of Object.entries(conflictListData.conflictMods)) {
 				if ( checkList.includes(modName) ) {
-					let doesConflict = false;
+					let doesConflict = false
 					if ( conflictDetails.confWith === null ) {
 						doesConflict = true
 					} else {
 						for ( const confWithName of conflictDetails.confWith ) {
 							if ( checkList.includes(confWithName) ) {
-								doesConflict = true;
+								doesConflict = true
 								break
 							}
 						}
@@ -127,7 +127,7 @@ module.exports = class modFileSlurp {
 	}
 	async safeResend() {
 		return Promise.allSettled(this.#modsTesting).then((args) => {
-			return true;
+			return true
 		})
 	}
 
@@ -135,7 +135,7 @@ module.exports = class modFileSlurp {
 		return Promise.allSettled(this.#modsTesting).then((args) => {
 			args.forEach((arg) => { 
 				if ( arg.status !== "fulfilled" ) {
-					console.log("DEBUG::Promise Testing Error:", arg)
+					// console.debug("DEBUG::Promise Testing Error:", arg)
 				}
 			})
 			return this.#search(options)
@@ -526,17 +526,17 @@ class modFile {
 		let bytes = this.fileSize
 
 		if (Math.abs(this.fileSize) < 1024) {
-			return '0 kB';
+			return '0 kB'
 		}
 
 		const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
-		let u = -1;
-		const r = 10**2;
+		let u = -1
+		const r = 10**2
 
 		do {
-			bytes /= 1024;
-			++u;
-		} while (Math.round(Math.abs(bytes) * r) / r >= 1024 && u < units.length - 1);
+			bytes /= 1024
+			++u
+		} while (Math.round(Math.abs(bytes) * r) / r >= 1024 && u < units.length - 1)
 
 		return bytes.toLocaleString( this.#current_locale(), { minimumFractionDigits: 2, maximumFractionDigits: 2 } ) + ' ' + units[u]
 	}
@@ -679,7 +679,7 @@ class modFile {
 	async #testZip() {
 		this.#zipTestingNow = true
 
-		const zip = new StreamZip({ file: this.fullPath });
+		const zip = new StreamZip({ file: this.fullPath })
 
 		zip.on("error", (err) => {
 			this.#fail.bad_zip = true
@@ -701,15 +701,15 @@ class modFile {
 					return false
 				} else {
 					this.XMLDocument = ""
-					stm.on('data', (chunk) => { this.XMLDocument += chunk.toString() });
+					stm.on('data', (chunk) => { this.XMLDocument += chunk.toString() })
 					stm.on('end', () => {
 						zip.close()
 						this.#zipTestingStatus = this.#testXML()
 						this.#zipTestingNow = false
 						return true
-					});
+					})
 				}
-			});
+			})
 		})
 
 		return new Promise(async (resolve, reject) => {
@@ -807,12 +807,16 @@ class modFile {
 		return true
 	}
 
-	#loadZipIcon() { // TODO: load icon from zip file
+	#loadZipIcon() {
+		// TODO: load icon from zip file
+		// And convert to a usable format
 		/* Return : status of load T/F */
 		return false
 	}
 
-	#loadFolderIcon() { //TODO: load icon from folder
+	#loadFolderIcon() {
+		//TODO: load icon from folder
+		// And convert to a usable format
 		/* Return : status of load T/F */
 		return false
 	}

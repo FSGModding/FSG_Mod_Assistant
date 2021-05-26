@@ -10,6 +10,7 @@
     "start": "electron ."
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.57",
     "electron": "^12.0.8",
     "eslint": "^7.26.0"
   },
@@ -19,6 +20,7 @@
     "md5-file": "^5.0.0",
     "merge-options": "^3.0.4",
     "node-stream-zip": "^1.13.4",
+    "request": "^2.88.2",
     "xml2js": "^0.4.23"
   }
 }

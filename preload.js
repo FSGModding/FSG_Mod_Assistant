@@ -356,49 +356,34 @@ Listeners on the renderer that need privileged execution (ipc usually)
 */
 
 window.addEventListener('DOMContentLoaded', () => {
-	byId("broken_list").addEventListener('contextmenu', (e) => {
-		/* Right click on a mod entry in the broken list */
+	const table_handler = (e, domID) => {
+		e.preventDefault()
+		
+		if ( e.target.matches("td") ) {
+			const theseHeaders = Array.from(
+				byId(domID).parentNode.firstElementChild.querySelectorAll("th.i18n"),
+				th => [th.innerText, th.getAttribute("data-i18n") ]
+			)
+			const theseValues = Array.from(
+				e.target.parentNode.childNodes,
+				td => td.innerText
+			)
+			ipcRenderer.send('show-context-menu-table', theseHeaders, theseValues)
+		}
+	}
+	const list_handler = (e) => {
 		e.preventDefault()
 
 		const closestEntry = e.target.closest(".mod-record")
 		
 		if ( closestEntry !== null ) {
-			ipcRenderer.send('show-context-menu-broken', closestEntry.getAttribute("data-path"))
+			ipcRenderer.send('show-context-menu-list', closestEntry.getAttribute("data-path"))
 		}
-	})
+	}
 
-	byId("table_missing_parent").addEventListener('contextmenu', (e) => {
-		/* Right click on a mod entry in the missing list */
-		e.preventDefault()
-		
-		if ( e.target.matches("td") ) {
-			const theseHeaders = Array.from(
-				byId("table_missing").parentNode.firstElementChild.querySelectorAll("th.i18n"),
-				th => [th.innerText, th.getAttribute("data-i18n") ]
-			)
-			const theseValues = Array.from(
-				e.target.parentNode.childNodes,
-				td => td.innerText
-			)
-			ipcRenderer.send('show-context-menu-table', theseHeaders, theseValues)
-		}
-	})
+	byId("broken_list").addEventListener('contextmenu', (e) => { list_handler(e) })
+	byId("conflict_list").addEventListener('contextmenu', (e) => {list_handler(e) })
 
-	byId("table_explore_parent").addEventListener('contextmenu', (e) => {
-		/* Right click on a mod entry in the explore list */
-		e.preventDefault()
-		
-		if ( e.target.matches("td") ) {
-			const theseHeaders = Array.from(
-				byId("table_explore").parentNode.firstElementChild.querySelectorAll("th.i18n"),
-				th => [th.innerText, th.getAttribute("data-i18n") ]
-			)
-			const theseValues = Array.from(
-				e.target.parentNode.childNodes,
-				td => td.innerText
-			)
-			console.log("right click!", theseHeaders, theseValues)
-			ipcRenderer.send('show-context-menu-table', theseHeaders, theseValues)
-		}
-	})
+	byId("table_missing_parent").addEventListener('contextmenu', (e) => { table_handler(e, "table_missing") })
+	byId("table_explore_parent").addEventListener('contextmenu', (e) => { table_handler(e, "table_explore") })
 })

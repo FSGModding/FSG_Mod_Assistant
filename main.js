@@ -25,6 +25,7 @@ function createWindow () {
 		icon           : path.join(app.getAppPath(), 'build', 'icon.png'),
 		width          : 1000,
 		height         : 700,
+		autoHideMenuBar: true,
 		webPreferences : {
 			nodeIntegration  : false,
 			contextIsolation : true,
@@ -58,7 +59,7 @@ function createWindow () {
   __|__ |       |_____  . |  |  | |______ |  \_| |_____| ______|
                                                                 
 */
-ipcMain.on('show-context-menu-broken', async (event, fullPath) => {
+ipcMain.on('show-context-menu-list', async (event, fullPath) => {
 	const template = [
 		{
 			label: await myTranslator.stringLookup("menu_copy_full_path"),
@@ -174,7 +175,10 @@ ipcMain.on('openConfigFile', (event) => {
 			})
 		}
 	}).catch(err => {
-		console.log(err)
+		// Read of file failed? Permissions issue maybe?  Not sure.
+		location_valid = false
+		event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" } )
+		// console.debug(err)
 	})
 })
 
@@ -312,6 +316,7 @@ function openDetailWindow(thisModRecord) {
 		minimizable    : false,
 		maximizable    : false,
 		fullscreenable : false,
+		autoHideMenuBar: true,
 		webPreferences : {
 			nodeIntegration  : false,
 			contextIsolation : true,
@@ -335,7 +340,7 @@ function openDetailWindow(thisModRecord) {
 
 	detailWindow.loadFile(path.join(__dirname, 'html', 'detail.html'))
 
-	detailWindow.webContents.openDevTools()
+	// detailWindow.webContents.openDevTools()
 
 	detailWindow.on('closed', function() {
 		newWindow = null
@@ -357,5 +362,3 @@ app.on('window-all-closed', () => {
 		app.quit()
 	}
 })
-
-// TODO: BIG ONE: Icons still.

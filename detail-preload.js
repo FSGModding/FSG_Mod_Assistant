@@ -39,7 +39,6 @@ ipcRenderer.on('mod-record', ( event, modDetails ) => {
 	byId("used_games").innerHTML   = modDetails.used_games
 	byId("has_scripts").innerHTML  = ((modDetails.has_scripts) ? iconGreenCheckMark : iconRedX)
 	byId("description").innerHTML  = modDetails.description
-	console.log(modDetails)
 })
 
 

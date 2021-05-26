@@ -51,4 +51,5 @@ function toggleExploreColumns () {
 
 window.addEventListener('DOMContentLoaded', () => {
 	toggleExploreColumns()
+	toggleHideFolderOnlyError()
 })
