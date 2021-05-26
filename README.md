@@ -2,6 +2,12 @@
 
 This little program will take a look at your mod install folder and inform you of the following
 
+## What this does
+
+This program provides information only.
+
+### Broken Mods
+
 * If a mod file is named incorrectly and won't load in the game.
   * Suggest it might be a copy if the name looks like a copy
     * Note if you already have that identical file
@@ -20,107 +26,82 @@ This little program will take a look at your mod install folder and inform you o
 * If a file exists that is not a mod at all
   * Suggest you remove the file
 
-* If a mod is used in your save games, but does not appear to be installed.
+### Conflicts
+
+* If a you have a mod as both a folder and a zip file, warn that only the zip file will be used
+
+* If you have a mod that is known to cause issues in specific circumstances, warn you
+
+### Missing Mods
+
+* List all those mods that are active in your save games but don't appear to be installed any more
+
+### Explore Mods
+
+Here you can sort the list of good, installed mods to discover any number of things
 
 * If a mod is not loaded or used in any of your save games
 
 * If a mod is loaded but unused in your save games.
 
-* If a mod you have possibly conflicts with another mod you have.
+* What mod each save game is using
 
-## Demo Video
-
-[Demo Video](https://streamable.com/wi4u04)
-
-## What this does
-
-This program provides information only.
-
-### This does not alter or delete any files on your computer at all
-
-You can, optionally, choose to save a log file from the File menu.
+* Which mods take up the most space on your disk
 
 ## Usage
 
-Run dist/FS19_Mod_Checker.exe - command line or explorer.
+Unzip the zip file, run the installer.
 
 ## What it looks like
-
-### Language Choice Screen
-
-<p align="center">
-  <img width="350" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/000-LangPick.png">
-</p>
-
-### Configuration Screen, Mods Loading
-
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/001-ConfigLoading.png">
-</p>
 
 ### Configuration Screen, Mods Loaded
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/001-ConfigLoaded.png">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/001-config.png">
 </p>
 
 ### Bad Mods, Unzipped Mods, Extra Files
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/002-BadMods.png">
-</p>
-
-### Possible Conflicts
-
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/003-Conflicts.png">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/002-broken.png">
 </p>
 
 ### Missing Mods
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/004-MissingMods.png">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/003-missing.png">
 </p>
 
-### Inactive, Unused Mods
+### Possible Conflicts
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/005-InactiveMods.png">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/004-conflict.png">
 </p>
 
-### Active but Unused Mods
+### Explore Mods
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/006-UnusedMods.png">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/005-explore.png">
 </p>
 
-### Good Mods
-
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/007-GoodMods.png">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/006-explore-options.png">
 </p>
 
 ### Detail Popup
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/010-DetailFull.png">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/010-detail.png">
 </p>
-
-## Development Requirements
-
-* [lxml](https://lxml.de/installation.html) module installed
-* [Pillow](https://pillow.readthedocs.io/en/latest/installation.html) module installed
 
 ## Translation Effort
 
-Sadly, the primary developer only understands English.  If you'd like to contribute a translation, and already know how gettext .pot/.po files work, check out the locale folder.  If not, you may find a web interface simpler: [Crowdin Project Page](https://crowdin.com/project/fs19-mod-checker)
+Sadly, the primary developer only understands English.  If you'd like to contribute a translation, take a look in the translations folder, it's simple json. If you prefer a web interface: [Crowdin Project Page](https://crowdin.com/project/fs19-mod-checker)
 
 ## In-Progress Improvements
-
-* Create a short list of popular script-only mods and hide them from the "loaded but not used" list. (i.e. AutoDrive, Global Company, Course Play, etc.) [GitHub Issue #4](https://github.com/jtsage/FS19_Mod_Checker/issues/4)
 
 * Note some of the more popular mod conflicts and suggest avoiding them: [GitHub Issue #2](https://github.com/jtsage/FS19_Mod_Checker/issues/2)
 
 ## A short note about the EXE
 
- So, the EXE file (the preferred method of running this) is essentially a miniaturized copy of python with all of the required libraries.  It has been reported in the past that EXE files built with this fantastic package can occasionally cause false positives in virus software.  As of this writing, it looks like it is all good - but that could potentially change for the worst.  As always, the source code is available to peruse at your leisure or run directly. (For the python initiated, this uses auto-py-to-exe to build, the configuration json file is included - of course you will need to update paths to build yourself)
+UPDATE: the electron package should work without any virus warnings, unlike the python version. It *is* unsigned, and probably will remain so for the future - I cannot possibly spend a couple hundred dollars a year on a code signing certificate for one little project - and as far as I know, no company still offers freebies for open source.
