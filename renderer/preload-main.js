@@ -346,7 +346,7 @@ contextBridge.exposeInMainWorld(
 			ipcRenderer.send('askExploreList', -1)
 		},
 		changeExploreScripts : () => {
-			ipcRenderer.send('askScriptList')
+			ipcRenderer.send('askExploreList', 0, 0, "hasScripts")
 			byId("col_mod_has_scripts_switch").checked = true
 		}
 	}

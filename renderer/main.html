@@ -32,6 +32,12 @@
 		td.col_mod_version, td.col_mod_size {
 			text-align: right;
 		}
+		td.col_mod_size {
+			white-space: nowrap;
+		}
+		td.col_mod_name {
+			word-break: break-word;
+		}
 		.col_mod_is_active, .col_mod_is_used, .col_mod_has_scripts {
 			text-align: center;
 		}
@@ -153,25 +159,36 @@
 
 			<div class="tab-pane fade" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
 				<p class="text-center i18n px-4" data-i18n="explore_blurb"></p>
+				
+				<div class="input-group mb-3 w-75 mx-auto">
+					<span class="input-group-text" id="search-addon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></span>
+					<input type="text" id="explore-search" onkeyup="searchExploreTable()" class="form-control" aria-describedby="search-addon">
+					<button class="btn btn-outline-secondary" onclick="searchExploreClear()" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+						<path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/>
+					  </svg></button>
+				</div>
+
 				<button class="w-75 mx-auto btn btn-primary btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
-				<table class="table table-responsive table-striped table-hover sortable" id="table_explore_parent">
-					<thead>
-						<tr>
-							<th class="i18n col_mod_name" data-i18n="header_mod_name"></th>
-							<th class="i18n col_mod_title" data-i18n="header_mod_title"></th>
-							<th class="i18n col_mod_version" data-i18n="header_mod_version"></th>
-							<th class="i18n col_mod_size" data-i18n="header_mod_size"></th>
-							<th class="i18n col_mod_is_active" data-i18n="header_mod_is_active"></th>
-							<th class="i18n col_mod_active_games" data-i18n="header_mod_active_games"></th>
-							<th class="i18n col_mod_is_used" data-i18n="header_mod_is_used"></th>
-							<th class="i18n col_mod_used_games" data-i18n="header_mod_used_games"></th>
-							<th class="i18n col_mod_full_path" data-i18n="header_mod_full_path"></th>
-							<th class="i18n col_mod_has_scripts" data-i18n="header_mod_has_scripts"></th>
-						</tr>
-					</thead>
-					<tbody id="table_explore">
-					</tbody>
-				</table>
+				<div class="table-responsive">
+					<table class="table table-striped table-hover sortable" id="table_explore_parent">
+						<thead>
+							<tr>
+								<th class="i18n col_mod_name" data-i18n="header_mod_name"></th>
+								<th class="i18n col_mod_title" data-i18n="header_mod_title"></th>
+								<th class="i18n col_mod_version" data-i18n="header_mod_version"></th>
+								<th class="i18n col_mod_size" data-i18n="header_mod_size"></th>
+								<th class="i18n col_mod_is_active" data-i18n="header_mod_is_active"></th>
+								<th class="i18n col_mod_active_games" data-i18n="header_mod_active_games"></th>
+								<th class="i18n col_mod_is_used" data-i18n="header_mod_is_used"></th>
+								<th class="i18n col_mod_used_games" data-i18n="header_mod_used_games"></th>
+								<th class="i18n col_mod_full_path" data-i18n="header_mod_full_path"></th>
+								<th class="i18n col_mod_has_scripts" data-i18n="header_mod_has_scripts"></th>
+							</tr>
+						</thead>
+						<tbody id="table_explore">
+						</tbody>
+					</table>
+				</div>
 			</div>
 
 			<div class="offcanvas offcanvas-start" tabindex="-1" id="exploreOptions">

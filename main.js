@@ -289,7 +289,7 @@ ipcMain.on("askGamesActive", (event) => {
   __|__ |       |_____  . |______ _/   \_ |       |_____ |_____| |    \_ |______
                                                                                 
 */
-ipcMain.on("askExploreList", (event, activeGame, usedGame = 0) => {
+ipcMain.on("askExploreList", (event, activeGame, usedGame = 0, extraTerms = []) => {
 	modList.search({
 		columns             : [
 			"shortName", "title", "mod_version", "fileSizeMap",
@@ -299,24 +299,19 @@ ipcMain.on("askExploreList", (event, activeGame, usedGame = 0) => {
 		activeGame          : parseInt(activeGame),
 		usedGame            : parseInt(usedGame),
 		allTerms            : true,
-		terms               : ["isNotMissing", "didTestingPassEnough"],
-	}).then(searchResults => { event.sender.send("gotExploreList", searchResults) })
-})
-/* Subset of askExploreList, easier to just call it again rather than further overloading
-   "askExploreList".  Set the tone for additional lists. */
-ipcMain.on("askScriptList", (event) => {
-	modList.search({
-		columns             : [
-			"shortName", "title", "mod_version", "fileSizeMap",
-			"isActive", "activeGames", "isUsed", "usedGames",
-			"fullPath", "hasScripts"
-		],
-		allTerms            : true,
-		terms               : ["isNotMissing", "didTestingPassEnough", "hasScripts"],
+		terms               : ["isNotMissing", "didTestingPassEnough"].concat(extraTerms)
 	}).then(searchResults => { event.sender.send("gotExploreList", searchResults) })
 })
 
 
+
+
+/*
+  ______  _______ _______ _______ _____             _  _  _ _____ __   _ ______   _____  _  _  _
+  |     \ |______    |    |_____|   |   |           |  |  |   |   | \  | |     \ |     | |  |  |
+  |_____/ |______    |    |     | __|__ |_____      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
+                                                                                                
+*/
 var detailWindow = null
 
 function openDetailWindow(thisModRecord) {

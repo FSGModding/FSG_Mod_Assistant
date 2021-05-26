@@ -9,8 +9,6 @@
 
 const byId = function( id ) { return document.getElementById( id ) }
 
-// TODO: search feature on explore.
-
 function toggleHideFolderOnlyError() {
 	const folderOnly = byId("broken_list").querySelectorAll(".just-folder-error")
 	const status     = byId("zip_folder_switch").checked
@@ -48,6 +46,27 @@ function toggleExploreColumns () {
 				thisRow.classList.add("d-none")
 			}
 		})
+	})
+}
+
+function searchExploreClear() {
+	byId("explore-search").value = ""
+	searchExploreTable()
+}
+function searchExploreTable() {
+	const exploreTable = byId("table_explore").querySelectorAll("tbody>tr")
+	const searchTerm = byId("explore-search").value.toLowerCase()
+
+	// BUG: wont-fix - zebra stripes get screwed up when searching. We'd have to remove them from the table.
+
+	exploreTable.forEach((thisTD) => {
+		const testString = (thisTD.childNodes[0].innerText + " " +  thisTD.childNodes[1].innerText).toLowerCase()
+		
+		if ( testString.indexOf(searchTerm) > -1 ) {
+			thisTD.classList.remove('d-none')
+		} else {
+			thisTD.classList.add('d-none')
+		}
 	})
 }
 
