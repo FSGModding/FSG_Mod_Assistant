@@ -10,11 +10,11 @@ const homedir  = require('os').homedir()
 const path     = require('path')
 
 //const gameFolder = path.join(homedir, "Documents" , "My Games", "FarmingSimulator2019" )
-const gameFolder = path.join(__dirname, "..", "testFolder")
+const gameFolder = path.join(__dirname, "..", "..", "testFolder")
 const fileFolder = path.join(gameFolder, "mods")
 
-const modReader = require('./mod-checker')
-const translator = require('./translate.js')
+const modReader = require('../lib/mod-checker')
+const translator = require('../lib/translate.js')
 const myTranslator = new translator.translator(translator.getSystemLocale())
 
 modList = new modReader(gameFolder, fileFolder, myTranslator.deferCurrentLocale)
