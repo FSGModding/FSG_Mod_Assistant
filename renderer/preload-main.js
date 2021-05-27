@@ -10,21 +10,21 @@
 
 const {contextBridge, ipcRenderer} = require('electron')
 
-const iconGreenCheckMark = "<span class=\"text-success\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-check-circle\" viewBox=\"0 0 16 16\">"+
-	"<path d=\"M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z\"/>" +
-	"<path d=\"M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z\"/>" +
-	"</svg></span>"
-const iconRedX = "<span class=\"text-danger\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-x-circle\" viewBox=\"0 0 16 16\">" + 
-	"<path d=\"M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z\"/>" + 
-	"<path d=\"M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z\"/>" +
-	"</svg></span>"
+const iconGreenCheckMark = '<span class="text-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">'+
+	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
+	'<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>' +
+	'</svg></span>'
+const iconRedX = '<span class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' + 
+	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' + 
+	'<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>' +
+	'</svg></span>'
 
 let dataIsLoaded = false
 
 const byId     = (domID) => { return document.getElementById(domID) }
 const classAdd = (domID, className) => { 
 	/* Add a class <className> to <domID> */
-	const domIDs =  ( typeof domID === "string" )  ? [domID] : domID
+	const domIDs =  ( typeof domID === 'string' )  ? [domID] : domID
 		
 	domIDs.forEach((thisDomID) => { 
 		document.getElementById(thisDomID).classList.add(className)
@@ -32,7 +32,7 @@ const classAdd = (domID, className) => {
 }
 const classRem = (domID, className) => {
 	/* Remove a class <className> from <domID> */
-	const domIDs  = ( typeof domID === "string" ) ? [domID] : domID
+	const domIDs  = ( typeof domID === 'string' ) ? [domID] : domID
 		
 	domIDs.forEach((thisDomID) => { 
 		document.getElementById(thisDomID).classList.remove(className)
@@ -41,25 +41,26 @@ const classRem = (domID, className) => {
 
 const buildOpt = (value, text, selected) => {
 	/* Build an option for a select box */
-	return `<option value=\"${value}"\"" ${( value == selected ) ? "selected" : ""}>${text}</option>`
+	return `<option value="${value}" ${( value == selected ) ? 'selected' : ''}>${text}</option>`
 }
 
 const buildTableRow = (columnValues, colNames = []) => {
 	/* Build a table row for display */
-	let thisRow = ""
+	let thisRow = ''
 
 	for ( let i = 0; i < columnValues.length; i++ ) {
 		let sort = null
 		let text = null
-		let cssClass = ""
+		let cssClass = ''
 
 		if ( colNames.length > 0 ) { cssClass = colNames[i] }
 		switch (typeof columnValues[i]) {
-			case "string" :
+		
+			case 'string' :
 				sort = columnValues[i].toString().toLowerCase()
 				text = columnValues[i]
 				break
-			case "boolean" :
+			case 'boolean' :
 				sort = ( columnValues[i] ? 1 : 0 )
 				text = ( columnValues[i] ? iconGreenCheckMark : iconRedX )
 				break
@@ -69,43 +70,43 @@ const buildTableRow = (columnValues, colNames = []) => {
 				break
 		}
 
-		thisRow += `<td class=\"${cssClass}\" data-sort=\"${sort}\">${text}</td>`
+		thisRow += `<td class="${cssClass}" data-sort="${sort}">${text}</td>`
 	}
-	return  "<tr>" + thisRow + "</tr>"
+	return  '<tr>' + thisRow + '</tr>'
 }
 
 const buildBrokenList = (name, path, bullets, copyName) => {
 	/* Build the broken list (multi level UL) */
-	const onlyFolderClass = ( bullets.length === 1 && bullets[0] === "INFO_NO_MULTIPLAYER_UNZIPPED" ) ? "just-folder-error" : ""
+	const onlyFolderClass = ( bullets.length === 1 && bullets[0] === 'INFO_NO_MULTIPLAYER_UNZIPPED' ) ? 'just-folder-error' : ''
 
-	let thisListItem = "" +
-		`<li data-path=\"${path}\" class=\"${onlyFolderClass} mod-record list-group-item d-flex justify-content-between align-items-start\">` +
-		"<div class=\"ms-2 me-auto\">" +
-		`<div><strong>${name}</strong> <em class=\"small\">${path}</em></div>` +
-		"<ul style=\"list-style: disc\">"
+	let thisListItem = '' +
+		`<li data-path="${path}" class="${onlyFolderClass} mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
+		'<div class="ms-2 me-auto">' +
+		`<div><strong>${name}</strong> <em class="small">${path}</em></div>` +
+		'<ul style="list-style-type: disc">'
 
 	if ( copyName !== null ) {
-		const existence = ( copyName[1] ) ? "file_error_copy_exists" : "file_error_copy_missing"
-		const identCopy = ( copyName[2] ) ? "<span class=\"i18n\" data-i18n=\"file_error_copy_identical\"></span>" : ""
-		thisListItem += `<li><span class=\"i18n\" data-i18n=\"file_error_copy_name\"></span> <span class=\"fst-italic fw-bold\">${copyName[0]}</span>.`
-		thisListItem += ` <span class=\"i18n\" data-i18n=\"${existence}\"></span> ${identCopy}`
-		thisListItem += "</li>"
+		const existence = ( copyName[1] ) ? 'file_error_copy_exists' : 'file_error_copy_missing'
+		const identCopy = ( copyName[2] ) ? '<span class="i18n" data-i18n="file_error_copy_identical"></span>' : ''
+		thisListItem += `<li class="mt-2"><span class="i18n" data-i18n="file_error_copy_name"></span> <span class="fst-italic fw-bold">${copyName[0]}</span>.`
+		thisListItem += ` <span class="i18n" data-i18n="${existence}"></span> ${identCopy}`
+		thisListItem += '</li>'
 	}
 
 	bullets.forEach((thisBullet) => {
-		thisListItem += `<li class=\"i18n\" data-i18n=\"${thisBullet}\"></li>`
+		thisListItem += `<li class="mt-2 i18n" data-i18n="${thisBullet}"></li>`
 	})
 	
-	return thisListItem += "</ul></div></li>"
+	return thisListItem += '</ul></div></li>'
 }
 
 const buildConflictList = (name, title, message, path) => {
 	/* Build the conflict list (multi level UL) */
 	
-	return "" +
-		`<li data-path=\"${path}\" class=\"mod-record list-group-item d-flex justify-content-between align-items-start\">` +
-		`<div class=\"ms-2 me-auto\"><div><strong>${name}</strong> <em class=\"small\">${title}</em></div>` +
-		`<ul style=\"list-style: disc\"><li>${message}</li></ul></div></li>`
+	return '' +
+		`<li data-path="${path}" class="mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
+		`<div class="ms-2 me-auto"><div><strong>${name}</strong> <em class="small">${title}</em></div>` +
+		`<ul style="list-style: disc"><li class="mt-2">${message}</li></ul></div></li>`
 }
 
 
@@ -121,7 +122,7 @@ ipcRenderer.on('trigger-i18n-select', (event, langList, locale) => {
 	/* Load language options into language pick list */
 	const newOpts = langList.map((x) => { return buildOpt(x[0], x[1], locale) })
 
-	byId("language_select").innerHTML = newOpts.join("")
+	byId('language_select').innerHTML = newOpts.join('')
 })
 
 ipcRenderer.on('trigger-i18n-on-data', () => {
@@ -137,7 +138,7 @@ ipcRenderer.on('trigger-i18n-on-data', () => {
 ipcRenderer.on('trigger-i18n', () => {
 	/* Get all i18n items in the UI and translate them */
 	let sendSet = new Set()
-	for (const item of document.getElementsByClassName("i18n")) {
+	for (const item of document.getElementsByClassName('i18n')) {
 		sendSet.add(item.getAttribute('data-i18n'))
 	}
 	sendSet.forEach( (thisStringID ) => {
@@ -165,22 +166,22 @@ ipcRenderer.on('i18n-translate-return', (event, dataPoint, newText) => {
 ipcRenderer.on('newFileConfig', (event, arg) => {
 	/* Get notification of loading a new config file */
 	if ( arg.error ) {
-		classRem("load_error", "d-none")
+		classRem('load_error', 'd-none')
 	} else {
-		classAdd("load_error", "d-none")
+		classAdd('load_error', 'd-none')
 	}
 	
 	if ( arg.valid ) {
-		classRem("button_process", "disabled")
+		classRem('button_process', 'disabled')
 	} else {
-		classAdd("button_process", "disabled")
+		classAdd('button_process', 'disabled')
 	}
 		
-	byId("location_savegame_folder").innerHTML = arg.saveDir
-	byId("location_mod_folder").innerHTML      = arg.modDir
+	byId('location_savegame_folder').innerHTML = arg.saveDir
+	byId('location_mod_folder').innerHTML      = arg.modDir
 
-	classAdd(["process_bar_working", "process_bar_done"], "d-none")
-	byId("button_process").focus()
+	classAdd(['process_bar_working', 'process_bar_done'], 'd-none')
+	byId('button_process').focus()
 })
 
 
@@ -191,9 +192,9 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
                                                                                  
 */
 ipcRenderer.on('processModsDone', () => {
-	classAdd("process_bar_working","d-none")
-	classRem("process_bar_done", "d-none")
-	classRem(["button_process","button_load"], "disabled")
+	classAdd('process_bar_working','d-none')
+	classRem('process_bar_done', 'd-none')
+	classRem(['button_process','button_load'], 'disabled')
 	
 	// Fuzzy logic.  Used to request reload of display data when changing l10n setting.
 	dataIsLoaded = true
@@ -215,10 +216,10 @@ ipcRenderer.on('processModsDone', () => {
 */
 ipcRenderer.on('gotBrokenList', (event, list) => {
 	const newContent = list.map((x) => { return buildBrokenList(...x) })
-	byId("broken_list").innerHTML = newContent.join("")
+	byId('broken_list').innerHTML = newContent.join('')
 
 	let sendSet = new Set()
-	for (const item of byId("broken_list").getElementsByClassName("i18n")) {
+	for (const item of byId('broken_list').getElementsByClassName('i18n')) {
 		sendSet.add(item.getAttribute('data-i18n'))
 	}
 	sendSet.forEach( (thisStringID ) => {
@@ -236,7 +237,7 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 */
 ipcRenderer.on('gotConflictList', (event, list) => {
 	const newContent = list.map((x) => { return buildConflictList(...x) })
-	byId("conflict_list").innerHTML = newContent.join("")
+	byId('conflict_list').innerHTML = newContent.join('')
 })
 
 
@@ -250,7 +251,7 @@ ipcRenderer.on('gotConflictList', (event, list) => {
 ipcRenderer.on('gotMissingList', (event, list) => {
 	const newContent = list.map((x) => { return buildTableRow(x) })
 	
-	byId("table_missing").innerHTML = newContent.join("")
+	byId('table_missing').innerHTML = newContent.join('')
 })
 
 
@@ -262,23 +263,23 @@ ipcRenderer.on('gotMissingList', (event, list) => {
 */
 ipcRenderer.on('gotExploreList', (event, list) => {
 	const colNames = [
-		"col_mod_name",
-		"col_mod_title",
-		"col_mod_version",
-		"col_mod_size",
-		"col_mod_is_active",
-		"col_mod_active_games",
-		"col_mod_is_used",
-		"col_mod_used_games",
-		"col_mod_full_path",
-		"col_mod_has_scripts"
+		'col_mod_name',
+		'col_mod_title',
+		'col_mod_version',
+		'col_mod_size',
+		'col_mod_is_active',
+		'col_mod_active_games',
+		'col_mod_is_used',
+		'col_mod_used_games',
+		'col_mod_full_path',
+		'col_mod_has_scripts'
 	]
 
 	const newContent = list.map((x) => { return buildTableRow(x, colNames) })
 
-	byId("table_explore").innerHTML = newContent.join("")
+	byId('table_explore').innerHTML = newContent.join('')
 
-	byId("col_mod_name_switch").dispatchEvent(new Event('change'))
+	byId('col_mod_name_switch').dispatchEvent(new Event('change'))
 })
 
 
@@ -298,10 +299,10 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 		newOptions += buildOpt(thisGame, saveGameText + thisGame, 0)
 	})
 
-	byId("savegame_select").innerHTML = newOptions
+	byId('savegame_select').innerHTML = newOptions
 
 	let sendSet = new Set()
-	for (const item of byId("savegame_select").getElementsByClassName("i18n")) {
+	for (const item of byId('savegame_select').getElementsByClassName('i18n')) {
 		sendSet.add(item.getAttribute('data-i18n'))
 	}
 	sendSet.forEach( (thisStringID ) => {
@@ -324,7 +325,7 @@ contextBridge.exposeInMainWorld(
 	'ipc', 
 	{
 		changeLangList : () => { 
-			ipcRenderer.send("i18n-change-locale", byId("language_select").value)
+			ipcRenderer.send('i18n-change-locale', byId('language_select').value)
 		},
 		loadButton : () => {
 			ipcRenderer.send('openConfigFile')
@@ -332,12 +333,12 @@ contextBridge.exposeInMainWorld(
 		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
-			classAdd(["button_process","button_load"], "disabled")
-			classAdd("process_bar_done", "d-none")
-			classRem("process_bar_working", "d-none")
+			classAdd(['button_process','button_load'], 'disabled')
+			classAdd('process_bar_done', 'd-none')
+			classRem('process_bar_working', 'd-none')
 		},
 		changeExplore : () => {
-			ipcRenderer.send('askExploreList', byId("savegame_select").value)
+			ipcRenderer.send('askExploreList', byId('savegame_select').value)
 		},
 		changeExploreActiveUnused : () => {
 			ipcRenderer.send('askExploreList', 0, -1)
@@ -346,8 +347,8 @@ contextBridge.exposeInMainWorld(
 			ipcRenderer.send('askExploreList', -1)
 		},
 		changeExploreScripts : () => {
-			ipcRenderer.send('askExploreList', 0, 0, "hasScripts")
-			byId("col_mod_has_scripts_switch").checked = true
+			ipcRenderer.send('askExploreList', 0, 0, 'hasScripts')
+			byId('col_mod_has_scripts_switch').checked = true
 		}
 	}
 )
@@ -366,10 +367,10 @@ window.addEventListener('DOMContentLoaded', () => {
 	const table_handler = (e, domID) => {
 		e.preventDefault()
 		
-		if ( e.target.matches("td") ) {
+		if ( e.target.matches('td') ) {
 			const theseHeaders = Array.from(
-				byId(domID).parentNode.firstElementChild.querySelectorAll("th.i18n"),
-				th => [th.innerText, th.getAttribute("data-i18n") ]
+				byId(domID).parentNode.firstElementChild.querySelectorAll('th.i18n'),
+				th => [th.innerText, th.getAttribute('data-i18n') ]
 			)
 			const theseValues = Array.from(
 				e.target.parentNode.childNodes,
@@ -378,19 +379,30 @@ window.addEventListener('DOMContentLoaded', () => {
 			ipcRenderer.send('show-context-menu-table', theseHeaders, theseValues)
 		}
 	}
+	const table_dblclick = (e) => {
+		e.preventDefault()
+		
+		if ( e.target.matches('td') ) {
+			const thisMod = e.target.parentNode.childNodes[0].innerText
+			ipcRenderer.send('show-mod-detail', thisMod)
+		}
+	}
 	const list_handler = (e) => {
 		e.preventDefault()
 
-		const closestEntry = e.target.closest(".mod-record")
+		const closestEntry = e.target.closest('.mod-record')
 		
 		if ( closestEntry !== null ) {
-			ipcRenderer.send('show-context-menu-list', closestEntry.getAttribute("data-path"))
+			ipcRenderer.send('show-context-menu-list', closestEntry.getAttribute('data-path'))
 		}
 	}
 
-	byId("broken_list").addEventListener('contextmenu', (e) => { list_handler(e) })
-	byId("conflict_list").addEventListener('contextmenu', (e) => {list_handler(e) })
+	byId('broken_list').addEventListener('contextmenu', (e) => { list_handler(e) })
+	byId('conflict_list').addEventListener('contextmenu', (e) => {list_handler(e) })
 
-	byId("table_missing_parent").addEventListener('contextmenu', (e) => { table_handler(e, "table_missing") })
-	byId("table_explore_parent").addEventListener('contextmenu', (e) => { table_handler(e, "table_explore") })
+	byId('table_missing_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
+	byId('table_explore_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
+
+	byId('table_missing_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_missing') })
+	byId('table_explore_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_explore') })
 })

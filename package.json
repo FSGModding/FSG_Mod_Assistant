@@ -7,8 +7,8 @@
   "keywords": [],
   "author": "J.T.Sage <jtsage+datebox@gmail.com (http://jtsage.dev)",
   "license": "ISC",
-  "bugs" : {
-      "url" : "https://github.com/jtsage/FS19_Mod_Checker/issues"
+  "bugs": {
+    "url": "https://github.com/jtsage/FS19_Mod_Checker/issues"
   },
   "repository": {
     "type": "git",
@@ -20,13 +20,15 @@
     "make": "electron-forge make"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/eslint-parser": "^7.14.3",
     "@electron-forge/cli": "^6.0.0-beta.57",
     "@electron-forge/maker-deb": "^6.0.0-beta.57",
     "@electron-forge/maker-rpm": "^6.0.0-beta.57",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.57",
     "@electron-forge/maker-zip": "^6.0.0-beta.57",
     "electron": "^12.0.8",
-    "eslint": "^7.26.0"
+    "eslint": "^7.27.0"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
@@ -46,8 +48,8 @@
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "FS19ModChecker",
-            "iconUrl" : "https://jtsage.dev/fsmcicon.ico",
-            "setupIcon" : "./build/icon.ico"
+            "iconUrl": "https://jtsage.dev/fsmcicon.ico",
+            "setupIcon": "./build/icon.ico"
           }
         },
         {

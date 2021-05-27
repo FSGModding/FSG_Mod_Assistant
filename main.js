@@ -9,9 +9,9 @@
 
 const { app, Menu, BrowserWindow, ipcMain, clipboard } = require('electron')
 
-if (require('electron-squirrel-startup')) return app.quit();
+if (require('electron-squirrel-startup')) return app.quit()
 
-const devDebug   = false //true
+const devDebug   = true
 
 const path       = require('path')
 const xml2js     = require('xml2js')
@@ -49,7 +49,7 @@ function createWindow () {
 		if ( modList !== null ) {
 			modList.safeResend().then((isIt) => {
 				if ( isIt ) {
-					event.sender.send("processModsDone")
+					event.sender.send('processModsDone')
 				}
 			})
 		}
@@ -59,9 +59,9 @@ function createWindow () {
 		})
 	})
 	win.webContents.setWindowOpenHandler(({ url }) => {
-		require('electron').shell.openExternal(url);
-		return { action: 'deny' };
-	});
+		require('electron').shell.openExternal(url)
+		return { action: 'deny' }
+	})
 }
 
 
@@ -76,7 +76,7 @@ function createWindow () {
 ipcMain.on('show-context-menu-list', async (event, fullPath) => {
 	const template = [
 		{
-			label: await myTranslator.stringLookup("menu_copy_full_path"),
+			label: await myTranslator.stringLookup('menu_copy_full_path'),
 			click: () => { clipboard.writeText(fullPath) }
 		}
 	]
@@ -84,15 +84,16 @@ ipcMain.on('show-context-menu-list', async (event, fullPath) => {
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 
+ipcMain.on('show-mod-detail', (event, thisMod) => { openDetailWindow(modList.fullList[thisMod]) })
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	let template = [
 		{
-			label: await myTranslator.stringLookup("menu_details"),
+			label: await myTranslator.stringLookup('menu_details'),
 			click: () => { openDetailWindow(modList.fullList[theseValues[0]]) }
 		}
 	]
-	const blackListColumns = ["header_mod_is_used", "header_mod_is_active", "header_mod_has_scripts"]
-	const copyString = await myTranslator.stringLookup("menu_copy_general")
+	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts']
+	const copyString = await myTranslator.stringLookup('menu_copy_general')
 
 	for ( let i = 0; i < theseHeaders.length; i++ ) {
 		if ( blackListColumns.includes(theseHeaders[i][1]) ) { continue }
@@ -124,8 +125,8 @@ ipcMain.on('i18n-translate', async (event, arg) => {
 
 ipcMain.on('i18n-change-locale', (event, arg) => {
 	myTranslator.currentLocale = arg
-	event.sender.send("trigger-i18n")
-	event.sender.send("trigger-i18n-on-data")
+	event.sender.send('trigger-i18n')
+	event.sender.send('trigger-i18n-on-data')
 })
 
 
@@ -144,7 +145,7 @@ ipcMain.on('openConfigFile', (event) => {
 
 	dialog.showOpenDialog({
 		properties: ['openFile'],
-		defaultPath: path.join(homedir, "Documents" , "My Games", "FarmingSimulator2019", "gameSettings.xml" ),
+		defaultPath: path.join(homedir, 'Documents' , 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' ),
 		filters: [
 			{ name: 'XML', extensions: ['xml'] },
 			{ name: 'All', extensions: ['*'] }
@@ -152,7 +153,7 @@ ipcMain.on('openConfigFile', (event) => {
 	}).then(result => {
 		if ( result.canceled ) {
 			location_valid = false
-			event.sender.send("newFileConfig", { valid : false, error : false, saveDir : "--", modDir : "--" })
+			event.sender.send('newFileConfig', { valid : false, error : false, saveDir : '--', modDir : '--' })
 		} else {
 			const XMLOptions = {strict: true, async: false, normalizeTags: true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
 			const strictXMLParser = new xml2js.Parser(XMLOptions)
@@ -163,23 +164,23 @@ ipcMain.on('openConfigFile', (event) => {
 				let overrideAttr = false
 
 				try {
-					overrideAttr = xmlTree["gamesettings"]["modsdirectoryoverride"][0]['$']
+					overrideAttr = xmlTree['gamesettings']['modsdirectoryoverride'][0]['$']
 				} catch {
 					overrideAttr   = false
 					location_valid = false
-					event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" } )
+					event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--' } )
 				}
 
 				if ( overrideAttr !== false ) {
-					if ( overrideAttr.ACTIVE == "true" ) {
+					if ( overrideAttr.ACTIVE == 'true' ) {
 						location_modfolder = overrideAttr.DIRECTORY
 					} else {
-						location_modfolder = path.join(location_savegame, "mods")
+						location_modfolder = path.join(location_savegame, 'mods')
 					}
 
 					location_valid = true
 
-					event.sender.send("newFileConfig", {
+					event.sender.send('newFileConfig', {
 						valid   : true,
 						error   : false,
 						saveDir : location_savegame,
@@ -188,11 +189,10 @@ ipcMain.on('openConfigFile', (event) => {
 				}
 			})
 		}
-	}).catch(err => {
+	}).catch(() => {
 		// Read of file failed? Permissions issue maybe?  Not sure.
 		location_valid = false
-		event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" } )
-		// console.debug(err)
+		event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--' } )
 	})
 })
 
@@ -212,14 +212,14 @@ ipcMain.on('processMods', (event) => {
 			myTranslator.deferCurrentLocale)
 
 		modList.readAll().then(() => {
-			event.sender.send("processModsDone")
+			event.sender.send('processModsDone')
 		}).catch(() => {
-			event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" })
+			event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--' })
 		})
 	} else {
 		// This should be unreachable.  But it means that the process button was clicked before loading
 		// a valid config.  Let's just start over with empty entries.
-		event.sender.send("newFileConfig", { valid : false, error : true, saveDir : "--", modDir : "--" })
+		event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--' })
 	}
 })
 
@@ -232,11 +232,11 @@ ipcMain.on('processMods', (event) => {
   __|__ |       |_____  . |_____] |    \_ |_____| |    \_ |______ |  \_|
                                                                         
 */
-ipcMain.on("askBrokenList", (event) => {
+ipcMain.on('askBrokenList', (event) => {
 	modList.search({
-		columns : ["filenameSlash", "fullPath", "failedTestList", "copyName"],
-		terms   : ["didTestingFail"],
-	}).then(searchResults => { event.sender.send("gotBrokenList", searchResults) })
+		columns : ['filenameSlash', 'fullPath', 'failedTestList', 'copyName'],
+		terms   : ['didTestingFail'],
+	}).then(searchResults => { event.sender.send('gotBrokenList', searchResults) })
 })
 
 
@@ -248,11 +248,11 @@ ipcMain.on("askBrokenList", (event) => {
   __|__ |       |_____  . |_____  |_____| |  \_| |       |_____ __|__ |_____     |    ______|
                                                                                              
 */
-ipcMain.on("askConflictList", async (event) => {
-	const folderAndZipText = await myTranslator.stringLookup("conflict_error_folder_and_file")
+ipcMain.on('askConflictList', async (event) => {
+	const folderAndZipText = await myTranslator.stringLookup('conflict_error_folder_and_file')
 
 	modList.conflictList(folderAndZipText).then((searchResults) => {
-		event.sender.send("gotConflictList", searchResults)
+		event.sender.send('gotConflictList', searchResults)
 	})
 })
 
@@ -265,11 +265,11 @@ ipcMain.on("askConflictList", async (event) => {
   __|__ |       |_____  . |  |  | __|__ ______| ______| __|__ |  \_| |_____|
                                                                             
 */
-ipcMain.on("askMissingList", (event) => {
+ipcMain.on('askMissingList', (event) => {
 	modList.search({
-		columns : ["shortName", "title", "activeGames", "usedGames"],
-		terms   : ["isMissing"],
-	}).then(searchResults => { event.sender.send("gotMissingList", searchResults) })
+		columns : ['shortName', 'title', 'activeGames', 'usedGames'],
+		terms   : ['isMissing'],
+	}).then(searchResults => { event.sender.send('gotMissingList', searchResults) })
 })
 
 
@@ -281,13 +281,13 @@ ipcMain.on("askMissingList", (event) => {
                                                                       
   This is a form control we are populating.
 */
-ipcMain.on("askGamesActive", (event) => {
+ipcMain.on('askGamesActive', (event) => {
 	modList.getActive().then(async (activeSet) => {
 		event.sender.send(
-			"gotGamesActive",
+			'gotGamesActive',
 			activeSet,
-			await myTranslator.stringLookup("filter_savegame"),
-			await myTranslator.stringLookup("filter_savegame_all")
+			await myTranslator.stringLookup('filter_savegame'),
+			await myTranslator.stringLookup('filter_savegame_all')
 		)
 	})
 })
@@ -300,18 +300,18 @@ ipcMain.on("askGamesActive", (event) => {
   __|__ |       |_____  . |______ _/   \_ |       |_____ |_____| |    \_ |______
                                                                                 
 */
-ipcMain.on("askExploreList", (event, activeGame, usedGame = 0, extraTerms = []) => {
+ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) => {
 	modList.search({
 		columns             : [
-			"shortName", "title", "mod_version", "fileSizeMap",
-			"isActive", "activeGames", "isUsed", "usedGames",
-			"fullPath", "hasScripts"
+			'shortName', 'title', 'mod_version', 'fileSizeMap',
+			'isActive', 'activeGames', 'isUsed', 'usedGames',
+			'fullPath', 'hasScripts'
 		],
 		activeGame          : parseInt(activeGame),
 		usedGame            : parseInt(usedGame),
 		allTerms            : true,
-		terms               : ["isNotMissing", "didTestingPassEnough"].concat(extraTerms)
-	}).then(searchResults => { event.sender.send("gotExploreList", searchResults) })
+		terms               : ['isNotMissing', 'didTestingPassEnough'].concat(extraTerms)
+	}).then(searchResults => { event.sender.send('gotExploreList', searchResults) })
 })
 
 

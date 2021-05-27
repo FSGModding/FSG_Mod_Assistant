@@ -2,16 +2,6 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Debug - CLI Tester",
-			"program": "${workspaceFolder}/cli-test-runner.js",
-			"cwd": "${workspaceFolder}",
-			"request": "launch",
-			"skipFiles": [
-				"<node_internals>/**"
-			],
-			"type": "pwa-node"
-		},
-		{
 			"name": "Debug - Electron Main Process",
 			"type": "node",
 			"request": "launch",
@@ -22,6 +12,16 @@
 			},
 			"args" : ["."],
 			"outputCapture": "std"
+		},
+		{
+			"name": "Debug - CLI Tester",
+			"program": "${workspaceFolder}/test/cli-test-runner.js",
+			"cwd": "${workspaceFolder}",
+			"request": "launch",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"type": "pwa-node"
 		}
 	]
 }

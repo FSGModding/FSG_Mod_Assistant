@@ -47,10 +47,10 @@
 </head>
 <body>
 	
-	<div class="container-fluid pt-2 px-1 user-select-none">
+	<div class="container-fluid pt-2 px-0 user-select-none">
 		<div class="row w-100 mb-2">
 			<div class="col-9 border-bottom">
-				<h2><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
+				<h2 class="ps-2"><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
 			</div>
 			<div class="col-3">
 				<div class="row float-end">
@@ -90,7 +90,7 @@
 			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
 				<p class="text-center i18n" data-i18n="config_blurb"></p>
 				<p class="text-center i18n fst-italic" data-i18n="config_blurb2"></p>
-				<p class="text-center fw-lighter fst-italic i18n mt-4" data-i18n="config_load_button_blurb"></p>
+				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-4" data-i18n="config_load_button_blurb"></p>
 				<button type="button" onclick="ipc.loadButton()" id="button_load" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_load_button"></button>
 				<div id="load_error" class="alert alert-danger w-50 mx-auto mt-2 text-center d-none" role="alert">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="align-text-top bi bi-exclamation-diamond-fill" viewBox="0 0 16 16">
@@ -111,7 +111,7 @@
 						<td class="fw-lighter fst-italic" id="location_mod_folder">--</td>
 					</tr>
 				</table>
-				<p class="text-center fw-lighter fst-italic i18n mt-5" data-i18n="config_process_button_blurb"></p>
+				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-5" data-i18n="config_process_button_blurb"></p>
 				<button type="button" id="button_process" onclick="ipc.processButton()" class="disabled btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_process_button"></button>
 
 				<div class="progress w-75 mt-5 mx-auto d-none" id="process_bar_working">
@@ -133,13 +133,13 @@
 						<label class="form-check-label i18n" data-i18n="broken_options_hide_unzipped" for="zip_folder_switch"></label>
 					</div>
 				</div>
-				<ul class="list-group mx-4 mb-4" id="broken_list"></ul>
+				<ul class="list-group list-group-flush mb-4" id="broken_list"></ul>
 			</div>
 
 			<div class="tab-pane fade" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
 				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
-				<div class="mx-3 table-responsive">
-					<table class="table table-striped table-hover sortable" id="table_missing_parent">
+				<div class="mx-0 table-responsive">
+					<table class="table table-hover sortable" id="table_missing_parent">
 						<thead>
 							<tr>
 								<th class="i18n" data-i18n="header_mod_name"></th>
@@ -156,7 +156,7 @@
 
 			<div class="tab-pane fade" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
 				<p class="text-center i18n px-4" data-i18n="conflict_blurb"></p>
-				<ul class="list-group mx-4 mb-4" id="conflict_list"></ul>
+				<ul class="list-group list-group-flush mb-4" id="conflict_list"></ul>
 				<button type="button" id="button_un_hide_conflict" onclick="unHideAllConflict()" class="d-none btn mb-4 btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="conflict_un_hide_button"></button>
 			</div>
 
@@ -172,8 +172,8 @@
 				</div>
 
 				<button class="w-75 mx-auto btn btn-primary btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
-				<div class="mx-3 table-responsive">
-					<table class="table table-striped table-hover sortable" id="table_explore_parent">
+				<div class="mx-0 table-responsive">
+					<table class="table table-hover sortable" id="table_explore_parent">
 						<thead>
 							<tr>
 								<th class="i18n col_mod_name" data-i18n="header_mod_name"></th>
