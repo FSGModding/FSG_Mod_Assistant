@@ -14,8 +14,8 @@ const iconGreenCheckMark = '<span class="text-success"><svg xmlns="http://www.w3
 	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 	'<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>' +
 	'</svg></span>'
-const iconRedX = '<span class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' + 
-	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' + 
+const iconRedX = '<span class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' +
+	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 	'<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>' +
 	'</svg></span>'
 
@@ -53,7 +53,7 @@ ipcRenderer.on('mod-record', ( event, modDetails ) => {
 
 ipcRenderer.on('trigger-i18n', () => {
 	/* Get all i18n items in the UI and translate them */
-	let sendSet = new Set()
+	const sendSet = new Set()
 	for (const item of document.getElementsByClassName('i18n')) {
 		sendSet.add(item.getAttribute('data-i18n'))
 	}
@@ -64,7 +64,7 @@ ipcRenderer.on('trigger-i18n', () => {
 
 ipcRenderer.on('i18n-translate-return', (event, dataPoint, newText) => {
 	/* Receive the translated text of an i18n item, update it everywhere it appears */
-	let changeThese = document.querySelectorAll(`[data-i18n='${dataPoint}']`)
+	const changeThese = document.querySelectorAll(`[data-i18n='${dataPoint}']`)
 	changeThese.forEach((changeThis) => {
 		changeThis.innerHTML = newText
 	})

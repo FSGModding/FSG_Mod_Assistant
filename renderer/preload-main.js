@@ -14,34 +14,34 @@ const iconGreenCheckMark = '<span class="text-success"><svg xmlns="http://www.w3
 	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 	'<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>' +
 	'</svg></span>'
-const iconRedX = '<span class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' + 
-	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' + 
+const iconRedX = '<span class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' +
+	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 	'<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>' +
 	'</svg></span>'
 
 let dataIsLoaded = false
 
 const byId     = (domID) => { return document.getElementById(domID) }
-const classAdd = (domID, className) => { 
+const classAdd = (domID, className) => {
 	/* Add a class <className> to <domID> */
 	const domIDs =  ( typeof domID === 'string' )  ? [domID] : domID
 		
-	domIDs.forEach((thisDomID) => { 
+	domIDs.forEach( (thisDomID) => {
 		document.getElementById(thisDomID).classList.add(className)
-	} )
+	})
 }
 const classRem = (domID, className) => {
 	/* Remove a class <className> from <domID> */
 	const domIDs  = ( typeof domID === 'string' ) ? [domID] : domID
 		
-	domIDs.forEach((thisDomID) => { 
+	domIDs.forEach( (thisDomID) => {
 		document.getElementById(thisDomID).classList.remove(className)
-	} )
+	})
 }
 
 const buildOpt = (value, text, selected) => {
 	/* Build an option for a select box */
-	return `<option value="${value}" ${( value == selected ) ? 'selected' : ''}>${text}</option>`
+	return `<option value="${value}" ${( value === selected ) ? 'selected' : ''}>${text}</option>`
 }
 
 const buildTableRow = (columnValues, colNames = []) => {
@@ -72,7 +72,7 @@ const buildTableRow = (columnValues, colNames = []) => {
 
 		thisRow += `<td class="${cssClass}" data-sort="${sort}">${text}</td>`
 	}
-	return  '<tr>' + thisRow + '</tr>'
+	return  `<tr>${thisRow}</tr>`
 }
 
 const buildBrokenList = (name, path, bullets, copyName) => {
@@ -137,7 +137,7 @@ ipcRenderer.on('trigger-i18n-on-data', () => {
 
 ipcRenderer.on('trigger-i18n', () => {
 	/* Get all i18n items in the UI and translate them */
-	let sendSet = new Set()
+	const sendSet = new Set()
 	for (const item of document.getElementsByClassName('i18n')) {
 		sendSet.add(item.getAttribute('data-i18n'))
 	}
@@ -148,7 +148,7 @@ ipcRenderer.on('trigger-i18n', () => {
 
 ipcRenderer.on('i18n-translate-return', (event, dataPoint, newText) => {
 	/* Receive the translated text of an i18n item, update it everywhere it appears */
-	let changeThese = document.querySelectorAll(`[data-i18n='${dataPoint}']`)
+	const changeThese = document.querySelectorAll(`[data-i18n='${dataPoint}']`)
 	changeThese.forEach((changeThis) => {
 		changeThis.innerHTML = newText
 	})
@@ -192,9 +192,9 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
                                                                                  
 */
 ipcRenderer.on('processModsDone', () => {
-	classAdd('process_bar_working','d-none')
+	classAdd('process_bar_working', 'd-none')
 	classRem('process_bar_done', 'd-none')
-	classRem(['button_process','button_load'], 'disabled')
+	classRem(['button_process', 'button_load'], 'disabled')
 	
 	// Fuzzy logic.  Used to request reload of display data when changing l10n setting.
 	dataIsLoaded = true
@@ -218,7 +218,7 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 	const newContent = list.map((x) => { return buildBrokenList(...x) })
 	byId('broken_list').innerHTML = newContent.join('')
 
-	let sendSet = new Set()
+	const sendSet = new Set()
 	for (const item of byId('broken_list').getElementsByClassName('i18n')) {
 		sendSet.add(item.getAttribute('data-i18n'))
 	}
@@ -295,13 +295,13 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 	/* Change explore list based on save game filter */
 	let newOptions = buildOpt(0, allText, 0)
 
-	list.forEach((thisGame) => { 
+	list.forEach((thisGame) => {
 		newOptions += buildOpt(thisGame, saveGameText + thisGame, 0)
 	})
 
 	byId('savegame_select').innerHTML = newOptions
 
-	let sendSet = new Set()
+	const sendSet = new Set()
 	for (const item of byId('savegame_select').getElementsByClassName('i18n')) {
 		sendSet.add(item.getAttribute('data-i18n'))
 	}
@@ -322,9 +322,9 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 Functions that are exposed to the UI renderer process
 */
 contextBridge.exposeInMainWorld(
-	'ipc', 
+	'ipc',
 	{
-		changeLangList : () => { 
+		changeLangList : () => {
 			ipcRenderer.send('i18n-change-locale', byId('language_select').value)
 		},
 		loadButton : () => {
@@ -333,7 +333,7 @@ contextBridge.exposeInMainWorld(
 		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
-			classAdd(['button_process','button_load'], 'disabled')
+			classAdd(['button_process', 'button_load'], 'disabled')
 			classAdd('process_bar_done', 'd-none')
 			classRem('process_bar_working', 'd-none')
 		},
@@ -349,7 +349,7 @@ contextBridge.exposeInMainWorld(
 		changeExploreScripts : () => {
 			ipcRenderer.send('askExploreList', 0, 0, 'hasScripts')
 			byId('col_mod_has_scripts_switch').checked = true
-		}
+		},
 	}
 )
 
@@ -370,11 +370,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		if ( e.target.matches('td') ) {
 			const theseHeaders = Array.from(
 				byId(domID).parentNode.firstElementChild.querySelectorAll('th.i18n'),
-				th => [th.innerText, th.getAttribute('data-i18n') ]
+				(th) => [th.innerText, th.getAttribute('data-i18n')]
 			)
 			const theseValues = Array.from(
 				e.target.parentNode.childNodes,
-				td => td.innerText
+				(td) => td.innerText
 			)
 			ipcRenderer.send('show-context-menu-table', theseHeaders, theseValues)
 		}

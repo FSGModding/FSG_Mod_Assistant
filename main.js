@@ -26,19 +26,19 @@ let location_savegame  = null
 let location_modfolder = null
 let location_valid     = false
 
-var modList = null
+let modList = null
 
 function createWindow () {
 	const win = new BrowserWindow({
-		icon           : path.join(app.getAppPath(), 'build', 'icon.png'),
-		width          : 1000,
-		height         : 700,
-		autoHideMenuBar: !devDebug,
-		webPreferences : {
+		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+		width           : 1000,
+		height          : 700,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
 			nodeIntegration  : false,
 			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'renderer', 'preload-main.js')
-		}
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload-main.js'),
+		},
 	})
 
 	if ( !devDebug ) { win.removeMenu() }
@@ -60,7 +60,7 @@ function createWindow () {
 	})
 	win.webContents.setWindowOpenHandler(({ url }) => {
 		require('electron').shell.openExternal(url)
-		return { action: 'deny' }
+		return { action : 'deny' }
 	})
 }
 
@@ -76,8 +76,8 @@ function createWindow () {
 ipcMain.on('show-context-menu-list', async (event, fullPath) => {
 	const template = [
 		{
-			label: await myTranslator.stringLookup('menu_copy_full_path'),
-			click: () => { clipboard.writeText(fullPath) }
+			label : await myTranslator.stringLookup('menu_copy_full_path'),
+			click : () => { clipboard.writeText(fullPath) },
 		}
 	]
 	const menu = Menu.buildFromTemplate(template)
@@ -86,10 +86,10 @@ ipcMain.on('show-context-menu-list', async (event, fullPath) => {
 
 ipcMain.on('show-mod-detail', (event, thisMod) => { openDetailWindow(modList.fullList[thisMod]) })
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
-	let template = [
+	const template = [
 		{
-			label: await myTranslator.stringLookup('menu_details'),
-			click: () => { openDetailWindow(modList.fullList[theseValues[0]]) }
+			label : await myTranslator.stringLookup('menu_details'),
+			click : () => { openDetailWindow(modList.fullList[theseValues[0]]) },
 		}
 	]
 	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts']
@@ -98,8 +98,8 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 	for ( let i = 0; i < theseHeaders.length; i++ ) {
 		if ( blackListColumns.includes(theseHeaders[i][1]) ) { continue }
 		template.push({
-			label: copyString + theseHeaders[i][0],
-			click: () => { clipboard.writeText(theseValues[i]) }
+			label : copyString + theseHeaders[i][0],
+			click : () => { clipboard.writeText(theseValues[i]) },
 		})
 		
 	}
@@ -117,8 +117,8 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
   __|__ |       |_____  .    |    |    \_ |     | |  \_| ______| |_____ |     |    |    |______
                                                                                                
 */
-ipcMain.on('i18n-translate', async (event, arg) => {
-	myTranslator.stringLookup(arg).then((text) => { 
+ipcMain.on('i18n-translate', (event, arg) => {
+	myTranslator.stringLookup(arg).then((text) => {
 		event.sender.send('i18n-translate-return', arg, text)
 	})
 })
@@ -139,23 +139,23 @@ ipcMain.on('i18n-change-locale', (event, arg) => {
                                                                       
 */
 ipcMain.on('openConfigFile', (event) => {
-	const {dialog} = require('electron') 
+	const {dialog} = require('electron')
 	const fs       = require('fs')
 	const homedir  = require('os').homedir()
 
 	dialog.showOpenDialog({
-		properties: ['openFile'],
-		defaultPath: path.join(homedir, 'Documents' , 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' ),
-		filters: [
-			{ name: 'XML', extensions: ['xml'] },
-			{ name: 'All', extensions: ['*'] }
-		]
-	}).then(result => {
+		properties  : ['openFile'],
+		defaultPath : path.join(homedir, 'Documents', 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' ),
+		filters     : [
+			{ name : 'XML', extensions : ['xml'] },
+			{ name : 'All', extensions : ['*'] },
+		],
+	}).then((result) => {
 		if ( result.canceled ) {
 			location_valid = false
 			event.sender.send('newFileConfig', { valid : false, error : false, saveDir : '--', modDir : '--' })
 		} else {
-			const XMLOptions = {strict: true, async: false, normalizeTags: true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
+			const XMLOptions = {strict : true, async : false, normalizeTags : true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
 			const strictXMLParser = new xml2js.Parser(XMLOptions)
 
 			location_savegame = path.dirname(result.filePaths[0])
@@ -164,7 +164,7 @@ ipcMain.on('openConfigFile', (event) => {
 				let overrideAttr = false
 
 				try {
-					overrideAttr = xmlTree['gamesettings']['modsdirectoryoverride'][0]['$']
+					overrideAttr = xmlTree.gamesettings.modsdirectoryoverride[0].$
 				} catch {
 					overrideAttr   = false
 					location_valid = false
@@ -172,7 +172,7 @@ ipcMain.on('openConfigFile', (event) => {
 				}
 
 				if ( overrideAttr !== false ) {
-					if ( overrideAttr.ACTIVE == 'true' ) {
+					if ( overrideAttr.ACTIVE === 'true' ) {
 						location_modfolder = overrideAttr.DIRECTORY
 					} else {
 						location_modfolder = path.join(location_savegame, 'mods')
@@ -184,7 +184,7 @@ ipcMain.on('openConfigFile', (event) => {
 						valid   : true,
 						error   : false,
 						saveDir : location_savegame,
-						modDir  : location_modfolder
+						modDir  : location_modfolder,
 					})
 				}
 			})
@@ -236,7 +236,7 @@ ipcMain.on('askBrokenList', (event) => {
 	modList.search({
 		columns : ['filenameSlash', 'fullPath', 'failedTestList', 'copyName'],
 		terms   : ['didTestingFail'],
-	}).then(searchResults => { event.sender.send('gotBrokenList', searchResults) })
+	}).then((searchResults) => { event.sender.send('gotBrokenList', searchResults) })
 })
 
 
@@ -269,7 +269,7 @@ ipcMain.on('askMissingList', (event) => {
 	modList.search({
 		columns : ['shortName', 'title', 'activeGames', 'usedGames'],
 		terms   : ['isMissing'],
-	}).then(searchResults => { event.sender.send('gotMissingList', searchResults) })
+	}).then((searchResults) => { event.sender.send('gotMissingList', searchResults) })
 })
 
 
@@ -310,8 +310,8 @@ ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) 
 		activeGame          : parseInt(activeGame),
 		usedGame            : parseInt(usedGame),
 		allTerms            : true,
-		terms               : ['isNotMissing', 'didTestingPassEnough'].concat(extraTerms)
-	}).then(searchResults => { event.sender.send('gotExploreList', searchResults) })
+		terms               : ['isNotMissing', 'didTestingPassEnough'].concat(extraTerms),
+	}).then((searchResults) => { event.sender.send('gotExploreList', searchResults) })
 })
 
 
@@ -323,7 +323,7 @@ ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) 
   |_____/ |______    |    |     | __|__ |_____      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
                                                                                                 
 */
-var detailWindow = null
+let detailWindow = null
 
 function openDetailWindow(thisModRecord) {
 	if (detailWindow) {
@@ -332,31 +332,31 @@ function openDetailWindow(thisModRecord) {
 	}
 
 	detailWindow = new BrowserWindow({
-		icon           : path.join(app.getAppPath(), 'build', 'icon.png'),
-		width          : 800,
-		height         : 500,
-		title          : thisModRecord.title,
-		minimizable    : false,
-		maximizable    : false,
-		fullscreenable : false,
-		autoHideMenuBar: !devDebug,
-		webPreferences : {
+		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+		width           : 800,
+		height          : 500,
+		title           : thisModRecord.title,
+		minimizable     : false,
+		maximizable     : false,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
 			nodeIntegration  : false,
 			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'renderer', 'preload-detail.js')
-		}
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload-detail.js'),
+		},
 	})
 	if ( !devDebug ) { detailWindow.removeMenu() }
 
 	detailWindow.webContents.on('did-finish-load', (event) => {
 		const sendData = {
-			title       : thisModRecord.title,
-			version     : thisModRecord.mod_version,
-			filesize    : thisModRecord.fileSizeString,
-			active_games: thisModRecord.activeGames,
-			used_games  : thisModRecord.usedGames,
-			has_scripts : ((thisModRecord.hasScripts) ? true : false),
-			description : thisModRecord.descDescription,
+			title        : thisModRecord.title,
+			version      : thisModRecord.mod_version,
+			filesize     : thisModRecord.fileSizeString,
+			active_games : thisModRecord.activeGames,
+			used_games   : thisModRecord.usedGames,
+			has_scripts  : thisModRecord.hasScripts,
+			description  : thisModRecord.descDescription,
 		}
 		event.sender.send('mod-record', sendData)
 		event.sender.send('trigger-i18n')
@@ -366,7 +366,7 @@ function openDetailWindow(thisModRecord) {
 
 	// detailWindow.webContents.openDevTools()
 
-	detailWindow.on('closed', function() {
+	detailWindow.on('closed', () => {
 		detailWindow = null
 	})
 }

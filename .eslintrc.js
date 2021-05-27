@@ -1,38 +1,96 @@
 module.exports = {
-	parser: '@babel/eslint-parser',
-	'env': {
-		'browser': true,
-		'commonjs': true,
-		'es2021': true,
-		'node': true
+	'parser' : '@babel/eslint-parser',
+	'env' : {
+		'browser'  : true,
+		'commonjs' : true,
+		'es2021'   : true,
+		'node'     : true,
 	},
-	'extends': 'eslint:recommended',
-	'parserOptions': {
-		'ecmaVersion': 12,
-		'requireConfigFile' : false
+	'extends' : 'eslint:recommended',
+	'parserOptions' : {
+		'ecmaVersion'       : 12,
+		'requireConfigFile' : false,
 	},
-	'rules': {
-		'no-prototype-builtins': 0,
-		'indent': [
+	'rules' : {
+		'indent' : [
 			'error',
 			'tab',
 			{
-				'SwitchCase': 1
+				'SwitchCase' : 1,
+			},
+		],
+		'quotes' : [
+			'error',
+			'single',
+		],
+		'semi' : [
+			'error',
+			'never',
+		],
+		'no-unused-vars' : [
+			'error',
+			{
+				'varsIgnorePattern' : '^_',
+			},
+		],
+		'no-trailing-spaces' : [
+			'error',
+			{
+				'skipBlankLines' : true,
+				'ignoreComments' : true,
+			},
+		],
+		'dot-notation' : [
+			'error',
+		],
+		'comma-dangle' : [
+			'error',
+			{
+				'arrays'    : 'only-multiline',
+				'objects'   : 'always-multiline',
+				'imports'   : 'never',
+				'exports'   : 'never',
+				'functions' : 'never',
 			}
 		],
-		'quotes': [
+		'key-spacing' : [
 			'error',
-			'single'
+			{
+				'beforeColon' : true,
+				'afterColon'  : true,
+				'mode'        : 'minimum',
+			},
 		],
-		'semi': [
+		'array-bracket-spacing' : [
 			'error',
 			'never'
 		],
-		'no-unused-vars': [
-			'error',
-			{
-				'varsIgnorePattern': '^_'
-			}
-		]
-	}
+		'no-await-in-loop'           : 'error',
+		'no-promise-executor-return' : 'error',
+		'no-useless-backreference'   : 'error',
+		'require-atomic-updates'     : 'error',
+		'default-case'               : 'error',
+		'eqeqeq'                     : 'error',
+		'no-else-return'             : 'error',
+		'no-global-assign'           : 'error',
+		'no-implicit-globals'        : 'error',
+		'no-multi-str'               : 'error',
+		'no-param-reassign'          : 'error',
+		'no-return-await'            : 'error',
+		'no-sequences'               : 'error',
+		'no-unused-expressions'      : 'error',
+		'comma-spacing'              : 'error',
+		'func-call-spacing'          : 'error',
+		'keyword-spacing'            : 'error',
+		'no-lonely-if'               : 'error',
+		'no-unneeded-ternary'        : 'error',
+		'arrow-parens'               : 'error',
+		'no-var'                     : 'error',
+		'prefer-const'               : 'error',
+		'prefer-arrow-callback'      : 'error',
+		'prefer-template'            : 'error',
+		'no-useless-concat'          : 'error',
+		
+		
+	},
 }
