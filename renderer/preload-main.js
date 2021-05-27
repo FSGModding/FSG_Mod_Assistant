@@ -132,6 +132,7 @@ ipcRenderer.on('trigger-i18n-on-data', () => {
 		ipcRenderer.send('askConflictList')
 		ipcRenderer.send('askExploreList', 0)
 		ipcRenderer.send('askGamesActive')
+		classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
 	}
 })
 
@@ -195,6 +196,7 @@ ipcRenderer.on('processModsDone', () => {
 	classAdd('process_bar_working', 'd-none')
 	classRem('process_bar_done', 'd-none')
 	classRem(['button_process', 'button_load'], 'disabled')
+	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
 	
 	// Fuzzy logic.  Used to request reload of display data when changing l10n setting.
 	dataIsLoaded = true

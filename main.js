@@ -11,7 +11,7 @@ const { app, Menu, BrowserWindow, ipcMain, clipboard } = require('electron')
 
 if (require('electron-squirrel-startup')) return app.quit()
 
-const devDebug   = true
+const devDebug   = false
 
 const path       = require('path')
 const xml2js     = require('xml2js')

@@ -72,18 +72,22 @@
 				<button class="link-dark nav-link active i18n" data-i18n="tab_config" id="tab_config" data-bs-toggle="tab" data-bs-target="#tab_config_content" type="button" role="tab" aria-selected="true" aria-controls="tab_config_content"></button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="link-dark nav-link i18n" data-i18n="tab_broken" id="tab_broken" data-bs-toggle="tab" data-bs-target="#tab_broken_content" type="button" role="tab" aria-selected="false" aria-controls="tab_broken_content"></button>
+				<button class="disabled link-dark nav-link i18n" data-i18n="tab_broken" id="tab_broken" data-bs-toggle="tab" data-bs-target="#tab_broken_content" type="button" role="tab" aria-selected="false" aria-controls="tab_broken_content"></button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="link-dark nav-link i18n" data-i18n="tab_missing" id="tab_missing" data-bs-toggle="tab" data-bs-target="#tab_missing_content" type="button" role="tab" aria-selected="false" aria-controls="tab_missing_content"></button>
+				<button class="disabled link-dark nav-link i18n" data-i18n="tab_missing" id="tab_missing" data-bs-toggle="tab" data-bs-target="#tab_missing_content" type="button" role="tab" aria-selected="false" aria-controls="tab_missing_content"></button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="link-dark nav-link i18n" data-i18n="tab_conflict" id="tab_conflict" data-bs-toggle="tab" data-bs-target="#tab_conflict_content" type="button" role="tab" aria-selected="false" aria-controls="tab_conflict_content"></button>
+				<button class="disabled link-dark nav-link i18n" data-i18n="tab_conflict" id="tab_conflict" data-bs-toggle="tab" data-bs-target="#tab_conflict_content" type="button" role="tab" aria-selected="false" aria-controls="tab_conflict_content"></button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="link-dark nav-link i18n" data-i18n="tab_explore" id="tab_explore" data-bs-toggle="tab" data-bs-target="#tab_explore_content" type="button" role="tab" aria-selected="false" aria-controls="tab_explore_content"></button>
+				<button class="disabled link-dark nav-link i18n" data-i18n="tab_explore" id="tab_explore" data-bs-toggle="tab" data-bs-target="#tab_explore_content" type="button" role="tab" aria-selected="false" aria-controls="tab_explore_content"></button>
 			</li>
 		</ul>
+
+
+
+
 
 		<div class="tab-content pt-3" id="mainTabContent">
 
@@ -125,6 +129,9 @@
 				</div>
 			</div>
 
+
+
+
 			<div class="tab-pane fade" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
 				<p class="text-center i18n" data-i18n="broken_blurb"></p>
 				<div class="text-center my-3">
@@ -135,6 +142,9 @@
 				</div>
 				<ul class="list-group list-group-flush mb-4" id="broken_list"></ul>
 			</div>
+
+
+
 
 			<div class="tab-pane fade" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
 				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
@@ -154,24 +164,35 @@
 				</div>
 			</div>
 
+
+
+
 			<div class="tab-pane fade" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
 				<p class="text-center i18n px-4" data-i18n="conflict_blurb"></p>
 				<ul class="list-group list-group-flush mb-4" id="conflict_list"></ul>
 				<button type="button" id="button_un_hide_conflict" onclick="unHideAllConflict()" class="d-none btn mb-4 btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="conflict_un_hide_button"></button>
 			</div>
 
+
+
+
 			<div class="tab-pane fade" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
 				<p class="text-center i18n px-4" data-i18n="explore_blurb"></p>
 				
-				<div class="input-group input-group-sm mb-3 w-75 mx-auto">
-					<span class="border-secondary input-group-text" id="search-addon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></span>
-					<input type="text" id="explore-search" onkeyup="searchExploreTable()" class="border-secondary form-control" aria-describedby="search-addon">
-					<button class="btn btn-outline-secondary" onclick="searchExploreClear()" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-						<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-					</svg></button>
+				<div class="row mx-5">
+					<div class="col-8">
+						<div class="input-group input-group-sm mb-3 w-100 mx-auto">
+							<span class="border-secondary input-group-text" id="search-addon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></span>
+							<input type="text" id="explore-search" onkeyup="searchExploreTable()" class="border-secondary form-control" aria-describedby="search-addon">
+							<button class="btn btn-outline-secondary" onclick="searchExploreClear()" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+								<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+							</svg></button>
+						</div>
+					</div>
+					<div class="col-4">
+						<button class="w-100 mx-auto btn btn-primary btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
+					</div>
 				</div>
-
-				<button class="w-75 mx-auto btn btn-primary btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
 				<div class="mx-0 table-responsive">
 					<table class="table table-hover sortable" id="table_explore_parent">
 						<thead>
