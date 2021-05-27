@@ -367,7 +367,7 @@ function openDetailWindow(thisModRecord) {
 	// detailWindow.webContents.openDevTools()
 
 	detailWindow.on('closed', function() {
-		newWindow = null
+		detailWindow = null
 	})
 }
 
