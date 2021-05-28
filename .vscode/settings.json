@@ -1,0 +1,33 @@
+{
+	"cSpell.words": [
+		"Courseplay",
+		"DESCVERSION",
+		"Hant",
+		"MODNAME",
+		"backreference",
+		"builtins",
+		"careersavegame",
+		"filesize",
+		"fullscreenable",
+		"gamesettings",
+		"gitattributes",
+		"iconfilename",
+		"jtsage",
+		"maximizable",
+		"minimizable",
+		"moddesc",
+		"modfolder",
+		"modsdirectoryoverride",
+		"modtiny",
+		"offcanvas",
+		"pdlc",
+		"placeables",
+		"savegame",
+		"storeitems",
+		"unzipper",
+		"zippack"
+	],
+	"files.exclude": {
+		"**/out": true
+	}
+}
