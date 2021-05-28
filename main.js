@@ -11,7 +11,7 @@ const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut } = require
 
 if (require('electron-squirrel-startup')) return app.quit()
 
-const devDebug   = true
+const devDebug   = false
 
 const path       = require('path')
 const xml2js     = require('xml2js')
@@ -90,8 +90,24 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 		{
 			label : await myTranslator.stringLookup('menu_details'),
 			click : () => { openDetailWindow(modList.fullList[theseValues[0]]) },
-		}
+		},
+		{ type : 'separator' }
 	]
+	if ( modList.fullList[theseValues[0]].isMissing ) {
+		template.push({
+			label : await myTranslator.stringLookup('menu_find_on_mod_hub'),
+			click : () => {
+				const url = `https://www.farming-simulator.com/mods.php?title=fs2019&searchMod= ${theseValues[1]}`
+				require('electron').shell.openExternal(url)
+			},
+		}, {
+			label : await myTranslator.stringLookup('menu_find_on_google'),
+			click : () => {
+				const url = `https://www.google.com/search?q=FS19 ${theseValues[1]}`
+				require('electron').shell.openExternal(url)
+			},
+		}, { type : 'separator' })
+	}
 	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts']
 	const copyString = await myTranslator.stringLookup('menu_copy_general')
 
