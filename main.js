@@ -7,11 +7,11 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, Menu, BrowserWindow, ipcMain, clipboard } = require('electron')
+const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut } = require('electron')
 
 if (require('electron-squirrel-startup')) return app.quit()
 
-const devDebug   = false
+const devDebug   = true
 
 const path       = require('path')
 const xml2js     = require('xml2js')
@@ -371,7 +371,59 @@ function openDetailWindow(thisModRecord) {
 	})
 }
 
+
+/*
+  ______  _______ ______  _     _  ______      _  _  _ _____ __   _ ______   _____  _  _  _
+  |     \ |______ |_____] |     | |  ____      |  |  |   |   | \  | |     \ |     | |  |  |
+  |_____/ |______ |_____] |_____| |_____|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
+                                                                                           
+*/
+let debugWindow = null
+
+function openDebugWindow(logClass) {
+	if (debugWindow) {
+		debugWindow.focus()
+		return
+	}
+
+	debugWindow = new BrowserWindow({
+		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+		width           : 800,
+		height          : 500,
+		title           : 'Debug Log',
+		minimizable     : false,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload-debug.js'),
+		},
+	})
+	if ( !devDebug ) { debugWindow.removeMenu() }
+
+	debugWindow.webContents.on('did-finish-load', (event) => {
+		const logContents = logClass.toDisplayHTML
+		event.sender.send('update-log', logContents)
+		event.sender.send('trigger-i18n')
+	})
+
+	debugWindow.loadFile(path.join(__dirname, 'renderer', 'debug.html'))
+
+	// debugWindow.webContents.openDevTools()
+
+	debugWindow.on('closed', () => {
+		debugWindow = null
+	})
+}
+
+
 app.whenReady().then(() => {
+	globalShortcut.register('Alt+CommandOrControl+D', () => {
+		if ( modList === null ) { return }
+		openDebugWindow(modList.log)
+	})
+
 	createWindow()
 
 	app.on('activate', () => {
