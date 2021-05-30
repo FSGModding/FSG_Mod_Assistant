@@ -364,7 +364,7 @@ function openDetailWindow(thisModRecord) {
 	})
 	if ( !devDebug ) { detailWindow.removeMenu() }
 
-	detailWindow.webContents.on('did-finish-load', (event) => {
+	detailWindow.webContents.on('did-finish-load', async (event) => {
 		const sendData = {
 			title        : thisModRecord.title,
 			version      : thisModRecord.mod_version,
@@ -375,11 +375,16 @@ function openDetailWindow(thisModRecord) {
 			description  : thisModRecord.descDescription,
 		}
 		event.sender.send('mod-record', sendData)
-		thisModRecord.getIcon().then((iconData) => {
-			const iconNative = nativeImage.createFromBuffer(iconData.data, { width : iconData.width, height : iconData.height })
-			event.sender.send('mod-icon', iconNative.toDataURL())
-		})
 		event.sender.send('trigger-i18n')
+
+		thisModRecord.getIcon().then((iconData) => {
+			if ( iconData === null || iconData === false ) {
+				event.sender.send('mod-icon', null)
+			} else {
+				const iconNative = nativeImage.createFromBuffer(iconData.data, { width : iconData.width, height : iconData.height })
+				event.sender.send('mod-icon', iconNative.toDataURL())
+			}
+		})
 	})
 
 	detailWindow.loadFile(path.join(__dirname, 'renderer', 'detail.html'))
