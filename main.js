@@ -7,7 +7,7 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut } = require('electron')
+const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut } = require('electron')
 
 if (require('electron-squirrel-startup')) return app.quit()
 
@@ -375,6 +375,10 @@ function openDetailWindow(thisModRecord) {
 			description  : thisModRecord.descDescription,
 		}
 		event.sender.send('mod-record', sendData)
+		thisModRecord.getIcon().then((iconData) => {
+			const iconNative = nativeImage.createFromBuffer(iconData.data, { width : iconData.width, height : iconData.height })
+			event.sender.send('mod-icon', iconNative.toDataURL())
+		})
 		event.sender.send('trigger-i18n')
 	})
 

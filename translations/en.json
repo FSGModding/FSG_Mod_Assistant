@@ -19,6 +19,7 @@
 	"location_savegame_folder"         : "Save Game Files",
 	"location_mod_folder"              : "Mod Files",
 	"config_working_status"            : "Working...",
+	"config_testing_status"            : "Testing...",
 	"config_working_done"              : "Done!",
 	"broken_blurb"                     : "These mods have been detected to be a possible problem.  ZIP Files or Folders with any non-alphanumeric character other than \"_\" will not be loaded by the game.  Mods that are not compressed as a ZIP file cannot be used in multiplayer games.  Finally, the mod folder should only contain mods, no other files.  Below, there is a list of problem files, and a suggested solution",
 	"broken_options_hide_unzipped"     : "Hide mods that only have multiplayer \"needs zipped\" warning.",

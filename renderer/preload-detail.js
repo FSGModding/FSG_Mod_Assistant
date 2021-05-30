@@ -41,6 +41,14 @@ ipcRenderer.on('mod-record', ( event, modDetails ) => {
 	byId('description').innerHTML  = modDetails.description
 })
 
+ipcRenderer.on('mod-icon', (event, pngData) => {
+	if ( pngData !== null ) {
+		byId('icon_div').innerHTML = `<img class="img-fluid" src="${pngData}" />`
+	} else {
+		byId('icon_div').classList.add('d-none')
+	}
+})
+
 
 
 

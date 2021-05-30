@@ -181,7 +181,7 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 	byId('location_savegame_folder').innerHTML = arg.saveDir
 	byId('location_mod_folder').innerHTML      = arg.modDir
 
-	classAdd(['process_bar_working', 'process_bar_done'], 'd-none')
+	classAdd(['process_bar_working', 'process_bar_done', 'process_bar_testing'], 'd-none')
 	byId('button_process').focus()
 })
 
@@ -194,7 +194,7 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 */
 ipcRenderer.on('processModsDone', () => {
 	classAdd('process_bar_working', 'd-none')
-	classRem('process_bar_done', 'd-none')
+	classRem('process_bar_testing', 'd-none')
 	classRem(['button_process', 'button_load'], 'disabled')
 	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
 	
@@ -217,6 +217,9 @@ ipcRenderer.on('processModsDone', () => {
                                                                         
 */
 ipcRenderer.on('gotBrokenList', (event, list) => {
+	classAdd('process_bar_testing', 'd-none')
+	classRem('process_bar_done', 'd-none')
+
 	const newContent = list.map((x) => { return buildBrokenList(...x) })
 	byId('broken_list').innerHTML = newContent.join('')
 

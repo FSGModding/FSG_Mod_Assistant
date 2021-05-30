@@ -31,9 +31,11 @@
     "eslint": "^7.27.0"
   },
   "dependencies": {
+    "decode-dxt": "^1.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "glob": "^7.1.7",
     "node-stream-zip": "^1.13.4",
+    "parse-dds": "^1.2.1",
     "xml2js": "^0.4.23"
   },
   "config": {

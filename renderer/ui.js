@@ -57,8 +57,6 @@ function searchExploreTable() {
 	const exploreTable = byId('table_explore').querySelectorAll('tbody>tr')
 	const searchTerm = byId('explore-search').value.toLowerCase()
 
-	// BUG: wont-fix - zebra stripes get screwed up when searching. We'd have to remove them from the table.
-
 	exploreTable.forEach((thisTD) => {
 		const testString = (thisTD.childNodes[0].innerText + thisTD.childNodes[1].innerText).toLowerCase()
 		

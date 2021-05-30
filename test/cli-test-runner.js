@@ -7,14 +7,14 @@
 
 // (c) 2021 JTSage.  MIT License.
 const _homedir  = require('os').homedir()
-const path     = require('path')
+const path      = require('path')
 
 //const gameFolder = path.join(_homedir, 'Documents' , 'My Games', 'FarmingSimulator2019' )
 const gameFolder = path.join(__dirname, '..', '..', 'testFolder')
 const fileFolder = path.join(gameFolder, 'mods')
 
-const modReader = require('../lib/mod-checker')
-const translator = require('../lib/translate.js')
+const modReader    = require('../lib/mod-checker.js')
+const translator   = require('../lib/translate.js')
 const myTranslator = new translator.translator(translator.getSystemLocale())
 
 const modList = new modReader(gameFolder, fileFolder, myTranslator.deferCurrentLocale)
@@ -28,21 +28,23 @@ modList.readAll().then(() => {
 			'shortName',
 			//'isActive',
 			//'isUsed',
-			//'isNotMissing',
+			'isFolder',
 			'didTestingPassEnough',
 			// 'title',
 			// 'mod_version',
 			//'fileSizeMap',
-			'activeGames',
-			'usedGames',
+			//'activeGames',
+			//'usedGames',
+			'iconFileName',
 			// 'fullPath',
 		],
-		usedGame : -1,
+		//usedGame : -1,
 		allTerms : true,
-		terms    : ['isNotMissing', 'didTestingPassEnough'],
+		terms    : ['didTestingPassEnough', 'isFile'],
 		debug    : true,
 	}).then((searchResults) => {
 		console.log('test.js results:', searchResults)
+		//console.log(modList.log.toDisplayText)
 	})
 })
 
@@ -63,7 +65,7 @@ async function _promiseStatus() {
 	console.log(modList.testPromise)
 	/* eslint-enable no-promise-executor-return */
 }
-_promiseStatus().then(() => { console.log('blag')})
+//_promiseStatus().then(() => { console.log('blag')})
 
 /* Race the parser!! We initialized in "de", changing to "en" to get the list from the search
 above in english.  As long as this line is run before the search can return, we should see english
