@@ -41,34 +41,34 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "ignore" : "(cli-test-runner.js|screen_shots/*|.vscode/*|.github/*|dist/*|.eslintrc.json|.gitattributes|.gitignore)",
-        "icon"   : "./build/icon",
-        "name"   : "FS19ModChecker"
+        "ignore": "(cli-test-runner.js|screen_shots/*|.vscode/*|.github/*|dist/*|.eslintrc.json|.gitattributes|.gitignore)",
+        "icon": "./build/icon",
+        "name": "FS19ModChecker"
       },
       "makers": [
         {
-          "name"   : "@electron-forge/maker-squirrel",
-          "config" : {
-            "authors"   : "J.T.Sage",
-            "name"      : "FS19ModChecker",
-            "iconUrl"   : "https://jtsage.dev/fsmcicon.ico",
-            "setupIcon" : "./build/icon.ico"
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "authors": "J.T.Sage",
+            "name": "FS19ModChecker",
+            "iconUrl": "https://jtsage.dev/fsmcicon.ico",
+            "setupIcon": "./build/icon.ico"
           }
         },
         {
-          "name"      : "@electron-forge/maker-zip",
-          "platforms" : [
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
             "darwin"
           ]
         },
         {
-          "name"   : "@electron-forge/maker-deb",
-          "config" : {
-            "productName" : "FS19 Mod Checker",
-            "icon"        : "./build/icon.png",
-            "bin"         : "FS19ModChecker",
-            "maintainer"  : "J.T.Sage",
-            "homepage"    : "https://jtsage.dev"
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "productName": "FS19 Mod Checker",
+            "icon": "./build/icon.png",
+            "bin": "FS19ModChecker",
+            "maintainer": "J.T.Sage",
+            "homepage": "https://jtsage.dev"
           }
         }
       ]
