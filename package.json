@@ -49,6 +49,7 @@
         {
           "name"   : "@electron-forge/maker-squirrel",
           "config" : {
+            "authors"   : "J.T.Sage",
             "name"      : "FS19ModChecker",
             "iconUrl"   : "https://jtsage.dev/fsmcicon.ico",
             "setupIcon" : "./build/icon.ico"
