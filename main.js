@@ -366,11 +366,14 @@ function openDetailWindow(thisModRecord) {
 
 	detailWindow.webContents.on('did-finish-load', async (event) => {
 		const sendData = {
+			total_games  : modList.activeArray,
 			title        : thisModRecord.title,
 			version      : thisModRecord.mod_version,
 			filesize     : thisModRecord.fileSizeString,
 			active_games : thisModRecord.activeGames,
 			used_games   : thisModRecord.usedGames,
+			active_game  : thisModRecord.activeGame,
+			used_game    : thisModRecord.usedGame,
 			has_scripts  : thisModRecord.hasScripts,
 			description  : thisModRecord.descDescription,
 		}

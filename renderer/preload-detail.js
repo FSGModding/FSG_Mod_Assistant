@@ -35,10 +35,15 @@ ipcRenderer.on('mod-record', ( event, modDetails ) => {
 	byId('title').innerHTML        = modDetails.title
 	byId('version').innerHTML      = modDetails.version
 	byId('filesize').innerHTML     = modDetails.filesize
-	byId('active_games').innerHTML = modDetails.active_games
-	byId('used_games').innerHTML   = modDetails.used_games
 	byId('has_scripts').innerHTML  = ((modDetails.has_scripts) ? iconGreenCheckMark : iconRedX)
 	byId('description').innerHTML  = modDetails.description
+
+	const row_legend = modDetails.total_games.map((thisGame) => { return `<td class="text-center fw-bold">${thisGame}</td>`})
+	const row_active = modDetails.total_games.map((thisGame) => { return `<td class="${(modDetails.active_game[thisGame])?'bg-success':'bg-danger'}">&nbsp;</td>`})
+	const row_used   = modDetails.total_games.map((thisGame) => { return `<td class="${(modDetails.used_game[thisGame])?'bg-success':'bg-danger'}">&nbsp;</td>`})
+
+	byId('used_active_table').innerHTML = `<tr><th class="i18n" data-i18n="active_used_table_savegame"></th>${row_legend.join('')}</tr><tr><th class="i18n" data-i18n="active_used_table_active"></th>${row_active.join('')}</tr><tr><th class="i18n" data-i18n="active_used_table_used"></th>${row_used.join('')}</tr>`
+
 })
 
 ipcRenderer.on('mod-icon', (event, pngData) => {

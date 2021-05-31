@@ -54,6 +54,10 @@
 	"header_mod_used_games"  : "Used In Saves",
 	"header_mod_full_path"   : "Full Path",
 	"header_mod_has_scripts" : "Uses Scripts",
+	
+	"active_used_table_savegame" : "Savegame",
+	"active_used_table_active"   : "Active",
+	"active_used_table_used"     : "Used",
 
 	"file_error_name_starts_digit"          : "This file starts with a digit. FS19 requires that mods start with a letter.",
 	"file_error_likely_copy"                : "This file name suggests that it is a duplicate copy of another mod.",
