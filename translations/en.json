@@ -39,6 +39,7 @@
 	"filter_savegame"                  : "Save Game Slot #",
 
 	"menu_details"         : "Open Mod Detail",
+	"menu_open_explorer"   : "Show in Finder / Explorer",
 	"menu_find_on_mod_hub" : "Search ModHub for this Mod",
 	"menu_find_on_google"  : "Search Google for this Mod",
 	"menu_copy_general"    : "Copy : ",

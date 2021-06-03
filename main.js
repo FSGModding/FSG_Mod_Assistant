@@ -7,7 +7,7 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut } = require('electron')
+const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut, shell } = require('electron')
 
 if (require('electron-squirrel-startup')) return app.quit()
 
@@ -76,6 +76,11 @@ function createWindow () {
 ipcMain.on('show-context-menu-list', async (event, fullPath) => {
 	const template = [
 		{
+			label : await myTranslator.stringLookup('menu_open_explorer'),
+			click : () => { shell.showItemInFolder(fullPath) },
+		},
+		{ type : 'separator' },
+		{
 			label : await myTranslator.stringLookup('menu_copy_full_path'),
 			click : () => { clipboard.writeText(fullPath) },
 		}
@@ -88,10 +93,10 @@ ipcMain.on('show-mod-detail', (event, thisMod) => { openDetailWindow(modList.ful
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	const template = [
 		{
-			label : await myTranslator.stringLookup('menu_details'),
+			label : `${await myTranslator.stringLookup('menu_details')} : ${theseValues[0]}`,
 			click : () => { openDetailWindow(modList.fullList[theseValues[0]]) },
 		},
-		{ type : 'separator' }
+		{ type : 'separator' },
 	]
 	if ( modList.fullList[theseValues[0]].isMissing ) {
 		template.push({
@@ -107,6 +112,12 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 				require('electron').shell.openExternal(url)
 			},
 		}, { type : 'separator' })
+	} else {
+		template.push({
+			label : await myTranslator.stringLookup('menu_open_explorer'),
+			click : () => { shell.showItemInFolder(modList.fullList[theseValues[0]].fullPath) },
+		},
+		{ type : 'separator' })
 	}
 	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts']
 	const copyString = await myTranslator.stringLookup('menu_copy_general')
