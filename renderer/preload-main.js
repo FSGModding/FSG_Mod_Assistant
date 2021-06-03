@@ -177,9 +177,10 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 	} else {
 		classAdd('button_process', 'disabled')
 	}
-		
-	byId('location_savegame_folder').innerHTML = arg.saveDir
-	byId('location_mod_folder').innerHTML      = arg.modDir
+	
+	byId('location_savegame_folder').innerHTML   = arg.saveDir
+	byId('location_mod_folder').innerHTML        = arg.modDir
+	byId('location_quarantine_folder').text      = arg.cleanDir
 
 	classAdd(['process_bar_working', 'process_bar_done', 'process_bar_testing'], 'd-none')
 	byId('button_process').focus()
@@ -355,6 +356,22 @@ contextBridge.exposeInMainWorld(
 			ipcRenderer.send('askExploreList', 0, 0, 'hasScripts')
 			byId('col_mod_has_scripts_switch').checked = true
 		},
+		openCleanDir : () => {
+			ipcRenderer.send('openCleanDir')
+		},
+		refreshBroken : () => {
+			ipcRenderer.send('askBrokenList')
+		},
+		refreshMissing : () => {
+			ipcRenderer.send('askMissingList')
+		},
+		refreshConflict : () => {
+			ipcRenderer.send('askConflictList')
+		},
+		refreshExplore : () => {
+			ipcRenderer.send('askExploreList', 0)
+		},
+
 	}
 )
 
