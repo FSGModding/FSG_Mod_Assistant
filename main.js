@@ -7,7 +7,7 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut } = require('electron')
+const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut, shell, dialog } = require('electron')
 
 if (require('electron-squirrel-startup')) return app.quit()
 
@@ -15,6 +15,7 @@ const devDebug   = false
 
 const path       = require('path')
 const xml2js     = require('xml2js')
+const fs         = require('fs')
 const translator = require('./lib/translate.js')
 const modReader  = require('./lib/mod-checker.js')
 const mcDetail   = require('./package.json')
@@ -22,14 +23,61 @@ const mcDetail   = require('./package.json')
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
 
+let location_cleaner   = null
 let location_savegame  = null
 let location_modfolder = null
 let location_valid     = false
 
 let modList = null
 
+let win = null // Main window.
+
+
+/*
+  _______  _____  _    _ _______      _______  _____  ______ 
+  |  |  | |     |  \  /  |______      |  |  | |     | |     \
+  |  |  | |_____|   \/   |______      |  |  | |_____| |_____/
+                                                             
+*/
+async function moveMod(modName) {
+	const response = dialog.showMessageBoxSync(win, {
+		message : `${await myTranslator.stringLookup('move_mod_message')} ${modName}`,
+		type    : 'warning',
+		buttons : [
+			await myTranslator.stringLookup('move_mod_cancel'),
+			await myTranslator.stringLookup('move_mod_ok')
+		],
+		defaultId : 0,
+		cancelId  : 0,
+	})
+	if ( response === 1 ) {
+		try {
+			fs.renameSync(modList.fullList[modName].fullPath, path.join(location_cleaner, modList.fullList[modName].filename))
+			modList.fullList[modName].ignoreMe = true
+			dialog.showMessageBoxSync(win, {
+				message : await myTranslator.stringLookup('move_mod_worked'),
+				type    : 'warning',
+			})
+			win.webContents.send('did-move-mod', modName)
+			
+		} catch {
+			dialog.showMessageBoxSync(win, {
+				message : await myTranslator.stringLookup('move_mod_failed'),
+				type    : 'warning',
+			})
+		}
+	}
+}
+
+
+/*
+  _______ _______ _____ __   _      _  _  _ _____ __   _ ______   _____  _  _  _
+  |  |  | |_____|   |   | \  |      |  |  |   |   | \  | |     \ |     | |  |  |
+  |  |  | |     | __|__ |  \_|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
+                                                                                
+*/
 function createWindow () {
-	const win = new BrowserWindow({
+	win = new BrowserWindow({
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
 		width           : 1000,
 		height          : 700,
@@ -73,12 +121,22 @@ function createWindow () {
   __|__ |       |_____  . |  |  | |______ |  \_| |_____| ______|
                                                                 
 */
-ipcMain.on('show-context-menu-list', async (event, fullPath) => {
+ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 	const template = [
+		{
+			label : await myTranslator.stringLookup('menu_open_explorer'),
+			click : () => { shell.showItemInFolder(fullPath) },
+		},
+		{ type : 'separator' },
+		{
+			label : await myTranslator.stringLookup('menu_move_file'),
+			click : () => { moveMod(modName) },
+		},
+		{ type : 'separator' },
 		{
 			label : await myTranslator.stringLookup('menu_copy_full_path'),
 			click : () => { clipboard.writeText(fullPath) },
-		}
+		},
 	]
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
@@ -88,10 +146,10 @@ ipcMain.on('show-mod-detail', (event, thisMod) => { openDetailWindow(modList.ful
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	const template = [
 		{
-			label : await myTranslator.stringLookup('menu_details'),
+			label : `${await myTranslator.stringLookup('menu_details')} : ${theseValues[0]}`,
 			click : () => { openDetailWindow(modList.fullList[theseValues[0]]) },
 		},
-		{ type : 'separator' }
+		{ type : 'separator' },
 	]
 	if ( modList.fullList[theseValues[0]].isMissing ) {
 		template.push({
@@ -107,6 +165,17 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 				require('electron').shell.openExternal(url)
 			},
 		}, { type : 'separator' })
+	} else {
+		template.push({
+			label : await myTranslator.stringLookup('menu_open_explorer'),
+			click : () => { shell.showItemInFolder(modList.fullList[theseValues[0]].fullPath) },
+		},
+		{ type : 'separator' },
+		{
+			label : await myTranslator.stringLookup('menu_move_file'),
+			click : () => { moveMod(theseValues[0]) },
+		},
+		{ type : 'separator' })
 	}
 	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts']
 	const copyString = await myTranslator.stringLookup('menu_copy_general')
@@ -154,9 +223,12 @@ ipcMain.on('i18n-change-locale', (event, arg) => {
   __|__ |       |_____  . |_____  |_____| |  \_| |       __|__ |_____|
                                                                       
 */
+ipcMain.on('openCleanDir', () => {
+	if ( location_cleaner !== null ) {
+		shell.openPath(location_cleaner)
+	}
+})
 ipcMain.on('openConfigFile', (event) => {
-	const {dialog} = require('electron')
-	const fs       = require('fs')
 	const homedir  = require('os').homedir()
 
 	dialog.showOpenDialog({
@@ -169,7 +241,7 @@ ipcMain.on('openConfigFile', (event) => {
 	}).then((result) => {
 		if ( result.canceled ) {
 			location_valid = false
-			event.sender.send('newFileConfig', { valid : false, error : false, saveDir : '--', modDir : '--' })
+			event.sender.send('newFileConfig', { valid : false, error : false, saveDir : '--', modDir : '--', cleanDir : '--' })
 		} else {
 			const XMLOptions = {strict : true, async : false, normalizeTags : true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
 			const strictXMLParser = new xml2js.Parser(XMLOptions)
@@ -184,7 +256,7 @@ ipcMain.on('openConfigFile', (event) => {
 				} catch {
 					overrideAttr   = false
 					location_valid = false
-					event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--' } )
+					event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--', cleanDir : '--' } )
 				}
 
 				if ( overrideAttr !== false ) {
@@ -196,11 +268,33 @@ ipcMain.on('openConfigFile', (event) => {
 
 					location_valid = true
 
+					if ( location_cleaner !== null ) {
+						/* Did we already run once?  If so, remove the ?empty? moved file folder. Or not, it it's not empty */
+						const movedFiles = fs.readdirSync(location_cleaner)
+						if ( movedFiles.length < 1 ) {
+							try {
+								fs.rmdirSync(location_cleaner)
+							} catch {
+								// Don't care.
+							}
+							location_cleaner = null
+						}
+					}
+		
+					if ( location_cleaner === null ) {
+						try {
+							location_cleaner = fs.mkdtempSync(path.join(location_savegame, 'modQuarantine-'))
+						} catch {
+							location_cleaner = null
+						}
+					}
+
 					event.sender.send('newFileConfig', {
-						valid   : true,
-						error   : false,
-						saveDir : location_savegame,
-						modDir  : location_modfolder,
+						valid    : true,
+						error    : false,
+						saveDir  : location_savegame,
+						modDir   : location_modfolder,
+						cleanDir : location_cleaner,
 					})
 				}
 			})
@@ -208,7 +302,7 @@ ipcMain.on('openConfigFile', (event) => {
 	}).catch(() => {
 		// Read of file failed? Permissions issue maybe?  Not sure.
 		location_valid = false
-		event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--' } )
+		event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--', cleanDir : '--' } )
 	})
 })
 
@@ -230,12 +324,12 @@ ipcMain.on('processMods', (event) => {
 		modList.readAll().then(() => {
 			event.sender.send('processModsDone')
 		}).catch(() => {
-			event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--' })
+			event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--', cleanDir : '--' })
 		})
 	} else {
 		// This should be unreachable.  But it means that the process button was clicked before loading
 		// a valid config.  Let's just start over with empty entries.
-		event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--' })
+		event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--', cleanDir : '--' })
 	}
 })
 
@@ -250,7 +344,7 @@ ipcMain.on('processMods', (event) => {
 */
 ipcMain.on('askBrokenList', (event) => {
 	modList.search({
-		columns : ['filenameSlash', 'fullPath', 'failedTestList', 'copyName'],
+		columns : ['filenameSlash', 'fullPath', 'failedTestList', 'copyName', 'shortName'],
 		terms   : ['didTestingFail'],
 	}).then((searchResults) => { event.sender.send('gotBrokenList', searchResults) })
 })
@@ -463,6 +557,17 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
+		if ( location_cleaner !== null ) {
+			const movedFiles = fs.readdirSync(location_cleaner)
+			if ( movedFiles.length < 1 ) {
+				try {
+					fs.rmdirSync(location_cleaner)
+				} catch {
+					// Don't care.
+				}
+			}
+		}
 		app.quit()
+		
 	}
 })

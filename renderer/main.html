@@ -114,6 +114,13 @@
 						<th class="i18n" data-i18n="location_mod_folder"></th>
 						<td class="fw-lighter fst-italic" id="location_mod_folder">--</td>
 					</tr>
+					<tr>
+						<th class="i18n" data-i18n="location_quarantine_folder"></th>
+						<td>
+							<a onclick="ipc.openCleanDir()" class="fw-lighter fst-italic" id="location_quarantine_folder">--</span>
+							
+						</td>
+					</tr>
 				</table>
 				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-5" data-i18n="config_process_button_blurb"></p>
 				<button type="button" id="button_process" onclick="ipc.processButton()" class="disabled btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_process_button"></button>
@@ -127,7 +134,7 @@
 				<div class="progress w-75 mt-5 mx-auto d-none" id="process_bar_done">
 					<div class="progress-bar progress-bar-striped bg-success i18n" data-i18n="config_working_done" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 				</div>
-				<div class="alert alert-info mt-5 mx-4 text-center" role="alert">
+				<div class="alert alert-info mt-3 mx-4 text-center" role="alert">
 					<span class="i18n" data-i18n="latest_version_link_blurb"></span> <a target="_blank" class="alert-link" href="https://github.com/jtsage/FS19_Mod_Checker/releases">github.com/jtsage/FS19_Mod_Checker</a>
 				</div>
 			</div>
@@ -144,6 +151,7 @@
 					</div>
 				</div>
 				<ul class="list-group list-group-flush mb-4" id="broken_list"></ul>
+				<button type="button" onclick="ipc.refreshBroken()" class="btn btn-primary mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 
@@ -165,6 +173,7 @@
 						</tbody>
 					</table>
 				</div>
+				<button type="button" onclick="ipc.refreshMissing()" class="btn btn-primary mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 
@@ -173,7 +182,7 @@
 			<div class="tab-pane fade" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
 				<p class="text-center i18n px-4" data-i18n="conflict_blurb"></p>
 				<ul class="list-group list-group-flush mb-4" id="conflict_list"></ul>
-				<button type="button" id="button_un_hide_conflict" onclick="unHideAllConflict()" class="d-none btn mb-4 btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="conflict_un_hide_button"></button>
+				<button type="button" onclick="ipc.refreshConflict()" class="btn btn-primary mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 
@@ -216,6 +225,7 @@
 						</tbody>
 					</table>
 				</div>
+				<button type="button" onclick="ipc.refreshExplore()" class="btn btn-primary d-block w-75 mx-auto mb-3 btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 			<div class="offcanvas offcanvas-start" tabindex="-1" id="exploreOptions">
