@@ -7,11 +7,11 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut, shell } = require('electron')
+const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut, shell, dialog } = require('electron')
 
 if (require('electron-squirrel-startup')) return app.quit()
 
-const devDebug   = true//false
+const devDebug   = false
 
 const path       = require('path')
 const xml2js     = require('xml2js')
@@ -30,8 +30,53 @@ let location_valid     = false
 
 let modList = null
 
+let win = null // Main window.
+
+
+/*
+  _______  _____  _    _ _______      _______  _____  ______ 
+  |  |  | |     |  \  /  |______      |  |  | |     | |     \
+  |  |  | |_____|   \/   |______      |  |  | |_____| |_____/
+                                                             
+*/
+async function moveMod(modName) {
+	const response = dialog.showMessageBoxSync(win, {
+		message : `${await myTranslator.stringLookup('move_mod_message')} ${modName}`,
+		type    : 'warning',
+		buttons : [
+			await myTranslator.stringLookup('move_mod_cancel'),
+			await myTranslator.stringLookup('move_mod_ok')
+		],
+		defaultId : 0,
+		cancelId  : 0,
+	})
+	if ( response === 1 ) {
+		try {
+			
+			fs.renameSync(modList.fullList[modName].fullPath, path.join(location_cleaner, modList.fullList[modName].filename))
+			dialog.showMessageBoxSync(win, {
+				message : await myTranslator.stringLookup('move_mod_worked'),
+				type    : 'warning',
+			})
+			win.webContents.send('did-move-mod', modName)
+		} catch {
+			dialog.showMessageBoxSync(win, {
+				message : await myTranslator.stringLookup('move_mod_failed'),
+				type    : 'warning',
+			})
+		}
+	}
+}
+
+
+/*
+  _______ _______ _____ __   _      _  _  _ _____ __   _ ______   _____  _  _  _
+  |  |  | |_____|   |   | \  |      |  |  |   |   | \  | |     \ |     | |  |  |
+  |  |  | |     | __|__ |  \_|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
+                                                                                
+*/
 function createWindow () {
-	const win = new BrowserWindow({
+	win = new BrowserWindow({
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
 		width           : 1000,
 		height          : 700,
@@ -75,7 +120,7 @@ function createWindow () {
   __|__ |       |_____  . |  |  | |______ |  \_| |_____| ______|
                                                                 
 */
-ipcMain.on('show-context-menu-list', async (event, fullPath) => {
+ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 	const template = [
 		{
 			label : await myTranslator.stringLookup('menu_open_explorer'),
@@ -83,9 +128,14 @@ ipcMain.on('show-context-menu-list', async (event, fullPath) => {
 		},
 		{ type : 'separator' },
 		{
+			label : await myTranslator.stringLookup('menu_move_file'),
+			click : () => { moveMod(modName) },
+		},
+		{ type : 'separator' },
+		{
 			label : await myTranslator.stringLookup('menu_copy_full_path'),
 			click : () => { clipboard.writeText(fullPath) },
-		}
+		},
 	]
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
@@ -118,6 +168,11 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 		template.push({
 			label : await myTranslator.stringLookup('menu_open_explorer'),
 			click : () => { shell.showItemInFolder(modList.fullList[theseValues[0]].fullPath) },
+		},
+		{ type : 'separator' },
+		{
+			label : await myTranslator.stringLookup('menu_move_file'),
+			click : () => { moveMod(theseValues[0]) },
 		},
 		{ type : 'separator' })
 	}
@@ -173,14 +228,11 @@ ipcMain.on('openCleanDir', () => {
 	}
 })
 ipcMain.on('openConfigFile', (event) => {
-	const {dialog} = require('electron')
 	const homedir  = require('os').homedir()
 
 	dialog.showOpenDialog({
 		properties  : ['openFile'],
-		//defaultPath : path.join(homedir, 'Documents', 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' ),
-		// TODO : set this back.
-		defaultPath : path.join(homedir, 'Desktop', 'GitHub Projects', 'testFolder', 'gameSettings.xml' ),
+		defaultPath : path.join(homedir, 'Documents', 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' ),
 		filters     : [
 			{ name : 'XML', extensions : ['xml'] },
 			{ name : 'All', extensions : ['*'] },
@@ -291,7 +343,7 @@ ipcMain.on('processMods', (event) => {
 */
 ipcMain.on('askBrokenList', (event) => {
 	modList.search({
-		columns : ['filenameSlash', 'fullPath', 'failedTestList', 'copyName'],
+		columns : ['filenameSlash', 'fullPath', 'failedTestList', 'copyName', 'shortName'],
 		terms   : ['didTestingFail'],
 	}).then((searchResults) => { event.sender.send('gotBrokenList', searchResults) })
 })

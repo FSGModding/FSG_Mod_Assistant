@@ -46,6 +46,13 @@
 	"menu_find_on_google"  : "Search Google for this Mod",
 	"menu_copy_general"    : "Copy : ",
 	"menu_copy_full_path"  : "Copy : Full File Path",
+	"menu_move_file"       : "Move Mod to quarantine",
+
+	"move_mod_message" : "Are you sure you want to move this mod to quarantine :",
+	"move_mod_cancel"  : "No, cancel",
+	"move_mod_ok"      : "Yes, move it",
+	"move_mod_worked"  : "The mod has been moved!",
+	"move_mod_failed"  : "The mod was unable to be moved",
 
 	"header_mod_name"        : "Name",
 	"header_mod_title"       : "Title",

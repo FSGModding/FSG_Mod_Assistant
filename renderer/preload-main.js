@@ -44,9 +44,10 @@ const buildOpt = (value, text, selected) => {
 	return `<option value="${value}" ${( value === selected ) ? 'selected' : ''}>${text}</option>`
 }
 
-const buildTableRow = (columnValues, colNames = []) => {
+const buildTableRow = (columnValues, colNames = [], idPrefix = null) => {
 	/* Build a table row for display */
 	let thisRow = ''
+	const thisID = idPrefix + columnValues[0]
 
 	for ( let i = 0; i < columnValues.length; i++ ) {
 		let sort = null
@@ -72,15 +73,16 @@ const buildTableRow = (columnValues, colNames = []) => {
 
 		thisRow += `<td class="${cssClass}" data-sort="${sort}">${text}</td>`
 	}
-	return  `<tr>${thisRow}</tr>`
+	return  `<tr id="${thisID}">${thisRow}</tr>`
 }
 
-const buildBrokenList = (name, path, bullets, copyName) => {
+const buildBrokenList = (name, path, bullets, copyName, shortName) => {
 	/* Build the broken list (multi level UL) */
 	const onlyFolderClass = ( bullets.length === 1 && bullets[0] === 'INFO_NO_MULTIPLAYER_UNZIPPED' ) ? 'just-folder-error' : ''
+	const thisID = `broke_${shortName}`
 
 	let thisListItem = '' +
-		`<li data-path="${path}" class="${onlyFolderClass} mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
+		`<li id="${thisID}" data-name="${shortName}" data-path="${path}" class="${onlyFolderClass} mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
 		'<div class="ms-2 me-auto">' +
 		`<div><strong>${name}</strong> <em class="small">${path}</em></div>` +
 		'<ul style="list-style-type: disc">'
@@ -102,9 +104,9 @@ const buildBrokenList = (name, path, bullets, copyName) => {
 
 const buildConflictList = (name, title, message, path) => {
 	/* Build the conflict list (multi level UL) */
-	
+	const thisID = `conf_${name}`
 	return '' +
-		`<li data-path="${path}" class="mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
+		`<li id="${thisID}" data-name="${name}" data-path="${path}" class="mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
 		`<div class="ms-2 me-auto"><div><strong>${name}</strong> <em class="small">${title}</em></div>` +
 		`<ul style="list-style: disc"><li class="mt-2">${message}</li></ul></div></li>`
 }
@@ -157,6 +159,31 @@ ipcRenderer.on('i18n-translate-return', (event, dataPoint, newText) => {
 
 
 
+/*
+  _____  _____  _______   _______  _____  ______       _______  _____  _    _ _______ ______ 
+    |   |_____] |       . |  |  | |     | |     \      |  |  | |     |  \  /  |______ |     \
+  __|__ |       |_____  . |  |  | |_____| |_____/      |  |  | |_____|   \/   |______ |_____/
+                                                                                             
+*/
+ipcRenderer.on('did-move-mod', (event, modName) => {
+	const exploreRow = byId(`exp_${modName}`)
+	const confRow    = byId(`conf_${modName}`)
+	const brokeRow   = byId(`broke_${modName}`)
+
+	if ( exploreRow !== null ) {
+		exploreRow.querySelectorAll('td').forEach((part) => {
+			part.classList.add('bg-secondary')
+		})
+	}
+
+	if ( confRow !== null ) {
+		confRow.classList.add('bg-secondary')
+	}
+
+	if ( brokeRow !== null ) {
+		brokeRow.classList.add('bg-secondary')
+	}
+})
 
 /*
   _____  _____  _______   _______  _____  __   _ _______ _____  ______
@@ -281,7 +308,7 @@ ipcRenderer.on('gotExploreList', (event, list) => {
 		'col_mod_has_scripts'
 	]
 
-	const newContent = list.map((x) => { return buildTableRow(x, colNames) })
+	const newContent = list.map((x) => { return buildTableRow(x, colNames, 'exp_') })
 
 	byId('table_explore').innerHTML = newContent.join('')
 
@@ -415,7 +442,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		const closestEntry = e.target.closest('.mod-record')
 		
 		if ( closestEntry !== null ) {
-			ipcRenderer.send('show-context-menu-list', closestEntry.getAttribute('data-path'))
+			ipcRenderer.send('show-context-menu-list', closestEntry.getAttribute('data-path'), closestEntry.getAttribute('data-name'))
 		}
 	}
 
