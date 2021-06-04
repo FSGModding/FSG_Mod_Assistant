@@ -52,13 +52,14 @@ async function moveMod(modName) {
 	})
 	if ( response === 1 ) {
 		try {
-			
 			fs.renameSync(modList.fullList[modName].fullPath, path.join(location_cleaner, modList.fullList[modName].filename))
+			modList.fullList[modName].ignoreMe = true
 			dialog.showMessageBoxSync(win, {
 				message : await myTranslator.stringLookup('move_mod_worked'),
 				type    : 'warning',
 			})
 			win.webContents.send('did-move-mod', modName)
+			
 		} catch {
 			dialog.showMessageBoxSync(win, {
 				message : await myTranslator.stringLookup('move_mod_failed'),
