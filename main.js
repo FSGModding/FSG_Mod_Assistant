@@ -65,7 +65,8 @@ async function moveMod(modName) {
 			})
 			win.webContents.send('did-move-mod', modName)
 			
-		} catch {
+		} catch (moveError) {
+			logger.fileError('moveFile', `File move failed : ${moveError}`)
 			dialog.showMessageBoxSync(win, {
 				message : await myTranslator.stringLookup('move_mod_failed'),
 				type    : 'warning',
@@ -245,6 +246,7 @@ function sendNewConfig(event) {
 			cleanDir : location_cleaner,
 		} )
 }
+
 ipcMain.on('openConfigFile', (event) => {
 	const homedir  = require('os').homedir()
 	location_valid     = false
@@ -294,7 +296,7 @@ ipcMain.on('openConfigFile', (event) => {
 				if ( ! ('gamesettings' in xmlTree) ) {
 					/* Not a valid config */
 					location_savegame = null
-					location_error = true
+					location_error    = true
 					logger.fatal('loader', 'gameSettings.xml does not contain the root gamesettings tag (not a settings file)')
 					sendNewConfig(event)
 					return
@@ -331,9 +333,9 @@ ipcMain.on('openConfigFile', (event) => {
 		}
 	}).catch((unknownError) => {
 		// Read of file failed? Permissions issue maybe?  Not sure.
-		location_valid = false
+		location_valid    = false
 		location_savegame = null
-		location_error = true
+		location_error    = true
 		logger.fatal('loader', `Could not read gameSettings.xml : ${unknownError}`)
 		sendNewConfig(event)
 	})
@@ -349,21 +351,42 @@ ipcMain.on('openConfigFile', (event) => {
 */
 ipcMain.on('processMods', (event) => {
 	if ( location_valid ) {
-		modList = new modReader(
-			location_savegame,
-			location_modfolder,
-			logger,
-			myTranslator.deferCurrentLocale)
+		try {
+			modList = new modReader(
+				location_savegame,
+				location_modfolder,
+				logger,
+				myTranslator.deferCurrentLocale)
+		} catch (createError) {
+			location_valid     = false
+			location_error     = true
+			location_modfolder = null
+			location_savegame  = null
+			logger.fatal('reader', `Could not get modList instance: ${createError.toString()}`)
+			sendNewConfig(event)
+		}
 
-		modList.readAll().then(() => {
-			event.sender.send('processModsDone')
-		}).catch(() => {
-			event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--', cleanDir : '--' })
-		})
+		if ( modList !== null ) {
+			modList.readAll().then(() => {
+				event.sender.send('processModsDone')
+			}).catch((useError) => {
+				location_valid     = false
+				location_error     = true
+				location_modfolder = null
+				location_savegame  = null
+				logger.fatal('reader', `Could not use modList instance: ${useError.toString()}`)
+				sendNewConfig(event)
+			})
+		}
 	} else {
 		// This should be unreachable.  But it means that the process button was clicked before loading
 		// a valid config.  Let's just start over with empty entries.
-		event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--', cleanDir : '--' })
+		location_valid     = false
+		location_error     = true
+		location_modfolder = null
+		location_savegame  = null
+		logger.notice('reader', 'Unreachable code point (apparently not)')
+		sendNewConfig(event)
 	}
 })
 
@@ -380,7 +403,12 @@ ipcMain.on('askBrokenList', (event) => {
 	modList.search({
 		columns : ['filenameSlash', 'fullPath', 'failedTestList', 'copyName', 'shortName'],
 		terms   : ['didTestingFail'],
-	}).then((searchResults) => { event.sender.send('gotBrokenList', searchResults) })
+	}).then((searchResults) => {
+		event.sender.send('gotBrokenList', searchResults)
+	}).catch((unknownError) => {
+		// Shouldn't happen.  No idea
+		logger.notice('ipcProcess', `Could not get "broken list" : ${unknownError}`)
+	})
 })
 
 
@@ -397,6 +425,9 @@ ipcMain.on('askConflictList', async (event) => {
 
 	modList.conflictList(folderAndZipText).then((searchResults) => {
 		event.sender.send('gotConflictList', searchResults)
+	}).catch((unknownError) => {
+		// Shouldn't happen.  No idea
+		logger.notice('ipcProcess', `Could not get "conflict list" : ${unknownError}`)
 	})
 })
 
@@ -413,7 +444,12 @@ ipcMain.on('askMissingList', (event) => {
 	modList.search({
 		columns : ['shortName', 'title', 'activeGames', 'usedGames'],
 		terms   : ['isMissing'],
-	}).then((searchResults) => { event.sender.send('gotMissingList', searchResults) })
+	}).then((searchResults) => {
+		event.sender.send('gotMissingList', searchResults)
+	}).catch((unknownError) => {
+		// Shouldn't happen.  No idea
+		logger.notice('ipcProcess', `Could not get "missing list" : ${unknownError}`)
+	})
 })
 
 
@@ -433,6 +469,9 @@ ipcMain.on('askGamesActive', (event) => {
 			await myTranslator.stringLookup('filter_savegame'),
 			await myTranslator.stringLookup('filter_savegame_all')
 		)
+	}).catch((unknownError) => {
+		// Shouldn't happen.  No idea
+		logger.notice('ipcProcess', `Could not get "list of active games" : ${unknownError}`)
 	})
 })
 
@@ -455,7 +494,12 @@ ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) 
 		usedGame            : parseInt(usedGame),
 		allTerms            : true,
 		terms               : ['isNotMissing', 'didTestingPassEnough'].concat(extraTerms),
-	}).then((searchResults) => { event.sender.send('gotExploreList', searchResults) })
+	}).then((searchResults) => {
+		event.sender.send('gotExploreList', searchResults)
+	}).catch((unknownError) => {
+		// Shouldn't happen.  No idea
+		logger.notice('ipcProcess', `Could not get "explore list" : ${unknownError}`)
+	})
 })
 
 
@@ -515,6 +559,9 @@ function openDetailWindow(thisModRecord) {
 				const iconNative = nativeImage.createFromBuffer(iconData.data, { width : iconData.width, height : iconData.height })
 				event.sender.send('mod-icon', iconNative.toDataURL())
 			}
+		}).catch((unknownError) => {
+			// Shouldn't happen.  No idea
+			logger.notice('ipcProcess', `Could not get "mod icon" : ${unknownError}`)
 		})
 	})
 
@@ -589,16 +636,12 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		if ( location_cleaner !== null ) {
-			const movedFiles = fs.readdirSync(location_cleaner)
-			if ( movedFiles.length < 1 ) {
-				try {
-					fs.rmdirSync(location_cleaner)
-				} catch {
-					// Don't care.
-				}
+			try {
+				fs.rmdirSync(location_cleaner)
+			} catch {
+				// Don't care. (probably folder not empty, or it's open in the explorer.)
 			}
 		}
 		app.quit()
-		
 	}
 })

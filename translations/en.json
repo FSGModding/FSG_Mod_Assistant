@@ -15,7 +15,7 @@
 	"config_process_button_blurb"      : "Next, click the \"Scan\" button to process your mods and save game files. This button will also reload all views from disk, updating any changes you have made manually.",
 	"config_process_button"            : "Scan Mods and Save Games",
 	"latest_version_link_blurb"        : "Get the latest version at:",
-	"user_error_open_settings"         : "Your selected game settings file is invalid or unreadable!",
+	"user_error_open_settings"         : "Your selected game settings file is invalid or unreadable! Log: CTRL+ALT+D",
 	"location_savegame_folder"         : "Save Game Files",
 	"location_mod_folder"              : "Mod Files",
 	"location_quarantine_folder"       : "Folder for Unwanted Mods",
