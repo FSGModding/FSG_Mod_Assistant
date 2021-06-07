@@ -205,9 +205,9 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 		classAdd('button_process', 'disabled')
 	}
 	
-	byId('location_savegame_folder').innerHTML   = arg.saveDir
-	byId('location_mod_folder').innerHTML        = arg.modDir
-	byId('location_quarantine_folder').text      = arg.cleanDir
+	byId('location_savegame_folder').innerHTML   = arg.saveDir === null ? '--' : arg.saveDir
+	byId('location_mod_folder').innerHTML        = arg.modDir === null ? '--' : arg.modDir
+	byId('location_quarantine_folder').text      = arg.cleanDir === null ? '--' : arg.cleanDir
 
 	classAdd(['process_bar_working', 'process_bar_done', 'process_bar_testing'], 'd-none')
 	byId('button_process').focus()

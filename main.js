@@ -19,16 +19,21 @@ const fs         = require('fs')
 const translator = require('./lib/translate.js')
 const modReader  = require('./lib/mod-checker.js')
 const mcDetail   = require('./package.json')
+const mcLogger   = require('./lib/mod-checker-log.js')
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
+
+const logger = new mcLogger()
 
 let location_cleaner   = null
 let location_savegame  = null
 let location_modfolder = null
 let location_valid     = false
+let location_error     = false
 
 let modList = null
+
 
 let win = null // Main window.
 
@@ -228,8 +233,36 @@ ipcMain.on('openCleanDir', () => {
 		shell.openPath(location_cleaner)
 	}
 })
+
+function sendNewConfig(event) {
+	event.sender.send(
+		'newFileConfig',
+		{
+			valid    : location_valid,
+			error    : location_error,
+			saveDir  : location_savegame,
+			modDir   : location_modfolder,
+			cleanDir : location_cleaner,
+		} )
+}
 ipcMain.on('openConfigFile', (event) => {
 	const homedir  = require('os').homedir()
+	location_valid     = false
+	location_error     = false
+	location_modfolder = null
+	location_savegame  = null
+
+	if ( location_cleaner !== null ) {
+		/* Did we already run once?  If so, remove the ?empty? moved file folder. Or not, it it's not empty */
+		try {
+			fs.rmdirSync(location_cleaner)
+		} catch {
+			logger.notice('loader', 'Cannot remove stale send-to location')
+			// Don't care. This means the os didn't let us remove it, probably because it's not empty.
+		}
+		location_cleaner = null
+	}
+
 
 	dialog.showOpenDialog({
 		properties  : ['openFile'],
@@ -240,69 +273,69 @@ ipcMain.on('openConfigFile', (event) => {
 		],
 	}).then((result) => {
 		if ( result.canceled ) {
-			location_valid = false
-			event.sender.send('newFileConfig', { valid : false, error : false, saveDir : '--', modDir : '--', cleanDir : '--' })
+			sendNewConfig(event)
+			logger.notice('loader', 'Open new xml canceled')
 		} else {
 			const XMLOptions = {strict : true, async : false, normalizeTags : true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
 			const strictXMLParser = new xml2js.Parser(XMLOptions)
-
+			
 			location_savegame = path.dirname(result.filePaths[0])
 
 			strictXMLParser.parseString(fs.readFileSync(result.filePaths[0]), (xmlErr, xmlTree) => {
+				if ( xmlErr !== null ) {
+					/* Could not parse the settings file. */
+					location_savegame = null
+					location_error    = true
+					logger.fatal('loader', `Unable to parse gameSettings.xml : ${xmlErr.toString()}`)
+					sendNewConfig(event)
+					return
+				}
+				
+				if ( ! ('gamesettings' in xmlTree) ) {
+					/* Not a valid config */
+					location_savegame = null
+					location_error = true
+					logger.fatal('loader', 'gameSettings.xml does not contain the root gamesettings tag (not a settings file)')
+					sendNewConfig(event)
+					return
+				}
+				
 				let overrideAttr = false
 
 				try {
 					overrideAttr = xmlTree.gamesettings.modsdirectoryoverride[0].$
 				} catch {
 					overrideAttr   = false
-					location_valid = false
-					event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--', cleanDir : '--' } )
+					logger.notice('loader', 'Did not find override directive in gameSettings.xml (recovering)')
 				}
 
-				if ( overrideAttr !== false ) {
-					if ( overrideAttr.ACTIVE === 'true' ) {
-						location_modfolder = overrideAttr.DIRECTORY
-					} else {
-						location_modfolder = path.join(location_savegame, 'mods')
-					}
-
-					location_valid = true
-
-					if ( location_cleaner !== null ) {
-						/* Did we already run once?  If so, remove the ?empty? moved file folder. Or not, it it's not empty */
-						const movedFiles = fs.readdirSync(location_cleaner)
-						if ( movedFiles.length < 1 ) {
-							try {
-								fs.rmdirSync(location_cleaner)
-							} catch {
-								// Don't care.
-							}
-							location_cleaner = null
-						}
-					}
+				if ( overrideAttr !== false && overrideAttr.ACTIVE === 'true' ) {
+					location_modfolder = overrideAttr.DIRECTORY
+				} else {
+					location_modfolder = path.join(location_savegame, 'mods')
+				}
+				
+				location_valid = true
 		
-					if ( location_cleaner === null ) {
-						try {
-							location_cleaner = fs.mkdtempSync(path.join(location_savegame, 'modQuarantine-'))
-						} catch {
-							location_cleaner = null
-						}
+				if ( location_cleaner === null ) {
+					try {
+						location_cleaner = fs.mkdtempSync(path.join(location_savegame, 'modQuarantine-'))
+					} catch {
+						logger.notice('loader', 'Could not make temp folder for quarantine')
+						location_cleaner = null
 					}
-
-					event.sender.send('newFileConfig', {
-						valid    : true,
-						error    : false,
-						saveDir  : location_savegame,
-						modDir   : location_modfolder,
-						cleanDir : location_cleaner,
-					})
 				}
+
+				sendNewConfig(event)
 			})
 		}
-	}).catch(() => {
+	}).catch((unknownError) => {
 		// Read of file failed? Permissions issue maybe?  Not sure.
 		location_valid = false
-		event.sender.send('newFileConfig', { valid : false, error : true, saveDir : '--', modDir : '--', cleanDir : '--' } )
+		location_savegame = null
+		location_error = true
+		logger.fatal('loader', `Could not read gameSettings.xml : ${unknownError}`)
+		sendNewConfig(event)
 	})
 })
 
@@ -319,6 +352,7 @@ ipcMain.on('processMods', (event) => {
 		modList = new modReader(
 			location_savegame,
 			location_modfolder,
+			logger,
 			myTranslator.deferCurrentLocale)
 
 		modList.readAll().then(() => {
@@ -532,8 +566,6 @@ function openDebugWindow(logClass) {
 
 	debugWindow.loadFile(path.join(__dirname, 'renderer', 'debug.html'))
 
-	// debugWindow.webContents.openDevTools()
-
 	debugWindow.on('closed', () => {
 		debugWindow = null
 	})
@@ -542,8 +574,7 @@ function openDebugWindow(logClass) {
 
 app.whenReady().then(() => {
 	globalShortcut.register('Alt+CommandOrControl+D', () => {
-		if ( modList === null ) { return }
-		openDebugWindow(modList.log)
+		openDebugWindow(logger)
 	})
 
 	createWindow()
