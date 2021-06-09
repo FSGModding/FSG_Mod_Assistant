@@ -86,7 +86,7 @@ function createWindow () {
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
 		width           : 1000,
 		height          : 700,
-		show            : false,
+		show            : devDebug,
 		autoHideMenuBar : !devDebug,
 		webPreferences  : {
 			nodeIntegration  : false,
@@ -95,17 +95,26 @@ function createWindow () {
 		},
 	})
 
-	splash = new BrowserWindow({
-		width           : 800,
-		height          : 400,
-		transparent     : true,
-		frame           : false,
-		alwaysOnTop     : true,
-		autoHideMenuBar : true,
-	})
-	splash.loadFile(path.join(__dirname, 'renderer', 'splash.html'))
+	if ( !devDebug ) {
+		splash = new BrowserWindow({
+			width           : 800,
+			height          : 400,
+			transparent     : true,
+			frame           : false,
+			alwaysOnTop     : true,
+			autoHideMenuBar : true,
+		})
+		splash.loadFile(path.join(__dirname, 'renderer', 'splash.html'))
 
-	if ( !devDebug ) { win.removeMenu() }
+		win.removeMenu()
+
+		win.once('ready-to-show', () => {
+			setTimeout(() => {
+				splash.destroy()
+				win.show()
+			}, 1500)
+		})
+	}
 
 	win.loadFile(path.join(__dirname, 'renderer', 'main.html'))
 
@@ -126,12 +135,7 @@ function createWindow () {
 		require('electron').shell.openExternal(url)
 		return { action : 'deny' }
 	})
-	win.once('ready-to-show', () => {
-		setTimeout(() => {
-			splash.destroy()
-			win.show()
-		}, 1500)
-	})
+	
 }
 
 

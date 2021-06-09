@@ -209,7 +209,7 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 	byId('location_mod_folder').innerHTML        = arg.modDir === null ? '--' : arg.modDir
 	byId('location_quarantine_folder').text      = arg.cleanDir === null ? '--' : arg.cleanDir
 
-	classAdd(['process_bar_working', 'process_bar_done', 'process_bar_testing'], 'd-none')
+	//classAdd(['process_bar_working', 'process_bar_done', 'process_bar_testing'], 'd-none')
 	byId('button_process').focus()
 })
 
@@ -221,8 +221,8 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
                                                                                  
 */
 ipcRenderer.on('processModsDone', () => {
-	classAdd('process_bar_working', 'd-none')
-	classRem('process_bar_testing', 'd-none')
+	classAdd('status-message-working', 'd-none')
+	classRem('status-message-testing', 'd-none')
 	classRem(['button_process', 'button_load'], 'disabled')
 	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
 	
@@ -245,8 +245,15 @@ ipcRenderer.on('processModsDone', () => {
                                                                         
 */
 ipcRenderer.on('gotBrokenList', (event, list) => {
-	classAdd('process_bar_testing', 'd-none')
-	classRem('process_bar_done', 'd-none')
+	classAdd(['status-message-testing', 'status-icon-working'], 'd-none')
+	classRem(['status-message-done', 'status-icon-done'], 'd-none')
+	setTimeout(() => {
+		document.getElementById('open_loading_modal').dispatchEvent(new MouseEvent('click', { view : window, bubbles : true, cancelable : true }))
+		setTimeout(() => {
+			classAdd(['status-message-done', 'status-icon-done'], 'd-none')
+			classRem(['status-message-working', 'status-icon-working'], 'd-none')
+		}, 1000)
+	}, 1500)
 
 	const newContent = list.map((x) => { return buildBrokenList(...x) })
 	byId('broken_list').innerHTML = newContent.join('')
@@ -367,8 +374,10 @@ contextBridge.exposeInMainWorld(
 		processButton : () => {
 			ipcRenderer.send('processMods')
 			classAdd(['button_process', 'button_load'], 'disabled')
-			classAdd('process_bar_done', 'd-none')
-			classRem('process_bar_working', 'd-none')
+			document.getElementById('open_loading_modal').dispatchEvent(new MouseEvent('click', { view : window, bubbles : true, cancelable : true }))
+
+			//window.loadModal = new window.bootstrap.Modal(document.getElementById('loadingModal'))
+			//window.loadModel.show()
 		},
 		changeExplore : () => {
 			ipcRenderer.send('askExploreList', byId('savegame_select').value)
