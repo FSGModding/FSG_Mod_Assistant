@@ -9,8 +9,6 @@
 
 const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut, shell, dialog } = require('electron')
 
-if (require('electron-squirrel-startup')) return app.quit()
-
 const devDebug   = false
 
 const path       = require('path')
