@@ -6,7 +6,7 @@ This little program will take a look at your mod install folder and inform you o
 
 This program provides lots of information.
 
-_Optionally_, it will also allow you to remove mods from your install folder (atomically - that is, one at a time).  Moved mods are sent to a "quarantine" folder (openable directly on the configuration tab, or you can find it in the same folder as your save games, where the "mods" folder is by default). From this quarantine location you can fix files names, unzip mod packs, or delete stuff you just don't want anymore.  Note that if you do not use this feature, the empty folder is cleaned up on exit.
+_Optionally_, it will also allow you to remove mods from your install folder (atomically - that is, one at a time).  Moved mods are sent to a "quarantine" folder of your choice. From this quarantine location you can fix files names, unzip mod packs, or delete stuff you just don't want anymore.
 
 ### Broken Mods
 
@@ -52,7 +52,8 @@ Here you can sort the list of good, installed mods to discover any number of thi
 
 ## Usage
 
-Unzip the zip file, run the installer.
+Download the installer for your platform from the [Releases](https://github.com/jtsage/FS19_Mod_Checker/releases) page - the program
+will install with 1-click, and auto-run when it's ready.
 
 ### Something didn't work?!?
 
