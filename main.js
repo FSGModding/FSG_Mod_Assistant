@@ -18,6 +18,7 @@ const translator = require('./lib/translate.js')
 const modReader  = require('./lib/mod-checker.js')
 const mcDetail   = require('./package.json')
 const mcLogger   = require('./lib/mod-checker-log.js')
+//TODO: figure out how bracketed exports work.  then put logger back in main lib.
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version

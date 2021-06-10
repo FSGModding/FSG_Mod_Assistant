@@ -223,7 +223,7 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 ipcRenderer.on('processModsDone', () => {
 	classAdd('status-message-working', 'd-none')
 	classRem('status-message-testing', 'd-none')
-	classRem(['button_process', 'button_load'], 'disabled')
+	classRem(['button_process', 'button_load', 'button_load_folder', 'button_move_folder'], 'disabled')
 	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
 	
 	// Fuzzy logic.  Used to request reload of display data when changing l10n setting.
@@ -248,7 +248,9 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 	classAdd(['status-message-testing', 'status-icon-working'], 'd-none')
 	classRem(['status-message-done', 'status-icon-done'], 'd-none')
 	setTimeout(() => {
-		document.getElementById('open_loading_modal').dispatchEvent(new MouseEvent('click', { view : window, bubbles : true, cancelable : true }))
+		classRem(['loadingModal', 'loading_modal_backdrop'], 'show')
+		classAdd('loading_modal_backdrop', 'd-none')
+		document.getElementById('loadingModal').style.display = null
 		setTimeout(() => {
 			classAdd(['status-message-done', 'status-icon-done'], 'd-none')
 			classRem(['status-message-working', 'status-icon-working'], 'd-none')
@@ -373,11 +375,10 @@ contextBridge.exposeInMainWorld(
 		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
-			classAdd(['button_process', 'button_load'], 'disabled')
-			document.getElementById('open_loading_modal').dispatchEvent(new MouseEvent('click', { view : window, bubbles : true, cancelable : true }))
-
-			//window.loadModal = new window.bootstrap.Modal(document.getElementById('loadingModal'))
-			//window.loadModel.show()
+			classAdd(['button_process', 'button_load', 'button_load_folder', 'button_move_folder'], 'disabled')
+			classRem('loading_modal_backdrop', 'd-none')
+			classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
+			document.getElementById('loadingModal').style.display = 'block'
 		},
 		changeExplore : () => {
 			ipcRenderer.send('askExploreList', byId('savegame_select').value)
