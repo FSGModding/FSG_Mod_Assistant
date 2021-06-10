@@ -14,10 +14,10 @@ const Diff      = require('diff')
 const gameFolder = path.join(__dirname, 'testRunnerMods')
 const fileFolder = path.join(gameFolder, 'mods')
 
-const modReader    = require('../lib/mod-checker.js')
+const { modReader, mcLogger }  = require('./lib/mod-checker.js')
 const translator   = require('../lib/translate.js')
 const myTranslator = new translator.translator('en')
-const mcLogger     = require('../lib/mod-checker-log.js')
+
 
 const logger  = new mcLogger()
 const modList = new modReader(gameFolder, fileFolder, logger, myTranslator.deferCurrentLocale)

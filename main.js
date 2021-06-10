@@ -14,11 +14,10 @@ const devDebug   = false
 const path       = require('path')
 const xml2js     = require('xml2js')
 const fs         = require('fs')
-const translator = require('./lib/translate.js')
-const modReader  = require('./lib/mod-checker.js')
-const mcDetail   = require('./package.json')
-const mcLogger   = require('./lib/mod-checker-log.js')
-//TODO: figure out how bracketed exports work.  then put logger back in main lib.
+
+const translator               = require('./lib/translate.js')
+const { modReader, mcLogger }  = require('./lib/mod-checker.js')
+const mcDetail                 = require('./package.json')
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
