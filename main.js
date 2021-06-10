@@ -44,6 +44,13 @@ let splash = null
                                                              
 */
 async function moveMod(modName) {
+	if ( location_cleaner === null ) {
+		dialog.showMessageBoxSync(win, {
+			message : await myTranslator.stringLookup('move_mod_no_folder'),
+			type    : 'warning',
+		})
+		return false
+	}
 	const response = dialog.showMessageBoxSync(win, {
 		message : `${await myTranslator.stringLookup('move_mod_message')} ${modName}`,
 		type    : 'warning',
@@ -153,17 +160,21 @@ ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 			label : await myTranslator.stringLookup('menu_open_explorer'),
 			click : () => { shell.showItemInFolder(fullPath) },
 		},
-		{ type : 'separator' },
-		{
+		{ type : 'separator' }]
+
+	if ( location_cleaner !== null ) {
+		template.push({
 			label : await myTranslator.stringLookup('menu_move_file'),
 			click : () => { moveMod(modName) },
 		},
-		{ type : 'separator' },
-		{
-			label : await myTranslator.stringLookup('menu_copy_full_path'),
-			click : () => { clipboard.writeText(fullPath) },
-		},
-	]
+		{ type : 'separator' })
+	}
+
+	template.push({
+		label : await myTranslator.stringLookup('menu_copy_full_path'),
+		click : () => { clipboard.writeText(fullPath) },
+	})
+	
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
@@ -196,12 +207,15 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 			label : await myTranslator.stringLookup('menu_open_explorer'),
 			click : () => { shell.showItemInFolder(modList.fullList[theseValues[0]].fullPath) },
 		},
-		{ type : 'separator' },
-		{
-			label : await myTranslator.stringLookup('menu_move_file'),
-			click : () => { moveMod(theseValues[0]) },
-		},
 		{ type : 'separator' })
+
+		if ( location_cleaner !== null ) {
+			template.push({
+				label : await myTranslator.stringLookup('menu_move_file'),
+				click : () => { moveMod(theseValues[0]) },
+			},
+			{ type : 'separator' })
+		}
 	}
 	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts']
 	const copyString = await myTranslator.stringLookup('menu_copy_general')
@@ -267,24 +281,65 @@ function sendNewConfig(event) {
 		} )
 }
 
-ipcMain.on('openConfigFile', (event) => {
+ipcMain.on('setMoveFolder', (event) => {
+	const homedir  = require('os').homedir()
+	
+	location_cleaner = null
+
+	dialog.showOpenDialog({
+		properties  : ['openDirectory'],
+		defaultPath : homedir,
+	}).then((result) => {
+		if ( result.canceled ) {
+			sendNewConfig(event)
+			logger.notice('loader', 'Set move folder canceled')
+		} else {
+			location_cleaner = result.filePaths[0]
+			sendNewConfig(event)
+		}
+	}).catch((unknownError) => {
+		// Read of file failed? Permissions issue maybe?  Not sure.
+		location_cleaner  = null
+		logger.fatal('loader', `Could not read specified move-to folder : ${unknownError}`)
+		sendNewConfig(event)
+	})
+})
+
+ipcMain.on('openOtherFolder', (event) => {
 	const homedir  = require('os').homedir()
 	location_valid     = false
 	location_error     = false
 	location_modfolder = null
 	location_savegame  = null
 
-	if ( location_cleaner !== null ) {
-		/* Did we already run once?  If so, remove the ?empty? moved file folder. Or not, it it's not empty */
-		try {
-			fs.rmdirSync(location_cleaner)
-		} catch {
-			logger.notice('loader', 'Cannot remove stale send-to location')
-			// Don't care. This means the os didn't let us remove it, probably because it's not empty.
+	dialog.showOpenDialog({
+		properties  : ['openDirectory'],
+		defaultPath : homedir,
+	}).then((result) => {
+		if ( result.canceled ) {
+			sendNewConfig(event)
+			logger.notice('loader', 'Open new folder canceled')
+		} else {
+			location_modfolder = result.filePaths[0]
+			location_valid     = true
+			sendNewConfig(event)
 		}
-		location_cleaner = null
-	}
+	}).catch((unknownError) => {
+		// Read of file failed? Permissions issue maybe?  Not sure.
+		location_valid    = false
+		location_savegame = null
+		location_error    = true
+		logger.fatal('loader', `Could not read specified mod folder : ${unknownError}`)
+		sendNewConfig(event)
+	})
+})
 
+ipcMain.on('openConfigFile', (event) => {
+	const homedir  = require('os').homedir()
+	location_valid     = false
+	location_error     = false
+	location_modfolder = null
+	location_savegame  = null
 
 	dialog.showOpenDialog({
 		properties  : ['openFile'],
@@ -338,15 +393,6 @@ ipcMain.on('openConfigFile', (event) => {
 				}
 				
 				location_valid = true
-		
-				if ( location_cleaner === null ) {
-					try {
-						location_cleaner = fs.mkdtempSync(path.join(location_savegame, 'modQuarantine-'))
-					} catch {
-						logger.notice('loader', 'Could not make temp folder for quarantine')
-						location_cleaner = null
-					}
-				}
 
 				sendNewConfig(event)
 			})
@@ -655,13 +701,6 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
-		if ( location_cleaner !== null ) {
-			try {
-				fs.rmdirSync(location_cleaner)
-			} catch {
-				// Don't care. (probably folder not empty, or it's open in the explorer.)
-			}
-		}
 		app.quit()
 	}
 })

@@ -373,6 +373,13 @@ contextBridge.exposeInMainWorld(
 			ipcRenderer.send('openConfigFile')
 			dataIsLoaded = false
 		},
+		loadFolder : () => {
+			ipcRenderer.send('openOtherFolder')
+			dataIsLoaded = false
+		},
+		chooseMoveFolder : () => {
+			ipcRenderer.send('setMoveFolder')
+		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
 			classAdd(['button_process', 'button_load', 'button_load_folder', 'button_move_folder'], 'disabled')
