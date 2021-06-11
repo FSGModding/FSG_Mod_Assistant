@@ -1,5 +1,7 @@
 # FS19 Mod Install Checker
 
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jtsage/FS19_Mod_Checker) [![Build/release](https://github.com/jtsage/FS19_Mod_Checker/actions/workflows/build.yml/badge.svg)](https://github.com/jtsage/FS19_Mod_Checker/actions/workflows/build.yml) ![GitHub Release Date](https://img.shields.io/github/release-date/jtsage/FS19_Mod_Checker) ![GitHub all releases](https://img.shields.io/github/downloads/jtsage/FS19_Mod_Checker/total)
+
 This little program will take a look at your mod install folder and inform you of the following
 
 ## What this does
