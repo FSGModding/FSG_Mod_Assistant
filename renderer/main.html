@@ -3,7 +3,6 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>FS19 Mod Folder Checker</title>
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
@@ -38,7 +37,7 @@
 		td.col_mod_name {
 			word-break: break-word;
 		}
-		.col_mod_is_active, .col_mod_is_used, .col_mod_has_scripts {
+		.col_mod_is_active, .col_mod_is_used, .col_mod_has_scripts, .col_mod_is_multiplayer {
 			text-align: center;
 		}
 
@@ -47,7 +46,8 @@
 </head>
 <body class="d-flex flex-column h-100">
 	<main class="flex-shrink-0">
-	<div class="container-fluid pt-2 px-0 user-select-none">
+	<div class="container-fluid px-0 user-select-none">
+	  <div class="sticky-top pt-2 bg-body">
 		<div class="row w-100 mb-2">
 			<div class="col-9 border-bottom">
 				<h2 class="ps-2"><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
@@ -84,7 +84,7 @@
 				<button class="disabled link-dark nav-link i18n" data-i18n="tab_explore" id="tab_explore" data-bs-toggle="tab" data-bs-target="#tab_explore_content" type="button" role="tab" aria-selected="false" aria-controls="tab_explore_content"></button>
 			</li>
 		</ul>
-
+	  </div>
 
 
 
@@ -136,7 +136,7 @@
 
 				<h4 class="i18n w-75 mx-auto mt-4" data-i18n="config_step_3"></h4>
 				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-2 ps-2" data-i18n="config_quarantine_folder_blurb"></p>
-				<button type="button" id="button_move_folder" onclick="ipc.chooseMoveFolder()" class="disabled btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_move_folder_button"></button>
+				<button type="button" id="button_move_folder" onclick="ipc.chooseMoveFolder()" class="disabled btn btn-dark d-block w-75 mx-auto btn-sm i18n" data-i18n="config_move_folder_button"></button>
 				<table class="table w-75 mx-auto table-sm mt-3">
 					<tr>
 						<th class="i18n" data-i18n="location_quarantine_folder"></th>
@@ -152,7 +152,7 @@
 
 
 
-			<div class="tab-pane fade" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
+			<div class="tab-pane fade pb-5" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
 				<p class="text-center i18n" data-i18n="broken_blurb"></p>
 				<div class="text-center my-3">
 					<div class="form-check form-switch form-check-inline">
@@ -161,13 +161,13 @@
 					</div>
 				</div>
 				<ul class="list-group list-group-flush mb-4" id="broken_list"></ul>
-				<button type="button" onclick="ipc.refreshBroken()" class="btn btn-primary mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
+				<button type="button" onclick="ipc.refreshBroken()" class="btn btn-dark mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 
 
 
-			<div class="tab-pane fade" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
+			<div class="tab-pane fade pb-5" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
 				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
 				<div class="mx-0 table-responsive">
 					<table class="table table-hover sortable" id="table_missing_parent">
@@ -183,22 +183,22 @@
 						</tbody>
 					</table>
 				</div>
-				<button type="button" onclick="ipc.refreshMissing()" class="btn btn-primary mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
+				<button type="button" onclick="ipc.refreshMissing()" class="btn btn-dark mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 
 
 
-			<div class="tab-pane fade" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
+			<div class="tab-pane fade pb-5" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
 				<p class="text-center i18n px-4" data-i18n="conflict_blurb"></p>
 				<ul class="list-group list-group-flush mb-4" id="conflict_list"></ul>
-				<button type="button" onclick="ipc.refreshConflict()" class="btn btn-primary mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
+				<button type="button" onclick="ipc.refreshConflict()" class="btn btn-dark mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 
 
 
-			<div class="tab-pane fade" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
+			<div class="tab-pane fade pb-5" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
 				<p class="text-center i18n px-4" data-i18n="explore_blurb"></p>
 				
 				<div class="row mx-5">
@@ -212,7 +212,7 @@
 						</div>
 					</div>
 					<div class="col-4">
-						<button class="w-100 mx-auto btn btn-primary btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
+						<button class="w-100 mx-auto btn btn-outline-dark btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
 					</div>
 				</div>
 				<div class="mx-0 table-responsive">
@@ -229,13 +229,14 @@
 								<th class="i18n col_mod_used_games" data-i18n="header_mod_used_games"></th>
 								<th class="i18n col_mod_full_path" data-i18n="header_mod_full_path"></th>
 								<th class="i18n col_mod_has_scripts" data-i18n="header_mod_has_scripts"></th>
+								<th class="i18n col_mod_is_multiplayer" data-i18n="header_mod_multiplayer"></th>
 							</tr>
 						</thead>
 						<tbody id="table_explore">
 						</tbody>
 					</table>
 				</div>
-				<button type="button" onclick="ipc.refreshExplore()" class="btn btn-primary d-block w-75 mx-auto mb-3 btn-sm i18n" data-i18n="button_refresh_tab"></button>
+				<button type="button" onclick="ipc.refreshExplore()" class="btn btn-dark d-block w-75 mx-auto mb-3 btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 			<div class="offcanvas offcanvas-start" tabindex="-1" id="exploreOptions">
@@ -288,15 +289,19 @@
 							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_has_scripts_switch">
 							<label class="form-check-label i18n" data-i18n="header_mod_has_scripts" for="col_mod_has_scripts_switch"></label>
 						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_multiplayer_switch">
+							<label class="form-check-label i18n" data-i18n="header_mod_multiplayer" for="col_mod_is_multiplayer_switch"></label>
+						</div>
 					</div>
 
-					<h6 class="i18n mt-5" data-i18n="explore_options_savegame_select"></h6>
+					<h6 class="i18n mt-4" data-i18n="explore_options_savegame_select"></h6>
 					<select onchange="ipc.changeExplore()" class="form-select mx-auto w-75" id="savegame_select"></select>
 
-					<h6 class="i18n mt-5" data-i18n="explore_options_special_lists"></h6>
-					<button type="button" onclick="ipc.changeExploreInActive()" id="special_inactive" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_inactive"></button>
-					<button type="button" onclick="ipc.changeExploreActiveUnused()" id="special_unused" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_unused"></button>
-					<button type="button" onclick="ipc.changeExploreScripts()" id="special_scripts" class="btn btn-primary d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_scripts"></button>
+					<h6 class="i18n mt-4" data-i18n="explore_options_special_lists"></h6>
+					<button type="button" onclick="ipc.changeExploreInActive()" id="special_inactive" class="btn btn-dark d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_inactive"></button>
+					<button type="button" onclick="ipc.changeExploreActiveUnused()" id="special_unused" class="btn btn-dark d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_unused"></button>
+					<button type="button" onclick="ipc.changeExploreScripts()" id="special_scripts" class="btn btn-dark d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_scripts"></button>
 				</div>
 			</div>
 
@@ -330,7 +335,7 @@
 	</div>
 	</main>
 
-	<footer class="footer mt-auto py-2 bg-dark">
+	<footer class="footer fixed-bottom mt-auto py-2 bg-dark">
 		<div class="container text-center">
 			<span class="i18n text-white-50" data-i18n="latest_version_link_blurb"></span> <a target="_blank" class="text-white-50" href="https://github.com/jtsage/FS19_Mod_Checker/releases">github.com/jtsage/FS19_Mod_Checker</a>
 		</div>

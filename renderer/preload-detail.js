@@ -32,15 +32,18 @@ const byId     = (domID) => { return document.getElementById(domID) }
                                                                                                    
 */
 ipcRenderer.on('mod-record', ( event, modDetails ) => {
-	byId('title').innerHTML        = modDetails.title
-	byId('version').innerHTML      = modDetails.version
-	byId('filesize').innerHTML     = modDetails.filesize
-	byId('has_scripts').innerHTML  = ((modDetails.has_scripts) ? iconGreenCheckMark : iconRedX)
-	byId('description').innerHTML  = modDetails.description
+	byId('title').innerHTML          = modDetails.title
+	byId('version').innerHTML        = modDetails.version
+	byId('filesize').innerHTML       = modDetails.filesize
+	byId('has_scripts').innerHTML    = ((modDetails.has_scripts) ? iconGreenCheckMark : iconRedX)
+	byId('is_multiplayer').innerHTML = ((modDetails.is_multiplayer) ? iconGreenCheckMark : iconRedX)
+	byId('store_items').innerHTML    = modDetails.store_items
+	byId('mod_author').innerHTML     = (modDetails.mod_author === null ) ? '' : modDetails.mod_author
+	byId('description').innerHTML    = modDetails.description
 
 	const row_legend = modDetails.total_games.map((thisGame) => { return `<td class="text-center fw-bold">${thisGame}</td>`})
-	const row_active = modDetails.total_games.map((thisGame) => { return `<td class="${(modDetails.active_game[thisGame])?'bg-success':'bg-danger'}">&nbsp;</td>`})
-	const row_used   = modDetails.total_games.map((thisGame) => { return `<td class="${(modDetails.used_game[thisGame])?'bg-success':'bg-danger'}">&nbsp;</td>`})
+	const row_active = modDetails.total_games.map((thisGame) => { return `<td class="text-center">${(modDetails.active_game[thisGame])?iconGreenCheckMark:iconRedX}</td>`})
+	const row_used   = modDetails.total_games.map((thisGame) => { return `<td class="text-center">${(modDetails.used_game[thisGame])?iconGreenCheckMark:iconRedX}</td>`})
 
 	byId('used_active_table').innerHTML = `<tr><th class="i18n" data-i18n="active_used_table_savegame"></th>${row_legend.join('')}</tr><tr><th class="i18n" data-i18n="active_used_table_active"></th>${row_active.join('')}</tr><tr><th class="i18n" data-i18n="active_used_table_used"></th>${row_used.join('')}</tr>`
 

@@ -5,32 +5,36 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
-	<script src="inc/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 	
-	<div class="container-fluid pt-2 px-1 user-select-none">
+	<div class="container-fluid px-1 user-select-none">
+	  <div class="sticky-top pt-2 bg-body">
 		<div class="row w-100">
 			<div class="col-9 border-bottom">
 				<h2><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
 			</div>
 		</div>
-		<h3 class="text-center my-3" id="title"></h3>
+		<h3 class="text-center my-3 border-bottom w-75 mx-auto" id="title"></h3>
+	  </div>
 
 		<div class="row mx-4 mb-3">
 			<div class="col-4" id="icon_div"></div>
 			<div class="col-8 mx-auto">
 				<table class="table">
+					<tr><th class="i18n" data-i18n="header_mod_author"></th><td class="text-end" id="mod_author"></td></tr>
 					<tr><th class="i18n" data-i18n="header_mod_version"></th><td class="text-end" id="version"></td></tr>
 					<tr><th class="i18n" data-i18n="header_mod_size"></th><td class="text-end" id="filesize"></td></tr>
-					<tr><th class="i18n" data-i18n="header_mod_has_scripts"></th><td class="text-center" id="has_scripts"></td></tr>
+					<tr><th class="i18n" data-i18n="header_mod_has_scripts"></th><td class="text-end" id="has_scripts"></td></tr>
+					<tr><th class="i18n" data-i18n="header_mod_store_items"></th><td class="text-end" id="store_items"></td></tr>
+					<tr><th class="i18n" data-i18n="header_mod_multiplayer"></th><td class="text-end" id="is_multiplayer"></td></tr>
 				</table>				
 			</div>
 		</div>
-		<div class="mb-3">
+		<div class="mb-3 px-3">
 			<table class="table table-bordered" id="used_active_table"></table>
 		</div>
-		<div style="white-space: pre-wrap" class="px-5" id="description"></div>
+		<div style="white-space: pre-wrap" class="px-5 font-monospace" id="description"></div>
 	</div>
 
 </body>

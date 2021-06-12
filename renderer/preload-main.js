@@ -314,7 +314,8 @@ ipcRenderer.on('gotExploreList', (event, list) => {
 		'col_mod_is_used',
 		'col_mod_used_games',
 		'col_mod_full_path',
-		'col_mod_has_scripts'
+		'col_mod_has_scripts',
+		'col_mod_is_multiplayer',
 	]
 
 	const newContent = list.map((x) => { return buildTableRow(x, colNames, 'exp_') })

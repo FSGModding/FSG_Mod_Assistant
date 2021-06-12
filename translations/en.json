@@ -71,6 +71,9 @@
 	"header_mod_used_games"  : "Used In Saves",
 	"header_mod_full_path"   : "Full Path",
 	"header_mod_has_scripts" : "Uses Scripts",
+	"header_mod_store_items" : "Store Items",
+	"header_mod_author"      : "Author",
+	"header_mod_multiplayer" : "Multiplayer",
 	
 	"active_used_table_savegame" : "Savegame",
 	"active_used_table_active"   : "Active",

@@ -14,7 +14,7 @@ const Diff      = require('diff')
 const gameFolder = path.join(__dirname, 'testRunnerMods')
 const fileFolder = path.join(gameFolder, 'mods')
 
-const { modReader, mcLogger }  = require('./lib/mod-checker.js')
+const { modReader, mcLogger }  = require('../lib/mod-checker.js')
 const translator   = require('../lib/translate.js')
 const myTranslator = new translator.translator('en')
 

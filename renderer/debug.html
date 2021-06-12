@@ -5,18 +5,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
-	<script src="inc/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 	
-	<div class="container-fluid pt-2 px-1">
-		<div class="row w-100">
+	<div class="container-fluid px-1 user-select-none">
+		<div class="row w-100 pt-2 sticky-top bg-body">
 			<div class="col-9 border-bottom">
-				<h2><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
+				<h2><span class="i18n" data-i18n="title"></span></h2>
 			</div>
 		</div>
 		
-		<div style="white-space: pre-wrap" class="px-5" id="debug_log"></div>
+		<div style="white-space: pre-wrap" class="px-5 font-monospace user-select-all" id="debug_log"></div>
 	</div>
 
 </body>

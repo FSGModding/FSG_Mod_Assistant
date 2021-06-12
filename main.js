@@ -137,6 +137,9 @@ function createWindow () {
 		myTranslator.getLangList().then((langList) => {
 			event.sender.send('trigger-i18n-select', langList, myTranslator.deferCurrentLocale())
 		})
+		myTranslator.stringLookup('title').then((title) => {
+			win.title = title
+		})
 	})
 	win.webContents.setWindowOpenHandler(({ url }) => {
 		require('electron').shell.openExternal(url)
@@ -554,7 +557,7 @@ ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) 
 		columns             : [
 			'shortName', 'title', 'mod_version', 'fileSizeMap',
 			'isActive', 'activeGames', 'isUsed', 'usedGames',
-			'fullPath', 'hasScripts'
+			'fullPath', 'hasScripts', 'isMultiplayer'
 		],
 		activeGame          : parseInt(activeGame),
 		usedGame            : parseInt(usedGame),
@@ -604,16 +607,19 @@ function openDetailWindow(thisModRecord) {
 
 	detailWindow.webContents.on('did-finish-load', async (event) => {
 		const sendData = {
-			total_games  : modList.activeArray,
-			title        : thisModRecord.title,
-			version      : thisModRecord.mod_version,
-			filesize     : thisModRecord.fileSizeString,
-			active_games : thisModRecord.activeGames,
-			used_games   : thisModRecord.usedGames,
-			active_game  : thisModRecord.activeGame,
-			used_game    : thisModRecord.usedGame,
-			has_scripts  : thisModRecord.hasScripts,
-			description  : thisModRecord.descDescription,
+			total_games    : modList.activeArray,
+			title          : thisModRecord.title,
+			version        : thisModRecord.mod_version,
+			filesize       : thisModRecord.fileSizeString,
+			active_games   : thisModRecord.activeGames,
+			used_games     : thisModRecord.usedGames,
+			active_game    : thisModRecord.activeGame,
+			used_game      : thisModRecord.usedGame,
+			has_scripts    : thisModRecord.hasScripts,
+			description    : thisModRecord.descDescription,
+			store_items    : thisModRecord.countStoreItems,
+			mod_author     : thisModRecord.mod_author,
+			is_multiplayer : thisModRecord.isMultiplayer,
 		}
 		event.sender.send('mod-record', sendData)
 		event.sender.send('trigger-i18n')
@@ -697,6 +703,15 @@ app.whenReady().then(() => {
 			createWindow()
 		}
 	})
+})
+
+app.setAboutPanelOptions({
+	applicationName : 'FS19 Mod Checker',
+	applicationVersion : mcDetail.version,
+	copyright : '(c) 2021 J.T.Sage',
+	credits : 'J.T.Sage <jtsage+datebox@gmail.com>',
+	website : 'https://github.com/jtsage/FS19_Mod_Checker',
+	iconPath : path.join(__dirname, 'build', 'icon.png'),
 })
 
 app.on('window-all-closed', () => {

@@ -34,10 +34,11 @@ function toggleExploreColumns () {
 		'mod_used_games',
 		'mod_full_path',
 		'mod_has_scripts',
+		'mod_is_multiplayer',
 	]
 	columns.forEach((thisCol) => {
 		const theseItems = byId('table_explore_parent').querySelectorAll(`.col_${thisCol}`)
-		const colStatus = byId(`col_${thisCol}_switch`).checked
+		const colStatus  = byId(`col_${thisCol}_switch`).checked
 
 		theseItems.forEach((thisRow) => {
 			if ( colStatus === true ) {
@@ -55,7 +56,7 @@ function searchExploreClear() {
 }
 function searchExploreTable() {
 	const exploreTable = byId('table_explore').querySelectorAll('tbody>tr')
-	const searchTerm = byId('explore-search').value.toLowerCase()
+	const searchTerm   = byId('explore-search').value.toLowerCase()
 
 	exploreTable.forEach((thisTD) => {
 		const testString = (thisTD.childNodes[0].innerText + thisTD.childNodes[1].innerText).toLowerCase()

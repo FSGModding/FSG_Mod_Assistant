@@ -15,13 +15,13 @@
 		},
 		{
 			"name": "Debug - CLI Tester",
-			"program": "${workspaceFolder}/test/cli-test-runner.js",
+			"program": "${workspaceFolder}/test/mod-reader-test.js",
 			"cwd": "${workspaceFolder}",
 			"request": "launch",
 			"skipFiles": [
 				"<node_internals>/**"
 			],
-			"type": "pwa-node"
+			"type": "node"
 		}
 	]
 }
