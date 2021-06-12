@@ -114,3 +114,7 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 ## A short note about the EXE
 
 UPDATE: the electron package should work without any virus warnings, unlike the python version. It *is* unsigned, and probably will remain so for the future - I cannot possibly spend a couple hundred dollars a year on a code signing certificate for one little project - and as far as I know, no company still offers freebies for open source.
+
+## For developers
+
+There is a CLI version in the repository, modChecker.js (you'll need the npm dependencies, but it will run without the dev-dependencies just fine. (dev stuff is only needed for the test suite and to run/build the electron version)) - it shows the basic usage of the mod / save game parser.  Someday, they parser might be it's own npm module, maybe.
