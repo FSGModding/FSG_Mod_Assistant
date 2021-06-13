@@ -470,8 +470,8 @@ ipcMain.on('processMods', (event) => {
 */
 ipcMain.on('askBrokenList', (event) => {
 	modList.search({
-		columns : ['filenameSlash', 'fullPath', 'failedTestList', 'copyName', 'shortName'],
-		terms   : ['didTestingFail'],
+		columns : ['filenameSlash', 'fullPath', 'howIsModBroken', 'copyName', 'shortName'],
+		terms   : ['isModBroken'],
 	}).then((searchResults) => {
 		event.sender.send('gotBrokenList', searchResults)
 	}).catch((unknownError) => {
@@ -490,9 +490,8 @@ ipcMain.on('askBrokenList', (event) => {
                                                                                              
 */
 ipcMain.on('askConflictList', async (event) => {
-	const folderAndZipText = await myTranslator.stringLookup('conflict_error_folder_and_file')
 
-	modList.conflictList(folderAndZipText).then((searchResults) => {
+	modList.conflictList().then((searchResults) => {
 		event.sender.send('gotConflictList', searchResults)
 	}).catch((unknownError) => {
 		// Shouldn't happen.  No idea

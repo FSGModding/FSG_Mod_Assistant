@@ -10,14 +10,14 @@
 const byId = function( id ) { return document.getElementById( id ) }
 
 function toggleHideFolderOnlyError() {
-	const folderOnly = byId('broken_list').querySelectorAll('.just-folder-error')
+	const folderOnly = byId('conflict_list').querySelectorAll('.just-folder-error')
 	const status     = byId('zip_folder_switch').checked
 
-	folderOnly.forEach((thisBroken) => {
+	folderOnly.forEach((thisConflict) => {
 		if ( status ) {
-			thisBroken.classList.add('d-none')
+			thisConflict.classList.add('d-none')
 		} else {
-			thisBroken.classList.remove('d-none')
+			thisConflict.classList.remove('d-none')
 		}
 	})
 }

@@ -104,11 +104,17 @@ const buildBrokenList = (name, path, bullets, copyName, shortName) => {
 
 const buildConflictList = (name, title, message, path) => {
 	/* Build the conflict list (multi level UL) */
-	const thisID = `conf_${name}`
+	const onlyFolderClass = ( typeof message !== 'string' && message.length === 1 && message[0] === 'INFO_NO_MULTIPLAYER_UNZIPPED' ) ? 'just-folder-error' : ''
+	const thisID          = `conf_${name}`
+
+	const thisMessage = ( typeof message === 'string' ) ?
+		`<li class="mt-2">${message}</li>` :
+		message.map((msgPart) => { return `<li class="mt-2 i18n" data-i18n="${msgPart}"></li>`} ).join('\n')
+	
 	return '' +
-		`<li id="${thisID}" data-name="${name}" data-path="${path}" class="mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
+		`<li id="${thisID}" data-name="${name}" data-path="${path}" class="${onlyFolderClass} mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
 		`<div class="ms-2 me-auto"><div><strong>${name}</strong> <em class="small">${title}</em></div>` +
-		`<ul style="list-style: disc"><li class="mt-2">${message}</li></ul></div></li>`
+		`<ul style="list-style: disc">${thisMessage}</ul></div></li>`
 }
 
 
@@ -280,6 +286,14 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 ipcRenderer.on('gotConflictList', (event, list) => {
 	const newContent = list.map((x) => { return buildConflictList(...x) })
 	byId('conflict_list').innerHTML = newContent.join('')
+
+	const sendSet = new Set()
+	for (const item of byId('conflict_list').getElementsByClassName('i18n')) {
+		sendSet.add(item.getAttribute('data-i18n'))
+	}
+	sendSet.forEach( (thisStringID ) => {
+		ipcRenderer.send('i18n-translate', thisStringID)
+	})
 })
 
 

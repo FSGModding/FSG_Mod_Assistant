@@ -22,11 +22,8 @@ const myTranslator = new translator.translator('en')
 const logger  = new mcLogger()
 const modList = new modReader(gameFolder, fileFolder, logger, myTranslator.deferCurrentLocale)
 
-const expectedConflictList = ['EXAMPLE_Good_Mod_Folder_and_Zip']
+const expectedConflictList = ['EXAMPLE_Good_Mod_Folder_and_Zip', 'EXAMPLE_Good_Mod_Folder_Warning']
 const expectedBrokenList = [
-	['EXAMPLE_Bad_ModDesc_CRC',
-		['NOT_MOD_MODDESC_MISSING']
-	],
 	['EXAMPLE_Broken_Zip_File',
 		['FILE_ERROR_UNREADABLE_ZIP']
 	],
@@ -71,6 +68,7 @@ const expectedBrokenList = [
 	]
 ]
 const expectedGoodList = [
+	['EXAMPLE_Bad_ModDesc_CRC', 'Bulbulator', '1.0.0.0'],
 	['EXAMPLE_Good_Mod', 'Totally valid FS19 Mod', '1.0.0.0'],
 	['EXAMPLE_Good_Mod_Folder_and_Zip', 'Totally valid FS19 Mod', '1.0.0.0'],
 	['EXAMPLE_Good_Mod_Folder_Warning', 'Totally valid FS19 Mod', '1.0.0.0'],
