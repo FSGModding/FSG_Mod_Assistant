@@ -7,7 +7,7 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, Menu, BrowserWindow, nativeImage, ipcMain, clipboard, globalShortcut, shell, dialog } = require('electron')
+const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dialog } = require('electron')
 
 const devDebug   = false
 
@@ -624,12 +624,7 @@ function openDetailWindow(thisModRecord) {
 		event.sender.send('trigger-i18n')
 
 		thisModRecord.getIcon().then((iconData) => {
-			if ( iconData === null || iconData === false ) {
-				event.sender.send('mod-icon', null)
-			} else {
-				const iconNative = nativeImage.createFromBuffer(iconData.data, { width : iconData.width, height : iconData.height })
-				event.sender.send('mod-icon', iconNative.toDataURL())
-			}
+			event.sender.send('mod-icon', ( iconData === null || iconData === false ) ? null : iconData)
 		}).catch((unknownError) => {
 			// Shouldn't happen.  No idea
 			logger.notice('ipcProcess', `Could not get "mod icon" : ${unknownError}`)
