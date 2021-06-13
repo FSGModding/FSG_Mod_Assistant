@@ -24,6 +24,9 @@ const modList = new modReader(gameFolder, fileFolder, logger, myTranslator.defer
 
 const expectedConflictList = ['EXAMPLE_Good_Mod_Folder_and_Zip']
 const expectedBrokenList = [
+	['EXAMPLE_Bad_ModDesc_CRC',
+		['NOT_MOD_MODDESC_MISSING']
+	],
 	['EXAMPLE_Broken_Zip_File',
 		['FILE_ERROR_UNREADABLE_ZIP']
 	],
