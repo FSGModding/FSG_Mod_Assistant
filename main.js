@@ -690,6 +690,11 @@ function openDebugWindow(logClass) {
 	})
 }
 
+ipcMain.on('getDebugLogContents', (event) => {
+	const logContents = logger.toDisplayHTML
+	event.sender.send('update-log', logContents)
+})
+
 
 app.whenReady().then(() => {
 	globalShortcut.register('Alt+CommandOrControl+D', () => {

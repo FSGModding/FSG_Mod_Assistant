@@ -8,8 +8,8 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const {ipcRenderer} = require('electron')
-
+const {contextBridge, ipcRenderer} = require('electron')
+const autoUpdateTimeSeconds = 30
 
 /*
   _____  _____  _______           _____   ______      _______  _____  __   _ _______ _______ __   _ _______
@@ -22,6 +22,18 @@ ipcRenderer.on('update-log', ( event, logContents ) => {
 })
 
 
+contextBridge.exposeInMainWorld(
+	'ipc',
+	{
+		getDebugLogContents : () => { ipcRenderer.send('getDebugLogContents') },
+	}
+)
+
+window.addEventListener('DOMContentLoaded', () => {
+	setInterval(() => {
+		ipcRenderer.send('getDebugLogContents')
+	}, (autoUpdateTimeSeconds * 1000))
+})
 
 
 /*
