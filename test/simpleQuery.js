@@ -3,7 +3,7 @@
 // |       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|
 // |__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  
 
-// Test Runner CLI. (old version, but this will become the CLI version soon)
+// Simple script for live testing in development environments
 
 // (c) 2021 JTSage.  MIT License.
 const _homedir  = require('os').homedir()

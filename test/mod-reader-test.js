@@ -22,7 +22,7 @@ const myTranslator = new translator.translator('en')
 const logger  = new mcLogger()
 const modList = new modReader(gameFolder, fileFolder, logger, myTranslator.deferCurrentLocale)
 
-const expectedConflictList = ['EXAMPLE_Good_Mod_Folder_and_Zip', 'EXAMPLE_Good_Mod_Folder_Warning']
+const expectedConflictList = ['EXAMPLE_Fake_Cracked_DLC', 'EXAMPLE_Good_Mod_Folder_and_Zip', 'EXAMPLE_Good_Mod_Folder_Warning']
 const expectedBrokenList = [
 	['EXAMPLE_Broken_Zip_File',
 		['FILE_ERROR_UNREADABLE_ZIP']
@@ -35,12 +35,6 @@ const expectedBrokenList = [
 	],
 	['EXAMPLE_Good_Mod - Copy',
 		['FILE_ERROR_LIKELY_COPY', 'FILE_ERROR_NAME_INVALID']
-	],
-	['EXAMPLE_Good_Mod_Folder_and_Zip',
-		['CONFLICT_ERROR_FOLDER_AND_FILE']
-	],
-	['EXAMPLE_Good_Mod_Folder_Warning',
-		['INFO_NO_MULTIPLAYER_UNZIPPED']
 	],
 	['EXAMPLE_Good_Mod_No_Original - Copy',
 		['FILE_ERROR_LIKELY_COPY', 'FILE_ERROR_NAME_INVALID']
@@ -69,6 +63,7 @@ const expectedBrokenList = [
 ]
 const expectedGoodList = [
 	['EXAMPLE_Bad_ModDesc_CRC', 'Bulbulator', '1.0.0.0'],
+	['EXAMPLE_Fake_Cracked_DLC', 'Fake Cracked DLC', '1.0.0.0'],
 	['EXAMPLE_Good_Mod', 'Totally valid FS19 Mod', '1.0.0.0'],
 	['EXAMPLE_Good_Mod_Folder_and_Zip', 'Totally valid FS19 Mod', '1.0.0.0'],
 	['EXAMPLE_Good_Mod_Folder_Warning', 'Totally valid FS19 Mod', '1.0.0.0'],
