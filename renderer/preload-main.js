@@ -418,6 +418,9 @@ contextBridge.exposeInMainWorld(
 		openCleanDir : () => {
 			ipcRenderer.send('openCleanDir')
 		},
+		openDebugLogContents : () => {
+			ipcRenderer.send('openDebugLogContents')
+		},
 		refreshBroken : () => {
 			ipcRenderer.send('askBrokenList')
 		},

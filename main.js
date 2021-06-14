@@ -289,7 +289,7 @@ ipcMain.on('setMoveFolder', (event) => {
 	
 	location_cleaner = null
 
-	dialog.showOpenDialog({
+	dialog.showOpenDialog(win, {
 		properties  : ['openDirectory'],
 		defaultPath : homedir,
 	}).then((result) => {
@@ -315,7 +315,7 @@ ipcMain.on('openOtherFolder', (event) => {
 	location_modfolder = null
 	location_savegame  = null
 
-	dialog.showOpenDialog({
+	dialog.showOpenDialog(win, {
 		properties  : ['openDirectory'],
 		defaultPath : homedir,
 	}).then((result) => {
@@ -344,7 +344,7 @@ ipcMain.on('openConfigFile', (event) => {
 	location_modfolder = null
 	location_savegame  = null
 
-	dialog.showOpenDialog({
+	dialog.showOpenDialog(win, {
 		properties  : ['openFile'],
 		defaultPath : path.join(homedir, 'Documents', 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' ),
 		filters     : [
@@ -684,9 +684,48 @@ function openDebugWindow(logClass) {
 	})
 }
 
+ipcMain.on('openDebugLogContents', () => {
+	openDebugWindow(logger)
+})
+
 ipcMain.on('getDebugLogContents', (event) => {
 	const logContents = logger.toDisplayHTML
 	event.sender.send('update-log', logContents)
+})
+
+ipcMain.on('saveDebugLogContents', () => {
+	const homedir  = require('os').homedir()
+
+	dialog.showSaveDialog(win, {
+		defaultPath : path.join(homedir, 'Documents', 'modCheckDebugLog.txt' ),
+		filters     : [
+			{ name : 'TXT', extensions : ['txt'] },
+			{ name : 'All', extensions : ['*'] },
+		],
+	}).then(async (result) => {
+		if ( result.canceled ) {
+			logger.notice('logger', 'Save log file canceled')
+		} else {
+			const logContents = logger.toDisplayText
+
+			try {
+				fs.writeFileSync(result.filePath, logContents)
+				dialog.showMessageBoxSync(win, {
+					message : await myTranslator.stringLookup('save_log_worked'),
+					type    : 'info',
+				})
+			} catch (err) {
+				logger.fileError('logger', `Could not save log file : ${err}`)
+				dialog.showMessageBoxSync(win, {
+					message : await myTranslator.stringLookup('save_log_failed'),
+					type    : 'warning',
+				})
+			}
+		}
+	}).catch((unknownError) => {
+		// Save of file failed? Permissions issue maybe?  Not sure.
+		logger.fileError('logger', `Could not save log file : ${unknownError}`)
+	})
 })
 
 

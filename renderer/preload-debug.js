@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld(
 	'ipc',
 	{
 		getDebugLogContents : () => { ipcRenderer.send('getDebugLogContents') },
+		saveDebugLogContents : () => { ipcRenderer.send('saveDebugLogContents') },
 	}
 )
 

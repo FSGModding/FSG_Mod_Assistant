@@ -61,6 +61,10 @@
 	"move_mod_failed"    : "The mod was unable to be moved",
 	"move_mod_no_folder" : "You must set a move-to location before using this command",
 
+	"save_log_failed" : "Debug log save failed",
+	"save_log_worked" : "Debug log saved successfully",
+	"open_debug_log"  : "View Debug Log",
+
 	"header_mod_name"        : "Name",
 	"header_mod_title"       : "Title",
 	"header_mod_version"     : "Version",
