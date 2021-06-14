@@ -17,7 +17,8 @@
   "repository": "github:jtsage/FS19_Mod_Checker",
   "scripts": {
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "test": "node ./test/mod-reader-test.js"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
