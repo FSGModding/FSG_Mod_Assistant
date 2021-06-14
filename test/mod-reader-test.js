@@ -18,7 +18,7 @@ const { modReader, mcLogger }  = require('../lib/mod-checker.js')
 const translator   = require('../lib/translate.js')
 const myTranslator = new translator.translator('en')
 
-
+let exitCode  = 0
 const logger  = new mcLogger()
 const modList = new modReader(gameFolder, fileFolder, logger, myTranslator.deferCurrentLocale)
 
@@ -79,6 +79,7 @@ modList.readAll().then(() => {
 		if (JSON.stringify(expectedBrokenList) === JSON.stringify(results)) {
 			console.log(c.green('PASS: Broken list is as expected'))
 		} else {
+			exitCode = 1
 			console.log(c.red('FAIL: Broken list is not as expected'))
 			const diff = Diff.diffChars(JSON.stringify(expectedBrokenList), JSON.stringify(results))
  
@@ -97,6 +98,7 @@ modList.readAll().then(() => {
 		if (JSON.stringify(simpleResults) === JSON.stringify(expectedConflictList)) {
 			console.log(c.green('PASS: Conflict list is as expected'))
 		} else {
+			exitCode = 1
 			console.log(c.red('FAIL: Conflict list is not as expected'))
 			const diff = Diff.diffChars(JSON.stringify(expectedConflictList), JSON.stringify(simpleResults))
  
@@ -118,6 +120,7 @@ modList.readAll().then(() => {
 		if (JSON.stringify(expectedGoodList) === JSON.stringify(results)) {
 			console.log(c.green('PASS: Good list is as expected'))
 		} else {
+			exitCode = 1
 			console.log(c.red('FAIL: Good list is not as expected'))
 			const diff = Diff.diffChars(JSON.stringify(expectedGoodList), JSON.stringify(results))
  
@@ -128,6 +131,7 @@ modList.readAll().then(() => {
 			})
 			console.log()
 		}
+		process.exit(exitCode)
 	})
 })
 

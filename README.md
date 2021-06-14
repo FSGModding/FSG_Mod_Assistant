@@ -107,6 +107,11 @@ Please open an issue and let me know what.  If it is specific to a mod, let me k
 
 Sadly, the primary developer only understands English.  If you'd like to contribute a translation, take a look in the translations folder, it's simple json. If you prefer a web interface: [Crowdin Project Page](https://crowdin.com/project/fs19-mod-checker)
 
+### Localizations Available
+
+* English
+* Polish / Polski - Thank you Ziuta!
+
 ## In-Progress Improvements
 
 * Note some of the more popular mod conflicts and suggest avoiding them: [GitHub Issue #2](https://github.com/jtsage/FS19_Mod_Checker/issues/2)
