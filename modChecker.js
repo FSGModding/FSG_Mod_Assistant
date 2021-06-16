@@ -198,7 +198,7 @@ modList.readAll().then(async () => {
 		console.log('')
 		console.log(await myTranslator.stringLookup('missing_blurb'))
 		sepLine()
-		const usedString = await myTranslator.stringLookup('header_mod_used_games')
+		const usedString = await myTranslator.stringLookup('detail_mod_used_games')
 
 		await modList.search({
 			columns : ['shortName', 'title', 'activeGames', 'usedGames'],
