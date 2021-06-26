@@ -210,6 +210,18 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 				const url = `https://www.google.com/search?q=FS19 ${theseValues[1]}`
 				require('electron').shell.openExternal(url)
 			},
+		}, {
+			label : await myTranslator.stringLookup('menu_find_on_duck'),
+			click : () => {
+				const url = `https://duckduckgo.com/?q=FS19 ${theseValues[1]}`
+				require('electron').shell.openExternal(url)
+			},
+		}, {
+			label : await myTranslator.stringLookup('menu_find_on_bing'),
+			click : () => {
+				const url = `https://www.bing.com/search?q=FS19 ${theseValues[1]}`
+				require('electron').shell.openExternal(url)
+			},
 		}, { type : 'separator' })
 	} else {
 		template.push({

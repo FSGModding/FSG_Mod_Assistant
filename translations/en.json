@@ -50,6 +50,8 @@
 	"menu_open_explorer"   : "Show in Finder / Explorer",
 	"menu_find_on_mod_hub" : "Search ModHub for this Mod",
 	"menu_find_on_google"  : "Search Google for this Mod",
+	"menu_find_on_duck"    : "Search DuckDuckGo for this Mod",
+	"menu_find_on_bing"    : "Search Bing for this Mod",
 	"menu_copy_general"    : "Copy : ",
 	"menu_copy_full_path"  : "Copy : Full File Path",
 	"menu_move_file"       : "Move Mod to quarantine",
