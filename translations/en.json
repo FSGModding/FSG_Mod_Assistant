@@ -69,6 +69,7 @@
 	"header_mod_title"       : "Title",
 	"header_mod_version"     : "Version",
 	"header_mod_size"        : "Size",
+	"header_mod_date"        : "Date",
 	"header_mod_is_active"   : "Is Active",
 	"header_mod_active_games": "Active In Saves",
 	"header_mod_is_used"     : "Is Used",
@@ -81,6 +82,7 @@
 
 	"detail_mod_version"     : "Version",
 	"detail_mod_size"        : "Size",
+	"detail_mod_date"        : "Date",
 	"detail_mod_has_scripts" : "Uses Scripts",
 	"detail_mod_store_items" : "Store Items",
 	"detail_mod_author"      : "Author",
@@ -90,6 +92,7 @@
 	"filter_mod_title"       : "Title",
 	"filter_mod_version"     : "Version",
 	"filter_mod_size"        : "Size",
+	"filter_mod_date"        : "Date",
 	"filter_mod_is_active"   : "Is Active",
 	"filter_mod_active_games": "Active In Saves",
 	"filter_mod_is_used"     : "Is Used",

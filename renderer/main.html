@@ -28,7 +28,7 @@
 			content: ' \025B4';
 		}
 
-		td.col_mod_version, td.col_mod_size {
+		td.col_mod_version, td.col_mod_size, td.col_mod_date {
 			text-align: right;
 		}
 		td.col_mod_size {
@@ -223,6 +223,7 @@
 								<th class="i18n col_mod_title" data-i18n="header_mod_title"></th>
 								<th class="i18n col_mod_version" data-i18n="header_mod_version"></th>
 								<th class="i18n col_mod_size" data-i18n="header_mod_size"></th>
+								<th class="i18n col_mod_date" data-i18n="header_mod_date"></th>
 								<th class="i18n col_mod_is_active" data-i18n="header_mod_is_active"></th>
 								<th class="i18n col_mod_active_games" data-i18n="header_mod_active_games"></th>
 								<th class="i18n col_mod_is_used" data-i18n="header_mod_is_used"></th>
@@ -264,6 +265,10 @@
 						<div class="form-check form-switch">
 							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_size_switch" checked>
 							<label class="form-check-label i18n" data-i18n="filter_mod_size" for="col_mod_size_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_date_switch">
+							<label class="form-check-label i18n" data-i18n="filter_mod_date" for="col_mod_date_switch"></label>
 						</div>
 						<div class="form-check form-switch">
 							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_active_switch" checked>

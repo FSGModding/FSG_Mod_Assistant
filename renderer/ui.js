@@ -28,6 +28,7 @@ function toggleExploreColumns () {
 		'mod_title',
 		'mod_version',
 		'mod_size',
+		'mod_date',
 		'mod_is_active',
 		'mod_active_games',
 		'mod_is_used',

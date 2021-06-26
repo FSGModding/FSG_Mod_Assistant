@@ -554,7 +554,7 @@ ipcMain.on('askGamesActive', (event) => {
 ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) => {
 	modList.search({
 		columns             : [
-			'shortName', 'title', 'mod_version', 'fileSizeMap',
+			'shortName', 'title', 'mod_version', 'fileSizeMap', 'stringDate',
 			'isActive', 'activeGames', 'isUsed', 'usedGames',
 			'fullPath', 'hasScripts', 'isMultiplayer'
 		],
@@ -619,6 +619,7 @@ function openDetailWindow(thisModRecord) {
 			store_items    : thisModRecord.countStoreItems,
 			mod_author     : thisModRecord.mod_author,
 			is_multiplayer : thisModRecord.isMultiplayer,
+			date           : thisModRecord.date,
 		}
 		event.sender.send('mod-record', sendData)
 		event.sender.send('trigger-i18n')

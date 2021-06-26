@@ -323,6 +323,7 @@ ipcRenderer.on('gotExploreList', (event, list) => {
 		'col_mod_title',
 		'col_mod_version',
 		'col_mod_size',
+		'col_mod_date',
 		'col_mod_is_active',
 		'col_mod_active_games',
 		'col_mod_is_used',
