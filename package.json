@@ -59,6 +59,12 @@
       "!**/.vscode/*",
       "!**/dist/*"
     ],
+    "win": {
+      "target": ["nsis", "portable"]
+    },
+    "portable": {
+      "artifactName": "${productName} Portable ${version}.exe"
+    },
     "mac": {
       "category": "public.app-category.productivity"
     }
