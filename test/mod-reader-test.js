@@ -131,6 +131,9 @@ modList.readAll().then(() => {
 			})
 			console.log()
 		}
+		if ( exitCode === 1 ) {
+			console.log(logger.toDisplayText)
+		}
 		process.exit(exitCode)
 	})
 })
