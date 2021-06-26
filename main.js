@@ -32,6 +32,12 @@ let location_error     = false
 
 let modList = null
 
+let counterInterval = null
+let counterRuntime  = 0
+
+const counterTick    = 500 //ms between counter update.
+const counterMaxTick = 300000 //ms for total counter time max
+
 
 let win    = null // Main window.
 let splash = null
@@ -436,6 +442,19 @@ ipcMain.on('processMods', (event) => {
 		}
 
 		if ( modList !== null ) {
+			counterRuntime = 0
+			counterInterval = setInterval(() => {
+				const counterValues = modList.testStatus
+				event.sender.send('processModsCounter', counterValues)
+				counterRuntime++
+				if ( counterValues[0] === counterValues[1] || counterRuntime > (counterMaxTick / counterTick) ) {
+					clearInterval(counterInterval)
+					if ( (counterMaxTick / counterTick) > 600 ) {
+						logger.info('reader', `Test counter timed out (${counterMaxTick}ms). This is odd.`)
+					}
+					
+				}
+			}, counterTick)
 			modList.readAll().then(() => {
 				event.sender.send('processModsDone')
 			}).catch((useError) => {

@@ -226,6 +226,10 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
   __|__ |       |_____  . |       |    \_ |_____| |_____  |______ ______| ______|
                                                                                  
 */
+ipcRenderer.on('processModsCounter', (event, values) => {
+	byId('counter_mods_done').innerHTML  = values[0]
+	byId('counter_mods_total').innerHTML = values[1]
+})
 ipcRenderer.on('processModsDone', () => {
 	classAdd('status-message-working', 'd-none')
 	classRem('status-message-testing', 'd-none')
@@ -401,6 +405,8 @@ contextBridge.exposeInMainWorld(
 			classAdd(['button_process', 'button_load', 'button_load_folder', 'button_move_folder'], 'disabled')
 			classRem('loading_modal_backdrop', 'd-none')
 			classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
+			byId('counter_mods_done').innerHTML  = 0
+			byId('counter_mods_total').innerHTML = 0
 			document.getElementById('loadingModal').style.display = 'block'
 		},
 		changeExplore : () => {
