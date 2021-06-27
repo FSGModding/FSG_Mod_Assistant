@@ -35,7 +35,7 @@ let modList = null
 let counterInterval = null
 let counterRuntime  = 0
 
-const counterTick    = 500 //ms between counter update.
+const counterTick    = 100 //ms between counter update.
 const counterMaxTick = 300000 //ms for total counter time max
 
 
@@ -461,7 +461,7 @@ ipcMain.on('processMods', (event) => {
 				counterRuntime++
 				if ( counterValues[0] === counterValues[1] || counterRuntime > (counterMaxTick / counterTick) ) {
 					clearInterval(counterInterval)
-					if ( (counterMaxTick / counterTick) > 600 ) {
+					if (  counterRuntime > (counterMaxTick / counterTick) ) {
 						logger.info('reader', `Test counter timed out (${counterMaxTick}ms). This is odd.`)
 					}
 					
