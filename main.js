@@ -188,7 +188,20 @@ ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 
-ipcMain.on('show-mod-detail', (event, thisMod) => { openDetailWindow(modList.fullList[thisMod]) })
+ipcMain.on('show-mod-detail', (event, thisMod) => {
+	let thisModDetail = null
+
+	try {
+		thisModDetail = modList.fullList[thisMod]
+	} catch (err) {
+		this.log.info(`detail-${thisMod}`, `Did not find mod details. This should be impossible: ${err}`)
+	}
+
+	if ( thisModDetail !== null ) {
+		openDetailWindow(thisModDetail)
+	}
+})
+
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	const template = [
 		{
@@ -238,7 +251,7 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 			{ type : 'separator' })
 		}
 	}
-	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts']
+	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts', 'header_mod_multiplayer']
 	const copyString = await myTranslator.stringLookup('menu_copy_general')
 
 	for ( let i = 0; i < theseHeaders.length; i++ ) {
@@ -508,7 +521,8 @@ ipcMain.on('askBrokenList', (event) => {
 	}).catch((unknownError) => {
 		// Shouldn't happen.  No idea
 		logger.notice('ipcProcess', `Could not get "broken list" : ${unknownError}`)
-		// this is a bad plan, but return empty list to continue.
+		// Explicitly return an empty list, as the UI will not remove the "testing" modal
+		// until this event happens.
 		event.sender.send('gotBrokenList', [])
 	})
 })
@@ -528,6 +542,7 @@ ipcMain.on('askConflictList', async (event) => {
 		event.sender.send('gotConflictList', searchResults)
 	}).catch((unknownError) => {
 		// Shouldn't happen.  No idea
+		// No need to return empty, this is not a pre-requisite for UI updates.
 		logger.notice('ipcProcess', `Could not get "conflict list" : ${unknownError}`)
 	})
 })
@@ -549,6 +564,7 @@ ipcMain.on('askMissingList', (event) => {
 		event.sender.send('gotMissingList', searchResults)
 	}).catch((unknownError) => {
 		// Shouldn't happen.  No idea
+		// No need to return empty, this is not a pre-requisite for UI updates.
 		logger.notice('ipcProcess', `Could not get "missing list" : ${unknownError}`)
 	})
 })
@@ -572,6 +588,7 @@ ipcMain.on('askGamesActive', (event) => {
 		)
 	}).catch((unknownError) => {
 		// Shouldn't happen.  No idea
+		// No need to return empty, this is not a pre-requisite for UI updates.
 		logger.notice('ipcProcess', `Could not get "list of active games" : ${unknownError}`)
 	})
 })
@@ -599,6 +616,7 @@ ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) 
 		event.sender.send('gotExploreList', searchResults)
 	}).catch((unknownError) => {
 		// Shouldn't happen.  No idea
+		// No need to return empty, this is not a pre-requisite for UI updates.
 		logger.notice('ipcProcess', `Could not get "explore list" : ${unknownError}`)
 	})
 })
