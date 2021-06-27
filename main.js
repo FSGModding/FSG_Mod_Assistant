@@ -508,6 +508,8 @@ ipcMain.on('askBrokenList', (event) => {
 	}).catch((unknownError) => {
 		// Shouldn't happen.  No idea
 		logger.notice('ipcProcess', `Could not get "broken list" : ${unknownError}`)
+		// this is a bad plan, but return empty list to continue.
+		event.sender.send('gotBrokenList', [])
 	})
 })
 
