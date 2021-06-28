@@ -2,7 +2,7 @@
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jtsage/FS19_Mod_Checker) [![Build/release](https://github.com/jtsage/FS19_Mod_Checker/actions/workflows/build.yml/badge.svg)](https://github.com/jtsage/FS19_Mod_Checker/actions/workflows/build.yml) ![GitHub Release Date](https://img.shields.io/github/release-date/jtsage/FS19_Mod_Checker) ![GitHub all releases](https://img.shields.io/github/downloads/jtsage/FS19_Mod_Checker/total) [![Crowdin](https://badges.crowdin.net/fs19-mod-checker/localized.svg)](https://crowdin.com/project/fs19-mod-checker)
 
-This little program will take a look at your mod install folder and inform you of the following
+This little program will take a look at your mod install folder and inform you of what it finds.
 
 ## What this does
 
@@ -39,6 +39,7 @@ _Optionally_, it will also allow you to remove mods from your install folder (at
 ### Missing Mods
 
 * List all those mods that are active in your save games but don't appear to be installed any more
+  * Allow you to search for the missing mod on the official mod hub, Google, DuckDuckGo, and Bing.
 
 ### Explore Mods
 
@@ -56,6 +57,17 @@ Here you can sort the list of good, installed mods to discover any number of thi
 
 Download the installer for your platform from the [Releases](https://github.com/jtsage/FS19_Mod_Checker/releases) page - the program
 will install with 1-click, and auto-run when it's ready.
+
+### Download options
+
+Builds are available for the following:
+
+* win x64 Installer
+* win x64 portable (no need to install)
+* mac x64 DMG (disk image)
+* mac x64 ZIP (portable)
+
+Note: the mac builds probably work just fine on the new M1 macs.
 
 ### Something didn't work?!?
 
@@ -111,6 +123,7 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 
 * Dutch / Nederlands - Thank you Kim | Paint-a-Farm!
 * English
+* German / Deutsch - Thank you paraTM!
 * Polish / Polski - Thank you Ziuta!
 
 ## In-Progress Improvements
@@ -123,4 +136,4 @@ UPDATE: the electron package should work without any virus warnings, unlike the 
 
 ## For developers
 
-There is a CLI version in the repository, modChecker.js (you'll need the npm dependencies, but it will run without the dev-dependencies just fine. (dev stuff is only needed for the test suite and to run/build the electron version)) - it shows the basic usage of the mod / save game parser.  Someday, they parser might be it's own npm module, maybe.
+There is a CLI version in the repository, modChecker.js (you'll need the npm dependencies, but it will run without the dev-dependencies just fine. (dev stuff is only needed for the test suite and to run/build the electron version)) - it shows the basic usage of the mod / save game parser.  Someday, the parser might be it's own npm module, maybe.
