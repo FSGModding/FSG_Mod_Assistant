@@ -6,10 +6,8 @@
 // Simple script for live testing in development environments
 
 // (c) 2021 JTSage.  MIT License.
-const _homedir  = require('os').homedir()
 const path      = require('path')
 
-//const gameFolder = path.join(_homedir, 'Documents' , 'My Games', 'FarmingSimulator2019' )
 const gameFolder = path.join(__dirname, '..', '..', 'testFolder')
 const fileFolder = path.join(gameFolder, 'mods')
 

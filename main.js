@@ -38,7 +38,6 @@ let counterRuntime  = 0
 const counterTick    = 100 //ms between counter update.
 const counterMaxTick = 300000 //ms for total counter time max
 
-
 let win    = null // Main window.
 let splash = null
 
@@ -117,7 +116,7 @@ function createWindow () {
 			alwaysOnTop     : true,
 			autoHideMenuBar : true,
 		})
-		splash.loadFile(path.join(__dirname, 'renderer', 'splash.html'))
+		splash.loadFile(path.join(app.getAppPath(), 'renderer', 'splash.html'))
 
 		win.removeMenu()
 
@@ -129,7 +128,7 @@ function createWindow () {
 		})
 	}
 
-	win.loadFile(path.join(__dirname, 'renderer', 'main.html'))
+	win.loadFile(path.join(app.getAppPath(), 'renderer', 'main.html'))
 
 	win.webContents.on('did-finish-load', (event) => {
 		if ( modList !== null ) {
@@ -169,7 +168,8 @@ ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 			label : await myTranslator.stringLookup('menu_open_explorer'),
 			click : () => { shell.showItemInFolder(fullPath) },
 		},
-		{ type : 'separator' }]
+		{ type : 'separator' }
+	]
 
 	if ( location_cleaner !== null ) {
 		template.push({
@@ -252,7 +252,7 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 		}
 	}
 	const blackListColumns = ['header_mod_is_used', 'header_mod_is_active', 'header_mod_has_scripts', 'header_mod_multiplayer']
-	const copyString = await myTranslator.stringLookup('menu_copy_general')
+	const copyString       = await myTranslator.stringLookup('menu_copy_general')
 
 	for ( let i = 0; i < theseHeaders.length; i++ ) {
 		if ( blackListColumns.includes(theseHeaders[i][1]) ) { continue }
@@ -312,7 +312,8 @@ function sendNewConfig(event) {
 			saveDir  : location_savegame,
 			modDir   : location_modfolder,
 			cleanDir : location_cleaner,
-		} )
+		}
+	)
 }
 
 ipcMain.on('setMoveFolder', (event) => {
@@ -683,13 +684,9 @@ function openDetailWindow(thisModRecord) {
 		})
 	})
 
-	detailWindow.loadFile(path.join(__dirname, 'renderer', 'detail.html'))
+	detailWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'detail.html'))
 
-	// detailWindow.webContents.openDevTools()
-
-	detailWindow.on('closed', () => {
-		detailWindow = null
-	})
+	detailWindow.on('closed', () => { detailWindow = null })
 }
 
 
@@ -729,7 +726,7 @@ function openDebugWindow(logClass) {
 		event.sender.send('trigger-i18n')
 	})
 
-	debugWindow.loadFile(path.join(__dirname, 'renderer', 'debug.html'))
+	debugWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
 
 	debugWindow.on('closed', () => {
 		debugWindow = null
@@ -796,12 +793,12 @@ app.whenReady().then(() => {
 })
 
 app.setAboutPanelOptions({
-	applicationName : 'FS19 Mod Checker',
+	applicationName    : 'FS19 Mod Checker',
 	applicationVersion : mcDetail.version,
-	copyright : '(c) 2021 J.T.Sage',
-	credits : 'J.T.Sage <jtsage+datebox@gmail.com>',
-	website : 'https://github.com/jtsage/FS19_Mod_Checker',
-	iconPath : path.join(__dirname, 'build', 'icon.png'),
+	copyright          : '(c) 2021 J.T.Sage',
+	credits            : 'J.T.Sage <jtsage+datebox@gmail.com>',
+	website            : 'https://github.com/jtsage/FS19_Mod_Checker',
+	iconPath           : path.join(app.getAppPath(), 'build', 'icon.png'),
 })
 
 app.on('window-all-closed', () => {
