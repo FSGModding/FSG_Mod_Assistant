@@ -260,6 +260,7 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 	setTimeout(() => {
 		classRem(['loadingModal', 'loading_modal_backdrop'], 'show')
 		classAdd('loading_modal_backdrop', 'd-none')
+		classAdd(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
 		document.getElementById('loadingModal').style.display = null
 		setTimeout(() => {
 			classAdd(['status-message-done', 'status-icon-done'], 'd-none')
@@ -402,6 +403,7 @@ contextBridge.exposeInMainWorld(
 		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
+			classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
 			classAdd(['button_process', 'button_load', 'button_load_folder', 'button_move_folder'], 'disabled')
 			classRem('loading_modal_backdrop', 'd-none')
 			classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')

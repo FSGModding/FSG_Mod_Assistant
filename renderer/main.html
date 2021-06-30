@@ -41,6 +41,32 @@
 			text-align: center;
 		}
 
+		@-webkit-keyframes flashonce {
+			0% {
+				background-color: rgba(72, 117, 72, 0.8);
+				opacity:1;
+			}
+			12% {
+				background-color: rgba(72, 117, 72, 1.0);
+			}
+			22% {
+				background-color: rgba(72, 117, 72, 0.7);
+			}
+			77% {
+				background-color: rgba(72, 117, 72, 0.3);
+			}
+			100% {
+				background-color: rgba(0, 255, 0, 0);
+			}
+		}
+			
+		.flashonce {
+			-webkit-animation-name: flashonce;
+			-webkit-animation-duration: 1500ms;
+			-webkit-animation-iteration-count: 1;
+			-webkit-animation-timing-function: ease-in-out;
+		}
+
 	</style>
 	
 </head>
