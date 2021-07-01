@@ -128,5 +128,6 @@
 	"file_error_copy_exists"                : "The original file exists.",
 	"file_error_copy_missing"               : "The original file DOES NOT exist.",
 	"file_error_copy_identical"             : "The original file and this file are identical.",
-	"info_might_be_piracy"                  : "This mod appears to be a cracked / pirated version of a paid DLC.  This test is simplistic, so this could be a false positive, however be aware that using cracked DLC will prevent you from receiving help from Giants support, and is grounds for a ban from the official discord and forums. Please support the developers!"
+	"info_might_be_piracy"                  : "This mod appears to be a cracked / pirated version of a paid DLC.  This test is simplistic, so this could be a false positive, however be aware that using cracked DLC will prevent you from receiving help from Giants support, and is grounds for a ban from the official discord and forums. Please support the developers!",
+	"info_might_be_duplicate"               : "Based on their title, these mods might be duplicates of each other.  You should compare versions and see if some could be removed."
 }

@@ -22,7 +22,12 @@ let exitCode  = 0
 const logger  = new mcLogger()
 const modList = new modReader(gameFolder, fileFolder, logger, myTranslator.deferCurrentLocale)
 
-const expectedConflictList = ['EXAMPLE_Fake_Cracked_DLC', 'EXAMPLE_Good_Mod_Folder_and_Zip', 'EXAMPLE_Good_Mod_Folder_Warning']
+const expectedConflictList = [
+	'EXAMPLE_Fake_Cracked_DLC',
+	'EXAMPLE_Good_Mod (1), EXAMPLE_Good_Mod - Copy, EXAMPLE_Good_Mod, EXAMPLE_Good_Mod_Folder_and_Zip, EXAMPLE_Good_Mod_No_Original - Copy, EXAMPLE_Good_Mod_Folder_Warning',
+	'EXAMPLE_Good_Mod_Folder_and_Zip',
+	'EXAMPLE_Good_Mod_Folder_Warning'
+]
 const expectedBrokenList = [
 	['EXAMPLE_Broken_Zip_File',
 		['FILE_ERROR_UNREADABLE_ZIP']
