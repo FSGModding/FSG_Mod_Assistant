@@ -60,7 +60,10 @@
       "!**/dist/*"
     ],
     "win": {
-      "target": ["nsis", "portable"]
+      "target": [
+        "nsis",
+        "portable"
+      ]
     },
     "portable": {
       "artifactName": "${productName} Portable ${version}.exe"
