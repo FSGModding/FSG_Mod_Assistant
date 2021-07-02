@@ -132,6 +132,8 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 
 ## A short note about the EXE
 
+2021-07-02: Spoke too soon.  The windows download at least is throwing a false virus warning at the moment.  Working on it.  Looks like sectigo joined the last couple decades and you can no verify without a listed phone number (a.k.a. Only own a cell phone like, ya know, everybody).  Looking into this today or tomorrow.
+
 UPDATE: the electron package should work without any virus warnings, unlike the python version. It *is* unsigned, and probably will remain so for the future - I cannot possibly spend a couple hundred dollars a year on a code signing certificate for one little project - and as far as I know, no company still offers freebies for open source.
 
 ## For developers
