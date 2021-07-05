@@ -125,6 +125,7 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 * English
 * German / Deutsch - Thank you paraTM!
 * Polish / Polski - Thank you Ziuta!
+* Spanish / Español - Thank you Vanquish081!
 
 ## In-Progress Improvements
 
