@@ -73,6 +73,20 @@ Note: the mac builds probably work just fine on the new M1 macs.
 
 Please open an issue and let me know what.  If it is specific to a mod, let me know where to get the mod.  You can also hit CTRL+ALT+D in the app to bring up the debug log - sending that too might be a good idea.
 
+### Usage with dedicated servers (for active/inactive/unused lists)
+
+It's beyond the scope of this project to tell you which farm / user is using each mod.  But, the program also doesn't look at that bit - a mod is either used or not, associated farm ownership is ignored.  
+
+So, if you want to run it against a dedicated server save:
+
+Option 1 - If you are running the dedicated server locally, just use the scanner on that set of save files / mods.
+
+Option 2 - Download your savegame folder *and* gameSettings.xml and run it on that.  Keep in mind to make sure the server has saved out the file recently before you do this.  Then just run it on that set of files like normal.
+
+Option 3 - Just grab the savegame folder, and replace one of your unused local saves with it.
+
+I will not be exploring using the server API to check directly - The amount of complexity this would add overshadows the benefits.  Nor will I be adding arbitrary save file loading - again, the complexity add is too much.
+
 ## What it looks like
 
 ### Configuration Screen, Mods Loaded
