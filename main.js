@@ -9,7 +9,13 @@
 
 const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dialog } = require('electron')
 
+const { autoUpdater } = require('electron-updater')
+
 const devDebug   = false
+
+if (process.platform === 'win32') {
+	autoUpdater.checkForUpdatesAndNotify()
+}
 
 const path       = require('path')
 const xml2js     = require('xml2js')
