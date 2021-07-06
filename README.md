@@ -69,6 +69,14 @@ Builds are available for the following:
 
 Note: the mac builds probably work just fine on the new M1 macs.
 
+### Updating
+
+Either download the new version and install over top, or, for every version post 1.9.30, it'll auto update.  Woohoo!
+
+Note: it might nuke the start menu / desktop shortcut though. Looking into this.  In the meantime, it installs by default to:
+
+```C:\Users\<your username>\AppData\Local\Programs\fs19-mod-checker```
+
 ### Something didn't work?!?
 
 Please open an issue and let me know what.  If it is specific to a mod, let me know where to get the mod.  You can also hit CTRL+ALT+D in the app to bring up the debug log - sending that too might be a good idea.
