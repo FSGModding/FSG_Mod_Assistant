@@ -69,11 +69,13 @@ Builds are available for the following:
 
 Note: the mac builds probably work just fine on the new M1 macs.
 
+Linux Note: this builds just fine under linux. For the very few folks this would help, I don't wish to eat into my free github actions minutes - build and run it like any other npm / yarn based project - if you were able to get FS running under linux, this shouldn't be much in comparison.
+
 ### Updating
 
-Either download the new version and install over top, or, for every version post 1.9.30, it'll auto update.  Woohoo!
+Either download the new version and install over top, or, for every version post 1.9.30, it'll auto update (windows only - mac requires a different code signing at $100/year).  Woohoo!
 
-Note: it might nuke the start menu / desktop shortcut though. Looking into this.  In the meantime, it installs by default to:
+Note: Give the program a second to update after closing (when notified of the new version).  If you are too fast, windows will want to remove your shortcut.  If you do what I did, and blindly click yes, the install folder is at:
 
 ```C:\Users\<your username>\AppData\Local\Programs\fs19-mod-checker```
 
