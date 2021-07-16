@@ -49,6 +49,8 @@
 	"menu_open_explorer": "Pokaż w eksploratorze plików",
 	"menu_find_on_mod_hub": "Wyszukaj modu na ModHub",
 	"menu_find_on_google": "Wyszukaj modu w Google",
+	"menu_find_on_duck": "Wyszukaj modu w DuckDuckGo",
+	"menu_find_on_bing": "Wyszukaj modu w Bing",
 	"menu_copy_general": "Skopiuj: ",
 	"menu_copy_full_path": "Skopiuj: Pełną ścieżkę pliku",
 	"menu_move_file": "Przenieś mod do kwarantanny",
@@ -118,5 +120,6 @@
 	"file_error_copy_exists": "Oryginalny plik istnieje.",
 	"file_error_copy_missing": "Oryginalny plik NIE istnieje.",
 	"file_error_copy_identical": "Oryginalny plik i ten plik są identyczne.",
-	"info_might_be_piracy": "Ten mod wygląda na piracką wersję DLC. Może to być błędne rozpoznanie ze względu na sposób działania programu, ale używanie pirackich wersji DLC uniemożliwi pomoc w problemach z grą od oficjalnego kanału wsparcia Giantsa oraz zostaniesz zbanowany z oficjalnego serwera Discord i oficjalnego forum gry. Wspieraj twórców gier!"
+	"info_might_be_piracy": "Ten mod wygląda na piracką wersję DLC. Może to być błędne rozpoznanie ze względu na sposób działania programu, ale używanie pirackich wersji DLC uniemożliwi pomoc w problemach z grą od oficjalnego kanału wsparcia Giantsa oraz zostaniesz zbanowany z oficjalnego serwera Discord i oficjalnego forum gry. Wspieraj twórców gier!",
+	"info_might_be_duplicate": "Na podstawie nazwy modu, mogą one być duplikatami. Powinieneś porównać wersje i sprawdzić, czy niektóre z nich mogą zostać usunięte."
 }
