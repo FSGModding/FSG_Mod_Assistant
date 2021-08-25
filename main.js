@@ -7,11 +7,11 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dialog } = require('electron')
+const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dialog, screen } = require('electron')
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug = true
+const devDebug = false
 
 if (process.platform === 'win32') {
 	autoUpdater.checkForUpdatesAndNotify()
@@ -47,6 +47,9 @@ const counterMaxTick = 300000 //ms for total counter time max
 
 let win    = null // Main window.
 let splash = null
+
+let workWidth  = 0
+let workHeight = 0
 
 
 /*
@@ -123,6 +126,9 @@ function createWindow () {
 			alwaysOnTop     : true,
 			autoHideMenuBar : true,
 		})
+
+		splash.setPosition(((workWidth/2)-200), ((workHeight/2)-200))
+
 		splash.loadFile(path.join(app.getAppPath(), 'renderer', 'splash.html'))
 
 		win.removeMenu()
@@ -838,6 +844,9 @@ app.whenReady().then(() => {
 	globalShortcut.register('Alt+CommandOrControl+D', () => {
 		openDebugWindow(logger)
 	})
+
+	workWidth = screen.getPrimaryDisplay().workAreaSize.width
+	workHeight = screen.getPrimaryDisplay().workAreaSize.height
 
 	createWindow()
 
