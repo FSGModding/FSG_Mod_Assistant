@@ -8,10 +8,19 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const {ipcRenderer} = require('electron')
+const {contextBridge, ipcRenderer} = require('electron')
 
 const byId     = (domID) => { return document.getElementById(domID) }
 
+
+contextBridge.exposeInMainWorld(
+	'ipc',
+	{
+		chooseMoveFolder : () => {
+			ipcRenderer.send('setMoveFolder')
+		},
+	}
+)
 
 /*
   _____  _____  _______   _______  ______ _______ __   _ _______        _______ _______ _______
