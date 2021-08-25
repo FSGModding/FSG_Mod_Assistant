@@ -31,14 +31,21 @@
 		td.col_mod_version, td.col_mod_size, td.col_mod_date {
 			text-align: right;
 		}
+		th.col_mod_version, th.col_mod_size, th.col_mod_date {
+			text-align: center;
+		}
 		td.col_mod_size {
 			white-space: nowrap;
+		}
+		td.col_mod_size, td.col_mod_version {
+			max-width: 120px;
 		}
 		td.col_mod_name {
 			word-break: break-word;
 		}
 		.col_mod_is_active, .col_mod_is_used, .col_mod_has_scripts, .col_mod_is_multiplayer {
 			text-align: center;
+			max-width: 80px;
 		}
 
 		@-webkit-keyframes flashonce {
