@@ -27,7 +27,11 @@ const classAdd = (domID, className) => {
 	const domIDs =  ( typeof domID === 'string' )  ? [domID] : domID
 		
 	domIDs.forEach( (thisDomID) => {
-		document.getElementById(thisDomID).classList.add(className)
+		try {
+			document.getElementById(thisDomID).classList.add(className)
+		} catch {
+			console.log('bad element name - class add', thisDomID, className)
+		}
 	})
 }
 const classRem = (domID, className) => {
@@ -35,7 +39,11 @@ const classRem = (domID, className) => {
 	const domIDs  = ( typeof domID === 'string' ) ? [domID] : domID
 		
 	domIDs.forEach( (thisDomID) => {
-		document.getElementById(thisDomID).classList.remove(className)
+		try {
+			document.getElementById(thisDomID).classList.remove(className)
+		} catch {
+			console.log('bad element name - class remove', thisDomID, className )
+		}
 	})
 }
 
@@ -213,7 +221,7 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 	
 	byId('location_savegame_folder').innerHTML   = arg.saveDir === null ? '--' : arg.saveDir
 	byId('location_mod_folder').innerHTML        = arg.modDir === null ? '--' : arg.modDir
-	byId('location_quarantine_folder').text      = arg.cleanDir === null ? '--' : arg.cleanDir
+	//byId('location_quarantine_folder').text      = arg.cleanDir === null ? '--' : arg.cleanDir
 
 	//classAdd(['process_bar_working', 'process_bar_done', 'process_bar_testing'], 'd-none')
 	byId('button_process').focus()
@@ -233,7 +241,7 @@ ipcRenderer.on('processModsCounter', (event, values) => {
 ipcRenderer.on('processModsDone', () => {
 	classAdd('status-message-working', 'd-none')
 	classRem('status-message-testing', 'd-none')
-	classRem(['button_process', 'button_load', 'button_load_folder', 'button_move_folder'], 'disabled')
+	classRem(['button_process', 'button_load', 'button_load_folder'], 'disabled')
 	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
 	
 	// Fuzzy logic.  Used to request reload of display data when changing l10n setting.
@@ -401,13 +409,10 @@ contextBridge.exposeInMainWorld(
 			ipcRenderer.send('openOtherFolder')
 			dataIsLoaded = false
 		},
-		chooseMoveFolder : () => {
-			ipcRenderer.send('setMoveFolder')
-		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
 			classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
-			classAdd(['button_process', 'button_load', 'button_load_folder', 'button_move_folder'], 'disabled')
+			classAdd(['button_process', 'button_load', 'button_load_folder'], 'disabled')
 			classRem('loading_modal_backdrop', 'd-none')
 			classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
 			byId('counter_mods_done').innerHTML  = 0
@@ -426,9 +431,6 @@ contextBridge.exposeInMainWorld(
 		changeExploreScripts : () => {
 			ipcRenderer.send('askExploreList', 0, 0, 'hasScripts')
 			byId('col_mod_has_scripts_switch').checked = true
-		},
-		openCleanDir : () => {
-			ipcRenderer.send('openCleanDir')
 		},
 		openDebugLogContents : () => {
 			ipcRenderer.send('openDebugLogContents')

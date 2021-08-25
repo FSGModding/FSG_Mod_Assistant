@@ -25,7 +25,7 @@
 				<div class="row my-2">
 					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_lock_lang"" for="lock_lang"></label>
 					<div class="col-8 ps-5 form-check form-switch">
-						<input class="form-check-input" type="checkbox" id="lock_lang">
+						<input onchange="ipc.setLockLang()" class="form-check-input" type="checkbox" id="lock_lang">
 					</div>
 				</div>
 				<div class="row my-1">
@@ -41,7 +41,7 @@
 				<div class="row my-2">
 					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_remember_last"" for="remember_last"></label>
 					<div class="col-8 ps-5 form-check form-switch">
-						<input class="form-check-input" type="checkbox" id="remember_last">
+						<input onchange="ipc.setRememberLast()" class="form-check-input" type="checkbox" id="remember_last">
 					</div>
 				</div>
 				<div class="row my-1">
@@ -56,21 +56,21 @@
 				<h4 class="i18n" data-i18n="user_pref_title_main_window"></h4>
 				<p class="i18n" data-i18n="user_pref_blurb_main_window"></p>
 				<div class="row">
-					<label for="main_window_y" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_y"></label>
+					<label for="main_window_x" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_x"></label>
 					<div class="col-8">
-						<input type="text" class="form-control" id="main_window_y" value="1000">
+						<input onchange="ipc.setMainWindowX()" type="number" class="form-control" id="main_window_x">
 					</div>
 				</div>
 				<div class="row my-1">
-					<label for="main_window_x" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_x"></label>
+					<label for="main_window_y" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_y"></label>
 					<div class="col-8">
-						<input type="text" class="form-control" id="main_window_x" value="700">
+						<input onchange="ipc.setMainWindowY()" type="number" class="form-control" id="main_window_y">
 					</div>
 				</div>
 				<div class="row my-2">
 					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_window_max"" for="main_window_max"></label>
 					<div class="col-8 ps-5 form-check form-switch">
-						<input class="form-check-input" type="checkbox" id="main_window_max">
+						<input onchange="ipc.setMainWindowMax()" class="form-check-input" type="checkbox" id="main_window_max">
 					</div>
 				</div>
 				
@@ -80,21 +80,21 @@
 				<p class="i18n" data-i18n="user_pref_blurb_detail_window"></p>
 
 				<div class="row">
-					<label for="detail_window_y" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_y"></label>
+					<label for="detail_window_x" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_x"></label>
 					<div class="col-8">
-						<input type="text" class="form-control" id="detail_window_y" value="1000">
+						<input onchange="ipc.setDetailWindowX()" type="number" class="form-control" id="detail_window_x">
 					</div>
 				</div>
 				<div class="row my-1">
-					<label for="detail_window_x" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_x"></label>
+					<label for="detail_window_y" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_y"></label>
 					<div class="col-8">
-						<input type="text" class="form-control" id="detail_window_x" value="700">
+						<input onchange="ipc.setDetailWindowY()" type="number" class="form-control" id="detail_window_y">
 					</div>
 				</div>
 				<div class="row my-2">
 					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_window_max"" for="detail_window_max"></label>
 					<div class="col-8 ps-5 form-check form-switch">
-						<input class="form-check-input" type="checkbox" id="detail_window_max">
+						<input onchange="ipc.setDetailWindowMax()" class="form-check-input" type="checkbox" id="detail_window_max">
 					</div>
 				</div>
 				
@@ -105,7 +105,7 @@
 				<div class="row my-2">
 					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_use_move"" for="use_move"></label>
 					<div class="col-8 ps-5 form-check form-switch">
-						<input class="form-check-input" type="checkbox" id="use_move">
+						<input onchange="ipc.setUseMove()" class="form-check-input" type="checkbox" id="use_move">
 					</div>
 				</div>
 				<div class="row my-1">
