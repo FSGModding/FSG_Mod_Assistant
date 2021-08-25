@@ -276,6 +276,12 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 		}, 1000)
 	}, 1500)
 
+	if ( list.length === 0 ) {
+		classRem('no_broken', 'd-none')
+	} else {
+		classAdd('no_broken', 'd-none')
+	}
+
 	const newContent = list.map((x) => { return buildBrokenList(...x) })
 	byId('broken_list').innerHTML = newContent.join('')
 
@@ -297,6 +303,12 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
                                                                                              
 */
 ipcRenderer.on('gotConflictList', (event, list) => {
+	if ( list.length === 0 ) {
+		classRem('no_conflict', 'd-none')
+	} else {
+		classAdd('no_conflict', 'd-none')
+	}
+
 	const newContent = list.map((x) => { return buildConflictList(...x) })
 	byId('conflict_list').innerHTML = newContent.join('')
 
@@ -319,6 +331,12 @@ ipcRenderer.on('gotConflictList', (event, list) => {
 */
 ipcRenderer.on('gotMissingList', (event, list) => {
 	const newContent = list.map((x) => { return buildTableRow(x) })
+
+	if ( list.length === 0 ) {
+		classRem('no_missing', 'd-none')
+	} else {
+		classAdd('no_missing', 'd-none')
+	}
 	
 	byId('table_missing').innerHTML = newContent.join('')
 })

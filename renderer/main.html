@@ -177,7 +177,8 @@
 
 
 			<div class="tab-pane fade pb-5" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
-				<p class="text-center i18n" data-i18n="broken_blurb"></p>
+				<p class="text-center i18n px-4" data-i18n="broken_blurb"></p>
+				<p class="text-center i18n px-4 fw-bold" id="no_broken" data-i18n="broken_blurb_none"></p>
 				<ul class="list-group list-group-flush mb-4" id="broken_list"></ul>
 				<button type="button" onclick="ipc.refreshBroken()" class="btn btn-dark mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
@@ -187,6 +188,7 @@
 
 			<div class="tab-pane fade pb-5" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
 				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
+				<p class="text-center i18n px-4 fw-bold" id="no_missing" data-i18n="missing_blurb_none"></p>
 				<div class="mx-0 table-responsive">
 					<table class="table table-hover sortable" id="table_missing_parent">
 						<thead>
@@ -209,6 +211,7 @@
 
 			<div class="tab-pane fade pb-5" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
 				<p class="text-center i18n px-4" data-i18n="conflict_blurb"></p>
+				<p class="text-center i18n px-4 fw-bold" id="no_conflict" data-i18n="conflict_blurb_none"></p>
 				<div class="text-center my-3">
 					<div class="form-check form-switch form-check-inline">
 						<input onchange="toggleHideFolderOnlyError()" class="form-check-input" type="checkbox" id="zip_folder_switch">
