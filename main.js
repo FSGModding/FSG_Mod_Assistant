@@ -128,7 +128,7 @@ function openSavedSettings(event) {
 
 		sendNewConfig(event)
 
-		if ( false ) { //mcSettings.hasSync('autoProcess') && mcSettings.getSync('autoProcess') ) {
+		if ( mcSettings.hasSync('auto_process') && mcSettings.getSync('auto_process') ) {
 			event.sender.send('autoProcess')
 		}
 	})
@@ -220,9 +220,8 @@ function createWindow () {
 
 		win.once('ready-to-show', () => {
 			setTimeout(() => {
-				console.log('close splash')
-				splash.destroy()
 				win.show()
+				splash.destroy()
 			}, 1500)
 		})
 	}
@@ -236,9 +235,7 @@ function createWindow () {
 	
 	win.webContents.on('did-finish-load', (event) => {
 		const showCount = setInterval(() => {
-			console.log('vis', win.isVisible())
 			if ( win.isVisible() ) {
-				console.log('here now!')
 				clearInterval(showCount)
 				if ( mcSettings.hasSync('gamesettings') ) {
 					openSavedSettings(event)
@@ -467,7 +464,6 @@ ipcMain.on('setMoveFolder', (event) => {
 		} else {
 			mcSettings.setSync('use_move', true)
 			mcSettings.setSync('move_destination', result.filePaths[0])
-			console.log('new clean', result.filePaths[0])
 
 			event.sender.send(
 				'got-pref-settings',

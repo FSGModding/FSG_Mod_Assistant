@@ -21,6 +21,9 @@ contextBridge.exposeInMainWorld(
 		setRememberLast : () => {
 			ipcRenderer.send('setPreference', 'remember_last', byId('remember_last').checked )
 		},
+		setAutoProcess : () => {
+			ipcRenderer.send('setPreference', 'auto_process', byId('auto_process').checked)
+		},
 		setMainWindowX : () => {
 			ipcRenderer.send('setPreference', 'main_window_x', parseInt(byId('main_window_x').value))
 		},
@@ -65,14 +68,12 @@ contextBridge.exposeInMainWorld(
 )
 
 ipcRenderer.on('got-pref-settings', (event, allPrefs, lang) => {
-	console.log('here we are!!!')
-	console.log({ allPrefs : allPrefs, lang : lang })
-
 	byId('lock_lang').checked = ( 'lock_lang' in allPrefs ) ? allPrefs.lock_lang : false
 	byId('current_lang').innerHTML = lang
 
 	byId('remember_last').checked = ( 'remember_last' in allPrefs ) ? allPrefs.remember_last : true
 	byId('current_gamesettings').innerHTML = ( 'gamesettings' in allPrefs ) ? allPrefs.gamesettings : '--'
+	byId('auto_process').checked = ( 'auto_process' in allPrefs ) ? allPrefs.auto_process : false
 
 	byId('main_window_x').value = ( 'main_window_x' in allPrefs ) ? allPrefs.main_window_x : 1000
 	byId('main_window_y').value = ( 'main_window_y' in allPrefs ) ? allPrefs.main_window_y : 700

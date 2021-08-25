@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\jtsag\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js upgrade
+  C:\Program Files\nodejs\node.exe C:\Users\jtsag\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js install
 
 PATH: 
   C:\Python39\Scripts\;C:\Python39\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files (x86)\gnupg\bin;C:\Program Files (x86)\Gpg4win\..\GnuPG\bin;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Users\jtsag\AppData\Local\Microsoft\WindowsApps;C:\Users\jtsag\AppData\Local\GitHubDesktop\bin;C:\Users\jtsag\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\jtsag\AppData\Roaming\npm
@@ -44,7 +44,7 @@ npm manifest:
       "@babel/eslint-parser": "^7.14.3",
       "ansi-colors": "^4.1.1",
       "diff": "^5.0.0",
-      "electron": "^12.0.8",
+      "electron": "^12.0",
       "electron-builder": "^22.10.5",
       "eslint": "^7.27.0"
     },
