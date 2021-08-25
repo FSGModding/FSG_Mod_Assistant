@@ -147,6 +147,7 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 
 * Dutch / Nederlands - Thank you Kim | Paint-a-Farm!
 * English
+* French / Français - Thank you Taco29!
 * German / Deutsch - Thank you paraTM!
 * Polish / Polski - Thank you Ziuta!
 * Spanish / Español - Thank you Vanquish081!
