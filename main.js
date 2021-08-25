@@ -11,7 +11,7 @@ const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dia
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug = true
+const devDebug = false
 
 if (process.platform === 'win32') {
 	autoUpdater.checkForUpdatesAndNotify()
@@ -127,6 +127,10 @@ function openSavedSettings(event) {
 		location_valid = true
 
 		sendNewConfig(event)
+
+		if ( false ) { //mcSettings.hasSync('autoProcess') && mcSettings.getSync('autoProcess') ) {
+			event.sender.send('autoProcess')
+		}
 	})
 }
 /*
@@ -216,6 +220,7 @@ function createWindow () {
 
 		win.once('ready-to-show', () => {
 			setTimeout(() => {
+				console.log('close splash')
 				splash.destroy()
 				win.show()
 			}, 1500)
@@ -228,11 +233,19 @@ function createWindow () {
 
 	win.loadFile(path.join(app.getAppPath(), 'renderer', 'main.html'))
 
+	
 	win.webContents.on('did-finish-load', (event) => {
-		if ( mcSettings.hasSync('gamesettings') ) {
-			console.log('ask to load old')
-			openSavedSettings(event)
-		}
+		const showCount = setInterval(() => {
+			console.log('vis', win.isVisible())
+			if ( win.isVisible() ) {
+				console.log('here now!')
+				clearInterval(showCount)
+				if ( mcSettings.hasSync('gamesettings') ) {
+					openSavedSettings(event)
+				}
+			}
+		}, 250)
+
 		if ( modList !== null ) {
 			modList.safeResend().then((isIt) => {
 				if ( isIt ) {

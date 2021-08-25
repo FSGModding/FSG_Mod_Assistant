@@ -381,7 +381,16 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 	})
 })
 
-
+ipcRenderer.on('autoProcess', () => {
+	ipcRenderer.send('processMods')
+	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
+	classAdd(['button_process', 'button_load', 'button_load_folder'], 'disabled')
+	classRem('loading_modal_backdrop', 'd-none')
+	classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
+	byId('counter_mods_done').innerHTML  = 0
+	byId('counter_mods_total').innerHTML = 0
+	document.getElementById('loadingModal').style.display = 'block'
+})
 
 
 
