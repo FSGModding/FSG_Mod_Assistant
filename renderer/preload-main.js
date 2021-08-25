@@ -390,6 +390,9 @@ contextBridge.exposeInMainWorld(
 		changeLangList : () => {
 			ipcRenderer.send('i18n-change-locale', byId('language_select').value)
 		},
+		openPreferences : () => {
+			ipcRenderer.send('askOpenPreferencesWindow')
+		},
 		loadButton : () => {
 			ipcRenderer.send('openConfigFile')
 			dataIsLoaded = false

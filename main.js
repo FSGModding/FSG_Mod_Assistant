@@ -11,7 +11,7 @@ const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dia
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug = false
+const devDebug = true
 
 if (process.platform === 'win32') {
 	autoUpdater.checkForUpdatesAndNotify()
@@ -24,6 +24,7 @@ const fs         = require('fs')
 const translator               = require('./lib/translate.js')
 const { modReader, mcLogger }  = require('./lib/mod-checker.js')
 const mcDetail                 = require('./package.json')
+const mcSettings               = require('electron-settings')
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
@@ -206,6 +207,10 @@ ipcMain.on('show-mod-detail', (event, thisMod) => {
 	if ( thisModDetail !== null ) {
 		openDetailWindow(thisModDetail)
 	}
+})
+
+ipcMain.on('askOpenPreferencesWindow', () => {
+	openPrefWindow()
 })
 
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
@@ -782,6 +787,51 @@ ipcMain.on('saveDebugLogContents', () => {
 		logger.fileError('logger', `Could not save log file : ${unknownError}`)
 	})
 })
+
+
+
+/*
+   _____   ______ _______ _______ _______      _  _  _ _____ __   _ ______   _____  _  _  _
+  |_____] |_____/ |______ |______ |______      |  |  |   |   | \  | |     \ |     | |  |  |
+  |       |    \_ |______ |       ______|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
+*/
+
+let prefWindow = null
+
+function openPrefWindow() {
+	if (prefWindow) {
+		prefWindow.focus()
+		return
+	}
+
+	prefWindow = new BrowserWindow({
+		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+		width           : 800,
+		height          : 500,
+		title           : myTranslator.syncStringLookup('user_pref_title_main'),
+		minimizable     : false,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload-pref.js'),
+		},
+	})
+	if ( !devDebug ) { prefWindow.removeMenu() }
+
+	prefWindow.webContents.on('did-finish-load', (event) => {
+		// const logContents = logClass.toDisplayHTML
+		// event.sender.send('update-log', logContents)
+		event.sender.send('trigger-i18n')
+	})
+
+	prefWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'prefs.html'))
+
+	prefWindow.on('closed', () => {
+		prefWindow = null
+	})
+}
 
 
 app.whenReady().then(() => {
