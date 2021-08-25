@@ -7,7 +7,7 @@
 
 // (c) 2021 JTSage.  MIT License.
 
-const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dialog } = require('electron')
+const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dialog, screen } = require('electron')
 
 const { autoUpdater } = require('electron-updater')
 
@@ -24,13 +24,22 @@ const fs         = require('fs')
 const translator               = require('./lib/translate.js')
 const { modReader, mcLogger }  = require('./lib/mod-checker.js')
 const mcDetail                 = require('./package.json')
+const mcSettings               = require('electron-settings')
+
+if ( !mcSettings.hasSync('remember_last') ) {
+	mcSettings.setSync('remember_last', true)
+}
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
 
+if ( mcSettings.hasSync('force_lang') && mcSettings.hasSync('lock_lang') ) {
+	myTranslator.currentLocale = mcSettings.getSync('force_lang')
+}
+
 const logger = new mcLogger()
 
-let location_cleaner   = null
+let location_settings  = null
 let location_savegame  = null
 let location_modfolder = null
 let location_valid     = false
@@ -47,7 +56,83 @@ const counterMaxTick = 300000 //ms for total counter time max
 let win    = null // Main window.
 let splash = null
 
+let workWidth  = 0
+let workHeight = 0
 
+
+
+/*
+ 
+   ______ _______ _______ _______ _______ ______  _______  ______       ______ _______ _______ _______ _______ _______ _______ _______ _____ __   _  ______ _______
+  |_____/ |______ |  |  | |______ |  |  | |_____] |______ |_____/      |  ____ |_____| |  |  | |______ |______ |______    |       |      |   | \  | |  ____ |______
+  |    \_ |______ |  |  | |______ |  |  | |_____] |______ |    \_      |_____| |     | |  |  | |______ ______| |______    |       |    __|__ |  \_| |_____| ______|
+                                                                                                                                                                   
+ 
+*/
+
+function openSavedSettings(event) {
+	const XMLOptions = {strict : true, async : false, normalizeTags : true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
+	const strictXMLParser = new xml2js.Parser(XMLOptions)
+			
+	location_savegame = path.dirname(mcSettings.getSync('gamesettings'))
+	location_settings = mcSettings.getSync('gamesettings')
+
+	let fileContents = ''
+	try {
+		fileContents = fs.readFileSync(mcSettings.getSync('gamesettings'))
+	} catch {
+		logger.fatal('loader', 'Saved gameSettings.xml unreadable')
+		location_settings = null
+		location_savegame = null
+		mcSettings.unsetSync('gamesettings')
+		return
+	}
+
+	strictXMLParser.parseString(fileContents, (xmlErr, xmlTree) => {
+		if ( xmlErr !== null ) {
+			/* Could not parse the settings file. */
+			location_savegame = null
+			location_settings = null
+			location_error    = true
+			logger.fatal('loader', `Unable to parse gameSettings.xml : ${xmlErr.toString()}`)
+			sendNewConfig(event)
+			return
+		}
+				
+		if ( ! ('gamesettings' in xmlTree) ) {
+			/* Not a valid config */
+			location_savegame = null
+			location_settings = null
+			location_error    = true
+			logger.fatal('loader', 'gameSettings.xml does not contain the root gamesettings tag (not a settings file)')
+			sendNewConfig(event)
+			return
+		}
+				
+		let overrideAttr = false
+
+		try {
+			overrideAttr = xmlTree.gamesettings.modsdirectoryoverride[0].$
+		} catch {
+			overrideAttr   = false
+			logger.notice('loader', 'Did not find override directive in gameSettings.xml (recovering)')
+		}
+
+		if ( overrideAttr !== false && overrideAttr.ACTIVE === 'true' ) {
+			location_modfolder = overrideAttr.DIRECTORY
+		} else {
+			location_modfolder = path.join(location_savegame, 'mods')
+		}
+				
+		location_valid = true
+
+		sendNewConfig(event)
+
+		if ( mcSettings.hasSync('auto_process') && mcSettings.getSync('auto_process') ) {
+			event.sender.send('autoProcess')
+		}
+	})
+}
 /*
   _______  _____  _    _ _______      _______  _____  ______ 
   |  |  | |     |  \  /  |______      |  |  | |     | |     \
@@ -55,7 +140,7 @@ let splash = null
                                                              
 */
 async function moveMod(modName) {
-	if ( location_cleaner === null ) {
+	if ( !mcSettings.hasSync('use_move') || !mcSettings.hasSync('move_destination') || !mcSettings.getSync('use_move') ) {
 		dialog.showMessageBoxSync(win, {
 			message : await myTranslator.stringLookup('move_mod_no_folder'),
 			type    : 'warning',
@@ -74,7 +159,10 @@ async function moveMod(modName) {
 	})
 	if ( response === 1 ) {
 		try {
-			fs.renameSync(modList.fullList[modName].fullPath, path.join(location_cleaner, modList.fullList[modName].filename))
+			fs.renameSync(
+				modList.fullList[modName].fullPath,
+				path.join(mcSettings.getSync('move_destination'), modList.fullList[modName].filename)
+			)
 			modList.fullList[modName].ignoreMe = true
 			dialog.showMessageBoxSync(win, {
 				message : await myTranslator.stringLookup('move_mod_worked'),
@@ -102,8 +190,8 @@ async function moveMod(modName) {
 function createWindow () {
 	win = new BrowserWindow({
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
-		width           : 1000,
-		height          : 700,
+		width           : mcSettings.hasSync('main_window_x') ? mcSettings.getSync('main_window_x') : 1000,
+		height          : mcSettings.hasSync('main_window_y') ? mcSettings.getSync('main_window_y') : 700,
 		show            : devDebug,
 		autoHideMenuBar : !devDebug,
 		webPreferences  : {
@@ -112,6 +200,7 @@ function createWindow () {
 			preload          : path.join(app.getAppPath(), 'renderer', 'preload-main.js'),
 		},
 	})
+	
 
 	if ( !devDebug ) {
 		splash = new BrowserWindow({
@@ -122,21 +211,38 @@ function createWindow () {
 			alwaysOnTop     : true,
 			autoHideMenuBar : true,
 		})
+
+		splash.setPosition(((workWidth/2)-200), ((workHeight/2)-200))
+
 		splash.loadFile(path.join(app.getAppPath(), 'renderer', 'splash.html'))
 
 		win.removeMenu()
 
 		win.once('ready-to-show', () => {
 			setTimeout(() => {
-				splash.destroy()
 				win.show()
+				splash.destroy()
 			}, 1500)
 		})
 	}
 
+	if ( mcSettings.hasSync('main_window_max') && mcSettings.getSync('main_window_max') ) {
+		win.maximize()
+	}
+
 	win.loadFile(path.join(app.getAppPath(), 'renderer', 'main.html'))
 
+	
 	win.webContents.on('did-finish-load', (event) => {
+		const showCount = setInterval(() => {
+			if ( win.isVisible() ) {
+				clearInterval(showCount)
+				if ( mcSettings.hasSync('gamesettings') ) {
+					openSavedSettings(event)
+				}
+			}
+		}, 250)
+
 		if ( modList !== null ) {
 			modList.safeResend().then((isIt) => {
 				if ( isIt ) {
@@ -160,6 +266,27 @@ function createWindow () {
 }
 
 
+ipcMain.on('setPreference', (event, settingName, settingValue) => {
+	if ( settingName === 'lock_lang') {
+		if ( settingValue === true ) {
+			mcSettings.setSync('force_lang', myTranslator.currentLocale)
+			mcSettings.setSync('lock_lang', true)
+		} else {
+			mcSettings.unsetSync('force_lang')
+			mcSettings.setSync('lock_lang', false)
+		}
+	} else {
+		mcSettings.setSync(settingName, settingValue)
+	}
+})
+
+ipcMain.on('refreshPreferences', (event) => {
+	event.sender.send(
+		'got-pref-settings',
+		mcSettings.getSync(),
+		myTranslator.syncStringLookup('language_name')
+	)
+})
 
 
 /*
@@ -177,7 +304,7 @@ ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 		{ type : 'separator' }
 	]
 
-	if ( location_cleaner !== null ) {
+	if ( mcSettings.hasSync('move_destination') && mcSettings.hasSync('use_move') && mcSettings.getSync('use_move') ) {
 		template.push({
 			label : await myTranslator.stringLookup('menu_move_file'),
 			click : () => { moveMod(modName) },
@@ -206,6 +333,10 @@ ipcMain.on('show-mod-detail', (event, thisMod) => {
 	if ( thisModDetail !== null ) {
 		openDetailWindow(thisModDetail)
 	}
+})
+
+ipcMain.on('askOpenPreferencesWindow', () => {
+	openPrefWindow()
 })
 
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
@@ -249,7 +380,7 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 		},
 		{ type : 'separator' })
 
-		if ( location_cleaner !== null ) {
+		if ( mcSettings.hasSync('move_destination') && mcSettings.hasSync('use_move') && mcSettings.getSync('use_move') ) {
 			template.push({
 				label : await myTranslator.stringLookup('menu_move_file'),
 				click : () => { moveMod(theseValues[0]) },
@@ -304,8 +435,8 @@ ipcMain.on('i18n-change-locale', (event, arg) => {
                                                                       
 */
 ipcMain.on('openCleanDir', () => {
-	if ( location_cleaner !== null ) {
-		shell.openPath(location_cleaner)
+	if ( mcSettings.hasSync('move_destination') && mcSettings.hasSync('use_move') && mcSettings.getSync('use_move') ) {
+		shell.openPath(mcSettings('move_destination'))
 	}
 })
 
@@ -317,32 +448,40 @@ function sendNewConfig(event) {
 			error    : location_error,
 			saveDir  : location_savegame,
 			modDir   : location_modfolder,
-			cleanDir : location_cleaner,
 		}
 	)
 }
 
 ipcMain.on('setMoveFolder', (event) => {
 	const homedir  = require('os').homedir()
-	
-	location_cleaner = null
 
-	dialog.showOpenDialog(win, {
+	dialog.showOpenDialog(prefWindow, {
 		properties  : ['openDirectory'],
 		defaultPath : homedir,
 	}).then((result) => {
 		if ( result.canceled ) {
-			sendNewConfig(event)
 			logger.notice('loader', 'Set move folder canceled')
 		} else {
-			location_cleaner = result.filePaths[0]
-			sendNewConfig(event)
+			mcSettings.setSync('use_move', true)
+			mcSettings.setSync('move_destination', result.filePaths[0])
+
+			event.sender.send(
+				'got-pref-settings',
+				mcSettings.getSync(),
+				myTranslator.syncStringLookup('language_name')
+			)
 		}
 	}).catch((unknownError) => {
 		// Read of file failed? Permissions issue maybe?  Not sure.
-		location_cleaner  = null
+		mcSettings.setSync('use_move', false)
+		mcSettings.unsetSync('move_destination')
 		logger.fatal('loader', `Could not read specified move-to folder : ${unknownError}`)
-		sendNewConfig(event)
+
+		event.sender.send(
+			'got-pref-settings',
+			mcSettings.getSync(),
+			myTranslator.syncStringLookup('language_name')
+		)
 	})
 })
 
@@ -352,6 +491,7 @@ ipcMain.on('openOtherFolder', (event) => {
 	location_error     = false
 	location_modfolder = null
 	location_savegame  = null
+	location_settings  = null
 
 	dialog.showOpenDialog(win, {
 		properties  : ['openDirectory'],
@@ -381,6 +521,7 @@ ipcMain.on('openConfigFile', (event) => {
 	location_error     = false
 	location_modfolder = null
 	location_savegame  = null
+	location_settings  = null
 
 	dialog.showOpenDialog(win, {
 		properties  : ['openFile'],
@@ -398,11 +539,13 @@ ipcMain.on('openConfigFile', (event) => {
 			const strictXMLParser = new xml2js.Parser(XMLOptions)
 			
 			location_savegame = path.dirname(result.filePaths[0])
+			location_settings = result.filePaths[0]
 
 			strictXMLParser.parseString(fs.readFileSync(result.filePaths[0]), (xmlErr, xmlTree) => {
 				if ( xmlErr !== null ) {
 					/* Could not parse the settings file. */
 					location_savegame = null
+					location_settings = null
 					location_error    = true
 					logger.fatal('loader', `Unable to parse gameSettings.xml : ${xmlErr.toString()}`)
 					sendNewConfig(event)
@@ -412,6 +555,7 @@ ipcMain.on('openConfigFile', (event) => {
 				if ( ! ('gamesettings' in xmlTree) ) {
 					/* Not a valid config */
 					location_savegame = null
+					location_settings = null
 					location_error    = true
 					logger.fatal('loader', 'gameSettings.xml does not contain the root gamesettings tag (not a settings file)')
 					sendNewConfig(event)
@@ -435,6 +579,11 @@ ipcMain.on('openConfigFile', (event) => {
 				
 				location_valid = true
 
+				if ( location_settings !== null ) {
+					if ( mcSettings.hasSync('remember_last') && mcSettings.getSync('remember_last') ) {
+						mcSettings.setSync('gamesettings', location_settings)
+					}
+				}
 				sendNewConfig(event)
 			})
 		}
@@ -442,6 +591,7 @@ ipcMain.on('openConfigFile', (event) => {
 		// Read of file failed? Permissions issue maybe?  Not sure.
 		location_valid    = false
 		location_savegame = null
+		location_settings = null
 		location_error    = true
 		logger.fatal('loader', `Could not read gameSettings.xml : ${unknownError}`)
 		sendNewConfig(event)
@@ -647,11 +797,11 @@ function openDetailWindow(thisModRecord) {
 
 	detailWindow = new BrowserWindow({
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
-		width           : 800,
-		height          : 500,
+		width           : mcSettings.hasSync('detail_window_x') ? mcSettings.getSync('detail_window_x') : 800,
+		height          : mcSettings.hasSync('detail_window_y') ? mcSettings.getSync('detail_window_y') : 500,
 		title           : thisModRecord.title,
 		minimizable     : false,
-		maximizable     : false,
+		maximizable     : true,
 		fullscreenable  : false,
 		autoHideMenuBar : !devDebug,
 		webPreferences  : {
@@ -660,6 +810,11 @@ function openDetailWindow(thisModRecord) {
 			preload          : path.join(app.getAppPath(), 'renderer', 'preload-detail.js'),
 		},
 	})
+
+	if ( mcSettings.hasSync('detail_window_max') && mcSettings.getSync('detail_window_max') ) {
+		detailWindow.maximize()
+	}
+
 	if ( !devDebug ) { detailWindow.removeMenu() }
 
 	detailWindow.webContents.on('did-finish-load', async (event) => {
@@ -784,10 +939,61 @@ ipcMain.on('saveDebugLogContents', () => {
 })
 
 
+
+/*
+   _____   ______ _______ _______ _______      _  _  _ _____ __   _ ______   _____  _  _  _
+  |_____] |_____/ |______ |______ |______      |  |  |   |   | \  | |     \ |     | |  |  |
+  |       |    \_ |______ |       ______|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
+*/
+
+let prefWindow = null
+
+function openPrefWindow() {
+	if (prefWindow) {
+		prefWindow.focus()
+		return
+	}
+
+	prefWindow = new BrowserWindow({
+		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+		width           : 800,
+		height          : 500,
+		title           : myTranslator.syncStringLookup('user_pref_title_main'),
+		minimizable     : false,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload-pref.js'),
+		},
+	})
+	if ( !devDebug ) { prefWindow.removeMenu() }
+
+	prefWindow.webContents.on('did-finish-load', (event) => {
+		event.sender.send(
+			'got-pref-settings',
+			mcSettings.getSync(),
+			myTranslator.syncStringLookup('language_name')
+		)
+		event.sender.send('trigger-i18n')
+	})
+
+	prefWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'prefs.html'))
+
+	prefWindow.on('closed', () => {
+		prefWindow = null
+	})
+}
+
+
 app.whenReady().then(() => {
 	globalShortcut.register('Alt+CommandOrControl+D', () => {
 		openDebugWindow(logger)
 	})
+
+	workWidth = screen.getPrimaryDisplay().workAreaSize.width
+	workHeight = screen.getPrimaryDisplay().workAreaSize.height
 
 	createWindow()
 
