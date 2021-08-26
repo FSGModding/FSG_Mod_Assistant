@@ -77,15 +77,15 @@ const expectedGoodList = [
 
 
 modList.readAll().then(() => {
-	console.log(c.cyan('NOTICE: File Read Done, Testing Proceeding Async - Calling First Search, will return when testing is complete.'))
+	writeLn(c.cyan('NOTICE: File Read Done, Testing Proceeding Async - Calling First Search, will return when testing is complete.'))
 
 	/* Check broken list */
 	modList.getBrokenList(['shortName', 'failedTestList']).then((results) => {
 		if (JSON.stringify(expectedBrokenList) === JSON.stringify(results)) {
-			console.log(c.green('PASS: Broken list is as expected'))
+			writeLn(c.green('PASS: Broken list is as expected'))
 		} else {
 			exitCode = 1
-			console.log(c.red('FAIL: Broken list is not as expected'))
+			writeLn(c.red('FAIL: Broken list is not as expected'))
 			const diff = Diff.diffChars(JSON.stringify(expectedBrokenList), JSON.stringify(results))
  
 			diff.forEach((part) => {
@@ -93,7 +93,7 @@ modList.readAll().then(() => {
 					part.removed ? 'red' : 'grey'
 				process.stderr.write(part.value[color])
 			})
-			console.log()
+			writeLn()
 		}
 	})
 
@@ -101,10 +101,10 @@ modList.readAll().then(() => {
 	modList.conflictList('').then((results) => {
 		const simpleResults = results.map((x) => { return x[0] })
 		if (JSON.stringify(simpleResults) === JSON.stringify(expectedConflictList)) {
-			console.log(c.green('PASS: Conflict list is as expected'))
+			writeLn(c.green('PASS: Conflict list is as expected'))
 		} else {
 			exitCode = 1
-			console.log(c.red('FAIL: Conflict list is not as expected'))
+			writeLn(c.red('FAIL: Conflict list is not as expected'))
 			const diff = Diff.diffChars(JSON.stringify(expectedConflictList), JSON.stringify(simpleResults))
  
 			diff.forEach((part) => {
@@ -112,7 +112,7 @@ modList.readAll().then(() => {
 					part.removed ? 'red' : 'grey'
 				process.stderr.write(part.value[color])
 			})
-			console.log()
+			writeLn()
 		}
 	})
 
@@ -123,10 +123,10 @@ modList.readAll().then(() => {
 		terms               : ['isNotMissing', 'didTestingPassEnough'],
 	}).then((results) => {
 		if (JSON.stringify(expectedGoodList) === JSON.stringify(results)) {
-			console.log(c.green('PASS: Good list is as expected'))
+			writeLn(c.green('PASS: Good list is as expected'))
 		} else {
 			exitCode = 1
-			console.log(c.red('FAIL: Good list is not as expected'))
+			writeLn(c.red('FAIL: Good list is not as expected'))
 			const diff = Diff.diffChars(JSON.stringify(expectedGoodList), JSON.stringify(results))
  
 			diff.forEach((part) => {
@@ -134,14 +134,16 @@ modList.readAll().then(() => {
 					part.removed ? 'red' : 'grey'
 				process.stderr.write(part.value[color])
 			})
-			console.log()
+			writeLn()
 		}
 		if ( exitCode === 1 ) {
-			console.log(logger.toDisplayText)
+			writeLn(logger.toDisplayText)
 		}
 		process.exit(exitCode)
 	})
 })
 
 
-console.log(c.cyan('NOTICE: End File Code. There may (should!) still be running async processes'))
+writeLn(c.cyan('NOTICE: End File Code. There may (should!) still be running async processes'))
+
+function writeLn(text) { process.stdout.write(`${text}\n`) }
