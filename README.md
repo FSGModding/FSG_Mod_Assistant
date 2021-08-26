@@ -139,6 +139,13 @@ I will not be exploring using the server API to check directly - The amount of c
   <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/010-detail.png">
 </p>
 
+### User Preferences
+
+<p align="center">
+  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/020-prefs.png">
+</p>
+
+
 ## Translation Effort
 
 Sadly, the primary developer only understands English.  If you'd like to contribute a translation, take a look in the translations folder, it's simple json. If you prefer a web interface: [Crowdin Project Page](https://crowdin.com/project/fs19-mod-checker)
@@ -157,6 +164,8 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 * Note some of the more popular mod conflicts and suggest avoiding them: [GitHub Issue #2](https://github.com/jtsage/FS19_Mod_Checker/issues/2)
 
 ## A short note about the EXE
+
+2021-07-03 (ish): The EXE is signed now for windows.  Sorry, not willing to join the apple developer program just for this.
 
 2021-07-02 (late): Seems to be ok with the ~3pm EDT update to defender.  At any rate, purchase pending on the signing certificate.
 
