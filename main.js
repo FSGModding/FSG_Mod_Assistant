@@ -57,6 +57,7 @@ let splash = null
 
 let workWidth  = 0
 let workHeight = 0
+let workScale  = 1
 
 
 
@@ -203,15 +204,18 @@ function createWindow () {
 
 	if ( !devDebug ) {
 		splash = new BrowserWindow({
-			width           : 800,
-			height          : 400,
+			width           : 500,
+			height          : 250,
 			transparent     : true,
 			frame           : false,
 			alwaysOnTop     : true,
 			autoHideMenuBar : true,
 		})
+		
+		const pos_left = (workWidth / 2)  - Math.floor((500/workScale)/2)
+		const pos_top  = (workHeight / 2) - Math.floor((250/workScale)/2)
 
-		splash.setPosition(((workWidth/2)-200), ((workHeight/2)-200))
+		splash.setPosition(pos_left, pos_top)
 
 		splash.loadFile(path.join(app.getAppPath(), 'renderer', 'splash.html'))
 
@@ -991,9 +995,9 @@ app.whenReady().then(() => {
 		openDebugWindow(logger)
 	})
 
-	workWidth = screen.getPrimaryDisplay().workAreaSize.width
-	workHeight = screen.getPrimaryDisplay().workAreaSize.height
-
+	workWidth  = screen.getPrimaryDisplay().size.width
+	workHeight = screen.getPrimaryDisplay().size.height
+	workScale  = screen.getPrimaryDisplay().scaleFactor
 	
 	if ( !mcStore.has('remember_last') ) {
 		mcStore.set('remember_last', true)
