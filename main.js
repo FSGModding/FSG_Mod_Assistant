@@ -21,21 +21,20 @@ const path       = require('path')
 const xml2js     = require('xml2js')
 const fs         = require('fs')
 
+
 const translator               = require('./lib/translate.js')
 const { modReader, mcLogger }  = require('./lib/mod-checker.js')
 const mcDetail                 = require('./package.json')
-const mcSettings               = require('electron-settings')
 
-if ( !mcSettings.hasSync('remember_last') ) {
-	mcSettings.setSync('remember_last', true)
-}
+
+const Store   = require('electron-store')
+const mcStore = new Store()
+
+
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
 
-if ( mcSettings.hasSync('force_lang') && mcSettings.hasSync('lock_lang') ) {
-	myTranslator.currentLocale = mcSettings.getSync('force_lang')
-}
 
 const logger = new mcLogger()
 
@@ -74,17 +73,17 @@ function openSavedSettings(event) {
 	const XMLOptions = {strict : true, async : false, normalizeTags : true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
 	const strictXMLParser = new xml2js.Parser(XMLOptions)
 			
-	location_savegame = path.dirname(mcSettings.getSync('gamesettings'))
-	location_settings = mcSettings.getSync('gamesettings')
+	location_savegame = path.dirname(mcStore.get('gamesettings'))
+	location_settings = mcStore.get('gamesettings')
 
 	let fileContents = ''
 	try {
-		fileContents = fs.readFileSync(mcSettings.getSync('gamesettings'))
+		fileContents = fs.readFileSync(mcStore.get('gamesettings'))
 	} catch {
 		logger.fatal('loader', 'Saved gameSettings.xml unreadable')
 		location_settings = null
 		location_savegame = null
-		mcSettings.unsetSync('gamesettings')
+		mcStore.delete('gamesettings')
 		return
 	}
 
@@ -128,7 +127,7 @@ function openSavedSettings(event) {
 
 		sendNewConfig(event)
 
-		if ( mcSettings.hasSync('auto_process') && mcSettings.getSync('auto_process') ) {
+		if ( mcStore.has('auto_process') && mcStore.get('auto_process') ) {
 			event.sender.send('autoProcess')
 		}
 	})
@@ -140,7 +139,7 @@ function openSavedSettings(event) {
                                                              
 */
 async function moveMod(modName) {
-	if ( !mcSettings.hasSync('use_move') || !mcSettings.hasSync('move_destination') || !mcSettings.getSync('use_move') ) {
+	if ( !mcStore.has('use_move') || !mcStore.has('move_destination') || !mcStore.get('use_move') ) {
 		dialog.showMessageBoxSync(win, {
 			message : await myTranslator.stringLookup('move_mod_no_folder'),
 			type    : 'warning',
@@ -161,7 +160,7 @@ async function moveMod(modName) {
 		try {
 			fs.renameSync(
 				modList.fullList[modName].fullPath,
-				path.join(mcSettings.getSync('move_destination'), modList.fullList[modName].filename)
+				path.join(mcStore.get('move_destination'), modList.fullList[modName].filename)
 			)
 			modList.fullList[modName].ignoreMe = true
 			dialog.showMessageBoxSync(win, {
@@ -190,8 +189,8 @@ async function moveMod(modName) {
 function createWindow () {
 	win = new BrowserWindow({
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
-		width           : mcSettings.hasSync('main_window_x') ? mcSettings.getSync('main_window_x') : 1000,
-		height          : mcSettings.hasSync('main_window_y') ? mcSettings.getSync('main_window_y') : 700,
+		width           : mcStore.get('main_window_x', 1000),
+		height          : mcStore.get('main_window_y', 700),
 		show            : devDebug,
 		autoHideMenuBar : !devDebug,
 		webPreferences  : {
@@ -226,7 +225,7 @@ function createWindow () {
 		})
 	}
 
-	if ( mcSettings.hasSync('main_window_max') && mcSettings.getSync('main_window_max') ) {
+	if ( mcStore.has('main_window_max') && mcStore.get('main_window_max') ) {
 		win.maximize()
 	}
 
@@ -237,7 +236,7 @@ function createWindow () {
 		const showCount = setInterval(() => {
 			if ( win.isVisible() ) {
 				clearInterval(showCount)
-				if ( mcSettings.hasSync('gamesettings') ) {
+				if ( mcStore.has('gamesettings') ) {
 					openSavedSettings(event)
 				}
 			}
@@ -269,21 +268,21 @@ function createWindow () {
 ipcMain.on('setPreference', (event, settingName, settingValue) => {
 	if ( settingName === 'lock_lang') {
 		if ( settingValue === true ) {
-			mcSettings.setSync('force_lang', myTranslator.currentLocale)
-			mcSettings.setSync('lock_lang', true)
+			mcStore.set('force_lang', myTranslator.currentLocale)
+			mcStore.set('lock_lang', true)
 		} else {
-			mcSettings.unsetSync('force_lang')
-			mcSettings.setSync('lock_lang', false)
+			mcStore.delete('force_lang')
+			mcStore.set('lock_lang', false)
 		}
 	} else {
-		mcSettings.setSync(settingName, settingValue)
+		mcStore.set(settingName, settingValue)
 	}
 })
 
 ipcMain.on('refreshPreferences', (event) => {
 	event.sender.send(
 		'got-pref-settings',
-		mcSettings.getSync(),
+		mcStore.store,
 		myTranslator.syncStringLookup('language_name')
 	)
 })
@@ -304,7 +303,7 @@ ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 		{ type : 'separator' }
 	]
 
-	if ( mcSettings.hasSync('move_destination') && mcSettings.hasSync('use_move') && mcSettings.getSync('use_move') ) {
+	if ( mcStore.has('move_destination') && mcStore.has('use_move') && mcStore.get('use_move') ) {
 		template.push({
 			label : await myTranslator.stringLookup('menu_move_file'),
 			click : () => { moveMod(modName) },
@@ -380,7 +379,7 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 		},
 		{ type : 'separator' })
 
-		if ( mcSettings.hasSync('move_destination') && mcSettings.hasSync('use_move') && mcSettings.getSync('use_move') ) {
+		if ( mcStore.has('move_destination') && mcStore.has('use_move') && mcStore.get('use_move') ) {
 			template.push({
 				label : await myTranslator.stringLookup('menu_move_file'),
 				click : () => { moveMod(theseValues[0]) },
@@ -435,8 +434,8 @@ ipcMain.on('i18n-change-locale', (event, arg) => {
                                                                       
 */
 ipcMain.on('openCleanDir', () => {
-	if ( mcSettings.hasSync('move_destination') && mcSettings.hasSync('use_move') && mcSettings.getSync('use_move') ) {
-		shell.openPath(mcSettings('move_destination'))
+	if ( mcStore.has('move_destination') && mcStore.has('use_move') && mcStore.get('use_move') ) {
+		shell.openPath(mcStore.get('move_destination'))
 	}
 })
 
@@ -462,24 +461,24 @@ ipcMain.on('setMoveFolder', (event) => {
 		if ( result.canceled ) {
 			logger.notice('loader', 'Set move folder canceled')
 		} else {
-			mcSettings.setSync('use_move', true)
-			mcSettings.setSync('move_destination', result.filePaths[0])
+			mcStore.set('use_move', true)
+			mcStore.set('move_destination', result.filePaths[0])
 
 			event.sender.send(
 				'got-pref-settings',
-				mcSettings.getSync(),
+				mcStore.store,
 				myTranslator.syncStringLookup('language_name')
 			)
 		}
 	}).catch((unknownError) => {
 		// Read of file failed? Permissions issue maybe?  Not sure.
-		mcSettings.setSync('use_move', false)
-		mcSettings.unsetSync('move_destination')
+		mcStore.set('use_move', false)
+		mcStore.delete('move_destination')
 		logger.fatal('loader', `Could not read specified move-to folder : ${unknownError}`)
 
 		event.sender.send(
 			'got-pref-settings',
-			mcSettings.getSync(),
+			mcStore.store,
 			myTranslator.syncStringLookup('language_name')
 		)
 	})
@@ -580,8 +579,8 @@ ipcMain.on('openConfigFile', (event) => {
 				location_valid = true
 
 				if ( location_settings !== null ) {
-					if ( mcSettings.hasSync('remember_last') && mcSettings.getSync('remember_last') ) {
-						mcSettings.setSync('gamesettings', location_settings)
+					if ( mcStore.has('remember_last') && mcStore.get('remember_last') ) {
+						mcStore.set('gamesettings', location_settings)
 					}
 				}
 				sendNewConfig(event)
@@ -797,8 +796,8 @@ function openDetailWindow(thisModRecord) {
 
 	detailWindow = new BrowserWindow({
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
-		width           : mcSettings.hasSync('detail_window_x') ? mcSettings.getSync('detail_window_x') : 800,
-		height          : mcSettings.hasSync('detail_window_y') ? mcSettings.getSync('detail_window_y') : 500,
+		width           : mcStore.get('detail_window_x', 800),
+		height          : mcStore.get('detail_window_y', 500),
 		title           : thisModRecord.title,
 		minimizable     : false,
 		maximizable     : true,
@@ -811,7 +810,7 @@ function openDetailWindow(thisModRecord) {
 		},
 	})
 
-	if ( mcSettings.hasSync('detail_window_max') && mcSettings.getSync('detail_window_max') ) {
+	if ( mcStore.has('detail_window_max') && mcStore.get('detail_window_max') ) {
 		detailWindow.maximize()
 	}
 
@@ -973,7 +972,7 @@ function openPrefWindow() {
 	prefWindow.webContents.on('did-finish-load', (event) => {
 		event.sender.send(
 			'got-pref-settings',
-			mcSettings.getSync(),
+			mcStore.store,
 			myTranslator.syncStringLookup('language_name')
 		)
 		event.sender.send('trigger-i18n')
@@ -994,6 +993,14 @@ app.whenReady().then(() => {
 
 	workWidth = screen.getPrimaryDisplay().workAreaSize.width
 	workHeight = screen.getPrimaryDisplay().workAreaSize.height
+
+	
+	if ( !mcStore.has('remember_last') ) {
+		mcStore.set('remember_last', true)
+	}
+	if ( mcStore.has('force_lang') && mcStore.has('lock_lang') ) {
+		myTranslator.currentLocale = mcStore.get('force_lang')
+	}
 
 	createWindow()
 

@@ -1,6 +1,6 @@
 {
   "name": "fs19-mod-checker",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "FS19 Mod Folder Checker",
   "main": "main.js",
   "homepage": "https://github.com/jtsage/FS19_Mod_Checker#readme",
@@ -26,12 +26,12 @@
     "ansi-colors": "^4.1.1",
     "diff": "^5.0.0",
     "electron": "^12.0",
-    "electron-builder": "^22.10.5",
+    "electron-builder": "^22.11",
     "eslint": "^7.27.0"
   },
   "dependencies": {
     "decode-dxt": "^1.0.1",
-    "electron-settings": "^4.0.2",
+    "electron-store": "^8.0.0",
     "electron-updater": "^4.3.9",
     "glob": "^7.1.7",
     "node-stream-zip": "^1.13.4",
@@ -44,22 +44,10 @@
     "appId": "jtsage.fsmodchecker",
     "productName": "FS19ModChecker",
     "files": [
-      "**/*",
-      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-      "!**/node_modules/*.d.ts",
-      "!**/node_modules/.bin",
-      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-      "!.editorconfig",
-      "!**/._*",
-      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes,.eslintrc.js}",
-      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-      "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
-      "!**/test/*",
-      "!**/screen_shots/*",
+      "!/test/*",
+      "!/screen_shots/*",
       "!**/.vscode/*",
-      "!**/dist/*"
+      "!/dist/*"
     ],
     "win": {
       "target": [
