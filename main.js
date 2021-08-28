@@ -59,7 +59,6 @@ let prefWindow   = null // Preferences window
 
 let workWidth  = 0
 let workHeight = 0
-let workScale  = 1
 
 
 
@@ -97,8 +96,8 @@ function createWindow () {
 			autoHideMenuBar : true,
 		})
 		
-		const pos_left = (workWidth / 2)  - Math.floor((500/workScale)/2)
-		const pos_top  = (workHeight / 2) - Math.floor((250/workScale)/2)
+		const pos_left = (workWidth / 2)  - (500/2)
+		const pos_top  = (workHeight / 2) - (250/2)
 
 		splash.setPosition(pos_left, pos_top)
 
@@ -896,7 +895,6 @@ app.whenReady().then(() => {
 
 	workWidth  = screen.getPrimaryDisplay().size.width
 	workHeight = screen.getPrimaryDisplay().size.height
-	workScale  = screen.getPrimaryDisplay().scaleFactor
 	
 	if ( !mcStore.has('remember_last') ) {
 		// Trap for we don't have preferences yet.  This is minimal
