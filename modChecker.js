@@ -80,11 +80,11 @@ const myArgs = yargs(hideBin(process.argv))
 	.argv
 
 
-console.log(' _______           __ ______ __                __               ')
-console.log('|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.')
-console.log('|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|')
-console.log('|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ')
-console.log('   (c) 2021 JTSage')
+writeLn(' _______           __ ______ __                __               ')
+writeLn('|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.')
+writeLn('|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|')
+writeLn('|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ')
+writeLn('   (c) 2021 JTSage')
 
 const myTranslator = new translator.translator(myArgs.lang === null ? translator.getSystemLocale() : myArgs.lang)
 
@@ -105,7 +105,7 @@ if ( myArgs.modFolder === null ) {
 			/* Could not parse the settings file. */
 			location_savegame = null
 			logger.fatal('loader', `Unable to parse gameSettings.xml : ${xmlErr.toString()}`)
-			console.log(logger.toDisplayText)
+			writeLn(logger.toDisplayText)
 			process.exit(1)
 		}
 				
@@ -113,7 +113,7 @@ if ( myArgs.modFolder === null ) {
 			/* Not a valid config */
 			location_savegame = null
 			logger.fatal('loader', 'gameSettings.xml does not contain the root gamesettings tag (not a settings file)')
-			console.log(logger.toDisplayText)
+			writeLn(logger.toDisplayText)
 			process.exit(1)
 		}
 				
@@ -144,11 +144,11 @@ const modList = new modReader(location_savegame, location_modfolder, logger, myT
 
 modList.readAll().then(async () => {
 	if ( myArgs.broken === true ) {
-		console.log('')
+		writeLn('')
 		sepLine()
-		console.log(await myTranslator.stringLookup('tab_broken'))
-		console.log('')
-		console.log(await myTranslator.stringLookup('broken_blurb'))
+		writeLn(await myTranslator.stringLookup('tab_broken'))
+		writeLn('')
+		writeLn(await myTranslator.stringLookup('broken_blurb'))
 		sepLine()
 
 		await modList.search({
@@ -156,13 +156,13 @@ modList.readAll().then(async () => {
 			terms   : ['didTestingFail'],
 		}).then(async (searchResults) => {
 			for ( let i = 0; i < searchResults.length; i++) {
-				console.log(searchResults[i][0])
+				writeLn(searchResults[i][0])
 				for ( let j = 0; j < searchResults[i][1].length; j++ ) {
 					/* eslint-disable no-await-in-loop */
-					console.log(`  ${await myTranslator.stringLookup(searchResults[i][1][j])}`)
+					writeLn(`  ${await myTranslator.stringLookup(searchResults[i][1][j])}`)
 					/* eslint-enable */
 				}
-				console.log('')
+				writeLn('')
 			}
 		}).catch((unknownError) => {
 			// Shouldn't happen.  No idea
@@ -171,11 +171,11 @@ modList.readAll().then(async () => {
 	}
 
 	if ( myArgs.conflicts === true ) {
-		console.log('')
+		writeLn('')
 		sepLine()
-		console.log(await myTranslator.stringLookup('tab_conflict'))
-		console.log('')
-		console.log(await myTranslator.stringLookup('conflict_blurb'))
+		writeLn(await myTranslator.stringLookup('tab_conflict'))
+		writeLn('')
+		writeLn(await myTranslator.stringLookup('conflict_blurb'))
 		sepLine()
 
 		const folderAndZipText = await myTranslator.stringLookup('conflict_error_folder_and_file')
@@ -184,7 +184,7 @@ modList.readAll().then(async () => {
 			const output = searchResults.map((record) => {
 				return `  ${record[0]} (${record[1]}) - ${record[2]}`
 			})
-			console.log(output.join('\n\n'))
+			writeLn(output.join('\n\n'))
 		}).catch((unknownError) => {
 			// Shouldn't happen.  No idea
 			logger.notice('reader', `Could not get "conflict list" : ${unknownError}`)
@@ -192,11 +192,11 @@ modList.readAll().then(async () => {
 	}
 
 	if ( myArgs.missing === true ) {
-		console.log('')
+		writeLn('')
 		sepLine()
-		console.log(await myTranslator.stringLookup('tab_missing'))
-		console.log('')
-		console.log(await myTranslator.stringLookup('missing_blurb'))
+		writeLn(await myTranslator.stringLookup('tab_missing'))
+		writeLn('')
+		writeLn(await myTranslator.stringLookup('missing_blurb'))
 		sepLine()
 		const usedString = await myTranslator.stringLookup('detail_mod_used_games')
 
@@ -210,7 +210,7 @@ modList.readAll().then(async () => {
 				}
 				return `  ${record[0]} (${record[1]})`
 			})
-			console.log(output.join('\n'))
+			writeLn(output.join('\n'))
 		}).catch((unknownError) => {
 			// Shouldn't happen.  No idea
 			logger.notice('reader', `Could not get "missing list" : ${unknownError}`)
@@ -218,9 +218,9 @@ modList.readAll().then(async () => {
 	}
 
 	if ( myArgs.inactive === true ) {
-		console.log('')
+		writeLn('')
 		sepLine()
-		console.log(await myTranslator.stringLookup('explore_options_special_inactive'))
+		writeLn(await myTranslator.stringLookup('explore_options_special_inactive'))
 		sepLine()
 
 		await modList.search({
@@ -234,7 +234,7 @@ modList.readAll().then(async () => {
 			const output = searchResults.map((record) => {
 				return `  ${record[0]} (${record[1]}) - ${record[2][0]}`
 			})
-			console.log(output.join('\n'))
+			writeLn(output.join('\n'))
 		}).catch((unknownError) => {
 			// Shouldn't happen.  No idea
 			logger.notice('reader', `Could not get "explore list" : ${unknownError}`)
@@ -242,9 +242,9 @@ modList.readAll().then(async () => {
 	}
 
 	if ( myArgs.unused === true ) {
-		console.log('')
+		writeLn('')
 		sepLine()
-		console.log(await myTranslator.stringLookup('explore_options_special_unused'))
+		writeLn(await myTranslator.stringLookup('explore_options_special_unused'))
 		sepLine()
 
 		await modList.search({
@@ -259,7 +259,7 @@ modList.readAll().then(async () => {
 			const output = searchResults.map((record) => {
 				return `  ${record[0]} (${record[1]}) - ${record[2][0]}`
 			})
-			console.log(output.join('\n'))
+			writeLn(output.join('\n'))
 		}).catch((unknownError) => {
 			// Shouldn't happen.  No idea
 			logger.notice('reader', `Could not get "explore list" : ${unknownError}`)
@@ -267,17 +267,19 @@ modList.readAll().then(async () => {
 	}
 
 	if ( myArgs.verbose === true ) {
-		console.log('')
+		writeLn('')
 		sepLine()
-		console.log('Debug Log')
+		writeLn('Debug Log')
 		sepLine()
-		console.log(logger.toDisplayText)
+		writeLn(logger.toDisplayText)
 	}
 
 })
 
 
 function sepLine() {
-	console.log(' -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
+	writeLn(' -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
 }
+
+function writeLn(text) { process.stdout.write(`${text}\n`) }
 

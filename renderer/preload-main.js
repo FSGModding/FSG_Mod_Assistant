@@ -22,30 +22,18 @@ const iconRedX = '<span class="text-danger"><svg xmlns="http://www.w3.org/2000/s
 let dataIsLoaded = false
 
 const byId     = (domID) => { return document.getElementById(domID) }
-const classAdd = (domID, className) => {
-	/* Add a class <className> to <domID> */
-	const domIDs =  ( typeof domID === 'string' )  ? [domID] : domID
-		
+const domClass = (domID, className, doAdd=true) => {
+	const domIDs  =  ( typeof domID === 'string' )  ? [domID] : domID
+
 	domIDs.forEach( (thisDomID) => {
-		try {
-			document.getElementById(thisDomID).classList.add(className)
-		} catch {
-			console.log('bad element name - class add', thisDomID, className)
+		const curElement = document.getElementById(thisDomID)
+		if ( curElement !== null ) {
+			curElement.classList[( doAdd===true ? 'add' : 'remove' )](className)
 		}
 	})
 }
-const classRem = (domID, className) => {
-	/* Remove a class <className> from <domID> */
-	const domIDs  = ( typeof domID === 'string' ) ? [domID] : domID
-		
-	domIDs.forEach( (thisDomID) => {
-		try {
-			document.getElementById(thisDomID).classList.remove(className)
-		} catch {
-			console.log('bad element name - class remove', thisDomID, className )
-		}
-	})
-}
+const classAdd = (domID, className) => { domClass(domID, className, true) }
+const classRem = (domID, className) => { domClass(domID, className, false) }
 
 const buildOpt = (value, text, selected) => {
 	/* Build an option for a select box */
@@ -221,9 +209,7 @@ ipcRenderer.on('newFileConfig', (event, arg) => {
 	
 	byId('location_savegame_folder').innerHTML   = arg.saveDir === null ? '--' : arg.saveDir
 	byId('location_mod_folder').innerHTML        = arg.modDir === null ? '--' : arg.modDir
-	//byId('location_quarantine_folder').text      = arg.cleanDir === null ? '--' : arg.cleanDir
 
-	//classAdd(['process_bar_working', 'process_bar_done', 'process_bar_testing'], 'd-none')
 	byId('button_process').focus()
 })
 
@@ -398,6 +384,16 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 		ipcRenderer.send('i18n-translate', thisStringID)
 	})
 })
+
+
+/*
+  _______ _     _ _______  _____   _____   ______  _____  _______ _______ _______ _______
+  |_____| |     |    |    |     | |_____] |_____/ |     | |       |______ |______ |______
+  |     | |_____|    |    |_____| |       |    \_ |_____| |_____  |______ ______| ______|
+                                                                                         
+*/
+// Because of earlier choices, it's easiest to fake a click in the renderer so that all the
+// events go to the right place.
 
 ipcRenderer.on('autoProcess', () => {
 	ipcRenderer.send('processMods')

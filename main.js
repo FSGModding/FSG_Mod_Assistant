@@ -38,7 +38,7 @@ myTranslator.mcVersion = mcDetail.version
 
 const logger = new mcLogger()
 
-let location_settings  = null
+
 let location_savegame  = null
 let location_modfolder = null
 let location_valid     = false
@@ -52,132 +52,17 @@ let counterRuntime  = 0
 const counterTick    = 100 //ms between counter update.
 const counterMaxTick = 300000 //ms for total counter time max
 
-let win    = null // Main window.
-let splash = null
+let win          = null // Main window
+let splash       = null // Splash screen
+let detailWindow = null // Detail window
+let prefWindow   = null // Preferences window
 
 let workWidth  = 0
 let workHeight = 0
+let workScale  = 1
 
 
 
-/*
- 
-   ______ _______ _______ _______ _______ ______  _______  ______       ______ _______ _______ _______ _______ _______ _______ _______ _____ __   _  ______ _______
-  |_____/ |______ |  |  | |______ |  |  | |_____] |______ |_____/      |  ____ |_____| |  |  | |______ |______ |______    |       |      |   | \  | |  ____ |______
-  |    \_ |______ |  |  | |______ |  |  | |_____] |______ |    \_      |_____| |     | |  |  | |______ ______| |______    |       |    __|__ |  \_| |_____| ______|
-                                                                                                                                                                   
- 
-*/
-
-function openSavedSettings(event) {
-	const XMLOptions = {strict : true, async : false, normalizeTags : true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
-	const strictXMLParser = new xml2js.Parser(XMLOptions)
-			
-	location_savegame = path.dirname(mcStore.get('gamesettings'))
-	location_settings = mcStore.get('gamesettings')
-
-	let fileContents = ''
-	try {
-		fileContents = fs.readFileSync(mcStore.get('gamesettings'))
-	} catch {
-		logger.fatal('loader', 'Saved gameSettings.xml unreadable')
-		location_settings = null
-		location_savegame = null
-		mcStore.delete('gamesettings')
-		return
-	}
-
-	strictXMLParser.parseString(fileContents, (xmlErr, xmlTree) => {
-		if ( xmlErr !== null ) {
-			/* Could not parse the settings file. */
-			location_savegame = null
-			location_settings = null
-			location_error    = true
-			logger.fatal('loader', `Unable to parse gameSettings.xml : ${xmlErr.toString()}`)
-			sendNewConfig(event)
-			return
-		}
-				
-		if ( ! ('gamesettings' in xmlTree) ) {
-			/* Not a valid config */
-			location_savegame = null
-			location_settings = null
-			location_error    = true
-			logger.fatal('loader', 'gameSettings.xml does not contain the root gamesettings tag (not a settings file)')
-			sendNewConfig(event)
-			return
-		}
-				
-		let overrideAttr = false
-
-		try {
-			overrideAttr = xmlTree.gamesettings.modsdirectoryoverride[0].$
-		} catch {
-			overrideAttr   = false
-			logger.notice('loader', 'Did not find override directive in gameSettings.xml (recovering)')
-		}
-
-		if ( overrideAttr !== false && overrideAttr.ACTIVE === 'true' ) {
-			location_modfolder = overrideAttr.DIRECTORY
-		} else {
-			location_modfolder = path.join(location_savegame, 'mods')
-		}
-				
-		location_valid = true
-
-		sendNewConfig(event)
-
-		if ( mcStore.has('auto_process') && mcStore.get('auto_process') ) {
-			event.sender.send('autoProcess')
-		}
-	})
-}
-/*
-  _______  _____  _    _ _______      _______  _____  ______ 
-  |  |  | |     |  \  /  |______      |  |  | |     | |     \
-  |  |  | |_____|   \/   |______      |  |  | |_____| |_____/
-                                                             
-*/
-async function moveMod(modName) {
-	if ( !mcStore.has('use_move') || !mcStore.has('move_destination') || !mcStore.get('use_move') ) {
-		dialog.showMessageBoxSync(win, {
-			message : await myTranslator.stringLookup('move_mod_no_folder'),
-			type    : 'warning',
-		})
-		return false
-	}
-	const response = dialog.showMessageBoxSync(win, {
-		message : `${await myTranslator.stringLookup('move_mod_message')} ${modName}`,
-		type    : 'warning',
-		buttons : [
-			await myTranslator.stringLookup('move_mod_cancel'),
-			await myTranslator.stringLookup('move_mod_ok')
-		],
-		defaultId : 0,
-		cancelId  : 0,
-	})
-	if ( response === 1 ) {
-		try {
-			fs.renameSync(
-				modList.fullList[modName].fullPath,
-				path.join(mcStore.get('move_destination'), modList.fullList[modName].filename)
-			)
-			modList.fullList[modName].ignoreMe = true
-			dialog.showMessageBoxSync(win, {
-				message : await myTranslator.stringLookup('move_mod_worked'),
-				type    : 'warning',
-			})
-			win.webContents.send('did-move-mod', modName)
-			
-		} catch (moveError) {
-			logger.fileError('moveFile', `File move failed : ${moveError}`)
-			dialog.showMessageBoxSync(win, {
-				message : await myTranslator.stringLookup('move_mod_failed'),
-				type    : 'warning',
-			})
-		}
-	}
-}
 
 
 /*
@@ -199,19 +84,23 @@ function createWindow () {
 			preload          : path.join(app.getAppPath(), 'renderer', 'preload-main.js'),
 		},
 	})
-	
+
+
 
 	if ( !devDebug ) {
 		splash = new BrowserWindow({
-			width           : 800,
-			height          : 400,
+			width           : 500,
+			height          : 250,
 			transparent     : true,
 			frame           : false,
 			alwaysOnTop     : true,
 			autoHideMenuBar : true,
 		})
+		
+		const pos_left = (workWidth / 2)  - Math.floor((500/workScale)/2)
+		const pos_top  = (workHeight / 2) - Math.floor((250/workScale)/2)
 
-		splash.setPosition(((workWidth/2)-200), ((workHeight/2)-200))
+		splash.setPosition(pos_left, pos_top)
 
 		splash.loadFile(path.join(app.getAppPath(), 'renderer', 'splash.html'))
 
@@ -225,6 +114,8 @@ function createWindow () {
 		})
 	}
 
+
+
 	if ( mcStore.has('main_window_max') && mcStore.get('main_window_max') ) {
 		win.maximize()
 	}
@@ -237,7 +128,7 @@ function createWindow () {
 			if ( win.isVisible() ) {
 				clearInterval(showCount)
 				if ( mcStore.has('gamesettings') ) {
-					openSavedSettings(event)
+					openSettings(event, mcStore.get('gamesettings'))
 				}
 			}
 		}, 250)
@@ -265,27 +156,31 @@ function createWindow () {
 }
 
 
-ipcMain.on('setPreference', (event, settingName, settingValue) => {
-	if ( settingName === 'lock_lang') {
-		if ( settingValue === true ) {
-			mcStore.set('force_lang', myTranslator.currentLocale)
-			mcStore.set('lock_lang', true)
-		} else {
-			mcStore.delete('force_lang')
-			mcStore.set('lock_lang', false)
-		}
-	} else {
-		mcStore.set(settingName, settingValue)
-	}
-})
 
-ipcMain.on('refreshPreferences', (event) => {
+function sendNewConfig(event) {
 	event.sender.send(
-		'got-pref-settings',
-		mcStore.store,
-		myTranslator.syncStringLookup('language_name')
+		'newFileConfig',
+		{
+			valid    : location_valid,
+			error    : location_error,
+			saveDir  : location_savegame,
+			modDir   : location_modfolder,
+		}
 	)
-})
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -294,6 +189,7 @@ ipcMain.on('refreshPreferences', (event) => {
   __|__ |       |_____  . |  |  | |______ |  \_| |_____| ______|
                                                                 
 */
+/* List type displays - broken and conflict */
 ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 	const template = [
 		{
@@ -320,24 +216,7 @@ ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 
-ipcMain.on('show-mod-detail', (event, thisMod) => {
-	let thisModDetail = null
-
-	try {
-		thisModDetail = modList.fullList[thisMod]
-	} catch (err) {
-		this.log.info(`detail-${thisMod}`, `Did not find mod details. This should be impossible: ${err}`)
-	}
-
-	if ( thisModDetail !== null ) {
-		openDetailWindow(thisModDetail)
-	}
-})
-
-ipcMain.on('askOpenPreferencesWindow', () => {
-	openPrefWindow()
-})
-
+/* Table style - explore, missing */
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	const template = [
 		{
@@ -406,6 +285,8 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 
 
 
+
+
 /*
   _____  _____  _______   _______  ______ _______ __   _ _______        _______ _______ _______
     |   |_____] |       .    |    |_____/ |_____| | \  | |______ |      |_____|    |    |______
@@ -427,29 +308,24 @@ ipcMain.on('i18n-change-locale', (event, arg) => {
 
 
 
+
+
+
 /*
-  _____  _____  _______   _______  _____  __   _ _______ _____  ______
-    |   |_____] |       . |       |     | | \  | |______   |   |  ____
-  __|__ |       |_____  . |_____  |_____| |  \_| |       __|__ |_____|
-                                                                      
+ 
+   _____   _____  _______ __   _      _______  _____         ______  _______  ______    / _______ _______ _______ _______ _____ __   _  ______ _______
+  |     | |_____] |______ | \  |      |______ |     | |      |     \ |______ |_____/   /  |______ |______    |       |      |   | \  | |  ____ |______
+  |_____| |       |______ |  \_|      |       |_____| |_____ |_____/ |______ |    \_  /   ______| |______    |       |    __|__ |  \_| |_____| ______|
+                                                                                     /                                                                
+ 
 */
+
+
 ipcMain.on('openCleanDir', () => {
 	if ( mcStore.has('move_destination') && mcStore.has('use_move') && mcStore.get('use_move') ) {
 		shell.openPath(mcStore.get('move_destination'))
 	}
 })
-
-function sendNewConfig(event) {
-	event.sender.send(
-		'newFileConfig',
-		{
-			valid    : location_valid,
-			error    : location_error,
-			saveDir  : location_savegame,
-			modDir   : location_modfolder,
-		}
-	)
-}
 
 ipcMain.on('setMoveFolder', (event) => {
 	const homedir  = require('os').homedir()
@@ -490,7 +366,6 @@ ipcMain.on('openOtherFolder', (event) => {
 	location_error     = false
 	location_modfolder = null
 	location_savegame  = null
-	location_settings  = null
 
 	dialog.showOpenDialog(win, {
 		properties  : ['openDirectory'],
@@ -520,11 +395,14 @@ ipcMain.on('openConfigFile', (event) => {
 	location_error     = false
 	location_modfolder = null
 	location_savegame  = null
-	location_settings  = null
+
+	const defaultFolder = (process.platform === 'darwin') ?
+		path.join(homedir, 'Library', 'Containers', 'com.astragon.farmingsim2019', 'Data', 'Library', 'Application Support', 'FarmingSimulator2019') :
+		path.join(homedir, 'Documents', 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' )
 
 	dialog.showOpenDialog(win, {
 		properties  : ['openFile'],
-		defaultPath : path.join(homedir, 'Documents', 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' ),
+		defaultPath : defaultFolder,
 		filters     : [
 			{ name : 'XML', extensions : ['xml'] },
 			{ name : 'All', extensions : ['*'] },
@@ -534,68 +412,23 @@ ipcMain.on('openConfigFile', (event) => {
 			sendNewConfig(event)
 			logger.notice('loader', 'Open new xml canceled')
 		} else {
-			const XMLOptions = {strict : true, async : false, normalizeTags : true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
-			const strictXMLParser = new xml2js.Parser(XMLOptions)
-			
-			location_savegame = path.dirname(result.filePaths[0])
-			location_settings = result.filePaths[0]
+			if ( mcStore.has('remember_last') && mcStore.get('remember_last') ) {
+				mcStore.set('gamesettings', result.filePaths[0])
+			}
 
-			strictXMLParser.parseString(fs.readFileSync(result.filePaths[0]), (xmlErr, xmlTree) => {
-				if ( xmlErr !== null ) {
-					/* Could not parse the settings file. */
-					location_savegame = null
-					location_settings = null
-					location_error    = true
-					logger.fatal('loader', `Unable to parse gameSettings.xml : ${xmlErr.toString()}`)
-					sendNewConfig(event)
-					return
-				}
-				
-				if ( ! ('gamesettings' in xmlTree) ) {
-					/* Not a valid config */
-					location_savegame = null
-					location_settings = null
-					location_error    = true
-					logger.fatal('loader', 'gameSettings.xml does not contain the root gamesettings tag (not a settings file)')
-					sendNewConfig(event)
-					return
-				}
-				
-				let overrideAttr = false
-
-				try {
-					overrideAttr = xmlTree.gamesettings.modsdirectoryoverride[0].$
-				} catch {
-					overrideAttr   = false
-					logger.notice('loader', 'Did not find override directive in gameSettings.xml (recovering)')
-				}
-
-				if ( overrideAttr !== false && overrideAttr.ACTIVE === 'true' ) {
-					location_modfolder = overrideAttr.DIRECTORY
-				} else {
-					location_modfolder = path.join(location_savegame, 'mods')
-				}
-				
-				location_valid = true
-
-				if ( location_settings !== null ) {
-					if ( mcStore.has('remember_last') && mcStore.get('remember_last') ) {
-						mcStore.set('gamesettings', location_settings)
-					}
-				}
-				sendNewConfig(event)
-			})
+			openSettings(event, result.filePaths[0])
 		}
 	}).catch((unknownError) => {
 		// Read of file failed? Permissions issue maybe?  Not sure.
 		location_valid    = false
 		location_savegame = null
-		location_settings = null
 		location_error    = true
 		logger.fatal('loader', `Could not read gameSettings.xml : ${unknownError}`)
 		sendNewConfig(event)
 	})
 })
+
+
 
 
 
@@ -780,13 +613,31 @@ ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) 
 
 
 
+
+
+
 /*
   ______  _______ _______ _______ _____             _  _  _ _____ __   _ ______   _____  _  _  _
   |     \ |______    |    |_____|   |   |           |  |  |   |   | \  | |     \ |     | |  |  |
   |_____/ |______    |    |     | __|__ |_____      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
                                                                                                 
 */
-let detailWindow = null
+
+
+ipcMain.on('show-mod-detail', (event, thisMod) => {
+	let thisModDetail = null
+
+	try {
+		thisModDetail = modList.fullList[thisMod]
+	} catch (err) {
+		this.log.info(`detail-${thisMod}`, `Did not find mod details. This should be impossible: ${err}`)
+	}
+
+	if ( thisModDetail !== null ) {
+		openDetailWindow(thisModDetail)
+	}
+})
+
 
 function openDetailWindow(thisModRecord) {
 	if (detailWindow) {
@@ -848,6 +699,13 @@ function openDetailWindow(thisModRecord) {
 
 	detailWindow.on('closed', () => { detailWindow = null })
 }
+
+
+
+
+
+
+
 
 
 /*
@@ -939,13 +797,42 @@ ipcMain.on('saveDebugLogContents', () => {
 
 
 
+
+
+
+
 /*
-   _____   ______ _______ _______ _______      _  _  _ _____ __   _ ______   _____  _  _  _
-  |_____] |_____/ |______ |______ |______      |  |  |   |   | \  | |     \ |     | |  |  |
-  |       |    \_ |______ |       ______|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
+   _____   ______ _______ _______ _______  ______ _______ __   _ _______ _______ _______
+  |_____] |_____/ |______ |______ |______ |_____/ |______ | \  | |       |______ |______
+  |       |    \_ |______ |       |______ |    \_ |______ |  \_| |_____  |______ ______|
+                                                                                        
 */
 
-let prefWindow = null
+ipcMain.on('askOpenPreferencesWindow', () => {
+	openPrefWindow()
+})
+
+ipcMain.on('setPreference', (event, settingName, settingValue) => {
+	if ( settingName === 'lock_lang') {
+		if ( settingValue === true ) {
+			mcStore.set('force_lang', myTranslator.currentLocale)
+			mcStore.set('lock_lang', true)
+		} else {
+			mcStore.delete('force_lang')
+			mcStore.set('lock_lang', false)
+		}
+	} else {
+		mcStore.set(settingName, settingValue)
+	}
+})
+
+ipcMain.on('refreshPreferences', (event) => {
+	event.sender.send(
+		'got-pref-settings',
+		mcStore.store,
+		myTranslator.syncStringLookup('language_name')
+	)
+})
 
 function openPrefWindow() {
 	if (prefWindow) {
@@ -986,19 +873,37 @@ function openPrefWindow() {
 }
 
 
+
+
+
+
+
+
+
+
+/*
+  _______  _____   _____     ______ _______ _______ ______  __   __
+  |_____| |_____] |_____] . |_____/ |______ |_____| |     \   \_/  
+  |     | |       |       . |    \_ |______ |     | |_____/    |   
+                                                                   
+*/
+
+
 app.whenReady().then(() => {
 	globalShortcut.register('Alt+CommandOrControl+D', () => {
 		openDebugWindow(logger)
 	})
 
-	workWidth = screen.getPrimaryDisplay().workAreaSize.width
-	workHeight = screen.getPrimaryDisplay().workAreaSize.height
-
+	workWidth  = screen.getPrimaryDisplay().size.width
+	workHeight = screen.getPrimaryDisplay().size.height
+	workScale  = screen.getPrimaryDisplay().scaleFactor
 	
 	if ( !mcStore.has('remember_last') ) {
+		// Trap for we don't have preferences yet.  This is minimal
 		mcStore.set('remember_last', true)
 	}
 	if ( mcStore.has('force_lang') && mcStore.has('lock_lang') ) {
+		// If language is locked, switch to it.
 		myTranslator.currentLocale = mcStore.get('force_lang')
 	}
 
@@ -1025,3 +930,137 @@ app.on('window-all-closed', () => {
 		app.quit()
 	}
 })
+
+
+
+
+
+
+
+
+
+/*
+   _____   _____  _______ __   _       ______ _______ _______ _______ _______ _______ _______ _______ _____ __   _  ______ _______
+  |     | |_____] |______ | \  |      |  ____ |_____| |  |  | |______ |______ |______    |       |      |   | \  | |  ____ |______
+  |_____| |       |______ |  \_|      |_____| |     | |  |  | |______ ______| |______    |       |    __|__ |  \_| |_____| ______|
+                                                                                                                                  
+*/
+
+function openSettings(event, fullPath) {
+	location_valid     = false
+	location_error     = false
+	location_modfolder = null
+	location_savegame  = null
+
+	const XMLOptions = {strict : true, async : false, normalizeTags : true, attrNameProcessors : [function(name) { return name.toUpperCase() }] }
+	const strictXMLParser = new xml2js.Parser(XMLOptions)
+			
+	location_savegame = path.dirname(fullPath)
+
+	let fileContents = ''
+	try {
+		fileContents = fs.readFileSync(fullPath)
+	} catch {
+		logger.fatal('loader', 'Saved gameSettings.xml unreadable')
+		location_savegame = null
+		location_error    = true
+		mcStore.delete('gamesettings')
+		return
+	}
+
+	strictXMLParser.parseString(fileContents, (xmlErr, xmlTree) => {
+		if ( xmlErr !== null ) {
+			/* Could not parse the settings file. */
+			location_savegame = null
+			location_error    = true
+			logger.fatal('loader', `Unable to parse gameSettings.xml : ${xmlErr.toString()}`)
+			sendNewConfig(event)
+			return
+		}
+				
+		if ( ! ('gamesettings' in xmlTree) ) {
+			/* Not a valid config */
+			location_savegame = null
+			location_error    = true
+			logger.fatal('loader', 'gameSettings.xml does not contain the root gamesettings tag (not a settings file)')
+			sendNewConfig(event)
+			return
+		}
+				
+		let overrideAttr = false
+
+		try {
+			overrideAttr = xmlTree.gamesettings.modsdirectoryoverride[0].$
+		} catch {
+			overrideAttr   = false
+			logger.notice('loader', 'Did not find override directive in gameSettings.xml (recovering)')
+		}
+
+		if ( overrideAttr !== false && overrideAttr.ACTIVE === 'true' ) {
+			location_modfolder = overrideAttr.DIRECTORY
+		} else {
+			location_modfolder = path.join(location_savegame, 'mods')
+		}
+				
+		location_valid = true
+
+		sendNewConfig(event)
+
+		if ( mcStore.has('auto_process') && mcStore.get('auto_process') ) {
+			event.sender.send('autoProcess')
+		}
+	})
+}
+
+
+
+
+
+
+
+/*
+  _______  _____  _    _ _______      _______  _____  ______ 
+  |  |  | |     |  \  /  |______      |  |  | |     | |     \
+  |  |  | |_____|   \/   |______      |  |  | |_____| |_____/
+                                                             
+*/
+async function moveMod(modName) {
+	if ( !mcStore.has('use_move') || !mcStore.has('move_destination') || !mcStore.get('use_move') ) {
+		dialog.showMessageBoxSync(win, {
+			message : await myTranslator.stringLookup('move_mod_no_folder'),
+			type    : 'warning',
+		})
+		return false
+	}
+	const response = dialog.showMessageBoxSync(win, {
+		message : `${await myTranslator.stringLookup('move_mod_message')} ${modName}`,
+		type    : 'warning',
+		buttons : [
+			await myTranslator.stringLookup('move_mod_cancel'),
+			await myTranslator.stringLookup('move_mod_ok')
+		],
+		defaultId : 0,
+		cancelId  : 0,
+	})
+	if ( response === 1 ) {
+		try {
+			fs.renameSync(
+				modList.fullList[modName].fullPath,
+				path.join(mcStore.get('move_destination'), modList.fullList[modName].filename)
+			)
+			modList.fullList[modName].ignoreMe = true
+			dialog.showMessageBoxSync(win, {
+				message : await myTranslator.stringLookup('move_mod_worked'),
+				type    : 'warning',
+			})
+			win.webContents.send('did-move-mod', modName)
+			
+		} catch (moveError) {
+			logger.fileError('moveFile', `File move failed : ${moveError}`)
+			dialog.showMessageBoxSync(win, {
+				message : await myTranslator.stringLookup('move_mod_failed'),
+				type    : 'warning',
+			})
+		}
+	}
+}
