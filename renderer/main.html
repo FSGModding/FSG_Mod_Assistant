@@ -75,17 +75,21 @@
 		}
 
 		.sticky-th {
-			top: 91px;
+			/*top: 91px;*/
 			box-shadow: inset 0 -1px 0 black !important;
+		}
+		.overflow-custom {
+			overflow-y: scroll !important;
+			overflow-x: auto !important;
 		}
 
 	</style>
 	
 </head>
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100" onresize="resizeWindow()">
 	<main class="flex-shrink-0">
 	<div class="container-fluid px-0 user-select-none">
-	  <div class="fixed-top pt-2 bg-body">
+	  <div class="fixed-top pt-2 bg-body" id="main-header">
 		<div class="row w-100 mb-2">
 			<div class="col-8 border-bottom">
 				<h2 class="ps-2"><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
@@ -133,10 +137,10 @@
 
 
 
-		<div style="margin-top: 95px" class="tab-content pt-3" id="mainTabContent">
+		<div style="margin-top: 95px;" class="tab-content overflow-custom" id="mainTabContent">
 
 			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
-				<p class="text-center i18n mb-1" data-i18n="config_blurb"></p>
+				<p class="text-center i18n mb-1 pt-3" data-i18n="config_blurb"></p>
 				<h4 class="i18n w-75 mx-auto" data-i18n="config_step_1"></h4>
 				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-2 ps-2" data-i18n="config_load_button_blurb"></p>
 				<div class="row w-75 mx-auto">
@@ -182,7 +186,7 @@
 
 
 			<div class="tab-pane fade pb-5" id="tab_broken_content" role="tabpanel" aria-labelledby="tab_broken">
-				<p class="text-center i18n px-4" data-i18n="broken_blurb"></p>
+				<p class="text-center i18n px-4 pt-3" data-i18n="broken_blurb"></p>
 				<p class="text-center i18n px-4 fw-bold" id="no_broken" data-i18n="broken_blurb_none"></p>
 				<ul class="list-group list-group-flush mb-4" id="broken_list"></ul>
 				<button type="button" onclick="ipc.refreshBroken()" class="btn btn-dark mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
@@ -192,7 +196,7 @@
 
 
 			<div class="tab-pane fade pb-5" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
-				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
+				<p class="text-center i18n px-4 pt-3" data-i18n="missing_blurb"></p>
 				<p class="text-center i18n px-4 fw-bold" id="no_missing" data-i18n="missing_blurb_none"></p>
 				<div class="mx-0">
 					<table class="table table-hover sortable" id="table_missing_parent">
@@ -215,7 +219,7 @@
 
 
 			<div class="tab-pane fade pb-5" id="tab_conflict_content" role="tabpanel" aria-labelledby="tab_conflict">
-				<p class="text-center i18n px-4" data-i18n="conflict_blurb"></p>
+				<p class="text-center i18n px-4 pt-3" data-i18n="conflict_blurb"></p>
 				<p class="text-center i18n px-4 fw-bold" id="no_conflict" data-i18n="conflict_blurb_none"></p>
 				<div class="text-center my-3">
 					<div class="form-check form-switch form-check-inline">
@@ -231,7 +235,7 @@
 
 
 			<div class="tab-pane fade pb-5" id="tab_explore_content" role="tabpanel" aria-labelledby="tab_explore">
-				<p class="text-center i18n px-4" data-i18n="explore_blurb"></p>
+				<p class="text-center i18n px-4 pt-3" data-i18n="explore_blurb"></p>
 				
 				<div class="row mx-5">
 					<div class="col-8">
@@ -373,7 +377,7 @@
 	</div>
 	</main>
 
-	<footer class="footer fixed-bottom mt-auto py-2 bg-dark">
+	<footer class="footer fixed-bottom mt-auto py-2 bg-dark" id="main-footer">
 		<div class="container text-center">
 			<span class="i18n text-white-50" data-i18n="latest_version_link_blurb"></span> <a target="_blank" class="text-white-50" href="https://github.com/jtsage/FS19_Mod_Checker/releases">github.com/jtsage/FS19_Mod_Checker</a>
 			<a class="text-white-50" style="cursor: pointer" onclick="ipc.openDebugLogContents()">[<span class="i18n" data-i18n="open_debug_log"></span>]</a>

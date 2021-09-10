@@ -70,8 +70,19 @@ function searchExploreTable() {
 	})
 }
 
+function resizeWindow() {
+	setTimeout(() => {
+		const headerHeight = byId('main-header').offsetHeight
+		const footerHeight = byId('main-footer').offsetHeight
+		const newTabHeight = window.innerHeight - headerHeight - footerHeight
+		byId('mainTabContent').style.height = `${newTabHeight}px`
+		byId('mainTabContent').style.marginTop = `${headerHeight}px`
+	}, 500)
+}
+
 window.addEventListener('DOMContentLoaded', () => {
 	toggleExploreColumns()
 	toggleHideFolderOnlyError()
 	searchExploreClear()
+	resizeWindow()
 })
