@@ -101,7 +101,7 @@ function createWindow () {
 
 		splash.setPosition(pos_left, pos_top)
 
-		splash.loadFile(path.join(app.getAppPath(), 'renderer', 'splash.html'))
+		splash.loadURL(`file://${path.join(app.getAppPath(), 'renderer', 'splash.html')}?version=${mcDetail.version}`)
 
 		win.removeMenu()
 

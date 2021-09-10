@@ -2,8 +2,28 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+		<style>
+			.version {
+				top:183px;
+				left:393px;
+				position:absolute;
+				font-weight:bolder;
+				text-transform: lowercase; 
+				-webkit-transform: skew(-9deg);
+				font-size: 25px;
+				font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
+				background: linear-gradient(to top, #FFFFFF 0%, #D9D9D9 50%, #FFFFFF 100%);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				-webkit-text-stroke-width: 1.3px;
+				-webkit-text-stroke-color: black;
+				filter: drop-shadow(2px 2px 3px #333);
+			}
+		</style>
+		<script src="ui-splash.js"></script>
 	</head>
 	<body style="margin:0; padding:0">
 		<img style="margin:0; padding:0" src="repocard.png" srcset="repocard@2x.png 2x">
+		<div id="version" class="version"></div>
 	</body>
 </html>
