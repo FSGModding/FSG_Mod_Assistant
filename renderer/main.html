@@ -74,13 +74,18 @@
 			animation-timing-function: ease-in-out;
 		}
 
+		.sticky-th {
+			top: 91px;
+			box-shadow: inset 0 -1px 0 black !important;
+		}
+
 	</style>
 	
 </head>
 <body class="d-flex flex-column h-100">
 	<main class="flex-shrink-0">
 	<div class="container-fluid px-0 user-select-none">
-	  <div class="sticky-top pt-2 bg-body">
+	  <div class="fixed-top pt-2 bg-body">
 		<div class="row w-100 mb-2">
 			<div class="col-8 border-bottom">
 				<h2 class="ps-2"><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
@@ -104,7 +109,7 @@
 				</svg></button>
 			</div>
 		</div>
-		
+	
 	
 		<ul class="nav nav-tabs" id="mainTab" role="tablist">
 			<li class="nav-item" role="presentation">
@@ -123,12 +128,12 @@
 				<button class="disabled link-dark nav-link i18n" data-i18n="tab_explore" id="tab_explore" data-bs-toggle="tab" data-bs-target="#tab_explore_content" type="button" role="tab" aria-selected="false" aria-controls="tab_explore_content"></button>
 			</li>
 		</ul>
-	  </div>
+	  </div> <!--end fixed 1-->
 
 
 
 
-		<div class="tab-content pt-3" id="mainTabContent">
+		<div style="margin-top: 95px" class="tab-content pt-3" id="mainTabContent">
 
 			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
 				<p class="text-center i18n mb-1" data-i18n="config_blurb"></p>
@@ -189,14 +194,14 @@
 			<div class="tab-pane fade pb-5" id="tab_missing_content" role="tabpanel" aria-labelledby="tab_missing">
 				<p class="text-center i18n px-4" data-i18n="missing_blurb"></p>
 				<p class="text-center i18n px-4 fw-bold" id="no_missing" data-i18n="missing_blurb_none"></p>
-				<div class="mx-0 table-responsive">
+				<div class="mx-0">
 					<table class="table table-hover sortable" id="table_missing_parent">
 						<thead>
 							<tr>
-								<th class="i18n" data-i18n="header_mod_name"></th>
-								<th class="i18n" data-i18n="header_mod_title"></th>
-								<th class="i18n" data-i18n="header_mod_active_games"></th>
-								<th class="i18n" data-i18n="header_mod_used_games"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_name"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_title"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_active_games"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_used_games"></th>
 							</tr>
 						</thead>
 						<tbody id="table_missing">
@@ -242,22 +247,22 @@
 						<button class="w-100 mx-auto btn btn-outline-dark btn-sm d-block i18n" data-i18n="explore_options_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#exploreOptions" aria-controls="exploreOptions"></button>
 					</div>
 				</div>
-				<div class="mx-0 table-responsive">
+				<div class="mx-0">
 					<table class="table table-hover sortable" id="table_explore_parent">
 						<thead>
 							<tr>
-								<th class="i18n col_mod_name" data-i18n="header_mod_name"></th>
-								<th class="i18n col_mod_title" data-i18n="header_mod_title"></th>
-								<th class="i18n col_mod_version" data-i18n="header_mod_version"></th>
-								<th class="i18n col_mod_size" data-i18n="header_mod_size"></th>
-								<th class="i18n col_mod_date" data-i18n="header_mod_date"></th>
-								<th class="i18n col_mod_is_active" data-i18n="header_mod_is_active"></th>
-								<th class="i18n col_mod_active_games" data-i18n="header_mod_active_games"></th>
-								<th class="i18n col_mod_is_used" data-i18n="header_mod_is_used"></th>
-								<th class="i18n col_mod_used_games" data-i18n="header_mod_used_games"></th>
-								<th class="i18n col_mod_full_path" data-i18n="header_mod_full_path"></th>
-								<th class="i18n col_mod_has_scripts" data-i18n="header_mod_has_scripts"></th>
-								<th class="i18n col_mod_is_multiplayer" data-i18n="header_mod_multiplayer"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_name" data-i18n="header_mod_name"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_title" data-i18n="header_mod_title"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_version" data-i18n="header_mod_version"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_size" data-i18n="header_mod_size"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_date" data-i18n="header_mod_date"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_is_active" data-i18n="header_mod_is_active"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_active_games" data-i18n="header_mod_active_games"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_is_used" data-i18n="header_mod_is_used"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_used_games" data-i18n="header_mod_used_games"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_full_path" data-i18n="header_mod_full_path"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_has_scripts" data-i18n="header_mod_has_scripts"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_is_multiplayer" data-i18n="header_mod_multiplayer"></th>
 							</tr>
 						</thead>
 						<tbody id="table_explore">
@@ -339,7 +344,7 @@
 
 
 		</div>
-
+	
 
 	</div>
 
