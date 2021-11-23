@@ -8,6 +8,7 @@
 	"tab_missing"                      : "Missing Mods",
 	"tab_conflict"                     : "Possible Conflicts",
 	"tab_explore"                      : "Explore Mods",
+	"tab_bulky"                        : "Bulky Mods",
 	"config_step_0"                    : "Farming Simulator Version",
 	"config_step_1"                    : "Step 1",
 	"config_step_2"                    : "Step 2",
@@ -47,7 +48,9 @@
 	"filter_savegame"                  : "Save Game Slot #",
 	"broken_blurb_none"                : "Congratulations, you have no (detected) broken mods installed",
 	"conflict_blurb_none"              : "Congratulations, you have no (detected) conflicting mods installed",
+	"bulky_blurb_none"                 : "Congratulations, you have no (detected) extra files in your mods",
 	"missing_blurb_none"               : "Congratulations, you have no missing mods in your save games - or you only scanned a mod folder.",
+	"bulky_blurb"                      : "Below, you will find a list of all mods that have \"extra\" files in them, as per the Giants specifications.  This tab is more for the technically savvy - mods indicated here could be cleaned up to save space, and in some cases it could indicate mods of lower quality - or it could just as easily be something the modder just missed on the final cleanup. If these mods do not appear on the broken tab, there is no reason to suspect there is anything wrong with them.",
 
 	"menu_details"         : "Open Mod Detail",
 	"menu_open_explorer"   : "Show in Finder / Explorer",
@@ -92,6 +95,7 @@
 	"detail_mod_store_items" : "Store Items",
 	"detail_mod_author"      : "Author",
 	"detail_mod_multiplayer" : "Multiplayer",
+	"detail_extra_files"     : "Developer Information - Extra files in the mod (per Giants spec)",
 
 	"filter_mod_name"        : "Name",
 	"filter_mod_title"       : "Title",

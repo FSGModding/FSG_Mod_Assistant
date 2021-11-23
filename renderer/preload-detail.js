@@ -40,6 +40,7 @@ ipcRenderer.on('mod-record', ( event, modDetails ) => {
 	byId('store_items').innerHTML    = modDetails.store_items
 	byId('mod_author').innerHTML     = (modDetails.mod_author === null ) ? '' : modDetails.mod_author
 	byId('description').innerHTML    = modDetails.description
+	byId('extraFiles').innerHTML     = modDetails.extraFiles.join('\n')
 	byId('file_date').innerHTML      = modDetails.date.toISOString().substring(0, 16)
 
 	const row_legend = modDetails.total_games.map((thisGame) => { return `<td class="text-center fw-bold">${thisGame}</td>`})

@@ -443,7 +443,6 @@ ipcMain.on('openConfigFile', (event) => {
                                                                                  
 */
 ipcMain.on('setGameVersion', (event, arg) => {
-	console.log('yo!')
 	if ( mcStore.has('remember_last') && mcStore.get('remember_last') ) {
 		mcStore.set('gameVersion', arg)
 	}
@@ -545,6 +544,19 @@ ipcMain.on('askConflictList', async (event) => {
 		// Shouldn't happen.  No idea
 		// No need to return empty, this is not a pre-requisite for UI updates.
 		logger.notice('ipcProcess', `Could not get "conflict list" : ${unknownError}`)
+	})
+})
+
+ipcMain.on('askBulkyList', (event) => {
+	modList.search({
+		columns : ['shortName', 'title', 'activeGames', 'usedGames'],
+		terms   : ['hasExtras'],
+	}).then((searchResults) => {
+		event.sender.send('gotBulkyList', searchResults)
+	}).catch((unknownError) => {
+		// Shouldn't happen.  No idea
+		// No need to return empty, this is not a pre-requisite for UI updates.
+		logger.notice('ipcProcess', `Could not get "bulky list" : ${unknownError}`)
 	})
 })
 
@@ -695,6 +707,7 @@ function openDetailWindow(thisModRecord) {
 			mod_author     : thisModRecord.mod_author,
 			is_multiplayer : thisModRecord.isMultiplayer,
 			date           : thisModRecord.date,
+			extraFiles     : thisModRecord.getExtras,
 		}
 		event.sender.send('mod-record', sendData)
 		event.sender.send('trigger-i18n')

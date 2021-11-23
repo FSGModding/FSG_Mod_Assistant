@@ -131,6 +131,9 @@
 			<li class="nav-item" role="presentation">
 				<button class="disabled link-dark nav-link i18n" data-i18n="tab_explore" id="tab_explore" data-bs-toggle="tab" data-bs-target="#tab_explore_content" type="button" role="tab" aria-selected="false" aria-controls="tab_explore_content"></button>
 			</li>
+			<li class="nav-item" role="presentation">
+				<button class="disabled link-dark nav-link i18n" data-i18n="tab_bulky" id="tab_bulky" data-bs-toggle="tab" data-bs-target="#tab_bulky_content" type="button" role="tab" aria-selected="false" aria-controls="tab_bulky_content"></button>
+			</li>
 		</ul>
 	  </div> <!--end fixed 1-->
 
@@ -359,6 +362,25 @@
 				</div>
 			</div>
 
+			<div class="tab-pane fade pb-5" id="tab_bulky_content" role="tabpanel" aria-labelledby="tab_bulky">
+				<p class="text-center i18n px-4 pt-3" data-i18n="bulky_blurb"></p>
+				<p class="text-center i18n px-4 fw-bold" id="no_bulky" data-i18n="bulky_blurb_none"></p>
+				<div class="mx-0">
+					<table class="table table-hover sortable" id="table_bulky_parent">
+						<thead>
+							<tr>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_name"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_title"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_active_games"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_used_games"></th>
+							</tr>
+						</thead>
+						<tbody id="table_bulky">
+						</tbody>
+					</table>
+				</div>
+				<button type="button" onclick="ipc.refreshBulky()" class="btn btn-dark mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
+			</div>
 
 		</div>
 	

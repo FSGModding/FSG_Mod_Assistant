@@ -136,7 +136,8 @@ ipcRenderer.on('trigger-i18n-on-data', () => {
 		ipcRenderer.send('askConflictList')
 		ipcRenderer.send('askExploreList', 0)
 		ipcRenderer.send('askGamesActive')
-		classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
+		ipcRenderer.send('askBulkyList')
+		classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'disabled')
 	}
 })
 
@@ -228,7 +229,7 @@ ipcRenderer.on('processModsDone', () => {
 	classAdd('status-message-working', 'd-none')
 	classRem('status-message-testing', 'd-none')
 	classRem(['button_process', 'button_load', 'button_load_folder'], 'disabled')
-	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
+	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'disabled')
 	
 	// Fuzzy logic.  Used to request reload of display data when changing l10n setting.
 	dataIsLoaded = true
@@ -238,6 +239,7 @@ ipcRenderer.on('processModsDone', () => {
 	ipcRenderer.send('askConflictList')
 	ipcRenderer.send('askExploreList', 0)
 	ipcRenderer.send('askGamesActive')
+	ipcRenderer.send('askBulkyList')
 })
 
 
@@ -254,7 +256,7 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 	setTimeout(() => {
 		classRem(['loadingModal', 'loading_modal_backdrop'], 'show')
 		classAdd('loading_modal_backdrop', 'd-none')
-		classAdd(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
+		classAdd(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'flashonce')
 		document.getElementById('loadingModal').style.display = null
 		setTimeout(() => {
 			classAdd(['status-message-done', 'status-icon-done'], 'd-none')
@@ -328,6 +330,19 @@ ipcRenderer.on('gotMissingList', (event, list) => {
 })
 
 
+ipcRenderer.on('gotBulkyList', (event, list) => {
+	const newContent = list.map((x) => { return buildTableRow(x) })
+
+	if ( list.length === 0 ) {
+		classRem('no_bulky', 'd-none')
+	} else {
+		classAdd('no_bulky', 'd-none')
+	}
+	
+	byId('table_bulky').innerHTML = newContent.join('')
+})
+
+
 /*
   _____  _____  _______   _______ _     _  _____          _____   ______ _______
     |   |_____] |       . |______  \___/  |_____] |      |     | |_____/ |______
@@ -396,7 +411,6 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 // events go to the right place.
 
 ipcRenderer.on('trigger_version', (event, versionNum) => {
-	console.log('hi')
 	classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-danger')
 	classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-success')
 	if ( versionNum === 19 ) {
@@ -410,7 +424,7 @@ ipcRenderer.on('trigger_version', (event, versionNum) => {
 
 ipcRenderer.on('autoProcess', () => {
 	ipcRenderer.send('processMods')
-	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
+	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'flashonce')
 	classAdd(['button_process', 'button_load', 'button_load_folder'], 'disabled')
 	classRem('loading_modal_backdrop', 'd-none')
 	classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
@@ -463,7 +477,7 @@ contextBridge.exposeInMainWorld(
 		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
-			classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
+			classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'flashonce')
 			classAdd(['button_process', 'button_load', 'button_load_folder'], 'disabled')
 			classRem('loading_modal_backdrop', 'd-none')
 			classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
@@ -492,6 +506,9 @@ contextBridge.exposeInMainWorld(
 		},
 		refreshMissing : () => {
 			ipcRenderer.send('askMissingList')
+		},
+		refreshBulky : () => {
+			ipcRenderer.send('askBulkyList')
 		},
 		refreshConflict : () => {
 			ipcRenderer.send('askConflictList')
@@ -552,7 +569,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	byId('table_missing_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
 	byId('table_explore_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
+	byId('table_bulky_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
 
 	byId('table_missing_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_missing') })
 	byId('table_explore_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_explore') })
+	byId('table_bulky_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_bulky') })
 })
