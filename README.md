@@ -1,4 +1,4 @@
-# FS19 Mod Install Checker
+# FS Mod Install Checker
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jtsage/FS19_Mod_Checker) [![Build/release](https://github.com/jtsage/FS19_Mod_Checker/actions/workflows/build.yml/badge.svg)](https://github.com/jtsage/FS19_Mod_Checker/actions/workflows/build.yml) ![GitHub Release Date](https://img.shields.io/github/release-date/jtsage/FS19_Mod_Checker) ![GitHub all releases](https://img.shields.io/github/downloads/jtsage/FS19_Mod_Checker/total) [![Crowdin](https://badges.crowdin.net/fs19-mod-checker/localized.svg)](https://crowdin.com/project/fs19-mod-checker)
 
@@ -24,7 +24,7 @@ _Optionally_, it will also allow you to remove mods from your install folder (at
   * Suggest you move the contents of the folder if it looks like a mod pack
   * Suggest you remove the folder if it looks like garbage
 
-* If a mod is not intended for FS19 (i.e. FS17 mods)
+* If a mod is not intended for FS19 or FS22 (configurable!) (i.e. FS17 mods)
   * Warn that you can't use it with this version
 
 * If a file exists that is not a mod at all
@@ -55,7 +55,7 @@ Here you can sort the list of good, installed mods to discover any number of thi
 
 ## Usage
 
-Download the installer for your platform from the [Releases](https://github.com/jtsage/FS19_Mod_Checker/releases) page - the program
+Download the installer for your platform from the [Releases](https://github.com/jtsage/FS_Mod_Checker/releases) page - the program
 will install with 1-click, and auto-run when it's ready.
 
 ### Download options
@@ -102,47 +102,47 @@ I will not be exploring using the server API to check directly - The amount of c
 ### Configuration Screen, Mods Loaded
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/001-config.png">
+  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/001-config.png">
 </p>
 
 ### Bad Mods, Unzipped Mods, Extra Files
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/002-broken.png">
+  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/002-broken.png">
 </p>
 
 ### Missing Mods
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/003-missing.png">
+  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/003-missing.png">
 </p>
 
 ### Possible Conflicts
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/004-conflict.png">
+  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/004-conflict.png">
 </p>
 
 ### Explore Mods
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/005-explore.png">
+  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/005-explore.png">
 </p>
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/006-explore-options.png">
+  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/006-explore-options.png">
 </p>
 
 ### Detail Popup
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/010-detail.png">
+  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/010-detail.png">
 </p>
 
 ### User Preferences
 
 <p align="center">
-  <img width="650" src="https://github.com/jtsage/FS19_Mod_Checker/raw/main/screen_shots/020-prefs.png">
+  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/020-prefs.png">
 </p>
 
 
@@ -161,7 +161,7 @@ Sadly, the primary developer only understands English.  If you'd like to contrib
 
 ## In-Progress Improvements
 
-* Note some of the more popular mod conflicts and suggest avoiding them: [GitHub Issue #2](https://github.com/jtsage/FS19_Mod_Checker/issues/2)
+* Note some of the more popular mod conflicts and suggest avoiding them: [GitHub Issue #2](https://github.com/jtsage/FS_Mod_Checker/issues/2)
 
 ## A short note about the EXE
 

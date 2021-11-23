@@ -45,6 +45,7 @@ let location_valid     = false
 let location_error     = false
 
 let modList = null
+let gameVersion = 19
 
 let counterInterval = null
 let counterRuntime  = 0
@@ -126,6 +127,10 @@ function createWindow () {
 		const showCount = setInterval(() => {
 			if ( win.isVisible() ) {
 				clearInterval(showCount)
+				if ( mcStore.has('gameVersion') ) {
+					gameVersion = mcStore.get('gameVersion')
+					event.sender.send('trigger_version', gameVersion)
+				}
 				if ( mcStore.has('gamesettings') ) {
 					openSettings(event, mcStore.get('gamesettings'))
 				}
@@ -228,25 +233,25 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 		template.push({
 			label : await myTranslator.stringLookup('menu_find_on_mod_hub'),
 			click : () => {
-				const url = `https://www.farming-simulator.com/mods.php?title=fs2019&searchMod= ${theseValues[1]}`
+				const url = `https://www.farming-simulator.com/mods.php?title=fs20${gameVersion}&searchMod= ${theseValues[1]}`
 				require('electron').shell.openExternal(url)
 			},
 		}, {
 			label : await myTranslator.stringLookup('menu_find_on_google'),
 			click : () => {
-				const url = `https://www.google.com/search?q=FS19 ${theseValues[1]}`
+				const url = `https://www.google.com/search?q=FS${gameVersion} ${theseValues[1]}`
 				require('electron').shell.openExternal(url)
 			},
 		}, {
 			label : await myTranslator.stringLookup('menu_find_on_duck'),
 			click : () => {
-				const url = `https://duckduckgo.com/?q=FS19 ${theseValues[1]}`
+				const url = `https://duckduckgo.com/?q=FS${gameVersion} ${theseValues[1]}`
 				require('electron').shell.openExternal(url)
 			},
 		}, {
 			label : await myTranslator.stringLookup('menu_find_on_bing'),
 			click : () => {
-				const url = `https://www.bing.com/search?q=FS19 ${theseValues[1]}`
+				const url = `https://www.bing.com/search?q=FS${gameVersion} ${theseValues[1]}`
 				require('electron').shell.openExternal(url)
 			},
 		}, { type : 'separator' })
@@ -396,8 +401,8 @@ ipcMain.on('openConfigFile', (event) => {
 	location_savegame  = null
 
 	const defaultFolder = (process.platform === 'darwin') ?
-		path.join(homedir, 'Library', 'Containers', 'com.astragon.farmingsim2019', 'Data', 'Library', 'Application Support', 'FarmingSimulator2019') :
-		path.join(homedir, 'Documents', 'My Games', 'FarmingSimulator2019', 'gameSettings.xml' )
+		path.join(homedir, 'Library', 'Containers', `com.astragon.farmingsim20${gameVersion}`, 'Data', 'Library', 'Application Support', 'FarmingSimulator2019') :
+		path.join(homedir, 'Documents', 'My Games', `FarmingSimulator20${gameVersion}`, 'gameSettings.xml' )
 
 	dialog.showOpenDialog(win, {
 		properties  : ['openFile'],
@@ -437,6 +442,13 @@ ipcMain.on('openConfigFile', (event) => {
   __|__ |       |_____  . |       |    \_ |_____| |_____  |______ ______| ______|
                                                                                  
 */
+ipcMain.on('setGameVersion', (event, arg) => {
+	console.log('yo!')
+	if ( mcStore.has('remember_last') && mcStore.get('remember_last') ) {
+		mcStore.set('gameVersion', arg)
+	}
+	gameVersion = arg
+})
 ipcMain.on('processMods', (event) => {
 	if ( location_valid ) {
 		try {
@@ -444,7 +456,8 @@ ipcMain.on('processMods', (event) => {
 				location_savegame,
 				location_modfolder,
 				logger,
-				myTranslator.deferCurrentLocale)
+				myTranslator.deferCurrentLocale,
+				gameVersion)
 		} catch (createError) {
 			location_valid     = false
 			location_error     = true

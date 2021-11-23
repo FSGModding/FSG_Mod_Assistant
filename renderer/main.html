@@ -141,7 +141,20 @@
 
 			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
 				<p class="text-center i18n mb-1 pt-3" data-i18n="config_blurb"></p>
-				<h4 class="i18n w-75 mx-auto" data-i18n="config_step_1"></h4>
+				<h4 class="i18n w-75 mx-auto" data-i18n="config_step_0"></h4>
+				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-2 ps-2" data-i18n="config_step_0_blurb"></p>
+				<div class="row w-75 mx-auto">
+					<div class="col-6">
+						<input onclick="ipc.setVer2019()" type="radio" class="btn-check" name="fs_ver" id="fs_ver_19" autocomplete="off" checked>
+						<label class="btn btn-sm btn-success w-100" id="fs_ver_19_lab" for="fs_ver_19">2019</label>
+					</div>
+					<div class="col-6">
+						<input onclick="ipc.setVer2022()" type="radio" class="btn-check" name="fs_ver" id="fs_ver_22" autocomplete="off">
+						<label class="btn btn-sm btn-danger w-100" id="fs_ver_22_lab" for="fs_ver_22">2022</label>
+					</div>
+				</div>
+
+				<h4 class="i18n w-75 mx-auto mt-4" data-i18n="config_step_1"></h4>
 				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-2 ps-2" data-i18n="config_load_button_blurb"></p>
 				<div class="row w-75 mx-auto">
 					<div class="col-6">

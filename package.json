@@ -1,9 +1,9 @@
 {
   "name": "fs19-mod-checker",
-  "version": "2.3.0",
-  "description": "FS19 Mod Folder Checker",
+  "version": "3.0.0",
+  "description": "FS Mod Folder Checker",
   "main": "main.js",
-  "homepage": "https://github.com/jtsage/FS19_Mod_Checker#readme",
+  "homepage": "https://github.com/jtsage/FS_Mod_Checker#readme",
   "keywords": [],
   "author": {
     "name": "J.T.Sage",
@@ -12,7 +12,7 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jtsage/FS19_Mod_Checker/issues"
+    "url": "https://github.com/jtsage/FS_Mod_Checker/issues"
   },
   "repository": "github:jtsage/FS19_Mod_Checker",
   "scripts": {

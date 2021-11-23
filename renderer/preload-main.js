@@ -395,6 +395,19 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 // Because of earlier choices, it's easiest to fake a click in the renderer so that all the
 // events go to the right place.
 
+ipcRenderer.on('trigger_version', (event, versionNum) => {
+	console.log('hi')
+	classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-danger')
+	classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-success')
+	if ( versionNum === 19 ) {
+		classAdd('fs_ver_19_lab', 'btn-success')
+		classAdd('fs_ver_22_lab', 'btn-danger')
+	} else {
+		classAdd('fs_ver_22_lab', 'btn-success')
+		classAdd('fs_ver_19_lab', 'btn-danger')
+	}
+})
+
 ipcRenderer.on('autoProcess', () => {
 	ipcRenderer.send('processMods')
 	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
@@ -430,6 +443,22 @@ contextBridge.exposeInMainWorld(
 		},
 		loadFolder : () => {
 			ipcRenderer.send('openOtherFolder')
+			dataIsLoaded = false
+		},
+		setVer2019 : () => {
+			ipcRenderer.send('setGameVersion', 19)
+			classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-danger')
+			classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-success')
+			classAdd('fs_ver_19_lab', 'btn-success')
+			classAdd('fs_ver_22_lab', 'btn-danger')
+			dataIsLoaded = false
+		},
+		setVer2022 : () => {
+			ipcRenderer.send('setGameVersion', 22)
+			classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-danger')
+			classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-success')
+			classAdd('fs_ver_22_lab', 'btn-success')
+			classAdd('fs_ver_19_lab', 'btn-danger')
 			dataIsLoaded = false
 		},
 		processButton : () => {
