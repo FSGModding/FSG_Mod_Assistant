@@ -42,6 +42,7 @@ ipcRenderer.on('mod-record', ( event, modDetails ) => {
 	byId('description').innerHTML    = modDetails.description
 	byId('extraFiles').innerHTML     = modDetails.extraFiles.join('\n')
 	byId('file_date').innerHTML      = modDetails.date.toISOString().substring(0, 16)
+	byId('newest_part').innerHTML    = modDetails.newestPart.toISOString().substring(0, 16)
 
 	const row_legend = modDetails.total_games.map((thisGame) => { return `<td class="text-center fw-bold">${thisGame}</td>`})
 	const row_active = modDetails.total_games.map((thisGame) => { return `<td class="text-center">${(modDetails.active_game[thisGame])?iconGreenCheckMark:iconRedX}</td>`})

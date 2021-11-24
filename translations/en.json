@@ -91,6 +91,7 @@
 	"detail_mod_version"     : "Version",
 	"detail_mod_size"        : "Size",
 	"detail_mod_date"        : "Date",
+	"detail_mod_date_recent" : "Most Recent File Date",
 	"detail_mod_has_scripts" : "Uses Scripts",
 	"detail_mod_store_items" : "Store Items",
 	"detail_mod_author"      : "Author",

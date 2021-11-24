@@ -97,8 +97,8 @@ function createWindow () {
 			autoHideMenuBar : true,
 		})
 		
-		const pos_left = (workWidth / 2)  - (500/2)
-		const pos_top  = (workHeight / 2) - (250/2)
+		const pos_left = (workWidth / 2)  - ( 500 / 2 )
+		const pos_top  = (workHeight / 2) - ( 250 / 2 )
 
 		splash.setPosition(pos_left, pos_top)
 
@@ -220,7 +220,7 @@ ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 
-/* Table style - explore, missing */
+/* Table style - explore, missing, bulky */
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	const template = [
 		{
@@ -547,6 +547,15 @@ ipcMain.on('askConflictList', async (event) => {
 	})
 })
 
+
+
+/*
+  _____  _____  _______   ______  _     _        _     _ __   __
+    |   |_____] |       . |_____] |     | |      |____/    \_/  
+  __|__ |       |_____  . |_____] |_____| |_____ |    \_    |   
+                                                                
+*/
+
 ipcMain.on('askBulkyList', (event) => {
 	modList.search({
 		columns : ['shortName', 'title', 'activeGames', 'usedGames'],
@@ -708,6 +717,7 @@ function openDetailWindow(thisModRecord) {
 			is_multiplayer : thisModRecord.isMultiplayer,
 			date           : thisModRecord.date,
 			extraFiles     : thisModRecord.getExtras,
+			newestPart     : ( thisModRecord.isFolder ? thisModRecord.date : thisModRecord.newestPart  ),
 		}
 		event.sender.send('mod-record', sendData)
 		event.sender.send('trigger-i18n')
@@ -941,11 +951,11 @@ app.whenReady().then(() => {
 })
 
 app.setAboutPanelOptions({
-	applicationName    : 'FS19 Mod Checker',
+	applicationName    : 'FS Mod Checker',
 	applicationVersion : mcDetail.version,
 	copyright          : '(c) 2021 J.T.Sage',
 	credits            : 'J.T.Sage <jtsage+datebox@gmail.com>',
-	website            : 'https://github.com/jtsage/FS19_Mod_Checker',
+	website            : 'https://github.com/jtsage/FS_Mod_Checker',
 	iconPath           : path.join(app.getAppPath(), 'build', 'icon.png'),
 })
 
