@@ -35,6 +35,8 @@ function toggleExploreColumns () {
 		'mod_used_games',
 		'mod_full_path',
 		'mod_has_scripts',
+		'mod_is_old_shader',
+		'mod_is_bulky',
 		'mod_is_multiplayer',
 	]
 	columns.forEach((thisCol) => {

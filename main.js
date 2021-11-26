@@ -220,7 +220,7 @@ ipcMain.on('show-context-menu-list', async (event, fullPath, modName) => {
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 
-/* Table style - explore, missing, bulky */
+/* Table style - explore, missing */
 ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) => {
 	const template = [
 		{
@@ -401,7 +401,10 @@ ipcMain.on('openConfigFile', (event) => {
 	location_savegame  = null
 
 	const defaultFolder = (process.platform === 'darwin') ?
-		path.join(homedir, 'Library', 'Containers', `com.astragon.farmingsim20${gameVersion}`, 'Data', 'Library', 'Application Support', 'FarmingSimulator2019') :
+		( ( gameVersion === 19 ) ?
+			path.join(homedir, 'Library', 'Containers', 'com.astragon.farmingsim2019', 'Data', 'Library', 'Application Support', 'FarmingSimulator2019') :
+			path.join(homedir, 'Library', 'Application Support', 'FarmingSimulator2022')
+		) :
 		path.join(homedir, 'Documents', 'My Games', `FarmingSimulator20${gameVersion}`, 'gameSettings.xml' )
 
 	dialog.showOpenDialog(win, {
@@ -549,28 +552,6 @@ ipcMain.on('askConflictList', async (event) => {
 
 
 
-/*
-  _____  _____  _______   ______  _     _        _     _ __   __
-    |   |_____] |       . |_____] |     | |      |____/    \_/  
-  __|__ |       |_____  . |_____] |_____| |_____ |    \_    |   
-                                                                
-*/
-
-ipcMain.on('askBulkyList', (event) => {
-	modList.search({
-		columns : ['shortName', 'title', 'activeGames', 'usedGames'],
-		terms   : ['hasExtras'],
-	}).then((searchResults) => {
-		event.sender.send('gotBulkyList', searchResults)
-	}).catch((unknownError) => {
-		// Shouldn't happen.  No idea
-		// No need to return empty, this is not a pre-requisite for UI updates.
-		logger.notice('ipcProcess', `Could not get "bulky list" : ${unknownError}`)
-	})
-})
-
-
-
 
 /*
   _____  _____  _______   _______ _____ _______ _______ _____ __   _  ______
@@ -628,7 +609,7 @@ ipcMain.on('askExploreList', (event, activeGame, usedGame = 0, extraTerms = []) 
 		columns             : [
 			'shortName', 'title', 'mod_version', 'fileSizeMap', 'stringDate',
 			'isActive', 'activeGames', 'isUsed', 'usedGames',
-			'fullPath', 'hasScripts', 'isMultiplayer'
+			'fullPath', 'hasScripts', 'isMultiplayer', 'hasExtras', 'isOldShaders'
 		],
 		activeGame          : parseInt(activeGame),
 		usedGame            : parseInt(usedGame),
@@ -715,8 +696,10 @@ function openDetailWindow(thisModRecord) {
 			store_items    : thisModRecord.countStoreItems,
 			mod_author     : thisModRecord.mod_author,
 			is_multiplayer : thisModRecord.isMultiplayer,
+			is_old_shaders : thisModRecord.isOldShaders,
 			date           : thisModRecord.date,
 			extraFiles     : thisModRecord.getExtras,
+			i3dFiles       : thisModRecord.getI3DNames,
 			newestPart     : ( thisModRecord.isFolder ? thisModRecord.date : thisModRecord.newestPart  ),
 		}
 		event.sender.send('mod-record', sendData)

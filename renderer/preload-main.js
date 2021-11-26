@@ -10,14 +10,18 @@
 
 const {contextBridge, ipcRenderer} = require('electron')
 
-const iconGreenCheckMark = '<span class="text-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">'+
+const iconCheckMark = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">'+
 	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 	'<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>' +
-	'</svg></span>'
-const iconRedX = '<span class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' +
+	'</svg>'
+const iconX = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' +
 	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 	'<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>' +
-	'</svg></span>'
+	'</svg>'
+const iconGreenCheckMark = `<span class="text-success">${iconCheckMark}</span>`
+const iconRedCheckMark   = `<span class="text-warning">${iconCheckMark}</span>`
+const iconGreenX         = `<span class="text-success">${iconX}</span>`
+const iconRedX           = `<span class="text-danger">${iconX}</span>`
 
 let dataIsLoaded = false
 
@@ -59,7 +63,11 @@ const buildTableRow = (columnValues, colNames = [], idPrefix = null) => {
 				break
 			case 'boolean' :
 				sort = ( columnValues[i] ? 1 : 0 )
-				text = ( columnValues[i] ? iconGreenCheckMark : iconRedX )
+				if ( colNames[i] === 'col_mod_is_old_shader' || colNames[i] === 'col_mod_is_bulky' ) {
+					text = ( columnValues[i] ? iconRedCheckMark : iconGreenX )
+				} else {
+					text = ( columnValues[i] ? iconGreenCheckMark : iconRedX )
+				}
 				break
 			default : // Object or Array
 				sort = columnValues[i][1]
@@ -136,8 +144,7 @@ ipcRenderer.on('trigger-i18n-on-data', () => {
 		ipcRenderer.send('askConflictList')
 		ipcRenderer.send('askExploreList', 0)
 		ipcRenderer.send('askGamesActive')
-		ipcRenderer.send('askBulkyList')
-		classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'disabled')
+		classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
 	}
 })
 
@@ -229,7 +236,7 @@ ipcRenderer.on('processModsDone', () => {
 	classAdd('status-message-working', 'd-none')
 	classRem('status-message-testing', 'd-none')
 	classRem(['button_process', 'button_load', 'button_load_folder'], 'disabled')
-	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'disabled')
+	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
 	
 	// Fuzzy logic.  Used to request reload of display data when changing l10n setting.
 	dataIsLoaded = true
@@ -239,7 +246,6 @@ ipcRenderer.on('processModsDone', () => {
 	ipcRenderer.send('askConflictList')
 	ipcRenderer.send('askExploreList', 0)
 	ipcRenderer.send('askGamesActive')
-	ipcRenderer.send('askBulkyList')
 })
 
 
@@ -256,7 +262,7 @@ ipcRenderer.on('gotBrokenList', (event, list) => {
 	setTimeout(() => {
 		classRem(['loadingModal', 'loading_modal_backdrop'], 'show')
 		classAdd('loading_modal_backdrop', 'd-none')
-		classAdd(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'flashonce')
+		classAdd(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
 		document.getElementById('loadingModal').style.display = null
 		setTimeout(() => {
 			classAdd(['status-message-done', 'status-icon-done'], 'd-none')
@@ -330,19 +336,6 @@ ipcRenderer.on('gotMissingList', (event, list) => {
 })
 
 
-ipcRenderer.on('gotBulkyList', (event, list) => {
-	const newContent = list.map((x) => { return buildTableRow(x) })
-
-	if ( list.length === 0 ) {
-		classRem('no_bulky', 'd-none')
-	} else {
-		classAdd('no_bulky', 'd-none')
-	}
-	
-	byId('table_bulky').innerHTML = newContent.join('')
-})
-
-
 /*
   _____  _____  _______   _______ _     _  _____          _____   ______ _______
     |   |_____] |       . |______  \___/  |_____] |      |     | |_____/ |______
@@ -363,6 +356,8 @@ ipcRenderer.on('gotExploreList', (event, list) => {
 		'col_mod_full_path',
 		'col_mod_has_scripts',
 		'col_mod_is_multiplayer',
+		'col_mod_is_bulky',
+		'col_mod_is_old_shader',
 	]
 
 	const newContent = list.map((x) => { return buildTableRow(x, colNames, 'exp_') })
@@ -424,7 +419,7 @@ ipcRenderer.on('trigger_version', (event, versionNum) => {
 
 ipcRenderer.on('autoProcess', () => {
 	ipcRenderer.send('processMods')
-	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'flashonce')
+	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
 	classAdd(['button_process', 'button_load', 'button_load_folder'], 'disabled')
 	classRem('loading_modal_backdrop', 'd-none')
 	classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
@@ -477,7 +472,7 @@ contextBridge.exposeInMainWorld(
 		},
 		processButton : () => {
 			ipcRenderer.send('processMods')
-			classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore', 'tab_bulky'], 'flashonce')
+			classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
 			classAdd(['button_process', 'button_load', 'button_load_folder'], 'disabled')
 			classRem('loading_modal_backdrop', 'd-none')
 			classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
@@ -506,9 +501,6 @@ contextBridge.exposeInMainWorld(
 		},
 		refreshMissing : () => {
 			ipcRenderer.send('askMissingList')
-		},
-		refreshBulky : () => {
-			ipcRenderer.send('askBulkyList')
 		},
 		refreshConflict : () => {
 			ipcRenderer.send('askConflictList')
@@ -569,9 +561,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	byId('table_missing_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
 	byId('table_explore_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
-	byId('table_bulky_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
 
 	byId('table_missing_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_missing') })
 	byId('table_explore_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_explore') })
-	byId('table_bulky_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_bulky') })
 })

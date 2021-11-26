@@ -43,7 +43,7 @@
 		td.col_mod_name {
 			word-break: break-word;
 		}
-		.col_mod_is_active, .col_mod_is_used, .col_mod_has_scripts, .col_mod_is_multiplayer {
+		.col_mod_is_active, .col_mod_is_used, .col_mod_has_scripts, .col_mod_is_bulky, .col_mod_is_old_shader, .col_mod_is_multiplayer {
 			text-align: center;
 			max-width: 80px;
 		}
@@ -130,9 +130,6 @@
 			</li>
 			<li class="nav-item" role="presentation">
 				<button class="disabled link-dark nav-link i18n" data-i18n="tab_explore" id="tab_explore" data-bs-toggle="tab" data-bs-target="#tab_explore_content" type="button" role="tab" aria-selected="false" aria-controls="tab_explore_content"></button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="disabled link-dark nav-link i18n" data-i18n="tab_bulky" id="tab_bulky" data-bs-toggle="tab" data-bs-target="#tab_bulky_content" type="button" role="tab" aria-selected="false" aria-controls="tab_bulky_content"></button>
 			</li>
 		</ul>
 	  </div> <!--end fixed 1-->
@@ -283,6 +280,8 @@
 								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_full_path" data-i18n="header_mod_full_path"></th>
 								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_has_scripts" data-i18n="header_mod_has_scripts"></th>
 								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_is_multiplayer" data-i18n="header_mod_multiplayer"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_is_bulky" data-i18n="header_mod_bulky"></th>
+								<th class="i18n sticky-top sticky-th table-secondary border-bottom col_mod_is_old_shader" data-i18n="header_mod_support"></th>
 							</tr>
 						</thead>
 						<tbody id="table_explore">
@@ -350,6 +349,14 @@
 							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_multiplayer_switch">
 							<label class="form-check-label i18n" data-i18n="filter_mod_multiplayer" for="col_mod_is_multiplayer_switch"></label>
 						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_bulky_switch">
+							<label class="form-check-label i18n" data-i18n="filter_mod_bulky" for="col_mod_is_bulky_switch"></label>
+						</div>
+						<div class="form-check form-switch">
+							<input onchange="toggleExploreColumns()" class="form-check-input" type="checkbox" id="col_mod_is_old_shader_switch">
+							<label class="form-check-label i18n" data-i18n="filter_mod_old_shader" for="col_mod_is_old_shader_switch"></label>
+						</div>
 					</div>
 
 					<h6 class="i18n mt-4" data-i18n="explore_options_savegame_select"></h6>
@@ -360,26 +367,6 @@
 					<button type="button" onclick="ipc.changeExploreActiveUnused()" id="special_unused" class="btn btn-dark d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_unused"></button>
 					<button type="button" onclick="ipc.changeExploreScripts()" id="special_scripts" class="btn btn-dark d-block w-75 mx-auto btn-sm i18n my-2" data-i18n="explore_options_special_scripts"></button>
 				</div>
-			</div>
-
-			<div class="tab-pane fade pb-5" id="tab_bulky_content" role="tabpanel" aria-labelledby="tab_bulky">
-				<p class="text-center i18n px-4 pt-3" data-i18n="bulky_blurb"></p>
-				<p class="text-center i18n px-4 fw-bold" id="no_bulky" data-i18n="bulky_blurb_none"></p>
-				<div class="mx-0">
-					<table class="table table-hover sortable" id="table_bulky_parent">
-						<thead>
-							<tr>
-								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_name"></th>
-								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_title"></th>
-								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_active_games"></th>
-								<th class="i18n sticky-top sticky-th table-secondary border-bottom" data-i18n="header_mod_used_games"></th>
-							</tr>
-						</thead>
-						<tbody id="table_bulky">
-						</tbody>
-					</table>
-				</div>
-				<button type="button" onclick="ipc.refreshBulky()" class="btn btn-dark mb-3 d-block w-75 mx-auto btn-sm i18n" data-i18n="button_refresh_tab"></button>
 			</div>
 
 		</div>

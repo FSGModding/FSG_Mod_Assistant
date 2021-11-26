@@ -8,7 +8,6 @@
 	"tab_missing"                      : "Missing Mods",
 	"tab_conflict"                     : "Possible Conflicts",
 	"tab_explore"                      : "Explore Mods",
-	"tab_bulky"                        : "Bulky Mods",
 	"config_step_0"                    : "Farming Simulator Version",
 	"config_step_1"                    : "Step 1",
 	"config_step_2"                    : "Step 2",
@@ -48,9 +47,7 @@
 	"filter_savegame"                  : "Save Game Slot #",
 	"broken_blurb_none"                : "Congratulations, you have no (detected) broken mods installed",
 	"conflict_blurb_none"              : "Congratulations, you have no (detected) conflicting mods installed",
-	"bulky_blurb_none"                 : "Congratulations, you have no (detected) extra files in your mods",
 	"missing_blurb_none"               : "Congratulations, you have no missing mods in your save games - or you only scanned a mod folder.",
-	"bulky_blurb"                      : "Below, you will find a list of all mods that have \"extra\" files in them, as per the Giants specifications.  This tab is more for the technically savvy - mods indicated here could be cleaned up to save space, and in some cases it could indicate mods of lower quality - or it could just as easily be something the modder just missed on the final cleanup. If these mods do not appear on the broken tab, there is no reason to suspect there is anything wrong with them.",
 
 	"menu_details"         : "Open Mod Detail",
 	"menu_open_explorer"   : "Show in Finder / Explorer",
@@ -87,6 +84,8 @@
 	"header_mod_store_items" : "Store Items",
 	"header_mod_author"      : "Author",
 	"header_mod_multiplayer" : "Multiplayer",
+	"header_mod_bulky"       : "Extra Files",
+	"header_mod_support"     : "Old Shaders",
 
 	"detail_mod_version"     : "Version",
 	"detail_mod_size"        : "Size",
@@ -96,7 +95,10 @@
 	"detail_mod_store_items" : "Store Items",
 	"detail_mod_author"      : "Author",
 	"detail_mod_multiplayer" : "Multiplayer",
-	"detail_extra_files"     : "Developer Information - Extra files in the mod (per Giants spec)",
+	"detail_mod_support"     : "Previous Version Shaders",
+	"detail_dev_info"        : "Developer Information",
+	"detail_extra_files"     : "Extra files in the mod (per Giants spec)",
+	"detail_i3d_files"       : "i3D files in the mod",
 
 	"filter_mod_name"        : "Name",
 	"filter_mod_title"       : "Title",
@@ -111,6 +113,8 @@
 	"filter_mod_has_scripts" : "Uses Scripts",
 	"filter_mod_store_items" : "Store Items",
 	"filter_mod_author"      : "Author",
+	"filter_mod_old_shader"  : "Old Shaders",
+	"filter_mod_bulky"       : "Extra Files",
 	"filter_mod_multiplayer" : "Multiplayer",
 	
 	"active_used_table_savegame" : "Savegame",

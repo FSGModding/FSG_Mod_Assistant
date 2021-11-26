@@ -10,14 +10,18 @@
 
 const {ipcRenderer} = require('electron')
 
-const iconGreenCheckMark = '<span class="text-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">'+
+const iconCheckMark = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">'+
 	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 	'<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>' +
-	'</svg></span>'
-const iconRedX = '<span class="text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' +
+	'</svg>'
+const iconX = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">' +
 	'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 	'<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>' +
-	'</svg></span>'
+	'</svg>'
+const iconGreenCheckMark = `<span class="text-success">${iconCheckMark}</span>`
+const iconRedCheckMark   = `<span class="text-warning">${iconCheckMark}</span>`
+const iconGreenX         = `<span class="text-success">${iconX}</span>`
+const iconRedX           = `<span class="text-danger">${iconX}</span>`
 
 const byId     = (domID) => { return document.getElementById(domID) }
 
@@ -37,10 +41,12 @@ ipcRenderer.on('mod-record', ( event, modDetails ) => {
 	byId('filesize').innerHTML       = modDetails.filesize
 	byId('has_scripts').innerHTML    = ((modDetails.has_scripts) ? iconGreenCheckMark : iconRedX)
 	byId('is_multiplayer').innerHTML = ((modDetails.is_multiplayer) ? iconGreenCheckMark : iconRedX)
+	byId('is_old_shaders').innerHTML = ((modDetails.is_old_shaders) ? iconRedCheckMark : iconGreenX)
 	byId('store_items').innerHTML    = modDetails.store_items
 	byId('mod_author').innerHTML     = (modDetails.mod_author === null ) ? '' : modDetails.mod_author
 	byId('description').innerHTML    = modDetails.description
 	byId('extraFiles').innerHTML     = modDetails.extraFiles.join('\n')
+	byId('i3dFiles').innerHTML       = modDetails.i3dFiles.join('\n')
 	byId('file_date').innerHTML      = modDetails.date.toISOString().substring(0, 16)
 	byId('newest_part').innerHTML    = modDetails.newestPart.toISOString().substring(0, 16)
 
