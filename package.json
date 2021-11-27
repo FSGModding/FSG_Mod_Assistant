@@ -14,7 +14,7 @@
   "bugs": {
     "url": "https://github.com/jtsage/FS_Mod_Checker/issues"
   },
-  "repository": "github:jtsage/FS19_Mod_Checker",
+  "repository": "github:jtsage/FS_Mod_Checker",
   "scripts": {
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
@@ -25,14 +25,14 @@
     "@babel/eslint-parser": "^7.14.3",
     "ansi-colors": "^4.1.1",
     "diff": "^5.0.0",
-    "electron": "^12.0",
-    "electron-builder": "^22.11",
+    "electron": "^16.0",
+    "electron-builder": "^22.14",
     "eslint": "^7.27.0"
   },
   "dependencies": {
     "decode-dxt": "^1.0.1",
-    "electron-store": "^8.0.0",
-    "electron-updater": "^4.3.9",
+    "electron-store": "^8.0.1",
+    "electron-updater": "^4.6.1",
     "glob": "^7.1.7",
     "node-stream-zip": "^1.13.4",
     "parse-dds": "^1.2.1",
@@ -42,7 +42,7 @@
   },
   "build": {
     "appId": "jtsage.fsmodchecker",
-    "productName": "FS19ModChecker",
+    "productName": "FSModChecker",
     "files": [
       "!/test/*",
       "!/screen_shots/*",
