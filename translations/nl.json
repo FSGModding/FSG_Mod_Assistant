@@ -12,7 +12,7 @@
 	"config_step_2": "Stap 2",
 	"config_step_3": "Stap 3 <em>(optioneel)</em>",
 	"config_blurb": "Dit kleine programma zal een kijkje nemen in uw mod installatiemap en je informeren over mogelijke problemen die het vindt.",
-	"config_load_button_blurb": "Eerst moet je Mod Checker naar je gameSettings.xml bestand <strong>of</strong> een mods map wijzen",
+	"config_load_button_blurb": "Eerst moet je Mod Checker naar je gameSettings.xml bestand <strong style='font-size: 150%'>of</strong> een mods map wijzen",
 	"config_load_button": "Instellingen Laden",
 	"config_load_folder_button": "Laad map",
 	"config_process_button_blurb": "Next, click the \"Scan\" button to process your mods and save game files. You can re-scan using this same button.",

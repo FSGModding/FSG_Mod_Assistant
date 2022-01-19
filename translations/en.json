@@ -14,7 +14,7 @@
 	"config_step_3"                    : "Step 3 <em>(optional)</em>",
 	"config_blurb"                     : "This little program will take a look at your mod install folder and inform you of any potential problems that it finds.",
 	"config_step_0_blurb"              : "Choose which version of Farming Simulator you'd like to check",
-	"config_load_button_blurb"         : "First, you need to point Mod Checker to your gameSettings.xml file <strong>or</strong> a folder of mods",
+	"config_load_button_blurb"         : "First, you need to point Mod Checker to your gameSettings.xml file <strong style='font-size: 150%'>OR</strong> a folder of mods",
 	"config_load_button"               : "Load Settings",
 	"config_load_folder_button"        : "Load Folder",
 	"config_process_button_blurb"      : "Next, click the \"Scan\" button to process your mods and save game files. You can re-scan using this same button. Note: if scanning a folder only, save games are not checked, making the \"Missing Mods\" tab somewhat useless.",

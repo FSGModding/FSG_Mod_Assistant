@@ -12,7 +12,7 @@
 	"config_step_2": "Krok 2",
 	"config_step_3": "Krok 3 <em>(opcjonalnie)</em>",
 	"config_blurb": "Ten mały program przejrzy twój folder z modami i poinformuje Cię o wszelkich potencjalnych problemach, które znalazł.",
-	"config_load_button_blurb": "Najpierw musisz załadować do Mod Checker Twój plik gameSettings.xml <strong>lub</strong> folder z modami",
+	"config_load_button_blurb": "Najpierw musisz załadować do Mod Checker Twój plik gameSettings.xml <strong style='font-size: 150%'>lub</strong> folder z modami",
 	"config_load_button": "Załaduj ustawienia",
 	"config_load_folder_button": "Załaduj folder",
 	"config_process_button_blurb": "Następnie, kliknij przycisk \"Skanuj\", aby przetworzyć twoje mody i zapisy z gry. Używając tego samego przycisku ponownie możesz na nowo przeskanować mody i zapisy. Uwaga: Jeśli skanujesz tylko folder, a zapisy z gier nie są zaznaczone to zakładka \"Brakujące modyfikacje\" staje się bezużyteczna.",

@@ -12,7 +12,7 @@
 	"config_step_2"                    : "Paso 2",
 	"config_step_3"                    : "Paso 3 <em>(opcional)</em>",
 	"config_blurb"                     : "Este pequeño programa echará un vistazo a la carpeta de mods y le informará de cualquier problema potencial que encuentre.",
-	"config_load_button_blurb"         : "Primero, necesita indicar a Mod Checker el archivo gameSettings.xml <strong>o</strong> la carpeta de mods.",
+	"config_load_button_blurb"         : "Primero, necesita indicar a Mod Checker el archivo gameSettings.xml <strong style='font-size: 150%'>o</strong> la carpeta de mods.",
 	"config_load_button"               : "Cargar gameSettings.xml",
 	"config_load_folder_button"        : "Indicar Carpeta de Mods",
 	"config_process_button_blurb"      : "Siguiente, haz click en el botón \"Scan\" para procesar tus mods y las partidas guardadas del juego. Puedes reescanear usando el mismo botón.",

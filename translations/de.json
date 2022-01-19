@@ -12,7 +12,7 @@
 	"config_step_2": "Schritt 2",
 	"config_step_3": "Schritt 3 <em>(optional)</em>",
 	"config_blurb": "Dieses kleine Programm schaut sich deinen mods-Ordner an und informiert dich über mögliche Probleme damit.",
-	"config_load_button_blurb": "Als erstes wähle bitte deine gameSettings.xml <strong>oder</strong> einen Ordner mit Mods darin aus",
+	"config_load_button_blurb": "Als erstes wähle bitte deine gameSettings.xml <strong style='font-size: 150%'>oder</strong> einen Ordner mit Mods darin aus",
 	"config_load_button": "Einstellungen laden",
 	"config_load_folder_button": "Ordner laden",
 	"config_process_button_blurb": "Dann klicke auf \"Scannen\", um deine Mods und Savegames zu untersuchen. Mit dem Button kann jederzeit erneut gescannt werden.",

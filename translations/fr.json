@@ -12,7 +12,7 @@
 	"config_step_2": "Étape 2",
 	"config_step_3": "Étape 3 <em>(optionnelle)</em>",
 	"config_blurb": "Ce petit programme examine votre dossier d'installation de mods FS19 et vous informe de tout problème potentiel qu'il trouve.",
-	"config_load_button_blurb": "Tout d'abord, vous devez pointer Mod Checker vers votre fichier gameSettings.xml <strong>ou</strong> un dossier de mods",
+	"config_load_button_blurb": "Tout d'abord, vous devez pointer Mod Checker vers votre fichier gameSettings.xml <strong style='font-size: 150%'>ou</strong> un dossier de mods",
 	"config_load_button": "Indiquer le fichier gameSettings.xml",
 	"config_load_folder_button": "Indiquer le répertoire de Mods",
 	"config_process_button_blurb": "Ensuite, cliquez sur le bouton \"Scan\" pour traiter vos mods et les fichiers de sauvegarde du jeu. Vous pouvez effectuer un nouveau balayage en utilisant ce même bouton. Remarque : si vous ne scannez qu'un dossier, les sauvegardes ne sont pas prises en compte, ce qui rend l'onglet \"Mods manquants\" quelque peu inutile.",
