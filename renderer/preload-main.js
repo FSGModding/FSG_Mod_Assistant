@@ -406,14 +406,12 @@ ipcRenderer.on('gotGamesActive', (event, list, saveGameText, allText) => {
 // events go to the right place.
 
 ipcRenderer.on('trigger_version', (event, versionNum) => {
-	classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-danger')
-	classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-success')
 	if ( versionNum === 19 ) {
-		classAdd('fs_ver_19_lab', 'btn-success')
-		classAdd('fs_ver_22_lab', 'btn-danger')
+		classRem(['ver_icon_19'], 'd-none')
+		classAdd(['ver_icon_22'], 'd-none')
 	} else {
-		classAdd('fs_ver_22_lab', 'btn-success')
-		classAdd('fs_ver_19_lab', 'btn-danger')
+		classAdd(['ver_icon_19'], 'd-none')
+		classRem(['ver_icon_22'], 'd-none')
 	}
 })
 
@@ -456,18 +454,14 @@ contextBridge.exposeInMainWorld(
 		},
 		setVer2019 : () => {
 			ipcRenderer.send('setGameVersion', 19)
-			classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-danger')
-			classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-success')
-			classAdd('fs_ver_19_lab', 'btn-success')
-			classAdd('fs_ver_22_lab', 'btn-danger')
+			classRem(['ver_icon_19'], 'd-none')
+			classAdd(['ver_icon_22'], 'd-none')
 			dataIsLoaded = false
 		},
 		setVer2022 : () => {
 			ipcRenderer.send('setGameVersion', 22)
-			classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-danger')
-			classRem(['fs_ver_22_lab', 'fs_ver_19_lab'], 'btn-success')
-			classAdd('fs_ver_22_lab', 'btn-success')
-			classAdd('fs_ver_19_lab', 'btn-danger')
+			classAdd(['ver_icon_19'], 'd-none')
+			classRem(['ver_icon_22'], 'd-none')
 			dataIsLoaded = false
 		},
 		processButton : () => {

@@ -140,32 +140,34 @@
 		<div style="margin-top: 95px;" class="tab-content overflow-custom" id="mainTabContent">
 
 			<div class="tab-pane fade show active" id="tab_config_content" role="tabpanel" aria-labelledby="tab_config">
-				<p class="text-center i18n mb-1 pt-3" data-i18n="config_blurb"></p>
-				<h4 class="i18n w-75 mx-auto" data-i18n="config_step_0"></h4>
-				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-2 ps-2" data-i18n="config_step_0_blurb"></p>
-				<div class="row w-75 mx-auto">
-					<div class="col-6">
-						<input onclick="ipc.setVer2019()" type="radio" class="btn-check" name="fs_ver" id="fs_ver_19" autocomplete="off" checked>
-						<label class="btn btn-sm btn-success w-100" id="fs_ver_19_lab" for="fs_ver_19">2019</label>
+				<p class="i18n text-center px-4 py-1 my-1" data-i18n="config_load_button_blurb"></p>
+				<p class="i18n text-center px-4 py-1 my-1" data-i18n="config_process_button_blurb"></p>
+
+				<div class="row mx-auto">
+					<div class="col-1"></div>
+					<div class="col-2">
+						<img style="margin-top:50%;" class="d-block mx-auto" src="version_icon_19.png" srcset="version_icon_19@2x.png 2x" id="ver_icon_19" onclick="ipc.setVer2022()" />
+						<img style="margin-top:50%;" class="d-block mx-auto" src="version_icon_22.png" srcset="version_icon_22@2x.png 2x" id="ver_icon_22" onclick="ipc.setVer2019()" />
 					</div>
-					<div class="col-6">
-						<input onclick="ipc.setVer2022()" type="radio" class="btn-check" name="fs_ver" id="fs_ver_22" autocomplete="off">
-						<label class="btn btn-sm btn-danger w-100" id="fs_ver_22_lab" for="fs_ver_22">2022</label>
+					<div class="col-2">
+						<img style="margin-top:50%;" class="d-block mx-auto" src="arrowDbl.png" srcset="arrowDbl@2x.png 2x" />
 					</div>
+					<div class="col-2">
+						<img src="xml.png" class="d-block mx-auto" srcset="xml@2x.png 2x" id="button_load" onclick="ipc.loadButton()" />
+						<p class="i18n text-center" data-i18n="config_load_button"></p>
+						<img src="folder.png" class="d-block mx-auto" srcset="folder@2x.png 2x" id="button_load_folder" onclick="ipc.loadFolder()" />
+						<p class="i18n text-center" data-i18n="config_load_folder_button"></p>
+					</div>
+					<div class="col-2">
+						<img style="margin-top:50%;" class="d-block mx-auto" src="conarrow.png" srcset="conarrow@2x.png 2x" />
+					</div>
+					<div class="col-2">
+						<img src="scan.png" style="margin-top:50%" class="d-block mx-auto" srcset="scan@2x.png 2x" id="button_process" onclick="ipc.processButton()" />
+						<p class="i18n text-center" data-i18n="config_process_button"></p>
+					</div>
+					<div class="col-1"></div>
 				</div>
 
-				<h4 class="i18n w-75 mx-auto mt-4" data-i18n="config_step_1"></h4>
-				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-2 ps-2" data-i18n="config_load_button_blurb"></p>
-				<div class="row w-75 mx-auto">
-					<div class="col-6">
-						<button type="button" onclick="ipc.loadButton()" id="button_load" class="btn btn-primary d-block w-100 mx-auto btn-sm i18n" data-i18n="config_load_button"></button>
-					</div>
-					<div class="col-6">
-						<button type="button" onclick="ipc.loadFolder()" id="button_load_folder" class="btn btn-primary d-block w-100 mx-auto btn-sm i18n" data-i18n="config_load_folder_button"></button>
-					</div>
-				</div>
-				
-				
 				<div id="load_error" class="alert alert-danger w-50 mx-auto mt-2 text-center d-none" role="alert">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="align-text-top bi bi-exclamation-diamond-fill" viewBox="0 0 16 16">
 						<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
@@ -175,7 +177,6 @@
 						<path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
 					</svg>
 				</div>
-
 				
 				<table class="table w-75 mx-auto table-sm mt-3">
 					<tr>
@@ -189,10 +190,6 @@
 					
 				</table>
 
-				<h4 class="i18n w-75 mx-auto mt-4" data-i18n="config_step_2"></h4>
-				<p class="w-75 mx-auto fw-lighter fst-italic i18n mt-2 ps-2" data-i18n="config_process_button_blurb"></p>
-				<button type="button" id="button_process" onclick="ipc.processButton()" class="disabled btn btn-primary d-block w-75 mx-auto btn-sm i18n" data-i18n="config_process_button"></button>
-				<button type="button" id="open_loading_modal" data-bs-toggle="modal" data-bs-target="#loadingModal" class="d-none"></button>
 			</div>
 
 
