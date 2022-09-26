@@ -79,12 +79,11 @@ const myArgs = yargs(hideBin(process.argv))
 	.epilog('copyright 2021')
 	.argv
 
-
-writeLn(' _______           __ ______ __                __               ')
-writeLn('|   |   |.-----.--|  |      |  |--.-----.----.|  |--.-----.----.')
-writeLn('|       ||  _  |  _  |   ---|     |  -__|  __||    <|  -__|   _|')
-writeLn('|__|_|__||_____|_____|______|__|__|_____|____||__|__|_____|__|  ')
-writeLn('   (c) 2021 JTSage')
+writeLn(' _______           __ _______               __         __   ')
+writeLn('|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ ')
+writeLn('|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|')
+writeLn('|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|')
+writeLn('   (c) 2022 FSG Modding')
 
 const myTranslator = new translator.translator(myArgs.lang === null ? translator.getSystemLocale() : myArgs.lang)
 
