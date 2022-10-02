@@ -30,7 +30,7 @@ module.exports = {
 		'no-unused-vars' : [
 			'error',
 			{
-				'varsIgnorePattern' : '^_',
+				'varsIgnorePattern' : '^_|^client',
 			},
 		],
 		'no-trailing-spaces' : [

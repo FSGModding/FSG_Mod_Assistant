@@ -2,6 +2,19 @@
 	"language_code"                    : "en",
 	"language_name"                    : "English",
 	"language_locale"                  : "en_US",
+	"app_name"                         : "Farm Sim 2022 Mod Assitant",
+	"folder_add"                       : "Add Folder",
+	"folder_edit"                      : "Edit Folder List",
+	"list_add"                         : "Add Mod List",
+	"list_edit"                        : "Edit List",
+	"add_to_list"                      : "Add",
+	"add_to_all"                       : "Add to All",
+	"remove_from_list"                 : "Remove",
+	"remove_all"                       : "Clear",
+
+
+
+
 	"title"                            : "Farming Simulator Mod Folder Checker",
 	"tab_config"                       : "Configuration",
 	"tab_broken"                       : "Broken Files",

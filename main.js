@@ -9,13 +9,13 @@
 
 const { app, Menu, BrowserWindow, ipcMain, clipboard, globalShortcut, shell, dialog, screen } = require('electron')
 
-const { autoUpdater } = require('electron-updater')
+// const { autoUpdater } = require('electron-updater')
 
 const devDebug = true
 
-if (process.platform === 'win32') {
-	autoUpdater.checkForUpdatesAndNotify()
-}
+// if (process.platform === 'win32') {
+// 	autoUpdater.checkForUpdatesAndNotify()
+// }
 
 const path       = require('path')
 const xml2js     = require('xml2js')
@@ -127,23 +127,25 @@ function createWindow () {
 		const showCount = setInterval(() => {
 			if ( win.isVisible() ) {
 				clearInterval(showCount)
-				if ( mcStore.has('gameVersion') ) {
-					gameVersion = mcStore.get('gameVersion')
-					event.sender.send('trigger_version', gameVersion)
-				}
-				if ( mcStore.has('gamesettings') ) {
-					openSettings(event, mcStore.get('gamesettings'))
-				}
+				// if ( mcStore.has('gameVersion') ) {
+				// 	gameVersion = mcStore.get('gameVersion')
+				// 	event.sender.send('trigger_version', gameVersion)
+				// }
+				// if ( mcStore.has('gamesettings') ) {
+				// 	openSettings(event, mcStore.get('gamesettings'))
+				// }
 			}
 		}, 250)
 
-		if ( modList !== null ) {
-			modList.safeResend().then((isIt) => {
-				if ( isIt ) {
-					event.sender.send('processModsDone')
-				}
-			})
-		}
+		// if ( modList !== null ) {
+		// 	modList.safeResend().then((isIt) => {
+		// 		if ( isIt ) {
+		// 			event.sender.send('processModsDone')
+		// 		}
+		// 	})
+		// }
+		event.sender.send('preloadMain_gather-and-send-i18n')
+
 		event.sender.send('trigger-i18n')
 		myTranslator.getLangList().then((langList) => {
 			event.sender.send('trigger-i18n-select', langList, myTranslator.deferCurrentLocale())
@@ -297,6 +299,14 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
   __|__ |       |_____  .    |    |    \_ |     | |  \_| ______| |_____ |     |    |    |______
                                                                                                
 */
+
+ipcMain.on('main_l10n-get-text', (event, arg) => {
+	myTranslator.stringLookup(arg).then((text) => {
+		console.log(arg, text)
+		event.sender.send('l10n-get-text-return', arg, text)
+	})
+})
+
 ipcMain.on('i18n-translate', (event, arg) => {
 	myTranslator.stringLookup(arg).then((text) => {
 		event.sender.send('i18n-translate-return', arg, text)

@@ -1,47 +1,50 @@
-/* _______           __ _______               __         __   
-  |   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
-  |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
-  |__|_|__||_____|_____|___|___||_____|_____||__||_____||____| */
+/*  _______           __ _______               __         __   
+   |   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+   |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+   |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+   (c) 2022-present FSG Modding.  MIT License. */
 
-// l10n Client Side Interface
+// Main Window UI
 
-// (c) 2022 FSG Modding
+/* global l10n, fsgUtil */
 
-/* global ipc */
 
-const byId = function( id ) { return document.getElementById( id ) }
+/*  __ ____   ______        
+   |  |_   | |      |.-----.
+   |  |_|  |_|  --  ||     |
+   |__|______|______||__|__| */
+
+function processL10N()          { clientGetL10NEntries(); l10n.langList_send() }
+function clientChangeL10N()     { l10n.langList_change(fsgUtil.byId('language_select').value) }
+function clientGetL10NEntries() {
+	const l10nSendItems = new Set()
+
+	fsgUtil.query('l10n').forEach((thisL10nItem) => {
+		l10nSendItems.add(fsgUtil.getAttribNullError(thisL10nItem, 'name'))
+	})
+
+	l10n.getText_send(l10nSendItems)
+}
+
+window.l10n.receive('fromMain_langList_return', (listData, selected) => {
+	fsgUtil.byId('language_select').innerHTML = listData.map((x) => {
+		return fsgUtil.buildSelectOpt(x[0], x[1], selected)
+	}).join('')
+})
+window.l10n.receive('fromMain_getText_return', (data) => {
+	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
+})
+window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
+
+
+
+
+
 
 let lastModSelect   = null
 let lastTableSelect = null
 let lastListSelect  = null
 
-function getAttribNullError(element, attrib) {
-	const attribValue = element.getAttribute(attrib)
-
-	if ( typeof attribValue === 'undefined' || attribValue === null ) {
-		throw new TypeError('l10n name not defined')
-	} else {
-		return attribValue
-	}
-}
-
-function clientGetL10NEntries() {
-	const l10nItems    = document.querySelectorAll('l10n')
-	const l10nFunction = typeof ipc === 'function' ? ipc.getL10nText : ((text) => {return text})
-	l10nItems.forEach((thisL10nItem) => {
-		try {
-			thisL10nItem.innerText = l10nFunction(getAttribNullError(thisL10nItem, 'name'))
-		} catch (err) {
-			if (err instanceof TypeError) {
-				console.log(`-- ${err.message}`)
-				console.log(`--- Item: ${thisL10nItem.outerHTML}`)
-				console.log(`--- Parent: ${thisL10nItem.parentElement.outerHTML}`)
-			} else {
-				throw err
-			}
-		}
-	})
-}
 
 function updateModFilesColor() {
 	const allModRows = document.querySelectorAll('.mod-row')
@@ -152,8 +155,10 @@ function fileListClick(event) {
 	}
 }
 
+
+
 window.addEventListener('DOMContentLoaded', () => {
-	clientGetL10NEntries()
+	processL10N()
 })
 
 window.addEventListener('click', (event) => {
@@ -163,7 +168,7 @@ window.addEventListener('click', (event) => {
 
 window.addEventListener('scroll', () => {
 	const scrollValue = this.scrollY +  140
-	const moveButtons = byId('moveButtons')
+	const moveButtons = fsgUtil.byId('moveButtons')
 	try {
 		moveButtons.style.top = `${scrollValue}px`
 	} catch { return }

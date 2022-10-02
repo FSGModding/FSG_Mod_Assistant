@@ -44,82 +44,82 @@ const buildOpt = (value, text, selected) => {
 	return `<option value="${value}" ${( value === selected ) ? 'selected' : ''}>${text}</option>`
 }
 
-const buildTableRow = (columnValues, colNames = [], idPrefix = null) => {
-	/* Build a table row for display */
-	let thisRow = ''
-	const thisID = idPrefix + columnValues[0]
+// const buildTableRow = (columnValues, colNames = [], idPrefix = null) => {
+// 	/* Build a table row for display */
+// 	let thisRow = ''
+// 	const thisID = idPrefix + columnValues[0]
 
-	for ( let i = 0; i < columnValues.length; i++ ) {
-		let sort = null
-		let text = null
-		let cssClass = ''
+// 	for ( let i = 0; i < columnValues.length; i++ ) {
+// 		let sort = null
+// 		let text = null
+// 		let cssClass = ''
 
-		if ( colNames.length > 0 ) { cssClass = colNames[i] }
-		switch (typeof columnValues[i]) {
+// 		if ( colNames.length > 0 ) { cssClass = colNames[i] }
+// 		switch (typeof columnValues[i]) {
 		
-			case 'string' :
-				sort = columnValues[i].toString().toLowerCase()
-				text = columnValues[i]
-				break
-			case 'boolean' :
-				sort = ( columnValues[i] ? 1 : 0 )
-				if ( colNames[i] === 'col_mod_is_old_shader' || colNames[i] === 'col_mod_is_bulky' ) {
-					text = ( columnValues[i] ? iconRedCheckMark : iconGreenX )
-				} else {
-					text = ( columnValues[i] ? iconGreenCheckMark : iconRedX )
-				}
-				break
-			default : // Object or Array
-				sort = columnValues[i][1]
-				text = columnValues[i][0]
-				break
-		}
+// 			case 'string' :
+// 				sort = columnValues[i].toString().toLowerCase()
+// 				text = columnValues[i]
+// 				break
+// 			case 'boolean' :
+// 				sort = ( columnValues[i] ? 1 : 0 )
+// 				if ( colNames[i] === 'col_mod_is_old_shader' || colNames[i] === 'col_mod_is_bulky' ) {
+// 					text = ( columnValues[i] ? iconRedCheckMark : iconGreenX )
+// 				} else {
+// 					text = ( columnValues[i] ? iconGreenCheckMark : iconRedX )
+// 				}
+// 				break
+// 			default : // Object or Array
+// 				sort = columnValues[i][1]
+// 				text = columnValues[i][0]
+// 				break
+// 		}
 
-		thisRow += `<td class="${cssClass}" data-sort="${sort}">${text}</td>`
-	}
-	return  `<tr id="${thisID}">${thisRow}</tr>`
-}
+// 		thisRow += `<td class="${cssClass}" data-sort="${sort}">${text}</td>`
+// 	}
+// 	return  `<tr id="${thisID}">${thisRow}</tr>`
+// }
 
-const buildBrokenList = (name, path, bullets, copyName, shortName) => {
-	/* Build the broken list (multi level UL) */
-	const onlyFolderClass = ( bullets.length === 1 && bullets[0] === 'INFO_NO_MULTIPLAYER_UNZIPPED' ) ? 'just-folder-error' : ''
-	const thisID = `broke_${shortName}`
+// const buildBrokenList = (name, path, bullets, copyName, shortName) => {
+// 	/* Build the broken list (multi level UL) */
+// 	const onlyFolderClass = ( bullets.length === 1 && bullets[0] === 'INFO_NO_MULTIPLAYER_UNZIPPED' ) ? 'just-folder-error' : ''
+// 	const thisID = `broke_${shortName}`
 
-	let thisListItem = '' +
-		`<li id="${thisID}" data-name="${shortName}" data-path="${path}" class="${onlyFolderClass} mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
-		'<div class="ms-2 me-auto">' +
-		`<div><strong>${name}</strong> <em class="small">${path}</em></div>` +
-		'<ul style="list-style-type: disc">'
+// 	let thisListItem = '' +
+// 		`<li id="${thisID}" data-name="${shortName}" data-path="${path}" class="${onlyFolderClass} mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
+// 		'<div class="ms-2 me-auto">' +
+// 		`<div><strong>${name}</strong> <em class="small">${path}</em></div>` +
+// 		'<ul style="list-style-type: disc">'
 
-	if ( copyName !== null ) {
-		const existence = ( copyName[1] ) ? 'file_error_copy_exists' : 'file_error_copy_missing'
-		const identCopy = ( copyName[2] ) ? '<span class="i18n" data-i18n="file_error_copy_identical"></span>' : ''
-		thisListItem += `<li class="mt-2"><span class="i18n" data-i18n="file_error_copy_name"></span> <span class="fst-italic fw-bold">${copyName[0]}</span>.`
-		thisListItem += ` <span class="i18n" data-i18n="${existence}"></span> ${identCopy}`
-		thisListItem += '</li>'
-	}
+// 	if ( copyName !== null ) {
+// 		const existence = ( copyName[1] ) ? 'file_error_copy_exists' : 'file_error_copy_missing'
+// 		const identCopy = ( copyName[2] ) ? '<span class="i18n" data-i18n="file_error_copy_identical"></span>' : ''
+// 		thisListItem += `<li class="mt-2"><span class="i18n" data-i18n="file_error_copy_name"></span> <span class="fst-italic fw-bold">${copyName[0]}</span>.`
+// 		thisListItem += ` <span class="i18n" data-i18n="${existence}"></span> ${identCopy}`
+// 		thisListItem += '</li>'
+// 	}
 
-	bullets.forEach((thisBullet) => {
-		thisListItem += `<li class="mt-2 i18n" data-i18n="${thisBullet}"></li>`
-	})
+// 	bullets.forEach((thisBullet) => {
+// 		thisListItem += `<li class="mt-2 i18n" data-i18n="${thisBullet}"></li>`
+// 	})
 	
-	return thisListItem += '</ul></div></li>'
-}
+// 	return thisListItem += '</ul></div></li>'
+// }
 
-const buildConflictList = (name, title, message, path) => {
-	/* Build the conflict list (multi level UL) */
-	const onlyFolderClass = ( typeof message !== 'string' && message.length === 1 && message[0] === 'INFO_NO_MULTIPLAYER_UNZIPPED' ) ? 'just-folder-error' : ''
-	const thisID          = `conf_${name}`
+// const buildConflictList = (name, title, message, path) => {
+// 	/* Build the conflict list (multi level UL) */
+// 	const onlyFolderClass = ( typeof message !== 'string' && message.length === 1 && message[0] === 'INFO_NO_MULTIPLAYER_UNZIPPED' ) ? 'just-folder-error' : ''
+// 	const thisID          = `conf_${name}`
 
-	const thisMessage = ( typeof message === 'string' ) ?
-		`<li class="mt-2">${message}</li>` :
-		message.map((msgPart) => { return `<li class="mt-2 i18n" data-i18n="${msgPart}"></li>`} ).join('\n')
+// 	const thisMessage = ( typeof message === 'string' ) ?
+// 		`<li class="mt-2">${message}</li>` :
+// 		message.map((msgPart) => { return `<li class="mt-2 i18n" data-i18n="${msgPart}"></li>`} ).join('\n')
 	
-	return '' +
-		`<li id="${thisID}" data-name="${name}" data-path="${path}" class="${onlyFolderClass} mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
-		`<div class="ms-2 me-auto"><div><strong>${name}</strong> <em class="small">${title}</em></div>` +
-		`<ul style="list-style: disc">${thisMessage}</ul></div></li>`
-}
+// 	return '' +
+// 		`<li id="${thisID}" data-name="${name}" data-path="${path}" class="${onlyFolderClass} mod-record list-group-item list-group-item-action d-flex justify-content-between align-items-start">` +
+// 		`<div class="ms-2 me-auto"><div><strong>${name}</strong> <em class="small">${title}</em></div>` +
+// 		`<ul style="list-style: disc">${thisMessage}</ul></div></li>`
+// }
 
 
 
@@ -137,16 +137,21 @@ ipcRenderer.on('trigger-i18n-select', (event, langList, locale) => {
 	byId('language_select').innerHTML = newOpts.join('')
 })
 
-ipcRenderer.on('trigger-i18n-on-data', () => {
-	if ( dataIsLoaded ) {
-		ipcRenderer.send('askBrokenList')
-		ipcRenderer.send('askMissingList')
-		ipcRenderer.send('askConflictList')
-		ipcRenderer.send('askExploreList', 0)
-		ipcRenderer.send('askGamesActive')
-		classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
-	}
-})
+// ipcRenderer.on('preloadMain_gather-and-send-i18n', () => {
+// 	const foundL10NTags = new Set()
+// 	for ( const l10nTag of documents.querySelectorAll('l10n') )
+// })
+
+// ipcRenderer.on('trigger-i18n-on-data', () => {
+// 	if ( dataIsLoaded ) {
+// 		ipcRenderer.send('askBrokenList')
+// 		ipcRenderer.send('askMissingList')
+// 		ipcRenderer.send('askConflictList')
+// 		ipcRenderer.send('askExploreList', 0)
+// 		ipcRenderer.send('askGamesActive')
+// 		classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'disabled')
+// 	}
+// })
 
 ipcRenderer.on('trigger-i18n', () => {
 	/* Get all i18n items in the UI and translate them */
@@ -438,6 +443,9 @@ Functions that are exposed to the UI renderer process
 contextBridge.exposeInMainWorld(
 	'ipc',
 	{
+		getL10nText : (text) => {
+			ipcRenderer.send('main_l10n-get-text', text)
+		},
 		changeLangList : () => {
 			ipcRenderer.send('i18n-change-locale', byId('language_select').value)
 		},
@@ -517,45 +525,45 @@ Listeners on the renderer that need privileged execution (ipc usually)
 */
 
 window.addEventListener('DOMContentLoaded', () => {
-	const table_handler = (e, domID) => {
-		e.preventDefault()
+	// const table_handler = (e, domID) => {
+	// 	e.preventDefault()
 		
-		if ( e.target.matches('td') ) {
-			const theseHeaders = Array.from(
-				byId(domID).parentNode.firstElementChild.querySelectorAll('th.i18n'),
-				(th) => [th.innerText, th.getAttribute('data-i18n')]
-			)
-			const theseValues = Array.from(
-				e.target.parentNode.childNodes,
-				(td) => td.innerText
-			)
-			ipcRenderer.send('show-context-menu-table', theseHeaders, theseValues)
-		}
-	}
-	const table_dblclick = (e) => {
-		e.preventDefault()
+	// 	if ( e.target.matches('td') ) {
+	// 		const theseHeaders = Array.from(
+	// 			byId(domID).parentNode.firstElementChild.querySelectorAll('th.i18n'),
+	// 			(th) => [th.innerText, th.getAttribute('data-i18n')]
+	// 		)
+	// 		const theseValues = Array.from(
+	// 			e.target.parentNode.childNodes,
+	// 			(td) => td.innerText
+	// 		)
+	// 		ipcRenderer.send('show-context-menu-table', theseHeaders, theseValues)
+	// 	}
+	// }
+	// const table_dblclick = (e) => {
+	// 	e.preventDefault()
 		
-		if ( e.target.matches('td') ) {
-			const thisMod = e.target.parentNode.childNodes[0].innerText
-			ipcRenderer.send('show-mod-detail', thisMod)
-		}
-	}
-	const list_handler = (e) => {
-		e.preventDefault()
+	// 	if ( e.target.matches('td') ) {
+	// 		const thisMod = e.target.parentNode.childNodes[0].innerText
+	// 		ipcRenderer.send('show-mod-detail', thisMod)
+	// 	}
+	// }
+	// const list_handler = (e) => {
+	// 	e.preventDefault()
 
-		const closestEntry = e.target.closest('.mod-record')
+	// 	const closestEntry = e.target.closest('.mod-record')
 		
-		if ( closestEntry !== null ) {
-			ipcRenderer.send('show-context-menu-list', closestEntry.getAttribute('data-path'), closestEntry.getAttribute('data-name'))
-		}
-	}
+	// 	if ( closestEntry !== null ) {
+	// 		ipcRenderer.send('show-context-menu-list', closestEntry.getAttribute('data-path'), closestEntry.getAttribute('data-name'))
+	// 	}
+	// }
 
-	byId('broken_list').addEventListener('contextmenu', (e) => { list_handler(e) })
-	byId('conflict_list').addEventListener('contextmenu', (e) => {list_handler(e) })
+	// byId('broken_list').addEventListener('contextmenu', (e) => { list_handler(e) })
+	// byId('conflict_list').addEventListener('contextmenu', (e) => {list_handler(e) })
 
-	byId('table_missing_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
-	byId('table_explore_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
+	// byId('table_missing_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
+	// byId('table_explore_parent').addEventListener('dblclick', (e) => { table_dblclick(e) })
 
-	byId('table_missing_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_missing') })
-	byId('table_explore_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_explore') })
+	// byId('table_missing_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_missing') })
+	// byId('table_explore_parent').addEventListener('contextmenu', (e) => { table_handler(e, 'table_explore') })
 })

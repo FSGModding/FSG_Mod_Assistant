@@ -1,25 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/debug_ui.js"></script>
 </head>
 <body>
 	
 	<div class="container-fluid px-1 user-select-none">
 		<div class="row w-100 pt-2 sticky-top bg-body">
 			<div class="col-9 border-bottom">
-				<h2><span class="i18n" data-i18n="title"></span></h2>
+				<h2><l10n name="app_name"></l10n></h2>
 			</div>
 			<div class="col-3 text-end">
 			  <div class="btn-group ms-auto me-1">
-				<button type="button" onclick="ipc.saveDebugLogContents()" class="btn btn-success btn-sm">
+				<button type="button" onclick="debug.saveDebugLogContents()" class="btn btn-success btn-sm">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
 						<path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
 					</svg>
-				</button><button type="button" onclick="ipc.getDebugLogContents()" class="btn btn-dark btn-sm">
+				</button><button type="button" onclick="debug.getDebugLogContents()" class="btn btn-dark btn-sm">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
 						<path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
 						<path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>

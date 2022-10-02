@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html class="h-100">
 <head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/icons.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
-	<script src="inc/sortable.min.js"></script>
-	<!-- <script src="ui.js"></script> -->
-	<script src="assist_ui.js"></script>
+	<!-- <script src="inc/sortable.min.js"></script> -->
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/assist_ui.js"></script>
+
 	<style>
 
 		@keyframes flashonce {
@@ -107,7 +113,7 @@
 							</svg></label>
 						</div>
 						<div class="col-auto">
-							<select onchange="ipc.changeLangList()" class="form-select" id="language_select"></select>
+							<select onchange="clientChangeL10N()" class="form-select" id="language_select"></select>
 						</div>
 					</div>
 				</div>
@@ -123,7 +129,7 @@
 		<div class="row overflow-custom px-2" style="margin-top: 95px;">
 			<div class="col-6"><!-- source mods -->
 				<div class="btn-group w-75 mx-auto d-flex" role="group">
-					<button type="button" class="btn btn-success"><gg-icon class="gg-folder-add"></gg-icon> <l10n name="folder_add"></l10n></button>
+					<button type="button" class="btn btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n name="folder_add"></l10n></button>
 					<button type="button" class="btn btn-primary"><gg-icon class="gg-folder"></gg-icon> <l10n name="folder_edit"></l10n></button>
 				</div>
 				<table class="w-100 table accordion border-top mt-2">
@@ -177,8 +183,8 @@
 					  <option value="2">Two</option>
 					  <option value="3">Three</option>
 					</select>
-					<button class="btn btn-warning" type="button"><l10n name="edit_list"></l10n></button>
-					<button class="btn btn-primary" type="button"><l10n name="add_list"></l10n></button>
+					<button class="btn btn-warning" type="button"><l10n name="list_edit"></l10n></button>
+					<button class="btn btn-primary" type="button"><l10n name="list_add"></l10n></button>
 				</div>
 				<div id="modListTable" class="mt-3">
 					<table class="w-100 table table-sm table-hover table-striped">
@@ -232,12 +238,13 @@
 			</div>
 		</div>
 	</div>
+
 	</main>
 
 	<footer class="footer fixed-bottom mt-auto py-2 bg-dark" id="main-footer">
 		<div class="container text-center">
 			<l10n class="text-white-50" name="latest_version_link_blurb"></l10n> <a target="_blank" class="text-white-50" href="https://github.com/FSGModding/FSG_Mod_Assistant/releases">github.com/FSGModding/FSG_Mod_Assistant</a>
-			<a class="text-white-50" style="cursor: pointer" onclick="ipc.openDebugLogContents()">[<l10n name="open_debug_log"></l10n>]</a>
+			<a class="text-white-50" style="cursor: pointer" onclick="mods.debugLog()">[<l10n name="open_debug_log"></l10n>]</a>
 		</div>
 	</footer>
 	<div class="fade modal-backdrop d-none" id="loading_modal_backdrop"></div>
