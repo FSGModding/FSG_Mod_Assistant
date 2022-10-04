@@ -11,7 +11,12 @@
 	"add_to_all"                       : "Add to All",
 	"remove_from_list"                 : "Remove",
 	"remove_all"                       : "Clear",
-
+	"mod_badge_broken"                 : "broken",
+	"mod_badge_problem"                : "issue",
+	"mod_badge_nomp"                   : "noMP",
+	"mod_badge_pconly"                 : "PC",
+	"mod_badge_folder"                 : "noZIP",
+	
 
 
 

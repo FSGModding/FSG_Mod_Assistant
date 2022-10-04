@@ -38,6 +38,32 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 
+window.mods.receive('fromMain_modList', (modList) => {
+	const modTable = []
+	Object.keys(modList).forEach((collection) => {
+		const modRows = []
+		modList[collection].mods.forEach((thisMod) => {
+			modRows.push(makeModRow(
+				`${collection}--${thisMod.fileDetail.shortName}`,
+				thisMod.fileDetail.shortName,
+				thisMod.modDesc.version,
+				thisMod.badges,
+				thisMod.canNotUse
+			))
+		})
+		modTable.push(makeModCollection(
+			collection,
+			modList[collection].name,
+			modRows
+		))
+	})
+	fsgUtil.byId('mod-collections').innerHTML = modTable.join('')
+	lastModSelect   = null
+	lastTableSelect = null
+	lastListSelect  = null
+	processL10N()
+})
+
 
 
 
@@ -107,7 +133,9 @@ function fileListClick(event) {
 	if (event.target.tagName === 'INPUT' && event.target.className === 'form-check-input mod-folder-checkbox') {
 		const thisModTable = document.getElementById(event.target.getAttribute('data-bs-target').substring(1)).querySelectorAll('input[type="checkbox"]')
 		thisModTable.forEach((thisCheckBox) => {
-			thisCheckBox.checked = event.target.checked
+			if ( ! thisCheckBox.parentElement.parentElement.classList.contains('disabled') ) {
+				thisCheckBox.checked = event.target.checked
+			}
 		})
 		lastModSelect   = null
 		lastTableSelect = null
@@ -117,8 +145,6 @@ function fileListClick(event) {
 	if (event.target.tagName === 'TD' && event.target.parentElement.className === 'mod-row') {
 		const thisTable = event.target.closest('table').closest('tr').id
 		const checkBox  = event.target.parentElement.querySelectorAll('input')[0]
-		
-		event.target.closest('table').parentElement.closest('table').querySelectorAll(`input[data-bs-target="#${thisTable}"]`)[0].indeterminate = true
 
 		if ( lastTableSelect !== null && lastTableSelect !== thisTable ) {
 			lastModSelect   = null
@@ -151,10 +177,57 @@ function fileListClick(event) {
 			}
 			lastModSelect = null
 		}
+
+		let allChecked = true
+		let noneChecked = true
+
+		const thisModTable = event.target.closest('table').querySelectorAll('input[type="checkbox"]')
+
+		thisModTable.forEach((thisCheckBox) => {
+			if ( ! thisCheckBox.parentElement.parentElement.classList.contains('disabled') ) {
+				if ( thisCheckBox.checked ) {
+					noneChecked = false
+				} else {
+					allChecked = false
+				}
+			}
+		})
+
+		const tableCheck = event.target.closest('table').parentElement.closest('table').querySelectorAll(`input[data-bs-target="#${thisTable}"]`)[0]
+
+		tableCheck.indeterminate = ! ( allChecked || noneChecked )
+
+		if ( allChecked ) {
+			tableCheck.checked = true
+		} else if ( noneChecked ) {
+			tableCheck.checked = false
+		}
+		
 		updateModFilesColor()
 	}
 }
 
+function makeModCollection(id, name, modsRows) {
+	let tableHTML = ''
+	
+	tableHTML += fsgUtil.buildTR('mod-table-folder')
+	tableHTML += fsgUtil.buildTD('folder-icon collapsed', [['toggle', 'collapse'], ['target', `#${id}_mods`]])
+	tableHTML += `${fsgUtil.getIconSVG('folder')}</td>`
+	tableHTML += fsgUtil.buildTD('folder-name collapsed', [['toggle', 'collapse'], ['target', `#${id}_mods`]])
+	tableHTML += `${name}</td>`
+	tableHTML += `<td class="text-end"><input type="checkbox" data-bs-target="#${id}_mods" class="form-check-input mod-folder-checkbox"></td></tr>`
+
+	tableHTML += fsgUtil.buildTR('mod-table-folder-detail collapse accordion-collapse', `${id}_mods`, 'data-bs-parent=".table"')
+	tableHTML += '<td class="mod-table-folder-details-indent"></td>'
+	tableHTML += '<td class="mod-table-folder-details px-0" colspan="2">'
+	tableHTML += `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`
+	tableHTML += '</td></tr>'
+	return tableHTML
+}
+
+function makeModRow(id, name, version, badges, disabled = false) {
+	return `<tr class="mod-row${(disabled===true)?' disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name} ${badges}</td><td>${version}</td></tr>`
+}
 
 
 window.addEventListener('DOMContentLoaded', () => {

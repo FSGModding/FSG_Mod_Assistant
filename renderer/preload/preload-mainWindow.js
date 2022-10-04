@@ -31,6 +31,17 @@ contextBridge.exposeInMainWorld(
 	'mods', {
 		addFolder : () => { ipcRenderer.send('toMain_addFolder') },
 		debugLog  : () => { ipcRenderer.send('openDebugLogContents') },
+
+
+		receive   : ( channel, func ) => {
+			const validChannels = [
+				'fromMain_modList',
+			]
+		
+			if ( validChannels.includes( channel ) ) {
+				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+			}
+		},
 	}
 )
 

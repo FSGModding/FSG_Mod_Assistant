@@ -22,6 +22,12 @@ const fsgUtil = {
 				'<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>' +
 				'<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>' +
 				'</svg>'
+			case 'folder':
+				return '<svg enable-background="new 0 0 347.479 347.479" version="1.1" viewBox="0 0 347.48 347.48" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" width="25" height="25">' +
+				'<path d="m292.25 79.766h-188.61v-8.544c0-5.974-4.888-10.862-10.862-10.862h-62.368c-5.975 0-10.862 4.888-10.862 10.862v8.544h-3.258c-8.962 0-16.294 7.332-16.294 16.293v174.77c0 8.961 7.332 16.293 16.293 16.293h275.96c8.961 0 16.293-7.332 16.293-16.293v-174.77c1e-3 -8.961-7.331-16.293-16.293-16.293z" fill="#E0B03B"/>'+
+				'<rect x="23.243" y="95.385" width="262.06" height="176.11" fill="#fff"/>' +
+				'<path d="m312.43 271.29c-2.135 8.704-11.213 15.825-20.175 15.825h-275.96c-8.961 0-14.547-7.121-12.412-15.825l34.598-141.05c2.135-8.704 11.213-15.825 20.175-15.825h275.96c8.961 0 14.547 7.121 12.412 15.825l-34.598 141.05z" fill="#FFC843"/>' +
+				'</svg>'
 			default:
 				return '&nbsp;'
 		}
@@ -52,5 +58,19 @@ const fsgUtil = {
 		} else {
 			return attribValue
 		}
+	},
+	buildTR : (cls, id = null, extra = null) => {
+		const thisID = ( id === null ) ? '' : ` id="${id}"`
+
+		return `<tr class="${cls}"${thisID} ${(extra===null)?'':extra}>`
+	},
+	buildTD : (cls, data_bs = null) => {
+		let thisBS = ''
+		if ( data_bs !== null ) {
+			data_bs.forEach((data) => {
+				thisBS += ` data-bs-${data[0]}="${data[1]}"`
+			})
+		}
+		return `<td class="${cls}"${thisBS}>`
 	},
 }

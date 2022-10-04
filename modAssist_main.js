@@ -8,7 +8,8 @@
 
 
 
-const { app, Menu, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = require('electron')
+//const { app, Menu, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut, dialog, screen } = require('electron')
 
 // const { autoUpdater } = require('electron-updater')
 
@@ -23,7 +24,8 @@ const fs         = require('fs')
 
 
 const translator               = require('./lib/translate.js')
-const { modReader, mcLogger }  = require('./lib/mod-checker.js')
+const { mcLogger }             = require('./lib/logger.js')
+const { modFileChecker }       = require('./lib/single-mod-checker.js')
 const mcDetail                 = require('./package.json')
 
 
@@ -38,6 +40,7 @@ const logger = new mcLogger()
 
 
 let modFolders = new Set()
+let modList    = {}
 
 let win          = null // Main window
 let splash       = null // Splash screen
@@ -529,8 +532,38 @@ ipcMain.on('saveDebugLogContents', () => {
 
 
 function processModFolders(newFolder = false) {
-	console.log(modFolders)
-	console.log(newFolder)
+	if ( newFolder === false ) { modList = {} }
+
+	modFolders.forEach((folder) => {
+		const cleanName = folder.replaceAll('\\', '-').replaceAll(':', '').replaceAll(' ', '_')
+		const shortName = path.basename(folder)
+		if ( folder === newFolder || newFolder === false ) {
+			modList[cleanName] = { name : shortName, mods : [] }
+
+			const folderContents = fs.readdirSync(folder, {withFileTypes : true})
+
+			folderContents.forEach((thisFile) => {
+				let isFolder = false
+				
+				if ( thisFile.isSymbolicLink() ) {
+					const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
+					const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
+					isFolder = thisSymLinkStat.isDirectory()
+				} else {
+					isFolder = thisFile.isDirectory()
+				}
+
+				modList[cleanName].mods.push( new modFileChecker(
+					path.join(folder, thisFile.name),
+					isFolder,
+					logger,
+					myTranslator.deferCurrentLocale()
+				))
+			})
+		}
+	})
+	win.webContents.send('fromMain_modList', modList)
+	console.log(modList)
 }
 
 

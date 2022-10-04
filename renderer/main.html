@@ -132,40 +132,7 @@
 					<button type="button" class="btn btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n name="folder_add"></l10n></button>
 					<button type="button" class="btn btn-primary"><gg-icon class="gg-folder"></gg-icon> <l10n name="folder_edit"></l10n></button>
 				</div>
-				<table class="w-100 table accordion border-top mt-2">
-					<tr class="mod-table-folder">
-						<td class="folder-icon collapsed" data-bs-toggle="collapse" data-bs-target="#r1">
-							<img style="margin:0; padding:0; width: 30px; height:30px;" src="folder.png" srcset="folder@2x.png 2x">
-						</td>
-						<td class="folder-name collapsed" data-bs-toggle="collapse" data-bs-target="#r1">main-collection</td>
-						<td class="text-end"><input type="checkbox" name="xxx" data-bs-target="#r1" class="form-check-input mod-folder-checkbox"></td>
-					</tr>
-					<tr class="mod-table-folder-detail collapse accordion-collapse" id="r1" data-bs-parent=".table">
-						<td class="mod-table-folder-details-indent"></td>
-						<td class="mod-table-folder-details px-0" colspan="2">
-							<table class="w-100 table table-sm table-hover table-striped">
-								<tr class="mod-row" id="mod_0"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_TransportMissions <span class="badge bg-info">ZIP</span> <span class="badge bg-warning"><l10n name="file_issue"></l10n></span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_1"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Tree_Devourer <span class="badge bg-info">ZIP</span> <span class="badge bg-danger"><l10n name="file_fail"></l10n></span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_2"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_TreeBGone <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_3"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_UniversalAutoload <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_4"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Vehicle_Barn_Set <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_5"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_VehicleSpeedSync <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_6"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Verkaufsstellen_Switty <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_7"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_viconExtraPack <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_8"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_viconFastBale <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_9"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Wasserwerk_Switty <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_10"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_WestBridgeHills22 <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_11"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_wifoBPseries <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_12"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_WolfSystemHall <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_13"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Workplan <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_14"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_WorkShop_Pack <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_15"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Zerkleinerer_Switty <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_16"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>LS22_Spinnerei_Fast <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-								<tr class="mod-row" id="mod_17"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>mantridFS22_NewMoon_alpha <span class="badge bg-info">ZIP</span></td><td>1.0.0.0</td></tr>
-							</table>
-						</td>
-					</tr>
-				</table>
+				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
 			</div><!-- end: source mods-->
 			<div class="col-1 p-0"><!-- buttons -->
 				<div id="moveButtons" class="p-2" style="position: absolute; top: 90px; width:8.33333333%;">
