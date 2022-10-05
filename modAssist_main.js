@@ -252,7 +252,8 @@ function openDetailWindow(thisModRecord) {
 	if ( !devDebug ) { detailWindow.removeMenu() }
 
 	detailWindow.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('mod-record', thisModRecord)
+		event.sender.send('fromMain_modRecord', thisModRecord)
+		detailWindow.webContents.openDevTools()
 	})
 
 	detailWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'detail.html'))
@@ -446,6 +447,7 @@ function processModFolders(newFolder = false) {
 					isFolder = thisFile.isDirectory()
 				}
 
+				console.log(isFolder)
 				modList[cleanName].mods.push( new modFileChecker(
 					path.join(folder, thisFile.name),
 					isFolder,

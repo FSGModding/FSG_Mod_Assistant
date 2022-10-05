@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/detail_ui.js"></script>
 </head>
 <body>
 	
@@ -12,37 +19,36 @@
 	  <div class="sticky-top pt-2 bg-body">
 		<div class="row w-100">
 			<div class="col-9 border-bottom">
-				<h2><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
+				<h2><l10n name="app_name"></l10n> v<l10n name="app_version"></l10n></h2>
 			</div>
 		</div>
-		<h3 class="text-center my-3 border-bottom w-75 mx-auto" id="title"></h3>
+		<h3 class="text-center mt-3 mb-1 w-75 mx-auto" id="title"></h3>
+		<h6 class="text-center mt-1 mb-1 w-75 mx-auto" id="badges"></h6>
+		<span class="text-center mb-4 mt-1 border-bottom w-100 mx-auto d-block" id="mod_location"></span>
 	  </div>
 
 		<div class="row mx-4 mb-3">
 			<div class="col-4" id="icon_div"></div>
 			<div class="col-8 mx-auto">
 				<table class="table">
-					<tr><th class="i18n" data-i18n="detail_mod_author"></th><td class="text-end" id="mod_author"></td></tr>
-					<tr><th class="i18n" data-i18n="detail_mod_version"></th><td class="text-end" id="version"></td></tr>
-					<tr><th class="i18n" data-i18n="detail_mod_size"></th><td class="text-end" id="filesize"></td></tr>
-					<tr><th class="i18n" data-i18n="detail_mod_date"></th><td class="text-end" id="file_date"></td></tr>
-					<tr><th class="i18n" data-i18n="detail_mod_date_recent"></th><td class="text-end" id="newest_part"></td></tr>
-					<tr><th class="i18n" data-i18n="detail_mod_has_scripts"></th><td class="text-end" id="has_scripts"></td></tr>
-					<tr><th class="i18n" data-i18n="detail_mod_store_items"></th><td class="text-end" id="store_items"></td></tr>
-					<tr><th class="i18n" data-i18n="detail_mod_support"></th><td class="text-end" id="is_old_shaders"></td></tr>
-					<tr><th class="i18n" data-i18n="detail_mod_multiplayer"></th><td class="text-end" id="is_multiplayer"></td></tr>
+					<tr><th><l10n name="detail_mod_author"></l10n></th><td class="text-end" id="mod_author"></td></tr>
+					<tr><th><l10n name="detail_mod_version"></l10n></th><td class="text-end" id="version"></td></tr>
+					<tr><th><l10n name="detail_mod_has_scripts"></l10n></th><td class="text-end" id="has_scripts"></td></tr>
+					<tr><th><l10n name="detail_mod_store_items"></l10n></th><td class="text-end" id="store_items"></td></tr>
+					<tr><th><l10n name="detail_mod_multiplayer"></l10n></th><td class="text-end" id="is_multiplayer"></td></tr>
 				</table>				
 			</div>
 		</div>
-		<div class="mb-3 px-3">
-			<table class="table table-bordered" id="used_active_table"></table>
+		<div class="px-3 mt-4 mb-2" id="problem_div">
+			<h4><l10n name="detail_problems"></l10n></h4>
+			<div id="problems" class="w-75 mx-auto border-bottom"></div>
 		</div>
 		<div style="white-space: pre-wrap" class="px-5 font-monospace" id="description"></div>
-		<div class="px-3 mt-4">
-			<h4 class="i18n" data-i18n="detail_dev_info"></h4>
-			<h5 class="i18n mt-4 ml-4" data-i18n="detail_extra_files"></h5>
+		<div class="px-3 mt-4 border-top">
+			<h4><l10n name="detail_dev_info"></l10n></h4>
+			<h6 class="i18n mt-4 ml-4"><l10n name="detail_extra_files"></l10n></h6>
 			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="extraFiles"></div>
-			<h5 class="i18n mt-4 ml-4" data-i18n="detail_i3d_files"></h5>
+			<h6 class="i18n mt-4 ml-4"><l10n name="detail_i3d_files"></l10n></h6>
 			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="i3dFiles"></div>
 		</div>
 	</div>
