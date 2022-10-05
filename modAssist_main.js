@@ -44,7 +44,7 @@ let modList    = {}
 
 let win          = null // Main window
 let splash       = null // Splash screen
-//let detailWindow = null // Detail window
+let detailWindow = null // Detail window
 //let prefWindow   = null // Preferences window
 
 let workWidth  = 0
@@ -194,93 +194,6 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	})
 })
 
-
-
-
-
-
-
-
-
-
-
-
-/*
-  _____  _____  _______    _____   ______  _____  _______ _______ _______ _______
-    |   |_____] |       . |_____] |_____/ |     | |       |______ |______ |______
-  __|__ |       |_____  . |       |    \_ |_____| |_____  |______ ______| ______|
-                                                                                 
-*/
-// ipcMain.on('setGameVersion', (event, arg) => {
-// 	if ( mcStore.has('remember_last') && mcStore.get('remember_last') ) {
-// 		mcStore.set('gameVersion', arg)
-// 	}
-// 	gameVersion = arg
-// })
-// ipcMain.on('processMods', (event) => {
-// 	if ( location_valid ) {
-// 		try {
-// 			modList = new modReader(
-// 				location_savegame,
-// 				location_modfolder,
-// 				logger,
-// 				myTranslator.deferCurrentLocale,
-// 				gameVersion)
-// 		} catch (createError) {
-// 			location_valid     = false
-// 			location_error     = true
-// 			location_modfolder = null
-// 			location_savegame  = null
-// 			logger.fatal('reader', `Could not get modList instance: ${createError.toString()}`)
-// 			sendNewConfig(event)
-// 		}
-
-// 		if ( modList !== null ) {
-// 			counterRuntime = 0
-// 			counterInterval = setInterval(() => {
-// 				const counterValues = modList.testStatus
-// 				event.sender.send('processModsCounter', counterValues)
-// 				counterRuntime++
-// 				if ( counterValues[0] === counterValues[1] || counterRuntime > (counterMaxTick / counterTick) ) {
-// 					clearInterval(counterInterval)
-// 					if (  counterRuntime > (counterMaxTick / counterTick) ) {
-// 						logger.info('reader', `Test counter timed out (${counterMaxTick}ms). This is odd.`)
-// 					}
-					
-// 				}
-// 			}, counterTick)
-// 			modList.readAll().then(() => {
-// 				event.sender.send('processModsDone')
-// 			}).catch((useError) => {
-// 				location_valid     = false
-// 				location_error     = true
-// 				location_modfolder = null
-// 				location_savegame  = null
-// 				logger.fatal('reader', `Could not use modList instance: ${useError.toString()}`)
-// 				sendNewConfig(event)
-// 			})
-// 		}
-// 	} else {
-// 		// This should be unreachable.  But it means that the process button was clicked before loading
-// 		// a valid config.  Let's just start over with empty entries.
-// 		location_valid     = false
-// 		location_error     = true
-// 		location_modfolder = null
-// 		location_savegame  = null
-// 		logger.notice('reader', 'Unreachable code point (apparently not)')
-// 		sendNewConfig(event)
-// 	}
-// })
-
-
-
-
-
-
-
-
-
-
 /*
   ______  _______ _______ _______ _____             _  _  _ _____ __   _ ______   _____  _  _  _
   |     \ |______    |    |_____|   |   |           |  |  |   |   | \  | |     \ |     | |  |  |
@@ -289,85 +202,63 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 */
 
 
-// ipcMain.on('show-mod-detail', (event, thisMod) => {
-// 	let thisModDetail = null
+ipcMain.on('toMain_openModDetail', (event, thisMod) => {
+	const thisModParts  = thisMod.split('--')
+	let   thisModDetail = null
+	let   foundMod      = false
 
-// 	try {
-// 		thisModDetail = modList.fullList[thisMod]
-// 	} catch (err) {
-// 		this.log.info(`detail-${thisMod}`, `Did not find mod details. This should be impossible: ${err}`)
-// 	}
+	try {
+		modList[thisModParts[0]].mods.forEach((checkMod) => {
+			if ( !foundMod && checkMod.uuid === thisModParts[1] ) {
+				foundMod      = true
+				thisModDetail = checkMod
+			}
+		})
+	} catch (e) {
+		this.log.info('detail', `Request for ${thisMod} failed: ${e}`)
+	}
+	if ( thisModDetail !== null ) {
+		openDetailWindow(thisModDetail)
+	}
+})
 
-// 	if ( thisModDetail !== null ) {
-// 		openDetailWindow(thisModDetail)
-// 	}
-// })
 
+function openDetailWindow(thisModRecord) {
+	if (detailWindow) { detailWindow.focus(); return }
 
-// function openDetailWindow(thisModRecord) {
-// 	if (detailWindow) {
-// 		detailWindow.focus()
-// 		return
-// 	}
+	thisModRecord.populateL10n()
+	thisModRecord.populateIcon()
 
-// 	detailWindow = new BrowserWindow({
-// 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
-// 		width           : mcStore.get('detail_window_x', 800),
-// 		height          : mcStore.get('detail_window_y', 500),
-// 		title           : thisModRecord.title,
-// 		minimizable     : false,
-// 		maximizable     : true,
-// 		fullscreenable  : false,
-// 		autoHideMenuBar : !devDebug,
-// 		webPreferences  : {
-// 			nodeIntegration  : false,
-// 			contextIsolation : true,
-// 			preload          : path.join(app.getAppPath(), 'renderer', 'preload-detail.js'),
-// 		},
-// 	})
+	detailWindow = new BrowserWindow({
+		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+		width           : mcStore.get('detail_window_x', 800),
+		height          : mcStore.get('detail_window_y', 500),
+		title           : thisModRecord.l10n.title,
+		minimizable     : false,
+		maximizable     : true,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload', 'preload-detailWindow.js'),
+		},
+	})
 
-// 	if ( mcStore.has('detail_window_max') && mcStore.get('detail_window_max') ) {
-// 		detailWindow.maximize()
-// 	}
+	if ( mcStore.has('detail_window_max') && mcStore.get('detail_window_max') ) {
+		detailWindow.maximize()
+	}
 
-// 	if ( !devDebug ) { detailWindow.removeMenu() }
+	if ( !devDebug ) { detailWindow.removeMenu() }
 
-// 	detailWindow.webContents.on('did-finish-load', async (event) => {
-// 		const sendData = {
-// 			total_games    : modList.activeArray,
-// 			title          : thisModRecord.title,
-// 			version        : thisModRecord.mod_version,
-// 			filesize       : thisModRecord.fileSizeString,
-// 			active_games   : thisModRecord.activeGames,
-// 			used_games     : thisModRecord.usedGames,
-// 			active_game    : thisModRecord.activeGame,
-// 			used_game      : thisModRecord.usedGame,
-// 			has_scripts    : thisModRecord.hasScripts,
-// 			description    : thisModRecord.descDescription,
-// 			store_items    : thisModRecord.countStoreItems,
-// 			mod_author     : thisModRecord.mod_author,
-// 			is_multiplayer : thisModRecord.isMultiplayer,
-// 			is_old_shaders : thisModRecord.isOldShaders,
-// 			date           : thisModRecord.date,
-// 			extraFiles     : thisModRecord.getExtras,
-// 			i3dFiles       : thisModRecord.getI3DNames,
-// 			newestPart     : ( thisModRecord.isFolder ? thisModRecord.date : thisModRecord.newestPart  ),
-// 		}
-// 		event.sender.send('mod-record', sendData)
-// 		event.sender.send('trigger-i18n')
+	detailWindow.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('mod-record', thisModRecord)
+	})
 
-// 		thisModRecord.getIcon().then((iconData) => {
-// 			event.sender.send('mod-icon', ( iconData === null || iconData === false ) ? null : iconData)
-// 		}).catch((unknownError) => {
-// 			// Shouldn't happen.  No idea
-// 			logger.notice('ipcProcess', `Could not get "mod icon" : ${unknownError}`)
-// 		})
-// 	})
+	detailWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'detail.html'))
 
-// 	detailWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'detail.html'))
-
-// 	detailWindow.on('closed', () => { detailWindow = null })
-// }
+	detailWindow.on('closed', () => { detailWindow = null })
+}
 
 
 
@@ -532,6 +423,8 @@ ipcMain.on('saveDebugLogContents', () => {
 
 
 function processModFolders(newFolder = false) {
+	win.webContents.send('fromMain_showLoading')
+
 	if ( newFolder === false ) { modList = {} }
 
 	modFolders.forEach((folder) => {
@@ -557,13 +450,13 @@ function processModFolders(newFolder = false) {
 					path.join(folder, thisFile.name),
 					isFolder,
 					logger,
-					myTranslator.deferCurrentLocale()
+					myTranslator.deferCurrentLocale
 				))
 			})
 		}
 	})
 	win.webContents.send('fromMain_modList', modList)
-	console.log(modList)
+	win.webContents.send('fromMain_hideLoading')
 }
 
 

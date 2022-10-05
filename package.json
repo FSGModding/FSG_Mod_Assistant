@@ -30,6 +30,7 @@
     "eslint": "^8.24.0"
   },
   "dependencies": {
+    "adm-zip": "^0.5.9",
     "decode-dxt": "^1.0.1",
     "electron-store": "^8.1.0",
     "electron-updater": "^5.2.1",

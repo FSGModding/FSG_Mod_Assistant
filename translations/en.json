@@ -2,7 +2,7 @@
 	"language_code"                    : "en",
 	"language_name"                    : "English",
 	"language_locale"                  : "en_US",
-	"app_name"                         : "Farm Sim 2022 Mod Assitant",
+	"app_name"                         : "Farm Sim 2022 Mod Assistant",
 	"folder_add"                       : "Add Folder",
 	"folder_edit"                      : "Edit Folder List",
 	"list_add"                         : "Add Mod List",
@@ -15,7 +15,9 @@
 	"mod_badge_problem"                : "issue",
 	"mod_badge_nomp"                   : "noMP",
 	"mod_badge_pconly"                 : "PC",
-	"mod_badge_folder"                 : "noZIP",
+	"mod_badge_folder"                 : "Folder",
+	"status-processing-title"          : "Processing Mods...",
+	"config_working_status"            : "Reading & Testing (this could take a while)...",
 	
 
 
@@ -42,8 +44,6 @@
 	"location_savegame_folder"         : "Save Game Files",
 	"location_mod_folder"              : "Mod Files",
 	"location_quarantine_folder"       : "Folder for Unwanted Mods",
-	"status-processing-title"          : "Processing Mods...",
-	"config_working_status"            : "Reading...",
 	"config_testing_status"            : "Testing...",
 	"config_working_done"              : "Done!",
 	"button_refresh_tab"               : "Refresh this Tab",

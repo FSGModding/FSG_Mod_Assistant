@@ -31,11 +31,14 @@ contextBridge.exposeInMainWorld(
 	'mods', {
 		addFolder : () => { ipcRenderer.send('toMain_addFolder') },
 		debugLog  : () => { ipcRenderer.send('openDebugLogContents') },
+		openMod   : (modID) => { ipcRenderer.send('toMain_openModDetail', modID) },
 
 
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modList',
+				'fromMain_showLoading',
+				'fromMain_hideLoading',
 			]
 		
 			if ( validChannels.includes( channel ) ) {
@@ -44,155 +47,6 @@ contextBridge.exposeInMainWorld(
 		},
 	}
 )
-
-
-
-
-// /*
-//   _____  _____  _______   _______  _____  __   _ _______ _____  ______
-//     |   |_____] |       . |       |     | | \  | |______   |   |  ____
-//   __|__ |       |_____  . |_____  |_____| |  \_| |       __|__ |_____|
-                                                                      
-// */
-// ipcRenderer.on('newFileConfig', (event, arg) => {
-// 	/* Get notification of loading a new config file */
-// 	if ( arg.error ) {
-// 		classRem('load_error', 'd-none')
-// 	} else {
-// 		classAdd('load_error', 'd-none')
-// 	}
-	
-// 	if ( arg.valid ) {
-// 		classRem('button_process', 'disabled')
-// 	} else {
-// 		classAdd('button_process', 'disabled')
-// 	}
-	
-// 	byId('location_savegame_folder').innerHTML   = arg.saveDir === null ? '--' : arg.saveDir
-// 	byId('location_mod_folder').innerHTML        = arg.modDir === null ? '--' : arg.modDir
-
-// 	byId('button_process').focus()
-// })
-
-
-
-
-
-
-
-// /*
-//   _______ _     _ _______  _____   _____   ______  _____  _______ _______ _______ _______
-//   |_____| |     |    |    |     | |_____] |_____/ |     | |       |______ |______ |______
-//   |     | |_____|    |    |_____| |       |    \_ |_____| |_____  |______ ______| ______|
-                                                                                         
-// */
-// // Because of earlier choices, it's easiest to fake a click in the renderer so that all the
-// // events go to the right place.
-
-// ipcRenderer.on('trigger_version', (event, versionNum) => {
-// 	if ( versionNum === 19 ) {
-// 		classRem(['ver_icon_19'], 'd-none')
-// 		classAdd(['ver_icon_22'], 'd-none')
-// 	} else {
-// 		classAdd(['ver_icon_19'], 'd-none')
-// 		classRem(['ver_icon_22'], 'd-none')
-// 	}
-// })
-
-// ipcRenderer.on('autoProcess', () => {
-// 	ipcRenderer.send('processMods')
-// 	classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
-// 	classAdd(['button_process', 'button_load', 'button_load_folder'], 'disabled')
-// 	classRem('loading_modal_backdrop', 'd-none')
-// 	classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
-// 	byId('counter_mods_done').innerHTML  = 0
-// 	byId('counter_mods_total').innerHTML = 0
-// 	document.getElementById('loadingModal').style.display = 'block'
-// })
-
-
-
-// /*
-//   _______ _     _  _____   _____  _______ _______ ______       _______  _____  _____
-//   |______  \___/  |_____] |     | |______ |______ |     \      |_____| |_____]   |  
-//   |______ _/   \_ |       |_____| ______| |______ |_____/      |     | |       __|__
-                                                                                    
-// Functions that are exposed to the UI renderer process
-// */
-// contextBridge.exposeInMainWorld(
-// 	'ipc',
-// 	{
-// 		getL10nText : (text) => {
-// 			ipcRenderer.send('main_l10n-get-text', text)
-// 		},
-// 		changeLangList : () => {
-// 			ipcRenderer.send('i18n-change-locale', byId('language_select').value)
-// 		},
-// 		openPreferences : () => {
-// 			ipcRenderer.send('askOpenPreferencesWindow')
-// 		},
-// 		loadButton : () => {
-// 			ipcRenderer.send('openConfigFile')
-// 			dataIsLoaded = false
-// 		},
-// 		loadFolder : () => {
-// 			ipcRenderer.send('openOtherFolder')
-// 			dataIsLoaded = false
-// 		},
-// 		setVer2019 : () => {
-// 			ipcRenderer.send('setGameVersion', 19)
-// 			classRem(['ver_icon_19'], 'd-none')
-// 			classAdd(['ver_icon_22'], 'd-none')
-// 			dataIsLoaded = false
-// 		},
-// 		setVer2022 : () => {
-// 			ipcRenderer.send('setGameVersion', 22)
-// 			classAdd(['ver_icon_19'], 'd-none')
-// 			classRem(['ver_icon_22'], 'd-none')
-// 			dataIsLoaded = false
-// 		},
-// 		processButton : () => {
-// 			ipcRenderer.send('processMods')
-// 			classRem(['tab_broken', 'tab_missing', 'tab_conflict', 'tab_explore'], 'flashonce')
-// 			classAdd(['button_process', 'button_load', 'button_load_folder'], 'disabled')
-// 			classRem('loading_modal_backdrop', 'd-none')
-// 			classAdd(['loadingModal', 'loading_modal_backdrop'], 'show')
-// 			byId('counter_mods_done').innerHTML  = 0
-// 			byId('counter_mods_total').innerHTML = 0
-// 			document.getElementById('loadingModal').style.display = 'block'
-// 		},
-// 		changeExplore : () => {
-// 			ipcRenderer.send('askExploreList', byId('savegame_select').value)
-// 		},
-// 		changeExploreActiveUnused : () => {
-// 			ipcRenderer.send('askExploreList', 0, -1)
-// 		},
-// 		changeExploreInActive : () => {
-// 			ipcRenderer.send('askExploreList', -1)
-// 		},
-// 		changeExploreScripts : () => {
-// 			ipcRenderer.send('askExploreList', 0, 0, 'hasScripts')
-// 			byId('col_mod_has_scripts_switch').checked = true
-// 		},
-// 		openDebugLogContents : () => {
-// 			ipcRenderer.send('openDebugLogContents')
-// 		},
-// 		refreshBroken : () => {
-// 			ipcRenderer.send('askBrokenList')
-// 		},
-// 		refreshMissing : () => {
-// 			ipcRenderer.send('askMissingList')
-// 		},
-// 		refreshConflict : () => {
-// 			ipcRenderer.send('askConflictList')
-// 		},
-// 		refreshExplore : () => {
-// 			ipcRenderer.send('askExploreList', 0)
-// 		},
-
-// 	}
-// )
-
 
 
 // /*
