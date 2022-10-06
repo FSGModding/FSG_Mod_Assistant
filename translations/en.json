@@ -57,6 +57,8 @@
 	"detail_i3d_files"       : "i3D files in the mod",
 	"detail_extra_clean"     : "None, archive is clean",
 
+	"latest_version_link_blurb"        : "Get the latest version at:",
+
 
 	"file_error_name_starts_digit"          : "This file starts with a digit. FS requires that mods start with a letter.",
 	"file_error_likely_copy"                : "This file name suggests that it is a duplicate copy of another mod.",

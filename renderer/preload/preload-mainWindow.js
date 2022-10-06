@@ -39,6 +39,8 @@ contextBridge.exposeInMainWorld(
 				'fromMain_modList',
 				'fromMain_showLoading',
 				'fromMain_hideLoading',
+				'fromMain_loadingTotal',
+				'fromMain_loadingDone'
 			]
 		
 			if ( validChannels.includes( channel ) ) {

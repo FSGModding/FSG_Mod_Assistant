@@ -37,9 +37,10 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
-
-window.mods.receive('fromMain_showLoading', () => { loadingModal.show() })
-window.mods.receive('fromMain_hideLoading', () => { loadingModal.hide() })
+window.mods.receive('fromMain_loadingTotal', (count) => { fsgUtil.byId('count_total').innerHTML = count })
+window.mods.receive('fromMain_loadingDone',  (count) => { fsgUtil.byId('count_done').innerHTML  = count })
+window.mods.receive('fromMain_showLoading',  () => { loadingModal.show() })
+window.mods.receive('fromMain_hideLoading',  () => { loadingModal.hide() })
 
 window.mods.receive('fromMain_modList', (modList) => {
 	const modTable = []
@@ -232,10 +233,7 @@ function makeModRow(id, name, version, badges, disabled = false) {
 	return `<tr onDblClick="clientOpenModDetail('${id}')" class="mod-row${(disabled===true)?' disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name} ${badges}</td><td>${version}</td></tr>`
 }
 
-function clientOpenModDetail(id) {
-	console.log(id)
-	window.mods.openMod(id)
-}
+function clientOpenModDetail(id) { window.mods.openMod(id) }
 
 
 window.addEventListener('DOMContentLoaded', () => {

@@ -302,7 +302,6 @@ ipcMain.on('show-context-menu-table', async (event, theseHeaders, theseValues) =
 
 ipcMain.on('main_l10n-get-text', (event, arg) => {
 	myTranslator.stringLookup(arg).then((text) => {
-		console.log(arg, text)
 		event.sender.send('l10n-get-text-return', arg, text)
 	})
 })

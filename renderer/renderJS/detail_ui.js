@@ -33,21 +33,23 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.mods.receive('fromMain_modRecord', (modRecord) => {
-	fsgUtil.byId('title').innerHTML          = modRecord.l10n.title
-	fsgUtil.byId('mod_location').innerHTML   = modRecord.fileDetail.fullPath
-	fsgUtil.byId('mod_author').innerHTML     = modRecord.modDesc.author
-	fsgUtil.byId('version').innerHTML        = modRecord.modDesc.version
-	fsgUtil.byId('has_scripts').innerHTML    = checkX(modRecord.modDesc.scriptFiles)
-	fsgUtil.byId('store_items').innerHTML    = checkX(modRecord.modDesc.storeItems)
-	fsgUtil.byId('is_multiplayer').innerHTML = checkX(modRecord.modDesc.multiPlayer, false)
-	fsgUtil.byId('description').innerHTML    = modRecord.l10n.description
-
-	if ( modRecord.fileDetail.extraFiles.length > 0 ) {
-		fsgUtil.byId('extraFiles').innerHTML     = modRecord.fileDetail.extraFiles.join('\n')
-	} else {
-		fsgUtil.byId('extraFiles').innerHTML     = '<l10n name="detail_extra_clean"></l10n>'
+	const idMap = {
+		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
+		file_date      : (isNaN(modRecord.fileDetail.fileDate.getTime()) ? '0000-00-00T00:00' : modRecord.fileDetail.fileDate.toISOString().substring(0, 16) ),
+		title          : (( modRecord.l10n.title !== null ) ? modRecord.l10n.title : modRecord.fileDetail.shortName),
+		mod_location   : modRecord.fileDetail.fullPath,
+		mod_author     : modRecord.modDesc.author,
+		version        : modRecord.modDesc.version,
+		has_scripts    : checkX(modRecord.modDesc.scriptFiles),
+		store_items    : checkX(modRecord.modDesc.storeItems),
+		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
+		description    : modRecord.l10n.description,
+		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
+		extraFiles     : (( modRecord.fileDetail.extraFiles.length > 0 ) ? modRecord.fileDetail.extraFiles.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
 	}
-	fsgUtil.byId('i3dFiles').innerHTML       = modRecord.fileDetail.i3dFiles.join('\n')
+	Object.keys(idMap).forEach((key) => {
+		fsgUtil.byId(key).innerHTML = idMap[key]
+	})
 
 	if ( modRecord.issues.length < 1 ) {
 		fsgUtil.byId('problem_div').classList.add('d-none')
@@ -64,21 +66,27 @@ window.mods.receive('fromMain_modRecord', (modRecord) => {
 		fsgUtil.byId('problems').innerHTML = `<table class="table">${problems.join('')}</table>`
 	}
 
-	if ( modRecord.badges === '' ) {
-		fsgUtil.byId('badges').classList.add('d-none')
-	} else {
-		fsgUtil.byId('badges').innerHTML = modRecord.badges
-	}
-
-	if ( modRecord.modDesc.iconImageCache !== null ) {
-		fsgUtil.byId('icon_div').innerHTML = `<img class="img-fluid" src="${modRecord.modDesc.iconImageCache}" />`
-	} else {
-		fsgUtil.byId('icon_div').classList.add('d-none')
-	}
+	textOrHide(
+		'badges',
+		modRecord.badges,
+		modRecord.badges
+	)
+	textOrHide(
+		'icon_div',
+		`<img class="img-fluid" src="${modRecord.modDesc.iconImageCache}" />`,
+		modRecord.modDesc.iconImageCache
+	)
 
 	processL10N()
 })
 
+function textOrHide(id, content, test) {
+	if ( test === null || test === '' ) {
+		fsgUtil.byId(id).classList.add('d-none')
+	} else {
+		fsgUtil.byId(id).innerHTML = content
+	}
+}
 
 function checkX(amount, showCount = true) {
 	let returner = ''

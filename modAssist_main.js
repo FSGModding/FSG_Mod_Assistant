@@ -21,6 +21,7 @@ const devDebug = true
 
 const path       = require('path')
 const fs         = require('fs')
+const glob       = require('glob')
 
 
 const translator               = require('./lib/translate.js')
@@ -41,6 +42,8 @@ const logger = new mcLogger()
 
 let modFolders = new Set()
 let modList    = {}
+let countTotal = 0
+let countMods  = 0
 
 let win          = null // Main window
 let splash       = null // Splash screen
@@ -124,7 +127,7 @@ function createWindow () {
 		}, 250)
 
 
-		myTranslator.stringLookup('title').then((title) => {
+		myTranslator.stringLookup('app_name').then((title) => {
 			win.title = title
 		})
 	})
@@ -228,6 +231,7 @@ function openDetailWindow(thisModRecord) {
 
 	thisModRecord.populateL10n()
 	thisModRecord.populateIcon()
+	thisModRecord.currentLocale = translator.currentLocale
 
 	detailWindow = new BrowserWindow({
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
@@ -421,10 +425,31 @@ ipcMain.on('saveDebugLogContents', () => {
 // }
 
 
+function incrementTotal(amount, reset = false) {
+	if ( reset ) {
+		countTotal = 0
+	} else {
+		countTotal += amount
+	}
+	win.webContents.send('fromMain_loadingTotal', countTotal)
+}
+function incrementDone(amount = 1, reset = false) {
+	if ( reset ) {
+		countMods = 0
+	} else {
+		countMods += amount
+	}
+	win.webContents.send('fromMain_loadingDone', countMods)
+}
+
+
 
 
 function processModFolders(newFolder = false) {
 	win.webContents.send('fromMain_showLoading')
+
+	incrementTotal(0, true)
+	incrementDone(0, true)
 
 	if ( newFolder === false ) { modList = {} }
 
@@ -435,25 +460,52 @@ function processModFolders(newFolder = false) {
 			modList[cleanName] = { name : shortName, mods : [] }
 
 			const folderContents = fs.readdirSync(folder, {withFileTypes : true})
+			incrementTotal(folderContents.length)
 
 			folderContents.forEach((thisFile) => {
 				let isFolder = false
+				let date     = null
+				let size     = 0
 				
 				if ( thisFile.isSymbolicLink() ) {
 					const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
 					const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
 					isFolder = thisSymLinkStat.isDirectory()
+
+					if ( ! isFolder ) {
+						size = thisSymLinkStat.size
+					}
+					date     = thisSymLinkStat.ctime
 				} else {
 					isFolder = thisFile.isDirectory()
 				}
 
-				console.log(isFolder)
+				if ( ! thisFile.isSymbolicLink() ) {
+					const theseStats = fs.statSync(path.join(folder, thisFile.name))
+					if ( ! isFolder ) { size = theseStats.size }
+					date = theseStats.ctime
+				}
+				if ( isFolder ) {
+					let bytes = 0
+					// BUG: with a *lot* of folders, this is going to be a pretty big performance hit.
+					glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
+						try {
+							const stats = fs.statSync(path.join(folder, thisFile.name, file))
+							if ( stats.isFile() ) { bytes += stats.size }
+						} catch { /* Do Nothing if we can't read it. */ }
+					})
+					size = bytes
+				}
+
 				modList[cleanName].mods.push( new modFileChecker(
 					path.join(folder, thisFile.name),
 					isFolder,
+					size,
+					date,
 					logger,
 					myTranslator.deferCurrentLocale
 				))
+				incrementDone()
 			})
 		}
 	})
