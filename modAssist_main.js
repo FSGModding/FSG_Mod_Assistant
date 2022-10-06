@@ -13,7 +13,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, dialog, screen } = require(
 
 // const { autoUpdater } = require('electron-updater')
 
-const devDebug = true
+const devDebug = false
 
 // if (process.platform === 'win32') {
 // 	autoUpdater.checkForUpdatesAndNotify()
@@ -121,8 +121,9 @@ function createWindow () {
 				clearInterval(showCount)
 				if ( mcStore.has('modFolders') ) {
 					modFolders = new Set(mcStore.get('modFolders'))
-					processModFolders()
+					setTimeout(() => { processModFolders() }, 1500)
 				}
+				win.webContents.openDevTools()
 			}
 		}, 250)
 

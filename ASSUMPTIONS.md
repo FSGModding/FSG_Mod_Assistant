@@ -22,7 +22,7 @@ Only readable ZIP files are valid - however, the Giants engine is more forgiving
 
 * a modDesc.xml is required, and must be parse-able
 * a readable icon file is required
-* the moddesc.descversion attribute must appear, and be between 40 and 53
+* the moddesc.descversion attribute must appear, and be 60+
 * a mod version string must be present
 * the "productid" tag should not be present (probably cracked DLC)
 

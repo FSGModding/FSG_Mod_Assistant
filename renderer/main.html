@@ -127,59 +127,34 @@
 		</div>
 	
 		<div class="row overflow-custom px-2" style="margin-top: 95px;">
-			<div class="col-6"><!-- source mods -->
-				<div class="btn-group w-75 mx-auto d-flex" role="group">
-					<button type="button" class="btn btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n name="folder_add"></l10n></button>
-					<button type="button" class="btn btn-primary"><gg-icon class="gg-folder"></gg-icon> <l10n name="folder_edit"></l10n></button>
+			<div class="col-10"><!-- source mods -->
+				<div class="row">
+					<div class="col-5">
+						<div class="btn-group d-flex" role="group">
+							<button type="button" class="btn btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n name="folder_add"></l10n></button>
+							<button type="button" class="btn btn-primary" onclick="mods.editFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n name="folder_edit"></l10n></button>
+						</div>
+					</div>
+					<div class="col-5">
+						<div class="input-group">
+							<select class="form-select" id="collectionSelect"></select>
+							<button class="btn btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
+						</div>
+					</div>
+					<div class="col-2">
+						<button class="btn btn-danger" type="button" onclick="mods.makeInactive()"><l10n name="list-none"></l10n></button>
+					</div>
 				</div>
 				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
 			</div><!-- end: source mods-->
-			<div class="col-1 p-0"><!-- buttons -->
-				<div id="moveButtons" class="p-2" style="position: absolute; top: 90px; width:8.33333333%;">
-					<button type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success disabled"><gg-icon class="gg-file-add"></gg-icon><br /><l10n class="small" name="add_to_list"></l10n></button>
-					<button type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success disabled"><gg-icon class="gg-extension-add"></gg-icon><br /><l10n class="small" name="add_to_all"></l10n></button>
-					<button type="button" style="height: 15vh" class="w-100 mb-2 btn btn-warning disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
-					<button type="button" style="height: 15vh" class="w-100 mb-2 btn btn-warning disabled"><gg-icon class="gg-play-list-remove"></gg-icon><br /><l10n class="small" name="remove_all"></l10n></button>
+			<div class="col-2 p-0"><!-- buttons -->
+				<div id="moveButtons" class="p-2" style="position: absolute; top: 90px;">
+					<button onclick="clientBatchOperation('move')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
+					<button onclick="clientBatchOperation('copy')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
+					<button onclick="clientBatchOperation('delete')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-danger disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
 				</div>
-
 			</div><!-- end: buttons-->
-			<div class="col-5"><!-- selected mod list-->
-				<div class="input-group">
-					<select class="form-select" id="modListSelect">
-					  <option value="1">One</option>
-					  <option value="2">Two</option>
-					  <option value="3">Three</option>
-					</select>
-					<button class="btn btn-warning" type="button"><l10n name="list_edit"></l10n></button>
-					<button class="btn btn-primary" type="button"><l10n name="list_add"></l10n></button>
-				</div>
-				<div id="modListTable" class="mt-3">
-					<table class="w-100 table table-sm table-hover table-striped">
-						<tr class="mod-list-row" id="lmod_0"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_TransportMissions</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_1"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Tree_Devourer</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_2"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_TreeBGone</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_3"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_UniversalAutoload</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_4"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Vehicle_Barn_Set</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_5"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_VehicleSpeedSync</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_6"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Verkaufsstellen_Switty</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_7"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_viconExtraPack</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_8"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_viconFastBale</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_9"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Wasserwerk_Switty</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_10"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_WestBridgeHills22</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_11"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_wifoBPseries</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_12"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_WolfSystemHall</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_13"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Workplan</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_14"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_WorkShop_Pack</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_15"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>FS22_Zerkleinerer_Switty</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_16"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>LS22_Spinnerei_Fast</td><td>1.0.0.0</td></tr>
-						<tr class="mod-list-row" id="lmod_17"><td><input type="checkbox" name="asdf" class="form-check-input"></td><td>mantridFS22_NewMoon_alpha</td><td>1.0.0.0</td></tr>
-					</table>
-				</div>
-			</div><!-- end: selected mod list -->
 		</div>
-	
-	
-
 	</div>
 
 	<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

@@ -30,9 +30,16 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'mods', {
 		addFolder : () => { ipcRenderer.send('toMain_addFolder') },
+		editFolders : () => { ipcRenderer.send('toMain_editFolders') }, //TODO: editFolders
+		makeActive : (list) => { ipcRenderer.send('toMain_makeActive', list) }, // TODO: makeActive
+		makeInactive : () => { ipcRenderer.send('toMain_makeInactive' ) }, // TODO: makeInactive
+
+		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) }, // TODO: copyMods
+		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) }, // TODO: moveMods
+		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) }, // TODO: deleteMods
+
 		debugLog  : () => { ipcRenderer.send('openDebugLogContents') },
 		openMod   : (modID) => { ipcRenderer.send('toMain_openModDetail', modID) },
-
 
 		receive   : ( channel, func ) => {
 			const validChannels = [

@@ -4,7 +4,7 @@
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
 
-// FSG Mod Assist Utilities
+// FSG Mod Assist Utilities (client side)
 
 const fsgUtil = {
 	byId       : ( id )    => { return document.getElementById( id ) },
