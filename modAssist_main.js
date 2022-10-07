@@ -13,7 +13,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, dialog, screen } = require(
 
 // const { autoUpdater } = require('electron-updater')
 
-const devDebug = false
+const devDebug = true
 
 // if (process.platform === 'win32') {
 // 	autoUpdater.checkForUpdatesAndNotify()
@@ -48,6 +48,7 @@ let countMods  = 0
 let win          = null // Main window
 let splash       = null // Splash screen
 let detailWindow = null // Detail window
+let folderWindow = null // Folder window
 //let prefWindow   = null // Preferences window
 
 let workWidth  = 0
@@ -168,6 +169,45 @@ ipcMain.on('toMain_addFolder', () => {
 	})
 })
 
+
+ipcMain.on('toMain_editFolders', () => { openFolderWindow() })
+
+function openFolderWindow() {
+	if (folderWindow) { folderWindow.focus(); return }
+
+	folderWindow = new BrowserWindow({
+		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+		width           : mcStore.get('detail_window_x', 800),
+		height          : mcStore.get('detail_window_y', 500),
+		title           : myTranslator.syncStringLookup('app_name'),
+		minimizable     : false,
+		maximizable     : true,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(app.getAppPath(), 'renderer', 'preload', 'preload-folderWindow.js'),
+		},
+	})
+
+	if ( mcStore.has('detail_window_max') && mcStore.get('detail_window_max') ) { folderWindow.maximize() }
+
+	if ( !devDebug ) { folderWindow.removeMenu() }
+
+	folderWindow.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('fromMain_getFolders', modList)
+	})
+
+	folderWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'folders.html'))
+
+	folderWindow.on('closed', () => {
+		folderWindow = null
+		processModFolders()
+	})
+}
+
+
 /*
   _____  _____  _______   _______  ______ _______ __   _ _______        _______ _______ _______
     |   |_____] |       .    |    |_____/ |_____| | \  | |______ |      |_____|    |    |______
@@ -258,7 +298,6 @@ function openDetailWindow(thisModRecord) {
 
 	detailWindow.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_modRecord', thisModRecord)
-		detailWindow.webContents.openDevTools()
 	})
 
 	detailWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'detail.html'))
@@ -458,7 +497,7 @@ function processModFolders(newFolder = false) {
 		const cleanName = folder.replaceAll('\\', '-').replaceAll(':', '').replaceAll(' ', '_')
 		const shortName = path.basename(folder)
 		if ( folder === newFolder || newFolder === false ) {
-			modList[cleanName] = { name : shortName, mods : [] }
+			modList[cleanName] = { name : shortName, fullPath : folder, mods : [] }
 
 			const folderContents = fs.readdirSync(folder, {withFileTypes : true})
 			incrementTotal(folderContents.length)
