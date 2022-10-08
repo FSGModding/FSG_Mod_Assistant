@@ -42,11 +42,36 @@ window.mods.receive('fromMain_getFolders', (modList) => {
 function makeFolderLine(path, name) {
 	let folderHTML = ''
 	
-	folderHTML += '<div class="mb-3 border-bottom"><div class="row">'
+	folderHTML += '<div class="folderLine mb-3 border-bottom"><div class="row">'
 	folderHTML += `<div class="col-8"><h4>${name}</h4></div>`
-	folderHTML += '<div class="col-4"><button class="btn btn-sm w-100 btn-danger"><l10n name="remove_folder"></l10n></button></div>'
+	folderHTML += '<div class="col-4"><div class="btn-group w-100"><button class="btn btn-sm btn-success open_folder"><l10n name="open_folder"></l10n></button><button class="btn btn-sm w-100 btn-danger remove_folder"><l10n name="remove_folder"></l10n></button></div></div>'
 	folderHTML += `</div><p class="folder-path text-end">${path}</p></div>`
 
 	return folderHTML
 }
 
+function processButtonClick(event) {
+	let thisButton = null
+	if ( event.target.tagName === 'L10N' ) {
+		thisButton = event.target.parentElement
+	} else {
+		thisButton = event.target
+	}
+
+	if ( thisButton.classList.contains('open_folder') ) {
+		const thisFolder = thisButton.closest('.folderLine').querySelectorAll('p')[0].innerHTML
+		window.mods.openFolder(thisFolder)
+	}
+	if ( thisButton.classList.contains('remove_folder') ) {
+		const thisLine   = thisButton.closest('.folderLine')
+		const thisFolder = thisLine.querySelectorAll('p')[0].innerHTML
+
+		thisLine.classList.add('bg-black', 'bg-opacity-50', 'text-decoration-line-through')
+		thisLine.querySelectorAll('button').forEach((button) => { button.classList.add('disabled')})
+		window.mods.removeFolder(thisFolder)
+	}
+}
+
+window.addEventListener('click', (event) => {
+	processButtonClick(event)
+})

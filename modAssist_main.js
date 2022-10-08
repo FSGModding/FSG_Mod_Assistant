@@ -9,7 +9,7 @@
 
 
 //const { app, Menu, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = require('electron')
-const { app, BrowserWindow, ipcMain, globalShortcut, dialog, screen } = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = require('electron')
 
 // const { autoUpdater } = require('electron-updater')
 
@@ -47,9 +47,7 @@ let countMods  = 0
 
 let win          = null // Main window
 let splash       = null // Splash screen
-let detailWindow = null // Detail window
-let folderWindow = null // Folder window
-//let prefWindow   = null // Preferences window
+let foldersDirty = true
 
 let workWidth  = 0
 let workHeight = 0
@@ -58,12 +56,6 @@ let workHeight = 0
 
 
 
-/*
-  _______ _______ _____ __   _      _  _  _ _____ __   _ ______   _____  _  _  _
-  |  |  | |_____|   |   | \  |      |  |  |   |   | \  | |     \ |     | |  |  |
-  |  |  | |     | __|__ |  \_|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
-                                                                                
-*/
 function createWindow () {
 	win = new BrowserWindow({
 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
@@ -121,7 +113,8 @@ function createWindow () {
 			if ( win.isVisible() ) {
 				clearInterval(showCount)
 				if ( mcStore.has('modFolders') ) {
-					modFolders = new Set(mcStore.get('modFolders'))
+					modFolders   = new Set(mcStore.get('modFolders'))
+					foldersDirty = true
 					setTimeout(() => { processModFolders() }, 1500)
 				}
 				win.webContents.openDevTools()
@@ -141,6 +134,13 @@ function createWindow () {
 }
 
 
+ipcMain.on('toMain_openMods', (event, mods) => {
+	const thisMod = modIdToRecord(mods[0])
+
+	if ( thisMod !== null ) { shell.showItemInFolder(thisMod.fileDetail.fullPath) }
+})
+
+
 
 ipcMain.on('toMain_addFolder', () => {
 	const homedir  = require('os').homedir()
@@ -158,6 +158,7 @@ ipcMain.on('toMain_addFolder', () => {
 			})
 			if ( ! alreadyExists ) {
 				modFolders.add(result.filePaths[0])
+				foldersDirty = true
 			}
 
 			mcStore.set('modFolders', Array.from(modFolders))
@@ -169,6 +170,8 @@ ipcMain.on('toMain_addFolder', () => {
 	})
 })
 
+
+let folderWindow = null
 
 ipcMain.on('toMain_editFolders', () => { openFolderWindow() })
 
@@ -207,13 +210,18 @@ function openFolderWindow() {
 	})
 }
 
+ipcMain.on('toMain_openFolder', (event, folder) => { shell.openPath(folder) })
+ipcMain.on('toMain_removeFolder', (event, folder) => {
+	if ( modFolders.delete(folder) ) {
+		logger.notice('folderManager', `Folder removed from list ${folder}`)
+		mcStore.set('modFolders', Array.from(modFolders))
+		foldersDirty = true
+	} else {
+		logger.notice('folderManager', `Folder NOT removed from list ${folder}`)
+	}
+})
 
-/*
-  _____  _____  _______   _______  ______ _______ __   _ _______        _______ _______ _______
-    |   |_____] |       .    |    |_____/ |_____| | \  | |______ |      |_____|    |    |______
-  __|__ |       |_____  .    |    |    \_ |     | |  \_| ______| |_____ |     |    |    |______
-                                                                                               
-*/
+
 
 ipcMain.on('toMain_langList_change', (event, lang) => {
 	myTranslator.currentLocale = lang
@@ -238,13 +246,11 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	})
 })
 
-/*
-  ______  _______ _______ _______ _____             _  _  _ _____ __   _ ______   _____  _  _  _
-  |     \ |______    |    |_____|   |   |           |  |  |   |   | \  | |     \ |     | |  |  |
-  |_____/ |______    |    |     | __|__ |_____      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
-                                                                                                
-*/
 
+
+
+
+let detailWindow = null
 
 ipcMain.on('toMain_openModDetail', (event, thisMod) => {
 	const thisModParts  = thisMod.split('--')
@@ -313,12 +319,7 @@ function openDetailWindow(thisModRecord) {
 
 
 
-/*
-  ______  _______ ______  _     _  ______      _  _  _ _____ __   _ ______   _____  _  _  _
-  |     \ |______ |_____] |     | |  ____      |  |  |   |   | \  | |     \ |     | |  |  |
-  |_____/ |______ |_____] |_____| |_____|      |__|__| __|__ |  \_| |_____/ |_____| |__|__|
-                                                                                           
-*/
+
 let debugWindow = null
 
 function openDebugWindow(logClass) {
@@ -393,12 +394,7 @@ ipcMain.on('saveDebugLogContents', () => {
 
 
 
-/*
-   _____   ______ _______ _______ _______  ______ _______ __   _ _______ _______ _______
-  |_____] |_____/ |______ |______ |______ |_____/ |______ | \  | |       |______ |______
-  |       |    \_ |______ |       |______ |    \_ |______ |  \_| |_____  |______ ______|
-                                                                                        
-*/
+
 
 // ipcMain.on('askOpenPreferencesWindow', () => {
 // 	openPrefWindow()
@@ -483,9 +479,21 @@ function incrementDone(amount = 1, reset = false) {
 }
 
 
+function modIdToRecord(id) {
+	const idParts = id.split('--')
+	let foundMod  = null
+
+	modList[idParts[0]].mods.forEach((mod) => {
+		if ( foundMod === null && mod.uuid === idParts[1] ) {
+			foundMod = mod
+		}
+	})
+	return foundMod
+}
 
 
 function processModFolders(newFolder = false) {
+	if ( !foldersDirty ) { return }
 	win.webContents.send('fromMain_showLoading')
 
 	incrementTotal(0, true)
@@ -549,8 +557,9 @@ function processModFolders(newFolder = false) {
 			})
 		}
 	})
+	foldersDirty = false
 	win.webContents.send('fromMain_modList', modList)
-	win.webContents.send('fromMain_hideLoading')
+	setTimeout(() => { win.webContents.send('fromMain_hideLoading') }, 1000)
 }
 
 
@@ -559,13 +568,6 @@ function processModFolders(newFolder = false) {
 
 
 
-
-/*
-  _______  _____   _____     ______ _______ _______ ______  __   __
-  |_____| |_____] |_____] . |_____/ |______ |_____| |     \   \_/  
-  |     | |       |       . |    \_ |______ |     | |_____/    |   
-                                                                   
-*/
 
 
 app.whenReady().then(() => {

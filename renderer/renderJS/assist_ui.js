@@ -144,8 +144,9 @@ function fileListClick(event) {
 			lastModSelect = null
 		}
 
-		let allChecked = true
-		let noneChecked = true
+		let allChecked   = true
+		let noneChecked  = true
+		const oneChecked = (document.querySelectorAll('.mod-row input[type="checkbox"]:checked').length === 1)
 
 		const thisModTable = event.target.closest('table').querySelectorAll('input[type="checkbox"]')
 
@@ -171,10 +172,10 @@ function fileListClick(event) {
 
 		const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
 
-		
-		moveButtons.forEach((button) =>{
-			button.classList[(!noneChecked)?'remove':'add']('disabled')
-		})
+		moveButtons[0].classList[(!noneChecked)?'remove':'add']('disabled')
+		moveButtons[1].classList[(!noneChecked)?'remove':'add']('disabled')
+		moveButtons[2].classList[(oneChecked)?'remove':'add']('disabled')
+		moveButtons[3].classList[(oneChecked)?'remove':'add']('disabled')
 		
 		updateModFilesColor()
 	}
@@ -218,13 +219,16 @@ function clientBatchOperation(mode) {
 
 	switch (mode) {
 		case 'copy':
-			window.mods.copyMods(selectedMods)
+			if ( selectedMods.length > 0 ) { window.mods.copyMods(selectedMods) }
 			break
 		case 'move':
-			window.mods.moveMods(selectedMods)
+			if ( selectedMods.length > 0 ) { window.mods.moveMods(selectedMods) }
 			break
 		case 'delete':
-			window.mods.deleteMods(selectedMods)
+			if ( selectedMods.length === 1 ) { window.mods.deleteMods(selectedMods) }
+			break
+		case 'open':
+			if ( selectedMods.length === 1 ) { window.mods.openMods(selectedMods) }
 			break
 		default:
 			console.log('inconceivable!')

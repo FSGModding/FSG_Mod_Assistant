@@ -5,6 +5,8 @@
 	"app_name"                         : "Farm Sim 2022 Mod Assistant",
 	"folder_add"                       : "Add Folder",
 	"folder_edit"                      : "Edit Folder List",
+	"open_folder"                      : "Open in Explorer",
+	"remove_folder"                    : "Forget Collection",
 
 	"list-active"                      : "Set Active",
 	"list-none"                        : "Deactivate",
@@ -12,6 +14,7 @@
 	"move_to_list"                     : "Move To...",
 	"copy_to_list"                     : "Copy To...",
 	"remove_from_list"                 : "Delete",
+	"open_from_list"                   : "Show in Explorer",
 	"mod_badge_broken"                 : "broken",
 	"mod_badge_problem"                : "issue",
 	"mod_badge_nomp"                   : "noMP",
