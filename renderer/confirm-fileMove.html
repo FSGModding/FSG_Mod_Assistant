@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/confirm_copy_move_ui.js"></script>
+</head>
+<body>
+	
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top pt-2 bg-body">
+			<div class="row w-100">
+				<div class="col-9 border-bottom">
+					<h3><l10n name="app_name"></l10n> v<l10n name="app_version"></l10n></h3>
+				</div>
+			</div>
+			<span class="text-center mb-4 mt-1 border-bottom w-100 mx-auto d-block"><l10n name="confirm_move_blurb"></l10n></span>
+		</div>
+
+		<div class="row mx-2">
+			<div class="col-4"><l10n name="destination"></l10n></div>
+			<div class="col-8">
+				<select onchange="updateConfirmList()" id="select_destination" class="form-select"></select>
+			</div>
+		</div>
+		
+
+		<div class="mx-4 my-2 border-top border-bottom" id="confirm_list"></div>
+
+		<div class="btn btn-danger w-75 mx-auto d-block" onclick="clientDoMove()"><l10n name="move"></l10n></div>
+	</div>
+
+</body>
+</html>

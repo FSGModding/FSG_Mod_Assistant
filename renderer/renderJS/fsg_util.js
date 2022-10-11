@@ -92,4 +92,7 @@ const fsgUtil = {
 			units[u]
 		].join(' ')
 	},
+	basename : (name, sep = '\\') => {
+		return name.substr(name.lastIndexOf(sep) + 1)
+	},
 }

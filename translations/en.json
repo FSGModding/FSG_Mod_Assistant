@@ -21,30 +21,26 @@
 	"mod_badge_pconly"                 : "PC",
 	"mod_badge_folder"                 : "Folder",
 	"status-processing-title"          : "Processing Mods...",
-	"config_working_status"            : "Reading & Testing (this could take a while)...",
-	
-	"menu_details"         : "Open Mod Detail",
-	"menu_open_explorer"   : "Show in Finder / Explorer",
-	"menu_find_on_mod_hub" : "Search ModHub for this Mod",
-	"menu_find_on_google"  : "Search Google for this Mod",
-	"menu_find_on_duck"    : "Search DuckDuckGo for this Mod",
-	"menu_find_on_bing"    : "Search Bing for this Mod",
-	"menu_copy_general"    : "Copy : ",
-	"menu_copy_full_path"  : "Copy : Full File Path",
-	"menu_move_file"       : "Move Mod to quarantine",
+	"config_working_status"            : "Reading, Copying, Moving, or Testing (this could take a while)...",
 
-	"move_mod_message"   : "Are you sure you want to move this mod to quarantine :",
-	"move_mod_cancel"    : "No, cancel",
-	"move_mod_ok"        : "Yes, move it",
-	"move_mod_worked"    : "The mod has been moved!",
-	"move_mod_failed"    : "The mod was unable to be moved",
-	"move_mod_no_folder" : "You must set a move-to location before using this command",
+	"delete"                    : "Yes, Delete Mod",
+	"move"                      : "Yes, Move Mods",
+	"copy"                      : "Yes, Copy Mod(s)",
+
+	"destination"               : "Intended Destination:",
+	"no_destination_selected"   : "Please select a destination above...",
+	"destination_full"          : "Destination file exists, overwrite is possible",
+	"destination_clear"         : "Destination file does not exist, good to go",
+	"overwrite"                 : "Overwrite File?",
+
+	"confirm_move_blurb"        : "To move mods, select the destination collection below, and choose to overwrite or not for each mod (where applicable)",
+	"confirm_copy_blurb"        : "To copy mods, select the destination collection below, and choose to overwrite or not for each mod (where applicable)",
+	"confirm_delete_blurb"      : "Are you absolutely sure you wish to delete this file?  This action cannot be undone!",
+	"latest_version_link_blurb" : "Get the latest version at:",
 
 	"save_log_failed" : "Debug log save failed",
 	"save_log_worked" : "Debug log saved successfully",
 	"open_debug_log"  : "View Debug Log",
-
-	
 
 	"detail_problems"        : "Issues with this Mod",
 	"detail_mod_version"     : "Version",
@@ -60,9 +56,6 @@
 	"detail_extra_files"     : "Extra files in the mod (per Giants spec)",
 	"detail_i3d_files"       : "i3D files in the mod",
 	"detail_extra_clean"     : "None, archive is clean",
-
-	"latest_version_link_blurb"        : "Get the latest version at:",
-
 
 	"file_error_name_starts_digit"          : "This file starts with a digit. FS requires that mods start with a letter.",
 	"file_error_likely_copy"                : "This file name suggests that it is a duplicate copy of another mod.",

@@ -108,7 +108,7 @@ function fileListClick(event) {
 		updateModFilesColor()
 	}
 
-	if (event.target.tagName === 'TD' && event.target.parentElement.className === 'mod-row') {
+	if (event.target.tagName === 'TD' && event.target.parentElement.classList.contains('mod-row') ) {
 		const thisTable = event.target.closest('table').closest('tr').id
 		const checkBox  = event.target.parentElement.querySelectorAll('input')[0]
 
@@ -200,7 +200,7 @@ function makeModCollection(id, name, modsRows) {
 }
 
 function makeModRow(id, name, version, badges, disabled = false) {
-	return `<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(disabled===true)?' disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name} ${badges}</td><td>${version}</td></tr>`
+	return `<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name} ${badges}</td><td>${version}</td></tr>`
 }
 
 function clientMakeListActive() {
