@@ -26,6 +26,7 @@
 		"Hant",
 		"hprof",
 		"iconfilename",
+		"ingame",
 		"jtsage",
 		"Kverneland",
 		"maximizable",
@@ -54,6 +55,7 @@
 		"storeitems",
 		"unzipper",
 		"Vicon",
+		"xmldec",
 		"xproj",
 		"zippack"
 	],

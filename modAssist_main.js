@@ -22,6 +22,7 @@ const devDebug = true
 const path       = require('path')
 const fs         = require('fs')
 const glob       = require('glob')
+const xml2js     = require('xml2js')
 
 const userHome  = require('os').homedir()
 
@@ -58,6 +59,64 @@ let quickRescan  = false
 let workWidth  = 0
 let workHeight = 0
 
+let gameSettings    = mcStore.get('game_settings', path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022', 'gameSettings.xml'))
+let gameSettingsXML = null
+let overrideFolder  = null
+let overrideIndex   = '999'
+let overrideActive  = null
+
+
+function parseSettings(newSetting = false) {
+	const XMLOptions      = {strict : true, async : false, normalizeTags : false }
+	const strictXMLParser = new xml2js.Parser(XMLOptions)
+	const XMLString       = fs.readFileSync(gameSettings, 'utf8')
+	
+	strictXMLParser.parseString(XMLString, (err, result) => {
+		gameSettingsXML = result
+		overrideFolder = gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.directory
+		overrideActive = gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active
+	})
+
+	if ( overrideActive === 'false' || overrideActive === false ) {
+		overrideIndex = '0'
+	} else {
+		overrideIndex = '999'
+		Object.keys(modFoldersMap).forEach((cleanName) => {
+			if ( modFoldersMap[cleanName] === overrideFolder ) {
+				overrideIndex = cleanName
+			}
+		})
+	}
+
+	if ( newSetting !== false ) {
+		win.webContents.send('fromMain_showListSet')
+		if ( newSetting === 'DISABLE' ) {
+			gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active    = false
+		} else {
+			gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active    = true
+			gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.directory = newSetting
+		}
+
+		const builder   = new xml2js.Builder({
+			xmldec : {
+				'version' : '1.0', 'encoding' : 'UTF-8', 'standalone' : false,
+			},
+			renderOpts : {
+				'pretty' : true, 'indent' : '    ', 'newline' : '\n',
+			},
+		})
+		let   outputXML = builder.buildObject(gameSettingsXML)
+
+		outputXML = outputXML.replace('<ingameMapFruitFilter/>', '<ingameMapFruitFilter></ingameMapFruitFilter>')
+
+		try {
+			fs.writeFileSync(gameSettings, outputXML)
+		} catch (e) {
+			logger.fileError('gameSettings', `Could not write game settings ${e}`)
+		}
+		setTimeout(() => { win.webContents.send('fromMain_hideListSet') }, 1500)
+	}
+}
 
 function createWindow () {
 	win = new BrowserWindow({
@@ -136,6 +195,8 @@ function createWindow () {
 	
 }
 
+ipcMain.on('toMain_makeInactive', () => { parseSettings('DISABLE') })
+ipcMain.on('toMain_makeActive', (event, newList) => { parseSettings(modFoldersMap[newList]) })
 
 ipcMain.on('toMain_openMods', (event, mods) => {
 	const thisMod = modIdToRecord(mods[0])
@@ -628,7 +689,12 @@ function processModFolders(newFolder = false) {
 
 	if ( newFolder === false ) { modList = {}; modFoldersMap = {}}
 
+	// Cleaner for no-longer existing folders.
+	modFolders.forEach((folder) => { if ( ! fs.existsSync(folder) ) { modFolders.delete(folder) } })
+	mcStore.set('modFolders', Array.from(modFolders))
+
 	modFolders.forEach((folder) => {
+		
 		const cleanName = folder.replaceAll('\\', '-').replaceAll(':', '').replaceAll(' ', '_')
 		const shortName = path.basename(folder)
 		if ( folder === newFolder || newFolder === false ) {
@@ -698,7 +764,13 @@ function processModFolders(newFolder = false) {
 	quickRescan  = false
 	foldersDirty = false
 	modListCache = {}
-	win.webContents.send('fromMain_modList', modList)
+	parseSettings()
+	win.webContents.send(
+		'fromMain_modList',
+		modList,
+		[myTranslator.syncStringLookup('override_disabled'), myTranslator.syncStringLookup('override_unknown')],
+		overrideIndex
+	)
 	setTimeout(() => { win.webContents.send('fromMain_hideLoading') }, 1000)
 }
 

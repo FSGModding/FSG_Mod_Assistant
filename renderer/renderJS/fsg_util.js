@@ -47,8 +47,8 @@ const fsgUtil = {
 	},
 	classAdd : (domID, className) => { fsgUtil.classChanger(domID, className, true) },
 	classRem : (domID, className) => { fsgUtil.classChanger(domID, className, false) },
-	buildSelectOpt : (value, text, selected) => {
-		return `<option value="${value}" ${( value === selected ) ? 'selected' : ''}>${text}</option>`
+	buildSelectOpt : (value, text, selected, disabled = false) => {
+		return `<option value="${value}" ${( value === selected ) ? 'selected' : ''} ${( disabled ) ? 'disabled' : ''}>${text}</option>`
 	},
 	getAttribNullError : (element, attrib) => {
 		const attribValue = element.getAttribute(attrib)

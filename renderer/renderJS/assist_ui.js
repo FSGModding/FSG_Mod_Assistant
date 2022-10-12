@@ -9,6 +9,7 @@
 /* global l10n, fsgUtil, bootstrap */
 
 let loadingModal = null
+let listModal    = null
 
 /*  __ ____   ______        
    |  |_   | |      |.-----.
@@ -41,10 +42,16 @@ window.mods.receive('fromMain_loadingTotal', (count) => { fsgUtil.byId('count_to
 window.mods.receive('fromMain_loadingDone',  (count) => { fsgUtil.byId('count_done').innerHTML  = count })
 window.mods.receive('fromMain_showLoading',  () => { loadingModal.show() })
 window.mods.receive('fromMain_hideLoading',  () => { loadingModal.hide() })
+window.mods.receive('fromMain_showListSet',  () => { listModal.show() })
+window.mods.receive('fromMain_hideListSet',  () => { listModal.hide() })
 
-window.mods.receive('fromMain_modList', (modList) => {
-	const modTable = []
-	const optList  = []
+window.mods.receive('fromMain_modList', (modList, extraL10n, currentList) => {
+	const selectedList = ( currentList !== '999' && currentList !== '0') ? `collection--${currentList}` : currentList
+	const modTable     = []
+	const optList      = []
+
+	optList.push(fsgUtil.buildSelectOpt('0', `--${extraL10n[0]}--`, selectedList, true))
+	
 	Object.keys(modList).forEach((collection) => {
 		const modRows = []
 		modList[collection].mods.forEach((thisMod) => {
@@ -61,9 +68,10 @@ window.mods.receive('fromMain_modList', (modList) => {
 			`${modList[collection].name} (${modList[collection].mods.length})`,
 			modRows
 		))
-		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, modList[collection].name, false))
+		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, modList[collection].name, selectedList))
 
 	})
+	optList.push(fsgUtil.buildSelectOpt('999', `--${extraL10n[1]}--`, selectedList, true))
 	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
 	lastModSelect   = null
@@ -181,6 +189,18 @@ function fileListClick(event) {
 	}
 }
 
+function clientMakeListInactive() {
+	fsgUtil.byId('collectionSelect').value = 0
+	window.mods.makeInactive()
+}
+function clientMakeListActive() {
+	const activePick = fsgUtil.byId('collectionSelect').value.replace('collection--', '')
+
+	if ( activePick !== '0' && activePick !== '999' ) {
+		window.mods.makeActive(activePick)
+	}
+}
+
 function makeModCollection(id, name, modsRows) {
 	let tableHTML = ''
 	
@@ -203,9 +223,6 @@ function makeModRow(id, name, version, badges, disabled = false) {
 	return `<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name} ${badges}</td><td>${version}</td></tr>`
 }
 
-function clientMakeListActive() {
-	window.mods.makeActive(fsgUtil.byId('collectionSelect').value)
-}
 
 function clientBatchOperation(mode) {
 	const selectedMods = []
@@ -255,6 +272,7 @@ window.addEventListener('show.bs.collapse', () => { deSelectAll() })
 
 window.addEventListener('DOMContentLoaded', () => {
 	loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'))
+	listModal = new bootstrap.Modal(document.getElementById('setModel'))
 	processL10N()
 })
 

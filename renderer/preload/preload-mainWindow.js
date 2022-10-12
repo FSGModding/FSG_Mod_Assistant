@@ -30,14 +30,14 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'mods', {
 		addFolder : () => { ipcRenderer.send('toMain_addFolder') },
-		editFolders : () => { ipcRenderer.send('toMain_editFolders') }, //TODO: editFolders
-		makeActive : (list) => { ipcRenderer.send('toMain_makeActive', list) }, // TODO: makeActive
-		makeInactive : () => { ipcRenderer.send('toMain_makeInactive' ) }, // TODO: makeInactive
+		editFolders : () => { ipcRenderer.send('toMain_editFolders') },
+		makeActive : (list) => { ipcRenderer.send('toMain_makeActive', list) },
+		makeInactive : () => { ipcRenderer.send('toMain_makeInactive' ) },
 
-		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) }, // TODO: copyMods
-		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) }, // TODO: moveMods
-		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) }, // TODO: deleteMods
-		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) }, // TODO: openMods
+		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
+		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
+		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
+		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
 
 		debugLog  : () => { ipcRenderer.send('openDebugLogContents') },
 		openMod   : (modID) => { ipcRenderer.send('toMain_openModDetail', modID) },
@@ -47,6 +47,8 @@ contextBridge.exposeInMainWorld(
 				'fromMain_modList',
 				'fromMain_showLoading',
 				'fromMain_hideLoading',
+				'fromMain_showListSet',
+				'fromMain_hideListSet',
 				'fromMain_loadingTotal',
 				'fromMain_loadingDone'
 			]
