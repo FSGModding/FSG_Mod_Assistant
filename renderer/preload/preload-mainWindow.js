@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld(
 		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
 		receive         : ( channel, func ) => {
 			const validChannels = [
+				'fromMain_getText_return_title',
 				'fromMain_getText_return',
 				'fromMain_langList_return',
 				'fromMain_l10n_refresh'

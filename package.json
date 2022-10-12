@@ -1,6 +1,6 @@
 {
   "name": "fsg-mod-assistant",
-  "version": "1.0.0",
+  "version": "0.0.9a",
   "description": "FSG Farm Sim Mod Assistant",
   "main": "modAssist_main.js",
   "homepage": "https://github.com/FSGModding/FSG_Mod_Assistant#readme",
@@ -43,8 +43,8 @@
     "yargs": "^17.5.1"
   },
   "build": {
-    "appId": "jtsage.fsmodchecker",
-    "productName": "FSModChecker",
+    "appId": "jtsage.fsmodassist",
+    "productName": "FSModAssistant",
     "files": [
       "!/test/*",
       "!/screen_shots/*",
@@ -59,9 +59,6 @@
     },
     "portable": {
       "artifactName": "${productName} Portable ${version}.exe"
-    },
-    "mac": {
-      "category": "public.app-category.productivity"
     }
   }
 }

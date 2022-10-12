@@ -9,13 +9,13 @@
 
 const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = require('electron')
 
-// const { autoUpdater } = require('electron-updater')
+const { autoUpdater } = require('electron-updater')
 
-const devDebug = true
+const devDebug = false
 
-// if (process.platform === 'win32') {
-// 	autoUpdater.checkForUpdatesAndNotify()
-// }
+if (process.platform === 'win32') {
+	autoUpdater.checkForUpdatesAndNotify()
+}
 
 const path       = require('path')
 const fs         = require('fs')
@@ -32,9 +32,21 @@ const { mcLogger }             = require('./lib/logger.js')
 const { modFileChecker }       = require('./lib/single-mod-checker.js')
 const mcDetail                 = require('./package.json')
 
+const settingsSchema = {
+	main_window_x     : { type : 'number', maximum : 4096, minimum : 100, default : 1000 },
+	main_window_y     : { type : 'number', maximum : 4096, minimum : 100, default : 700 },
+	main_window_max   : { type : 'boolean', default : false },
+	detail_window_x   : { type : 'number', maximum : 4096, minimum : 100, default : 800 },
+	detail_window_y   : { type : 'number', maximum : 4096, minimum : 100, default : 500 },
+	detail_window_max : { type : 'boolean', default : false },
+	modFolders        : { type : 'array', default : [] },
+	lock_lang         : { type : 'boolean', default : false },
+	force_lang        : { type : 'string', default : '' },
+	game_settings     : { type : 'string', default : path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022', 'gameSettings.xml') },
+}
 
 const Store   = require('electron-store')
-const mcStore = new Store()
+const mcStore = new Store({schema : settingsSchema})
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
@@ -64,7 +76,7 @@ let quickRescan  = false
 let workWidth  = 0
 let workHeight = 0
 
-let gameSettings    = mcStore.get('game_settings', path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022', 'gameSettings.xml'))
+let gameSettings    = mcStore.get('game_settings')
 let gameSettingsXML = null
 let overrideFolder  = null
 let overrideIndex   = '999'
@@ -173,7 +185,7 @@ function createConfirmWindow(type, modRecords, origList) {
 
 	windows.confirm.loadFile(path.join(pathRender, file_HTML))
 
-	windows.confirm.on('closed', () => { windows.confirm = null })
+	windows.confirm.on('closed', () => { windows.confirm = null; windows.main.focus() })
 }
 
 function createFolderWindow() {
@@ -202,7 +214,7 @@ function createFolderWindow() {
 	})
 
 	windows.folder.loadFile(path.join(pathRender, 'folders.html'))
-	windows.folder.on('closed', () => { windows.folder = null; processModFolders() })
+	windows.folder.on('closed', () => { windows.folder = null; windows.main.focus(); processModFolders() })
 }
 
 function createDetailWindow(thisModRecord) {
@@ -237,7 +249,7 @@ function createDetailWindow(thisModRecord) {
 	})
 
 	windows.detail.loadFile(path.join(pathRender, 'detail.html'))
-	windows.detail.on('closed', () => { windows.detail = null })
+	windows.detail.on('closed', () => { windows.detail = null; windows.main.focus() })
 }
 
 function createDebugWindow(logClass) {
@@ -264,7 +276,7 @@ function createDebugWindow(logClass) {
 
 	windows.debug.removeMenu()
 	windows.debug.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
-	windows.debug.on('closed', () => { windows.debug = null })
+	windows.debug.on('closed', () => { windows.debug = null; windows.main.focus() })
 }
 
 function createPrefsWindow() {
@@ -291,7 +303,7 @@ function createPrefsWindow() {
 	})
 
 	windows.prefs.loadFile(path.join(pathRender, 'prefs.html'))
-	windows.prefs.on('closed', () => { windows.prefs = null })
+	windows.prefs.on('closed', () => { windows.prefs = null; windows.main.focus() })
 }
 
 
@@ -388,6 +400,11 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			myTranslator.stringLookup(l10nEntry).then((text) => {
 				event.sender.send('fromMain_getText_return', [l10nEntry, text])
 			})
+			myTranslator.stringTitleLookup(l10nEntry).then((text) => {
+				if ( text !== null ) {
+					event.sender.send('fromMain_getText_return_title', [l10nEntry, text])
+				}
+			})
 		}
 	})
 })
@@ -440,11 +457,36 @@ ipcMain.on('saveDebugLogContents', () => {
 
 /** Preferences window operation */
 ipcMain.on('toMain_openPrefs', () => { createPrefsWindow() })
-ipcMain.on('toMain_refreshPrefs', (event) => { event.sender.send( 'fromMain_allSettings', mcStore.store ) })
+ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setPref', (event, name, value) => {
 	if ( name === 'lock_lang' ) { mcStore.set('force_lang', myTranslator.currentLocale) }
+	if ( name === 'game_settings' ) { gameSettings = value }
 	mcStore.set(name, value)
+	event.sender.send( 'fromMain_allSettings', mcStore.store )
 })
+ipcMain.on('toMain_setPrefFile', (event) => {
+	dialog.showOpenDialog(windows.prefs, {
+		properties  : ['openFile'],
+		defaultPath : path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022'),
+		filters     : [
+			{ name : 'XML', extensions : ['xml'] },
+			{ name : 'All', extensions : ['*'] },
+		],
+	}).then((result) => {
+		if ( result.canceled ) {
+			logger.notice('gameSettings', 'New gamesettings :: canceled')
+		} else {
+			mcStore.set('game_settings', result.filePaths[0])
+			gameSettings = result.filePaths[0]
+			parseSettings()
+			event.sender.send( 'fromMain_allSettings', mcStore.store )
+		}
+	}).catch((unknownError) => {
+		logger.notice('gameSettings', `Could not read specified gamesettings : ${unknownError}`)
+	})
+	
+})
+/** END: Preferences window operation */
 
 
 /** Main Window Modal Functions */

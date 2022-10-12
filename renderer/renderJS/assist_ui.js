@@ -36,6 +36,9 @@ window.l10n.receive('fromMain_langList_return', (listData, selected) => {
 window.l10n.receive('fromMain_getText_return', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
 })
+window.l10n.receive('fromMain_getText_return_title', (data) => {
+	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.closest('button').title = data[1] })
+})
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 window.mods.receive('fromMain_loadingTotal', (count) => { fsgUtil.byId('count_total').innerHTML = count })
@@ -58,6 +61,7 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList) => {
 			modRows.push(makeModRow(
 				`${collection}--${thisMod.uuid}`,
 				thisMod.fileDetail.shortName,
+				thisMod.l10n.title,
 				thisMod.modDesc.version,
 				thisMod.badges,
 				thisMod.canNotUse
@@ -219,8 +223,8 @@ function makeModCollection(id, name, modsRows) {
 	return tableHTML
 }
 
-function makeModRow(id, name, version, badges, disabled = false) {
-	return `<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name} ${badges}</td><td>${version}</td></tr>`
+function makeModRow(id, name, title, version, badges, disabled = false) {
+	return `<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name} ${badges}<br /><small>${title}</small></td><td>${version}</td></tr>`
 }
 
 

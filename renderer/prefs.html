@@ -5,6 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/pref_ui.js"></script>
 </head>
 <body>
 	
@@ -12,116 +14,80 @@
 		<div class="sticky-top pt-2 bg-body">
 			<div class="row w-100">
 				<div class="col-9 border-bottom">
-					<h2><span class="i18n" data-i18n="title"></span> v<span class="i18n" data-i18n="mc_ver_string"></span></h2>
+					<h2><l10n name="app_name"></l10n> v<l10n name="app_version"></l10n></h2>
 				</div>
 			</div>
-			<h3 class="text-center my-3 border-bottom w-75 mx-auto i18n" data-i18n="user_pref_title_main"></h3>
+			<h3 class="text-center my-3 border-bottom w-75 mx-auto i18n"><l10n name="user_pref_title_main"></l10n></h3>
 		</div>
 
 		<div class="row mx-4 mb-3">
 			<div class="border-bottom mb-2">
-				<h4 class="i18n" data-i18n="user_pref_title_lang"></h4>
-				<p class="i18n" data-i18n="user_pref_blurb_lang"></p>
+				<h4><l10n name="user_pref_title_lang"></l10n></h4>
+				<p><l10n name="user_pref_blurb_lang"></l10n></p>
 				<div class="row my-2">
-					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_lock_lang"" for="lock_lang"></label>
+					<label class="col-4 form-check-label i18n" for="lock_lang"><l10n name="user_pref_setting_lock_lang"></l10n></label>
 					<div class="col-8 ps-5 form-check form-switch">
-						<input onchange="ipc.setLockLang()" class="form-check-input" type="checkbox" id="lock_lang">
-					</div>
-				</div>
-				<div class="row my-1">
-					<label for="current_lang" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_current_lang"></label>
-					<div class="col-8">
-						<em id="current_lang"></em>
+						<input onchange="clientSetPref('lock_lang')" class="form-check-input" type="checkbox" id="lock_lang">
 					</div>
 				</div>
 			</div>
 			<div class="border-bottom mb-2">
-				<h4 class="i18n" data-i18n="user_pref_title_game_settings"></h4>
-				<p class="i18n" data-i18n="user_pref_blurb_game_settings"></p>
-				<div class="row my-2">
-					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_remember_last"" for="remember_last"></label>
-					<div class="col-8 ps-5 form-check form-switch">
-						<input onchange="ipc.setRememberLast()" class="form-check-input" type="checkbox" id="remember_last">
-					</div>
-				</div>
+				<h4><l10n name="user_pref_title_game_settings"></l10n></h4>
+				<p><l10n name="user_pref_blurb_game_settings"></l10n></p>
 				<div class="row my-1">
-					<label for="current_gamesettings" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_current_gamesettings"></label>
-					<div class="col-8">
-						<em id="current_gamesettings"></em>
+					<div class="col-12">
+						<em id="game_settings">TODO: FIX THIS</em>
 					</div>
 				</div>
-				<div class="row my-2">
-					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_auto_process" for="auto_process"></label>
-					<div class="col-8 ps-5 form-check form-switch">
-						<input onchange="ipc.setAutoProcess()" class="form-check-input" type="checkbox" id="auto_process">
-					</div>
-				</div>
+				<div class="d-block btn btn-success w-75 mx-auto mb-3" onclick="window.mods.setPrefFile()"><l10n name="user_pref_button_game_settings"></l10n></div>
 				
 			</div>
 			<div class="border-bottom mb-2">
-				<h4 class="i18n" data-i18n="user_pref_title_main_window"></h4>
-				<p class="i18n" data-i18n="user_pref_blurb_main_window"></p>
+				<h4><l10n name="user_pref_title_main_window"></l10n></h4>
+				<p><l10n name="user_pref_blurb_main_window"></l10n></p>
 				<div class="row">
-					<label for="main_window_x" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_x"></label>
+					<label for="main_window_x" class="col-4 col-form-label i18n"><l10n name="user_pref_setting_window_x"></l10n></label>
 					<div class="col-8">
-						<input onchange="ipc.setMainWindowX()" type="number" class="form-control" id="main_window_x">
+						<input onchange="clientSetPref('main_window_x')" type="number" class="form-control" id="main_window_x">
 					</div>
 				</div>
 				<div class="row my-1">
-					<label for="main_window_y" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_y"></label>
+					<label for="main_window_y" class="col-4 col-form-label i18n"><l10n name="user_pref_setting_window_y"></l10n></label>
 					<div class="col-8">
-						<input onchange="ipc.setMainWindowY()" type="number" class="form-control" id="main_window_y">
+						<input onchange="clientSetPref('main_window_y')" type="number" class="form-control" id="main_window_y">
 					</div>
 				</div>
 				<div class="row my-2">
-					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_window_max"" for="main_window_max"></label>
+					<label class="col-4 form-check-label i18n" for="main_window_max"><l10n name="user_pref_setting_window_max"></l10n></label>
 					<div class="col-8 ps-5 form-check form-switch">
-						<input onchange="ipc.setMainWindowMax()" class="form-check-input" type="checkbox" id="main_window_max">
+						<input onchange="clientSetPref('main_window_max')" class="form-check-input" type="checkbox" id="main_window_max">
 					</div>
 				</div>
 				
 			</div>
 			<div class="border-bottom mb-2">
-				<h4 class="i18n" data-i18n="user_pref_title_detail_window"></h4>
-				<p class="i18n" data-i18n="user_pref_blurb_detail_window"></p>
+				<h4><l10n name="user_pref_title_detail_window"></l10n></h4>
+				<p><l10n name="user_pref_blurb_detail_window"></l10n></p>
 
 				<div class="row">
-					<label for="detail_window_x" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_x"></label>
+					<label for="detail_window_x" class="col-4 col-form-label i18n"><l10n name="user_pref_setting_window_x"></l10n></label>
 					<div class="col-8">
-						<input onchange="ipc.setDetailWindowX()" type="number" class="form-control" id="detail_window_x">
+						<input onchange="clientSetPref('detail_window_x')" type="number" class="form-control" id="detail_window_x">
 					</div>
 				</div>
 				<div class="row my-1">
-					<label for="detail_window_y" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_window_y"></label>
+					<label for="detail_window_y" class="col-4 col-form-label i18n"><l10n name="user_pref_setting_window_y"></l10n></label>
 					<div class="col-8">
-						<input onchange="ipc.setDetailWindowY()" type="number" class="form-control" id="detail_window_y">
+						<input onchange="clientSetPref('detail_window_y')" type="number" class="form-control" id="detail_window_y">
 					</div>
 				</div>
 				<div class="row my-2">
-					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_window_max"" for="detail_window_max"></label>
+					<label class="col-4 form-check-label i18n" for="detail_window_max"><l10n name="user_pref_setting_window_max"></l10n></label>
 					<div class="col-8 ps-5 form-check form-switch">
-						<input onchange="ipc.setDetailWindowMax()" class="form-check-input" type="checkbox" id="detail_window_max">
+						<input onchange="clientSetPref('detail_window_max')" class="form-check-input" type="checkbox" id="detail_window_max">
 					</div>
 				</div>
 				
-			</div>
-			<div class="border-bottom mb-2">
-				<h4 class="i18n" data-i18n="user_pref_title_move_dest"></h4>
-				<p class="i18n" data-i18n="user_pref_blurb_move_dest"></p>
-				<div class="row my-2">
-					<label class="col-4 form-check-label i18n" data-i18n="user_pref_setting_use_move"" for="use_move"></label>
-					<div class="col-8 ps-5 form-check form-switch">
-						<input onchange="ipc.setUseMove()" class="form-check-input" type="checkbox" id="use_move">
-					</div>
-				</div>
-				<div class="row my-1">
-					<label for="move_destination" class="col-4 col-form-label i18n" data-i18n="user_pref_setting_move_dest"></label>
-					<div class="col-8">
-						<em id="move_destination"></em>
-					</div>
-				</div>
-				<button type="button" onclick="ipc.chooseMoveFolder()" class="btn btn-primary d-block w-100 mx-auto my-2 btn-sm i18n" data-i18n="user_pref_setting_move_button"></button>
-				<button type="button" onclick="ipc.openCleanDir()" class="btn btn-primary d-block w-100 mx-auto mb-2 mt-0 btn-sm i18n" data-i18n="user_pref_setting_move_open_button"></button>
 			</div>
 		</div>
 	</div>
