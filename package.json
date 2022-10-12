@@ -1,14 +1,14 @@
 {
   "name": "fsg-mod-assistant",
-  "version": "0.0.9a",
+  "version": "0.9.1",
   "description": "FSG Farm Sim Mod Assistant",
   "main": "modAssist_main.js",
   "homepage": "https://github.com/FSGModding/FSG_Mod_Assistant#readme",
   "keywords": [],
   "author": {
-    "name": "J.T.Sage",
+    "name": "FSG Modding",
     "email": "jtsage+datebox@gmail.com",
-    "url": "http://jtsage.dev"
+    "url": "https://www.fsgmodding.com/"
   },
   "license": "ISC",
   "bugs": {
@@ -23,8 +23,6 @@
   "devDependencies": {
     "@babel/core": "^7.19.1",
     "@babel/eslint-parser": "^7.19.1",
-    "ansi-colors": "^4.1.3",
-    "diff": "^5.1.0",
     "electron": "^20.2.0",
     "electron-builder": "^23.3.3",
     "eslint": "^8.24.0"
@@ -35,10 +33,8 @@
     "electron-store": "^8.1.0",
     "electron-updater": "^5.2.1",
     "glob": "^8.0.3",
-    "node-stream-zip": "^1.15.0",
     "parse-dds": "^1.2.1",
     "pngjs": "^6.0.0",
-    "trash": "^8.1.0",
     "xml2js": "^0.4.23",
     "yargs": "^17.5.1"
   },
