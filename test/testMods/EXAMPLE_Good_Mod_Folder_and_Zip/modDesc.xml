@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="53">
-	<author>FSModCheck Test</author>
+<modDesc descVersion="69">
+	<author>FSModAssit Test</author>
 
-	<title> <en>Totally valid FS19 Mod</en></title>
+	<title> <en>Totally valid FS22 Mod</en></title>
 
 	<description>
-		<en><![CDATA[Demonstates how FSModCheck handles a good mod file.]]></en>
+		<en><![CDATA[Demonstates how FSModAssit handles a good mod file.]]></en>
 	</description>
 
 	<version>1.0.0.0</version>

@@ -7,8 +7,6 @@
 // Main Program
 
 
-
-//const { app, Menu, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = require('electron')
 const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = require('electron')
 
 // const { autoUpdater } = require('electron-updater')
