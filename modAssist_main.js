@@ -24,8 +24,10 @@ const fs         = require('fs')
 const glob       = require('glob')
 const xml2js     = require('xml2js')
 
-const userHome  = require('os').homedir()
-
+const userHome    = require('os').homedir()
+const pathRender  = path.join(app.getAppPath(), 'renderer')
+const pathPreload = path.join(pathRender, 'preload')
+const pathIcon    = path.join(app.getAppPath(), 'build', 'icon.png')
 
 const translator               = require('./lib/translate.js')
 const { mcLogger }             = require('./lib/logger.js')
@@ -39,9 +41,7 @@ const mcStore = new Store()
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
 
-
 const logger = new mcLogger()
-
 
 let modFolders    = new Set()
 let modFoldersMap = {}
@@ -50,9 +50,16 @@ let modListCache  = {}
 let countTotal    = 0
 let countMods     = 0
 
-let win          = null // Main window
-let splash       = null // Splash screen
-let confirmWin   = null // Confirmation Window
+const windows = {
+	main    : null,
+	splash  : null,
+	confirm : null,
+	detail  : null,
+	prefs   : null,
+	folder  : null,
+	debug   : null,
+}
+
 let foldersDirty = true
 let quickRescan  = false
 
@@ -66,76 +73,30 @@ let overrideIndex   = '999'
 let overrideActive  = null
 
 
-function parseSettings(newSetting = false) {
-	const XMLOptions      = {strict : true, async : false, normalizeTags : false }
-	const strictXMLParser = new xml2js.Parser(XMLOptions)
-	const XMLString       = fs.readFileSync(gameSettings, 'utf8')
-	
-	strictXMLParser.parseString(XMLString, (err, result) => {
-		gameSettingsXML = result
-		overrideFolder = gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.directory
-		overrideActive = gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active
-	})
 
-	if ( overrideActive === 'false' || overrideActive === false ) {
-		overrideIndex = '0'
-	} else {
-		overrideIndex = '999'
-		Object.keys(modFoldersMap).forEach((cleanName) => {
-			if ( modFoldersMap[cleanName] === overrideFolder ) {
-				overrideIndex = cleanName
-			}
-		})
-	}
+/*  _    _  ____  _  _  ____   _____  _    _  ___ 
+   ( \/\/ )(_  _)( \( )(  _ \ (  _  )( \/\/ )/ __)
+    )    (  _)(_  )  (  )(_) ) )(_)(  )    ( \__ \
+   (__/\__)(____)(_)\_)(____/ (_____)(__/\__)(___/ */
 
-	if ( newSetting !== false ) {
-		win.webContents.send('fromMain_showListSet')
-		if ( newSetting === 'DISABLE' ) {
-			gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active    = false
-		} else {
-			gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active    = true
-			gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.directory = newSetting
-		}
-
-		const builder   = new xml2js.Builder({
-			xmldec : {
-				'version' : '1.0', 'encoding' : 'UTF-8', 'standalone' : false,
-			},
-			renderOpts : {
-				'pretty' : true, 'indent' : '    ', 'newline' : '\n',
-			},
-		})
-		let   outputXML = builder.buildObject(gameSettingsXML)
-
-		outputXML = outputXML.replace('<ingameMapFruitFilter/>', '<ingameMapFruitFilter></ingameMapFruitFilter>')
-
-		try {
-			fs.writeFileSync(gameSettings, outputXML)
-		} catch (e) {
-			logger.fileError('gameSettings', `Could not write game settings ${e}`)
-		}
-		setTimeout(() => { win.webContents.send('fromMain_hideListSet') }, 1500)
-	}
-}
-
-function createWindow () {
-	win = new BrowserWindow({
-		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+function createMainWindow () {
+	windows.main = new BrowserWindow({
+		icon            : pathIcon,
 		width           : mcStore.get('main_window_x', 1000),
 		height          : mcStore.get('main_window_y', 700),
+		title           : myTranslator.syncStringLookup('app_name'),
 		show            : devDebug,
 		autoHideMenuBar : !devDebug,
 		webPreferences  : {
 			nodeIntegration  : false,
 			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'renderer', 'preload', 'preload-mainWindow.js'),
+			preload          : path.join(pathPreload, 'preload-mainWindow.js'),
 		},
 	})
 
 
-
 	if ( !devDebug ) {
-		splash = new BrowserWindow({
+		windows.splash = new BrowserWindow({
 			width           : 500,
 			height          : 250,
 			transparent     : true,
@@ -147,141 +108,48 @@ function createWindow () {
 		const pos_left = (workWidth / 2)  - ( 500 / 2 )
 		const pos_top  = (workHeight / 2) - ( 250 / 2 )
 
-		splash.setPosition(pos_left, pos_top)
+		windows.splash.setPosition(pos_left, pos_top)
+		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${mcDetail.version}`)
 
-		splash.loadURL(`file://${path.join(app.getAppPath(), 'renderer', 'splash.html')}?version=${mcDetail.version}`)
-
-		win.removeMenu()
-
-		win.once('ready-to-show', () => {
-			setTimeout(() => {
-				win.show()
-				splash.destroy()
-			}, 1500)
+		windows.main.removeMenu()
+		windows.main.once('ready-to-show', () => {
+			setTimeout(() => { windows.main.show(); windows.splash.destroy() }, 1500)
 		})
 	}
 
+	if ( mcStore.get('main_window_max', false) ) { windows.main.maximize() }
 
+	windows.main.loadFile(path.join(pathRender, 'main.html'))
 
-	if ( mcStore.has('main_window_max') && mcStore.get('main_window_max') ) {
-		win.maximize()
-	}
-
-	win.loadFile(path.join(app.getAppPath(), 'renderer', 'main.html'))
-
-	
-	win.webContents.on('did-finish-load', () => {
+	windows.main.webContents.on('did-finish-load', () => {
 		const showCount = setInterval(() => {
-			if ( win.isVisible() ) {
+			if ( windows.main.isVisible() ) {
 				clearInterval(showCount)
 				if ( mcStore.has('modFolders') ) {
 					modFolders   = new Set(mcStore.get('modFolders'))
 					foldersDirty = true
 					setTimeout(() => { processModFolders() }, 1500)
 				}
-				win.webContents.openDevTools()
+				if ( devDebug ) { windows.main.webContents.openDevTools() }
 			}
 		}, 250)
-
-
-		myTranslator.stringLookup('app_name').then((title) => {
-			win.title = title
-		})
-	})
-	win.webContents.setWindowOpenHandler(({ url }) => {
-		require('electron').shell.openExternal(url)
-		return { action : 'deny' }
 	})
 	
-}
-
-ipcMain.on('toMain_makeInactive', () => { parseSettings('DISABLE') })
-ipcMain.on('toMain_makeActive', (event, newList) => { parseSettings(modFoldersMap[newList]) })
-
-ipcMain.on('toMain_openMods', (event, mods) => {
-	const thisMod = modIdToRecord(mods[0])
-
-	if ( thisMod !== null ) { shell.showItemInFolder(thisMod.fileDetail.fullPath) }
-})
-
-ipcMain.on('toMain_realFileMove', (event, fileMap) => { copyORmove('move', fileMap) })
-ipcMain.on('toMain_realFileCopy', (event, fileMap) => { copyORmove('copy', fileMap) })
-ipcMain.on('toMain_realFileDelete', async (event, collection, uuid) => {
-	const foundMod = modIdToRecord(`${collection}--${uuid}`)
-	await shell.trashItem(foundMod.fileDetail.fullPath)
-	foldersDirty = true
-	quickRescan  = true
-	confirmWin.close()
-	processModFolders()
-})
-
-
-
-function copyORmove(type, fileMap) {
-	const fullPathMap = []
-
-	fileMap.forEach((file) => {
-		fullPathMap.push([file[2], file[2].replaceAll(modFoldersMap[file[1]], modFoldersMap[file[0]])])
+	windows.main.webContents.setWindowOpenHandler(({ url }) => {
+		shell.openExternal(url)
+		return { action : 'deny' }
 	})
-
-	confirmWin.close()
-	win.focus()
-
-	foldersDirty = true
-	quickRescan  = true
-
-	incrementTotal(0, true)
-	incrementDone(0, true)
-
-	incrementTotal(fullPathMap.length)
-
-	win.webContents.send('fromMain_showLoading')
-
-	setTimeout(() => {
-		fullPathMap.forEach((file) => {
-			try {
-				if ( type === 'copy' ) {
-					fs.copyFileSync(file[0], file[1])
-				} else {
-					fs.renameSync(file[0], file[1])
-				}
-			} catch (e) {
-				logger.fileError(`${type}File`, `Could not ${type} file : ${e}`)
-			}
-			incrementDone()
-		})
-		
-		
-		processModFolders()
-	}, 1000)
 }
 
-ipcMain.on('toMain_deleteMods', (event, mods) => {
-	const thisMod = modIdToRecord(mods[0])
-	if ( thisMod !== null ) { openConfirm('delete', thisMod, mods) }
-})
-
-ipcMain.on('toMain_moveMods', (event, mods) => {
-	const theseMods = []
-	mods.forEach((inMod) => { theseMods.push(modIdToRecord(inMod)) })
-	if ( theseMods.length > 0 ) { openConfirm('move', theseMods, mods) }
-})
-
-ipcMain.on('toMain_copyMods', (event, mods) => {
-	const theseMods = []
-	mods.forEach((inMod) => { theseMods.push(modIdToRecord(inMod)) })
-	if ( theseMods.length > 0 ) { openConfirm('copy', theseMods, mods) }
-})
-
-
-function openConfirm(type, modRecords, origList) {
-	if (confirmWin) { confirmWin.focus(); return }
+function createConfirmWindow(type, modRecords, origList) {
+	if ( windows.confirm ) { windows.confirm.focus(); return }
 
 	const file_HTML  = `confirm-file${type.charAt(0).toUpperCase()}${type.slice(1)}.html`
 	const file_JS    = `preload-confirm${type.charAt(0).toUpperCase()}${type.slice(1)}.js`
 	const collection = origList[0].split('--')[0]
 
-	confirmWin = new BrowserWindow({
+	windows.confirm = new BrowserWindow({
+		icon            : pathIcon,
 		width           : 750,
 		height          : 500,
 		alwaysOnTop     : true,
@@ -290,67 +158,31 @@ function openConfirm(type, modRecords, origList) {
 		webPreferences  : {
 			nodeIntegration  : false,
 			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'renderer', 'preload', file_JS),
+			preload          : path.join(pathPreload, file_JS),
 		},
 	})
 
 	const pos_left = (workWidth / 2)  - ( 750 / 2 )
 	const pos_top  = (workHeight / 2) - ( 500 / 2 )
 
-	confirmWin.setPosition(pos_left, pos_top)
+	windows.confirm.setPosition(pos_left, pos_top)
 
-	if ( !devDebug ) { confirmWin.removeMenu() }
+	if ( !devDebug ) { windows.confirm.removeMenu() }
 
-	confirmWin.webContents.on('did-finish-load', async (event) => {
+	windows.confirm.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_confirmList', modRecords, modList, modFoldersMap, collection)
 	})
 
-	confirmWin.loadFile(path.join(app.getAppPath(), 'renderer', file_HTML))
+	windows.confirm.loadFile(path.join(pathRender, file_HTML))
 
-	confirmWin.on('closed', () => { confirmWin = null })
+	windows.confirm.on('closed', () => { windows.confirm = null })
 }
 
+function createFolderWindow() {
+	if ( windows.folder ) { windows.folder.focus(); return }
 
-
-
-ipcMain.on('toMain_addFolder', () => {
-	const homedir  = require('os').homedir()
-	
-	dialog.showOpenDialog(win, {
-		properties  : ['openDirectory'],
-		defaultPath : homedir,
-	}).then((result) => {
-		if ( result.canceled ) {
-			logger.notice('folderList', 'Add folder :: canceled')
-		} else {
-			let alreadyExists = false
-			modFolders.forEach((thisPath) => {
-				if ( path.relative(thisPath, result.filePaths[0]) === '' ) { alreadyExists = true }
-			})
-			if ( ! alreadyExists ) {
-				modFolders.add(result.filePaths[0])
-				foldersDirty = true
-			}
-
-			mcStore.set('modFolders', Array.from(modFolders))
-			processModFolders(result.filePaths[0])
-		}
-	}).catch((unknownError) => {
-		// Read of file failed? Permissions issue maybe?  Not sure.
-		logger.notice('folderList', `Could not read specified add folder : ${unknownError}`)
-	})
-})
-
-
-let folderWindow = null
-
-ipcMain.on('toMain_editFolders', () => { openFolderWindow() })
-
-function openFolderWindow() {
-	if (folderWindow) { folderWindow.focus(); return }
-
-	folderWindow = new BrowserWindow({
-		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
+	windows.folder = new BrowserWindow({
+		icon            : pathIcon,
 		width           : mcStore.get('detail_window_x', 800),
 		height          : mcStore.get('detail_window_y', 500),
 		title           : myTranslator.syncStringLookup('app_name'),
@@ -361,27 +193,175 @@ function openFolderWindow() {
 		webPreferences  : {
 			nodeIntegration  : false,
 			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'renderer', 'preload', 'preload-folderWindow.js'),
+			preload          : path.join(pathPreload, 'preload-folderWindow.js'),
 		},
 	})
 
-	if ( mcStore.has('detail_window_max') && mcStore.get('detail_window_max') ) { folderWindow.maximize() }
+	if ( !devDebug ) { windows.folder.removeMenu() }
 
-	if ( !devDebug ) { folderWindow.removeMenu() }
-
-	folderWindow.webContents.on('did-finish-load', async (event) => {
+	windows.folder.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_getFolders', modList)
 	})
 
-	folderWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'folders.html'))
-
-	folderWindow.on('closed', () => {
-		folderWindow = null
-		processModFolders()
-	})
+	windows.folder.loadFile(path.join(pathRender, 'folders.html'))
+	windows.folder.on('closed', () => { windows.folder = null; processModFolders() })
 }
 
-ipcMain.on('toMain_openFolder', (event, folder) => { shell.openPath(folder) })
+function createDetailWindow(thisModRecord) {
+	if ( windows.detail ) { windows.detail.focus(); return }
+
+	thisModRecord.populateL10n()
+	thisModRecord.populateIcon()
+	thisModRecord.currentLocale = translator.currentLocale
+
+	windows.detail = new BrowserWindow({
+		icon            : pathIcon,
+		width           : mcStore.get('detail_window_x', 800),
+		height          : mcStore.get('detail_window_y', 500),
+		title           : thisModRecord.l10n.title,
+		minimizable     : false,
+		maximizable     : true,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(pathPreload, 'preload-detailWindow.js'),
+		},
+	})
+
+	if ( mcStore.get('detail_window_max', false) ) { windows.detail.maximize() }
+
+	if ( !devDebug ) { windows.detail.removeMenu() }
+
+	windows.detail.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('fromMain_modRecord', thisModRecord)
+	})
+
+	windows.detail.loadFile(path.join(pathRender, 'detail.html'))
+	windows.detail.on('closed', () => { windows.detail = null })
+}
+
+function createDebugWindow(logClass) {
+	if ( windows.debug ) { windows.debug.focus(); return }
+
+	windows.debug = new BrowserWindow({
+		icon            : pathIcon,
+		width           : 800,
+		height          : 500,
+		title           : 'Debug',
+		minimizable     : false,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(pathPreload, 'preload-debugWindow.js'),
+		},
+	})
+
+	windows.debug.webContents.on('did-finish-load', (event) => {
+		event.sender.send('update-log', logClass.toDisplayHTML)
+	})
+
+	windows.debug.removeMenu()
+	windows.debug.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
+	windows.debug.on('closed', () => { windows.debug = null })
+}
+
+function createPrefsWindow() {
+	if ( windows.prefs ) { windows.prefs.focus(); return }
+
+	windows.prefs = new BrowserWindow({
+		icon            : pathIcon,
+		width           : 800,
+		height          : 500,
+		title           : myTranslator.syncStringLookup('user_pref_title_main'),
+		minimizable     : false,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(pathPreload, 'preload-prefsWindow.js'),
+		},
+	})
+	if ( !devDebug ) { windows.prefs.removeMenu() }
+
+	windows.prefs.webContents.on('did-finish-load', (event) => {
+		event.sender.send( 'fromMain_allSettings', mcStore.store )
+	})
+
+	windows.prefs.loadFile(path.join(pathRender, 'prefs.html'))
+	windows.prefs.on('closed', () => { windows.prefs = null })
+}
+
+
+/*  ____  ____   ___ 
+   (_  _)(  _ \ / __)
+    _)(_  )___/( (__ 
+   (____)(__)   \___) */
+
+/** File operation buttons */
+ipcMain.on('toMain_makeInactive', () => { parseSettings('DISABLE') })
+ipcMain.on('toMain_makeActive', (event, newList) => { parseSettings(modFoldersMap[newList]) })
+ipcMain.on('toMain_openMods', (event, mods) => {
+	const thisMod = modIdToRecord(mods[0])
+	if ( thisMod !== null ) { shell.showItemInFolder(thisMod.fileDetail.fullPath) }
+})
+
+ipcMain.on('toMain_realFileDelete', (event, fileMap) => { fileOperation('delete', fileMap) })
+ipcMain.on('toMain_deleteMods',     (event, mods) => {
+	/* Delete confirm window */
+	const theseMods = modIdsToRecords(mods)
+	if ( theseMods.length > 0  ) { createConfirmWindow('delete', theseMods, mods) }
+})
+
+ipcMain.on('toMain_realFileMove', (event, fileMap) => { fileOperation('move', fileMap) })
+ipcMain.on('toMain_moveMods',     (event, mods) => {
+	/* Move confirm window */
+	const theseMods = modIdsToRecords(mods)
+	if ( theseMods.length > 0 ) { createConfirmWindow('move', theseMods, mods) }
+})
+
+ipcMain.on('toMain_realFileCopy', (event, fileMap) => { fileOperation('copy', fileMap) })
+ipcMain.on('toMain_copyMods',     (event, mods) => {
+	/* Copy confirm window */
+	const theseMods = modIdsToRecords(mods)
+	if ( theseMods.length > 0 ) { createConfirmWindow('copy', theseMods, mods) }
+})
+/** END: File operation buttons */
+
+
+/** Folder Window Operation */
+ipcMain.on('toMain_addFolder', () => {
+	dialog.showOpenDialog(windows.main, {
+		properties : ['openDirectory'], defaultPath : userHome,
+	}).then((result) => {
+		if ( result.canceled ) {
+			logger.notice('folderList', 'Add folder :: canceled')
+		} else {
+			let alreadyExists = false
+
+			modFolders.forEach((thisPath) => {
+				if ( path.relative(thisPath, result.filePaths[0]) === '' ) { alreadyExists = true }
+			})
+
+			if ( ! alreadyExists ) {
+				modFolders.add(result.filePaths[0]); foldersDirty = true
+			} else {
+				logger.notice('folderList', 'Add folder :: canceled, already exists in list')
+			}
+
+			mcStore.set('modFolders', Array.from(modFolders))
+			processModFolders(result.filePaths[0])
+		}
+	}).catch((unknownError) => {
+		logger.notice('folderList', `Could not read specified add folder : ${unknownError}`)
+	})
+})
+ipcMain.on('toMain_editFolders',  () => { createFolderWindow() })
+ipcMain.on('toMain_openFolder',   (event, folder) => { shell.openPath(folder) })
 ipcMain.on('toMain_removeFolder', (event, folder) => {
 	if ( modFolders.delete(folder) ) {
 		logger.notice('folderManager', `Folder removed from list ${folder}`)
@@ -391,20 +371,17 @@ ipcMain.on('toMain_removeFolder', (event, folder) => {
 		logger.notice('folderManager', `Folder NOT removed from list ${folder}`)
 	}
 })
+/** END: Folder Window Operation */
 
 
 
-ipcMain.on('toMain_langList_change', (event, lang) => {
-	myTranslator.currentLocale = lang
-	event.sender.send('fromMain_l10n_refresh')
-})
-
-ipcMain.on('toMain_langList_send', (event) => {
+/** l10n Operation */
+ipcMain.on('toMain_langList_change', (event, lang) => { myTranslator.currentLocale = lang; event.sender.send('fromMain_l10n_refresh') })
+ipcMain.on('toMain_langList_send',   (event) => {
 	myTranslator.getLangList().then((langList) => {
 		event.sender.send('fromMain_langList_return', langList, myTranslator.deferCurrentLocale())
 	})
 })
-
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	l10nSet.forEach((l10nEntry) => {
 		if ( l10nEntry === 'app_version' ) {
@@ -416,119 +393,24 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 		}
 	})
 })
+/** END: l10n Operation */
 
 
-
-
-
-let detailWindow = null
-
+/** Detail window operation */
 ipcMain.on('toMain_openModDetail', (event, thisMod) => {
-	const thisModParts  = thisMod.split('--')
-	let   thisModDetail = null
-	let   foundMod      = false
+	const thisModDetail = modIdToRecord(thisMod)
 
-	try {
-		modList[thisModParts[0]].mods.forEach((checkMod) => {
-			if ( !foundMod && checkMod.uuid === thisModParts[1] ) {
-				foundMod      = true
-				thisModDetail = checkMod
-			}
-		})
-	} catch (e) {
-		this.log.info('detail', `Request for ${thisMod} failed: ${e}`)
-	}
-	if ( thisModDetail !== null ) {
-		openDetailWindow(thisModDetail)
-	}
+	if ( thisModDetail !== null ) { createDetailWindow(thisModDetail) }
 })
+/** END: Detail window operation */
 
 
-function openDetailWindow(thisModRecord) {
-	if (detailWindow) { detailWindow.focus(); return }
-
-	thisModRecord.populateL10n()
-	thisModRecord.populateIcon()
-	thisModRecord.currentLocale = translator.currentLocale
-
-	detailWindow = new BrowserWindow({
-		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
-		width           : mcStore.get('detail_window_x', 800),
-		height          : mcStore.get('detail_window_y', 500),
-		title           : thisModRecord.l10n.title,
-		minimizable     : false,
-		maximizable     : true,
-		fullscreenable  : false,
-		autoHideMenuBar : !devDebug,
-		webPreferences  : {
-			nodeIntegration  : false,
-			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'renderer', 'preload', 'preload-detailWindow.js'),
-		},
-	})
-
-	if ( mcStore.has('detail_window_max') && mcStore.get('detail_window_max') ) {
-		detailWindow.maximize()
-	}
-
-	if ( !devDebug ) { detailWindow.removeMenu() }
-
-	detailWindow.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modRecord', thisModRecord)
-	})
-
-	detailWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'detail.html'))
-
-	detailWindow.on('closed', () => { detailWindow = null })
-}
-
-
-
-
-
-
-
-
-
-
-let debugWindow = null
-
-function openDebugWindow(logClass) {
-	if (debugWindow) { debugWindow.focus(); return }
-
-	debugWindow = new BrowserWindow({
-		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
-		width           : 800,
-		height          : 500,
-		title           : 'Debug Log',
-		minimizable     : false,
-		fullscreenable  : false,
-		autoHideMenuBar : !devDebug,
-		webPreferences  : {
-			nodeIntegration  : false,
-			contextIsolation : true,
-			preload          : path.join(app.getAppPath(), 'renderer', 'preload', 'preload-debugWindow.js'),
-		},
-	})
-	if ( !devDebug ) { debugWindow.removeMenu() }
-
-	debugWindow.webContents.on('did-finish-load', (event) => {
-		const logContents = logClass.toDisplayHTML
-		event.sender.send('update-log', logContents)
-	})
-
-	debugWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
-
-	debugWindow.on('closed', () => { debugWindow = null })
-}
-
-ipcMain.on('openDebugLogContents', () => { openDebugWindow(logger) })
+/** Debug window operation */
+ipcMain.on('openDebugLogContents', () => { createDebugWindow(logger) })
 ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('update-log', logger.toDisplayHTML) })
 ipcMain.on('saveDebugLogContents', () => {
-	const homedir  = require('os').homedir()
-
-	dialog.showSaveDialog(win, {
-		defaultPath : path.join(homedir, 'Documents', 'modCheckDebugLog.txt' ),
+	dialog.showSaveDialog(windows.main, {
+		defaultPath : path.join(userHome, 'Documents', 'modAssistDebugLog.txt' ),
 		filters     : [
 			{ name : 'TXT', extensions : ['txt'] },
 			{ name : 'All', extensions : ['*'] },
@@ -537,121 +419,57 @@ ipcMain.on('saveDebugLogContents', () => {
 		if ( result.canceled ) {
 			logger.notice('logger', 'Save log file canceled')
 		} else {
-			const logContents = logger.toDisplayText
-
 			try {
-				fs.writeFileSync(result.filePath, logContents)
-				dialog.showMessageBoxSync(win, {
+				fs.writeFileSync(result.filePath, logger.toDisplayText)
+				dialog.showMessageBoxSync(windows.main, {
 					message : await myTranslator.stringLookup('save_log_worked'),
 					type    : 'info',
 				})
 			} catch (err) {
 				logger.fileError('logger', `Could not save log file : ${err}`)
-				dialog.showMessageBoxSync(win, {
+				dialog.showMessageBoxSync(windows.main, {
 					message : await myTranslator.stringLookup('save_log_failed'),
 					type    : 'warning',
 				})
 			}
 		}
 	}).catch((unknownError) => {
-		// Save of file failed? Permissions issue maybe?  Not sure.
 		logger.fileError('logger', `Could not save log file : ${unknownError}`)
 	})
 })
+/** END: Debug window operation */
 
-ipcMain.on('toMain_homeDirRevamp', (event, thisPath) => {
-	event.returnValue = thisPath.replaceAll(userHome, '~')
+
+/** Preferences window operation */
+ipcMain.on('toMain_openPrefs', () => { createPrefsWindow() })
+ipcMain.on('toMain_refreshPrefs', (event) => { event.sender.send( 'fromMain_allSettings', mcStore.store ) })
+ipcMain.on('toMain_setPref', (event, name, value) => {
+	if ( name === 'lock_lang' ) { mcStore.set('force_lang', myTranslator.currentLocale) }
+	mcStore.set(name, value)
 })
 
 
+/** Main Window Modal Functions */
+function pop_load_show() { windows.main.webContents.send('fromMain_showLoading') }
+function pop_list_show() { windows.main.webContents.send('fromMain_showListSet') }
+function pop_load_hide(time = 1000) { setTimeout(() => { windows.main.webContents.send('fromMain_hideLoading') }, time) }
+function pop_list_hide(time = 1000) { setTimeout(() => { windows.main.webContents.send('fromMain_hideListSet') }, time) }
+/** END: Main Window Modal Functions */
 
-
-
-
-
-
-// ipcMain.on('askOpenPreferencesWindow', () => {
-// 	openPrefWindow()
-// })
-
-// ipcMain.on('setPreference', (event, settingName, settingValue) => {
-// 	if ( settingName === 'lock_lang') {
-// 		if ( settingValue === true ) {
-// 			mcStore.set('force_lang', myTranslator.currentLocale)
-// 			mcStore.set('lock_lang', true)
-// 		} else {
-// 			mcStore.delete('force_lang')
-// 			mcStore.set('lock_lang', false)
-// 		}
-// 	} else {
-// 		mcStore.set(settingName, settingValue)
-// 	}
-// })
-
-// ipcMain.on('refreshPreferences', (event) => {
-// 	event.sender.send(
-// 		'got-pref-settings',
-// 		mcStore.store,
-// 		myTranslator.syncStringLookup('language_name')
-// 	)
-// })
-
-// function openPrefWindow() {
-// 	if (prefWindow) {
-// 		prefWindow.focus()
-// 		return
-// 	}
-
-// 	prefWindow = new BrowserWindow({
-// 		icon            : path.join(app.getAppPath(), 'build', 'icon.png'),
-// 		width           : 800,
-// 		height          : 500,
-// 		title           : myTranslator.syncStringLookup('user_pref_title_main'),
-// 		minimizable     : false,
-// 		fullscreenable  : false,
-// 		autoHideMenuBar : !devDebug,
-// 		webPreferences  : {
-// 			nodeIntegration  : false,
-// 			contextIsolation : true,
-// 			preload          : path.join(app.getAppPath(), 'renderer', 'preload-pref.js'),
-// 		},
-// 	})
-// 	if ( !devDebug ) { prefWindow.removeMenu() }
-
-// 	prefWindow.webContents.on('did-finish-load', (event) => {
-// 		event.sender.send(
-// 			'got-pref-settings',
-// 			mcStore.store,
-// 			myTranslator.syncStringLookup('language_name')
-// 		)
-// 		event.sender.send('trigger-i18n')
-// 	})
-
-// 	prefWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'prefs.html'))
-
-// 	prefWindow.on('closed', () => {
-// 		prefWindow = null
-// 	})
-// }
-
+/** Utility & Convenience Functions */
+ipcMain.on('toMain_homeDirRevamp', (event, thisPath) => { event.returnValue = thisPath.replaceAll(userHome, '~') })
 
 function incrementTotal(amount, reset = false) {
-	if ( reset ) {
-		countTotal = 0
-	} else {
-		countTotal += amount
-	}
-	win.webContents.send('fromMain_loadingTotal', countTotal)
-}
-function incrementDone(amount = 1, reset = false) {
-	if ( reset ) {
-		countMods = 0
-	} else {
-		countMods += amount
-	}
-	win.webContents.send('fromMain_loadingDone', countMods)
+	countTotal += ( reset ) ? ( -1 * countTotal ) : amount
+
+	windows.main.webContents.send('fromMain_loadingTotal', countTotal)
 }
 
+function incrementDone(amount = 1, reset = false) {
+	countMods += ( reset ) ? ( -1 * countMods ) : amount
+
+	windows.main.webContents.send('fromMain_loadingDone', countMods)
+}
 
 function modIdToRecord(id) {
 	const idParts = id.split('--')
@@ -678,12 +496,115 @@ function modCacheSearch(collection, path) {
 	return foundMod
 }
 
+function modIdsToRecords(mods) {
+	const theseMods = []
+	mods.forEach((inMod) => { theseMods.push(modIdToRecord(inMod)) })
+	return theseMods
+}
+/** END: Utility & Convenience Functions */
+
+
+/** Business Functions */
+function parseSettings(newSetting = false) {
+	const strictXMLParser = new xml2js.Parser({strict : true, async : false, normalizeTags : false })
+	const XMLString       = fs.readFileSync(gameSettings, 'utf8')
+	
+	try {
+		strictXMLParser.parseString(XMLString, (err, result) => {
+			if ( err !== null ) {
+				logger.fileError('gameSettings', `Could not read game settings ${err}`)
+			}
+			gameSettingsXML = result
+			overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.directory
+			overrideActive  = gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active
+		})
+	} catch (e) {
+		logger.fileError('gameSettings', `Could not read game settings ${e}`)
+	}
+
+	if ( overrideActive === 'false' || overrideActive === false ) {
+		overrideIndex = '0'
+	} else {
+		overrideIndex = '999'
+		Object.keys(modFoldersMap).forEach((cleanName) => {
+			if ( modFoldersMap[cleanName] === overrideFolder ) { overrideIndex = cleanName }
+		})
+	}
+
+	if ( newSetting !== false ) {
+		pop_list_show()
+
+		gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active    = ( newSetting !== 'DISABLE' )
+		gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.directory = ( newSetting !== 'DISABLE' ) ? newSetting : ''
+
+		const builder   = new xml2js.Builder({
+			xmldec     : { version : '1.0', encoding : 'UTF-8', standalone : false },
+			renderOpts : { pretty : true, indent : '    ', newline : '\n' },
+		})
+
+		try {
+			let outputXML = builder.buildObject(gameSettingsXML)
+
+			outputXML = outputXML.replace('<ingameMapFruitFilter/>', '<ingameMapFruitFilter></ingameMapFruitFilter>')
+
+			fs.writeFileSync(gameSettings, outputXML)
+		} catch (e) {
+			logger.fileError('gameSettings', `Could not write game settings ${e}`)
+		}
+
+		pop_list_hide(1500)
+	}
+}
+
+function fileOperation(type, fileMap) {
+	const fullPathMap = []
+
+	fileMap.forEach((file) => {
+		fullPathMap.push([file[2], file[2].replaceAll(modFoldersMap[file[1]], modFoldersMap[file[0]])])
+	})
+
+	windows.confirm.close()
+	windows.main.focus()
+
+	foldersDirty = true
+	quickRescan  = true
+
+	incrementTotal(0, true)
+	incrementDone(0, true)
+	incrementTotal(fullPathMap.length)
+	pop_load_show()
+
+	setTimeout(() => {
+		fullPathMap.forEach((file) => {
+			try {
+				switch ( type ) {
+					case 'copy' :
+						fs.copyFileSync(file[0], file[1])
+						break
+					case 'move' :
+						fs.renameSync(file[0], file[1])
+						break
+					case 'delete' :
+						fs.rmSync(file[0], { recursive : true } )
+						break
+					default :
+						break
+				}
+			} catch (e) {
+				logger.fileError(`${type}File`, `Could not ${type} file : ${e}`)
+			}
+			incrementDone()
+		})
+
+		processModFolders()
+	}, 1000)
+}
 
 function processModFolders(newFolder = false) {
 	if ( quickRescan ) { modListCache = modList }
 	if ( !foldersDirty ) { return }
-	win.webContents.send('fromMain_showLoading')
 
+	pop_load_show()
 	incrementTotal(0, true)
 	incrementDone(0, true)
 
@@ -694,96 +615,100 @@ function processModFolders(newFolder = false) {
 	mcStore.set('modFolders', Array.from(modFolders))
 
 	modFolders.forEach((folder) => {
-		
 		const cleanName = folder.replaceAll('\\', '-').replaceAll(':', '').replaceAll(' ', '_')
 		const shortName = path.basename(folder)
+
 		if ( folder === newFolder || newFolder === false ) {
 			modFoldersMap[cleanName] = folder
-			modList[cleanName] = { name : shortName, fullPath : folder, mods : [] }
+			modList[cleanName]       = { name : shortName, fullPath : folder, mods : [] }
 
-			const folderContents = fs.readdirSync(folder, {withFileTypes : true})
-			incrementTotal(folderContents.length)
+			try {
+				const folderContents = fs.readdirSync(folder, {withFileTypes : true})
 
-			folderContents.forEach((thisFile) => {
-				let skipEntry = false
-				if ( quickRescan ) {
-					const thisMod = modCacheSearch(cleanName, path.join(folder, thisFile.name))
-					if ( thisMod !== null ) {
-						modList[cleanName].mods.push(thisMod)
-						skipEntry = true
-					}
-				}
-				if ( !skipEntry ) {
-					let isFolder = false
-					let date     = null
-					let size     = 0
-					
-					if ( thisFile.isSymbolicLink() ) {
-						const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
-						const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
-						isFolder = thisSymLinkStat.isDirectory()
+				incrementTotal(folderContents.length)
 
-						if ( ! isFolder ) {
-							size = thisSymLinkStat.size
+				folderContents.forEach((thisFile) => {
+					let skipEntry = false
+					if ( quickRescan ) {
+						const thisMod = modCacheSearch(cleanName, path.join(folder, thisFile.name))
+						if ( thisMod !== null ) {
+							modList[cleanName].mods.push(thisMod)
+							skipEntry = true
 						}
-						date     = thisSymLinkStat.ctime
-					} else {
-						isFolder = thisFile.isDirectory()
 					}
+					if ( !skipEntry ) {
+						let isFolder = false
+						let date     = null
+						let size     = 0
+						
+						if ( thisFile.isSymbolicLink() ) {
+							const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
+							const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
+							isFolder = thisSymLinkStat.isDirectory()
+							date     = thisSymLinkStat.ctime
 
-					if ( ! thisFile.isSymbolicLink() ) {
-						const theseStats = fs.statSync(path.join(folder, thisFile.name))
-						if ( ! isFolder ) { size = theseStats.size }
-						date = theseStats.ctime
-					}
-					if ( isFolder ) {
-						let bytes = 0
-						// BUG: with a *lot* of folders, this is going to be a pretty big performance hit.
-						glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
-							try {
-								const stats = fs.statSync(path.join(folder, thisFile.name, file))
-								if ( stats.isFile() ) { bytes += stats.size }
-							} catch { /* Do Nothing if we can't read it. */ }
-						})
-						size = bytes
-					}
+							if ( !isFolder ) { size = thisSymLinkStat.size }
+						} else {
+							isFolder = thisFile.isDirectory()
+						}
 
-					modList[cleanName].mods.push( new modFileChecker(
-						path.join(folder, thisFile.name),
-						isFolder,
-						size,
-						date,
-						logger,
-						myTranslator.deferCurrentLocale
-					))
-				}
-				incrementDone()
-			})
+						if ( ! thisFile.isSymbolicLink() ) {
+							const theseStats = fs.statSync(path.join(folder, thisFile.name))
+							if ( !isFolder ) { size = theseStats.size }
+							date = theseStats.ctime
+						}
+						if ( isFolder ) {
+							let bytes = 0
+							glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
+								try {
+									const stats = fs.statSync(path.join(folder, thisFile.name, file))
+									if ( stats.isFile() ) { bytes += stats.size }
+								} catch { /* Do Nothing if we can't read it. */ }
+							})
+							size = bytes
+						}
+
+						try {
+							modList[cleanName].mods.push( new modFileChecker(
+								path.join(folder, thisFile.name),
+								isFolder,
+								size,
+								date,
+								logger,
+								myTranslator.deferCurrentLocale
+							))
+						} catch (e) {
+							logger.fileError(thisFile.name, `Couldn't test and add mod: ${e}`)
+						}
+					}
+					incrementDone()
+				})
+			} catch (e) {
+				logger.fileError('folderError', `Couldn't process ${folder}: ${e}`)
+			}
 		}
 	})
 	quickRescan  = false
 	foldersDirty = false
 	modListCache = {}
+
 	parseSettings()
-	win.webContents.send(
+
+	windows.main.webContents.send(
 		'fromMain_modList',
 		modList,
 		[myTranslator.syncStringLookup('override_disabled'), myTranslator.syncStringLookup('override_unknown')],
 		overrideIndex
 	)
-	setTimeout(() => { win.webContents.send('fromMain_hideLoading') }, 1000)
+
+	pop_load_hide()
 }
-
-
-
-
-
-
+/** END: Business Functions */
 
 
 
 app.whenReady().then(() => {
-	globalShortcut.register('Alt+CommandOrControl+D', () => { openDebugWindow(logger) })
+	globalShortcut.register('Alt+CommandOrControl+D', () => { createDebugWindow(logger) })
 
 	workWidth  = screen.getPrimaryDisplay().size.width
 	workHeight = screen.getPrimaryDisplay().size.height
@@ -793,11 +718,9 @@ app.whenReady().then(() => {
 		myTranslator.currentLocale = mcStore.get('force_lang')
 	}
 
-	createWindow()
+	createMainWindow()
 
-	app.on('activate', () => {
-		if (BrowserWindow.getAllWindows().length === 0) { createWindow() }
-	})
+	app.on('activate', () => {if (BrowserWindow.getAllWindows().length === 0) { createMainWindow() } })
 })
 
 app.setAboutPanelOptions({
@@ -806,9 +729,7 @@ app.setAboutPanelOptions({
 	copyright          : '(c) 2022-present FSG Modding',
 	credits            : 'J.T.Sage <jtsage+datebox@gmail.com>',
 	website            : 'https://github.com/FSGModding/FSG_Mod_Assistant',
-	iconPath           : path.join(app.getAppPath(), 'build', 'icon.png'),
+	iconPath           : pathIcon,
 })
 
-app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin') { app.quit() }
-})
+app.on('window-all-closed', () => {	if (process.platform !== 'darwin') { app.quit() } })

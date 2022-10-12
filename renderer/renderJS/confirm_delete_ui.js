@@ -30,23 +30,32 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
+let lastModRecords = null
+let lastCollection = null
 
-window.mods.receive('fromMain_confirmList', (modRecords) => {
-	let innerHTML = ''
+window.mods.receive('fromMain_confirmList', (modRecords, fullList, folderMap, collection) => {
+	lastModRecords = modRecords
+	lastCollection = collection
 
-	innerHTML += `<div class="col-8"><h5>${modRecords.fileDetail.shortName}</h5></div>`
-	innerHTML += `<div class="col-4"><button id="deleteButton" onclick="clientDeleteButton()" data-uuid="${modRecords.uuid}" data-collection=${modRecords.currentCollection} class="btn btn-danger"><l10n name="delete"></l10n></button></div>`
-	innerHTML += `<div class="col-12"><p class="font-monospace small">${window.mods.homeDirMap(modRecords.fileDetail.fullPath)}</p></div>`
+	const confirmHTML = []
 
-	fsgUtil.byId('confirm_list').innerHTML = innerHTML
+	lastModRecords.forEach((mod) => {
+		confirmHTML.push('<div class="row border-bottom">')
+		confirmHTML.push(`<h3 class="mb-0 mt-2">${mod.fileDetail.shortName}</h3>`)
+		confirmHTML.push(`<p class="font-monospace small">${window.mods.homeDirMap(mod.fileDetail.fullPath)}</h3>`)
+		confirmHTML.push('</div>')
+	})
 
+	fsgUtil.byId('confirm_list').innerHTML = confirmHTML.join('')
 	processL10N()
 })
 
 function clientDeleteButton() {
-	const record     = fsgUtil.byId('deleteButton')
-	const uuid       = fsgUtil.getAttribNullError(record, 'data-uuid')
-	const collection = fsgUtil.getAttribNullError(record, 'data-collection')
+	const fileMap = []
 
-	window.mods.realDeleteFile(collection, uuid)
+	lastModRecords.forEach((mod) => {
+		fileMap.push([lastCollection, lastCollection, mod.fileDetail.fullPath])
+	})
+
+	window.mods.realDeleteFile(fileMap)
 }

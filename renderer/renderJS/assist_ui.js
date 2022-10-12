@@ -182,7 +182,7 @@ function fileListClick(event) {
 
 		moveButtons[0].classList[(!noneChecked)?'remove':'add']('disabled')
 		moveButtons[1].classList[(!noneChecked)?'remove':'add']('disabled')
-		moveButtons[2].classList[(oneChecked)?'remove':'add']('disabled')
+		moveButtons[2].classList[(!noneChecked)?'remove':'add']('disabled')
 		moveButtons[3].classList[(oneChecked)?'remove':'add']('disabled')
 		
 		updateModFilesColor()
@@ -242,7 +242,7 @@ function clientBatchOperation(mode) {
 			if ( selectedMods.length > 0 ) { window.mods.moveMods(selectedMods) }
 			break
 		case 'delete':
-			if ( selectedMods.length === 1 ) { window.mods.deleteMods(selectedMods) }
+			if ( selectedMods.length > 0 ) { window.mods.deleteMods(selectedMods) }
 			break
 		case 'open':
 			if ( selectedMods.length === 1 ) { window.mods.openMods(selectedMods) }
@@ -259,10 +259,8 @@ function deSelectAll() {
 	const tableChecks = document.querySelectorAll('.folder_master_check')
 
 	tableChecks.forEach((thisCheck) => { thisCheck.checked = false; thisCheck.indeterminate = false })
-
-	allModRows.forEach((thisRow) => { thisRow.childNodes[0].childNodes[0].checked = false })
-
-	moveButtons.forEach((button) => { button.classList.add('disabled') })
+	allModRows.forEach( (thisRow)   => { thisRow.childNodes[0].childNodes[0].checked = false })
+	moveButtons.forEach((button)    => { button.classList.add('disabled') })
 
 	updateModFilesColor()
 }
@@ -272,13 +270,11 @@ window.addEventListener('show.bs.collapse', () => { deSelectAll() })
 
 window.addEventListener('DOMContentLoaded', () => {
 	loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'))
-	listModal = new bootstrap.Modal(document.getElementById('setModel'))
+	listModal    = new bootstrap.Modal(document.getElementById('setModel'))
 	processL10N()
 })
 
-window.addEventListener('click', (event) => {
-	fileListClick(event)
-})
+window.addEventListener('click', (event) => { fileListClick(event) })
 
 window.addEventListener('scroll', () => {
 	const scrollValue = this.scrollY +  140
