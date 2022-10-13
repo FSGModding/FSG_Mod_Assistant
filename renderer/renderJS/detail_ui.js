@@ -46,6 +46,9 @@ window.mods.receive('fromMain_modRecord', (modRecord) => {
 		description    : modRecord.l10n.description,
 		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
 		extraFiles     : (( modRecord.fileDetail.extraFiles.length > 0 ) ? modRecord.fileDetail.extraFiles.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
+		bigFiles       : (( modRecord.fileDetail.tooBigFiles.length > 0 ) ? modRecord.fileDetail.tooBigFiles.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
+		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 ) ? modRecord.fileDetail.spaceFiles.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
+		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 ) ? modRecord.fileDetail.pngTexture.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
 	}
 	Object.keys(idMap).forEach((key) => {
 		fsgUtil.byId(key).innerHTML = idMap[key]
@@ -63,7 +66,7 @@ window.mods.receive('fromMain_modRecord', (modRecord) => {
 			}
 			problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
 		})
-		fsgUtil.byId('problems').innerHTML = `<table class="table">${problems.join('')}</table>`
+		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`
 	}
 
 	textOrHide(

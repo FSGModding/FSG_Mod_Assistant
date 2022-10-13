@@ -56,6 +56,7 @@
 	"open_debug_log"  : "View Debug Log",
 
 	"detail_problems"        : "Issues with this Mod",
+	"detail_description"     : "Description",
 	"detail_mod_version"     : "Version",
 	"detail_mod_size"        : "Size",
 	"detail_mod_date"        : "Date",
@@ -68,7 +69,10 @@
 	"detail_dev_info"        : "Developer Information",
 	"detail_extra_files"     : "Extra files in the mod (per Giants spec)",
 	"detail_i3d_files"       : "i3D files in the mod",
+	"detail_space_files"     : "Files with space in filename",
+	"detail_big_files"       : "Oversized files",
 	"detail_extra_clean"     : "None, archive is clean",
+	"detail_png_textures"    : "Possible PNG Texture files",
 
 	"file_error_name_starts_digit"          : "This file starts with a digit. FS requires that mods start with a letter.",
 	"file_error_likely_copy"                : "This file name suggests that it is a duplicate copy of another mod.",
@@ -91,6 +95,18 @@
 	"file_error_copy_identical"             : "The original file and this file are identical.",
 	"info_might_be_piracy"                  : "This mod appears to be a cracked / pirated version of a paid DLC.  This test is simplistic, so this could be a false positive, however be aware that using cracked DLC will prevent you from receiving help from Giants support, and is grounds for a ban from the official discord and forums. Please support the developers!",
 	"info_might_be_duplicate"               : "Based on their title, these mods might be duplicates of each other.  You should compare versions and see if some could be removed.",
+	"perf_has_extra"                        : "Performance Consideration - Mod has unnecessary files",
+	"perf_dds_too_big"                      : "Performance Consideration - One or more DDS files is too big (12MB)",
+	"perf_xml_too_big"                      : "Performance Consideration - One or more XML files is too big (0.25MB)",
+	"perf_i3d_too_big"                      : "Performance Consideration - One or more I3D...CACHE files is too big (10MB)",
+	"perf_shapes_too_big"                   : "Performance Consideration - One or more SHAPES files is too big (256MB)",
+	"perf_gdm_too_big"                      : "Performance Consideration - One or more GDM files is too big (18MB)",
+	"perf_grle_too_many"                    : "Performance Consideration - Too many GRLEs in mod (10+)",
+	"perf_png_too_many"                     : "Performance Consideration - Too many PNGs in mod (128+)",
+	"perf_space_in_file"                    : "Performance Consideration - File(s) contain spaces",
+	"perf_l10n_not_set"                     : "Performance Consideration - L10N Entries in ModDesc are not set",
+	"png_texture"                           : "Performance Consideration - PNG files should not be used as textures",
+
 
 	"user_pref_title_main"                   : "User Preferences",
 	"user_pref_title_lang"                   : "Language",

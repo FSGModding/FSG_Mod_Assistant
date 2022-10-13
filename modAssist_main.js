@@ -11,7 +11,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = r
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug = false
+const devDebug = true
 
 if (process.platform === 'win32') {
 	autoUpdater.checkForUpdatesAndNotify()
@@ -251,6 +251,7 @@ function createDetailWindow(thisModRecord) {
 
 	windows.detail.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_modRecord', thisModRecord)
+		if ( devDebug ) { windows.detail.webContents.openDevTools() }
 	})
 
 	windows.detail.loadFile(path.join(pathRender, 'detail.html'))
