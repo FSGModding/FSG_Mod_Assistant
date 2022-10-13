@@ -40,6 +40,7 @@ folderContents.forEach((thisFile) => {
 		const badgeNames = Array.from(thisMod.badges.matchAll(/"mod_badge_(.+?)"/g), (m) => `${m[1]}`)
 		console.log(`  Issues: ${thisMod.issues.join(', ')}`)
 		console.log(`  Badges: ${badgeNames.join(', ')}`)
+		console.log(`  Extra:  ${thisMod.fileDetail.extraFiles.join(', ')}`)
 	} catch (e) {
 		console.log(`  Unable to read ${thisFile} :: ${e}`)
 		console.log(e.stack)

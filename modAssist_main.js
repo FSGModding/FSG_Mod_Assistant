@@ -11,7 +11,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = r
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug = true
+const devDebug = false
 
 if (process.platform === 'win32') {
 	autoUpdater.checkForUpdatesAndNotify()
