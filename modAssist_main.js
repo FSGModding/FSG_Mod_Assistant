@@ -473,9 +473,9 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 ipcMain.on('toMain_setPrefFile', (event) => {
 	dialog.showOpenDialog(windows.prefs, {
 		properties  : ['openFile'],
-		defaultPath : path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022'),
+		defaultPath : pathBestGuess,
 		filters     : [
-			{ name : 'XML', extensions : ['xml'] },
+			{ name : 'gameSettings.xml', extensions : ['xml'] },
 			{ name : 'All', extensions : ['*'] },
 		],
 	}).then((result) => {
