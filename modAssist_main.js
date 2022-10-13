@@ -22,10 +22,15 @@ const fs         = require('fs')
 const glob       = require('glob')
 const xml2js     = require('xml2js')
 
-const userHome    = require('os').homedir()
-const pathRender  = path.join(app.getAppPath(), 'renderer')
-const pathPreload = path.join(pathRender, 'preload')
-const pathIcon    = path.join(app.getAppPath(), 'build', 'icon.png')
+const userHome      = require('os').homedir()
+const pathRender    = path.join(app.getAppPath(), 'renderer')
+const pathPreload   = path.join(pathRender, 'preload')
+const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.png')
+let   pathBestGuess = path.join(userHome, 'OneDrive', 'Documents', 'My Games', 'FarmingSimulator2022')
+
+if ( ! fs.existsSync(pathBestGuess) ) {
+	pathBestGuess = path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
+}
 
 const translator               = require('./lib/translate.js')
 const { mcLogger }             = require('./lib/logger.js')
@@ -42,7 +47,7 @@ const settingsSchema = {
 	modFolders        : { type : 'array', default : [] },
 	lock_lang         : { type : 'boolean', default : false },
 	force_lang        : { type : 'string', default : '' },
-	game_settings     : { type : 'string', default : path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022', 'gameSettings.xml') },
+	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
 }
 
 const Store   = require('electron-store')
@@ -547,8 +552,17 @@ function modIdsToRecords(mods) {
 /** Business Functions */
 function parseSettings(newSetting = false) {
 	const strictXMLParser = new xml2js.Parser({strict : true, async : false, normalizeTags : false })
-	const XMLString       = fs.readFileSync(gameSettings, 'utf8')
-	
+	let XMLString = ''
+	let canContinue = true
+	try {
+		XMLString = fs.readFileSync(gameSettings, 'utf8')
+	} catch (e) {
+		logger.fileError('gameSettings', `Could not read game settings ${e}`)
+		canContinue = false
+	}
+
+	if ( !canContinue ) { return }
+
 	try {
 		strictXMLParser.parseString(XMLString, (err, result) => {
 			if ( err !== null ) {
