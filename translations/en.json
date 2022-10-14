@@ -2,7 +2,7 @@
 	"language_code"                    : "en",
 	"language_name"                    : "English",
 	"language_locale"                  : "en_US",
-	"app_name"                         : "Farm Sim 2022 Mod Assistant",
+	"app_name"                         : "FSG FS22 Mod Assistant",
 	"folder_add"                       : "Add Folder",
 	"folder_add__title"                : "Add Collection Folder",
 	"folder_edit"                      : "Edit Folder List",
@@ -120,5 +120,9 @@
 	"user_pref_setting_window_y"             : "Window Height",
 	"user_pref_setting_window_max"           : "Start Maximized",
 	"user_pref_setting_lock_lang"            : "Always use the current language (do not detect on start)",
-	"user_pref_button_game_settings"         : "Change gameSettings.xml file"
+	"user_pref_button_game_settings"         : "Change gameSettings.xml file",
+
+	"check_save"       : "Compare to SaveGame",
+	"open_save_folder" : "Check Save Folder",
+	"open_save_zip"    : "Check Save .ZIP"
 }

@@ -206,21 +206,24 @@ function clientMakeListActive() {
 }
 
 function makeModCollection(id, name, modsRows) {
-	let tableHTML = ''
+	const tableHTML = []
 	
-	tableHTML += fsgUtil.buildTR('mod-table-folder')
-	tableHTML += fsgUtil.buildTD('folder-icon collapsed', [['toggle', 'collapse'], ['target', `#${id}_mods`]])
-	tableHTML += `${fsgUtil.getIconSVG('folder')}</td>`
-	tableHTML += fsgUtil.buildTD('folder-name collapsed', [['toggle', 'collapse'], ['target', `#${id}_mods`]])
-	tableHTML += `${name}</td>`
-	tableHTML += `<td class="text-end"><input type="checkbox" data-bs-target="#${id}_mods" class="form-check-input mod-folder-checkbox folder_master_check"></td></tr>`
+	tableHTML.push(fsgUtil.buildTR('mod-table-folder'))
+	tableHTML.push(fsgUtil.buildTD('folder-icon collapsed', [['toggle', 'collapse'], ['target', `#${id}_mods`]]))
+	tableHTML.push(`${fsgUtil.getIconSVG('folder')}</td>`)
+	tableHTML.push(fsgUtil.buildTD('folder-name collapsed', [['toggle', 'collapse'], ['target', `#${id}_mods`]]))
+	tableHTML.push(`${name}</td>`)
+	tableHTML.push('<td class="text-end">')
+	tableHTML.push(`<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')"><l10n name="check_save"></l10n></button>`)
+	tableHTML.push(`<input type="checkbox" data-bs-target="#${id}_mods" class="align-middle form-check-input mod-folder-checkbox folder_master_check">`)
+	tableHTML.push('</td></tr>')
 
-	tableHTML += fsgUtil.buildTR('mod-table-folder-detail collapse accordion-collapse', `${id}_mods`, 'data-bs-parent=".table"')
-	tableHTML += '<td class="mod-table-folder-details-indent"></td>'
-	tableHTML += '<td class="mod-table-folder-details px-0" colspan="2">'
-	tableHTML += `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`
-	tableHTML += '</td></tr>'
-	return tableHTML
+	tableHTML.push(fsgUtil.buildTR('mod-table-folder-detail collapse accordion-collapse', `${id}_mods`, 'data-bs-parent=".table"'))
+	tableHTML.push('<td class="mod-table-folder-details-indent"></td>')
+	tableHTML.push('<td class="mod-table-folder-details px-0" colspan="2">')
+	tableHTML.push(`<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`)
+	tableHTML.push('</td></tr>')
+	return tableHTML.join('')
 }
 
 function makeModRow(id, name, title, version, badges, disabled = false) {

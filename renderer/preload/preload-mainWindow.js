@@ -36,6 +36,7 @@ contextBridge.exposeInMainWorld(
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
 		makeInactive     : () => { ipcRenderer.send('toMain_makeInactive' ) },
 
+		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },

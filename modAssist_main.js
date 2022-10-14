@@ -51,6 +51,7 @@ const settingsSchema = {
 }
 
 const Store   = require('electron-store')
+const { saveFileChecker } = require('./lib/savegame-parser.js')
 const mcStore = new Store({schema : settingsSchema})
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
@@ -73,6 +74,7 @@ const windows = {
 	prefs   : null,
 	folder  : null,
 	debug   : null,
+	save    : null,
 }
 
 let foldersDirty = true
@@ -312,6 +314,37 @@ function createPrefsWindow() {
 	windows.prefs.on('closed', () => { windows.prefs = null; windows.main.focus() })
 }
 
+function createSavegameWindow(collection) {
+	if ( windows.save ) { windows.save.focus(); return }
+
+	windows.save = new BrowserWindow({
+		icon            : pathIcon,
+		width           : mcStore.get('detail_window_x', 800),
+		height          : mcStore.get('detail_window_y', 500),
+		title           : myTranslator.syncStringLookup('app_name'),
+		minimizable     : false,
+		maximizable     : true,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(pathPreload, 'preload-savegameWindow.js'),
+		},
+	})
+
+	if ( mcStore.get('detail_window_max', false) ) { windows.save.maximize() }
+
+	if ( !devDebug ) { windows.save.removeMenu() }
+
+	windows.save.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('fromMain_collectionName', collection, modList)
+		if ( devDebug ) { windows.save.webContents.openDevTools() }
+	})
+
+	windows.save.loadFile(path.join(pathRender, 'savegame.html'))
+	windows.save.on('closed', () => { windows.save = null; windows.main.focus() })
+}
 
 /*  ____  ____   ___ 
    (_  _)(  _ \ / __)
@@ -493,6 +526,39 @@ ipcMain.on('toMain_setPrefFile', (event) => {
 	
 })
 /** END: Preferences window operation */
+
+
+/** Savegame window operation */
+ipcMain.on('toMain_openSave',       (event, collection) => { createSavegameWindow(collection) })
+ipcMain.on('toMain_openSaveFolder', () => { openSaveGame(false) })
+ipcMain.on('toMain_openSaveZIP',    () => { openSaveGame(true) })
+
+function openSaveGame(zipMode = false) {
+	const options = {
+		properties  : [(zipMode) ? 'openFile' : 'openDirectory'],
+		defaultPath : pathBestGuess,
+	}
+	if ( zipMode ) {
+		options.filters = [{ name : 'ZIP Files', extensions : ['zip'] }]
+	}
+
+	dialog.showOpenDialog(windows.save, options).then((result) => {
+		if ( result.canceled ) {
+			logger.notice('savegame', 'Load canceled')
+		} else {
+			try {
+				const thisSavegame = new saveFileChecker(result.filePaths[0], !zipMode, logger)
+				console.log(thisSavegame)
+				windows.save.webContents.send('fromMain_saveInfo', modList, thisSavegame)
+			} catch (e) {
+				logger.notice('savegame', `Load failed: ${e}`)
+			}
+		}
+	}).catch((unknownError) => {
+		logger.notice('savegame', `Could not read specified file/folder : ${unknownError}`)
+	})
+}
+/** Savegame window operation */
 
 
 /** Main Window Modal Functions */
