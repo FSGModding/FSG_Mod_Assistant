@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<npcs>
+    <npc name="NPC_US_01" finishedMissions="1"/>
+    <npc name="NPC_US_02" finishedMissions="0"/>
+    <npc name="NPC_US_03" finishedMissions="1"/>
+    <npc name="NPC_US_04" finishedMissions="0"/>
+    <npc name="NPC_US_05" finishedMissions="0"/>
+    <npc name="NPC_US_06" finishedMissions="2"/>
+    <npc name="NPC_US_07" finishedMissions="0"/>
+    <npc name="NPC_US_08" finishedMissions="2"/>
+    <npc name="NPC_US_09" finishedMissions="1"/>
+    <npc name="NPC_US_10" finishedMissions="3"/>
+    <npc name="NPC_US_11" finishedMissions="1"/>
+    <npc name="NPC_US_12" finishedMissions="1"/>
+    <npc name="NPC_US_13" finishedMissions="2"/>
+    <npc name="NPC_US_14" finishedMissions="0"/>
+    <npc name="NPC_US_15" finishedMissions="0"/>
+</npcs>

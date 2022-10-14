@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<easyDevControls type="RELEASE" version="1.2.0.0" buildId="1.200000">
+    <settings>
+        <general>
+            <toggleHudInputEnabled>false</toggleHudInputEnabled>
+            <timeScaleCustomSettingsActive>true</timeScaleCustomSettingsActive>
+        </general>
+        <player>
+            <maxRunningSpeedInputActive>false</maxRunningSpeedInputActive>
+            <maxRunningSpeedMultiplier>4</maxRunningSpeedMultiplier>
+            <jumpHeight>1</jumpHeight>
+        </player>
+    </settings>
+    <permissions admin="1" farmManager="2" standard="3" none="4">
+        <general>
+            <cheatMoney>1</cheatMoney>
+            <teleport>1</teleport>
+            <flipVehicles>1</flipVehicles>
+        </general>
+        <player>
+            <superStrength>1</superStrength>
+            <jumpHeight>4</jumpHeight>
+            <runningSpeed>4</runningSpeed>
+            <setFarm>1</setFarm>
+        </player>
+        <objects>
+            <addBale>1</addBale>
+            <addPallet>1</addPallet>
+            <addLog>1</addLog>
+        </objects>
+        <vehicles>
+            <vehicleFillLevel>1</vehicleFillLevel>
+            <vehicleCondition>1</vehicleCondition>
+            <vehicleFuel>1</vehicleFuel>
+            <vehicleMotorTemp>1</vehicleMotorTemp>
+            <vehicleOperatingTime>1</vehicleOperatingTime>
+        </vehicles>
+        <placeables>
+            <productionPoints>1</productionPoints>
+        </placeables>
+        <fields>
+            <fieldSetFruit>1</fieldSetFruit>
+            <fieldSetGround>1</fieldSetGround>
+            <vineSetState>1</vineSetState>
+            <addRemoveWeedsStones>1</addRemoveWeedsStones>
+            <updateGrowthSystem>1</updateGrowthSystem>
+        </fields>
+        <environment>
+            <setTime>1</setTime>
+            <updateSnow>1</updateSnow>
+            <addSalt>1</addSalt>
+        </environment>
+    </permissions>
+</easyDevControls>

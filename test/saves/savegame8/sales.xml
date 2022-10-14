@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<sales>
+    <item timeLeft="5" isGenerated="true" xmlFilename="data/vehicles/boeckmann/bigMasterWesternWCF/bigMasterWesternWCF.xml" age="22" price="8118" damage="0.548621" wear="0.318445" operatingTime="47156.042969"/>
+    <item timeLeft="9" isGenerated="true" xmlFilename="data/vehicles/claas/quadrant5300/quadrant5300.xml" age="24" price="65563" damage="0.524916" wear="0.831758" operatingTime="52462.859375"/>
+    <item timeLeft="14" isGenerated="true" xmlFilename="data/vehicles/kuhn/sw4014/sw4014.xml" age="21" price="23888" damage="0.518037" wear="0.540814" operatingTime="85476.843750"/>
+    <item timeLeft="33" isGenerated="true" xmlFilename="data/vehicles/claas/directDisc500/directDisc500.xml" age="12" price="28146" damage="0.552617" wear="0.976824" operatingTime="54062.910156"/>
+    <item timeLeft="20" isGenerated="true" xmlFilename="data/vehicles/briri/manureDirector14/manureDirector14.xml" age="25" price="25064" damage="0.276537" wear="0.305556" operatingTime="73238.070313"/>
+</sales>

@@ -15,6 +15,9 @@ const { modFileChecker }       = require('../lib/single-mod-checker.js')
 
 const logger = new mcLogger()
 
+console.log('FSG Mod Assistant : Test Mod Reader')
+console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n')
+
 let exitCode = 0
 let folderContents = []
 
@@ -52,5 +55,5 @@ folderContents.forEach((thisFile) => {
 console.log('\n\nLogger:')
 console.log(logger.toDisplayText)
 
-console.log(`\n\nExiting with code ${exitCode}`)
+console.log(`\n\nExiting with code ${exitCode}\n`)
 process.exit(exitCode)

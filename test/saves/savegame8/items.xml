@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<items>
+    <item className="InlineBaleSingle" id="1" filename="data/objects/squarebales/squarebale180.xml" position="194.57702636719 82.211288452148 -498.099609375" rotation="0.36235508912581 -89.70858565335 -0.36427031685776" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="2" filename="data/objects/squarebales/squarebale180.xml" position="194.87074279785 82.21134185791 -515.24353027344" rotation="-177.89401180103 -89.785111092811 177.89476312184" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="3" filename="data/objects/squarebales/squarebale180.xml" position="195.04573059082 82.211326599121 -529.21032714844" rotation="-179.81173767467 -88.749148980639 179.81190159921" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="4" filename="data/objects/squarebales/squarebale180.xml" position="195.06015014648 82.211326599121 -528.01782226563" rotation="-179.84396250718 -88.614321046423 179.84398982793" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="5" filename="data/objects/squarebales/squarebale220.xml" position="16.632858276367 85.189308166504 833.64514160156" rotation="-1.8868719881712 83.94094169176 -1.8026965233965" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="6" filename="data/objects/squarebales/squarebale180.xml" position="194.51699829102 82.262428283691 -484.15588378906" rotation="-157.46189704991 -88.535282097347 157.69102257581" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="7" filename="data/objects/squarebales/squarebale240.xml" position="48.925048828125 82.233261108398 -397.11148071289" rotation="-0.0046614085910337 83.838304439102 -0.0046223642882208" valueScale="1.000000" fillLevel="9000.000000" fillType="STRAW" farmId="1" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="Bale" id="8" filename="data/objects/squarebales/squarebale240.xml" position="9.0588979721069 82.435516357422 -492.74731445313" rotation="0.0071345844878012 -11.740290928477 179.99497798973" valueScale="1.000000" fillLevel="9000.000000" fillType="STRAW" farmId="1" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="Bale" id="9" filename="data/objects/squarebales/squarebale220.xml" position="-492.00366210938 82.565116882324 -817.66754150391" rotation="69.733000746353 -4.0981135020077e-05 90.001505146096" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="2" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="10" filename="data/objects/squarebales/squarebale180.xml" position="194.85729980469 82.211318969727 -516.48724365234" rotation="-179.80821329706 -88.839737779601 179.80807669328" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="11" filename="data/objects/squarebales/squarebale220.xml" position="18.783443450928 84.338310241699 833.68737792969" rotation="-158.51630067284 -89.659647347947 158.61479200067" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="12" filename="data/objects/squarebales/squarebale180.xml" position="194.5325012207 82.275718688965 -482.88980102539" rotation="-138.46970911923 -89.115493006962 138.75407721514" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="13" filename="data/objects/squarebales/squarebale180.xml" position="194.67172241211 82.211326599121 -494.42907714844" rotation="-179.75742401039 -89.013210924141 179.75760159531" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="14" filename="data/objects/squarebales/squarebale180.xml" position="195.10409545898 82.210929870605 -531.73773193359" rotation="-5.9644533012035 -89.663697650125 5.9571531096413" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="15" filename="data/objects/squarebales/squarebale180.xml" position="194.88665771484 82.211318969727 -522.94946289063" rotation="-179.84602522431 -88.614041008667 179.84584763939" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="16" filename="data/objects/squarebales/squarebale180.xml" position="194.75074768066 82.211357116699 -507.72811889648" rotation="179.897429228 -86.888359563917 -179.89835813373" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="17" filename="data/objects/squarebales/squarebale180.xml" position="194.60575866699 82.218208312988 -490.53686523438" rotation="-160.44380737738 -89.316416681776 160.55725681949" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="18" filename="data/objects/squarebales/squarebale180.xml" position="194.5387878418 82.250511169434 -485.39916992188" rotation="-145.64687189908 -89.025983377888 145.86114859372" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="19" filename="data/objects/squarebales/squarebale180.xml" position="194.6583404541 82.211318969727 -506.49722290039" rotation="-179.81893669406 -88.672473277016 179.81885473179" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="20" filename="data/objects/squarebales/squarebale180.xml" position="194.53082275391 82.21363067627 -491.83782958984" rotation="-176.30033742237 -87.043165801455 176.39695727837" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="21" filename="data/objects/squarebales/squarebale180.xml" position="194.5546875 82.224647521973 -489.23696899414" rotation="-119.36092985942 -89.607826702714 119.47107348998" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="22" filename="data/objects/squarebales/squarebale220.xml" position="16.502504348755 84.331214904785 834.98956298828" rotation="-1.2772810198421 84.035205132495 -1.1863821943249" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="23" filename="data/objects/squarebales/squarebale180.xml" position="195.17695617676 82.211326599121 -536.87017822266" rotation="-179.93100643796 -86.909956622073 179.93081519266" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="24" filename="data/objects/squarebales/squarebale180.xml" position="195.17253112793 82.211326599121 -535.57629394531" rotation="-179.83397677061 -88.72757924324 179.83412703477" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="25" filename="data/objects/squarebales/squarebale180.xml" position="194.8956451416 82.211318969727 -517.77258300781" rotation="-179.92679904143 -86.987144589883 179.92704492824" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="26" filename="data/objects/squarebales/squarebale220.xml" position="18.833463668823 85.197418212891 835.02459716797" rotation="-179.43329055314 84.253832657638 -179.29275258078" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="27" filename="data/objects/squarebales/squarebale180.xml" position="194.77697753906 82.213325500488 -509.02795410156" rotation="178.39379040298 -86.176530908997 -178.39773825232" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="28" filename="data/objects/squarebales/squarebale180.xml" position="195.0050201416 82.211326599121 -524.23004150391" rotation="-179.61102573572 -89.390899894675 179.61116233951" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="29" filename="data/objects/squarebales/squarebale220.xml" position="16.714302062988 83.46997833252 833.62182617188" rotation="-10.467947921962 89.060974437006 -10.410045847046" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="30" filename="data/objects/squarebales/squarebale180.xml" position="194.89387512207 82.211326599121 -521.65631103516" rotation="-179.91557021044 -87.325191142474 179.91558387081" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="31" filename="data/objects/squarebales/squarebale180.xml" position="194.80465698242 82.211326599121 -512.85888671875" rotation="-179.69584302484 -89.332645211244 179.69573374181" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="32" filename="data/objects/squarebales/squarebale180.xml" position="194.89147949219 82.211326599121 -519.07421875" rotation="-1.2996345214483 -89.821959963383 1.2997986594318" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="33" filename="data/objects/squarebales/squarebale180.xml" position="194.83212280273 82.211311340332 -514.07336425781" rotation="-179.44227908209 -89.783294262492 179.44227908209" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="34" filename="data/objects/squarebales/squarebale220.xml" position="18.929012298584 83.478187561035 834.9130859375" rotation="-3.3113405964193 -88.573599458591 3.4528941325337" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="35" filename="data/objects/squarebales/squarebale180.xml" position="194.58947753906 82.211318969727 -505.26470947266" rotation="-179.88763473673 -87.881510050372 179.88733420841" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="36" filename="data/objects/squarebales/squarebale180.xml" position="194.60891723633 82.241119384766 -486.65548706055" rotation="-163.17398425279 -88.803858795891 163.37520162574" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBale" id="37" filename="data/objects/inlineBales/squarebales/inlineBale_square180.xml">
+        <bales>
+            <bale saveId="12"/>
+            <bale saveId="6"/>
+            <bale saveId="18"/>
+            <bale saveId="36"/>
+            <bale saveId="50"/>
+            <bale saveId="21"/>
+            <bale saveId="17"/>
+            <bale saveId="20"/>
+            <bale saveId="40"/>
+            <bale saveId="13"/>
+            <bale saveId="46"/>
+            <bale saveId="60"/>
+            <bale saveId="1"/>
+            <bale saveId="54"/>
+            <bale saveId="57"/>
+            <bale saveId="45"/>
+            <bale saveId="53"/>
+            <bale saveId="58"/>
+            <bale saveId="35"/>
+            <bale saveId="19"/>
+            <bale saveId="16"/>
+            <bale saveId="27"/>
+            <bale saveId="44"/>
+            <bale saveId="42"/>
+            <bale saveId="31"/>
+            <bale saveId="33"/>
+            <bale saveId="2"/>
+            <bale saveId="10"/>
+            <bale saveId="25"/>
+            <bale saveId="32"/>
+            <bale saveId="47"/>
+            <bale saveId="30"/>
+            <bale saveId="15"/>
+            <bale saveId="28"/>
+            <bale saveId="52"/>
+            <bale saveId="56"/>
+            <bale saveId="4"/>
+            <bale saveId="3"/>
+            <bale saveId="61"/>
+            <bale saveId="14"/>
+            <bale saveId="55"/>
+            <bale saveId="43"/>
+            <bale saveId="24"/>
+            <bale saveId="23"/>
+            <bale saveId="51"/>
+        </bales>
+    </item>
+    <item className="Bale" id="38" filename="data/objects/squarebales/squarebale220.xml" position="16.70111656189 83.47159576416 834.85485839844" rotation="-1.9865914693929 86.045316144852 -1.9024855871704" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="Bale" id="39" filename="data/objects/squarebales/squarebale220.xml" position="-491.64846801758 82.406478881836 -818.63323974609" rotation="0.002894880463938 69.752186747731 0.0039410866859268" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="2" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="40" filename="data/objects/squarebales/squarebale180.xml" position="194.63070678711 82.212112426758 -493.13452148438" rotation="-179.86677533901 -84.231286203188 179.9222774562" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="41" filename="data/objects/squarebales/squarebale220.xml" position="18.818002700806 84.337524414063 834.95294189453" rotation="-169.40879949323 89.625694477583 -169.26543382255" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="42" filename="data/objects/squarebales/squarebale180.xml" position="194.8385925293 82.212120056152 -511.62145996094" rotation="-173.9417911397 -88.987174243024 173.94102615851" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="43" filename="data/objects/squarebales/squarebale180.xml" position="195.18853759766 82.211318969727 -534.29333496094" rotation="-179.92438115447 -86.821778879888 179.92418990917" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="44" filename="data/objects/squarebales/squarebale180.xml" position="194.77378845215 82.21459197998 -510.32363891602" rotation="-9.1124046736187 -89.270176301095 9.1115047961956" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="45" filename="data/objects/squarebales/squarebale180.xml" position="194.65023803711 82.211326599121 -501.6194152832" rotation="-0.37520552976023 -89.418172840031 0.37520939842207" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="46" filename="data/objects/squarebales/squarebale180.xml" position="194.71478271484 82.211326599121 -495.7243347168" rotation="-0.089760351710431 -87.639837466969 0.089960581640797" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="47" filename="data/objects/squarebales/squarebale180.xml" position="194.83526611328 82.210357666016 -520.36431884766" rotation="2.3175948162896 -88.729430224505 -2.3324942336337" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="48" filename="data/objects/squarebales/squarebale220.xml" position="-491.64196777344 83.266151428223 -818.62805175781" rotation="0.0037216706107751 69.828958074002 0.0052695001160614" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="2" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="Bale" id="49" filename="data/objects/squarebales/squarebale220.xml" position="16.642442703247 84.329734802246 833.66864013672" rotation="-172.18471131533 -88.739948715827 172.24569124424" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="50" filename="data/objects/squarebales/squarebale180.xml" position="194.55026245117 82.232208251953 -487.93811035156" rotation="-150.91240133403 -89.296110529373 151.02549560631" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="51" filename="data/objects/squarebales/squarebale180.xml" position="195.33129882813 82.211326599121 -538.08819580078" rotation="-179.90395888885 -87.298690008495 179.90374032279" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="52" filename="data/objects/squarebales/squarebale180.xml" position="195.00810241699 82.211318969727 -525.52941894531" rotation="-179.74254785838 -89.147492443223 179.74254785838" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="53" filename="data/objects/squarebales/squarebale180.xml" position="194.65922546387 82.211326599121 -502.7903137207" rotation="-0.36915363531006 -89.412817971721 0.36907596858868" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="54" filename="data/objects/squarebales/squarebale180.xml" position="194.60969543457 82.211334228516 -499.2705078125" rotation="-0.95742624921818 -89.730927202126 0.95773179346183" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="55" filename="data/objects/squarebales/squarebale180.xml" position="195.17268371582 82.211326599121 -532.99774169922" rotation="-7.231139439911e-05 -90.000002504478 0" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="56" filename="data/objects/squarebales/squarebale180.xml" position="195.02769470215 82.211318969727 -526.80499267578" rotation="-178.33503711574 -89.870276721572 178.33558353087" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="57" filename="data/objects/squarebales/squarebale180.xml" position="194.66198730469 82.211326599121 -500.44903564453" rotation="-0.41522958452286 -89.426300765143 0.41504765069493" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="58" filename="data/objects/squarebales/squarebale180.xml" position="194.63911437988 82.211334228516 -504.01681518555" rotation="-179.84382590339 -88.573736062374 179.84385322415" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="59" filename="data/objects/squarebales/squarebale220.xml" position="18.881561279297 83.478927612305 833.73254394531" rotation="-175.19746677709 88.4974086984 -175.09878420396" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+    <item className="InlineBaleSingle" id="60" filename="data/objects/squarebales/squarebale180.xml" position="194.57876586914 82.211326599121 -496.92926025391" rotation="0.34981053958058 -89.706577577734 -0.34671923865092" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="InlineBaleSingle" id="61" filename="data/objects/squarebales/squarebale180.xml" position="195.08549499512 82.209617614746 -530.48864746094" rotation="179.75384499127 -88.062120742595 -179.97420055427" valueScale="1.000000" fillLevel="6500.000000" fillType="SILAGE" farmId="1" isMissionBale="false" wrappingState="1.000000" wrappingColor="0.391 0.521 0.366 1">
+        <textures wrapDiffuse="data/objects/squarebales/squarebaleWrapDefault_diffuse.dds" wrapNormal="data/objects/squarebales/squarebaleWrapDefault_normal.dds"/>
+    </item>
+    <item className="Bale" id="62" filename="data/objects/squarebales/squarebale220.xml" position="16.448553085327 85.190467834473 834.99945068359" rotation="-179.26790435258 -79.08986813565 179.388224965" valueScale="1.000000" fillLevel="7250.000000" fillType="DRYGRASS_WINDROW" farmId="5" isMissionBale="false" wrappingState="0.000000" wrappingColor="1 1 1 1"/>
+</items>
