@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld(
 		receive         : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getText_return',
+				'fromMain_getText_return_title',
 				'fromMain_l10n_refresh'
 			]
 		

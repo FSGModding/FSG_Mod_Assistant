@@ -122,7 +122,21 @@
 	"user_pref_setting_lock_lang"            : "Always use the current language (do not detect on start)",
 	"user_pref_button_game_settings"         : "Change gameSettings.xml file",
 
-	"check_save"       : "Compare to SaveGame",
-	"open_save_folder" : "Check Save Folder",
-	"open_save_zip"    : "Check Save .ZIP"
+	"check_save"                      : "Compare to SaveGame",
+	"check_save__title"               : "Load a savegame to compare to this collection",
+	"savegame_farms"                  : "Farms",
+	"savegame_missing"                : "Missing",
+	"savegame_scriptonly"             : "Script",
+	"savegame_isloaded"               : "Active",
+	"savegame_isused"                 : "Used",
+	"savegame_versionmismatch"        : "Version",
+	"savegame_inactive"               : "In-Active",
+	"savegame_missing__title"         : "This file does not exist in the collection",
+	"savegame_scriptonly__title"      : "This contains only scripts, assumed to be in-use",
+	"savegame_isloaded__title"        : "This is active in the save",
+	"savegame_isused__title"          : "This is used (purchased) in the save",
+	"savegame_versionmismatch__title" : "The version you have does not match the version in the save",
+	"savegame_inactive__title"        : "This is NOT used in the save",
+	"open_save_folder"                : "Check Save Folder",
+	"open_save_zip"                   : "Check Save .ZIP"
 }

@@ -37,7 +37,10 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
 })
 window.l10n.receive('fromMain_getText_return_title', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.closest('button').title = data[1] })
+	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
+		item.closest('button').title = data[1]
+		new bootstrap.Tooltip(item.closest('button'))
+	})
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 

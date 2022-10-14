@@ -6,7 +6,7 @@
 
 // Detail window UI
 
-/* global l10n, fsgUtil */
+/* global l10n, fsgUtil, bootstrap */
 
 
 /*  __ ____   ______        
@@ -30,6 +30,12 @@ function clientGetL10NEntries() {
 window.l10n.receive('fromMain_getText_return', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
 })
+window.l10n.receive('fromMain_getText_return_title', (data) => {
+	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
+		item.closest('span').title = data[1]
+		new bootstrap.Tooltip(item.closest('span'))
+	})
+})
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
@@ -43,9 +49,9 @@ window.mods.receive('fromMain_collectionName', (collection, modList) => {
 })
 
 window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
-	const fullModSet = new Set()
-	const haveModSet = {}
-	const fullModSetDetail = {}
+	const fullModSet       = new Set()
+	const haveModSet       = {}
+	const modSetHTML       = []
 
 	modList[thisCollection].mods.forEach((thisMod) => {
 		haveModSet[thisMod.fileDetail.shortName] = thisMod
@@ -54,8 +60,8 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
 
 	Object.keys(savegame.mods).forEach((thisMod) => { fullModSet.add(thisMod) })
 
-	Array.from(fullModSet).sort((a, b) => a - b).forEach((thisMod) => {
-		fullModSetDetail[thisMod] = {
+	Array.from(fullModSet).sort().forEach((thisMod) => {
+		const thisModDetail = {
 			title           : null,
 			version         : null,
 			scriptOnly      : false,
@@ -65,33 +71,90 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
 			usedBy          : null,
 			versionMismatch : false,
 		}
+
+		if ( thisMod === savegame.mapMod ) {
+			thisModDetail.isUsed = true
+			thisModDetail.isLoaded = true
+		}
+
 		if ( typeof savegame.mods[thisMod] !== 'undefined' ) {
-			fullModSetDetail[thisMod].version  = savegame.mods[thisMod].version
-			fullModSetDetail[thisMod].title    = savegame.mods[thisMod].title
-			fullModSetDetail[thisMod].isLoaded = true
+			thisModDetail.version  = savegame.mods[thisMod].version
+			thisModDetail.title    = savegame.mods[thisMod].title
+			thisModDetail.isLoaded = true
+
 			if ( savegame.mods[thisMod].farms.size > 0 ) {
-				fullModSetDetail[thisMod].isUsed = true
-				fullModSetDetail[thisMod].usedBy = savegame.mods[thisMod].farms
+				thisModDetail.isUsed = true
+				thisModDetail.usedBy = savegame.mods[thisMod].farms
 			}
 		}
 		if ( typeof haveModSet[thisMod] !== 'undefined' ) {
-			fullModSetDetail[thisMod].isPresent = true
+			thisModDetail.isPresent = true
+
 			if ( haveModSet[thisMod].modDesc.storeItems < 1 && haveModSet[thisMod].modDesc.scriptFiles > 0 ) {
-				fullModSetDetail[thisMod].scriptOnly = true
-				if ( fullModSet[thisMod].isLoaded ) {
-					fullModSetDetail[thisMod].isUsed = true
-				}
+				thisModDetail.scriptOnly = true
+				if ( thisModDetail.isLoaded ) { thisModDetail.isUsed = true }
 			}
-			if ( fullModSetDetail[thisMod].version === null ) {
-				fullModSetDetail[thisMod].version = haveModSet[thisMod].modDesc.version
-			} else if ( fullModSetDetail[thisMod].version !== haveModSet[thisMod].modDesc.version ) {
-				fullModSetDetail[thisMod].versionMismatch = true
+
+			if ( thisModDetail.version === null ) {
+				thisModDetail.version = haveModSet[thisMod].modDesc.version
+			} else if ( thisModDetail.version !== haveModSet[thisMod].modDesc.version ) {
+				thisModDetail.versionMismatch = true
 			}
-			fullModSetDetail[thisMod].title = haveModSet[thisMod].l10n.title
+			thisModDetail.title = haveModSet[thisMod].l10n.title
 		}
+
+		if ( thisMod === savegame.mapMod ) {
+			thisModDetail.isUsed   = true
+			thisModDetail.isLoaded = true
+			thisModDetail.usedBy   = null
+		}
+		modSetHTML.push(makeLine(thisMod, thisModDetail))
 	})
 
-	console.log(fullModSetDetail)
+	fsgUtil.byId('modList').innerHTML = modSetHTML.join('')
 
 	processL10N()
 })
+
+function makeLine(name, mod) {
+	const badges   = ['scriptOnly', 'isLoaded', 'isUsed', 'versionMismatch']
+	const thisHTML = []
+	let colorClass = ''
+
+	if ( !mod.isPresent ) {
+		colorClass = 'list-group-item-danger'
+	} else if ( mod.versionMismatch ) {
+		colorClass = 'list-group-item-info'
+	} else if ( mod.isUsed ) {
+		colorClass = 'list-group-item-success'
+	} else if ( mod.isLoaded ) {
+		colorClass = 'list-group-item-warning'
+	} else {
+		colorClass = 'list-group-item-secondary'
+	}
+	
+	thisHTML.push(`<li class="list-group-item d-flex justify-content-between align-items-start ${colorClass}">`)
+	thisHTML.push('<div class="ms-2 me-auto">')
+	thisHTML.push(`<div class="fw-bold">${name}</div>`)
+	thisHTML.push(`<div class="small">${mod.title}</div>`)
+	if ( mod.usedBy !== null ) {
+		thisHTML.push(`<div class="text-muted small ps-3"><l10n name="savegame_farms"></l10n>: ${Array.from(mod.usedBy).join(', ')}</div>`)
+	}
+	thisHTML.push('</div>')
+
+	if ( !mod.isPresent ) {
+		thisHTML.push('<span class="badge bg-danger bg-gradient rounded-pill"><l10n name="savegame_missing"></l10n></span>')
+	}
+	if ( !mod.isLoaded ) {
+		thisHTML.push('<span class="badge bg-dark bg-gradient rounded-pill"><l10n name="savegame_inactive"></l10n></span>')
+	}
+	badges.forEach((badge) => {
+		if ( mod[badge] === true ) {
+			thisHTML.push(`<span class="badge bg-dark bg-gradient rounded-pill"><l10n name="savegame_${badge.toLowerCase()}"></l10n></span>`)
+		}
+	})
+
+	thisHTML.push('</li>')
+
+	return thisHTML.join('')
+}

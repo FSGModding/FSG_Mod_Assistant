@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/savegame_ui.js"></script>
 	<style> ::-webkit-scrollbar { display: none; } </style>
@@ -22,7 +23,7 @@
 					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
 				</div>
 				<div class="col-5">
-					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill" id="collection_name"></div>
+					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill"><span class="h4" id="collection_name"></span></div>
 				</div>
 			</div>
 			<i class="text-center mt-1 w-100 mx-auto d-block small" id="collection_location"></i>
@@ -32,6 +33,8 @@
 			<button class="btn btn-primary btn-sm" onclick="window.mods.openFolder()"><l10n name="open_save_folder"></l10n></button>
 			<button class="btn btn-primary btn-sm" onclick="window.mods.openZIP()"><l10n name="open_save_zip"></l10n></button>
 		</div>
+
+		<div class="list-group mx-2 my-3" id="modList"></div>
 
 	</div>
 
