@@ -12,30 +12,32 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/confirm_copy_move_ui.js"></script>
+	<style> ::-webkit-scrollbar { display: none; } </style>
 </head>
 <body>
 	
 	<div class="container-fluid user-select-none">
-		<div class="sticky-top pt-2 bg-body">
-			<div class="row w-100">
-				<div class="col-9 border-bottom">
-					<h3><l10n name="app_name"></l10n> v<l10n name="app_version"></l10n></h3>
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row gx-1 w-100">
+				<div class="col-7">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+				</div>
+				<div class="col-5">
+					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill"><l10n class="h4" name="confirm_copy_title"></l10n></div>
 				</div>
 			</div>
-			<span class="text-center mb-4 mt-1 border-bottom w-100 mx-auto d-block"><l10n name="confirm_copy_blurb"></l10n></span>
+			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="confirm_copy_blurb"></l10n></span>
 		</div>
 
 		<div class="row mx-2">
-			<div class="col-4"><l10n name="destination"></l10n></div>
+			<div class="col-4 col-form-label"><l10n name="destination"></l10n></div>
 			<div class="col-8">
 				<select onchange="updateConfirmList()" id="select_destination" class="form-select"></select>
 			</div>
 		</div>
 		
 
-		<div class="mx-4 my-2 border-top border-bottom" id="confirm_list">
-			
-		</div>
+		<div class="mx-4 my-3 border-top" id="confirm_list"></div>
 
 		<div class="btn btn-danger w-75 mx-auto d-block" onclick="clientDoCopy()"><l10n name="copy"></l10n></div>
 	</div>

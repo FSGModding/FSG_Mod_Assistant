@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		homeDirMap : ( path ) => { return ipcRenderer.sendSync('toMain_homeDirRevamp', path) },
 		removeFolder : ( folder ) => { ipcRenderer.send('toMain_removeFolder', folder) },
 		openFolder : ( folder ) => { ipcRenderer.send('toMain_openFolder', folder) },
 		receive   : ( channel, func ) => {

@@ -33,7 +33,9 @@
 	"config_working_set_list"          : "Setting game mod folder (this only takes a second)...",
 	"config_working_status"            : "Reading, Copying, Moving, or Testing (this could take a while)...",
 
-	"delete"                    : "Yes, Delete Mod",
+	"folder_list_title"         : "Collection Folders",
+	"folder_list_blurb"         : "On this screen you can open collection folders directly or remove them from consideration.  Forgetting (removing) a folder does not alter the files in any way.",
+	"delete"                    : "Yes, Delete Mods",
 	"confirm_delete_title"      : "Delete Mod File(s)",
 	"move"                      : "Yes, Move Mods",
 	"confirm_move_title"        : "Move Mod File(s)",
@@ -51,7 +53,7 @@
 
 	"confirm_move_blurb"        : "To move mods, select the destination collection below, and choose to overwrite or not for each mod (where applicable)",
 	"confirm_copy_blurb"        : "To copy mods, select the destination collection below, and choose to overwrite or not for each mod (where applicable)",
-	"confirm_delete_blurb"      : "Are you absolutely sure you wish to delete this file?  This action cannot be undone!",
+	"confirm_delete_blurb"      : "Are you absolutely sure you wish to delete this file?<br><strong><mark>This action cannot be undone!</mark></strong>",
 	"latest_version_link_blurb" : "Get the latest version at:",
 
 	"save_log_failed" : "Debug log save failed",

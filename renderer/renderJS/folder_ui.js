@@ -40,14 +40,14 @@ window.mods.receive('fromMain_getFolders', (modList) => {
 })
 
 function makeFolderLine(path, name) {
-	let folderHTML = ''
+	const folderHTML = []
 	
-	folderHTML += '<div class="folderLine mb-3 border-bottom"><div class="row">'
-	folderHTML += `<div class="col-8"><h4>${name}</h4></div>`
-	folderHTML += '<div class="col-4"><div class="btn-group w-100"><button class="btn btn-sm btn-success open_folder"><l10n name="open_folder"></l10n></button><button class="btn btn-sm w-100 btn-danger remove_folder"><l10n name="remove_folder"></l10n></button></div></div>'
-	folderHTML += `</div><p class="folder-path text-end">${path}</p></div>`
+	folderHTML.push('<div class="folderLine mb-3 pb-2 border-bottom"><div class="row">')
+	folderHTML.push(`<div class="col-6"><h4>${name}</h4></div>`)
+	folderHTML.push('<div class="col-6"><div class="btn-group w-100"><button class="btn btn-sm btn-success open_folder"><l10n name="open_folder"></l10n></button><button class="btn btn-sm btn-danger remove_folder"><l10n name="remove_folder"></l10n></button></div></div>')
+	folderHTML.push(`</div><em class="ps-2 folder-path">${window.mods.homeDirMap(path)}</em></div>`)
 
-	return folderHTML
+	return folderHTML.join('')
 }
 
 function processButtonClick(event) {
