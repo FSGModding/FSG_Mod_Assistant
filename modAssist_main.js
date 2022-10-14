@@ -548,7 +548,6 @@ function openSaveGame(zipMode = false) {
 		} else {
 			try {
 				const thisSavegame = new saveFileChecker(result.filePaths[0], !zipMode, logger)
-				console.log(thisSavegame)
 				windows.save.webContents.send('fromMain_saveInfo', modList, thisSavegame)
 			} catch (e) {
 				logger.notice('savegame', `Load failed: ${e}`)
