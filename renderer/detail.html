@@ -12,25 +12,29 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/detail_ui.js"></script>
+	<style>
+		::-webkit-scrollbar {
+ 			display: none;
+		}
+	</style>
 </head>
 <body>
-	
 	<div class="container-fluid px-1 user-select-none">
-	  <div class="sticky-top pt-2 bg-body">
-		<div class="row w-100">
-			<div class="col-9 border-bottom">
-				<h2><l10n name="app_name"></l10n> v<l10n name="app_version"></l10n></h2>
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100">
+				<div class="col-7">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+				</div>
+				<div class="col-5 text-center mx-auto pt-1" id="badges"></div>
 			</div>
+			<h3 class="text-center mb-1 w-75 mx-auto display-6" id="title"></h3>
+			<i class="text-center mt-1 w-100 mx-auto d-block small" id="mod_location"></i>
 		</div>
-		<h3 class="text-center mt-3 mb-1 w-75 mx-auto" id="title"></h3>
-		<h6 class="text-center mt-1 mb-1 w-75 mx-auto" id="badges"></h6>
-		<span class="text-center mb-4 mt-1 border-bottom w-100 mx-auto d-block" id="mod_location"></span>
-	  </div>
 
 		<div class="row mx-4 mb-3">
-			<div class="col-4" id="icon_div"></div>
+			<div class="col-4 my-auto mx-auto" id="icon_div"></div>
 			<div class="col-8 mx-auto">
-				<table class="table">
+				<table class="table table-sm table-striped mb-0">
 					<tr><th><l10n name="detail_mod_author"></l10n></th><td class="text-end" id="mod_author"></td></tr>
 					<tr><th><l10n name="detail_mod_version"></l10n></th><td class="text-end" id="version"></td></tr>
 					<tr><th><l10n name="detail_mod_size"></l10n></th><td class="text-end" id="filesize"></td></tr>
@@ -41,15 +45,15 @@
 				</table>				
 			</div>
 		</div>
-		<div class="px-3 mt-4 mb-2" id="problem_div">
+		<div class="px-3 border-bottom mb-2" id="problem_div">
 			<h4><l10n name="detail_problems"></l10n></h4>
-			<div id="problems" class="w-100 mx-auto px-5"></div>
+			<div id="problems" class="w-100 mx-auto ps-5"></div>
 		</div>
-		<div class="px-3 mt-4 mb-2" id="problem_div">
+		<div class="px-3 border-bottom mb-2" id="desc_div">
 			<h4><l10n name="detail_description"></l10n></h4>
-			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="description"></div>
+			<div style="white-space: pre-wrap" class="ps-5 font-monospace" id="description"></div>
 		</div>
-		<div class="px-3 mt-4">
+		<div class="px-3 border-bottom mb-2">
 			<h4><l10n name="detail_dev_info"></l10n></h4>
 			<h6 class="i18n mt-4 ms-4"><l10n name="detail_extra_files"></l10n></h6>
 			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="extraFiles"></div>

@@ -11,7 +11,7 @@ const autoUpdateTimeSeconds        = 30
 
 
 ipcRenderer.on('update-log', ( _, logContents ) => {
-	document.getElementById('debug_log').innerHTML = logContents
+	document.getElementById('debug_log').innerHTML = logContents.replaceAll('\n', '<br>\n')
 })
 
 contextBridge.exposeInMainWorld(

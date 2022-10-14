@@ -34,13 +34,16 @@
 	"config_working_status"            : "Reading, Copying, Moving, or Testing (this could take a while)...",
 
 	"delete"                    : "Yes, Delete Mod",
+	"confirm_delete_title"      : "Delete Mod File(s)",
 	"move"                      : "Yes, Move Mods",
+	"confirm_move_title"        : "Move Mod File(s)",
 	"copy"                      : "Yes, Copy Mod(s)",
+	"confirm_copy_title"        : "Copy Mod File(s)",
 
 	"override_disabled"         : "disabled",
 	"override_unknown"          : "unknown",
 
-	"destination"               : "Intended Destination:",
+	"destination"               : "Destination Collection:",
 	"no_destination_selected"   : "Please select a destination above...",
 	"destination_full"          : "Destination file exists, overwrite is possible",
 	"destination_clear"         : "Destination file does not exist, good to go",

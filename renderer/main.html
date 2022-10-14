@@ -102,7 +102,7 @@
 		<div class="fixed-top pt-2 bg-body" id="main-header">
 			<div class="row w-100 mb-2">
 				<div class="col-8 border-bottom">
-					<h2 class="ps-2"><l10n name="app_name"></l10n> v<l10n name="app_version"></l10n></h2>
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
 				</div>
 				<div class="col-3">
 					<div class="row float-end">
@@ -117,10 +117,7 @@
 					</div>
 				</div>
 				<div class="col-1 text-end">
-					<button onclick="window.mods.openPreferences()" class="btn btn-outline-dark text-center w-100" id="open_prefs"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="vertical-align: text-top" class="bi bi-gear" viewBox="0 0 16 16">
-						<path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
-						<path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
-					</svg></button>
+					<button onclick="window.mods.openPreferences()" class="btn btn-outline-dark text-center w-100" id="open_prefs"><gg-icon class="align-middle gg-more"></gg-icon></button>
 				</div>
 			</div>
 		</div>
@@ -130,28 +127,28 @@
 				<div class="row">
 					<div class="col-5">
 						<div class="btn-group d-flex" role="group">
-							<button type="button" class="btn btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n name="folder_add"></l10n></button>
-							<button type="button" class="btn btn-primary" onclick="mods.editFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n name="folder_edit"></l10n></button>
+							<button type="button" class="btn btn-sm btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n name="folder_add"></l10n></button>
+							<button type="button" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n name="folder_edit"></l10n></button>
 						</div>
 					</div>
 					<div class="col-5">
-						<div class="input-group">
-							<select class="form-select" id="collectionSelect"></select>
-							<button class="btn btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
+						<div class="input-group w-100">
+							<select class="form-select form-select-sm" id="collectionSelect"></select>
+							<button class="btn btn-sm btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
 						</div>
 					</div>
 					<div class="col-2">
-						<button class="btn btn-danger" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
+						<button class="btn btn-danger btn-sm w-100" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
 					</div>
 				</div>
 				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
 			</div><!-- end: source mods-->
 			<div class="col-2 p-0"><!-- buttons -->
 				<div id="moveButtons" class="p-2" style="position: absolute; top: 90px;">
-					<button onclick="clientBatchOperation('move')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
-					<button onclick="clientBatchOperation('copy')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
-					<button onclick="clientBatchOperation('delete')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-danger disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
-					<button onclick="clientBatchOperation('open')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-info disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_from_list"></l10n></button>
+					<button onclick="clientBatchOperation('move')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
+					<button onclick="clientBatchOperation('copy')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
+					<button onclick="clientBatchOperation('delete')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-danger rounded-4 disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
+					<button onclick="clientBatchOperation('open')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-info rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_from_list"></l10n></button>
 				</div>
 			</div><!-- end: buttons-->
 		</div>
@@ -202,7 +199,7 @@
 
 	</main>
 
-	<footer class="footer fixed-bottom mt-auto py-2 bg-dark" id="main-footer">
+	<footer class="footer fixed-bottom mt-auto py-2 bg-dark small" id="main-footer">
 		<div class="container text-center">
 			<l10n class="text-white-50" name="latest_version_link_blurb"></l10n> <a target="_blank" class="text-white-50" href="https://github.com/FSGModding/FSG_Mod_Assistant/releases">github.com/FSGModding/FSG_Mod_Assistant</a>
 			<a class="text-white-50" style="cursor: pointer" onclick="mods.debugLog()">[<l10n name="open_debug_log"></l10n>]</a>

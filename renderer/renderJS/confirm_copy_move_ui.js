@@ -65,17 +65,17 @@ function updateConfirmList() {
 
 	lastModRecords.forEach((mod) => {
 		confirmHTML.push('<div class="row border-bottom">')
-		confirmHTML.push(`<h3 class="mb-0 mt-2">${mod.fileDetail.shortName}</h3>`)
-		confirmHTML.push(`<p class="font-monospace small">${window.mods.homeDirMap(mod.fileDetail.fullPath)}</h3>`)
+		confirmHTML.push(`<h3 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${mod.l10n.title}</span></h3>`)
+		confirmHTML.push(`<p class="font-monospace small mb-1 ps-4">${window.mods.homeDirMap(mod.fileDetail.fullPath)}</h3>`)
 
 		if ( selectedDest === '0' ) {
-			confirmHTML.push('<p><l10n name="no_destination_selected"></l10n></p>')
+			confirmHTML.push('<div class="row mt-0"><div class="col col-form-label"><l10n name="no_destination_selected"></l10n></div></div>')
 		} else if ( findConflict(selectedDest, mod.fileDetail.shortName, mod.fileDetail.isFolder) ) {
-			confirmHTML.push('<div class="row"><div class="col-9"><l10n name="destination_full"></l10n></div><div class="col-3">')
+			confirmHTML.push('<div class="row mt-0"><div class="col-9 col-form-label"><l10n name="destination_full"></l10n></div><div class="col-3 col-form-label">')
 			confirmHTML.push(`<div class="form-check"><input class="form-check-input" type="checkbox" value="" id="${mod.uuid}">`)
 			confirmHTML.push(`<label class="form-check-label" for="${mod.uuid}"><l10n name="overwrite"></l10n></label></div></div></div>`)
 		} else {
-			confirmHTML.push('<p><l10n name="destination_clear"></l10n></p>')
+			confirmHTML.push('<div class="row mt-0"><div class="col col-form-label"><l10n name="destination_clear"></l10n></div></div>')
 			confirmHTML.push(`<input type="hidden" value="1" id="${mod.uuid}" />`)
 		}
 
