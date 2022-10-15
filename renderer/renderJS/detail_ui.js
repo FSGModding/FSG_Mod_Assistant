@@ -35,7 +35,7 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 window.mods.receive('fromMain_modRecord', (modRecord) => {
 	const idMap = {
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
-		file_date      : (isNaN(modRecord.fileDetail.fileDate.getTime()) ? '0000-00-00T00:00' : modRecord.fileDetail.fileDate.toISOString().substring(0, 16) ),
+		file_date      : modRecord.fileDetail.fileDate.substring(0, 16),
 		title          : (( modRecord.l10n.title !== null ) ? modRecord.l10n.title : modRecord.fileDetail.shortName),
 		mod_location   : modRecord.fileDetail.fullPath,
 		mod_author     : modRecord.modDesc.author,

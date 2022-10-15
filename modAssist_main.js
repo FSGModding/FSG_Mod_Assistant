@@ -11,7 +11,8 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = r
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug = true
+const devDebug  = false
+const skipCache = false
 
 if (process.platform === 'win32') {
 	autoUpdater.checkForUpdatesAndNotify()
@@ -21,6 +22,7 @@ const path       = require('path')
 const fs         = require('fs')
 const glob       = require('glob')
 const xml2js     = require('xml2js')
+const crypto     = require('crypto')
 
 const userHome      = require('os').homedir()
 const pathRender    = path.join(app.getAppPath(), 'renderer')
@@ -53,6 +55,7 @@ const settingsSchema = {
 const Store   = require('electron-store')
 const { saveFileChecker } = require('./lib/savegame-parser.js')
 const mcStore = new Store({schema : settingsSchema})
+const maCache = new Store({name : 'mod_cache'})
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
@@ -62,7 +65,6 @@ const logger = new mcLogger()
 let modFolders    = new Set()
 let modFoldersMap = {}
 let modList       = {}
-let modListCache  = {}
 let countTotal    = 0
 let countMods     = 0
 
@@ -78,7 +80,6 @@ const windows = {
 }
 
 let foldersDirty = true
-let quickRescan  = false
 
 let workWidth  = 0
 let workHeight = 0
@@ -114,23 +115,23 @@ function createMainWindow () {
 
 	if ( !devDebug ) {
 		windows.splash = new BrowserWindow({
-			width           : 500,
-			height          : 250,
+			width           : 600,
+			height          : 300,
 			transparent     : true,
 			frame           : false,
 			alwaysOnTop     : true,
 			autoHideMenuBar : true,
 		})
 		
-		const pos_left = (workWidth / 2)  - ( 500 / 2 )
-		const pos_top  = (workHeight / 2) - ( 250 / 2 )
+		const pos_left = (workWidth / 2)  - ( 600 / 2 )
+		const pos_top  = (workHeight / 2) - ( 300 / 2 )
 
 		windows.splash.setPosition(pos_left, pos_top)
 		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${mcDetail.version}`)
 
 		windows.main.removeMenu()
 		windows.main.once('ready-to-show', () => {
-			setTimeout(() => { windows.main.show(); windows.splash.destroy() }, 1500)
+			setTimeout(() => { windows.main.show(); windows.splash.destroy() }, 2000)
 		})
 	}
 
@@ -227,8 +228,6 @@ function createFolderWindow() {
 function createDetailWindow(thisModRecord) {
 	if ( windows.detail ) { windows.detail.focus(); return }
 
-	thisModRecord.populateL10n()
-	thisModRecord.populateIcon()
 	thisModRecord.currentLocale = translator.currentLocale
 
 	windows.detail = new BrowserWindow({
@@ -597,16 +596,6 @@ function modIdToRecord(id) {
 	return foundMod
 }
 
-function modCacheSearch(collection, path) {
-	let foundMod = null
-	modListCache[collection].mods.forEach((mod) => {
-		if ( foundMod === null && mod.fileDetail.fullPath === path ) {
-			foundMod = mod
-		}
-	})
-	return foundMod
-}
-
 function modIdsToRecords(mods) {
 	const theseMods = []
 	mods.forEach((inMod) => { theseMods.push(modIdToRecord(inMod)) })
@@ -687,7 +676,6 @@ function fileOperation(type, fileMap) {
 	windows.main.focus()
 
 	foldersDirty = true
-	quickRescan  = true
 
 	incrementTotal(0, true)
 	incrementDone(0, true)
@@ -721,7 +709,6 @@ function fileOperation(type, fileMap) {
 }
 
 function processModFolders(newFolder = false) {
-	if ( quickRescan ) { modListCache = modList }
 	if ( !foldersDirty ) { return }
 
 	pop_load_show()
@@ -737,6 +724,7 @@ function processModFolders(newFolder = false) {
 	modFolders.forEach((folder) => {
 		const cleanName = folder.replaceAll('\\', '-').replaceAll(':', '').replaceAll(' ', '_')
 		const shortName = path.basename(folder)
+		const localStore = maCache.store
 
 		if ( folder === newFolder || newFolder === false ) {
 			modFoldersMap[cleanName] = folder
@@ -747,60 +735,73 @@ function processModFolders(newFolder = false) {
 
 				incrementTotal(folderContents.length)
 
+				let modIndex = -1
 				folderContents.forEach((thisFile) => {
-					let skipEntry = false
-					if ( quickRescan ) {
-						const thisMod = modCacheSearch(cleanName, path.join(folder, thisFile.name))
-						if ( thisMod !== null ) {
-							modList[cleanName].mods.push(thisMod)
-							skipEntry = true
+					modIndex++
+					let skipTest  = false
+					let isFolder  = false
+					let date      = null
+					let size      = 0
+
+					if ( thisFile.isSymbolicLink() ) {
+						const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
+						const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
+						isFolder = thisSymLinkStat.isDirectory()
+						date     = thisSymLinkStat.ctime
+
+						if ( !isFolder ) { size = thisSymLinkStat.size }
+					} else {
+						isFolder = thisFile.isDirectory()
+					}
+
+					if ( ! thisFile.isSymbolicLink() ) {
+						const theseStats = fs.statSync(path.join(folder, thisFile.name))
+						if ( !isFolder ) { size = theseStats.size }
+						date = theseStats.ctime
+						
+					}
+					if ( isFolder ) {
+						let bytes = 0
+						glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
+							try {
+								const stats = fs.statSync(path.join(folder, thisFile.name, file))
+								if ( stats.isFile() ) { bytes += stats.size }
+							} catch { /* Do Nothing if we can't read it. */ }
+						})
+						size = bytes
+					}
+
+					if ( !isFolder && !skipCache ) {
+						const hashString = `${thisFile.name}-${size}-${date.toISOString()}`
+						const thisMD5Sum = crypto.createHash('md5').update(hashString).digest('hex')
+
+						if ( typeof localStore[thisMD5Sum] !== 'undefined') {
+							modList[cleanName].mods[modIndex] = localStore[thisMD5Sum]
+							skipTest = true
 						}
 					}
-					if ( !skipEntry ) {
-						let isFolder = false
-						let date     = null
-						let size     = 0
-						
-						if ( thisFile.isSymbolicLink() ) {
-							const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
-							const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
-							isFolder = thisSymLinkStat.isDirectory()
-							date     = thisSymLinkStat.ctime
 
-							if ( !isFolder ) { size = thisSymLinkStat.size }
-						} else {
-							isFolder = thisFile.isDirectory()
-						}
-
-						if ( ! thisFile.isSymbolicLink() ) {
-							const theseStats = fs.statSync(path.join(folder, thisFile.name))
-							if ( !isFolder ) { size = theseStats.size }
-							date = theseStats.ctime
-						}
-						if ( isFolder ) {
-							let bytes = 0
-							glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
-								try {
-									const stats = fs.statSync(path.join(folder, thisFile.name, file))
-									if ( stats.isFile() ) { bytes += stats.size }
-								} catch { /* Do Nothing if we can't read it. */ }
-							})
-							size = bytes
-						}
-
+					if ( !skipTest ) {
 						try {
-							modList[cleanName].mods.push( new modFileChecker(
+							const thisModDetail = new modFileChecker(
 								path.join(folder, thisFile.name),
 								isFolder,
 								size,
 								date,
 								logger,
 								myTranslator.deferCurrentLocale
-							))
+							)
+							modList[cleanName].mods[modIndex] = thisModDetail
+							if ( thisModDetail.md5Sum !== null ) {
+								maCache.set(thisModDetail.md5Sum, thisModDetail.storable)
+							}
+
 						} catch (e) {
 							logger.fileError(thisFile.name, `Couldn't test and add mod: ${e}`)
 						}
 					}
+					
+					
 					incrementDone()
 				})
 			} catch (e) {
@@ -808,9 +809,7 @@ function processModFolders(newFolder = false) {
 			}
 		}
 	})
-	quickRescan  = false
 	foldersDirty = false
-	modListCache = {}
 
 	parseSettings()
 
