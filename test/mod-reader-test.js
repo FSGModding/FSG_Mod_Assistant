@@ -44,7 +44,6 @@ folderContents.forEach((thisFile) => {
 		console.log(`  Issues: ${thisMod.issues.join(', ')}`)
 		console.log(`  Badges: ${badgeNames.join(', ')}`)
 		console.log(`  Extra:  ${thisMod.fileDetail.extraFiles.join(', ')}`)
-		console.log(thisMod.storable)
 	} catch (e) {
 		console.log(`  Unable to read ${thisFile} :: ${e}`)
 		console.log(e.stack)
