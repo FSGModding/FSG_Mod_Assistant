@@ -51,11 +51,11 @@ window.mods.receive('fromMain_hideLoading',  () => { loadingModal.hide() })
 window.mods.receive('fromMain_showListSet',  () => { listModal.show() })
 window.mods.receive('fromMain_hideListSet',  () => { listModal.hide() })
 
-window.mods.receive('fromMain_modList', (modList, extraL10n, currentList) => {
+window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFoldersMap) => {
 	const selectedList = ( currentList !== '999' && currentList !== '0') ? `collection--${currentList}` : currentList
 	const modTable     = []
 	const optList      = []
-
+	
 	optList.push(fsgUtil.buildSelectOpt('0', `--${extraL10n[0]}--`, selectedList, true))
 	
 	Object.keys(modList).forEach((collection) => {
@@ -75,7 +75,7 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList) => {
 			`${modList[collection].name} (${modList[collection].mods.length})`,
 			modRows
 		))
-		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, modList[collection].name, selectedList))
+		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, modList[collection].name, selectedList, false, modFoldersMap[collection]))
 
 	})
 	optList.push(fsgUtil.buildSelectOpt('999', `--${extraL10n[1]}--`, selectedList, true))
@@ -230,7 +230,7 @@ function makeModCollection(id, name, modsRows) {
 }
 
 function makeModRow(id, name, title, version, badges, disabled = false) {
-	return `<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name} ${badges}<br /><small>${title}</small></td><td>${version}</td></tr>`
+	return `<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name}<br /><small>${title}</small><div class="issue_badges">${badges}</div></td><td class="text-end pe-4">${version}</td></tr>`
 }
 
 

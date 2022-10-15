@@ -5,7 +5,7 @@
 	"app_name"                         : "FSG FS22 Mod Assistant",
 	"folder_add"                       : "Add Folder",
 	"folder_add__title"                : "Add Collection Folder",
-	"folder_edit"                      : "Edit Folder List",
+	"folder_edit"                      : "Edit Folders",
 	"folder_edit__title"               : "Edit Collection Folder List",
 	"open_folder"                      : "Open in Explorer",
 	"remove_folder"                    : "Forget Collection",
@@ -28,6 +28,7 @@
 	"mod_badge_nomp"                   : "noMP",
 	"mod_badge_pconly"                 : "PC",
 	"mod_badge_folder"                 : "Folder",
+	"mod_badge_notmod"                 : "Not MOD",
 	"status-processing-title"          : "Processing Mods...",
 	"status-set-list-title"            : "Setting Game Mod Folder...",
 	"config_working_set_list"          : "Setting game mod folder (this only takes a second)...",
@@ -139,7 +140,8 @@
 	"savegame_inactive__title"        : "This is NOT used in the save",
 	"open_save_folder"                : "Load Save Folder",
 	"open_save_zip"                   : "Load Save ZIP File",
-
+	"folder_refresh"                  : "Reload Folders",
+	"folder_refresh__title"           : "Reload Folders from Disk",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Set User Preferences"
 }

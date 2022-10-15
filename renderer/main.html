@@ -91,6 +91,14 @@
 		tr.mod-list-row td:first-child input {
 			display: none;
 		}
+		.issue_badges {
+			position: relative;
+			float: right;
+			top: -1.2em;
+		}
+		.issue_badges>span {
+			margin-left: 3px;
+		}
 
 
 	</style>
@@ -120,31 +128,34 @@
 					<button onclick="window.mods.openPreferences()" class="btn btn-outline-light text-center w-100" id="open_prefs"><l10n name="preferences_button"></l10n></button>
 				</div>
 			</div>
-		</div>
-	
-		<div class="row overflow-custom px-2" style="margin-top: 95px;">
-			<div class="col-10"><!-- source mods -->
-				<div class="row">
-					<div class="col-5">
-						<div class="btn-group d-flex" role="group">
-							<button type="button" class="btn btn-sm btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n name="folder_add"></l10n></button>
-							<button type="button" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n name="folder_edit"></l10n></button>
-						</div>
-					</div>
-					<div class="col-5">
-						<div class="input-group w-100">
-							<select class="form-select form-select-sm" id="collectionSelect"></select>
-							<button class="btn btn-sm btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
-						</div>
-					</div>
-					<div class="col-2">
-						<button class="btn btn-danger btn-sm w-100" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
+
+			<div class="row px-3 pt-1"><!-- source mods -->
+				<div class="col">
+					<div class="btn-group d-flex" role="group">
+						<button type="button" class="btn btn-sm btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n class="small" name="folder_add"></l10n></button>
+						<button type="button" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n class="small" name="folder_edit"></l10n></button>
+						<button type="button" class="btn btn-sm btn-secondary" onclick="mods.refreshFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n class="small" name="folder_refresh"></l10n></button>
 					</div>
 				</div>
-				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
+				<div class="col">
+					<div class="input-group w-100">
+						<select class="form-select form-select-sm" id="collectionSelect"></select>
+						<button class="btn btn-sm btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
+						<button class="btn btn-danger btn-sm" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
+					</div>
+				</div>
+				<div class="col-2">
+					<button class="btn btn-success btn-sm w-100" type="button" onclick="mods.versionCheck()"><l10n name="version_check"></l10n></button>
+				</div>
 			</div><!-- end: source mods-->
+		</div>
+		
+		<div class="row overflow-custom px-2" style="margin-top: 105px;">
+			<div class="col-10">
+				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
+			</div>
 			<div class="col-2 p-0"><!-- buttons -->
-				<div id="moveButtons" class="p-2" style="position: absolute; top: 90px;">
+				<div id="moveButtons" class="p-2" style="position: absolute; top: 140px;">
 					<button onclick="clientBatchOperation('move')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
 					<button onclick="clientBatchOperation('copy')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
 					<button onclick="clientBatchOperation('delete')" type="button" style="height: 15vh" class="w-100 mb-2 btn btn-danger rounded-4 disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
@@ -152,6 +163,7 @@
 				</div>
 			</div><!-- end: buttons-->
 		</div>
+		
 	</div>
 
 	<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

@@ -33,6 +33,7 @@ contextBridge.exposeInMainWorld(
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
 		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
 		editFolders     : () => { ipcRenderer.send('toMain_editFolders') },
+		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
 		makeInactive     : () => { ipcRenderer.send('toMain_makeInactive' ) },
 

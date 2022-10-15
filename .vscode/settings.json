@@ -57,6 +57,7 @@
 		"modsdirectoryoverride",
 		"modtiny",
 		"nomp",
+		"notmod",
 		"nsis",
 		"offcanvas",
 		"pconly",

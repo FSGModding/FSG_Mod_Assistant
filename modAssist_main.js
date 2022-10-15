@@ -11,7 +11,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = r
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug  = false
+const devDebug  = true
 const skipCache = false
 
 if (process.platform === 'win32') {
@@ -34,10 +34,10 @@ if ( ! fs.existsSync(pathBestGuess) ) {
 	pathBestGuess = path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
 }
 
-const translator               = require('./lib/translate.js')
-const { mcLogger }             = require('./lib/logger.js')
-const { modFileChecker }       = require('./lib/single-mod-checker.js')
-const mcDetail                 = require('./package.json')
+const translator                            = require('./lib/translate.js')
+const { mcLogger }                          = require('./lib/logger.js')
+const { modFileChecker, notModFileChecker } = require('./lib/single-mod-checker.js')
+const mcDetail                              = require('./package.json')
 
 const settingsSchema = {
 	main_window_x     : { type : 'number', maximum : 4096, minimum : 100, default : 1000 },
@@ -67,6 +67,19 @@ let modFoldersMap = {}
 let modList       = {}
 let countTotal    = 0
 let countMods     = 0
+
+const ignoreList = [
+	'^npm-debug\\.log$',
+	'^\\..*\\.swp$',
+	'^Thumbs\\.db$',
+	'^thumbs\\.db$',
+	'^ehthumbs\\.db$',
+	'^Desktop\\.ini$',
+	'^desktop\\.ini$',
+	'@eaDir$',
+]
+
+const junkRegex = new RegExp(ignoreList.join('|'))
 
 const windows = {
 	main    : null,
@@ -408,9 +421,10 @@ ipcMain.on('toMain_addFolder', () => {
 		logger.notice('folderList', `Could not read specified add folder : ${unknownError}`)
 	})
 })
-ipcMain.on('toMain_editFolders',  () => { createFolderWindow() })
-ipcMain.on('toMain_openFolder',   (event, folder) => { shell.openPath(folder) })
-ipcMain.on('toMain_removeFolder', (event, folder) => {
+ipcMain.on('toMain_editFolders',    () => { createFolderWindow() })
+ipcMain.on('toMain_openFolder',     (event, folder) => { shell.openPath(folder) })
+ipcMain.on('toMain_refreshFolders', () => { foldersDirty = true; processModFolders() })
+ipcMain.on('toMain_removeFolder',   (event, folder) => {
 	if ( modFolders.delete(folder) ) {
 		logger.notice('folderManager', `Folder removed from list ${folder}`)
 		mcStore.set('modFolders', Array.from(modFolders))
@@ -708,6 +722,45 @@ function fileOperation(type, fileMap) {
 	}, 1000)
 }
 
+function fileGetStats(folder, thisFile) {
+	let isFolder = null
+	let date     = null
+	let size     = null
+
+	if ( thisFile.isSymbolicLink() ) {
+		const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
+		const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
+		isFolder = thisSymLinkStat.isDirectory()
+		date     = thisSymLinkStat.ctime
+
+		if ( !isFolder ) { size = thisSymLinkStat.size }
+	} else {
+		isFolder = thisFile.isDirectory()
+	}
+
+	if ( ! thisFile.isSymbolicLink() ) {
+		const theseStats = fs.statSync(path.join(folder, thisFile.name))
+		if ( !isFolder ) { size = theseStats.size }
+		date = theseStats.ctime
+		
+	}
+	if ( isFolder ) {
+		let bytes = 0
+		glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
+			try {
+				const stats = fs.statSync(path.join(folder, thisFile.name, file))
+				if ( stats.isFile() ) { bytes += stats.size }
+			} catch { /* Do Nothing if we can't read it. */ }
+		})
+		size = bytes
+	}
+	return {
+		folder : isFolder,
+		size   : size,
+		date   : date,
+	}
+}
+
 function processModFolders(newFolder = false) {
 	if ( !foldersDirty ) { return }
 
@@ -737,71 +790,55 @@ function processModFolders(newFolder = false) {
 
 				let modIndex = -1
 				folderContents.forEach((thisFile) => {
+					if ( junkRegex.test(thisFile.name) ) {
+						incrementDone()
+						return
+					}
+
 					modIndex++
-					let skipTest  = false
-					let isFolder  = false
-					let date      = null
-					let size      = 0
 
-					if ( thisFile.isSymbolicLink() ) {
-						const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
-						const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
-						isFolder = thisSymLinkStat.isDirectory()
-						date     = thisSymLinkStat.ctime
+					const thisFileStats = fileGetStats(folder, thisFile)
 
-						if ( !isFolder ) { size = thisSymLinkStat.size }
-					} else {
-						isFolder = thisFile.isDirectory()
-					}
-
-					if ( ! thisFile.isSymbolicLink() ) {
-						const theseStats = fs.statSync(path.join(folder, thisFile.name))
-						if ( !isFolder ) { size = theseStats.size }
-						date = theseStats.ctime
-						
-					}
-					if ( isFolder ) {
-						let bytes = 0
-						glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
-							try {
-								const stats = fs.statSync(path.join(folder, thisFile.name, file))
-								if ( stats.isFile() ) { bytes += stats.size }
-							} catch { /* Do Nothing if we can't read it. */ }
-						})
-						size = bytes
-					}
-
-					if ( !isFolder && !skipCache ) {
-						const hashString = `${thisFile.name}-${size}-${date.toISOString()}`
+					if ( !thisFileStats.folder && !skipCache ) {
+						const hashString = `${thisFile.name}-${thisFileStats.size}-${thisFileStats.date.toISOString()}`
 						const thisMD5Sum = crypto.createHash('md5').update(hashString).digest('hex')
 
 						if ( typeof localStore[thisMD5Sum] !== 'undefined') {
 							modList[cleanName].mods[modIndex] = localStore[thisMD5Sum]
-							skipTest = true
+							incrementDone()
+							return
 						}
 					}
 
-					if ( !skipTest ) {
-						try {
-							const thisModDetail = new modFileChecker(
-								path.join(folder, thisFile.name),
-								isFolder,
-								size,
-								date,
-								logger,
-								myTranslator.deferCurrentLocale
-							)
-							modList[cleanName].mods[modIndex] = thisModDetail
-							if ( thisModDetail.md5Sum !== null ) {
-								maCache.set(thisModDetail.md5Sum, thisModDetail.storable)
-							}
-
-						} catch (e) {
-							logger.fileError(thisFile.name, `Couldn't test and add mod: ${e}`)
-						}
+					if ( !thisFileStats.folder && !thisFile.name.endsWith('.zip') ) {
+						modList[cleanName].mods[modIndex] = new notModFileChecker(
+							path.join(folder, thisFile.name),
+							false,
+							thisFileStats.size,
+							thisFileStats.date,
+							logger
+						)
+						incrementDone()
+						return
 					}
-					
-					
+
+					try {
+						const thisModDetail = new modFileChecker(
+							path.join(folder, thisFile.name),
+							thisFileStats.folder,
+							thisFileStats.size,
+							thisFileStats.date,
+							logger,
+							myTranslator.deferCurrentLocale
+						)
+						modList[cleanName].mods[modIndex] = thisModDetail
+						if ( thisModDetail.md5Sum !== null ) {
+							maCache.set(thisModDetail.md5Sum, thisModDetail.storable)
+						}
+					} catch (e) {
+						logger.fileError(thisFile.name, `Couldn't test and add mod: ${e}`)
+					}
+
 					incrementDone()
 				})
 			} catch (e) {
@@ -817,7 +854,8 @@ function processModFolders(newFolder = false) {
 		'fromMain_modList',
 		modList,
 		[myTranslator.syncStringLookup('override_disabled'), myTranslator.syncStringLookup('override_unknown')],
-		overrideIndex
+		overrideIndex,
+		modFoldersMap
 	)
 
 	pop_load_hide()
