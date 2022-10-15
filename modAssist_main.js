@@ -27,7 +27,7 @@ const crypto     = require('crypto')
 const userHome      = require('os').homedir()
 const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
-const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.png')
+const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
 let   pathBestGuess = path.join(userHome, 'OneDrive', 'Documents', 'My Games', 'FarmingSimulator2022')
 
 if ( ! fs.existsSync(pathBestGuess) ) {
