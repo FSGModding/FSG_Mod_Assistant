@@ -149,6 +149,8 @@
 	"version_collection"              : "Colecciones",
 	"version_diff"                    : "Desajuste de la versión",
 	"version_same"                    : "Versión de la partida",
+	"savegame_dlc"                    : "DLC",
+	"savegame_dlc__title"             : "Contenido DLC de pago",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Configurar las preferencias del usuario"
 }

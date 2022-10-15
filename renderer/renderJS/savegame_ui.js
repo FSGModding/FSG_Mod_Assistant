@@ -68,12 +68,18 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
 			isLoaded        : false,
 			isUsed          : false,
 			isPresent       : false,
+			isDLC           : false,
 			usedBy          : null,
 			versionMismatch : false,
 		}
 
+		if ( thisMod.startsWith('pdlc_')) {
+			thisModDetail.isDLC     = true
+			thisModDetail.isPresent = true
+		}
+
 		if ( thisMod === savegame.mapMod ) {
-			thisModDetail.isUsed = true
+			thisModDetail.isUsed   = true
 			thisModDetail.isLoaded = true
 		}
 
@@ -142,6 +148,9 @@ function makeLine(name, mod) {
 	}
 	thisHTML.push('</div>')
 
+	if ( mod.isDLC ) {
+		thisHTML.push('<span class="badge bg-info bg-gradient rounded-1 ms-1"><l10n name="savegame_dlc"></l10n></span>')
+	}
 	if ( !mod.isPresent ) {
 		thisHTML.push('<span class="badge bg-danger bg-gradient rounded-1 ms-1"><l10n name="savegame_missing"></l10n></span>')
 	}

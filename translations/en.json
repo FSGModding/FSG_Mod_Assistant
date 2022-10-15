@@ -149,6 +149,8 @@
 	"version_collection"              : "Collections",
 	"version_diff"                    : "Version Mismatch",
 	"version_same"                    : "Version Match",
+	"savegame_dlc"                    : "DLC",
+	"savegame_dlc__title"             : "Paid DLC Content",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Set User Preferences"
 }

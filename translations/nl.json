@@ -149,6 +149,8 @@
 	"version_collection"              : "Collecties",
 	"version_diff"                    : "Verkeerde versie",
 	"version_same"                    : "Versie wedstrijd",
+	"savegame_dlc"                    : "DLC",
+	"savegame_dlc__title"             : "Betaalde DLC-inhoud",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Gebruikersvoorkeuren instellen"
 }
