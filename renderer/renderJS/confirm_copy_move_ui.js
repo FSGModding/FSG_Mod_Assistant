@@ -136,5 +136,5 @@ function clientDoMove() {
 		}
 	})
 
-	window.mods.realCopyFile(fileMap)
+	window.mods.realMoveFile(fileMap)
 }
