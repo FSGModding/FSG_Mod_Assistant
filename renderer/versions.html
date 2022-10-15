@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/version_ui.js"></script>
+	<style> ::-webkit-scrollbar { display: none; } </style>
+</head>
+<body>
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100">
+				<div class="col-7">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+				</div>
+				<div class="col-5">
+					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill"><l10n class="h4" name="version_check_window"></l10n></div>
+				</div>
+			</div>
+			<button onclick="window.mods.refreshList()" class="btn btn-sm btn-primary d-block w-50 mx-auto mt-3"><l10n name="refresh_version"></l10n></button>
+		</div>
+
+		<div class="list-group mx-2 my-3" id="modList"></div>
+
+	</div>
+
+</body>
+</html>

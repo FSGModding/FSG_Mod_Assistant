@@ -142,6 +142,13 @@
 	"open_save_zip"                   : "Load Save ZIP File",
 	"folder_refresh"                  : "Reload Folders",
 	"folder_refresh__title"           : "Reload Folders from Disk",
+	"version_check"                   : "Check Versions",
+	"version_check__title"            : "Compare Versions Across Collections",
+	"version_check_window"            : "Collection Versions",
+	"refresh_version"                 : "Refresh Version List",
+	"version_collection"              : "Collections",
+	"version_diff"                    : "Version Mismatch",
+	"version_same"                    : "Version Match",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Set User Preferences"
 }

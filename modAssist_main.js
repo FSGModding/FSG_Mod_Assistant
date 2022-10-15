@@ -90,6 +90,7 @@ const windows = {
 	folder  : null,
 	debug   : null,
 	save    : null,
+	version : null,
 }
 
 let foldersDirty = true
@@ -358,6 +359,42 @@ function createSavegameWindow(collection) {
 	windows.save.on('closed', () => { windows.save = null; windows.main.focus() })
 }
 
+function createVersionWindow() {
+	if ( windows.version ) {
+		windows.version.webContents.send('fromMain_modList', modList)
+		windows.version.focus()
+		return
+	}
+
+	windows.version = new BrowserWindow({
+		icon            : pathIcon,
+		width           : mcStore.get('detail_window_x', 800),
+		height          : mcStore.get('detail_window_y', 500),
+		title           : myTranslator.syncStringLookup('app_name'),
+		minimizable     : false,
+		maximizable     : true,
+		fullscreenable  : false,
+		autoHideMenuBar : !devDebug,
+		webPreferences  : {
+			nodeIntegration  : false,
+			contextIsolation : true,
+			preload          : path.join(pathPreload, 'preload-versionWindow.js'),
+		},
+	})
+
+	if ( mcStore.get('detail_window_max', false) ) { windows.version.maximize() }
+
+	if ( !devDebug ) { windows.version.removeMenu() }
+
+	windows.version.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('fromMain_modList', modList)
+		if ( devDebug ) { windows.version.webContents.openDevTools() }
+	})
+
+	windows.version.loadFile(path.join(pathRender, 'versions.html'))
+	windows.version.on('closed', () => { windows.version = null; windows.main.focus() })
+}
+
 /*  ____  ____   ___ 
    (_  _)(  _ \ / __)
     _)(_  )___/( (__ 
@@ -570,7 +607,14 @@ function openSaveGame(zipMode = false) {
 		logger.notice('savegame', `Could not read specified file/folder : ${unknownError}`)
 	})
 }
-/** Savegame window operation */
+/** END: Savegame window operation */
+
+
+/** Version window operation */
+ipcMain.on('toMain_versionCheck',    () => { createVersionWindow() })
+ipcMain.on('toMain_refreshVersions', (event) => { event.sender.send('fromMain_modList', modList) } )
+/** END: Version window operation */
+
 
 
 /** Main Window Modal Functions */
