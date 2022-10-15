@@ -28,6 +28,7 @@
 	"mod_badge_nomp"                   : "noMP",
 	"mod_badge_pconly"                 : "PC",
 	"mod_badge_folder"                 : "Map",
+	"mod_badge_notmod"                 : "Niet MOD",
 	"status-processing-title"          : "Mods verwerken...",
 	"status-set-list-title"            : "Game Mod Map instellen...",
 	"config_working_set_list"          : "Game mod folder instellen (dit duurt maar een seconde)...",
@@ -139,6 +140,15 @@
 	"savegame_inactive__title"        : "Dit wordt NIET gebruikt bij het opslaan",
 	"open_save_folder"                : "Map laden",
 	"open_save_zip"                   : "Laad ZIP-bestand opslaan",
+	"folder_refresh"                  : "Mappen opnieuw laden",
+	"folder_refresh__title"           : "Mappen opnieuw laden vanaf schijf",
+	"version_check"                   : "Versies controleren",
+	"version_check__title"            : "Versies van verschillende collecties vergelijken",
+	"version_check_window"            : "Collectie Versies",
+	"refresh_version"                 : "Vernieuwen versielijst",
+	"version_collection"              : "Collecties",
+	"version_diff"                    : "Verkeerde versie",
+	"version_same"                    : "Versie wedstrijd",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Gebruikersvoorkeuren instellen"
 }

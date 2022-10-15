@@ -29,6 +29,7 @@
 	"mod_badge_nomp"                   : "noMP",
 	"mod_badge_pconly"                 : "PC",
 	"mod_badge_folder"                 : "Folder",
+	"mod_badge_notmod"                 : "Nie MOD",
 	"status-processing-title"          : "Processing Mods...",
 	"status-set-list-title"            : "Ustawianie folderu Game Mod...",
 	"config_working_set_list"          : "Ustawienie folderu game mod (to zajmuje tylko sekundę)...",
@@ -140,6 +141,15 @@
 	"savegame_inactive__title"        : "To NIE jest używane w zapisie",
 	"open_save_folder"                : "Załaduj Zapisz Folder",
 	"open_save_zip"                   : "Załaduj Zapisz plik ZIP",
+	"folder_refresh"                  : "Przeładowanie folderów",
+	"folder_refresh__title"           : "Przeładowanie folderów z dysku",
+	"version_check"                   : "Sprawdź wersje",
+	"version_check__title"            : "Porównywanie wersji w różnych kolekcjach",
+	"version_check_window"            : "Wersje kolekcji",
+	"refresh_version"                 : "Odświeżanie listy wersji",
+	"version_collection"              : "Kolekcje",
+	"version_diff"                    : "Niedopasowanie wersji",
+	"version_same"                    : "Wersja Dopasowanie",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Ustawianie preferencji użytkownika"
 }

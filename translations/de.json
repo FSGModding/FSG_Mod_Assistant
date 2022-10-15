@@ -28,6 +28,7 @@
 	"mod_badge_nomp"                   : "noMP",
 	"mod_badge_pconly"                 : "PC",
 	"mod_badge_folder"                 : "Mappe",
+	"mod_badge_notmod"                 : "Nicht MOD",
 	"status-processing-title"          : "Verarbeitung von Mods...",
 	"status-set-list-title"            : "Spiel-Mod-Ordner einstellen...",
 	"config_working_set_list"          : "Einstellen des Spielmod-Ordners (dies dauert nur eine Sekunde)...",
@@ -139,6 +140,15 @@
 	"savegame_inactive__title"        : "Dies wird NICHT bei der Speicherung verwendet",
 	"open_save_folder"                : "Speicherordner laden",
 	"open_save_zip"                   : "ZIP-Datei laden speichern",
+	"folder_refresh"                  : "Ordner neu laden",
+	"folder_refresh__title"           : "Ordner von der Festplatte neu laden",
+	"version_check"                   : "Versionen prüfen",
+	"version_check__title"            : "Versionsvergleiche zwischen verschiedenen Sammlungen",
+	"version_check_window"            : "Versionen der Sammlung",
+	"refresh_version"                 : "Refresh Version List",
+	"version_collection"              : "Sammlungen",
+	"version_diff"                    : "Versionsabweichung",
+	"version_same"                    : "Version Match",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Benutzerpräferenzen festlegen"
 }
