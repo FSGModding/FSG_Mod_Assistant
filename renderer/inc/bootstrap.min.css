@@ -19,3 +19,5 @@
 
 :root{--bs-border-color:#2f3338;--bs-body-color:#ddd;}
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {color:#eef;}
+
+.table-success{--bs-table-color:#fff;--bs-table-bg:#048967;--bs-table-border-color:#31a487;--bs-table-striped-bg:#059d76;--bs-table-striped-color:#fff;--bs-table-active-bg:#1ac398;--bs-table-active-color:#fff;--bs-table-hover-bg:#13c195;--bs-table-hover-color:#fff;color:var(--bs-table-color);border-color:var(--bs-table-border-color)}

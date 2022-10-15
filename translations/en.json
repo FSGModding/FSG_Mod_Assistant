@@ -137,6 +137,9 @@
 	"savegame_isused__title"          : "This is used (purchased) in the save",
 	"savegame_versionmismatch__title" : "The version you have does not match the version in the save",
 	"savegame_inactive__title"        : "This is NOT used in the save",
-	"open_save_folder"                : "Check Save Folder",
-	"open_save_zip"                   : "Check Save .ZIP"
+	"open_save_folder"                : "Load Save Folder",
+	"open_save_zip"                   : "Load Save ZIP File",
+
+	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
+	"preferences_button__title"       : "Set User Preferences"
 }

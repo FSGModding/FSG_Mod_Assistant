@@ -117,7 +117,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
 })
 
 function makeLine(name, mod) {
-	const badges   = ['scriptOnly', 'isLoaded', 'isUsed', 'versionMismatch']
+	const badges   = ['versionMismatch', 'scriptOnly', 'isUsed', 'isLoaded']
 	const thisHTML = []
 	let colorClass = ''
 
@@ -138,19 +138,19 @@ function makeLine(name, mod) {
 	thisHTML.push(`<div class="fw-bold">${name}</div>`)
 	thisHTML.push(`<div class="small">${mod.title}</div>`)
 	if ( mod.usedBy !== null ) {
-		thisHTML.push(`<div class="text-muted small ps-3"><l10n name="savegame_farms"></l10n>: ${Array.from(mod.usedBy).join(', ')}</div>`)
+		thisHTML.push(`<div class="text-black small ps-3"><l10n name="savegame_farms"></l10n>: ${Array.from(mod.usedBy).join(', ')}</div>`)
 	}
 	thisHTML.push('</div>')
 
 	if ( !mod.isPresent ) {
-		thisHTML.push('<span class="badge bg-danger bg-gradient rounded-pill"><l10n name="savegame_missing"></l10n></span>')
+		thisHTML.push('<span class="badge bg-danger bg-gradient rounded-1 ms-1"><l10n name="savegame_missing"></l10n></span>')
 	}
 	if ( !mod.isLoaded ) {
-		thisHTML.push('<span class="badge bg-dark bg-gradient rounded-pill"><l10n name="savegame_inactive"></l10n></span>')
+		thisHTML.push('<span class="badge bg-warning bg-gradient rounded-1 ms-1"><l10n name="savegame_inactive"></l10n></span>')
 	}
 	badges.forEach((badge) => {
 		if ( mod[badge] === true ) {
-			thisHTML.push(`<span class="badge bg-dark bg-gradient rounded-pill"><l10n name="savegame_${badge.toLowerCase()}"></l10n></span>`)
+			thisHTML.push(`<span class="badge bg-dark bg-gradient rounded-1 ms-1"><l10n name="savegame_${badge.toLowerCase()}"></l10n></span>`)
 		}
 	})
 

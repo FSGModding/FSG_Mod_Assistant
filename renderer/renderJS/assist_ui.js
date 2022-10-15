@@ -104,7 +104,8 @@ function updateModFilesColor() {
 
 
 function fileListClick(event) {
-	if (event.target.tagName === 'INPUT' && event.target.className === 'form-check-input mod-folder-checkbox folder_master_check') {
+	if (event.target.tagName === 'INPUT' && event.target.classList.contains('folder_master_check') ) {
+		console.log('here')
 		const thisModTable = document.getElementById(event.target.getAttribute('data-bs-target').substring(1)).querySelectorAll('input[type="checkbox"]')
 		thisModTable.forEach((thisCheckBox) => {
 			if ( ! thisCheckBox.parentElement.parentElement.classList.contains('disabled') ) {
