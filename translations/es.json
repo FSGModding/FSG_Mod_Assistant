@@ -168,6 +168,11 @@
 	"loading_set_title"               : "Alterar gameSettings.xml",
 	"loading_set_subtitle"            : "Configuración de la recogida activa",
 
+	"resolve_version_window"          : "Resolver la diferencia de versión",
+	"resolve_version_newest"          : "La versión más reciente:",
+	"confirm_version_blurb"           : "Marque los mods de abajo que desea reemplazar con la última versión.<br /><mark>¡Esto sobrescribirá los archivos existentes!</mark>.",
+	"confirm_version_blurb_2"         : "Nota: si este mod utiliza una cadena de versión no numérica, esta utilidad no puede proceder.",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Configurar las preferencias del usuario"
 }

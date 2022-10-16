@@ -167,6 +167,11 @@
 	"loading_set_title"               : "GameSettings.xml wijzigen",
 	"loading_set_subtitle"            : "Instelling collectie actief",
 
+	"resolve_version_window"          : "Versieverschil oplossen",
+	"resolve_version_newest"          : "Nieuwste versie:",
+	"confirm_version_blurb"           : "Check de mods hieronder die je wilt vervangen door de laatste versie.<br /><mark>Dit zal bestaande bestanden overschrijven! </mark>.",
+	"confirm_version_blurb_2"         : "Opmerking: als deze mod een niet-numerieke versiestring gebruikt, kan dit hulpprogramma niet verdergaan.",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Gebruikersvoorkeuren instellen"
 }

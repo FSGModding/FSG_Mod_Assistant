@@ -168,6 +168,11 @@
 	"loading_set_title"               : "Ändern von gameSettings.xml",
 	"loading_set_subtitle"            : "Einstellung Sammlung aktiv",
 
+	"resolve_version_window"          : "Versionsunterschied auflösen",
+	"resolve_version_newest"          : "Neuestes Version:",
+	"confirm_version_blurb"           : "Überprüfen Sie die unten aufgeführten Mods, die Sie durch die neueste Version ersetzen möchten.<br /><mark>Damit werden bestehende Dateien überschrieben!</mark>.",
+	"confirm_version_blurb_2"         : "Hinweis: Wenn diese Mod eine nicht-numerische Versionszeichenfolge verwendet, kann dieses Dienstprogramm nicht fortfahren.",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Benutzerpräferenzen festlegen"
 }

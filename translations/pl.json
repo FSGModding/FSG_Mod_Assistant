@@ -168,6 +168,11 @@
 	"loading_set_title"               : "Zmiana gameSettings.xml",
 	"loading_set_subtitle"            : "Ustawienie zbioru aktywnego",
 
+	"resolve_version_window"          : "Rozwiązywanie różnic w wersjach",
+	"resolve_version_newest"          : "Najnowsza wersja:",
+	"confirm_version_blurb"           : "Zaznacz poniżej modów, które chcesz zastąpić najnowszą wersją.<br /><mark>To nadpisze istniejące pliki!</mark>.",
+	"confirm_version_blurb_2"         : "Uwaga: jeśli ten mod używa nie-numerycznego łańcucha wersji, to narzędzie nie może kontynuować.",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Ustawianie preferencji użytkownika"
 }
