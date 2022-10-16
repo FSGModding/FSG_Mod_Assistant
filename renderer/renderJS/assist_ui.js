@@ -51,7 +51,7 @@ window.mods.receive('fromMain_hideLoading',  () => { loadingModal.hide() })
 window.mods.receive('fromMain_showListSet',  () => { listModal.show() })
 window.mods.receive('fromMain_hideListSet',  () => { listModal.hide() })
 
-window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFoldersMap) => {
+window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFoldersMap, newList) => {
 	const selectedList = ( currentList !== '999' && currentList !== '0') ? `collection--${currentList}` : currentList
 	const modTable     = []
 	const optList      = []
@@ -61,12 +61,16 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 	Object.keys(modList).forEach((collection) => {
 		const modRows = []
 		modList[collection].mods.forEach((thisMod) => {
+			const theseBadges = ( newList.includes(thisMod.md5Sum) ) ?
+				`${thisMod.badges}<span class="badge bg-success"><l10n name="mod_badge_new"></l10n></span>` :
+				thisMod.badges
+			
 			modRows.push(makeModRow(
 				`${collection}--${thisMod.uuid}`,
 				thisMod.fileDetail.shortName,
 				thisMod.l10n.title,
 				thisMod.modDesc.version,
-				thisMod.badges,
+				theseBadges,
 				thisMod.canNotUse
 			))
 		})

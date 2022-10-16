@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		cleanCache  : () => { ipcRenderer.send('toMain_cleanCacheFile') },
 		setPrefFile : () => { ipcRenderer.send('toMain_setPrefFile') },
 		setPref : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
 		receive   : ( channel, func ) => {

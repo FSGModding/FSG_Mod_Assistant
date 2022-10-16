@@ -151,6 +151,12 @@
 	"version_same"                    : "Version Match",
 	"savegame_dlc"                    : "DLC",
 	"savegame_dlc__title"             : "Contenu DLC payant",
+	"mod_badge_new"                   : "NOUVEAU",
+	"clean_cache_size"                : "Taille actuelle du cache :",
+	"user_pref_button_clean_cache"    : "Nettoyer le cache",
+	"user_pref_blurb_clean_cache"     : "Ce bouton vous permet de nettoyer le fichier cache de Mod Assist.  Si vous avez supprimé un grand nombre de mods, vous devriez exécuter cette opération, car vous avez probablement un bon nombre de données périmées dans ce fichier. Veuillez noter que cette opération peut prendre un certain temps, une boîte d'information s'affiche à la fin.",
+	"user_pref_title_clean_cache"     : "Mod Cache",
+	"user_pref_clean_cache_did"       : "Le cache des mods a été nettoyé de tous les mods qui ne font pas partie des collections actuelles.",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Définir les préférences de l'utilisateur"
 }

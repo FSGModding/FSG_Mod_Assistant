@@ -33,6 +33,21 @@
 			<button class="btn btn-primary btn-sm border" onclick="window.mods.openFolder()"><l10n name="open_save_folder"></l10n></button>
 			<button class="btn btn-primary btn-sm border" onclick="window.mods.openZIP()"><l10n name="open_save_zip"></l10n></button>
 		</div>
+		<div class="input-group input-group-sm btn-group w-100 mt-2 px-1">
+			<span class="input-group-text" id="basic-addon1"><l10n name="filter_only"></l10n></span>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_dlc" onchange="clientChangeFilter()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_dlc"><l10n name="savegame_dlc"></l10n></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_missing" onchange="clientChangeFilter()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_missing"><l10n name="savegame_missing"></l10n></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_scriptonly" onchange="clientChangeFilter()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_scriptonly"><l10n name="savegame_scriptonly"></l10n></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_isloaded" onchange="clientChangeFilter()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_isloaded"><l10n name="savegame_isloaded"></l10n></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_isused" onchange="clientChangeFilter()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_isused"><l10n name="savegame_isused"></l10n></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_inactive" onchange="clientChangeFilter()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_inactive"><l10n name="savegame_inactive"></l10n></label>
+		</div>
 
 		<div class="list-group mx-2 my-3" id="modList"></div>
 

@@ -11,7 +11,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = r
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug  = false
+const devDebug  = true
 const skipCache = false
 
 if (process.platform === 'win32') {
@@ -56,6 +56,8 @@ const Store   = require('electron-store')
 const { saveFileChecker } = require('./lib/savegame-parser.js')
 const mcStore = new Store({schema : settingsSchema})
 const maCache = new Store({name : 'mod_cache'})
+
+const newModsList = []
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
@@ -485,6 +487,11 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	l10nSet.forEach((l10nEntry) => {
 		if ( l10nEntry === 'app_version' ) {
 			event.sender.send('fromMain_getText_return', [l10nEntry, mcDetail.version])
+		} else if ( l10nEntry === 'clean_cache_size' ) {
+			const cleanString = myTranslator.syncStringLookup(l10nEntry)
+			const cacheStats = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json'))
+
+			event.sender.send('fromMain_getText_return', [l10nEntry, `${cleanString} ${(cacheStats.size/(1024*1024)).toFixed(2)}MB`])
 		} else {
 			myTranslator.stringLookup(l10nEntry).then((text) => {
 				event.sender.send('fromMain_getText_return', [l10nEntry, text])
@@ -552,6 +559,30 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 	if ( name === 'game_settings' ) { gameSettings = value }
 	mcStore.set(name, value)
 	event.sender.send( 'fromMain_allSettings', mcStore.store )
+})
+ipcMain.on('toMain_cleanCacheFile', (event) => {
+	const localStore = maCache.store
+	const md5Set = new Set()
+	Object.keys(localStore).forEach((md5) => { md5Set.add(md5) })
+	
+	Object.keys(modList).forEach((collection) => {
+		modList[collection].mods.forEach((mod) => {
+			md5Set.delete(mod.md5Sum)
+		})
+	})
+
+	md5Set.forEach((md5) => { maCache.delete(md5) })
+
+	const options = {
+		type    : 'info',
+		title   : myTranslator.syncStringLookup('user_pref_title_clean_cache'),
+		message : myTranslator.syncStringLookup('user_pref_clean_cache_did'),
+	}
+	
+	dialog.showMessageBox(null, options)
+	console.log(md5Set)
+
+	event.sender.send('fromMain_l10n_refresh')
 })
 ipcMain.on('toMain_setPrefFile', (event) => {
 	dialog.showOpenDialog(windows.prefs, {
@@ -877,6 +908,7 @@ function processModFolders(newFolder = false) {
 						)
 						modList[cleanName].mods[modIndex] = thisModDetail
 						if ( thisModDetail.md5Sum !== null ) {
+							newModsList.push(thisModDetail.md5Sum)
 							maCache.set(thisModDetail.md5Sum, thisModDetail.storable)
 						}
 					} catch (e) {
@@ -899,7 +931,8 @@ function processModFolders(newFolder = false) {
 		modList,
 		[myTranslator.syncStringLookup('override_disabled'), myTranslator.syncStringLookup('override_unknown')],
 		overrideIndex,
-		modFoldersMap
+		modFoldersMap,
+		newModsList
 	)
 
 	pop_load_hide()

@@ -151,6 +151,13 @@
 	"version_same"                    : "Version Match",
 	"savegame_dlc"                    : "DLC",
 	"savegame_dlc__title"             : "Paid DLC Content",
+	"filter_only"                     : "Limit To",
+	"mod_badge_new"                   : "NEW",
+	"clean_cache_size"                : "Current cache size:",
+	"user_pref_button_clean_cache"    : "Clean Cache",
+	"user_pref_blurb_clean_cache"     : "This button allows you to clean Mod Assist's cache file.  If you have deleted a lot of mods, you should run this, as you probably have a fair bit of stale data in there. Please note this operation can take a while to complete, there is an info box popup when finished.",
+	"user_pref_title_clean_cache"     : "Mod Cache",
+	"user_pref_clean_cache_did"       : "Mod Cache has been cleaned of all mods not in current collections",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Set User Preferences"
 }

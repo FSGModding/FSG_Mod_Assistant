@@ -151,6 +151,13 @@
 	"version_same"                    : "Versión de la partida",
 	"savegame_dlc"                    : "DLC",
 	"savegame_dlc__title"             : "Contenido DLC de pago",
+	"filter_only"                     : "Limit To",
+	"mod_badge_new"                   : "NUEVO",
+	"clean_cache_size"                : "Tamaño actual de la caché:",
+	"user_pref_button_clean_cache"    : "Limpiar la caché",
+	"user_pref_blurb_clean_cache"     : "Este botón te permite limpiar el archivo de caché de Mod Assist.  Si has borrado muchos mods, deberías ejecutar esto, ya que probablemente tengas bastantes datos obsoletos ahí. Por favor, ten en cuenta que esta operación puede tardar un poco en completarse, hay un cuadro de información emergente cuando termina.",
+	"user_pref_title_clean_cache"     : "Mod Cache",
+	"user_pref_clean_cache_did"       : "Se ha limpiado la caché de los mods que no están en las colecciones actuales",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Configurar las preferencias del usuario"
 }

@@ -32,8 +32,10 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 })
 window.l10n.receive('fromMain_getText_return_title', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
-		item.closest('span').title = data[1]
-		new bootstrap.Tooltip(item.closest('span'))
+		let thisTitle = item.closest('span')
+		thisTitle ??= item.closest('label')
+		thisTitle.title = data[1]
+		new bootstrap.Tooltip(thisTitle)
 	})
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
@@ -114,7 +116,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
 			thisModDetail.isLoaded = true
 			thisModDetail.usedBy   = null
 		}
-		modSetHTML.push(makeLine(thisMod, thisModDetail))
+		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm))
 	})
 
 	fsgUtil.byId('modList').innerHTML = modSetHTML.join('')
@@ -122,7 +124,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
 	processL10N()
 })
 
-function makeLine(name, mod) {
+function makeLine(name, mod, singleFarm) {
 	const badges   = ['versionMismatch', 'scriptOnly', 'isUsed', 'isLoaded']
 	const thisHTML = []
 	let colorClass = ''
@@ -139,11 +141,11 @@ function makeLine(name, mod) {
 		colorClass = 'list-group-item-secondary'
 	}
 	
-	thisHTML.push(`<li class="list-group-item d-flex justify-content-between align-items-start ${colorClass}">`)
+	thisHTML.push(`<li class="mod-item list-group-item d-flex justify-content-between align-items-start ${colorClass}">`)
 	thisHTML.push('<div class="ms-2 me-auto">')
 	thisHTML.push(`<div class="fw-bold">${name}</div>`)
 	thisHTML.push(`<div class="small">${mod.title}</div>`)
-	if ( mod.usedBy !== null ) {
+	if ( mod.usedBy !== null && !singleFarm ) {
 		thisHTML.push(`<div class="text-black small ps-3"><l10n name="savegame_farms"></l10n>: ${Array.from(mod.usedBy).join(', ')}</div>`)
 	}
 	thisHTML.push('</div>')
@@ -166,4 +168,36 @@ function makeLine(name, mod) {
 	thisHTML.push('</li>')
 
 	return thisHTML.join('')
+}
+
+
+function clientChangeFilter() {
+	const filtersActive = fsgUtil.query('.filter_only:checked').length
+	const modItems      = fsgUtil.query('.mod-item')
+	const filters = {
+		dlc        : false,
+		missing    : false,
+		scriptonly : false,
+		isloaded   : false,
+		isused     : false,
+		inactive   : false,
+	}
+
+	if ( filtersActive === 0 ) {
+		modItems.forEach((modItem) => { modItem.classList.remove('d-none') })
+	} else {
+		const activeFilters = []
+		Object.keys(filters).forEach((key) => {
+			if ( fsgUtil.byId(`check_savegame_${key}`).checked ) { activeFilters.push(key)}
+		})
+		modItems.forEach((modItem) => {
+			let badgesFound = 0
+			activeFilters.forEach((thisFilter) => {
+				if ( modItem.querySelector(`[name="savegame_${thisFilter}"]`) !== null ) {
+					badgesFound++
+				}
+			})
+			modItem.classList[( badgesFound === activeFilters.length ) ? 'remove' : 'add']('d-none')
+		})
+	}
 }

@@ -151,6 +151,13 @@
 	"version_same"                    : "Version Match",
 	"savegame_dlc"                    : "DLC",
 	"savegame_dlc__title"             : "Kostenpflichtiger DLC-Inhalt",
+	"filter_only"                     : "Limit To",
+	"mod_badge_new"                   : "NEU",
+	"clean_cache_size"                : "Aktuelle Cache-Größe:",
+	"user_pref_button_clean_cache"    : "Cache löschen",
+	"user_pref_blurb_clean_cache"     : "Mit dieser Schaltfläche können Sie die Cache-Datei von Mod Assist leeren.  Wenn Sie viele Mods gelöscht haben, sollten Sie diesen Vorgang ausführen, da Sie wahrscheinlich eine ganze Menge veralteter Daten darin haben. Bitte beachten Sie, dass dieser Vorgang eine Weile dauern kann, bis er abgeschlossen ist; nach Beendigung erscheint ein Infobox-Popup.",
+	"user_pref_title_clean_cache"     : "Mod Cache",
+	"user_pref_clean_cache_did"       : "Der Mod-Cache wurde von allen Mods bereinigt, die sich nicht in den aktuellen Sammlungen befinden.",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Benutzerpräferenzen festlegen"
 }

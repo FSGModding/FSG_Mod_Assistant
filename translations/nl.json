@@ -151,6 +151,12 @@
 	"version_same"                    : "Versie wedstrijd",
 	"savegame_dlc"                    : "DLC",
 	"savegame_dlc__title"             : "Betaalde DLC-inhoud",
+	"mod_badge_new"                   : "NIEUW",
+	"clean_cache_size"                : "Huidige cache grootte:",
+	"user_pref_button_clean_cache"    : "Schone cache",
+	"user_pref_blurb_clean_cache"     : "Met deze knop kun je het cache-bestand van Mod Assist opschonen.  Als je veel mods hebt verwijderd, moet je dit uitvoeren, omdat er waarschijnlijk veel oude gegevens in staan. Deze operatie kan even duren, er verschijnt een infovenster als het klaar is.",
+	"user_pref_title_clean_cache"     : "Mod Cache",
+	"user_pref_clean_cache_did"       : "Mod Cache is opgeschoond van alle mods die niet in de huidige collecties zitten.",
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Gebruikersvoorkeuren instellen"
 }

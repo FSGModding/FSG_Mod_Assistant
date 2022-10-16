@@ -38,7 +38,6 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.mods.receive('fromMain_modList', (modList) => {
-	//console.log(modList)
 	const collectionMap      = {}
 	const nameTitleMap       = {}
 	const versionList        = {}
@@ -77,7 +76,6 @@ window.mods.receive('fromMain_modList', (modList) => {
 		versionListNoMatch[key].forEach((versionArray) => {
 			theseCollections.push(`${collectionMap[versionArray[0]]}: ${versionArray[1]}`)
 		})
-		console.log(theseCollections)
 		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections))
 	})
 
