@@ -49,9 +49,11 @@ window.mods.receive('fromMain_modList', (modList) => {
 			const modName = mod.fileDetail.shortName
 			const modVer  = mod.modDesc.version
 
-			nameTitleMap[modName] ??= mod.l10n.title
-			versionList[modName]  ??= []
-			versionList[modName].push([collection, modVer])
+			if ( ! mod.fileDetail.isFolder ) {
+				nameTitleMap[modName] ??= mod.l10n.title
+				versionList[modName]  ??= []
+				versionList[modName].push([collection, modVer])
+			}
 		})
 	})
 	Object.keys(versionList).forEach((key) => {
@@ -93,9 +95,10 @@ window.mods.receive('fromMain_modList', (modList) => {
 function makeLine(type, realName, shortName, collections) {
 	const color = ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger'
 	const l10n  = ( type === 'same' ) ? 'version_same' : 'version_diff'
+	const click = ( type === 'diff' ) ? `oncontextmenu="window.mods.openVersionResolve('${shortName}')" onDblClick="window.mods.openVersionResolve('${shortName}')"` : ''
 	const thisHTML = []
 	
-	thisHTML.push(`<li class="list-group-item d-flex justify-content-between align-items-start ${color}">`)
+	thisHTML.push(`<li ${click} class="list-group-item d-flex justify-content-between align-items-start ${color}">`)
 	thisHTML.push('<div class="ms-2 me-auto">')
 	thisHTML.push(`<div class="fw-bold">${shortName}</div>`)
 	thisHTML.push(`<div class="small">${realName}</div>`)

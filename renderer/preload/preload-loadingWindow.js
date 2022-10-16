@@ -11,7 +11,7 @@ const {ipcRenderer} = require('electron')
 ipcRenderer.on('formMain_loadingTitles', (event, mainTitle, subTitle) => {
 	document.getElementById('statusMessage').innerHTML = mainTitle
 	document.getElementById('statusDetail').innerHTML  = subTitle
-	document.getElementById('statusCount').classList.delete('d-none')
+	document.getElementById('statusCount').classList.remove('d-none')
 	document.getElementById('statusTotal').innerHTML   = '0'
 	document.getElementById('statusCurrent').innerHTML = '0'
 })
@@ -29,5 +29,5 @@ ipcRenderer.on('fromMain_loadingTotal', (event, count) => {
 ipcRenderer.on('fromMain_loadingCurrent', (event, count) => {
 	const thisElement = document.getElementById('statusCurrent')
 
-	if ( thisElement !== null ) { thisElement.innerHTML = count}
+	if ( thisElement !== null ) { thisElement.innerHTML = count }
 })

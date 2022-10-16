@@ -7,7 +7,7 @@
 // Main Program
 
 
-const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, screen } = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog } = require('electron')
 
 const { autoUpdater } = require('electron-updater')
 
@@ -84,22 +84,20 @@ const ignoreList = [
 const junkRegex = new RegExp(ignoreList.join('|'))
 
 const windows = {
-	main    : null,
-	splash  : null,
 	confirm : null,
-	detail  : null,
-	prefs   : null,
-	folder  : null,
 	debug   : null,
-	save    : null,
-	version : null,
+	detail  : null,
+	folder  : null,
 	load    : null,
+	main    : null,
+	prefs   : null,
+	resolve : null,
+	save    : null,
+	splash  : null,
+	version : null,
 }
 
 let foldersDirty = true
-
-let workWidth  = 0
-let workHeight = 0
 
 let gameSettings    = mcStore.get('game_settings')
 let gameSettingsXML = null
@@ -194,29 +192,10 @@ function createConfirmWindow(type, modRecords, origList) {
 	if ( windows.confirm ) { windows.confirm.focus(); return }
 
 	const file_HTML  = `confirm-file${type.charAt(0).toUpperCase()}${type.slice(1)}.html`
-	const file_JS    = `preload-confirm${type.charAt(0).toUpperCase()}${type.slice(1)}.js`
+	const file_JS    = `confirm${type.charAt(0).toUpperCase()}${type.slice(1)}`
 	const collection = origList[0].split('--')[0]
 
-	windows.confirm = new BrowserWindow({
-		icon            : pathIcon,
-		width           : 750,
-		height          : 500,
-		alwaysOnTop     : true,
-		title           : myTranslator.syncStringLookup('app_name'),
-		autoHideMenuBar : !devDebug,
-		webPreferences  : {
-			nodeIntegration  : false,
-			contextIsolation : true,
-			preload          : path.join(pathPreload, file_JS),
-		},
-	})
-
-	const pos_left = (workWidth / 2)  - ( 750 / 2 )
-	const pos_top  = (workHeight / 2) - ( 500 / 2 )
-
-	windows.confirm.setPosition(pos_left, pos_top)
-
-	if ( !devDebug ) { windows.confirm.removeMenu() }
+	windows.confirm = createSubWindow({ parent : 'main', preload : file_JS, width : 750, height : 500, fixed : true, center : true })
 
 	windows.confirm.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_confirmList', modRecords, modList, modFoldersMap, collection)
@@ -315,6 +294,24 @@ function createSavegameWindow(collection) {
 	windows.save.on('closed', () => { windows.save = null; windows.main.focus() })
 }
 
+function createResolveWindow(modSet, shortName) {
+	if ( windows.resolve ) {
+		windows.resolve.webContents.send('fromMain_modSet', modSet, shortName)
+		windows.resolve.focus()
+		return
+	}
+
+	windows.resolve = createSubWindow({ parent : 'version', preload : 'resolveWindow', width : 750, height : 600, fixed : true, center : true })
+
+	windows.resolve.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('fromMain_modSet', modSet, shortName)
+		if ( devDebug ) { windows.resolve.webContents.openDevTools() }
+	})
+
+	windows.resolve.loadFile(path.join(pathRender, 'resolve.html'))
+	windows.resolve.on('closed', () => { windows.resolve = null; windows.version.focus() })
+}
+
 function createVersionWindow() {
 	if ( windows.version ) {
 		windows.version.webContents.send('fromMain_modList', modList)
@@ -383,6 +380,7 @@ ipcMain.on('toMain_copyMods',       (event, mods) => { createConfirmWindow('copy
 ipcMain.on('toMain_realFileDelete', (event, fileMap) => { fileOperation('delete', fileMap) })
 ipcMain.on('toMain_realFileMove',   (event, fileMap) => { fileOperation('move', fileMap) })
 ipcMain.on('toMain_realFileCopy',   (event, fileMap) => { fileOperation('copy', fileMap) })
+ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => { fileOperation('copy', fileMap, 'resolve') })
 /** END: File operation buttons */
 
 
@@ -579,6 +577,17 @@ function openSaveGame(zipMode = false) {
 /** Version window operation */
 ipcMain.on('toMain_versionCheck',    () => { createVersionWindow() })
 ipcMain.on('toMain_refreshVersions', (event) => { event.sender.send('fromMain_modList', modList) } )
+ipcMain.on('toMain_versionResolve',  (event, shortName) => {
+	const modSet = []
+	Object.keys(modList).forEach((collection) => {
+		modList[collection].mods.forEach((mod) => {
+			if ( mod.fileDetail.shortName === shortName && !mod.fileDetail.isFolder ) {
+				modSet.push([collection, mod.modDesc.version, mod, modList[collection].name])
+			}
+		})
+	})
+	createResolveWindow(modSet, shortName)
+})
 /** END: Version window operation */
 
 
@@ -681,7 +690,7 @@ function parseSettings(newSetting = false) {
 	}
 }
 
-function fileOperation(type, fileMap) {
+function fileOperation(type, fileMap, srcWindow = 'confirm') {
 	const fullPathMap = []
 
 	fileMap.forEach((file) => {
@@ -692,7 +701,8 @@ function fileOperation(type, fileMap) {
 		])
 	})
 
-	windows.confirm.close()
+	console.log(fullPathMap)
+	windows[srcWindow].close()
 	windows.main.focus()
 
 	foldersDirty = true
@@ -724,6 +734,9 @@ function fileOperation(type, fileMap) {
 	})
 
 	processModFolders()
+	if ( windows.version && windows.version.isVisible() ) {
+		windows.version.webContents.send('fromMain_modList', modList)
+	}
 
 }
 
@@ -864,9 +877,6 @@ function processModFolders(newFolder = false) {
 
 app.whenReady().then(() => {
 	globalShortcut.register('Alt+CommandOrControl+D', () => { createDebugWindow(logger) })
-
-	workWidth  = screen.getPrimaryDisplay().size.width
-	workHeight = screen.getPrimaryDisplay().size.height
 	
 	if ( mcStore.has('force_lang') && mcStore.has('lock_lang') ) {
 		// If language is locked, switch to it.

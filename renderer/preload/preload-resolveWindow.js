@@ -27,11 +27,11 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		openVersionResolve : (shortName) => { ipcRenderer.send('toMain_versionResolve', shortName)},
 		refreshList  : () => { ipcRenderer.send('toMain_refreshVersions') },
+		realCopyFile : ( fileMap ) => { ipcRenderer.send('toMain_realFileVerCP', fileMap) },
 		receive      : ( channel, func ) => {
 			const validChannels = [
-				'fromMain_modList',
+				'fromMain_modSet',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

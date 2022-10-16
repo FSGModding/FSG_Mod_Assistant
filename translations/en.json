@@ -146,7 +146,7 @@
 	"version_check__title"            : "Compare Versions Across Collections",
 	"version_check_window"            : "Collection Versions",
 	"refresh_version"                 : "Refresh Version List",
-	"version_collection"              : "Collections",
+	"version_collections"             : "Collections",
 	"version_diff"                    : "Version Mismatch",
 	"version_same"                    : "Version Match",
 	"savegame_dlc"                    : "DLC",
@@ -167,6 +167,12 @@
 	"loading_cache_subtitle"          : "Cleaning extra cache entries (slow!)",
 	"loading_set_title"               : "Altering gameSettings.xml",
 	"loading_set_subtitle"            : "Setting collection active",
+
+	"resolve_version_window"          : "Resolve Version Difference",
+	"resolve_version_newest"          : "Newest Version:",
+	"confirm_version_blurb"           : "Check the mods below you wish to replace with the latest version.<br /><mark>This will overwrite existing files!</mark>.",
+	"confirm_version_blurb_2"         : "Note: if this mod uses a non-numeric version string, this utility cannot proceed.",
+	
 	
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Set User Preferences"

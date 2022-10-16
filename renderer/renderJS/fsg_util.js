@@ -74,6 +74,7 @@ const fsgUtil = {
 		return `<td class="${cls}"${thisBS}>`
 	},
 	bytesToHR : ( inBytes, locale ) => {
+		const thisLocale = ( locale !== null ) ? locale : 'en'
 		let bytes = inBytes
 
 		if (Math.abs(bytes) < 1024) { return '0 kB' }
@@ -88,7 +89,7 @@ const fsgUtil = {
 		} while (Math.round(Math.abs(bytes) * r) / r >= 1024 && u < units.length - 1)
 
 		return [
-			bytes.toLocaleString( locale, { minimumFractionDigits : 2, maximumFractionDigits : 2 } ),
+			bytes.toLocaleString( thisLocale, { minimumFractionDigits : 2, maximumFractionDigits : 2 } ),
 			units[u]
 		].join(' ')
 	},
