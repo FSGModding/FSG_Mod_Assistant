@@ -8,8 +8,6 @@
 
 /* global l10n, fsgUtil, bootstrap */
 
-let loadingModal = null
-let listModal    = null
 
 /*  __ ____   ______        
    |  |_   | |      |.-----.
@@ -46,10 +44,6 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 window.mods.receive('fromMain_loadingTotal', (count) => { fsgUtil.byId('count_total').innerHTML = count })
 window.mods.receive('fromMain_loadingDone',  (count) => { fsgUtil.byId('count_done').innerHTML  = count })
-window.mods.receive('fromMain_showLoading',  () => { loadingModal.show() })
-window.mods.receive('fromMain_hideLoading',  () => { loadingModal.hide() })
-window.mods.receive('fromMain_showListSet',  () => { listModal.show() })
-window.mods.receive('fromMain_hideListSet',  () => { listModal.hide() })
 
 window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFoldersMap, newList) => {
 	const selectedList = ( currentList !== '999' && currentList !== '0') ? `collection--${currentList}` : currentList
@@ -255,6 +249,8 @@ function clientBatchOperation(mode) {
 		}
 	})
 
+	console.log(selectedMods)
+
 	switch (mode) {
 		case 'copy':
 			if ( selectedMods.length > 0 ) { window.mods.copyMods(selectedMods) }
@@ -289,11 +285,7 @@ function deSelectAll() {
 window.addEventListener('hide.bs.collapse', () => { deSelectAll() })
 window.addEventListener('show.bs.collapse', () => { deSelectAll() })
 
-window.addEventListener('DOMContentLoaded', () => {
-	loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'))
-	listModal    = new bootstrap.Modal(document.getElementById('setModel'))
-	processL10N()
-})
+window.addEventListener('DOMContentLoaded', () => {	processL10N() })
 
 window.addEventListener('click', (event) => {
 	document.querySelectorAll('.tooltip').forEach((tooltip) => {

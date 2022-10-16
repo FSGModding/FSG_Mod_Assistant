@@ -369,8 +369,12 @@ function loadingWindow_noCount() {
 ipcMain.on('toMain_makeInactive', () => { parseSettings('DISABLE') })
 ipcMain.on('toMain_makeActive',   (event, newList) => { parseSettings(modFoldersMap[newList]) })
 ipcMain.on('toMain_openMods',     (event, mods) => {
+	const thisCollectionFolder = modFoldersMap[mods[0].split('--')[0]]
 	const thisMod = modIdToRecord(mods[0])
-	if ( thisMod !== null ) { shell.showItemInFolder(thisMod.fileDetail.fullPath) }
+
+	if ( thisMod !== null ) {
+		shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
+	}
 })
 
 ipcMain.on('toMain_deleteMods',     (event, mods) => { createConfirmWindow('delete', modIdsToRecords(mods), mods) })
