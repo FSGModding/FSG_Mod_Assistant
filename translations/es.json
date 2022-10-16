@@ -158,6 +158,16 @@
 	"user_pref_blurb_clean_cache"     : "Este botón te permite limpiar el archivo de caché de Mod Assist.  Si has borrado muchos mods, deberías ejecutar esto, ya que probablemente tengas bastantes datos obsoletos ahí. Por favor, ten en cuenta que esta operación puede tardar un poco en completarse, hay un cuadro de información emergente cuando termina.",
 	"user_pref_title_clean_cache"     : "Mod Cache",
 	"user_pref_clean_cache_did"       : "Se ha limpiado la caché de los mods que no están en las colecciones actuales",
+
+	"loading_mods_title"              : "Mods de procesamiento",
+	"loading_mods_subtitle"           : "Lectura y pruebas (esto podría llevar un tiempo)",
+	"loading_files_title"             : "Organizar los mods",
+	"loading_files_subtitle"          : "Mover, copiar o borrar",
+	"loading_cache_title"             : "Limpieza de la caché",
+	"loading_cache_subtitle"          : "Limpieza de entradas de caché adicionales (¡lento!)",
+	"loading_set_title"               : "Alterar gameSettings.xml",
+	"loading_set_subtitle"            : "Configuración de la recogida activa",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Configurar las preferencias del usuario"
 }

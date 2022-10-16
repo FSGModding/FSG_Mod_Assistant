@@ -157,6 +157,16 @@
 	"user_pref_blurb_clean_cache"     : "Ce bouton vous permet de nettoyer le fichier cache de Mod Assist.  Si vous avez supprimé un grand nombre de mods, vous devriez exécuter cette opération, car vous avez probablement un bon nombre de données périmées dans ce fichier. Veuillez noter que cette opération peut prendre un certain temps, une boîte d'information s'affiche à la fin.",
 	"user_pref_title_clean_cache"     : "Mod Cache",
 	"user_pref_clean_cache_did"       : "Le cache des mods a été nettoyé de tous les mods qui ne font pas partie des collections actuelles.",
+
+	"loading_mods_title"              : "Modes de traitement",
+	"loading_mods_subtitle"           : "Lecture et test (cela peut prendre un certain temps)",
+	"loading_files_title"             : "Organiser les mods",
+	"loading_files_subtitle"          : "Déplacer, copier ou supprimer",
+	"loading_cache_title"             : "Nettoyage du cache",
+	"loading_cache_subtitle"          : "Nettoyage des entrées supplémentaires dans le cache (lent !)",
+	"loading_set_title"               : "Modification de gameSettings.xml",
+	"loading_set_subtitle"            : "Réglage de la collecte active",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Définir les préférences de l'utilisateur"
 }

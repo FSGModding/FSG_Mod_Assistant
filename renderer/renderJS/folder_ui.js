@@ -59,7 +59,7 @@ function processButtonClick(event) {
 	}
 
 	if ( thisButton.classList.contains('open_folder') ) {
-		const thisFolder = thisButton.closest('.folderLine').querySelectorAll('em')[0].innerHTML
+		const thisFolder = thisButton.closest('.folderLine').querySelectorAll('em')[0].getAttribute('data-folder')
 		window.mods.openFolder(thisFolder)
 	}
 	if ( thisButton.classList.contains('remove_folder') ) {

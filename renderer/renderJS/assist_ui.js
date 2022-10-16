@@ -85,6 +85,13 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 	optList.push(fsgUtil.buildSelectOpt('999', `--${extraL10n[1]}--`, selectedList, true))
 	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
+
+	const activeFolder = document.querySelector(`[data-bs-target="#${currentList}_mods"] svg`)
+	if ( activeFolder !== null ) {
+		activeFolder.innerHTML += '<polygon fill="#43A047" points="290.088 61.432 117.084 251.493 46.709 174.18 26.183 197.535 117.084 296.592 310.614 83.982"></polygon>'
+	}
+	
+	
 	lastModSelect   = null
 	lastTableSelect = null
 	processL10N()
@@ -288,7 +295,12 @@ window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 })
 
-window.addEventListener('click', (event) => { fileListClick(event) })
+window.addEventListener('click', (event) => {
+	document.querySelectorAll('.tooltip').forEach((tooltip) => {
+		tooltip.remove()
+	})
+	fileListClick(event)
+})
 
 window.addEventListener('scroll', () => {
 	const scrollValue = this.scrollY +  140

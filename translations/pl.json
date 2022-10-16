@@ -158,6 +158,16 @@
 	"user_pref_blurb_clean_cache"     : "Ten przycisk pozwala na wyczyszczenie pliku cache Mod Assist.  Jeśli usunąłeś wiele modów, powinieneś uruchomić ten przycisk, ponieważ prawdopodobnie masz tam sporo nieaktualnych danych. Pamiętaj, że ta operacja może trochę potrwać, a po jej zakończeniu pojawi się okienko informacyjne.",
 	"user_pref_title_clean_cache"     : "Mod Cache",
 	"user_pref_clean_cache_did"       : "Mod Cache został wyczyszczony z wszystkich modów nie znajdujących się w aktualnych kolekcjach.",
+
+	"loading_mods_title"              : "Mody przetwarzające",
+	"loading_mods_subtitle"           : "Czytanie i testowanie (to może zająć trochę czasu)",
+	"loading_files_title"             : "Organizowanie modów",
+	"loading_files_subtitle"          : "Przenoszenie, kopiowanie lub usuwanie",
+	"loading_cache_title"             : "Czyszczenie pamięci podręcznej",
+	"loading_cache_subtitle"          : "Czyszczenie dodatkowych wpisów w pamięci podręcznej (wolno!)",
+	"loading_set_title"               : "Zmiana gameSettings.xml",
+	"loading_set_subtitle"            : "Ustawienie zbioru aktywnego",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Ustawianie preferencji użytkownika"
 }
