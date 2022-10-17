@@ -7,16 +7,14 @@
 // Main Program
 
 
-const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray } = require('electron')
 
 const { autoUpdater } = require('electron-updater')
 
 const devDebug  = false
 const skipCache = false
 
-if (process.platform === 'win32') {
-	autoUpdater.checkForUpdatesAndNotify()
-}
+if (process.platform === 'win32') { autoUpdater.checkForUpdatesAndNotify() }
 
 const path       = require('path')
 const fs         = require('fs')
@@ -83,6 +81,7 @@ const ignoreList = [
 
 const junkRegex = new RegExp(ignoreList.join('|'))
 
+let tray    = null
 const windows = {
 	confirm : null,
 	debug   : null,
@@ -156,12 +155,17 @@ function createMainWindow () {
 
 	windows.main = createSubWindow({ show : devDebug, preload : 'mainWindow', width : 'main_window_x', height : 'main_window_y', maximize : mcStore.get('main_window_max') })
 
+	windows.main.on('minimize', () => { if ( tray ) { windows.main.hide() }})
+	windows.main.on('close',    () => { tray.destroy(); app.quit() })
+
 	if ( !devDebug ) {
 		windows.splash = createSubWindow({ center : true, fixed : true, move : false, frame : false, width : 600, height : 300 })
 		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${mcDetail.version}`)
 
+		windows.splash.on('closed', () => { windows.splash = null })
+
 		windows.main.once('ready-to-show', () => {
-			setTimeout(() => { windows.main.show(); windows.splash.destroy() }, 2000)
+			setTimeout(() => { windows.main.show(); windows.splash.close() }, 2000)
 		})
 	}
 
@@ -882,6 +886,19 @@ app.whenReady().then(() => {
 		// If language is locked, switch to it.
 		myTranslator.currentLocale = mcStore.get('force_lang')
 	}
+
+	tray = new Tray(pathIcon)
+
+	const template = [
+		{ label : 'FSG Mod Assist', /*icon : pathIcon, */enabled : false },
+		{ type  : 'separator' },
+		{ label : myTranslator.syncStringLookup('tray_show'), click : () => { windows.main.show() } },
+		{ label : myTranslator.syncStringLookup('tray_quit'), click : () => { windows.main.close() } },
+	]
+	const contextMenu = Menu.buildFromTemplate(template)
+	tray.setContextMenu(contextMenu)
+	tray.setToolTip('FSG Mod Assist')
+	tray.on('click', () => { windows.main.show() })
 
 	createMainWindow()
 

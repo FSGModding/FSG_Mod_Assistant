@@ -173,6 +173,9 @@
 	"confirm_version_blurb"           : "Zaznacz poniżej modów, które chcesz zastąpić najnowszą wersją.<br /><mark>To nadpisze istniejące pliki!</mark>.",
 	"confirm_version_blurb_2"         : "Uwaga: jeśli ten mod używa nie-numerycznego łańcucha wersji, to narzędzie nie może kontynuować.",
 
+	"tray_show"                       : "Pokaż",
+	"tray_quit"                       : "Zakończ",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Ustawianie preferencji użytkownika"
 }

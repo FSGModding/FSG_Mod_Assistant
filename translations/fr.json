@@ -172,6 +172,9 @@
 	"confirm_version_blurb"           : "Cochez les mods ci-dessous que vous souhaitez remplacer par la dernière version.<br /><mark>Cela écrasera les fichiers existants !</mark>.",
 	"confirm_version_blurb_2"         : "Remarque : si ce mod utilise une chaîne de version non numérique, cet utilitaire ne peut pas continuer.",
 
+	"tray_show"                       : "Afficher",
+	"tray_quit"                       : "Arrêtez",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Définir les préférences de l'utilisateur"
 }

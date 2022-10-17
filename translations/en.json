@@ -172,6 +172,9 @@
 	"resolve_version_newest"          : "Newest Version:",
 	"confirm_version_blurb"           : "Check the mods below you wish to replace with the latest version.<br /><mark>This will overwrite existing files!</mark>.",
 	"confirm_version_blurb_2"         : "Note: if this mod uses a non-numeric version string, this utility cannot proceed.",
+
+	"tray_show"                       : "Show",
+	"tray_quit"                       : "Quit",
 	
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Set User Preferences"

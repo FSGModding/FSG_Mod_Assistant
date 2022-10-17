@@ -46,6 +46,10 @@ window.mods.receive('fromMain_loadingTotal', (count) => { fsgUtil.byId('count_to
 window.mods.receive('fromMain_loadingDone',  (count) => { fsgUtil.byId('count_done').innerHTML  = count })
 
 window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFoldersMap, newList) => {
+	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
+	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
+	const scrollStart = window.scrollY
+
 	const selectedList = ( currentList !== '999' && currentList !== '0') ? `collection--${currentList}` : currentList
 	const modTable     = []
 	const optList      = []
@@ -88,6 +92,12 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 	
 	lastModSelect   = null
 	lastTableSelect = null
+
+	try {
+		document.getElementById(lastOpenID).classList.add('show')
+		window.scrollTo(0, scrollStart)
+	} catch { /* nope */ }
+
 	processL10N()
 })
 
@@ -196,6 +206,8 @@ function fileListClick(event) {
 		moveButtons[1].classList[(!noneChecked)?'remove':'add']('disabled')
 		moveButtons[2].classList[(!noneChecked)?'remove':'add']('disabled')
 		moveButtons[3].classList[(oneChecked)?'remove':'add']('disabled')
+
+		clientFilterTable(thisTable)
 		
 		updateModFilesColor()
 	}
@@ -229,8 +241,13 @@ function makeModCollection(id, name, modsRows) {
 	tableHTML.push(fsgUtil.buildTR('mod-table-folder-detail collapse accordion-collapse', `${id}_mods`, 'data-bs-parent=".table"'))
 	tableHTML.push('<td class="mod-table-folder-details-indent"></td>')
 	tableHTML.push('<td class="mod-table-folder-details px-0" colspan="2">')
-	tableHTML.push(`<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`)
+	tableHTML.push('<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">')
+	tableHTML.push('<tr><td colspan="3">')
+	tableHTML.push('<div class="input-group input-group-sm mb-0"><span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>')
+	tableHTML.push(`<input type="text" id="${id}_mods__input" onkeyup="clientFilterTable('${id}_mods')" class="form-control"></div>`)
 	tableHTML.push('</td></tr>')
+	tableHTML.push(modsRows.join(''))
+	tableHTML.push('</table></td></tr>')
 	return tableHTML.join('')
 }
 
@@ -280,6 +297,26 @@ function deSelectAll() {
 	moveButtons.forEach((button)    => { button.classList.add('disabled') })
 
 	updateModFilesColor()
+}
+
+function clientFilterTable(table) {
+	const theseMods     = document.getElementById(table).querySelectorAll('.mod-row')
+	const rawSearchTerm = document.getElementById(`${table}__input`).value.toLowerCase()
+	const inverseSearch = rawSearchTerm.startsWith('!')
+	const searchTerm    = ( inverseSearch ) ? rawSearchTerm.substring(1) : rawSearchTerm
+
+	theseMods.forEach((modRow) => {
+		if ( searchTerm.length < 2 ) { modRow.classList.remove('d-none'); return }
+		
+		const modText   = modRow.querySelector('td:nth-child(2)').innerText.toLowerCase()
+		const matchText = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
+		const showMe    = modRow.querySelector('input').checked || matchText
+
+		modRow.classList[(showMe?'remove':'add')]('d-none')
+	})
+	
+	console.log(searchTerm)
+	
 }
 
 window.addEventListener('hide.bs.collapse', () => { deSelectAll() })
