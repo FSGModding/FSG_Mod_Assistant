@@ -7,6 +7,7 @@
 // Main Program
 
 
+
 const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray } = require('electron')
 
 const { autoUpdater } = require('electron-updater')
@@ -26,6 +27,11 @@ const userHome      = require('os').homedir()
 const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
 const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
+
+const trayIcon = !app.isPackaged
+	? path.join(app.getAppPath(), 'renderer', 'img', 'icon.ico')
+	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
+
 let   pathBestGuess = path.join(userHome, 'OneDrive', 'Documents', 'My Games', 'FarmingSimulator2022')
 
 if ( ! fs.existsSync(pathBestGuess) ) {
@@ -156,7 +162,10 @@ function createMainWindow () {
 	windows.main = createSubWindow({ show : devDebug, preload : 'mainWindow', width : 'main_window_x', height : 'main_window_y', maximize : mcStore.get('main_window_max') })
 
 	windows.main.on('minimize', () => { if ( tray ) { windows.main.hide() }})
-	windows.main.on('closed',   () => { tray.destroy() })
+	windows.main.on('closed',   () => {
+		if ( tray ) { tray.destroy() }
+		windows.load.destroy()
+	})
 
 	if ( !devDebug ) {
 		windows.splash = createSubWindow({ center : true, fixed : true, move : false, frame : false, width : 600, height : 300 })
@@ -887,7 +896,7 @@ app.whenReady().then(() => {
 		myTranslator.currentLocale = mcStore.get('force_lang')
 	}
 
-	tray = new Tray(pathIcon)
+	tray = new Tray(trayIcon)
 
 	const template = [
 		{ label : 'FSG Mod Assist', /*icon : pathIcon, */enabled : false },
