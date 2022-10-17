@@ -156,7 +156,7 @@ function createMainWindow () {
 	windows.main = createSubWindow({ show : devDebug, preload : 'mainWindow', width : 'main_window_x', height : 'main_window_y', maximize : mcStore.get('main_window_max') })
 
 	windows.main.on('minimize', () => { if ( tray ) { windows.main.hide() }})
-	windows.main.on('close',    () => { tray.destroy(); app.quit() })
+	windows.main.on('closed',   () => { tray.destroy() })
 
 	if ( !devDebug ) {
 		windows.splash = createSubWindow({ center : true, fixed : true, move : false, frame : false, width : 600, height : 300 })
@@ -165,7 +165,7 @@ function createMainWindow () {
 		windows.splash.on('closed', () => { windows.splash = null })
 
 		windows.main.once('ready-to-show', () => {
-			setTimeout(() => { windows.main.show(); windows.splash.close() }, 2000)
+			setTimeout(() => { windows.main.show(); windows.splash.destroy() }, 2000)
 		})
 	}
 
