@@ -43,6 +43,7 @@ contextBridge.exposeInMainWorld(
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
 		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
+		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },
 
 		debugLog  : () => { ipcRenderer.send('openDebugLogContents') },
 		openMod   : (modID) => { ipcRenderer.send('toMain_openModDetail', modID) },

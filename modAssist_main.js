@@ -12,7 +12,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray }
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug  = false
+const devDebug  = true
 const skipCache = false
 
 if (process.platform === 'win32') { autoUpdater.checkForUpdatesAndNotify() }
@@ -121,7 +121,7 @@ function createSubWindow({show = true, parent = null, title = null, maximize = f
 	const winOptions = {
 		minimizable     : !fixed,
 		center          : center,
-		alwaysOnTop     : fixed,
+		alwaysOnTop     : fixed && !devDebug,
 		maximizable     : !fixed,
 		fullscreenable  : !fixed,
 		width           : ( typeof width === 'number' ) ? width : mcStore.get(width),
@@ -384,6 +384,13 @@ ipcMain.on('toMain_openMods',     (event, mods) => {
 
 	if ( thisMod !== null ) {
 		shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
+	}
+})
+ipcMain.on('toMain_openHub',     (event, mods) => {
+	const thisMod = modIdToRecord(mods[0])
+
+	if ( thisMod !== null ) {
+		shell.openExternal(`https://www.farming-simulator.com/mod.php?hash=${thisMod.giantsHash}`)
 	}
 })
 
@@ -714,7 +721,6 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 		])
 	})
 
-	console.log(fullPathMap)
 	windows[srcWindow].close()
 	windows.main.focus()
 
@@ -792,12 +798,28 @@ function fileGetStats(folder, thisFile) {
 	}
 }
 
-function processModFolders(newFolder = false) {
+let loadingWait = null
+function processModFolders(newFolder) {
 	if ( !foldersDirty ) { return }
 
 	loadingWindow_open('mods', 'main')
 	loadingWindow_total(0, true)
 	loadingWindow_current(0, true)
+
+	loadingWait = setInterval(() => {
+		if ( windows.load.isVisible() ) {
+			clearInterval(loadingWait)
+			processModFolders_post(newFolder)
+		}
+	}, 250)
+}
+
+function processModFolders_post(newFolder = false) {
+	// if ( !foldersDirty ) { return }
+
+	// loadingWindow_open('mods', 'main')
+	// loadingWindow_total(0, true)
+	// loadingWindow_current(0, true)
 
 	if ( newFolder === false ) { modList = {}; modFoldersMap = {}}
 

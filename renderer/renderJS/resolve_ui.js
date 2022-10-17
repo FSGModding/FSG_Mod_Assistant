@@ -88,7 +88,6 @@ function compareVersion(versionArray, thisVersion, collection) {
 
 
 function makeLine(mod, version) {
-	console.log(mod)
 	const thisHTML = []
 
 	if ( mod[1] === version[1] ) { //same

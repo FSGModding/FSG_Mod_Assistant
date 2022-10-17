@@ -38,6 +38,7 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.mods.receive('fromMain_modList', (modList) => {
+	const nameIconMap        = {}
 	const collectionMap      = {}
 	const nameTitleMap       = {}
 	const versionList        = {}
@@ -51,6 +52,7 @@ window.mods.receive('fromMain_modList', (modList) => {
 
 			if ( ! mod.fileDetail.isFolder ) {
 				nameTitleMap[modName] ??= mod.l10n.title
+				nameIconMap[modName]  ??= mod.modDesc.iconImageCache
 				versionList[modName]  ??= []
 				versionList[modName].push([collection, modVer])
 			}
@@ -78,13 +80,13 @@ window.mods.receive('fromMain_modList', (modList) => {
 		versionListNoMatch[key].forEach((versionArray) => {
 			theseCollections.push(`${collectionMap[versionArray[0]]}: ${versionArray[1]}`)
 		})
-		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections))
+		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
 	})
 
 	Object.keys(versionList).forEach((key) => {
 		const theseCollections = []
 		versionList[key].forEach((versionArray) => { theseCollections.push(collectionMap[versionArray[0]]) })
-		listHTML.push(makeLine('same', nameTitleMap[key], key, theseCollections))
+		listHTML.push(makeLine('same', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
 	})
 
 	fsgUtil.byId('modList').innerHTML = listHTML.join('')
@@ -92,20 +94,24 @@ window.mods.receive('fromMain_modList', (modList) => {
 })
 
 
-function makeLine(type, realName, shortName, collections) {
+function makeLine(type, realName, shortName, collections, icon) {
 	const color = ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger'
 	const l10n  = ( type === 'same' ) ? 'version_same' : 'version_diff'
 	const click = ( type === 'diff' ) ? `oncontextmenu="window.mods.openVersionResolve('${shortName}')" onDblClick="window.mods.openVersionResolve('${shortName}')"` : ''
+
 	const thisHTML = []
 	
 	thisHTML.push(`<li ${click} class="list-group-item d-flex justify-content-between align-items-start ${color}">`)
-	thisHTML.push('<div class="ms-2 me-auto">')
-	thisHTML.push(`<div class="fw-bold">${shortName}</div>`)
+	thisHTML.push('<div class="row w-100"><div class="col-2 p-0 mx-3" style="width:64px; height:64px;">')
+	if ( icon !== null ) {
+		thisHTML.push(`<img class="img-fluid" src="${icon}" />`)
+	}
+	thisHTML.push(`</div><div class="col-8"><div class="fw-bold">${shortName}</div>`)
 	thisHTML.push(`<div class="small">${realName}</div>`)
 	thisHTML.push(`<div class="text-black small ps-3"><l10n name="version_collections"></l10n>: ${collections.join(', ')}</div>`)
-	thisHTML.push('</div>')
+	thisHTML.push('</div><div class="col-2">')
 	thisHTML.push(`<span class="badge bg-dark bg-gradient rounded-1 ms-1"><l10n name="${l10n}"></l10n></span>`)
-	thisHTML.push('</li>')
+	thisHTML.push('</div></div></li>')
 
 	return thisHTML.join('')
 }

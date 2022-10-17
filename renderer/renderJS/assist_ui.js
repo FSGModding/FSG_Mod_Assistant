@@ -67,9 +67,12 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 				`${collection}--${thisMod.uuid}`,
 				thisMod.fileDetail.shortName,
 				thisMod.l10n.title,
+				thisMod.modDesc.author,
 				thisMod.modDesc.version,
 				theseBadges,
-				thisMod.canNotUse
+				thisMod.canNotUse,
+				thisMod.modDesc.iconImageCache,
+				thisMod.giantsHash
 			))
 		})
 		modTable.push(makeModCollection(
@@ -176,6 +179,7 @@ function fileListClick(event) {
 
 		let allChecked   = true
 		let noneChecked  = true
+		let hashGHash    = false
 		const oneChecked = (document.querySelectorAll('.mod-row input[type="checkbox"]:checked').length === 1)
 
 		const thisModTable = event.target.closest('table').querySelectorAll('input[type="checkbox"]')
@@ -183,6 +187,9 @@ function fileListClick(event) {
 		thisModTable.forEach((thisCheckBox) => {
 			if ( ! thisCheckBox.parentElement.parentElement.classList.contains('disabled') ) {
 				if ( thisCheckBox.checked ) {
+					if ( thisCheckBox.parentElement.parentElement.classList.contains('has-hash') ) {
+						hashGHash = true
+					}
 					noneChecked = false
 				} else {
 					allChecked = false
@@ -206,6 +213,7 @@ function fileListClick(event) {
 		moveButtons[1].classList[(!noneChecked)?'remove':'add']('disabled')
 		moveButtons[2].classList[(!noneChecked)?'remove':'add']('disabled')
 		moveButtons[3].classList[(oneChecked)?'remove':'add']('disabled')
+		moveButtons[4].classList[(oneChecked && hashGHash)?'remove':'add']('disabled')
 
 		clientFilterTable(thisTable)
 		
@@ -242,7 +250,7 @@ function makeModCollection(id, name, modsRows) {
 	tableHTML.push('<td class="mod-table-folder-details-indent"></td>')
 	tableHTML.push('<td class="mod-table-folder-details px-0" colspan="2">')
 	tableHTML.push('<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">')
-	tableHTML.push('<tr><td colspan="3">')
+	tableHTML.push('<tr><td colspan="4">')
 	tableHTML.push('<div class="input-group input-group-sm mb-0"><span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>')
 	tableHTML.push(`<input type="text" id="${id}_mods__input" onkeyup="clientFilterTable('${id}_mods')" class="form-control"></div>`)
 	tableHTML.push('</td></tr>')
@@ -251,8 +259,20 @@ function makeModCollection(id, name, modsRows) {
 	return tableHTML.join('')
 }
 
-function makeModRow(id, name, title, version, badges, disabled = false) {
-	return `<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}"><td><input type="checkbox" class="form-check-input"></td><td>${name}<br /><small>${title}</small><div class="issue_badges">${badges}</div></td><td class="text-end pe-4">${version}</td></tr>`
+function makeModRow(id, name, title, author, version, badges, disabled, image, hash) {
+	const rowHTML = []
+	
+	rowHTML.push(`<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(hash!==null ? ' has-hash' : '')}${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">`)
+	rowHTML.push('<td><input type="checkbox" class="form-check-input"></td>')
+	rowHTML.push('<td style="width: 64px; height: 64px">')
+	if ( image !== null ) {
+		rowHTML.push(`<img class="img-fluid" src="${image}" />`)
+	}
+	rowHTML.push('</td>')
+	rowHTML.push(`<td><div class="bg-light"></div>${name}<br /><small>${title} - <em>${author}</em></small><div class="issue_badges">${badges}</div></td>`)
+	rowHTML.push(`<td class="text-end pe-4">${version}</td></tr>`)
+	
+	return rowHTML.join('')
 }
 
 
@@ -265,8 +285,6 @@ function clientBatchOperation(mode) {
 			selectedMods.push(thisRow.id)
 		}
 	})
-
-	console.log(selectedMods)
 
 	switch (mode) {
 		case 'copy':
@@ -281,8 +299,10 @@ function clientBatchOperation(mode) {
 		case 'open':
 			if ( selectedMods.length === 1 ) { window.mods.openMods(selectedMods) }
 			break
+		case 'hub':
+			if ( selectedMods.length === 1 ) { window.mods.openHub(selectedMods) }
+			break
 		default:
-			console.log('inconceivable!')
 			break
 	}
 }
@@ -308,15 +328,12 @@ function clientFilterTable(table) {
 	theseMods.forEach((modRow) => {
 		if ( searchTerm.length < 2 ) { modRow.classList.remove('d-none'); return }
 		
-		const modText   = modRow.querySelector('td:nth-child(2)').innerText.toLowerCase()
+		const modText   = modRow.querySelector('td:nth-child(3)').innerText.toLowerCase()
 		const matchText = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
 		const showMe    = modRow.querySelector('input').checked || matchText
 
 		modRow.classList[(showMe?'remove':'add')]('d-none')
 	})
-	
-	console.log(searchTerm)
-	
 }
 
 window.addEventListener('hide.bs.collapse', () => { deSelectAll() })
@@ -332,7 +349,7 @@ window.addEventListener('click', (event) => {
 })
 
 window.addEventListener('scroll', () => {
-	const scrollValue = this.scrollY +  140
+	const scrollValue = this.scrollY +  120
 	const moveButtons = fsgUtil.byId('moveButtons')
 	try {
 		moveButtons.style.top = `${scrollValue}px`

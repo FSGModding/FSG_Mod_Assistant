@@ -64,14 +64,18 @@ function updateConfirmList() {
 	const selectedDest = fsgUtil.byId('select_destination').value
 
 	lastModRecords.forEach((mod) => {
-		confirmHTML.push('<div class="row border-bottom">')
-		confirmHTML.push(`<h3 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${mod.l10n.title}</span></h3>`)
-		confirmHTML.push(`<p class="font-monospace small mb-1 ps-4">${window.mods.homeDirMap(mod.fileDetail.fullPath)}</h3>`)
+		confirmHTML.push('<div class="row border-bottom"><div class="col col-auto">')
+		confirmHTML.push('<div class="p-2" style="width: 110px; height:110px;">')
+		if ( mod.modDesc.iconImageCache !== null ) {
+			confirmHTML.push(`<img class="img-fluid" src="${mod.modDesc.iconImageCache}" />`)
+		}
+		confirmHTML.push(`</div></div><div class="col"><h4 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${mod.l10n.title}</span></h4>`)
+		confirmHTML.push(`<p class="font-monospace small mb-1">${window.mods.homeDirMap(mod.fileDetail.fullPath)}</h3>`)
 
 		if ( selectedDest === '0' ) {
 			confirmHTML.push('<div class="row mt-0"><div class="col col-form-label"><l10n name="no_destination_selected"></l10n></div></div>')
 		} else if ( findConflict(selectedDest, mod.fileDetail.shortName, mod.fileDetail.isFolder) ) {
-			confirmHTML.push('<div class="row mt-0"><div class="col-9 col-form-label"><l10n name="destination_full"></l10n></div><div class="col-3 col-form-label">')
+			confirmHTML.push('<div class="row mt-0"><div class="col-8 col-form-label"><l10n name="destination_full"></l10n></div><div class="col-4 col-form-label">')
 			confirmHTML.push(`<div class="form-check"><input class="form-check-input" type="checkbox" value="" id="${mod.uuid}">`)
 			confirmHTML.push(`<label class="form-check-label" for="${mod.uuid}"><l10n name="overwrite"></l10n></label></div></div></div>`)
 		} else {
@@ -79,7 +83,7 @@ function updateConfirmList() {
 			confirmHTML.push(`<input type="hidden" value="1" id="${mod.uuid}" />`)
 		}
 
-		confirmHTML.push('</div>')
+		confirmHTML.push('</div></div>')
 	})
 
 	fsgUtil.byId('confirm_list').innerHTML = confirmHTML.join('')

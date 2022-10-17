@@ -33,7 +33,6 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.mods.receive('fromMain_modRecord', (modRecord) => {
-	console.log(modRecord)
 	const idMap = {
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
 		file_date      : modRecord.fileDetail.fileDate.substring(0, 16),
