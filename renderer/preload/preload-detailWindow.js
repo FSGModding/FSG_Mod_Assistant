@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		closeWindow  : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'detail') },
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modRecord',

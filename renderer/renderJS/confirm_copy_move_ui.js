@@ -60,7 +60,7 @@ window.mods.receive('fromMain_confirmList', (modRecords, fullList, folderMap, co
 })
 
 function updateConfirmList() {
-	const confirmHTML = []
+	const confirmHTML  = []
 	const selectedDest = fsgUtil.byId('select_destination').value
 
 	lastModRecords.forEach((mod) => {

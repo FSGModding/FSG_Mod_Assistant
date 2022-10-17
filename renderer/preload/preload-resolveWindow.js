@@ -27,6 +27,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		closeWindow  : () => { ipcRenderer.send('toMain_closeSubWindow', 'resolve') },
 		refreshList  : () => { ipcRenderer.send('toMain_refreshVersions') },
 		realCopyFile : ( fileMap ) => { ipcRenderer.send('toMain_realFileVerCP', fileMap) },
 		receive      : ( channel, func ) => {

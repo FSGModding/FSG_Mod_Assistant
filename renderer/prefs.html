@@ -7,6 +7,12 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/pref_ui.js"></script>
+	<script type="text/javascript">
+		document.onkeydown = function(evt) {
+			evt = evt || window.event
+			if (evt.keyCode == 27) { window.mods.closeWindow() }
+		}
+	</script>
 </head>
 <body>
 	

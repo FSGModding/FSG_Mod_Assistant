@@ -27,9 +27,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow', 'version') },
 		openVersionResolve : (shortName) => { ipcRenderer.send('toMain_versionResolve', shortName)},
-		refreshList  : () => { ipcRenderer.send('toMain_refreshVersions') },
-		receive      : ( channel, func ) => {
+		refreshList        : () => { ipcRenderer.send('toMain_refreshVersions') },
+		receive            : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modList',
 			]

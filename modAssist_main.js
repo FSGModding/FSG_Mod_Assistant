@@ -612,6 +612,7 @@ ipcMain.on('toMain_versionResolve',  (event, shortName) => {
 
 
 /** Utility & Convenience Functions */
+ipcMain.on('toMain_closeSubWindow', (event, thisWin) => { windows[thisWin].close() })
 ipcMain.on('toMain_homeDirRevamp', (event, thisPath) => { event.returnValue = thisPath.replaceAll(userHome, '~') })
 
 

@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		closeWindow    : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'confirm') },
 		homeDirMap     : ( path ) => { return ipcRenderer.sendSync('toMain_homeDirRevamp', path) },
 		realDeleteFile : ( collection, uuid ) => { ipcRenderer.send('toMain_realFileDelete', collection, uuid) },
 		receive        : ( channel, func ) => {
