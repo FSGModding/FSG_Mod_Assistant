@@ -1,178 +1,214 @@
-# FS Mod Install Checker
+# FSG Mod Assistant
 
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jtsage/FS19_Mod_Checker) [![Build/release](https://github.com/jtsage/FS19_Mod_Checker/actions/workflows/build.yml/badge.svg)](https://github.com/jtsage/FS19_Mod_Checker/actions/workflows/build.yml) ![GitHub Release Date](https://img.shields.io/github/release-date/jtsage/FS19_Mod_Checker) ![GitHub all releases](https://img.shields.io/github/downloads/jtsage/FS19_Mod_Checker/total) [![Crowdin](https://badges.crowdin.net/fs19-mod-checker/localized.svg)](https://crowdin.com/project/fs19-mod-checker)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/FSGModding/FSG_Mod_Assistant) [![Build/release](https://github.com/FSGModding/FSG_Mod_Assistant/actions/workflows/build.yml/badge.svg)](https://github.com/FSGModding/FSG_Mod_Assistant/actions/workflows/build.yml) ![GitHub Release Date](https://img.shields.io/github/release-date/FSGModding/FSG_Mod_Assistant) ![GitHub all releases](https://img.shields.io/github/downloads/FSGModding/FSG_Mod_Assistant/total)
 
-This little program will take a look at your mod install folder and inform you of what it finds.
+This is a mod folder switcher with extra tools
+
+- Check mods to ensure that they (probably) work in game
+- Check a collection against a save game to see what is used and what is not
+- Resolve version differences of mods between collections
+
+___Contents___
+
+- [FSG Mod Assistant](#fsg-mod-assistant)
+  - [What this does](#what-this-does)
+  - [What is a Broken Mod?](#what-is-a-broken-mod)
+  - [Usage](#usage)
+    - [Download options](#download-options)
+    - [Updating](#updating)
+  - [How to Use](#how-to-use)
+    - [Main Screen](#main-screen)
+      - [Collections Buttons](#collections-buttons)
+      - [gameSettings Buttons](#gamesettings-buttons)
+      - [Collections Area](#collections-area)
+        - [Color Coding and Badges](#color-coding-and-badges)
+        - [Active List](#active-list)
+        - [Action Buttons](#action-buttons)
+        - [Search Feature](#search-feature)
+    - [Move and Copy](#move-and-copy)
+    - [Delete](#delete)
+    - [Savegame Compare](#savegame-compare)
+      - [Badges Used](#badges-used)
+    - [Version Check](#version-check)
+    - [Edit Folders](#edit-folders)
+    - [User Preferences](#user-preferences)
+      - [gameSettings.xml](#gamesettingsxml)
+      - [Mod Cache](#mod-cache)
+  - [Tips and Tricks](#tips-and-tricks)
+  - [Something didn't work?!?](#something-didnt-work)
+  - [Technical Details](#technical-details)
+    - [The Mod Cache](#the-mod-cache)
 
 ## What this does
 
-This program provides lots of information.
+At it's core functionality, this is a file manager, and it has the ability to edit FS22's `gameSettings.xml` file to set one of your mod collections as the mod location the game reads. __For the security conscious__, it's sole communication with the internet is the self-updater for the program - all of your mods are tested locally - if you prefer to update manually, you can safely block this app in your firewall. There is also a portable (no-install) version if you prefer that.
 
-_Optionally_, it will also allow you to remove mods from your install folder (atomically - that is, one at a time).  Moved mods are sent to a "quarantine" folder of your choice. From this quarantine location you can fix files names, unzip mod packs, or delete stuff you just don't want anymore.
+## What is a Broken Mod?
 
-### Broken Mods
+- If a mod file is named incorrectly and won't load in the game.
+  - Suggest it might be a copy if the name looks like a copy (and what the name probably should be)
+  - Suggest you extract it if it looks like a collection of mods
 
-* If a mod file is named incorrectly and won't load in the game.
-  * Suggest it might be a copy if the name looks like a copy
-    * Note if you already have that identical file
-    * Note if you already have that version, but the files are different
-    * Note if you don't have a properly named original
-  * Suggest you extract it if it looks like a collection of mods
+- If a mod is not properly zipped.
+  - Suggest that you zip it up
+  - Suggest you move the contents of the folder if it looks like a mod pack
+  - Suggest you remove the folder if it looks like garbage
 
-* If a mod is not properly zipped.
-  * Suggest that you zip it up
-  * Suggest you move the contents of the folder if it looks like a mod pack
-  * Suggest you remove the folder if it looks like garbage
+- If a mod is not intended for FS22 (e.g. FS19 & FS17 mods)
+  - Warn that you can't use it with this version
 
-* If a mod is not intended for FS19 or FS22 (configurable!) (i.e. FS17 mods)
-  * Warn that you can't use it with this version
-
-* If a file exists that is not a mod at all
-  * Suggest you remove the file
-
-### Conflicts
-
-* If a you have a mod as both a folder and a zip file, warn that only the zip file will be used
-
-* If you have a mod that is known to cause issues in specific circumstances, warn you
-
-### Missing Mods
-
-* List all those mods that are active in your save games but don't appear to be installed any more
-  * Allow you to search for the missing mod on the official mod hub, Google, DuckDuckGo, and Bing.
-
-### Explore Mods
-
-Here you can sort the list of good, installed mods to discover any number of things
-
-* If a mod is not loaded or used in any of your save games
-
-* If a mod is loaded but unused in your save games.
-
-* What mod each save game is using
-
-* Which mods take up the most space on your disk
+- If a file exists that is not a mod at all
+  - Suggest you remove the file
 
 ## Usage
 
-Download the installer for your platform from the [Releases](https://github.com/jtsage/FS_Mod_Checker/releases) page - the program
-will install with 1-click, and auto-run when it's ready.
+Download the installer for your platform from the [Releases](https://github.com//FSGModding/FSG_Mod_Assistant/releases) page - the program will install with 1-click, and auto-run when it's ready.
 
 ### Download options
 
 Builds are available for the following:
 
-* win x64 Installer
-* win x64 portable (no need to install)
-* mac x64 DMG (disk image)
-* mac x64 ZIP (portable)
+- win x64 Installer
+- win x64 portable (no need to install)
 
-Note: the mac builds probably work just fine on the new M1 macs.
-
-Linux Note: this builds just fine under linux. For the very few folks this would help, I don't wish to eat into my free github actions minutes - build and run it like any other npm / yarn based project - if you were able to get FS running under linux, this shouldn't be much in comparison.
+Linux and Mac: this might build under MacOS and Linux, however I lack a test machine for either, so at a minimum the assumed paths are going to be wrong. If another developer wants to track down the right paths, I'd be happy to add them.
 
 ### Updating
 
-Either download the new version and install over top, or, for every version post 1.9.30, it'll auto update (windows only - mac requires a different code signing at $100/year).  Woohoo!
+Either download the new version and install over top, or, the program will self-update itself every time you start it (downloads silently, installs on exit)
 
-Note: Give the program a second to update after closing (when notified of the new version).  If you are too fast, windows will want to remove your shortcut.  If you do what I did, and blindly click yes, the install folder is at:
+## How to Use
 
-```C:\Users\<your username>\AppData\Local\Programs\fs19-mod-checker```
+__PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk so that this app can run as fast as possible - but the initial scanning process is in depth, and ___not very fast___.  So, be aware than when you add a folder of a lot of mods, it may take a bit of time to scan them for the first time. Mod Assistant goes out of it's way to only scan a "version" of a file once, so subsequent loads on the program will be much, much fast.  If you are interested in the details of the cache, see below.
 
-### Something didn't work?!?
+### Main Screen
 
-Please open an issue and let me know what.  If it is specific to a mod, let me know where to get the mod.  You can also hit CTRL+ALT+D in the app to bring up the debug log - sending that too might be a good idea.
+![main](screen_shots/001-main_program.png)
 
-### Usage with dedicated servers (for active/inactive/unused lists)
+#### Collections Buttons
 
-It's beyond the scope of this project to tell you which farm / user is using each mod.  But, the program also doesn't look at that bit - a mod is either used or not, associated farm ownership is ignored.  
+- __Add Folder__ : This button allows you to add a folder of mods as a collection to the program
+- __Edit Folders__ : This button brings up a dialog where you can remove or open your collection folders in windows explorer.
+- __Reload Folders__ : This button reloads the contents of your folders.  If you have added or moved mods manually, this button lets you tell FSG Mod Assistant to update it's internal list.  This happens automatically on startup
 
-So, if you want to run it against a dedicated server save:
+#### gameSettings Buttons
 
-Option 1 - If you are running the dedicated server locally, just use the scanner on that set of save files / mods.
+- __Collection Dropdown__ : Select the collection to activate.  When "--disabled--" is shown, the mod folder override in `gameSettings.xml` is turned off.  When "--unknown--" is shown, the mod folder override is set to a folder that FSG Mod Assistant is not tracking
+- __Set Active__ : Set the currently selected collection in the dropdown to be the active collection in Farm Sim. Doing this with the game open could lead to odd results. (It may corrupt your gameSettings file, but most probably it just won't work until you restart the game)
+- __Deactivate__ : Set the override in `gameSettings.xml` to off and just use the default mods folder again.
 
-Option 2 - Download your savegame folder *and* gameSettings.xml and run it on that.  Keep in mind to make sure the server has saved out the file recently before you do this.  Then just run it on that set of files like normal.
+#### Collections Area
 
-Option 3 - Just grab the savegame folder, and replace one of your unused local saves with it.
+![collections](screen_shots/002-main_program_collect.png)
+![collections zoom](screen_shots/003-collect_detail.png)
 
-I will not be exploring using the server API to check directly - The amount of complexity this would add overshadows the benefits.  Nor will I be adding arbitrary save file loading - again, the complexity add is too much.
+In this area you will see a list of all of the collections (folders) that you have added.
 
-## What it looks like
+##### Color Coding and Badges
 
-### Configuration Screen, Mods Loaded
+- Colors
+  - __Red Background__ : A red background indicates a mod or file that Mod Assistant thinks will not work in game
+  - __Green Background__ : This mod is currently selected
+- Badges
+  - __NotMOD__ : This file is not a mod
+  - __Broken__ : This mod is likely broken
+  - __Issue__ : This mod may have non game breaking issues
+  - __noMP__ : This mod can't be used for multiplayer
+  - __Folder__ : This mod is unzipped
+  - __PC Badge__ : This mod contains scripts, and will only work on PC/Mac
 
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/001-config.png">
-</p>
+##### Active List
 
-### Bad Mods, Unzipped Mods, Extra Files
+![collections active zoom](screen_shots/004-collect_active.png)
 
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/002-broken.png">
-</p>
+The active list is marked with a green check over the folder.
 
-### Missing Mods
+##### Action Buttons
 
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/003-missing.png">
-</p>
+- __Collection Checkbox__ : You can use this checkbox to quick select all or none of the mods in the list.  Additionally, shift-select for a range of mods is available.
+- __Compare to SaveGame__ : This will prompt you for a savegame (folder or zip file) and will compare what mods the save game expects to the mods in the collection.
+- __Move To...__ : This will prompt you which collection you wish to move the selected files into. This button is only available when a one or more files are selected.
+- __Copy To...__ : This will prompt you which collection you wish to copy the selected files into. This button is only available when a one or more files are selected.
+- __Delete__ : This will prompt you to make sure you wish to delete the selected files. This button is only available when a one or more files are selected.
+- __Show in Explorer__ : Open a windows explorer window with the selected file pre-selected. This button is only available when a single file is selected.
+- __Find on ModHub__ : Attempt to open this mod on the modhub. This will fail for mods not on the modhub, and is not available for non-mod files. This button is only available when a single file is selected.
 
-### Possible Conflicts
+##### Search Feature
 
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/004-conflict.png">
-</p>
+![collections search](screen_shots/005-collect_search.png)
 
-### Explore Mods
+This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_25DU_Trailers` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
 
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/005-explore.png">
-</p>
+### Move and Copy
 
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/006-explore-options.png">
-</p>
+![move and copy](screen_shots/006-move_copy.png)
 
-### Detail Popup
+In the move and copy dialog you will see a list of the selected mods, along with a dropdown that will let you choose the destination for the files.  If the file already exists at that location, you will be warned and prompted to `Overwrite File?`, leaving this box unchecked will ignore the file.  To proceed, press the button at the bottom, to cancel simply close the popup window or press `[ESC]`
 
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/010-detail.png">
-</p>
+### Delete
+
+![delete](screen_shots/007-delete.png)
+
+In the delete dialog you will see a list of the selected mods. This is a permanent action, it directly deletes these files, bypassing the recycling bin. To proceed, press the button at the bottom, to cancel simply close the popup window or press `[ESC]`
+
+### Savegame Compare
+
+![savegame](screen_shots/008-savegame.png)
+
+In this display, you can compare a collection to a savegame.  Both savegame folders and zipped save games are supported.  You can use the buttons at the top of the list to filter what is shown. Multiple buttons can be selected at once.
+
+#### Badges Used
+
+- __In-Active__ : This mod is not loaded in the savegame
+- __Active__ : This mod is loaded in the savegame
+- __Used__ : This mod is used in the savegame (someone owns something from it)
+- __Script__ : This mod contains only scripts, so it is assumed it is in use in the savegame
+- __Missing__ : This mod is active or used in the savegame, but you do not have the file in your collection
+- __DLC__ : This mod is paid DLC content from Giants
+- __Version Mismatch__ : The version of the mod used in the savegame and the version in your collection don't match.  For single player, this will fix itself on load, however, for multi-player play, this will prevent you from joining.
+
+### Version Check
+
+![version overview](screen_shots/009-version_overview.png)
+
+This screen shows you when you have the same mod in multiple collections, and if the versions of those mods match or not.  If the versions differ, you can double click or right click on the mod and a resolution screen will appear
+
+![version resolve](screen_shots/010-version_resolve.png)
+
+On this screen, you will be reminded of the name of the mod you are working with, and the newest detected version of it.  Note that this tool can only work with fully numeric version strings (`1.0.0.0` or `1.0` is fine, `1.4-beta` is not). Keep in mind this only compares version __numbers__, not the mod files themselves - if you have edited the file, the behavior of this tool is unpredictable. (In other words, always change the version number when you edit a mod)
+
+Check the box next to old versions of mods and press the `Yes, Copy Mod(s)` button to update those collections with the latest version of the mod.
+
+### Edit Folders
+
+![folders](screen_shots/011-folders.png)
+
+This display will let you change which collections are loaded, and open them in windows explorer if you wish.  In this example, I have "forgotten" the `test_mods` collection, which will update when I close the folder edit window.
 
 ### User Preferences
 
-<p align="center">
-  <img width="650" src="https://github.com/jtsage/FS_Mod_Checker/raw/main/screen_shots/020-prefs.png">
-</p>
+![preferences](screen_shots/012-prefs.png)
 
+Clicking the `...` button in the upper right corner of the main window will open user preferences.  Most of these are straight forward (window sizes, maximization selection, and UI language override).
 
-## Translation Effort
+#### gameSettings.xml
 
-Sadly, the primary developer only understands English.  If you'd like to contribute a translation, take a look in the translations folder, it's simple json. If you prefer a web interface: [Crowdin Project Page](https://crowdin.com/project/fs19-mod-checker)
+This option lets you override where the app looks for the gameSettings.xml file. Once in a while, the app may fail to detect it automatically - this is also useful if you have multiple installs of the game.
 
-### Localizations Available
+#### Mod Cache
 
-* Dutch / Nederlands - Thank you Kim | Paint-a-Farm!
-* English
-* French / Français - Thank you Taco29!
-* German / Deutsch - Thank you paraTM!
-* Polish / Polski - Thank you Ziuta!
-* Spanish / Español - Thank you Vanquish081!
+This button lets you clean out the mod cache for the app.  Under most circumstances, you will need to rarely use this - but if you have recently deleted a large number of mods, this may speed up operation of the app.
 
-## In-Progress Improvements
+## Tips and Tricks
 
-* Note some of the more popular mod conflicts and suggest avoiding them: [GitHub Issue #2](https://github.com/jtsage/FS_Mod_Checker/issues/2)
+- Think about adding your `Downloads` folder to the program to easily move or copy new mods into your collections.  Mod Assist is pretty smart about what is and isn't a mod, and will happily ignore anything else that might be in your `Downloads` folder.
 
-## A short note about the EXE
+## Something didn't work?!?
 
-2021-07-03 (ish): The EXE is signed now for windows.  Sorry, not willing to join the apple developer program just for this.
+Please open an issue and let me know what.  If it is specific to a mod, let me know where to get the mod.  You can also hit CTRL+ALT+D in the app to bring up the debug log - sending that too might be a good idea.
 
-2021-07-02 (late): Seems to be ok with the ~3pm EDT update to defender.  At any rate, purchase pending on the signing certificate.
+## Technical Details
 
-2021-07-02: Spoke too soon.  The windows download at least is throwing a false virus warning at the moment.  Working on it.  Looks like sectigo joined the last couple decades and you can no verify without a listed phone number (a.k.a. Only own a cell phone like, ya know, everybody).  Looking into this today or tomorrow.
+### The Mod Cache
 
-2021-06: the electron package should work without any virus warnings, unlike the python version. It *is* unsigned, and probably will remain so for the future - I cannot possibly spend a couple hundred dollars a year on a code signing certificate for one little project - and as far as I know, no company still offers freebies for open source.
-
-## For developers
-
-There is a CLI version in the repository, modChecker.js (you'll need the npm dependencies, but it will run without the dev-dependencies just fine. (dev stuff is only needed for the test suite and to run/build the electron version)) - it shows the basic usage of the mod / save game parser.  Someday, the parser might be it's own npm module, maybe.
+This app uses a mod cache based on mod file name, size, and date. As such, it only needs to scan a mod once. Unzipped mods, broken mods, and files that don't appear to be mods are not added to the cache.  The `broken mods` item is important as if you have a _lot_ of broken mods in your mod folder, it can slow down the startup of the app.
