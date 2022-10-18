@@ -12,7 +12,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray }
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug  = true
+const devDebug  = false
 const skipCache = false
 
 if (process.platform === 'win32') { autoUpdater.checkForUpdatesAndNotify() }
