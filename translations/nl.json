@@ -175,6 +175,9 @@
 	"tray_show"                       : "Toon",
 	"tray_quit"                       : "Stop",
 
+	"open_hub"                        : "Zoek op ModHub",
+	"mod_badge_recent"                : "Recente",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Gebruikersvoorkeuren instellen"
 }

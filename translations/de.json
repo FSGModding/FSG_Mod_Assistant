@@ -176,6 +176,9 @@
 	"tray_show"                       : "anzeigen",
 	"tray_quit"                       : "Beenden Sie",
 
+	"open_hub"                        : "Auf ModHub finden",
+	"mod_badge_recent"                : "Neueste",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Benutzerpräferenzen festlegen"
 }
