@@ -25,6 +25,7 @@ ___Contents___
         - [Active List](#active-list)
         - [Action Buttons](#action-buttons)
         - [Search Feature](#search-feature)
+    - [Detail Window](#detail-window)
     - [Move and Copy](#move-and-copy)
     - [Delete](#delete)
     - [Savegame Compare](#savegame-compare)
@@ -41,7 +42,7 @@ ___Contents___
 
 ## What this does
 
-At it's core functionality, this is a file manager, and it has the ability to edit FS22's `gameSettings.xml` file to set one of your mod collections as the mod location the game reads. __For the security conscious__, it's sole communication with the internet is the self-updater for the program - all of your mods are tested locally - if you prefer to update manually, you can safely block this app in your firewall. There is also a portable (no-install) version if you prefer that.
+At it's core functionality, this is a file manager, and it has the ability to edit FS22's `gameSettings.xml` file to set one of your mod collections as the mod location the game reads. __For the security conscious__, it's sole communication with the internet is the self-updater for the program, and pulling a list of modHub mods from a server - all of your mods are tested locally - if you prefer to update manually, you can safely block this app in your firewall - although that will break the "Open on ModHub" button. There is also a portable (no-install) version if you prefer that.
 
 ## What is a Broken Mod?
 
@@ -110,6 +111,8 @@ In this area you will see a list of all of the collections (folders) that you ha
   - __Red Background__ : A red background indicates a mod or file that Mod Assistant thinks will not work in game
   - __Green Background__ : This mod is currently selected
 - Badges
+  - __New__ : This file has been added to this collection since the last scan
+  - __Recent__ : This mod has recently been updated or released on the modHub
   - __NotMOD__ : This file is not a mod
   - __Broken__ : This mod is likely broken
   - __Issue__ : This mod may have non game breaking issues
@@ -138,6 +141,18 @@ The active list is marked with a green check over the folder.
 ![collections search](screen_shots/005-collect_search.png)
 
 This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_25DU_Trailers` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
+
+### Detail Window
+
+![detail top](screen_shots/013-detail_top.png)
+
+Double clicking or right clicking on a mod in the main window will bring up the detail window where you can see details about the mod such as the file date, file size, if it uses scripts, how many store items it has, and the mod description.
+
+If problems or issues were found with the mod, you will also be presenting with detailed information on the issue, often with suggestions of how to fix them
+
+![detail top](screen_shots/014-detail_bottom.png)
+
+The bottom section of the detail window is for developers, and contains a list of some information they may find helpful in debugging and releasing mods. This is not a replacement for the testRunner, it does not do several of the tests that are included there - however, some of the MP server warning tests are conducted that the testRunner choose to omit.
 
 ### Move and Copy
 
