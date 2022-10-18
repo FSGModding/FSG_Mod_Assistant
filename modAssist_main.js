@@ -8,7 +8,7 @@
 
 
 
-const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray } = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray, net } = require('electron')
 
 const { autoUpdater } = require('electron-updater')
 
@@ -73,6 +73,8 @@ let modFoldersMap = {}
 let modList       = {}
 let countTotal    = 0
 let countMods     = 0
+let modHubList    = {}
+
 
 const ignoreList = [
 	'^npm-debug\\.log$',
@@ -388,9 +390,10 @@ ipcMain.on('toMain_openMods',     (event, mods) => {
 })
 ipcMain.on('toMain_openHub',     (event, mods) => {
 	const thisMod = modIdToRecord(mods[0])
+	const thisModId = modHubList.mods[thisMod.fileDetail.shortName] || null
 
-	if ( thisMod !== null ) {
-		shell.openExternal(`https://www.farming-simulator.com/mod.php?hash=${thisMod.giantsHash}`)
+	if ( thisModId !== null ) {
+		shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisModId}`)
 	}
 })
 
@@ -623,7 +626,8 @@ function refreshClientModList() {
 		[myTranslator.syncStringLookup('override_disabled'), myTranslator.syncStringLookup('override_unknown')],
 		overrideIndex,
 		modFoldersMap,
-		newModsList
+		newModsList,
+		modHubList
 	)
 }
 
@@ -907,6 +911,16 @@ function processModFolders_post(newFolder = false) {
 	refreshClientModList()
 	loadingWindow_hide()
 }
+
+function loadModHub() {
+	try {
+		const rawData = fs.readFileSync(path.join(app.getPath('userData'), 'modHubData.json'))
+		modHubList = JSON.parse(rawData)
+		logger.info('modHubList', 'Loaded list')
+	} catch (e) {
+		logger.info('modHubList', `List Fail: ${e}`)
+	}
+}
 /** END: Business Functions */
 
 
@@ -931,6 +945,21 @@ app.whenReady().then(() => {
 	tray.setContextMenu(contextMenu)
 	tray.setToolTip('FSG Mod Assist')
 	tray.on('click', () => { windows.main.show() })
+
+	const request = net.request('http://dev.jtsage.com/modHubData.json')
+	let mhResp = ''
+
+	request.on('response', (response) => {
+		logger.info('modHubList', `Got list: ${response.statusCode}`)
+		response.on('data', (chunk) => {
+			mhResp = mhResp + chunk.toString()
+		})
+		response.on('end', () => {
+			fs.writeFileSync(path.join(app.getPath('userData'), 'modHubData.json'), mhResp)
+			loadModHub()
+		})
+	})
+	request.end()
 
 	createMainWindow()
 

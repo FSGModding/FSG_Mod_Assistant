@@ -45,7 +45,7 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 window.mods.receive('fromMain_loadingTotal', (count) => { fsgUtil.byId('count_total').innerHTML = count })
 window.mods.receive('fromMain_loadingDone',  (count) => { fsgUtil.byId('count_done').innerHTML  = count })
 
-window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFoldersMap, newList) => {
+window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFoldersMap, newList, modHubList) => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 	const scrollStart = window.scrollY
@@ -59,9 +59,17 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 	Object.keys(modList).forEach((collection) => {
 		const modRows = []
 		modList[collection].mods.forEach((thisMod) => {
-			const theseBadges = ( newList.includes(thisMod.md5Sum) ) ?
-				`${thisMod.badges}<span class="badge bg-success"><l10n name="mod_badge_new"></l10n></span>` :
-				thisMod.badges
+			const extraBadges = []
+			const modId       = modHubList.mods[thisMod.fileDetail.shortName] || null
+
+			if ( newList.includes(thisMod.md5Sum) ) {
+				extraBadges.push('<span class="badge bg-success"><l10n name="mod_badge_new"></l10n></span>')
+			}
+			if ( modId !== null && modHubList.last.includes(modId) ) {
+				extraBadges.push('<span class="badge bg-success"><l10n name="mod_badge_recent"></l10n></span>')
+			}
+
+			const theseBadges = thisMod.badges + extraBadges.join('')
 			
 			modRows.push(makeModRow(
 				`${collection}--${thisMod.uuid}`,
@@ -72,7 +80,7 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 				theseBadges,
 				thisMod.canNotUse,
 				thisMod.modDesc.iconImageCache,
-				thisMod.giantsHash
+				modId
 			))
 		})
 		modTable.push(makeModCollection(
@@ -122,6 +130,16 @@ function updateModFilesColor() {
 
 
 function fileListClick(event) {
+	if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TD' ) {
+		const closeTD = event.target.closest('td')
+		const closeTR = event.target.closest('tr')
+
+		if ( closeTR !== null && closeTR.classList.contains('mod-row') ) {
+			console.log('dispatching')
+			closeTD.click()
+		}
+	}
+
 	if (event.target.tagName === 'INPUT' && event.target.classList.contains('folder_master_check') ) {
 		const thisModTable = document.getElementById(event.target.getAttribute('data-bs-target').substring(1)).querySelectorAll('input[type="checkbox"]')
 		thisModTable.forEach((thisCheckBox) => {
@@ -259,10 +277,10 @@ function makeModCollection(id, name, modsRows) {
 	return tableHTML.join('')
 }
 
-function makeModRow(id, name, title, author, version, badges, disabled, image, hash) {
+function makeModRow(id, name, title, author, version, badges, disabled, image, modId) {
 	const rowHTML = []
 	
-	rowHTML.push(`<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(hash!==null ? ' has-hash' : '')}${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">`)
+	rowHTML.push(`<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">`)
 	rowHTML.push('<td><input type="checkbox" class="form-check-input"></td>')
 	rowHTML.push('<td style="width: 64px; height: 64px">')
 	if ( image !== null ) {
