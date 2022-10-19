@@ -178,6 +178,9 @@
 
 	"open_hub"                        : "Find on ModHub",
 	"mod_badge_recent"                : "Recent",
+
+	"show_broken"                     : "Show Broken",
+	"show_non_mod"                    : "Show Non-Mods",
 	
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Set User Preferences"

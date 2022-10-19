@@ -179,6 +179,9 @@
 	"open_hub"                        : "Znajdź na ModHubie",
 	"mod_badge_recent"                : "Ostatnio",
 
+	"show_broken"                     : "Pokaż Uszkodzone",
+	"show_non_mod"                    : "Pokaż nie-mody",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Ustawianie preferencji użytkownika"
 }

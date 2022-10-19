@@ -178,6 +178,9 @@
 	"open_hub"                        : "Zoek op ModHub",
 	"mod_badge_recent"                : "Recente",
 
+	"show_broken"                     : "Toon Gebroken",
+	"show_non_mod"                    : "Toon Non-Mods",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Gebruikersvoorkeuren instellen"
 }

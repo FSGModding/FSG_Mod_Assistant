@@ -134,13 +134,15 @@ The active list is marked with a green check over the folder.
 - __Copy To...__ : This will prompt you which collection you wish to copy the selected files into. This button is only available when a one or more files are selected.
 - __Delete__ : This will prompt you to make sure you wish to delete the selected files. This button is only available when a one or more files are selected.
 - __Show in Explorer__ : Open a windows explorer window with the selected file pre-selected. This button is only available when a single file is selected.
-- __Find on ModHub__ : Attempt to open this mod on the modhub. This will fail for mods not on the modhub, and is not available for non-mod files. This button is only available when a single file is selected.
+- __Find on ModHub__ : Attempt to open this mod on the modhub. This button is only available when a single file is selected, and Mod Assistant knows it is on the modhub. The list of mods is updated roughly hourly, and is refreshed when you restart the app.
 
 ##### Search Feature
 
 ![collections search](screen_shots/005-collect_search.png)
 
 This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_25DU_Trailers` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
+
+The `Show Non-Mods` button will hide files that Mod Assistant thinks are not mods, and the `Show Broken` button will hide mods that Mod Assistant believes are broken
 
 ### Detail Window
 

@@ -134,10 +134,7 @@ function fileListClick(event) {
 		const closeTD = event.target.closest('td')
 		const closeTR = event.target.closest('tr')
 
-		if ( closeTR !== null && closeTR.classList.contains('mod-row') ) {
-			console.log('dispatching')
-			closeTD.click()
-		}
+		if ( closeTR !== null && closeTR.classList.contains('mod-row') ) { closeTD.click() }
 	}
 
 	if (event.target.tagName === 'INPUT' && event.target.classList.contains('folder_master_check') ) {
@@ -271,8 +268,10 @@ function makeModCollection(id, name, modsRows) {
 	tableHTML.push('<tr><td colspan="4">')
 	tableHTML.push('<div class="input-group input-group-sm mb-0"><span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>')
 	tableHTML.push(`<input type="text" id="${id}_mods__input" onkeyup="clientFilterTable('${id}_mods')" class="form-control">`)
-	tableHTML.push('<button class="btn btn-success btn-sm" type="button"><l10n name="show_nonmod"></l10n></button>')
-	tableHTML.push('<button class="btn btn-success btn-sm" type="button"><l10n name="show_broken"></l10n></button>')
+	tableHTML.push(`<input type="checkbox" id="${id}_mods__show_non_mod" onchange="clientFilterTable('${id}_mods')" class="btn-check" autocomplete="off" checked>`)
+	tableHTML.push(`<label class="btn btn-outline-success" for="${id}_mods__show_non_mod"><l10n name="show_non_mod"></l10n></label>`)
+	tableHTML.push(`<input type="checkbox" id="${id}_mods__show_broken" onchange="clientFilterTable('${id}_mods')" class="btn-check" autocomplete="off" checked>`)
+	tableHTML.push(`<label class="btn btn-outline-success" for="${id}_mods__show_broken"><l10n name="show_broken"></l10n></label>`)
 	tableHTML.push('</div></td></tr>')
 	tableHTML.push(modsRows.join(''))
 	tableHTML.push('</table></td></tr>')
@@ -340,15 +339,25 @@ function deSelectAll() {
 function clientFilterTable(table) {
 	const theseMods     = document.getElementById(table).querySelectorAll('.mod-row')
 	const rawSearchTerm = document.getElementById(`${table}__input`).value.toLowerCase()
+	const showNonMods   = document.getElementById(`${table}__show_non_mod`).checked
+	const showBroken    = document.getElementById(`${table}__show_broken`).checked
 	const inverseSearch = rawSearchTerm.startsWith('!')
 	const searchTerm    = ( inverseSearch ) ? rawSearchTerm.substring(1) : rawSearchTerm
 
 	theseMods.forEach((modRow) => {
-		if ( searchTerm.length < 2 ) { modRow.classList.remove('d-none'); return }
+		modRow.classList.remove('d-none')
+
+		if ( modRow.querySelector('input').checked ) { return }
 		
-		const modText   = modRow.querySelector('td:nth-child(3)').innerText.toLowerCase()
-		const matchText = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
-		const showMe    = modRow.querySelector('input').checked || matchText
+		const modBadges = modRow.querySelector('.issue_badges').innerHTML
+		
+		if ( !showBroken  && modBadges.match('mod_badge_broken') ) { modRow.classList.add('d-none'); return }
+		if ( !showNonMods && modBadges.match('mod_badge_notmod') ) { modRow.classList.add('d-none'); return }
+
+		if ( searchTerm.length < ((inverseSearch) ? 3 : 2) ) { modRow.classList.remove('d-none'); return }
+		
+		const modText = modRow.querySelector('td:nth-child(3)').innerText.toLowerCase()
+		const showMe  = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
 
 		modRow.classList[(showMe?'remove':'add')]('d-none')
 	})
@@ -360,9 +369,7 @@ window.addEventListener('show.bs.collapse', () => { deSelectAll() })
 window.addEventListener('DOMContentLoaded', () => {	processL10N() })
 
 window.addEventListener('click', (event) => {
-	document.querySelectorAll('.tooltip').forEach((tooltip) => {
-		tooltip.remove()
-	})
+	document.querySelectorAll('.tooltip').forEach((tooltip) => { tooltip.remove() })
 	fileListClick(event)
 })
 
