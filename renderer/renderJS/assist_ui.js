@@ -270,8 +270,10 @@ function makeModCollection(id, name, modsRows) {
 	tableHTML.push('<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">')
 	tableHTML.push('<tr><td colspan="4">')
 	tableHTML.push('<div class="input-group input-group-sm mb-0"><span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>')
-	tableHTML.push(`<input type="text" id="${id}_mods__input" onkeyup="clientFilterTable('${id}_mods')" class="form-control"></div>`)
-	tableHTML.push('</td></tr>')
+	tableHTML.push(`<input type="text" id="${id}_mods__input" onkeyup="clientFilterTable('${id}_mods')" class="form-control">`)
+	tableHTML.push('<button class="btn btn-success btn-sm" type="button"><l10n name="show_nonmod"></l10n></button>')
+	tableHTML.push('<button class="btn btn-success btn-sm" type="button"><l10n name="show_broken"></l10n></button>')
+	tableHTML.push('</div></td></tr>')
 	tableHTML.push(modsRows.join(''))
 	tableHTML.push('</table></td></tr>')
 	return tableHTML.join('')
@@ -283,9 +285,7 @@ function makeModRow(id, name, title, author, version, badges, disabled, image, m
 	rowHTML.push(`<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">`)
 	rowHTML.push('<td><input type="checkbox" class="form-check-input"></td>')
 	rowHTML.push('<td style="width: 64px; height: 64px">')
-	if ( image !== null ) {
-		rowHTML.push(`<img class="img-fluid" src="${image}" />`)
-	}
+	rowHTML.push(`<img class="img-fluid" src="${fsgUtil.iconMaker(image)}" />`)
 	rowHTML.push('</td>')
 	rowHTML.push(`<td><div class="bg-light"></div>${name}<br /><small>${title} - <em>${author}</em></small><div class="issue_badges">${badges}</div></td>`)
 	rowHTML.push(`<td class="text-end pe-4">${version}</td></tr>`)

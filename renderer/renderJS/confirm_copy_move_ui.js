@@ -66,9 +66,7 @@ function updateConfirmList() {
 	lastModRecords.forEach((mod) => {
 		confirmHTML.push('<div class="row border-bottom"><div class="col col-auto">')
 		confirmHTML.push('<div class="p-2" style="width: 110px; height:110px;">')
-		if ( mod.modDesc.iconImageCache !== null ) {
-			confirmHTML.push(`<img class="img-fluid" src="${mod.modDesc.iconImageCache}" />`)
-		}
+		confirmHTML.push(`<img class="img-fluid" src="${fsgUtil.iconMaker(mod.modDesc.iconImageCache)}" />`)
 		confirmHTML.push(`</div></div><div class="col"><h4 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${mod.l10n.title}</span></h4>`)
 		confirmHTML.push(`<p class="font-monospace small mb-1">${window.mods.homeDirMap(mod.fileDetail.fullPath)}</h3>`)
 

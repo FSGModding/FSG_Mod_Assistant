@@ -12,7 +12,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray, 
 
 const { autoUpdater } = require('electron-updater')
 
-const devDebug  = false
+const devDebug  = true
 const skipCache = false
 
 if (process.platform === 'win32') { autoUpdater.checkForUpdatesAndNotify() }
@@ -27,6 +27,8 @@ const userHome      = require('os').homedir()
 const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
 const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
+
+const hubURL        = 'https://jtsage.dev/modHubData.json'
 
 const trayIcon = !app.isPackaged
 	? path.join(app.getAppPath(), 'renderer', 'img', 'icon.ico')
@@ -946,15 +948,13 @@ app.whenReady().then(() => {
 	tray.setToolTip('FSG Mod Assist')
 	tray.on('click', () => { windows.main.show() })
 
-	const request = net.request('http://dev.jtsage.com/modHubData.json')
-	let mhResp = ''
+	const request = net.request(hubURL)
 
 	request.on('response', (response) => {
 		logger.info('modHubList', `Got list: ${response.statusCode}`)
-		response.on('data', (chunk) => {
-			mhResp = mhResp + chunk.toString()
-		})
-		response.on('end', () => {
+		let mhResp = ''
+		response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
+		response.on('end',  () => {
 			fs.writeFileSync(path.join(app.getPath('userData'), 'modHubData.json'), mhResp)
 			loadModHub()
 		})
