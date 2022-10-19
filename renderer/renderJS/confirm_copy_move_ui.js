@@ -34,6 +34,7 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 let lastFullList   = null
 let lastModRecords = null
 let lastCollection = null
+let lastFolderMap  = null
 
 window.mods.receive('fromMain_confirmList', (modRecords, fullList, folderMap, collection) => {
 	const selectOpts = []
@@ -43,6 +44,7 @@ window.mods.receive('fromMain_confirmList', (modRecords, fullList, folderMap, co
 	lastModRecords = modRecords
 	lastFullList   = fullList
 	lastCollection = collection
+	lastFolderMap  = folderMap
 
 	Object.keys(folderMap).forEach((safeName) => {
 		if ( safeName !== collection ) {
@@ -64,11 +66,12 @@ function updateConfirmList() {
 	const selectedDest = fsgUtil.byId('select_destination').value
 
 	lastModRecords.forEach((mod) => {
+		const printPath = window.mods.homeDirMap(`${lastFolderMap[lastCollection]}\\${fsgUtil.basename(mod.fileDetail.fullPath)}`)
 		confirmHTML.push('<div class="row border-bottom"><div class="col col-auto">')
 		confirmHTML.push('<div class="p-2" style="width: 110px; height:110px;">')
 		confirmHTML.push(`<img class="img-fluid" src="${fsgUtil.iconMaker(mod.modDesc.iconImageCache)}" />`)
 		confirmHTML.push(`</div></div><div class="col"><h4 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${mod.l10n.title}</span></h4>`)
-		confirmHTML.push(`<p class="font-monospace small mb-1">${window.mods.homeDirMap(mod.fileDetail.fullPath)}</h3>`)
+		confirmHTML.push(`<p class="font-monospace small mb-1">${printPath}</h3>`)
 
 		if ( selectedDest === '0' ) {
 			confirmHTML.push('<div class="row mt-0"><div class="col col-form-label"><l10n name="no_destination_selected"></l10n></div></div>')

@@ -36,7 +36,7 @@ window.mods.receive('fromMain_modRecord', (modRecord) => {
 	const idMap = {
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
 		file_date      : modRecord.fileDetail.fileDate.substring(0, 16),
-		title          : (( modRecord.l10n.title !== null ) ? modRecord.l10n.title : modRecord.fileDetail.shortName),
+		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? modRecord.l10n.title : modRecord.fileDetail.shortName),
 		mod_location   : modRecord.fileDetail.fullPath,
 		mod_author     : modRecord.modDesc.author,
 		version        : modRecord.modDesc.version,

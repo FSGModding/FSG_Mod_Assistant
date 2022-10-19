@@ -45,7 +45,7 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 window.mods.receive('fromMain_loadingTotal', (count) => { fsgUtil.byId('count_total').innerHTML = count })
 window.mods.receive('fromMain_loadingDone',  (count) => { fsgUtil.byId('count_done').innerHTML  = count })
 
-window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFoldersMap, newList, modHubList) => {
+window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList) => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 	const scrollStart = window.scrollY
@@ -57,12 +57,16 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 	optList.push(fsgUtil.buildSelectOpt('0', `--${extraL10n[0]}--`, selectedList, true))
 	
 	Object.keys(modList).forEach((collection) => {
-		const modRows = []
+		const modRows      = []
+		let   sizeOfFolder = 0
+
 		modList[collection].mods.forEach((thisMod) => {
 			const extraBadges = []
 			const modId       = modHubList.mods[thisMod.fileDetail.shortName] || null
 
-			if ( newList.includes(thisMod.md5Sum) ) {
+			sizeOfFolder += thisMod.fileDetail.fileSize
+
+			if ( newList.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
 				extraBadges.push('<span class="badge bg-success"><l10n name="mod_badge_new"></l10n></span>')
 			}
 			if ( modId !== null && modHubList.last.includes(modId) ) {
@@ -77,6 +81,7 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 				thisMod.l10n.title,
 				thisMod.modDesc.author,
 				thisMod.modDesc.version,
+				( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, currLocale) : '',
 				theseBadges,
 				thisMod.canNotUse,
 				thisMod.modDesc.iconImageCache,
@@ -85,7 +90,7 @@ window.mods.receive('fromMain_modList', (modList, extraL10n, currentList, modFol
 		})
 		modTable.push(makeModCollection(
 			collection,
-			`${modList[collection].name} (${modList[collection].mods.length})`,
+			`${modList[collection].name} (${modList[collection].mods.length}) <small>[${fsgUtil.bytesToHR(sizeOfFolder, currLocale)}]</small>`,
 			modRows
 		))
 		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, modList[collection].name, selectedList, false, modFoldersMap[collection]))
@@ -278,7 +283,7 @@ function makeModCollection(id, name, modsRows) {
 	return tableHTML.join('')
 }
 
-function makeModRow(id, name, title, author, version, badges, disabled, image, modId) {
+function makeModRow(id, name, title, author, version, size, badges, disabled, image, modId) {
 	const rowHTML = []
 	
 	rowHTML.push(`<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">`)
@@ -287,7 +292,7 @@ function makeModRow(id, name, title, author, version, badges, disabled, image, m
 	rowHTML.push(`<img class="img-fluid" src="${fsgUtil.iconMaker(image)}" />`)
 	rowHTML.push('</td>')
 	rowHTML.push(`<td><div class="bg-light"></div>${name}<br /><small>${title} - <em>${author}</em></small><div class="issue_badges">${badges}</div></td>`)
-	rowHTML.push(`<td class="text-end pe-4">${version}</td></tr>`)
+	rowHTML.push(`<td class="text-end pe-4">${version}<br /><em class="small">${size}</em></td></tr>`)
 	
 	return rowHTML.join('')
 }

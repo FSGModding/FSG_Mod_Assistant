@@ -14,7 +14,12 @@
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/assist_ui.js"></script>
-
+	<script type="text/javascript">
+		document.onkeydown = function(evt) {
+			evt = evt || window.event
+			if (evt.keyCode == 116) { window.mods.refreshFolders() }
+		}
+	</script>
 	<style>
 
 		@keyframes flashonce {

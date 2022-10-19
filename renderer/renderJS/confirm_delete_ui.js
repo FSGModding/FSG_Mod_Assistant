@@ -36,13 +36,15 @@ let lastCollection = null
 window.mods.receive('fromMain_confirmList', (modRecords, fullList, folderMap, collection) => {
 	lastModRecords = modRecords
 	lastCollection = collection
+	
 
 	const confirmHTML = []
 
 	lastModRecords.forEach((mod) => {
+		const printPath = window.mods.homeDirMap(`${folderMap[lastCollection]}\\${fsgUtil.basename(mod.fileDetail.fullPath)}`)
 		confirmHTML.push('<div class="row border-bottom">')
 		confirmHTML.push(`<h3 class="mb-0 mt-2">${mod.fileDetail.shortName}</h3>`)
-		confirmHTML.push(`<p class="font-monospace small">${window.mods.homeDirMap(mod.fileDetail.fullPath)}</h3>`)
+		confirmHTML.push(`<p class="font-monospace small">${printPath}</h3>`)
 		confirmHTML.push('</div>')
 	})
 
