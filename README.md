@@ -111,6 +111,7 @@ In this area you will see a list of all of the collections (folders) that you ha
   - __Red Background__ : A red background indicates a mod or file that Mod Assistant thinks will not work in game
   - __Green Background__ : This mod is currently selected
 - Badges
+  - __Update__ : The version of the mod you have does not match the version on modhub
   - __New__ : This file has been added to this collection since the last scan
   - __Recent__ : This mod has recently been updated or released on the modHub
   - __NotMOD__ : This file is not a mod
