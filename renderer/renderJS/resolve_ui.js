@@ -109,7 +109,7 @@ function makeLine(mod, version) {
 }
 
 function clientDoCopy() {
-	const checked = document.querySelectorAll(':checked')
+	const checked = fsgUtil.query(':checked')
 	const fileMap = []
 
 	checked.forEach((thisCheck) => {

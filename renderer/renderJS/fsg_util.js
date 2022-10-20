@@ -10,7 +10,6 @@ const getText = (text) => `<l10n name="${text}"></l10n>`
 
 const fsgUtil = {
 	byId       : ( id )    => { return document.getElementById( id ) },
-	byCls      : ( cls )   => { return document.getElementsByClassName( cls ) },
 	query      : ( query ) => { return document.querySelectorAll( query ) },
 	getIconSVG : ( type )  => {
 		switch (type) {
@@ -37,18 +36,6 @@ const fsgUtil = {
 	getIcon : ( type, cls ) => {
 		return `<span class="text-${cls}">${fsgUtil.getIconSVG(type)}</span>`
 	},
-	classChanger : ( domID, className, doAdd = true ) => {
-		const domIDs  =  ( typeof domID === 'string' )  ? [domID] : domID
-	
-		domIDs.forEach( (thisDomID) => {
-			const curElement = document.getElementById(thisDomID)
-			if ( curElement !== null ) {
-				curElement.classList[( doAdd === true ? 'add' : 'remove' )](className)
-			}
-		})
-	},
-	classAdd : (domID, className) => { fsgUtil.classChanger(domID, className, true) },
-	classRem : (domID, className) => { fsgUtil.classChanger(domID, className, false) },
 	buildSelectOpt : (value, text, selected, disabled = false, title = null) => {
 		return `<option ${( title !== null ) ? `title="${title}"` : '' } value="${value}" ${( value === selected ) ? 'selected' : ''} ${( disabled ) ? 'disabled' : ''}>${text}</option>`
 	},

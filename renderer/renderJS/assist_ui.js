@@ -213,7 +213,7 @@ function makeModRow(id, thisMod, badges, modId) {
 
 function clientBatchOperation(mode) {
 	const selectedMods = []
-	const allModRows   = document.querySelectorAll('.mod-row')
+	const allModRows   = fsgUtil.query('.mod-row')
 
 	allModRows.forEach((thisRow) => {
 		if ( thisRow.querySelector('.mod-row-checkbox').checked ) {
@@ -248,7 +248,7 @@ window.addEventListener('show.bs.collapse', () => { select_lib.clear_all() })
 window.addEventListener('DOMContentLoaded', () => {	processL10N() })
 
 window.addEventListener('click', () => {
-	document.querySelectorAll('.tooltip').forEach((tooltip) => { tooltip.remove() })
+	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
 })
 
 window.addEventListener('scroll', () => {

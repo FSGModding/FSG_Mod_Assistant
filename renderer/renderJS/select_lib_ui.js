@@ -74,11 +74,11 @@ const select_lib = {
 		select_lib.bulk_table(tableID)
 	},
 	clear_all         : () => {
-		const allMods      = document.querySelectorAll('.mod-row')
+		const allMods      = fsgUtil.query('.mod-row')
 		const moveButtons  = fsgUtil.byId('moveButtons').querySelectorAll('button')
-		const allModChecks = document.querySelectorAll('.mod-row-checkbox')
-		const filterBoxes  = document.querySelectorAll('.mod-row-filter')
-		const filterChecks = document.querySelectorAll('.mod-row-filter_check')
+		const allModChecks = fsgUtil.query('.mod-row-checkbox')
+		const filterBoxes  = fsgUtil.query('.mod-row-filter')
+		const filterChecks = fsgUtil.query('.mod-row-filter_check')
 
 		filterBoxes.forEach( (thisBox)   => { thisBox.value = '' })
 		allModChecks.forEach((thisCheck) => { thisCheck.checked = false })
@@ -90,7 +90,7 @@ const select_lib = {
 		select_lib.update_color()
 	},
 	update_color      : () => {
-		const allModRows    = document.querySelectorAll('.mod-row')
+		const allModRows    = fsgUtil.query('.mod-row')
 		let   countSelected = 0
 		let   hasHash       = false
 
