@@ -51,12 +51,7 @@ contextBridge.exposeInMainWorld(
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modList',
-				'fromMain_showLoading',
-				'fromMain_hideLoading',
-				'fromMain_showListSet',
-				'fromMain_hideListSet',
-				'fromMain_loadingTotal',
-				'fromMain_loadingDone'
+				'fromMain_selectAllOpen',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

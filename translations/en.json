@@ -123,7 +123,7 @@
 	"user_pref_setting_lock_lang"            : "Always use the current language (do not detect on start)",
 	"user_pref_button_game_settings"         : "Change gameSettings.xml file",
 
-	"check_save"                      : "Compare to SaveGame",
+	"check_save"                      : "Compare to Savegame",
 	"check_save__title"               : "Load a savegame to compare to this collection",
 	"savegame_farms"                  : "Farms",
 	"savegame_missing"                : "Missing",

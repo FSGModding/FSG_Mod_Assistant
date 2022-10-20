@@ -10,7 +10,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray, 
 
 const { autoUpdater } = require('electron-updater')
 
-let devDebug  = false
+let devDebug  = true
 let skipCache = false
 
 if ( app.isPackaged ) { devDebug = false; skipCache = false }
@@ -20,8 +20,9 @@ if (process.platform === 'win32') { autoUpdater.checkForUpdatesAndNotify() }
 const path       = require('path')
 const fs         = require('fs')
 const glob       = require('glob')
-const xml2js     = require('xml2js')
+const fxml       = require('fast-xml-parser')
 const crypto     = require('crypto')
+const winUtil    = require('windows')
 
 const userHome      = require('os').homedir()
 const pathRender    = path.join(app.getAppPath(), 'renderer')
@@ -32,11 +33,24 @@ const trayIcon      = !app.isPackaged
 	? path.join(app.getAppPath(), 'renderer', 'img', 'icon.ico')
 	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
 
-let   pathBestGuess = path.join(userHome, 'OneDrive', 'Documents', 'My Games', 'FarmingSimulator2022')
+let pathBestGuess = userHome
+let foundPath     = false
 
-if ( ! fs.existsSync(pathBestGuess) ) {
-	pathBestGuess = path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
-}
+const pathGuesses = [
+	path.join(userHome, 'OneDrive', 'Documents', 'My Games', 'FarmingSimulator2022'),
+	path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
+]
+try {
+	const userFolder = winUtil.registry('HKEY_CURRENT_USER/SOFTWARE/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders').Personal.value
+	pathGuesses.unshift(path.join(userFolder, 'My Games', 'FarmingSimulator2022'))
+} catch { /* do nothing */ }
+
+pathGuesses.forEach((testPath) => {
+	if ( !foundPath && fs.existsSync(testPath) ) {
+		foundPath     = true
+		pathBestGuess = testPath
+	}
+})
 
 const translator                            = require('./lib/translate.js')
 const { mcLogger }                          = require('./lib/logger.js')
@@ -119,7 +133,7 @@ let overrideActive  = null
     )    (  _)(_  )  (  )(_) ) )(_)(  )    ( \__ \
    (__/\__)(____)(_)\_)(____/ (_____)(__/\__)(___/ */
 
-function createSubWindow({show = true, parent = null, title = null, maximize = false, fixed = false, center = false, frame = true, move = true, width = 'detail_window_x', height = 'detail_window_y', preload = null} = {}) {
+function createSubWindow({noSelect = true, show = true, parent = null, title = null, maximize = false, fixed = false, center = false, frame = true, move = true, width = 'detail_window_x', height = 'detail_window_y', preload = null} = {}) {
 	const winOptions = {
 		minimizable     : !fixed,
 		center          : center,
@@ -151,8 +165,15 @@ function createSubWindow({show = true, parent = null, title = null, maximize = f
 			preload          : (preload === null ) ? null : path.join(pathPreload, `preload-${preload}.js`),
 		},
 	})
+	if ( noSelect ) {
+		thisWindow.webContents.on('before-input-event', (event, input) => {
+			if (input.control && input.key.toLowerCase() === 'a') {
+				event.preventDefault()
+			}
+		})
+	}
 	if ( !devDebug ) { thisWindow.removeMenu()}
-	if ( maximize ) { thisWindow.maximize() }
+	if ( maximize )  { thisWindow.maximize() }
 	return thisWindow
 }
 
@@ -161,7 +182,7 @@ function createMainWindow () {
 	windows.load.loadFile(path.join(pathRender, 'loading.html'))
 	windows.load.on('close', (event) => { event.preventDefault() })
 
-	windows.main = createSubWindow({ show : devDebug, preload : 'mainWindow', width : 'main_window_x', height : 'main_window_y', maximize : mcStore.get('main_window_max') })
+	windows.main = createSubWindow({ noSelect : false, show : devDebug, preload : 'mainWindow', width : 'main_window_x', height : 'main_window_y', maximize : mcStore.get('main_window_max') })
 
 	windows.main.on('minimize', () => { if ( tray ) { windows.main.hide() }})
 	windows.main.on('closed',   () => {
@@ -194,6 +215,13 @@ function createMainWindow () {
 				if ( devDebug ) { windows.main.webContents.openDevTools() }
 			}
 		}, 250)
+	})
+
+	windows.main.webContents.on('before-input-event', (event, input) => {
+		if (input.control && input.key.toLowerCase() === 'a') {
+			windows.main.webContents.send('fromMain_selectAllOpen')
+			event.preventDefault()
+		}
 	})
 	
 	windows.main.webContents.setWindowOpenHandler(({ url }) => {
@@ -657,7 +685,21 @@ function modIdsToRecords(mods) {
 
 /** Business Functions */
 function parseSettings(newSetting = false) {
-	const strictXMLParser = new xml2js.Parser({strict : true, async : false, normalizeTags : false })
+	const readOptions = {
+		commentPropName    : '#comment',
+		ignoreAttributes   : false,
+		numberParseOptions : { leadingZeros : true, hex : true, skipLike : /[0-9]\.[0-9]{6}/ },
+	}
+	const writeOptions = {
+		commentPropName           : '#comment',
+		ignoreAttributes          : false,
+		suppressBooleanAttributes : false,
+		format                    : true,
+		indentBy                  : '    ',
+		suppressEmptyNode         : true,
+	}
+	const XMLParser = new fxml.XMLParser(readOptions)
+	// const strictXMLParser = new xml2js.Parser({strict : true, async : false, normalizeTags : false })
 	let XMLString = ''
 	try {
 		XMLString = fs.readFileSync(gameSettings, 'utf8')
@@ -667,14 +709,9 @@ function parseSettings(newSetting = false) {
 	}
 
 	try {
-		strictXMLParser.parseString(XMLString, (err, result) => {
-			if ( err !== null ) {
-				logger.fileError('gameSettings', `Could not read game settings ${err}`)
-			}
-			gameSettingsXML = result
-			overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.directory
-			overrideActive  = gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active
-		})
+		gameSettingsXML = XMLParser.parse(XMLString)
+		overrideActive  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']
+		overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory']
 	} catch (e) {
 		logger.fileError('gameSettings', `Could not read game settings ${e}`)
 	}
@@ -692,16 +729,13 @@ function parseSettings(newSetting = false) {
 		loadingWindow_open('set')
 		loadingWindow_noCount()
 
-		gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.active    = ( newSetting !== 'DISABLE' )
-		gameSettingsXML.gameSettings.modsDirectoryOverride[0].$.directory = ( newSetting !== 'DISABLE' ) ? newSetting : ''
-
-		const builder   = new xml2js.Builder({
-			xmldec     : { version : '1.0', encoding : 'UTF-8', standalone : false },
-			renderOpts : { pretty : true, indent : '    ', newline : '\n' },
-		})
+		gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( newSetting !== 'DISABLE' )
+		gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( newSetting !== 'DISABLE' ) ? newSetting : ''
+		
+		const builder    = new fxml.XMLBuilder(writeOptions)
 
 		try {
-			let outputXML = builder.buildObject(gameSettingsXML)
+			let outputXML = builder.build(gameSettingsXML)
 
 			outputXML = outputXML.replace('<ingameMapFruitFilter/>', '<ingameMapFruitFilter></ingameMapFruitFilter>')
 

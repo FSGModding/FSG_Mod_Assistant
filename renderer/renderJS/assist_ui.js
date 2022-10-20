@@ -14,6 +14,9 @@
    |  |_|  |_|  --  ||     |
    |__|______|______||__|__| */
 
+let lastModSelect   = null
+let lastTableSelect = null
+
 function processL10N()          { clientGetL10NEntries(); l10n.langList_send() }
 function clientChangeL10N()     { l10n.langList_change(fsgUtil.byId('language_select').value) }
 function clientGetL10NEntries() {
@@ -42,9 +45,24 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
-window.mods.receive('fromMain_loadingTotal', (count) => { fsgUtil.byId('count_total').innerHTML = count })
-window.mods.receive('fromMain_loadingDone',  (count) => { fsgUtil.byId('count_done').innerHTML  = count })
+window.mods.receive('fromMain_selectAllOpen', () => {
+	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
+	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 
+	if ( lastOpenID !== null ) {
+		lastModSelect     = null
+		lastTableSelect   = null
+		const thisCollect = document.getElementById(lastOpenID)
+		const theseRows   = thisCollect.querySelectorAll('.mod-row')
+		const tableCheck = thisCollect.parentElement.closest('table').querySelectorAll(`input[data-bs-target="#${lastOpenID}"]`)[0]
+
+		theseRows.forEach( (thisRow) => { thisRow.childNodes[0].childNodes[0].checked = true })
+		tableCheck.indeterminate = false
+		tableCheck.checked       = true
+		clientFilterTable(lastOpenID)
+		updateModFilesColor()
+	}
+})
 window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList) => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
@@ -73,7 +91,11 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 				extraBadges.push('<span class="badge bg-success"><l10n name="mod_badge_recent"></l10n></span>')
 			}
 
-			const theseBadges = thisMod.badges + extraBadges.join('')
+			let theseBadges = thisMod.badges + extraBadges.join('')
+
+			if ( theseBadges.match('mod_badge_broken') && theseBadges.match('mod_badge_notmod') ) {
+				theseBadges = theseBadges.replace('<span class="badge bg-danger"><l10n name="mod_badge_broken"></l10n></span>', '')
+			}
 			
 			modRows.push(makeModRow(
 				`${collection}--${thisMod.uuid}`,
@@ -116,10 +138,6 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 
 	processL10N()
 })
-
-
-let lastModSelect   = null
-let lastTableSelect = null
 
 
 function updateModFilesColor() {
