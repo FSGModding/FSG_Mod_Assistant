@@ -716,22 +716,13 @@ function modIdsToRecords(mods) {
 
 /** Business Functions */
 function parseSettings(newSetting = false) {
-	const readOptions = {
+	let   XMLString = ''
+	const XMLParser = new fxml.XMLParser({
 		commentPropName    : '#comment',
 		ignoreAttributes   : false,
 		numberParseOptions : { leadingZeros : true, hex : true, skipLike : /[0-9]\.[0-9]{6}/ },
-	}
-	const writeOptions = {
-		commentPropName           : '#comment',
-		ignoreAttributes          : false,
-		suppressBooleanAttributes : false,
-		format                    : true,
-		indentBy                  : '    ',
-		suppressEmptyNode         : true,
-	}
-	const XMLParser = new fxml.XMLParser(readOptions)
-	// const strictXMLParser = new xml2js.Parser({strict : true, async : false, normalizeTags : false })
-	let XMLString = ''
+	})
+	
 	try {
 		XMLString = fs.readFileSync(gameSettings, 'utf8')
 	} catch (e) {
@@ -763,7 +754,14 @@ function parseSettings(newSetting = false) {
 		gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( newSetting !== 'DISABLE' )
 		gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( newSetting !== 'DISABLE' ) ? newSetting : ''
 		
-		const builder    = new fxml.XMLBuilder(writeOptions)
+		const builder    = new fxml.XMLBuilder({
+			commentPropName           : '#comment',
+			ignoreAttributes          : false,
+			suppressBooleanAttributes : false,
+			format                    : true,
+			indentBy                  : '    ',
+			suppressEmptyNode         : true,
+		})
 
 		try {
 			let outputXML = builder.build(gameSettingsXML)
