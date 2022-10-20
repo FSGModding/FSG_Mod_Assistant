@@ -6,16 +6,13 @@
 
 // Main Window UI
 
-/* global l10n, fsgUtil, bootstrap */
+/* global l10n, fsgUtil, bootstrap, select_lib */
 
 
 /*  __ ____   ______        
    |  |_   | |      |.-----.
    |  |_|  |_|  --  ||     |
    |__|______|______||__|__| */
-
-let lastModSelect   = null
-let lastTableSelect = null
 
 function processL10N()          { clientGetL10NEntries(); l10n.langList_send() }
 function clientChangeL10N()     { l10n.langList_change(fsgUtil.byId('language_select').value) }
@@ -49,20 +46,9 @@ window.mods.receive('fromMain_selectAllOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 
-	if ( lastOpenID !== null ) {
-		lastModSelect     = null
-		lastTableSelect   = null
-		const thisCollect = document.getElementById(lastOpenID)
-		const theseRows   = thisCollect.querySelectorAll('.mod-row')
-		const tableCheck = thisCollect.parentElement.closest('table').querySelectorAll(`input[data-bs-target="#${lastOpenID}"]`)[0]
-
-		theseRows.forEach( (thisRow) => { thisRow.childNodes[0].childNodes[0].checked = true })
-		tableCheck.indeterminate = false
-		tableCheck.checked       = true
-		clientFilterTable(lastOpenID)
-		updateModFilesColor()
-	}
+	if ( lastOpenID !== null ) { select_lib.click_all(lastOpenID) }
 })
+
 window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList) => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
@@ -127,9 +113,7 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 		activeFolder.innerHTML += '<polygon fill="#43A047" points="290.088 61.432 117.084 251.493 46.709 174.18 26.183 197.535 117.084 296.592 310.614 83.982"></polygon>'
 	}
 	
-	
-	lastModSelect   = null
-	lastTableSelect = null
+	select_lib.clear_range()
 
 	try {
 		document.getElementById(lastOpenID).classList.add('show')
@@ -139,125 +123,6 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 	processL10N()
 })
 
-
-function updateModFilesColor() {
-	const allModRows = document.querySelectorAll('.mod-row')
-
-	allModRows.forEach((thisRow) => {
-		const thisColor = thisRow.childNodes[0].childNodes[0].checked
-		thisRow.querySelectorAll('td').forEach((thisTD) => {
-			thisTD.classList[( thisColor===true ? 'add' : 'remove' )]('table-success')
-		})
-	})
-}
-
-
-function fileListClick(event) {
-	if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TD' ) {
-		const closeTD = event.target.closest('td')
-		const closeTR = event.target.closest('tr')
-
-		if ( closeTR !== null && closeTR.classList.contains('mod-row') ) { closeTD.click() }
-	}
-
-	if (event.target.tagName === 'INPUT' && event.target.classList.contains('folder_master_check') ) {
-		const thisModTable = document.getElementById(event.target.getAttribute('data-bs-target').substring(1)).querySelectorAll('input[type="checkbox"]')
-		thisModTable.forEach((thisCheckBox) => {
-			if ( ! thisCheckBox.parentElement.parentElement.classList.contains('disabled') ) {
-				thisCheckBox.checked = event.target.checked
-			}
-		})
-
-		const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
-
-		moveButtons.forEach((button) =>{
-			button.classList[(event.target.checked)?'remove':'add']('disabled')
-		})
-
-		lastModSelect   = null
-		lastTableSelect = null
-		updateModFilesColor()
-	}
-
-	if (event.target.tagName === 'TD' && event.target.parentElement.classList.contains('mod-row') ) {
-		const thisTable = event.target.closest('table').closest('tr').id
-		const checkBox  = event.target.parentElement.querySelectorAll('input')[0]
-
-		if ( lastTableSelect !== null && lastTableSelect !== thisTable ) {
-			lastModSelect   = null
-			lastTableSelect = thisTable
-		}
-
-		if ( !event.shiftKey || lastModSelect === null || event.target.parentElement.id === lastModSelect ) {
-			checkBox.checked = !checkBox.checked
-			lastModSelect    = event.target.parentElement.id
-		} else {
-			const thisModSelection = event.target.parentElement.parentElement.querySelectorAll('tr')
-			let thisPosition = null
-			let lastPosition = null
-
-			for ( let i=0; i<thisModSelection.length; i++ ) {
-				if (thisModSelection[i].id === event.target.parentElement.id ) {
-					thisPosition = i
-				}
-				if (thisModSelection[i].id === lastModSelect ) {
-					lastPosition = i
-				}
-			}
-
-			const positionTestStart = Math.min(thisPosition, lastPosition)
-			const positionTestEnd   = Math.max(thisPosition, lastPosition)
-			const checkValue        = thisModSelection[lastPosition].querySelectorAll('input')[0].checked
-
-			for ( let i=positionTestStart; i<=positionTestEnd; i++) {
-				thisModSelection[i].querySelectorAll('input')[0].checked = checkValue
-			}
-			lastModSelect = null
-		}
-
-		let allChecked   = true
-		let noneChecked  = true
-		let hashGHash    = false
-		const oneChecked = (document.querySelectorAll('.mod-row input[type="checkbox"]:checked').length === 1)
-
-		const thisModTable = event.target.closest('table').querySelectorAll('input[type="checkbox"]')
-
-		thisModTable.forEach((thisCheckBox) => {
-			if ( ! thisCheckBox.parentElement.parentElement.classList.contains('disabled') ) {
-				if ( thisCheckBox.checked ) {
-					if ( thisCheckBox.parentElement.parentElement.classList.contains('has-hash') ) {
-						hashGHash = true
-					}
-					noneChecked = false
-				} else {
-					allChecked = false
-				}
-			}
-		})
-
-		const tableCheck = event.target.closest('table').parentElement.closest('table').querySelectorAll(`input[data-bs-target="#${thisTable}"]`)[0]
-
-		tableCheck.indeterminate = ! ( allChecked || noneChecked )
-
-		if ( allChecked ) {
-			tableCheck.checked = true
-		} else if ( noneChecked ) {
-			tableCheck.checked = false
-		}
-
-		const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
-
-		moveButtons[0].classList[(!noneChecked)?'remove':'add']('disabled')
-		moveButtons[1].classList[(!noneChecked)?'remove':'add']('disabled')
-		moveButtons[2].classList[(!noneChecked)?'remove':'add']('disabled')
-		moveButtons[3].classList[(oneChecked)?'remove':'add']('disabled')
-		moveButtons[4].classList[(oneChecked && hashGHash)?'remove':'add']('disabled')
-
-		clientFilterTable(thisTable)
-		
-		updateModFilesColor()
-	}
-}
 
 function clientMakeListInactive() {
 	fsgUtil.byId('collectionSelect').value = 0
@@ -272,47 +137,70 @@ function clientMakeListActive() {
 }
 
 function makeModCollection(id, name, modsRows) {
-	const tableHTML = []
-	
-	tableHTML.push(fsgUtil.buildTR('mod-table-folder'))
-	tableHTML.push(fsgUtil.buildTD('folder-icon collapsed', [['toggle', 'collapse'], ['target', `#${id}_mods`]]))
-	tableHTML.push(`${fsgUtil.getIconSVG('folder')}</td>`)
-	tableHTML.push(fsgUtil.buildTD('folder-name collapsed', [['toggle', 'collapse'], ['target', `#${id}_mods`]]))
-	tableHTML.push(`${name}</td>`)
-	tableHTML.push('<td class="text-end">')
-	tableHTML.push(`<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')"><l10n name="check_save"></l10n></button>`)
-	tableHTML.push(`<input type="checkbox" data-bs-target="#${id}_mods" class="align-middle form-check-input mod-folder-checkbox folder_master_check">`)
-	tableHTML.push('</td></tr>')
+	return `<tr class="mod-table-folder">
+	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
+		${fsgUtil.getIconSVG('folder')}
+	</td>
+	<td class="folder-name collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
+		${name}
+	</td>
+	<td class="text-end">
+		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')"><l10n name="check_save"></l10n></button>
+	</td>
+</tr>
+<tr class="mod-table-folder-detail collapse accordion-collapse data-bs-parent=".table" id="${id}_mods">
+	<td class="mod-table-folder-details px-0 ps-4" colspan="3">
+		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">
+			<tr>
+				<td colspan="4">
+					<div class="row g-2 mb-1">
+						<div class="col">
+							<div class="input-group input-group-sm mb-0">
+								<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
+								<input type="text" id="${id}_mods__filter" onkeyup="select_lib.filter('${id}_mods')" class="form-control mod-row-filter">
+							</div>
+						</div>
+						<div class="col col-auto">
+							<div class="btn-group btn-group-sm">
+								<input type="checkbox" id="${id}_mods__show_non_mod" onchange="select_lib.filter('${id}_mods')" class="btn-check mod-row-filter_check" autocomplete="off" checked>
+								<label class="btn btn-outline-success" for="${id}_mods__show_non_mod"><l10n name="show_non_mod"></l10n></label>
 
-	tableHTML.push(fsgUtil.buildTR('mod-table-folder-detail collapse accordion-collapse', `${id}_mods`, 'data-bs-parent=".table"'))
-	tableHTML.push('<td class="mod-table-folder-details-indent"></td>')
-	tableHTML.push('<td class="mod-table-folder-details px-0" colspan="2">')
-	tableHTML.push('<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">')
-	tableHTML.push('<tr><td colspan="4">')
-	tableHTML.push('<div class="input-group input-group-sm mb-0"><span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>')
-	tableHTML.push(`<input type="text" id="${id}_mods__input" onkeyup="clientFilterTable('${id}_mods')" class="form-control">`)
-	tableHTML.push(`<input type="checkbox" id="${id}_mods__show_non_mod" onchange="clientFilterTable('${id}_mods')" class="btn-check" autocomplete="off" checked>`)
-	tableHTML.push(`<label class="btn btn-outline-success" for="${id}_mods__show_non_mod"><l10n name="show_non_mod"></l10n></label>`)
-	tableHTML.push(`<input type="checkbox" id="${id}_mods__show_broken" onchange="clientFilterTable('${id}_mods')" class="btn-check" autocomplete="off" checked>`)
-	tableHTML.push(`<label class="btn btn-outline-success" for="${id}_mods__show_broken"><l10n name="show_broken"></l10n></label>`)
-	tableHTML.push('</div></td></tr>')
-	tableHTML.push(modsRows.join(''))
-	tableHTML.push('</table></td></tr>')
-	return tableHTML.join('')
+								<input type="checkbox" id="${id}_mods__show_broken" onchange="select_lib.filter('${id}_mods')" class="btn-check mod-row-filter_check" autocomplete="off" checked>
+								<label class="btn btn-outline-success" for="${id}_mods__show_broken"><l10n name="show_broken"></l10n></label>
+							</div>
+						</div>
+						<div class="col col-auto">
+							<div class="btn-group btn-group-sm input-group input-group-sm">
+								<span class="input-group-text"><l10n name="select_pick"></l10n></span>
+								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_none('${id}_mods')"><l10n name="select_none"></l10></button>
+								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_all('${id}_mods')"><l10n name="select_all"></l10></button>
+								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_invert('${id}_mods')"><l10n name="select_invert"></l10></button>
+							</div>
+						</div>
+					</div>
+				</td>
+			</tr>
+			${modsRows.join('')}
+		</table>
+	</td>
+</tr>`
 }
 
 function makeModRow(id, name, title, author, version, size, badges, disabled, image, modId) {
-	const rowHTML = []
-	
-	rowHTML.push(`<tr oncontextmenu="window.mods.openMod('${id}')" onDblClick="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">`)
-	rowHTML.push('<td><input type="checkbox" class="form-check-input"></td>')
-	rowHTML.push('<td style="width: 64px; height: 64px">')
-	rowHTML.push(`<img class="img-fluid" src="${fsgUtil.iconMaker(image)}" />`)
-	rowHTML.push('</td>')
-	rowHTML.push(`<td><div class="bg-light"></div>${name}<br /><small>${title} - <em>${author}</em></small><div class="issue_badges">${badges}</div></td>`)
-	rowHTML.push(`<td class="text-end pe-4">${version}<br /><em class="small">${size}</em></td></tr>`)
-	
-	return rowHTML.join('')
+	return `<tr onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
+	<td>
+		<input type="checkbox" class="form-check-input mod-row-checkbox" id="${id}__checkbox">
+	</td>
+	<td style="width: 64px; height: 64px">
+		<img class="img-fluid" src="${fsgUtil.iconMaker(image)}" />
+	</td>
+	<td>
+		<div class="bg-light"></div>${name}<br /><small>${title} - <em>${author}</em></small><div class="issue_badges">${badges}</div>
+	</td>
+	<td class="text-end pe-4">
+		${version}<br /><em class="small">${size}</em>
+	</td>
+</tr>`
 }
 
 
@@ -321,7 +209,7 @@ function clientBatchOperation(mode) {
 	const allModRows   = document.querySelectorAll('.mod-row')
 
 	allModRows.forEach((thisRow) => {
-		if ( thisRow.childNodes[0].childNodes[0].checked ) {
+		if ( thisRow.querySelector('.mod-row-checkbox').checked ) {
 			selectedMods.push(thisRow.id)
 		}
 	})
@@ -347,53 +235,13 @@ function clientBatchOperation(mode) {
 	}
 }
 
-function deSelectAll() {
-	const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
-	const allModRows  = document.querySelectorAll('.mod-row')
-	const tableChecks = document.querySelectorAll('.folder_master_check')
-
-	tableChecks.forEach((thisCheck) => { thisCheck.checked = false; thisCheck.indeterminate = false })
-	allModRows.forEach( (thisRow)   => { thisRow.childNodes[0].childNodes[0].checked = false })
-	moveButtons.forEach((button)    => { button.classList.add('disabled') })
-
-	updateModFilesColor()
-}
-
-function clientFilterTable(table) {
-	const theseMods     = document.getElementById(table).querySelectorAll('.mod-row')
-	const rawSearchTerm = document.getElementById(`${table}__input`).value.toLowerCase()
-	const showNonMods   = document.getElementById(`${table}__show_non_mod`).checked
-	const showBroken    = document.getElementById(`${table}__show_broken`).checked
-	const inverseSearch = rawSearchTerm.startsWith('!')
-	const searchTerm    = ( inverseSearch ) ? rawSearchTerm.substring(1) : rawSearchTerm
-
-	theseMods.forEach((modRow) => {
-		modRow.classList.remove('d-none')
-
-		if ( modRow.querySelector('input').checked ) { return }
-		
-		const modBadges = modRow.querySelector('.issue_badges').innerHTML
-		
-		if ( !showBroken  && modBadges.match('mod_badge_broken') ) { modRow.classList.add('d-none'); return }
-		if ( !showNonMods && modBadges.match('mod_badge_notmod') ) { modRow.classList.add('d-none'); return }
-
-		if ( searchTerm.length < ((inverseSearch) ? 3 : 2) ) { modRow.classList.remove('d-none'); return }
-		
-		const modText = modRow.querySelector('td:nth-child(3)').innerText.toLowerCase()
-		const showMe  = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
-
-		modRow.classList[(showMe?'remove':'add')]('d-none')
-	})
-}
-
-window.addEventListener('hide.bs.collapse', () => { deSelectAll() })
-window.addEventListener('show.bs.collapse', () => { deSelectAll() })
+window.addEventListener('hide.bs.collapse', () => { select_lib.clear_all() })
+window.addEventListener('show.bs.collapse', () => { select_lib.clear_all() })
 
 window.addEventListener('DOMContentLoaded', () => {	processL10N() })
 
-window.addEventListener('click', (event) => {
+window.addEventListener('click', () => {
 	document.querySelectorAll('.tooltip').forEach((tooltip) => { tooltip.remove() })
-	fileListClick(event)
 })
 
 window.addEventListener('scroll', () => {

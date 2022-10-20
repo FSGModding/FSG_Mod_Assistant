@@ -64,6 +64,7 @@ const fsgUtil = {
 
 		return `<tr class="${cls}"${thisID} ${(extra===null)?'':extra}>`
 	},
+	buildBS : (name, value) => `data-bs-${name}="${value}"`,
 	buildTD : (cls, data_bs = null) => {
 		let thisBS = ''
 		if ( data_bs !== null ) {

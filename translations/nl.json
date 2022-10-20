@@ -181,6 +181,11 @@
 	"show_broken"                     : "Toon Gebroken",
 	"show_non_mod"                    : "Toon Non-Mods",
 
+	"select_pick"                     : "Selecteer",
+	"select_none"                     : "geen",
+	"select_all"                      : "alle",
+	"select_invert"                   : "omkeren",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Gebruikersvoorkeuren instellen"
 }

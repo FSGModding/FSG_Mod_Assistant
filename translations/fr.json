@@ -181,6 +181,11 @@
 	"show_broken"                     : "Montrer cassé",
 	"show_non_mod"                    : "Afficher les non-mods",
 
+	"select_pick"                     : "Sélectionnez",
+	"select_none"                     : "aucun",
+	"select_all"                      : "tous",
+	"select_invert"                   : "inverser",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Définir les préférences de l'utilisateur"
 }

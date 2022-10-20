@@ -182,6 +182,11 @@
 	"show_broken"                     : "Gebrochene anzeigen",
 	"show_non_mod"                    : "Nicht-Mods anzeigen",
 
+	"select_pick"                     : "Wählen Sie",
+	"select_none"                     : "keine",
+	"select_all"                      : "alle",
+	"select_invert"                   : "invertieren",
+
 	"preferences_button"              : "<gg-icon class=\"align-middle gg-more\"></gg-icon>",
 	"preferences_button__title"       : "Benutzerpräferenzen festlegen"
 }
