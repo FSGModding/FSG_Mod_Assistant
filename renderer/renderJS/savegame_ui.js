@@ -6,7 +6,7 @@
 
 // Detail window UI
 
-/* global l10n, fsgUtil, bootstrap */
+/* global l10n, fsgUtil, bootstrap, getText */
 
 
 /*  __ ____   ______        
@@ -146,22 +146,22 @@ function makeLine(name, mod, singleFarm) {
 	thisHTML.push(`<div class="fw-bold">${name}</div>`)
 	thisHTML.push(`<div class="small">${mod.title}</div>`)
 	if ( mod.usedBy !== null && !singleFarm ) {
-		thisHTML.push(`<div class="text-black small ps-3"><l10n name="savegame_farms"></l10n>: ${Array.from(mod.usedBy).join(', ')}</div>`)
+		thisHTML.push(`<div class="text-black small ps-3">${getText('savegame_farms')}: ${Array.from(mod.usedBy).join(', ')}</div>`)
 	}
 	thisHTML.push('</div>')
 
 	if ( mod.isDLC ) {
-		thisHTML.push('<span class="badge bg-info bg-gradient rounded-1 ms-1"><l10n name="savegame_dlc"></l10n></span>')
+		thisHTML.push(fsgUtil.badge('info bg-gradient rounded-1 ms-1', 'savegame_dlc', true))
 	}
 	if ( !mod.isPresent ) {
-		thisHTML.push('<span class="badge bg-danger bg-gradient rounded-1 ms-1"><l10n name="savegame_missing"></l10n></span>')
+		thisHTML.push(fsgUtil.badge('danger bg-gradient rounded-1 ms-1', 'savegame_missing', true))
 	}
 	if ( !mod.isLoaded ) {
-		thisHTML.push('<span class="badge bg-warning bg-gradient rounded-1 ms-1"><l10n name="savegame_inactive"></l10n></span>')
+		thisHTML.push(fsgUtil.badge('warning bg-gradient rounded-1 ms-1', 'savegame_inactive', true))
 	}
 	badges.forEach((badge) => {
 		if ( mod[badge] === true ) {
-			thisHTML.push(`<span class="badge bg-dark bg-gradient rounded-1 ms-1"><l10n name="savegame_${badge.toLowerCase()}"></l10n></span>`)
+			thisHTML.push(fsgUtil.badge('dark bg-gradient rounded-1 ms-1', `savegame_${badge.toLowerCase()}`, true))
 		}
 	})
 

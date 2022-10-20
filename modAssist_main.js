@@ -28,6 +28,7 @@ const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
 const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
 const hubURL        = 'https://jtsage.dev/modHubData.json'
+const hubVerURL     = 'https://jtsage.dev/modHubVersion.json'
 const trayIcon      = !app.isPackaged
 	? path.join(app.getAppPath(), 'renderer', 'img', 'icon.ico')
 	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
@@ -88,6 +89,7 @@ let modList       = {}
 let countTotal    = 0
 let countMods     = 0
 let modHubList    = {}
+let modHubVersion = {}
 
 
 const ignoreList = [
@@ -268,16 +270,18 @@ function createFolderWindow() {
 
 function createDetailWindow(thisModRecord) {
 	if ( thisModRecord === null ) { return }
+	const modhubRecord = modRecordToModHub(thisModRecord)
+
 	if ( windows.detail ) {
 		windows.detail.focus()
-		windows.detail.webContents.send('fromMain_modRecord', thisModRecord)
+		windows.detail.webContents.send('fromMain_modRecord', thisModRecord, modhubRecord)
 		return
 	}
 
 	windows.detail = createSubWindow({ parent : 'main', preload : 'detailWindow', maximize : mcStore.get('detail_window_max') })
 
 	windows.detail.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modRecord', thisModRecord)
+		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord)
 		if ( devDebug ) { windows.detail.webContents.openDevTools() }
 	})
 
@@ -656,10 +660,15 @@ function refreshClientModList() {
 		overrideIndex,
 		modFoldersMap,
 		newModsList,
-		modHubList
+		modHubList,
+		modHubVersion
 	)
 }
 
+function modRecordToModHub(mod) {
+	const modId = modHubList.mods[mod.fileDetail.shortName] || null
+	return [modId, (modHubVersion[modId] || null)]
+}
 function modIdToRecord(id) {
 	const idParts = id.split('--')
 	let foundMod  = null
@@ -950,6 +959,15 @@ function loadModHub() {
 		logger.info('modHubList', `List Fail: ${e}`)
 	}
 }
+function loadModHubVer() {
+	try {
+		const rawData = fs.readFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'))
+		modHubVersion = JSON.parse(rawData)
+		logger.info('modHubVersion', 'Loaded list')
+	} catch (e) {
+		logger.info('modHubVersion', `List Fail: ${e}`)
+	}
+}
 /** END: Business Functions */
 
 
@@ -987,6 +1005,19 @@ app.whenReady().then(() => {
 		})
 	})
 	request.end()
+
+	const request2 = net.request(hubVerURL)
+
+	request2.on('response', (response) => {
+		logger.info('modHubVersion', `Got list: ${response.statusCode}`)
+		let mhResp = ''
+		response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
+		response.on('end',  () => {
+			fs.writeFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'), mhResp)
+			loadModHubVer()
+		})
+	})
+	request2.end()
 
 	createMainWindow()
 

@@ -6,7 +6,7 @@
 
 // copy/move confirm UI
 
-/* global l10n, fsgUtil */
+/* global l10n, fsgUtil, getText */
 
 
 /*  __ ____   ______        
@@ -67,21 +67,33 @@ function updateConfirmList() {
 
 	lastModRecords.forEach((mod) => {
 		const printPath = window.mods.homeDirMap(`${lastFolderMap[lastCollection]}\\${fsgUtil.basename(mod.fileDetail.fullPath)}`)
-		confirmHTML.push('<div class="row border-bottom"><div class="col col-auto">')
-		confirmHTML.push('<div class="p-2" style="width: 110px; height:110px;">')
-		confirmHTML.push(`<img class="img-fluid" src="${fsgUtil.iconMaker(mod.modDesc.iconImageCache)}" />`)
-		confirmHTML.push(`</div></div><div class="col"><h4 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${mod.l10n.title}</span></h4>`)
-		confirmHTML.push(`<p class="font-monospace small mb-1">${printPath}</h3>`)
+		confirmHTML.push(`<div class="row border-bottom">
+			<div class="col col-auto">
+				<div class="p-2" style="width: 110px; height:110px;">
+					<img class="img-fluid" src="${fsgUtil.iconMaker(mod.modDesc.iconImageCache)}" />
+				</div>
+			</div>
+			<div class="col">
+				<h4 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${mod.l10n.title}</span></h4>
+				<p class="font-monospace small mb-1">${printPath}</p>`)
 
 		if ( selectedDest === '0' ) {
-			confirmHTML.push('<div class="row mt-0"><div class="col col-form-label"><l10n name="no_destination_selected"></l10n></div></div>')
+			confirmHTML.push(`<div class="row mt-0"><div class="col col-form-label">${getText('no_destination_selected')}</div></div>`)
 		} else if ( findConflict(selectedDest, mod.fileDetail.shortName, mod.fileDetail.isFolder) ) {
-			confirmHTML.push('<div class="row mt-0"><div class="col-8 col-form-label"><l10n name="destination_full"></l10n></div><div class="col-4 col-form-label">')
-			confirmHTML.push(`<div class="form-check"><input class="form-check-input" type="checkbox" value="" id="${mod.uuid}">`)
-			confirmHTML.push(`<label class="form-check-label" for="${mod.uuid}"><l10n name="overwrite"></l10n></label></div></div></div>`)
+			confirmHTML.push(`<div class="row mt-0">
+				<div class="col-8 col-form-label">${getText('destination_full')}</div>
+				<div class="col-4 col-form-label">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" id="${mod.uuid}">
+						<label class="form-check-label" for="${mod.uuid}">${getText('overwrite')}</label>
+					</div>
+				</div>
+			</div>`)
 		} else {
-			confirmHTML.push('<div class="row mt-0"><div class="col col-form-label"><l10n name="destination_clear"></l10n></div></div>')
-			confirmHTML.push(`<input type="hidden" value="1" id="${mod.uuid}" />`)
+			confirmHTML.push(`<div class="row mt-0">
+				<div class="col col-form-label">${getText('destination_clear')}</div>
+			</div>
+			<input type="hidden" value="1" id="${mod.uuid}" />`)
 		}
 
 		confirmHTML.push('</div></div>')

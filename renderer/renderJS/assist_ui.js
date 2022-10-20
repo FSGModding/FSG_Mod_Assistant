@@ -6,7 +6,7 @@
 
 // Main Window UI
 
-/* global l10n, fsgUtil, bootstrap, select_lib */
+/* global l10n, fsgUtil, bootstrap, select_lib, getText */
 
 
 /*  __ ____   ______        
@@ -58,7 +58,7 @@ window.mods.receive('fromMain_selectAllOpen', () => {
 
 let lastLocale = 'en'
 
-window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList) => {
+window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList, modHubVersion) => {
 	lastLocale = currLocale
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -78,9 +78,13 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 		modList[collection].mods.forEach((thisMod) => {
 			const extraBadges = []
 			const modId       = modHubList.mods[thisMod.fileDetail.shortName] || null
+			const modVer      = modHubVersion[modId] || null
 
 			sizeOfFolder += thisMod.fileDetail.fileSize
 
+			if ( modVer !== null && thisMod.modDesc.version !== modVer) {
+				extraBadges.push(fsgUtil.badge('light', 'update'))
+			}
 			if ( newList.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
 				extraBadges.push(fsgUtil.badge('success', 'new'))
 			}
@@ -147,7 +151,7 @@ function makeModCollection(id, name, modsRows) {
 		${name}
 	</td>
 	<td class="text-end">
-		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')"><l10n name="check_save"></l10n></button>
+		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')">${getText('check_save')}</button>
 	</td>
 </tr>
 <tr class="mod-table-folder-detail collapse accordion-collapse data-bs-parent=".table" id="${id}_mods">
@@ -158,25 +162,25 @@ function makeModCollection(id, name, modsRows) {
 					<div class="row g-2 mb-1">
 						<div class="col">
 							<div class="input-group input-group-sm mb-0">
-								<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
+								<span class="input-group-text bg-gradient">${getText('filter_only')}</span>
 								<input type="text" id="${id}_mods__filter" onkeyup="select_lib.filter('${id}_mods')" class="form-control mod-row-filter">
 							</div>
 						</div>
 						<div class="col col-auto">
 							<div class="btn-group btn-group-sm">
 								<input type="checkbox" id="${id}_mods__show_non_mod" onchange="select_lib.filter('${id}_mods')" class="btn-check mod-row-filter_check" autocomplete="off" checked>
-								<label class="btn btn-outline-success" for="${id}_mods__show_non_mod"><l10n name="show_non_mod"></l10n></label>
+								<label class="btn btn-outline-success" for="${id}_mods__show_non_mod">${getText('show_non_mod')}</label>
 
 								<input type="checkbox" id="${id}_mods__show_broken" onchange="select_lib.filter('${id}_mods')" class="btn-check mod-row-filter_check" autocomplete="off" checked>
-								<label class="btn btn-outline-success" for="${id}_mods__show_broken"><l10n name="show_broken"></l10n></label>
+								<label class="btn btn-outline-success" for="${id}_mods__show_broken">${getText('show_broken')}</label>
 							</div>
 						</div>
 						<div class="col col-auto">
 							<div class="btn-group btn-group-sm input-group input-group-sm">
-								<span class="input-group-text"><l10n name="select_pick"></l10n></span>
-								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_none('${id}_mods')"><l10n name="select_none"></l10></button>
-								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_all('${id}_mods')"><l10n name="select_all"></l10></button>
-								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_invert('${id}_mods')"><l10n name="select_invert"></l10></button>
+								<span class="input-group-text">${getText('select_pick')}</span>
+								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_none('${id}_mods')">${getText('select_none')}</button>
+								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_all('${id}_mods')">${getText('select_all')}</button>
+								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_invert('${id}_mods')">${getText('select_invert')}</button>
 							</div>
 						</div>
 					</div>

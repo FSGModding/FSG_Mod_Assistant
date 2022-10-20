@@ -6,7 +6,7 @@
 
 // Version window UI
 
-/* global l10n, fsgUtil, bootstrap */
+/* global l10n, fsgUtil, bootstrap, getText */
 
 
 /*  __ ____   ______        
@@ -99,20 +99,20 @@ function makeLine(type, realName, shortName, collections, icon) {
 	const l10n  = ( type === 'same' ) ? 'version_same' : 'version_diff'
 	const click = ( type === 'diff' ) ? `oncontextmenu="window.mods.openVersionResolve('${shortName}')" onDblClick="window.mods.openVersionResolve('${shortName}')"` : ''
 
-	const thisHTML = []
-	
-	thisHTML.push(`<li ${click} class="list-group-item d-flex justify-content-between align-items-start ${color}">`)
-	thisHTML.push('<div class="row w-100"><div class="col-2 p-0 mx-3" style="width:64px; height:64px;">')
-	if ( icon !== null ) {
-		thisHTML.push(`<img class="img-fluid" src="${icon}" />`)
-	}
-	thisHTML.push(`</div><div class="col-8"><div class="fw-bold">${shortName}</div>`)
-	thisHTML.push(`<div class="small">${realName}</div>`)
-	thisHTML.push(`<div class="text-black small ps-3"><l10n name="version_collections"></l10n>: ${collections.join(', ')}</div>`)
-	thisHTML.push('</div><div class="col-2">')
-	thisHTML.push(`<span class="badge bg-dark bg-gradient rounded-1 ms-1"><l10n name="${l10n}"></l10n></span>`)
-	thisHTML.push('</div></div></li>')
-
-	return thisHTML.join('')
+	return `<li ${click} class="list-group-item d-flex justify-content-between align-items-start ${color}">
+		<div class="row w-100">
+			<div class="col-2 p-0 mx-3" style="width:64px; height:64px;">
+				<img class="img-fluid" src="${fsgUtil.iconMaker(icon)}" />
+			</div>
+			<div class="col-8">
+				<div class="fw-bold">${shortName}</div>
+				<div class="small">${realName}</div>
+				<div class="text-black small ps-3">${getText('version_collections')}: ${collections.join(', ')}</div>
+			</div>
+			<div class="col-2">
+				${fsgUtil.badge('dark', l10n, true)}
+			</div>
+		</div>
+	</li>`
 }
 

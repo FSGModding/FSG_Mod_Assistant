@@ -60,6 +60,7 @@
 		"modsdirectoryoverride",
 		"modtiny",
 		"nomp",
+		"norecord",
 		"notmod",
 		"nsis",
 		"offcanvas",

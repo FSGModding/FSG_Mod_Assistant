@@ -6,7 +6,7 @@
 
 // Version window UI
 
-/* global l10n, fsgUtil, bootstrap */
+/* global l10n, fsgUtil, bootstrap, getText */
 
 
 /*  __ ____   ______        
@@ -88,28 +88,24 @@ function compareVersion(versionArray, thisVersion, collection) {
 
 
 function makeLine(mod, version) {
-	const thisHTML = []
-
 	if ( mod[1] === version[1] ) { //same
-		thisHTML.push('<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-dark">')
-		thisHTML.push('<div class="ms-2 me-auto">')
-		thisHTML.push(`<div class="fw-bold">${mod[2].fileDetail.shortName}</div>`)
-		thisHTML.push(`<div class="small">${mod[2].l10n.title}</div>`)
-		thisHTML.push(`<div class="text-black small ps-3"><l10n name="destination"></l10n> ${mod[3]} :: <l10n name="version_same"></l10n></div>`)
-		thisHTML.push('</div>')
-		thisHTML.push('</li>')
-	} else {
-		thisHTML.push('<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-danger">')
-		thisHTML.push('<div class="ms-2 me-auto">')
-		thisHTML.push(`<div class="fw-bold">${mod[2].fileDetail.shortName} <span class="small">${mod[1]}</span></div>`)
-		thisHTML.push(`<div class="small">${mod[2].l10n.title}</div>`)
-		thisHTML.push(`<div class="text-black small ps-3"><l10n name="destination"></l10n> ${mod[3]}</div>`)
-		thisHTML.push('</div>')
-		thisHTML.push(`<input class="form-check-input form-check me-1" type="checkbox" name="modToCopy[]" value="${mod[0]}">`)
-		thisHTML.push('</li>')
+		return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-dark">
+			<div class="ms-2 me-auto">
+				<div class="fw-bold">${mod[2].fileDetail.shortName}</div>
+				<div class="small">${mod[2].l10n.title}</div>
+				<div class="text-black small ps-3">${getText('destination')} ${mod[3]} :: ${getText('version_same')}</div>
+			</div>
+		</li>`
 	}
 
-	return thisHTML.join('')
+	return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-danger">
+		<div class="ms-2 me-auto">
+			<div class="fw-bold">${mod[2].fileDetail.shortName} <span class="small">${mod[1]}</span></div>
+			<div class="small">${mod[2].l10n.title}</div>
+			<div class="text-black small ps-3">${getText('destination')} ${mod[3]}</div>
+		</div>
+		<input class="form-check-input form-check me-1" type="checkbox" name="modToCopy[]" value="${mod[0]}">
+	</li>`
 }
 
 function clientDoCopy() {

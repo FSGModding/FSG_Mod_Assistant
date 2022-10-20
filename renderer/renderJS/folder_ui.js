@@ -6,7 +6,7 @@
 
 // Folder window UI
 
-/* global l10n, fsgUtil */
+/* global l10n, fsgUtil, bootstrap, getText */
 
 /*  __ ____   ______        
    |  |_   | |      |.-----.
@@ -27,6 +27,15 @@ function clientGetL10NEntries() {
 window.l10n.receive('fromMain_getText_return', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
 })
+window.l10n.receive('fromMain_getText_return_title', (data) => {
+	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
+		const buttonItem = item.closest('button')
+		if ( buttonItem !== null ) {
+			buttonItem.title = data[1]
+			new bootstrap.Tooltip(buttonItem)
+		}
+	})
+})
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 window.mods.receive('fromMain_getFolders', (modList) => {
@@ -40,14 +49,18 @@ window.mods.receive('fromMain_getFolders', (modList) => {
 })
 
 function makeFolderLine(path, name) {
-	const folderHTML = []
-	
-	folderHTML.push('<div class="folderLine mb-3 pb-2 border-bottom"><div class="row">')
-	folderHTML.push(`<div class="col-6"><h4>${name}</h4></div>`)
-	folderHTML.push('<div class="col-6"><div class="btn-group w-100"><button class="btn btn-sm btn-success open_folder"><l10n name="open_folder"></l10n></button><button class="btn btn-sm btn-danger remove_folder"><l10n name="remove_folder"></l10n></button></div></div>')
-	folderHTML.push(`</div><em class="ps-2 folder-path" data-folder="${path}">${window.mods.homeDirMap(path)}</em></div>`)
-
-	return folderHTML.join('')
+	return `<div class="folderLine mb-3 pb-2 border-bottom">
+		<div class="row">
+			<div class="col-6"><h4>${name}</h4></div>
+			<div class="col-6">
+				<div class="btn-group w-100">
+					<button class="btn btn-sm btn-success open_folder">${getText('open_folder')}</button>
+					<button class="btn btn-sm btn-danger remove_folder">${getText('remove_folder')}</button>
+				</div>
+			</div>
+		</div>
+		<em class="ps-2 folder-path" data-folder="${path}">${window.mods.homeDirMap(path)}</em>
+	</div>`
 }
 
 function processButtonClick(event) {

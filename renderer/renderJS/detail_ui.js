@@ -6,7 +6,7 @@
 
 // Detail window UI
 
-/* global l10n, fsgUtil, bootstrap */
+/* global l10n, fsgUtil, bootstrap, getText */
 
 
 /*  __ ____   ______        
@@ -40,7 +40,9 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-window.mods.receive('fromMain_modRecord', (modRecord) => {
+window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord) => {
+	const mhVer = ( modhubRecord[1] !== null ) ? modhubRecord[1] : `<em>${getText(modhubRecord[0] === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
+
 	const idMap = {
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
 		file_date      : modRecord.fileDetail.fileDate.substring(0, 16),
@@ -48,15 +50,16 @@ window.mods.receive('fromMain_modRecord', (modRecord) => {
 		mod_location   : modRecord.fileDetail.fullPath,
 		mod_author     : modRecord.modDesc.author,
 		version        : modRecord.modDesc.version,
+		mh_version     : mhVer,
 		has_scripts    : checkX(modRecord.modDesc.scriptFiles),
 		store_items    : checkX(modRecord.modDesc.storeItems),
 		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
 		description    : modRecord.l10n.description,
 		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
-		extraFiles     : (( modRecord.fileDetail.extraFiles.length > 0 ) ? modRecord.fileDetail.extraFiles.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
-		bigFiles       : (( modRecord.fileDetail.tooBigFiles.length > 0 ) ? modRecord.fileDetail.tooBigFiles.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
-		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 ) ? modRecord.fileDetail.spaceFiles.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
-		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 ) ? modRecord.fileDetail.pngTexture.join('\n') : '<l10n name="detail_extra_clean"></l10n>'),
+		extraFiles     : (( modRecord.fileDetail.extraFiles.length > 0 )  ? modRecord.fileDetail.extraFiles.join('\n')  : getText('detail_extra_clean')),
+		bigFiles       : (( modRecord.fileDetail.tooBigFiles.length > 0 ) ? modRecord.fileDetail.tooBigFiles.join('\n') : getText('detail_extra_clean')),
+		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 )  ? modRecord.fileDetail.spaceFiles.join('\n')  : getText('detail_extra_clean')),
+		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 )  ? modRecord.fileDetail.pngTexture.join('\n')  : getText('detail_extra_clean')),
 	}
 	Object.keys(idMap).forEach((key) => {
 		fsgUtil.byId(key).innerHTML = idMap[key]
@@ -67,10 +70,10 @@ window.mods.receive('fromMain_modRecord', (modRecord) => {
 	} else {
 		const problems = []
 		modRecord.issues.forEach((issue) => {
-			let issueText = `<l10n name="${issue}"></l10n>`
+			let issueText = getText(issue)
 		
 			if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
-				issueText += ` <l10n name="file_error_copy_name"></l10n> ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
+				issueText += ` ${getText('file_error_copy_name')} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
 			}
 			problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
 		})
