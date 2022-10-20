@@ -6,7 +6,7 @@
 
 // Detail window UI
 
-/* global l10n, fsgUtil */
+/* global l10n, fsgUtil, bootstrap */
 
 
 /*  __ ____   ______        
@@ -29,6 +29,14 @@ function clientGetL10NEntries() {
 window.l10n.receive('fromMain_getText_return', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
 })
+
+window.l10n.receive('fromMain_getText_return_title', (data) => {
+	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
+		item.parentElement.title = data[1]
+		new bootstrap.Tooltip(item.parentElement)
+	})
+})
+
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 

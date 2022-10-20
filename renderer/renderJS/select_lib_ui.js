@@ -97,9 +97,10 @@ const select_lib = {
 		allModRows.forEach((thisRow) => {
 			const isChecked = thisRow.querySelector(`#${thisRow.id}__checkbox`).checked
 
-			countSelected += (isChecked) ? 1 : 0
-
-			hasHash = countSelected === 1 && thisRow.classList.contains('has-hash')
+			if ( isChecked ) {
+				countSelected += 1
+				hasHash = ( countSelected === 1 ) && thisRow.classList.contains('has-hash')
+			}
 
 			thisRow.querySelectorAll('td').forEach((thisTD) => {
 				thisTD.classList[( isChecked ? 'add' : 'remove' )]('table-success')

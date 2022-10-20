@@ -36,8 +36,14 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 })
 window.l10n.receive('fromMain_getText_return_title', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
-		item.closest('button').title = data[1]
-		new bootstrap.Tooltip(item.closest('button'))
+		const buttonItem = item.closest('button')
+		if ( buttonItem !== null ) {
+			buttonItem.title = data[1]
+			new bootstrap.Tooltip(buttonItem)
+		} else {
+			item.parentElement.title = data[1]
+			new bootstrap.Tooltip(item.parentElement)
+		}
 	})
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
@@ -49,7 +55,12 @@ window.mods.receive('fromMain_selectAllOpen', () => {
 	if ( lastOpenID !== null ) { select_lib.click_all(lastOpenID) }
 })
 
+
+let lastLocale = 'en'
+
 window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList) => {
+	lastLocale = currLocale
+
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 	const scrollStart = window.scrollY
@@ -71,30 +82,20 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 			sizeOfFolder += thisMod.fileDetail.fileSize
 
 			if ( newList.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
-				extraBadges.push('<span class="badge bg-success"><l10n name="mod_badge_new"></l10n></span>')
+				extraBadges.push(fsgUtil.badge('success', 'new'))
 			}
 			if ( modId !== null && modHubList.last.includes(modId) ) {
-				extraBadges.push('<span class="badge bg-success"><l10n name="mod_badge_recent"></l10n></span>')
+				extraBadges.push(fsgUtil.badge('success', 'recent'))
 			}
 
 			let theseBadges = thisMod.badges + extraBadges.join('')
 
 			if ( theseBadges.match('mod_badge_broken') && theseBadges.match('mod_badge_notmod') ) {
-				theseBadges = theseBadges.replace('<span class="badge bg-danger"><l10n name="mod_badge_broken"></l10n></span>', '')
+				theseBadges = theseBadges.replace(fsgUtil.badge('danger', 'broken'), '')
 			}
-			
-			modRows.push(makeModRow(
-				`${collection}--${thisMod.uuid}`,
-				thisMod.fileDetail.shortName,
-				thisMod.l10n.title,
-				thisMod.modDesc.author,
-				thisMod.modDesc.version,
-				( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, currLocale) : '',
-				theseBadges,
-				thisMod.canNotUse,
-				thisMod.modDesc.iconImageCache,
-				modId
-			))
+
+			modRows.push(makeModRow( `${collection}--${thisMod.uuid}`, thisMod, theseBadges, modId))
+
 		})
 		modTable.push(makeModCollection(
 			collection,
@@ -128,6 +129,7 @@ function clientMakeListInactive() {
 	fsgUtil.byId('collectionSelect').value = 0
 	window.mods.makeInactive()
 }
+
 function clientMakeListActive() {
 	const activePick = fsgUtil.byId('collectionSelect').value.replace('collection--', '')
 
@@ -186,19 +188,20 @@ function makeModCollection(id, name, modsRows) {
 </tr>`
 }
 
-function makeModRow(id, name, title, author, version, size, badges, disabled, image, modId) {
-	return `<tr onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(disabled===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
+
+function makeModRow(id, thisMod, badges, modId) {
+	return `<tr onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
 	<td>
 		<input type="checkbox" class="form-check-input mod-row-checkbox" id="${id}__checkbox">
 	</td>
 	<td style="width: 64px; height: 64px">
-		<img class="img-fluid" src="${fsgUtil.iconMaker(image)}" />
+		<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
 	</td>
 	<td>
-		<div class="bg-light"></div>${name}<br /><small>${title} - <em>${author}</em></small><div class="issue_badges">${badges}</div>
+		<div class="bg-light"></div>${thisMod.fileDetail.shortName}<br /><small>${thisMod.l10n.title} - <em>${thisMod.modDesc.author}</em></small><div class="issue_badges">${badges}</div>
 	</td>
 	<td class="text-end pe-4">
-		${version}<br /><em class="small">${size}</em>
+		${thisMod.modDesc.version}<br /><em class="small">${( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : ''}</em>
 	</td>
 </tr>`
 }
