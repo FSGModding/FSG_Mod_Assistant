@@ -27,10 +27,8 @@ const userHome      = require('os').homedir()
 const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
 const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
-
 const hubURL        = 'https://jtsage.dev/modHubData.json'
-
-const trayIcon = !app.isPackaged
+const trayIcon      = !app.isPackaged
 	? path.join(app.getAppPath(), 'renderer', 'img', 'icon.ico')
 	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
 
@@ -624,6 +622,7 @@ ipcMain.on('toMain_homeDirRevamp', (event, thisPath) => { event.returnValue = th
 function refreshClientModList() {
 	windows.main.webContents.send(
 		'fromMain_modList',
+		myTranslator.deferCurrentLocale(),
 		modList,
 		[myTranslator.syncStringLookup('override_disabled'), myTranslator.syncStringLookup('override_unknown')],
 		overrideIndex,
@@ -822,12 +821,6 @@ function processModFolders(newFolder) {
 }
 
 function processModFolders_post(newFolder = false) {
-	// if ( !foldersDirty ) { return }
-
-	// loadingWindow_open('mods', 'main')
-	// loadingWindow_total(0, true)
-	// loadingWindow_current(0, true)
-
 	if ( newFolder === false ) { modList = {}; modFoldersMap = {}}
 
 	// Cleaner for no-longer existing folders.
