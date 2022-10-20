@@ -25,6 +25,7 @@ ___Contents___
         - [Active List](#active-list)
         - [Action Buttons](#action-buttons)
         - [Search Feature](#search-feature)
+          - [Search Buttons](#search-buttons)
     - [Detail Window](#detail-window)
     - [Move and Copy](#move-and-copy)
     - [Delete](#delete)
@@ -143,7 +144,13 @@ The active list is marked with a green check over the folder.
 
 This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_25DU_Trailers` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
 
-The `Show Non-Mods` button will hide files that Mod Assistant thinks are not mods, and the `Show Broken` button will hide mods that Mod Assistant believes are broken
+###### Search Buttons
+
+- __Show Non-Mods__ : hides files that Mod Assistant thinks are not mods
+- __Show Broken__ : hides mods that Mod Assistant believes are broken
+- __Select None__ : Clear selection on this collection
+- __Select All__ : Select all on this collection
+- __Select Invert__ : Invert selection on this collection
 
 ### Detail Window
 
