@@ -18,7 +18,7 @@
   "scripts": {
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "test": "node ./test/mod-reader-test.js && node ./test/save-reader-test.js",
+    "test": "node ./test/mod-reader-test.js && node ./test/save-reader-test.js && node ./test/translate-check.js",
     "langtest": "node ./test/translate-check.js"
   },
   "devDependencies": {
