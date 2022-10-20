@@ -154,7 +154,7 @@ function makeModCollection(id, name, modsRows) {
 		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')">${getText('check_save')}</button>
 	</td>
 </tr>
-<tr class="mod-table-folder-detail collapse accordion-collapse data-bs-parent=".table" id="${id}_mods">
+<tr class="mod-table-folder-detail collapse accordion-collapse" data-bs-parent="#mod-collections" id="${id}_mods">
 	<td class="mod-table-folder-details px-0 ps-4" colspan="3">
 		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">
 			<tr>

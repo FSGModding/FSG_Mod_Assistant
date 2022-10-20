@@ -10,7 +10,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray, 
 
 const { autoUpdater } = require('electron-updater')
 
-let devDebug  = true
+let devDebug  = false
 let skipCache = false
 
 if ( app.isPackaged ) { devDebug = false; skipCache = false }
