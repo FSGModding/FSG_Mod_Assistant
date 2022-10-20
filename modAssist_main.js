@@ -22,7 +22,6 @@ const fs         = require('fs')
 const glob       = require('glob')
 const fxml       = require('fast-xml-parser')
 const crypto     = require('crypto')
-const winUtil    = require('windows')
 
 const userHome      = require('os').homedir()
 const pathRender    = path.join(app.getAppPath(), 'renderer')
@@ -41,6 +40,7 @@ const pathGuesses = [
 	path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
 ]
 try {
+	const winUtil    = require('windows')
 	const userFolder = winUtil.registry('HKEY_CURRENT_USER/SOFTWARE/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders').Personal.value
 	pathGuesses.unshift(path.join(userFolder, 'My Games', 'FarmingSimulator2022'))
 } catch { /* do nothing */ }
