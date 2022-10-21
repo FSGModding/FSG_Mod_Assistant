@@ -91,6 +91,9 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 			if ( modId !== null && modHubList.last.includes(modId) ) {
 				extraBadges.push(fsgUtil.badge('success', 'recent'))
 			}
+			if ( modId === null ) {
+				extraBadges.push(fsgUtil.badge('dark', 'nonmh'))
+			}
 
 			let theseBadges = thisMod.badges + extraBadges.join('')
 

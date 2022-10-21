@@ -41,6 +41,7 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord) => {
+	console.log(modhubRecord)
 	const mhVer = ( modhubRecord[1] !== null ) ? modhubRecord[1] : `<em>${getText(modhubRecord[0] === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
 
 	const idMap = {
@@ -80,10 +81,29 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord) => {
 		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`
 	}
 
+	const extraBadges = []
+
+	if ( modhubRecord[0] !== null && modRecord.modDesc.version !== modhubRecord[1]) {
+		extraBadges.push(fsgUtil.badge('light', 'update'))
+	}
+	if ( modhubRecord[2] ) {
+		extraBadges.push(fsgUtil.badge('success', 'recent'))
+	}
+	if ( modhubRecord[0] === null ) {
+		extraBadges.push(fsgUtil.badge('dark', 'nonmh'))
+	}
+
+	extraBadges.push(modRecord.badges)
+	let theseBadges = extraBadges.join('')
+
+	if ( theseBadges.match('mod_badge_broken') && theseBadges.match('mod_badge_notmod') ) {
+		theseBadges = theseBadges.replace(fsgUtil.badge('danger', 'broken'), '')
+	}
+
 	textOrHide(
 		'badges',
-		modRecord.badges,
-		modRecord.badges
+		theseBadges,
+		theseBadges
 	)
 	textOrHide(
 		'icon_div',

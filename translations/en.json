@@ -190,5 +190,7 @@
 	"version_check"                          : "Check Versions",
 	"version_collections"                    : "Collections",
 	"version_diff"                           : "Version Mismatch",
-	"version_same"                           : "Version Match"
+	"version_same"                           : "Version Match",
+	"mod_badge_nonmh"                        : "nonModHub",
+	"mod_badge_nonmh__title"                 : "This mod is not available on the in-game modhub"
 }

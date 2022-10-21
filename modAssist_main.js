@@ -689,7 +689,7 @@ function refreshClientModList() {
 
 function modRecordToModHub(mod) {
 	const modId = modHubList.mods[mod.fileDetail.shortName] || null
-	return [modId, (modHubVersion[modId] || null)]
+	return [modId, (modHubVersion[modId] || null), modHubList.last.includes(modId)]
 }
 function modIdToRecord(id) {
 	const idParts = id.split('--')
