@@ -77,7 +77,6 @@ pathGuesses.forEach((testPath) => {
 
 const { ma_logger }                         = require('./lib/ma-logger.js')
 const translator                            = require('./lib/translate.js')
-const { mcLogger }                          = require('./lib/logger.js')
 const { modFileChecker, notModFileChecker } = require('./lib/single-mod-checker.js')
 const mcDetail                              = require('./package.json')
 
@@ -107,8 +106,6 @@ myTranslator.mcVersion = mcDetail.version
 const log = new ma_logger('modAssist', app, 'assist.log')
 
 log.log.info(`ModAssist Logger: ${mcDetail.version}`)
-
-const logger = new mcLogger()
 
 let modFolders    = new Set()
 let modFoldersMap = {}
@@ -623,7 +620,7 @@ function openSaveGame(zipMode = false) {
 	dialog.showOpenDialog(windows.save, options).then((result) => {
 		if ( !result.canceled ) {
 			try {
-				const thisSavegame = new saveFileChecker(result.filePaths[0], !zipMode, logger)
+				const thisSavegame = new saveFileChecker(result.filePaths[0], !zipMode, log)
 				windows.save.webContents.send('fromMain_saveInfo', modList, thisSavegame)
 			} catch (e) {
 				log.log.danger(`Load failed: ${e}`, 'savegame')

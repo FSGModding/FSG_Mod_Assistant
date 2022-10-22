@@ -9,10 +9,10 @@
 const path       = require('path')
 const fs         = require('fs')
 
-const { mcLogger }             = require('../lib/logger.js')
+const { ma_logger }             = require('../lib/ma-logger.js')
 const { saveFileChecker }       = require('../lib/savegame-parser.js')
 
-const logger = new mcLogger()
+const logger = new ma_logger('saveTest')
 
 console.log('FSG Mod Assistant : Test Save Reader')
 console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n')
@@ -45,7 +45,7 @@ try {
 
 
 console.log('\n\nLogger:')
-console.log(logger.toDisplayText)
+console.log(logger.textLog)
 
 console.log(`\n\nExiting with code ${exitCode}\n`)
 process.exit(exitCode)
