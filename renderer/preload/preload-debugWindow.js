@@ -21,7 +21,7 @@ contextBridge.exposeInMainWorld(
 )
 
 ipcRenderer.on('update-log', ( _, logContents ) => {
-	document.getElementById('debug_log').innerHTML = logContents.replaceAll('\n', '<br>\n')
+	document.getElementById('debug_log').innerHTML = logContents//.replaceAll('\n', '<br>\n')
 })
 
 contextBridge.exposeInMainWorld(
@@ -44,7 +44,7 @@ contextBridge.exposeInMainWorld(
 	'debug',
 	{
 		getDebugLogContents  : () => { ipcRenderer.send('getDebugLogContents') },
-		saveDebugLogContents : () => { ipcRenderer.send('saveDebugLogContents') },
+		openDebugLogFolder   : () => { ipcRenderer.send('openDebugLogFolder') },
 	}
 )
 

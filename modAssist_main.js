@@ -9,34 +9,41 @@
 const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray, net } = require('electron')
 
 const { autoUpdater } = require('electron-updater')
+const { ma_logger }   = require('./lib/ma-logger.js')
+const mcDetail        = require('./package.json')
+const log             = new ma_logger('modAssist', app, 'assist.log')
 
-let devDebug  = true
-let skipCache = false
+let devDebug        = false
+let skipCache       = false
+let updaterInterval = null
 
 if ( app.isPackaged ) { devDebug = false; skipCache = false }
 
-if (process.platform === 'win32') {
-	autoUpdater.checkForUpdatesAndNotify()
+log.log.info(`ModAssist Logger: ${mcDetail.version}`)
 
-	autoUpdater.on('error', (message) => {
-		console.error('There was a problem updating the application')
-		console.error(message)
-	})
+if ( process.platform === 'win32' && app.isPackaged ) {
+	autoUpdater.on('update-checking-for-update', () => { log.log.info('Checking for update', 'auto-update') })
+	autoUpdater.on('update-available', () => { log.log.info('Update Available', 'auto-update') })
+	autoUpdater.on('update-not-available', () => { log.log.info('No Update Available', 'auto-update') })
+	autoUpdater.on('error', (message) => { log.log.warning(`Updater Failed: ${message}`, 'auto-update') })
 
 	autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+		clearInterval(updaterInterval)
 		const dialogOpts = {
-			type : 'info',
+			type    : 'info',
 			buttons : ['Restart', 'Later'],
-			title : 'Application Update',
+			title   : 'Application Update',
 			message : process.platform === 'win32' ? releaseNotes : releaseName,
-			detail :
-				'A new version has been downloaded. Restart the application to apply the updates.',
+			detail  : 'A new version has been downloaded. Restart the application to apply the updates.',
 		}
 		dialog.showMessageBox(dialogOpts).then((returnValue) => {
-			if (returnValue.response === 0) autoUpdater.quitAndInstall()
+			if (returnValue.response === 0) { autoUpdater.quitAndInstall() }
 		})
 	})
 
+	autoUpdater.checkForUpdatesAndNotify()
+
+	updaterInterval = setInterval(() => { autoUpdater.checkForUpdatesAndNotify() }, ( 30 * 60 * 1000))
 }
 
 const path       = require('path')
@@ -75,10 +82,8 @@ pathGuesses.forEach((testPath) => {
 	}
 })
 
-const { ma_logger }                         = require('./lib/ma-logger.js')
 const translator                            = require('./lib/translate.js')
 const { modFileChecker, notModFileChecker } = require('./lib/single-mod-checker.js')
-const mcDetail                              = require('./package.json')
 
 const settingsSchema = {
 	main_window_x     : { type : 'number', maximum : 4096, minimum : 100, default : 1000 },
@@ -102,10 +107,6 @@ const newModsList = []
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
-
-const log = new ma_logger('modAssist', app, 'assist.log')
-
-log.log.info(`ModAssist Logger: ${mcDetail.version}`)
 
 let modFolders    = new Set()
 let modFoldersMap = {}
@@ -547,6 +548,7 @@ ipcMain.on('toMain_openModDetail', (event, thisMod) => { createDetailWindow(modI
 
 /** Debug window operation */
 ipcMain.on('openDebugLogContents', () => { createDebugWindow() })
+ipcMain.on('openDebugLogFolder',   () => { shell.showItemInFolder(log.pathToLog) })
 ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('update-log', log.htmlLog) })
 /** END: Debug window operation */
 
@@ -903,6 +905,7 @@ function processModFolders_post(newFolder = false) {
 
 						if ( typeof localStore[thisMD5Sum] !== 'undefined') {
 							modList[cleanName].mods[modIndex] = localStore[thisMD5Sum]
+							log.log.info(`Adding mod FROM cache: ${localStore[thisMD5Sum].fileDetail.shortName}`, `mod-${localStore[thisMD5Sum].uuid}`)
 							loadingWindow_current()
 							return
 						}
@@ -931,6 +934,7 @@ function processModFolders_post(newFolder = false) {
 						)
 						modList[cleanName].mods[modIndex] = thisModDetail
 						if ( thisModDetail.md5Sum !== null ) {
+							log.log.info('Adding mod to cache', `mod-${thisModDetail.uuid}`)
 							newModsList.push(thisModDetail.md5Sum)
 							maCache.set(thisModDetail.md5Sum, thisModDetail.storable)
 						}
