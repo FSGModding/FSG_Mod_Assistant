@@ -6,10 +6,10 @@
 
 // Test Program
 
-const { mcLogger }             = require('../lib/logger.js')
+const { ma_logger }            = require('../lib/ma-logger.js')
 const { modFileChecker }       = require('../lib/single-mod-checker.js')
 
-const logger = new mcLogger()
+const logger = new ma_logger('single-test')
 
 console.log('FSG Mod Assistant : Test Mod Reader')
 console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n')

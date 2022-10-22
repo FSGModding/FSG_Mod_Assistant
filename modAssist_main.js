@@ -917,7 +917,7 @@ function processModFolders_post(newFolder = false) {
 							false,
 							thisFileStats.size,
 							thisFileStats.date,
-							logger
+							log
 						)
 						loadingWindow_current()
 						return
@@ -929,7 +929,7 @@ function processModFolders_post(newFolder = false) {
 							thisFileStats.folder,
 							thisFileStats.size,
 							thisFileStats.date,
-							logger,
+							log,
 							myTranslator.deferCurrentLocale
 						)
 						modList[cleanName].mods[modIndex] = thisModDetail

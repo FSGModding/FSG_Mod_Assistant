@@ -10,10 +10,10 @@ const path       = require('path')
 const fs         = require('fs')
 const testPath   = path.join(__dirname, 'testMods')
 
-const { mcLogger }             = require('../lib/logger.js')
+const { ma_logger }            = require('../lib/ma-logger.js')
 const { modFileChecker }       = require('../lib/single-mod-checker.js')
 
-const logger = new mcLogger()
+const logger = new ma_logger('multi-test')
 
 console.log('FSG Mod Assistant : Test Mod Reader')
 console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n')
@@ -54,7 +54,7 @@ folderContents.forEach((thisFile) => {
 })
 
 console.log('\n\nLogger:')
-console.log(logger.toDisplayText)
+console.log(logger.textLog)
 
 console.log(`\n\nExiting with code ${exitCode}\n`)
 process.exit(exitCode)
