@@ -9,6 +9,16 @@
 const {contextBridge, ipcRenderer} = require('electron')
 const autoUpdateTimeSeconds        = 30
 
+contextBridge.exposeInMainWorld(
+	'log', {
+		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
+		debug   : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
+		info    : (text, process) => { ipcRenderer.send('toMain_log', 'info', `render-${process}`, text) },
+		notice  : (text, process) => { ipcRenderer.send('toMain_log', 'notice', `render-${process}`, text) },
+		warning : (text, process) => { ipcRenderer.send('toMain_log', 'warning', `render-${process}`, text) },
+		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
+	}
+)
 
 ipcRenderer.on('update-log', ( _, logContents ) => {
 	document.getElementById('debug_log').innerHTML = logContents.replaceAll('\n', '<br>\n')

@@ -14,6 +14,11 @@
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/savegame_ui.js"></script>
 	<style> ::-webkit-scrollbar { display: none; } </style>
+	<script type="text/javascript">
+		window.onerror = function (message, file, line, col, error) {
+			window.log.debug(error.message, 'savegame'); return false
+		}
+	</script>
 </head>
 <body>
 	<div class="container-fluid px-1 user-select-none">

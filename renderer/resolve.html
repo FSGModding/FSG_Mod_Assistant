@@ -19,6 +19,9 @@
 			evt = evt || window.event
 			if (evt.keyCode == 27) { window.mods.closeWindow() }
 		}
+		window.onerror = function (message, file, line, col, error) {
+			window.log.debug(error.message, 'resolve'); return false
+		}
 	</script>
 </head>
 <body>

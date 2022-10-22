@@ -10,7 +10,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray, 
 
 const { autoUpdater } = require('electron-updater')
 
-let devDebug  = false
+let devDebug  = true
 let skipCache = false
 
 if ( app.isPackaged ) { devDebug = false; skipCache = false }
@@ -75,6 +75,7 @@ pathGuesses.forEach((testPath) => {
 	}
 })
 
+const { ma_logger }                         = require('./lib/ma-logger.js')
 const translator                            = require('./lib/translate.js')
 const { mcLogger }                          = require('./lib/logger.js')
 const { modFileChecker, notModFileChecker } = require('./lib/single-mod-checker.js')
@@ -102,6 +103,10 @@ const newModsList = []
 
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
+
+const log = new ma_logger('modAssist', app, 'assist.log')
+
+log.log.info(`ModAssist Logger: ${mcDetail.version}`)
 
 const logger = new mcLogger()
 
@@ -314,14 +319,14 @@ function createDetailWindow(thisModRecord) {
 function createDebugWindow() {
 	if ( windows.debug ) {
 		windows.debug.focus()
-		windows.debug.webContents.send('update-log', logger.toDisplayHTML)
+		windows.debug.webContents.send('update-log', log.htmlLog)
 		return
 	}
 
 	windows.debug = createSubWindow({ parent : 'main', preload : 'debugWindow', width : 800, height : 500 })
 
 	windows.debug.webContents.on('did-finish-load', (event) => {
-		event.sender.send('update-log', logger.toDisplayHTML)
+		event.sender.send('update-log', log.htmlLog)
 	})
 
 	windows.debug.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
@@ -478,11 +483,13 @@ ipcMain.on('toMain_addFolder', () => {
 				mcStore.set('modFolders', Array.from(modFolders))
 				processModFolders(result.filePaths[0])
 			} else {
-				logger.notice('folderList', 'Add folder :: canceled, already exists in list')
+				log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
 			}
+		} else {
+			log.log.info('Add folder :: canceled, already exists in list', 'folder-opts')
 		}
 	}).catch((unknownError) => {
-		logger.notice('folderList', `Could not read specified add folder : ${unknownError}`)
+		log.log.danger(`Could not read specified add folder : ${unknownError}`, 'folder-opts')
 	})
 })
 ipcMain.on('toMain_editFolders',    () => { createFolderWindow() })
@@ -490,16 +497,20 @@ ipcMain.on('toMain_openFolder',     (event, folder) => { shell.openPath(folder) 
 ipcMain.on('toMain_refreshFolders', () => { foldersDirty = true; processModFolders() })
 ipcMain.on('toMain_removeFolder',   (event, folder) => {
 	if ( modFolders.delete(folder) ) {
-		logger.notice('folderManager', `Folder removed from list ${folder}`)
+		log.log.notice(`Folder removed from list ${folder}`, 'folder-opts')
 		mcStore.set('modFolders', Array.from(modFolders))
 		foldersDirty = true
 	} else {
-		logger.notice('folderManager', `Folder NOT removed from list ${folder}`)
+		log.log.warning(`Folder NOT removed from list ${folder}`, 'folder-opts')
 	}
 })
 /** END: Folder Window Operation */
 
 
+
+/** Logging Operation */
+ipcMain.on('toMain_log', (event, level, process, text) => { log.log[level](text, process) })
+/** END: Logging Operation */
 
 /** l10n Operation */
 ipcMain.on('toMain_langList_change', (event, lang) => { myTranslator.currentLocale = lang; event.sender.send('fromMain_l10n_refresh') })
@@ -538,34 +549,8 @@ ipcMain.on('toMain_openModDetail', (event, thisMod) => { createDetailWindow(modI
 
 
 /** Debug window operation */
-ipcMain.on('openDebugLogContents', () => { createDebugWindow(logger) })
-ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('update-log', logger.toDisplayHTML) })
-ipcMain.on('saveDebugLogContents', () => {
-	dialog.showSaveDialog(windows.main, {
-		defaultPath : path.join(userHome, 'Documents', 'modAssistDebugLog.txt' ),
-		filters     : [{ name : 'TXT', extensions : ['txt'] }],
-	}).then((result) => {
-		if ( result.canceled ) {
-			logger.notice('logger', 'Save log file canceled')
-		} else {
-			try {
-				fs.writeFileSync(result.filePath, logger.toDisplayText)
-				dialog.showMessageBoxSync(windows.main, {
-					message : myTranslator.syncStringLookup('save_log_worked'),
-					type    : 'info',
-				})
-			} catch (err) {
-				logger.fileError('logger', `Could not save log file : ${err}`)
-				dialog.showMessageBoxSync(windows.main, {
-					message : myTranslator.syncStringLookup('save_log_failed'),
-					type    : 'warning',
-				})
-			}
-		}
-	}).catch((unknownError) => {
-		logger.fileError('logger', `Could not save log file : ${unknownError}`)
-	})
-})
+ipcMain.on('openDebugLogContents', () => { createDebugWindow() })
+ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('update-log', log.htmlLog) })
 /** END: Debug window operation */
 
 
@@ -614,7 +599,7 @@ ipcMain.on('toMain_setPrefFile', (event) => {
 			event.sender.send( 'fromMain_allSettings', mcStore.store )
 		}
 	}).catch((unknownError) => {
-		logger.notice('gameSettings', `Could not read specified gamesettings : ${unknownError}`)
+		log.log.danger(`Could not read specified gamesettings : ${unknownError}`, 'game-settings')
 	})
 	
 })
@@ -641,11 +626,11 @@ function openSaveGame(zipMode = false) {
 				const thisSavegame = new saveFileChecker(result.filePaths[0], !zipMode, logger)
 				windows.save.webContents.send('fromMain_saveInfo', modList, thisSavegame)
 			} catch (e) {
-				logger.notice('savegame', `Load failed: ${e}`)
+				log.log.danger(`Load failed: ${e}`, 'savegame')
 			}
 		}
 	}).catch((unknownError) => {
-		logger.notice('savegame', `Could not read specified file/folder : ${unknownError}`)
+		log.log.danger(`Could not read specified file/folder : ${unknownError}`, 'savegame')
 	})
 }
 /** END: Savegame window operation */
@@ -726,7 +711,7 @@ function parseSettings(newSetting = false) {
 	try {
 		XMLString = fs.readFileSync(gameSettings, 'utf8')
 	} catch (e) {
-		logger.fileError('gameSettings', `Could not read game settings ${e}`)
+		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
 		return
 	}
 
@@ -735,7 +720,7 @@ function parseSettings(newSetting = false) {
 		overrideActive  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']
 		overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory']
 	} catch (e) {
-		logger.fileError('gameSettings', `Could not read game settings ${e}`)
+		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
 	}
 
 	if ( overrideActive === 'false' || overrideActive === false ) {
@@ -770,7 +755,7 @@ function parseSettings(newSetting = false) {
 
 			fs.writeFileSync(gameSettings, outputXML)
 		} catch (e) {
-			logger.fileError('gameSettings', `Could not write game settings ${e}`)
+			log.log.danger(`Could not write game settings ${e}`, 'game-settings')
 		}
 
 		parseSettings()
@@ -815,7 +800,7 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 					break
 			}
 		} catch (e) {
-			logger.fileError(`${type}File`, `Could not ${type} file : ${e}`)
+			log.log.danger(`Could not ${type} file : ${e}`, `${type}-file`)
 		}
 
 		loadingWindow_current()
@@ -953,13 +938,13 @@ function processModFolders_post(newFolder = false) {
 							maCache.set(thisModDetail.md5Sum, thisModDetail.storable)
 						}
 					} catch (e) {
-						logger.fileError(thisFile.name, `Couldn't test and add mod: ${e}`)
+						log.log.danger(`Couldn't process ${thisFile.name}: ${e}`, 'folder-reader')
 					}
 
 					loadingWindow_current()
 				})
 			} catch (e) {
-				logger.fileError('folderError', `Couldn't process ${folder}: ${e}`)
+				log.log.danger(`Couldn't process ${folder}: ${e}`, 'folder-reader')
 			}
 		}
 	})
@@ -974,18 +959,18 @@ function loadModHub() {
 	try {
 		const rawData = fs.readFileSync(path.join(app.getPath('userData'), 'modHubData.json'))
 		modHubList = JSON.parse(rawData)
-		logger.info('modHubList', 'Loaded list')
+		log.log.info('Loaded modHubData.json', 'local-cache')
 	} catch (e) {
-		logger.info('modHubList', `List Fail: ${e}`)
+		log.log.warning('Loading modHubData.json failed: ${e}', 'local-cache')
 	}
 }
 function loadModHubVer() {
 	try {
 		const rawData = fs.readFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'))
 		modHubVersion = JSON.parse(rawData)
-		logger.info('modHubVersion', 'Loaded list')
+		log.log.info('Loaded modHubVersion.json', 'local-cache')
 	} catch (e) {
-		logger.info('modHubVersion', `List Fail: ${e}`)
+		log.log.warning('Loading modHubVersion.json failed: ${e}', 'local-cache')
 	}
 }
 /** END: Business Functions */
@@ -993,7 +978,7 @@ function loadModHubVer() {
 
 
 app.whenReady().then(() => {
-	globalShortcut.register('Alt+CommandOrControl+D', () => { createDebugWindow(logger) })
+	globalShortcut.register('Alt+CommandOrControl+D', () => { createDebugWindow() })
 	
 	if ( mcStore.has('force_lang') && mcStore.has('lock_lang') ) {
 		// If language is locked, switch to it.
@@ -1016,7 +1001,7 @@ app.whenReady().then(() => {
 	const request = net.request(hubURL)
 
 	request.on('response', (response) => {
-		logger.info('modHubList', `Got list: ${response.statusCode}`)
+		log.log.info(`Got modHubData.json: ${response.statusCode}`, 'local-cache')
 		let mhResp = ''
 		response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
 		response.on('end',  () => {
@@ -1029,7 +1014,7 @@ app.whenReady().then(() => {
 	const request2 = net.request(hubVerURL)
 
 	request2.on('response', (response) => {
-		logger.info('modHubVersion', `Got list: ${response.statusCode}`)
+		log.log.info(`Got modHubVersion.json: ${response.statusCode}`, 'local-cache')
 		let mhResp = ''
 		response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
 		response.on('end',  () => {
