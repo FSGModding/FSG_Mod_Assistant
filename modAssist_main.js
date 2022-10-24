@@ -6,7 +6,7 @@
 
 // Main Program
 
-const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog, Menu, Tray, net } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net } = require('electron')
 
 const { autoUpdater } = require('electron-updater')
 const { ma_logger }   = require('./lib/ma-logger.js')
@@ -115,6 +115,7 @@ let countTotal    = 0
 let countMods     = 0
 let modHubList    = {}
 let modHubVersion = {}
+let lastFolderLoc = null
 
 
 const ignoreList = [
@@ -197,6 +198,10 @@ function createSubWindow({noSelect = true, show = true, parent = null, title = n
 			if (input.control && input.key.toLowerCase() === 'a') {
 				event.preventDefault()
 			}
+			if ( input.alt && input.control && input.key.toLowerCase() === 'd' ) {
+				createDebugWindow()
+				event.preventDefault()
+			}
 		})
 	}
 	if ( !devDebug ) { thisWindow.removeMenu()}
@@ -247,6 +252,10 @@ function createMainWindow () {
 	windows.main.webContents.on('before-input-event', (event, input) => {
 		if (input.control && input.key.toLowerCase() === 'a') {
 			windows.main.webContents.send('fromMain_selectAllOpen')
+			event.preventDefault()
+		}
+		if ( input.alt && input.control && input.key.toLowerCase() === 'd' ) {
+			createDebugWindow()
 			event.preventDefault()
 		}
 	})
@@ -467,7 +476,7 @@ ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => { fileOperation('copy', 
 /** Folder Window Operation */
 ipcMain.on('toMain_addFolder', () => {
 	dialog.showOpenDialog(windows.main, {
-		properties : ['openDirectory'], defaultPath : userHome,
+		properties : ['openDirectory'], defaultPath : (lastFolderLoc !== null) ? lastFolderLoc : userHome,
 	}).then((result) => {
 		if ( !result.canceled ) {
 			let alreadyExists = false
@@ -475,6 +484,8 @@ ipcMain.on('toMain_addFolder', () => {
 			modFolders.forEach((thisPath) => {
 				if ( path.relative(thisPath, result.filePaths[0]) === '' ) { alreadyExists = true }
 			})
+
+			lastFolderLoc = path.resolve(path.join(result.filePaths[0], '..'))
 
 			if ( ! alreadyExists ) {
 				modFolders.add(result.filePaths[0]); foldersDirty = true
@@ -979,8 +990,6 @@ function loadModHubVer() {
 
 
 app.whenReady().then(() => {
-	globalShortcut.register('Alt+CommandOrControl+D', () => { createDebugWindow() })
-	
 	if ( mcStore.has('force_lang') && mcStore.has('lock_lang') ) {
 		// If language is locked, switch to it.
 		myTranslator.currentLocale = mcStore.get('force_lang')
