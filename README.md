@@ -20,6 +20,7 @@ ___Contents___
     - [Main Screen](#main-screen)
       - [Collections Buttons](#collections-buttons)
       - [gameSettings Buttons](#gamesettings-buttons)
+      - [Other Buttons](#other-buttons)
       - [Collections Area](#collections-area)
         - [Color Coding and Badges](#color-coding-and-badges)
         - [Active List](#active-list)
@@ -34,6 +35,7 @@ ___Contents___
     - [Version Check](#version-check)
     - [Edit Folders](#edit-folders)
     - [User Preferences](#user-preferences)
+      - [Game Path](#game-path)
       - [gameSettings.xml](#gamesettingsxml)
       - [Mod Cache](#mod-cache)
   - [Tips and Tricks](#tips-and-tricks)
@@ -99,6 +101,11 @@ __PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk
 - __Set Active__ : Set the currently selected collection in the dropdown to be the active collection in Farm Sim. Doing this with the game open could lead to odd results. (It may corrupt your gameSettings file, but most probably it just won't work until you restart the game)
 - __Deactivate__ : Set the override in `gameSettings.xml` to off and just use the default mods folder again.
 
+#### Other Buttons
+
+- __Check Versions__ : Compare mod versions across different collections and resolve differences if desired.
+- __Launch FS22__ : Start the game.  If your game is not in the default e-shop or steam location, you will need to set the game path in the preferences screen first.
+
 #### Collections Area
 
 ![collections](screen_shots/002-main_program_collect.png)
@@ -115,6 +122,7 @@ In this area you will see a list of all of the collections (folders) that you ha
   - __Update__ : The version of the mod you have does not match the version on modhub
   - __New__ : This file has been added to this collection since the last scan
   - __Recent__ : This mod has recently been updated or released on the modHub
+  - __nonModHub__ : This mod wasn't found on ModHub, it is probably a 3rd party mod.
   - __NotMOD__ : This file is not a mod
   - __Broken__ : This mod is likely broken
   - __Issue__ : This mod may have non game breaking issues
@@ -215,6 +223,10 @@ This display will let you change which collections are loaded, and open them in 
 ![preferences](screen_shots/012-prefs.png)
 
 Clicking the `...` button in the upper right corner of the main window will open user preferences.  Most of these are straight forward (window sizes, maximization selection, and UI language override).
+
+#### Game Path
+
+This option lets you set the path to the game `.EXE` file if it was not found automatically, so that the `Launch FS22` button on the main screen works.
 
 #### gameSettings.xml
 
