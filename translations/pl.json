@@ -192,5 +192,9 @@
 	"version_diff": "Różne wersje",
 	"version_same": "Ta sama wersja",
 	"mod_badge_nonmh": "nonModHub",
-	"mod_badge_nonmh__title": "Ten mod nie jest dostępny na ModHubie"
+	"mod_badge_nonmh__title": "Ten mod nie jest dostępny na ModHubie",
+	"user_pref_title_game_path"              : "Ścieżka gry",
+	"user_pref_blurb_game_path"              : "Ustaw tutaj ścieżkę do gry, aby włączyć przycisk Launch FS22",
+	"user_pref_button_game_path"             : "Set Game Path",
+	"launch_fs22"                            : "Launch FS2022"
 }

@@ -41,6 +41,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
 		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
 		editFolders     : () => { ipcRenderer.send('toMain_editFolders') },

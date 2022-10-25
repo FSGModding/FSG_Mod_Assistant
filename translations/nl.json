@@ -192,5 +192,9 @@
 	"version_diff": "Verkeerde versie",
 	"version_same": "Versie wedstrijd",
 	"mod_badge_nonmh": "nonModHub",
-	"mod_badge_nonmh__title": "Deze mod is niet beschikbaar op de in-game modhub"
+	"mod_badge_nonmh__title": "Deze mod is niet beschikbaar op de in-game modhub",
+	"user_pref_title_game_path"              : "Game Path",
+	"user_pref_blurb_game_path"              : "Stel hier het pad naar het spel in om de Lanceer FS22 knop in te schakelen.",
+	"user_pref_button_game_path"             : "Set Game Path",
+	"launch_fs22"                            : "Start FS2022"
 }

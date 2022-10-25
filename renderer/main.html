@@ -92,7 +92,7 @@
 	<div class="container-fluid px-0 user-select-none">
 		<div class="fixed-top pt-2 pb-2 bg-body" id="main-header">
 			<div class="row w-100 mb-2">
-				<div class="col-8 border-bottom">
+				<div class="col-6 border-bottom">
 					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
 				</div>
 				<div class="col-3">
@@ -107,8 +107,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-1 text-end">
-					<button onclick="window.mods.openPreferences()" class="btn btn-outline-light text-center w-100" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+				<div class="col-3 text-end">
+					<button onclick="window.mods.startFarmSim()" class="btn btn-primary w-75" id="open_prefs"><l10n name="launch_fs22"></l10n></button>
+					<button onclick="window.mods.openPreferences()" class="btn btn-outline-light" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+					
 				</div>
 			</div>
 

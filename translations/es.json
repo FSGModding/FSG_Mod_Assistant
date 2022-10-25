@@ -192,5 +192,9 @@
 	"version_diff": "Desajuste de la versión",
 	"version_same": "Versión de la partida",
 	"mod_badge_nonmh": "nonModHub",
-	"mod_badge_nonmh__title": "Este mod no está disponible en el modhub del juego"
+	"mod_badge_nonmh__title": "Este mod no está disponible en el modhub del juego",
+	"user_pref_title_game_path"              : "Ruta de juego",
+	"user_pref_blurb_game_path"              : "Establezca aquí la ruta del juego para activar el botón de lanzamiento de FS22",
+	"user_pref_button_game_path"             : "Establecer ruta de juego",
+	"launch_fs22"                            : "Lanzar FS2022"
 }

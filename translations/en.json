@@ -192,5 +192,9 @@
 	"version_diff"                           : "Version Mismatch",
 	"version_same"                           : "Version Match",
 	"mod_badge_nonmh"                        : "nonModHub",
-	"mod_badge_nonmh__title"                 : "This mod is not available on the in-game modhub"
+	"mod_badge_nonmh__title"                 : "This mod is not available on the in-game modhub",
+	"user_pref_title_game_path"              : "Game Path",
+	"user_pref_blurb_game_path"              : "Set the path to the game here to enable the Launch FS22 Button",
+	"user_pref_button_game_path"             : "Set Game Path",
+	"launch_fs22"                            : "Launch FS2022"
 }

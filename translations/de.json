@@ -192,5 +192,9 @@
 	"version_diff": "Versionsabweichung",
 	"version_same": "Version Match",
 	"mod_badge_nonmh": "nonModHub",
-	"mod_badge_nonmh__title": "Diese Mod ist nicht im Modhub des Spiels verfügbar"
+	"mod_badge_nonmh__title": "Diese Mod ist nicht im Modhub des Spiels verfügbar",
+	"user_pref_title_game_path"              : "Spielverlauf",
+	"user_pref_blurb_game_path"              : "Legen Sie hier den Pfad zum Spiel fest, um die Schaltfläche \"FS22 starten\" zu aktivieren",
+	"user_pref_button_game_path"             : "Spielpfad festlegen",
+	"launch_fs22"                            : "FS2022 starten"
 }

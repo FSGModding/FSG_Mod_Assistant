@@ -64,7 +64,13 @@ const trayIcon      = !app.isPackaged
 
 let pathBestGuess = userHome
 let foundPath     = false
+let foundGame     = ''
 
+const gameExeName = 'FarmingSimulator2022.exe'
+const gameGuesses = [
+	'C:\\Program Files (x86)\\Farming Simulator 2022\\',
+	'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Farming Simulator 22'
+]
 const pathGuesses = [
 	path.join(userHome, 'OneDrive', 'Documents', 'My Games', 'FarmingSimulator2022'),
 	path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
@@ -74,6 +80,12 @@ try {
 	const userFolder = winUtil.registry('HKEY_CURRENT_USER/SOFTWARE/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders').Personal.value
 	pathGuesses.unshift(path.join(userFolder, 'My Games', 'FarmingSimulator2022'))
 } catch { /* do nothing */ }
+
+gameGuesses.forEach((testPath) => {
+	if ( fs.existsSync(path.join(testPath, gameExeName)) ) {
+		foundGame = path.join(testPath, gameExeName)
+	}
+})
 
 pathGuesses.forEach((testPath) => {
 	if ( !foundPath && fs.existsSync(testPath) ) {
@@ -96,6 +108,7 @@ const settingsSchema = {
 	lock_lang         : { type : 'boolean', default : false },
 	force_lang        : { type : 'string', default : '' },
 	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
+	game_path         : { type : 'string', default : foundGame },
 }
 
 const Store   = require('electron-store')
@@ -564,6 +577,25 @@ ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('update-log', 
 /** END: Debug window operation */
 
 
+/** Game launcher */
+ipcMain.on('toMain_startFarmSim', () => {
+	if ( mcStore.get('game_path') !== '' ) {
+		const cp       = require('child_process')
+		const progPath = mcStore.get('game_path')
+		const child    = cp.spawn(progPath, { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
+		child.unref()
+	} else {
+		const dialogOpts = {
+			type    : 'info',
+			title   : 'Game Path Not Found',
+			message : 'Please set the game path in preferences',
+		}
+		dialog.showMessageBox(dialogOpts)
+		log.log.warning('Game path not set!', 'game-launcher')
+	}
+})
+/** END: game launcher */
+
 /** Preferences window operation */
 ipcMain.on('toMain_openPrefs', () => { createPrefsWindow() })
 ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
@@ -611,7 +643,26 @@ ipcMain.on('toMain_setPrefFile', (event) => {
 	}).catch((unknownError) => {
 		log.log.danger(`Could not read specified gamesettings : ${unknownError}`, 'game-settings')
 	})
-	
+})
+ipcMain.on('toMain_setGamePath', (event) => {
+	dialog.showOpenDialog(windows.prefs, {
+		properties  : ['openFile'],
+		defaultPath : path.join(userHome, gameExeName),
+		filters     : [
+			{ name : gameExeName, extensions : ['exe'] },
+			{ name : 'All', extensions : ['*'] },
+		],
+	}).then((result) => {
+		if ( ! result.canceled ) {
+			mcStore.set('game_path', result.filePaths[0])
+			gameSettings = result.filePaths[0]
+			parseSettings()
+			refreshClientModList()
+			event.sender.send( 'fromMain_allSettings', mcStore.store )
+		}
+	}).catch((unknownError) => {
+		log.log.danger(`Could not read specified game EXE : ${unknownError}`, 'game-path')
+	})
 })
 /** END: Preferences window operation */
 
