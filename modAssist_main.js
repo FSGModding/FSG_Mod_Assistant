@@ -8,10 +8,14 @@
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net } = require('electron')
 
+const gotTheLock = app.requestSingleInstanceLock()
+
+if ( !gotTheLock ) { app.quit() }
+
 const { autoUpdater } = require('electron-updater')
 const { ma_logger }   = require('./lib/ma-logger.js')
 const mcDetail        = require('./package.json')
-const log             = new ma_logger('modAssist', app, 'assist.log')
+const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
 
 let devDebug        = false
 let skipCache       = false
@@ -1084,6 +1088,14 @@ app.whenReady().then(() => {
 		})
 	})
 	request2.end()
+
+	app.on('second-instance', () => {
+		// Someone tried to run a second instance, we should focus our window.
+		if (windows.main) {
+			if ( windows.main.isMinimized()) { windows.main.restore() }
+			windows.main.focus()
+		}
+	})
 
 	createMainWindow()
 
