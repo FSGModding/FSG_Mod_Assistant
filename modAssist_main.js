@@ -25,7 +25,7 @@ if ( app.isPackaged ) { devDebug = false; skipCache = false }
 
 log.log.info(`ModAssist Logger: ${mcDetail.version}`)
 
-if ( process.platform === 'win32' && app.isPackaged ) {
+if ( process.platform === 'win32' && app.isPackaged && gotTheLock ) {
 	autoUpdater.on('update-checking-for-update', () => { log.log.info('Checking for update', 'auto-update') })
 	autoUpdater.on('update-available', () => { log.log.info('Update Available', 'auto-update') })
 	autoUpdater.on('update-not-available', () => { log.log.info('No Update Available', 'auto-update') })
@@ -1045,61 +1045,63 @@ function loadModHubVer() {
 
 
 app.whenReady().then(() => {
-	if ( mcStore.has('force_lang') && mcStore.has('lock_lang') ) {
-		// If language is locked, switch to it.
-		myTranslator.currentLocale = mcStore.get('force_lang')
-	}
-
-	tray = new Tray(trayIcon)
-
-	const template = [
-		{ label : 'FSG Mod Assist', /*icon : pathIcon, */enabled : false },
-		{ type  : 'separator' },
-		{ label : myTranslator.syncStringLookup('tray_show'), click : () => { windows.main.show() } },
-		{ label : myTranslator.syncStringLookup('tray_quit'), click : () => { windows.main.close() } },
-	]
-	const contextMenu = Menu.buildFromTemplate(template)
-	tray.setContextMenu(contextMenu)
-	tray.setToolTip('FSG Mod Assist')
-	tray.on('click', () => { windows.main.show() })
-
-	const request = net.request(hubURL)
-
-	request.on('response', (response) => {
-		log.log.info(`Got modHubData.json: ${response.statusCode}`, 'local-cache')
-		let mhResp = ''
-		response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
-		response.on('end',  () => {
-			fs.writeFileSync(path.join(app.getPath('userData'), 'modHubData.json'), mhResp)
-			loadModHub()
-		})
-	})
-	request.end()
-
-	const request2 = net.request(hubVerURL)
-
-	request2.on('response', (response) => {
-		log.log.info(`Got modHubVersion.json: ${response.statusCode}`, 'local-cache')
-		let mhResp = ''
-		response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
-		response.on('end',  () => {
-			fs.writeFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'), mhResp)
-			loadModHubVer()
-		})
-	})
-	request2.end()
-
-	app.on('second-instance', () => {
-		// Someone tried to run a second instance, we should focus our window.
-		if (windows.main) {
-			if ( windows.main.isMinimized()) { windows.main.restore() }
-			windows.main.focus()
+	if ( gotTheLock ) {
+		if ( mcStore.has('force_lang') && mcStore.has('lock_lang') ) {
+			// If language is locked, switch to it.
+			myTranslator.currentLocale = mcStore.get('force_lang')
 		}
-	})
 
-	createMainWindow()
+		tray = new Tray(trayIcon)
 
-	app.on('activate', () => {if (BrowserWindow.getAllWindows().length === 0) { createMainWindow() } })
+		const template = [
+			{ label : 'FSG Mod Assist', /*icon : pathIcon, */enabled : false },
+			{ type  : 'separator' },
+			{ label : myTranslator.syncStringLookup('tray_show'), click : () => { windows.main.show() } },
+			{ label : myTranslator.syncStringLookup('tray_quit'), click : () => { windows.main.close() } },
+		]
+		const contextMenu = Menu.buildFromTemplate(template)
+		tray.setContextMenu(contextMenu)
+		tray.setToolTip('FSG Mod Assist')
+		tray.on('click', () => { windows.main.show() })
+
+		const request = net.request(hubURL)
+
+		request.on('response', (response) => {
+			log.log.info(`Got modHubData.json: ${response.statusCode}`, 'local-cache')
+			let mhResp = ''
+			response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
+			response.on('end',  () => {
+				fs.writeFileSync(path.join(app.getPath('userData'), 'modHubData.json'), mhResp)
+				loadModHub()
+			})
+		})
+		request.end()
+
+		const request2 = net.request(hubVerURL)
+
+		request2.on('response', (response) => {
+			log.log.info(`Got modHubVersion.json: ${response.statusCode}`, 'local-cache')
+			let mhResp = ''
+			response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
+			response.on('end',  () => {
+				fs.writeFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'), mhResp)
+				loadModHubVer()
+			})
+		})
+		request2.end()
+
+		app.on('second-instance', () => {
+			// Someone tried to run a second instance, we should focus our window.
+			if (windows.main) {
+				if ( windows.main.isMinimized()) { windows.main.show() }
+				windows.main.focus()
+			}
+		})
+
+		createMainWindow()
+
+		app.on('activate', () => {if (BrowserWindow.getAllWindows().length === 0) { createMainWindow() } })
+	}
 })
 
 app.setAboutPanelOptions({
