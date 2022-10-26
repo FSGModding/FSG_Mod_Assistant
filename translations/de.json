@@ -196,5 +196,7 @@
 	"user_pref_title_game_path"              : "Spielverlauf",
 	"user_pref_blurb_game_path"              : "Legen Sie hier den Pfad zum Spiel fest, um die Schaltfläche \"FS22 starten\" zu aktivieren",
 	"user_pref_button_game_path"             : "Spielpfad festlegen",
-	"launch_fs22"                            : "FS2022 starten"
+	"launch_fs22"                            : "FS2022 starten",
+	"minimize_message_title"                 : "Minimieren in die Taskleiste",
+	"minimize_message"                       : "Die Anwendung wurde in die Taskleiste minimiert"
 }

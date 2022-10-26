@@ -196,5 +196,7 @@
 	"user_pref_title_game_path"              : "Game Path",
 	"user_pref_blurb_game_path"              : "Stel hier het pad naar het spel in om de Lanceer FS22 knop in te schakelen.",
 	"user_pref_button_game_path"             : "Set Game Path",
-	"launch_fs22"                            : "Start FS2022"
+	"launch_fs22"                            : "Start FS2022",
+	"minimize_message_title"                 : "Minimaliseren naar systeemvak",
+	"minimize_message"                       : "Toepassing is geminimaliseerd naar het systeemvak"
 }

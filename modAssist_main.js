@@ -35,7 +35,6 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock ) {
 		clearInterval(updaterInterval)
 		const dialogOpts = {
 			type    : 'info',
-			buttons : ['Restart', 'Later'],
 			title   : 'Application Update',
 			message : process.platform === 'win32' ? releaseNotes : releaseName,
 			detail  : 'A new version has been downloaded. Restart the application to apply the updates.',
@@ -164,6 +163,7 @@ const windows = {
 }
 
 let foldersDirty = true
+let firstMin     = true
 
 let gameSettings    = mcStore.get('game_settings')
 let gameSettingsXML = null
@@ -233,7 +233,24 @@ function createMainWindow () {
 
 	windows.main = createSubWindow({ noSelect : false, show : devDebug, preload : 'mainWindow', width : 'main_window_x', height : 'main_window_y', maximize : mcStore.get('main_window_max') })
 
-	windows.main.on('minimize', () => { if ( tray ) { windows.main.hide() }})
+	windows.main.on('minimize', () => {
+		if ( tray ) {
+			
+			if ( firstMin ) {
+				const dialogOpts = {
+					type    : 'info',
+					title   : 'Application Update',
+					message : myTranslator.syncStringLookup('minimize_message_title'),
+					detail  : myTranslator.syncStringLookup('minimize_message'),
+				}
+
+				dialog.showMessageBox(dialogOpts)
+			}
+			
+			firstMin = false
+			windows.main.hide()
+		}
+	})
 	windows.main.on('closed',   () => {
 		if ( tray ) { tray.destroy() }
 		windows.load.destroy()
