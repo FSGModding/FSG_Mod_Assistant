@@ -17,11 +17,9 @@ const { ma_logger }   = require('./lib/ma-logger.js')
 const mcDetail        = require('./package.json')
 const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
 
-let devDebug        = false
-let skipCache       = false
+const devDebug      = !(app.isPackaged)
+const skipCache     = false && !(app.isPackaged)
 let updaterInterval = null
-
-if ( app.isPackaged ) { devDebug = false; skipCache = false }
 
 log.log.info(`ModAssist Logger: ${mcDetail.version}`)
 
@@ -958,7 +956,8 @@ function processModFolders_post(newFolder = false) {
 	mcStore.set('modFolders', Array.from(modFolders))
 
 	modFolders.forEach((folder) => {
-		const cleanName = folder.replaceAll('\\', '-').replaceAll(':', '').replaceAll(' ', '_')
+		const cleanName = `col_${crypto.createHash('md5').update(folder).digest('hex')}`
+		//const cleanName = folder.replaceAll('\\', '-').replaceAll(':', '').replace(/[^\w-]/gi, '_')
 		const shortName = path.basename(folder)
 		const localStore = maCache.store
 
