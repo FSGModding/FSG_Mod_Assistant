@@ -10,7 +10,8 @@
 		"translations/es.json",
 		"translations/fr.json",
 		"translations/nl.json",
-		"translations/pl.json"
+		"translations/pl.json",
+		"translations/ru.json",
 	],
 	"cSpell.words": [
 		"asar",

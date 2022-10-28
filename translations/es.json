@@ -193,10 +193,15 @@
 	"version_same": "Versión de la partida",
 	"mod_badge_nonmh": "nonModHub",
 	"mod_badge_nonmh__title": "Este mod no está disponible en el modhub del juego",
-	"user_pref_title_game_path"              : "Ruta de juego",
-	"user_pref_blurb_game_path"              : "Establezca aquí la ruta del juego para activar el botón de lanzamiento de FS22",
-	"user_pref_button_game_path"             : "Establecer ruta de juego",
-	"launch_fs22"                            : "Lanzar FS2022",
-	"minimize_message_title"                 : "Minimizar a la bandeja del sistema",
-	"minimize_message"                       : "La aplicación se ha minimizado a la bandeja del sistema"
+	"user_pref_title_game_path": "Ruta de juego",
+	"user_pref_blurb_game_path": "Establezca aquí la ruta del juego para activar el botón de lanzamiento de FS22",
+	"user_pref_button_game_path": "Establecer ruta de juego",
+	"launch_fs22": "Lanzar FS2022",
+	"minimize_message_title": "Minimizar a la bandeja del sistema",
+	"minimize_message": "La aplicación se ha minimizado a la bandeja del sistema",
+	"savegame_unused": "Sin usar",
+	"savegame_unused__title": "Este mod no ha sido comprado en el juego",
+	"savegame_error": "Errores encontrados en la partida guardada",
+	"savegame_unreadable": "No se pudo leer el archivo:",
+	"savegame_parse_error": "No se pudo analizar el archivo:"
 }

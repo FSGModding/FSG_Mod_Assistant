@@ -193,10 +193,15 @@
 	"version_same": "Ta sama wersja",
 	"mod_badge_nonmh": "nonModHub",
 	"mod_badge_nonmh__title": "Ten mod nie jest dostępny na ModHubie",
-	"user_pref_title_game_path"              : "Ścieżka gry",
-	"user_pref_blurb_game_path"              : "Ustaw tutaj ścieżkę do gry, aby włączyć przycisk Launch FS22",
-	"user_pref_button_game_path"             : "Set Game Path",
-	"launch_fs22"                            : "Launch FS2022",
-	"minimize_message_title"                 : "Minimalizacja do zasobnika systemowego",
-	"minimize_message"                       : "Aplikacja została zminimalizowana do zasobnika systemowego"
+	"user_pref_title_game_path": "Ścieżka gry",
+	"user_pref_blurb_game_path": "Ustaw tutaj ścieżkę do gry, aby włączyć przycisk Launch FS22",
+	"user_pref_button_game_path": "Set Game Path",
+	"launch_fs22": "Launch FS2022",
+	"minimize_message_title": "Minimalizacja do zasobnika systemowego",
+	"minimize_message": "Aplikacja została zminimalizowana do zasobnika systemowego",
+	"savegame_unused": "Niewykorzystane",
+	"savegame_unused__title": "Ten mod nie został zakupiony w grze",
+	"savegame_error": "Błędy znalezione przy zapisie gry",
+	"savegame_unreadable": "Nie można odczytać pliku:",
+	"savegame_parse_error": "Nie można przetworzyć pliku:"
 }

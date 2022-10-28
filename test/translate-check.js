@@ -66,10 +66,12 @@ folderContents.forEach((thisFile) => {
 		if ( noneFound ) {
 			console.log('  --Keys Match!')
 			console.log('\n')
+		} else {
+			exitCode += 1
 		}
 	} catch (e) {
 		console.log(`Issue with file ${thisFile.name} :: ${e}`)
-		exitCode = 1
+		exitCode += 1
 	}
 })
 

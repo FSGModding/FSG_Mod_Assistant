@@ -193,10 +193,15 @@
 	"version_same": "Versie wedstrijd",
 	"mod_badge_nonmh": "nonModHub",
 	"mod_badge_nonmh__title": "Deze mod is niet beschikbaar op de in-game modhub",
-	"user_pref_title_game_path"              : "Game Path",
-	"user_pref_blurb_game_path"              : "Stel hier het pad naar het spel in om de Lanceer FS22 knop in te schakelen.",
-	"user_pref_button_game_path"             : "Set Game Path",
-	"launch_fs22"                            : "Start FS2022",
-	"minimize_message_title"                 : "Minimaliseren naar systeemvak",
-	"minimize_message"                       : "Toepassing is geminimaliseerd naar het systeemvak"
+	"user_pref_title_game_path": "Game Path",
+	"user_pref_blurb_game_path": "Stel hier het pad naar het spel in om de Lanceer FS22 knop in te schakelen.",
+	"user_pref_button_game_path": "Set Game Path",
+	"launch_fs22": "Start FS2022",
+	"minimize_message_title": "Minimaliseren naar systeemvak",
+	"minimize_message": "Toepassing is geminimaliseerd naar het systeemvak",
+	"savegame_unused": "Ongebruikt",
+	"savegame_unused__title": "Deze mod is niet gekocht in het spel",
+	"savegame_error": "Fouten gevonden met savegame",
+	"savegame_unreadable": "Kon bestand niet lezen:",
+	"savegame_parse_error": "Kon bestand niet parsen:"
 }
