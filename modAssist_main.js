@@ -33,6 +33,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock ) {
 		clearInterval(updaterInterval)
 		const dialogOpts = {
 			type    : 'info',
+			buttons : ['Restart', 'Later'],
 			title   : 'Application Update',
 			message : process.platform === 'win32' ? releaseNotes : releaseName,
 			detail  : 'A new version has been downloaded. Restart the application to apply the updates.',
