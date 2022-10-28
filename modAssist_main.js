@@ -110,6 +110,7 @@ const settingsSchema = {
 	force_lang        : { type : 'string', default : '' },
 	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
 	game_path         : { type : 'string', default : foundGame },
+	cache_version     : { type : 'string', default : '0.0.0' },
 }
 
 const Store   = require('electron-store')
@@ -169,6 +170,11 @@ let overrideFolder  = null
 let overrideIndex   = '999'
 let overrideActive  = null
 
+/** Upgrade Cache Version Here */
+
+mcStore.set('cache_version', mcDetail.version)
+
+/** END: Upgrade Cache Version Here */
 
 
 /*  _    _  ____  _  _  ____   _____  _    _  ___ 

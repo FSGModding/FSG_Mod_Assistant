@@ -195,6 +195,7 @@ In this display, you can compare a collection to a savegame.  Both savegame fold
 - __In-Active__ : This mod is not loaded in the savegame
 - __Active__ : This mod is loaded in the savegame
 - __Used__ : This mod is used in the savegame (someone owns something from it)
+- __Unused__ : This mod is NOT used in the savegame (nobody owns anything from it)
 - __Script__ : This mod contains only scripts, so it is assumed it is in use in the savegame
 - __Missing__ : This mod is active or used in the savegame, but you do not have the file in your collection
 - __DLC__ : This mod is paid DLC content from Giants
