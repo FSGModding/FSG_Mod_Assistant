@@ -198,5 +198,10 @@
 	"user_pref_button_game_path"             : "Set Game Path",
 	"launch_fs22"                            : "Launch FS2022",
 	"minimize_message_title"                 : "Minimizing to system tray",
-	"minimize_message"                       : "Application has been minimized to the system tray"
+	"minimize_message"                       : "Application has been minimized to the system tray",
+	"savegame_unused"                        : "Unused",
+	"savegame_unused__title"                 : "This mod has not been purchased in-game",
+	"savegame_error"                         : "Errors found with savegame",
+	"savegame_unreadable"                    : "Could not read file:",
+	"savegame_parse_error"                   : "Could not parse file:"
 }

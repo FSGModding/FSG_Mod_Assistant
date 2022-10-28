@@ -51,9 +51,23 @@ window.mods.receive('fromMain_collectionName', (collection, modList) => {
 })
 
 window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
+	console.log(savegame.errorList)
 	const fullModSet       = new Set()
 	const haveModSet       = {}
 	const modSetHTML       = []
+
+	if ( savegame.errorList.length > 0 ) {
+		const errors = []
+
+		savegame.errorList.forEach((error) => { errors.push(`<l10n name="${error[0]}"></l10n> ${error[1]}`) })
+
+		modSetHTML.push(`<li class="mod-item list-group-item text-center justify-content-between list-group-item-danger">
+			<div class="ms-2 me-auto">
+				<div class="fw-bold"><l10n name="savegame_error"></div>
+				<div class="small">${errors.join(', ')}</div>
+			</div>
+		</li>`)
+	}
 
 	modList[thisCollection].mods.forEach((thisMod) => {
 		haveModSet[thisMod.fileDetail.shortName] = thisMod
@@ -156,6 +170,9 @@ function makeLine(name, mod, singleFarm) {
 	if ( !mod.isPresent ) {
 		thisHTML.push(fsgUtil.badge('danger bg-gradient rounded-1 ms-1', 'savegame_missing', true))
 	}
+	if ( !mod.isUsed ) {
+		thisHTML.push(fsgUtil.badge('warning bg-gradient rounded-1 ms-1', 'savegame_unused', true))
+	}
 	if ( !mod.isLoaded ) {
 		thisHTML.push(fsgUtil.badge('warning bg-gradient rounded-1 ms-1', 'savegame_inactive', true))
 	}
@@ -181,6 +198,7 @@ function clientChangeFilter() {
 		isloaded   : false,
 		isused     : false,
 		inactive   : false,
+		unused     : false,
 	}
 
 	if ( filtersActive === 0 ) {
@@ -201,3 +219,7 @@ function clientChangeFilter() {
 		})
 	}
 }
+
+window.addEventListener('click', () => {
+	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
+})
