@@ -203,5 +203,9 @@
 	"savegame_unused__title": "Ce mod n'a pas été acheté dans le jeu",
 	"savegame_error": "Erreurs trouvées avec le jeu de sauvegarde",
 	"savegame_unreadable": "Impossible de lire le fichier :",
-	"savegame_parse_error": "Impossible d'analyser le fichier :"
+	"savegame_parse_error": "Impossible d'analyser le fichier :",
+	"user_pref_setting_game_args": "Arguments de jeu",
+	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
+	"savegame_nohub": "Non-ModHub",
+	"savegmae_nohub__title": "Ce mod n'est pas sur le modhub du jeu"
 }

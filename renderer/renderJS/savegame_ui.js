@@ -50,8 +50,8 @@ window.mods.receive('fromMain_collectionName', (collection, modList) => {
 	processL10N()
 })
 
-window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
-	console.log(savegame.errorList)
+window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
+	console.log(modHubList)
 	const fullModSet       = new Set()
 	const haveModSet       = {}
 	const modSetHTML       = []
@@ -87,8 +87,10 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame) => {
 			isDLC           : false,
 			usedBy          : null,
 			versionMismatch : false,
+			isModHub        : typeof modHubList.mods[thisMod] !== 'undefined',
 		}
 
+		console.log(thisMod, thisModDetail.isModHub)
 		if ( thisMod.startsWith('pdlc_')) {
 			thisModDetail.isDLC     = true
 			thisModDetail.isPresent = true
@@ -164,6 +166,9 @@ function makeLine(name, mod, singleFarm) {
 	}
 	thisHTML.push('</div>')
 
+	if ( !mod.isModHub && !mod.isDLC ) {
+		thisHTML.push(fsgUtil.badge('info bg-gradient rounded-1 ms-1', 'savegame_nohub', true))
+	}
 	if ( mod.isDLC ) {
 		thisHTML.push(fsgUtil.badge('info bg-gradient rounded-1 ms-1', 'savegame_dlc', true))
 	}
@@ -199,6 +204,7 @@ function clientChangeFilter() {
 		isused     : false,
 		inactive   : false,
 		unused     : false,
+		nohub      : false,
 	}
 
 	if ( filtersActive === 0 ) {

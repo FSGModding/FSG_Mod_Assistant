@@ -203,5 +203,9 @@
 	"savegame_unused__title": "Deze mod is niet gekocht in het spel",
 	"savegame_error": "Fouten gevonden met savegame",
 	"savegame_unreadable": "Kon bestand niet lezen:",
-	"savegame_parse_error": "Kon bestand niet parsen:"
+	"savegame_parse_error": "Kon bestand niet parsen:",
+	"user_pref_setting_game_args": "Spelargumenten",
+	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
+	"savegame_nohub": "Non-ModHub",
+	"savegmae_nohub__title": "Deze mod staat niet op de in-game modhub."
 }

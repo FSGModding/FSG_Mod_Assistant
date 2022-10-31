@@ -203,5 +203,9 @@
 	"savegame_unused__title"                 : "This mod has not been purchased in-game",
 	"savegame_error"                         : "Errors found with savegame",
 	"savegame_unreadable"                    : "Could not read file:",
-	"savegame_parse_error"                   : "Could not parse file:"
+	"savegame_parse_error"                   : "Could not parse file:",
+	"user_pref_setting_game_args"            : "Game Arguments",
+	"user_pref_setting_game_args_example"    : "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
+	"savegame_nohub"                         : "Non-ModHub",
+	"savegmae_nohub__title"                  : "This mod is not on the in-game modhub"
 }

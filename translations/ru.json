@@ -203,5 +203,9 @@
 	"savegame_unused__title": "Этот мод не был приобретен в игре",
 	"savegame_error": "Найдены ошибки при сохранении игры",
 	"savegame_unreadable": "Не удалось прочитать файл:",
-	"savegame_parse_error": "Не удалось разобрать файл:"
+	"savegame_parse_error": "Не удалось разобрать файл:",
+	"user_pref_setting_game_args": "Аргументы игры",
+	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
+	"savegame_nohub": "Non-ModHub",
+	"savegmae_nohub__title": "Этого мода нет на внутриигровом модхабе"
 }

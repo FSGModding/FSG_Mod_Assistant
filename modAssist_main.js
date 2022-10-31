@@ -112,6 +112,7 @@ const settingsSchema = {
 	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
 	game_path         : { type : 'string', default : foundGame },
 	cache_version     : { type : 'string', default : '0.0.0' },
+	game_args         : { type : 'string', default : '' },
 }
 
 const Store   = require('electron-store')
@@ -608,7 +609,7 @@ ipcMain.on('toMain_startFarmSim', () => {
 	if ( mcStore.get('game_path') !== '' ) {
 		const cp       = require('child_process')
 		const progPath = mcStore.get('game_path')
-		const child    = cp.spawn(progPath, { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
+		const child    = cp.spawn(progPath, mcStore.get('game_args').split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
 		child.unref()
 	} else {
 		const dialogOpts = {
@@ -711,7 +712,7 @@ function openSaveGame(zipMode = false) {
 		if ( !result.canceled ) {
 			try {
 				const thisSavegame = new saveFileChecker(result.filePaths[0], !zipMode, log)
-				windows.save.webContents.send('fromMain_saveInfo', modList, thisSavegame)
+				windows.save.webContents.send('fromMain_saveInfo', modList, thisSavegame, modHubList)
 			} catch (e) {
 				log.log.danger(`Load failed: ${e}`, 'savegame')
 			}

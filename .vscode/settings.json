@@ -62,6 +62,7 @@
 		"MODNAME",
 		"modsdirectoryoverride",
 		"modtiny",
+		"nohub",
 		"nomp",
 		"nonmh",
 		"norecord",
