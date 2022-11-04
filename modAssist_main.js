@@ -509,7 +509,12 @@ ipcMain.on('toMain_copyMods',       (event, mods) => { createConfirmWindow('copy
 ipcMain.on('toMain_realFileDelete', (event, fileMap) => { fileOperation('delete', fileMap) })
 ipcMain.on('toMain_realFileMove',   (event, fileMap) => { fileOperation('move', fileMap) })
 ipcMain.on('toMain_realFileCopy',   (event, fileMap) => { fileOperation('copy', fileMap) })
-ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => { fileOperation('copy', fileMap, 'resolve') })
+ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => {
+	fileOperation('copy', fileMap, 'resolve')
+	setTimeout(() => {
+		windows.version.webContents.send('fromMain_modList', modList)
+	}, 1500)
+})
 /** END: File operation buttons */
 
 
