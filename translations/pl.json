@@ -204,8 +204,8 @@
 	"savegame_error": "Błędy znalezione przy zapisie gry",
 	"savegame_unreadable": "Nie można odczytać pliku:",
 	"savegame_parse_error": "Nie można przetworzyć pliku:",
-	"user_pref_setting_game_args": "Argumenty za grą",
-	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
+	"user_pref_setting_game_args": "Parametry startowe",
+	"user_pref_setting_game_args_example": "(np. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-ModHub",
-	"savegmae_nohub__title": "Tego moda nie ma na modhubie w grze"
+	"savegmae_nohub__title": "Tego moda nie ma na modhubie"
 }
