@@ -130,6 +130,8 @@ In this area you will see a list of all of the collections (folders) that you ha
   - __Folder__ : This mod is unzipped
   - __PC Badge__ : This mod contains scripts, and will only work on PC/Mac
 
+__Special Note:__ - The Issue badge is based on all the possible issues we know about, _including_ those that the Giants Server software reports - some of those issues are easily ignorable, and in fact do not pose a problem to a mod being included on the modhub.  However, for completeness, they are displayed by Mod Assistant.
+
 ##### Active List
 
 ![collections active zoom](screen_shots/004-collect_active.png)
@@ -200,6 +202,8 @@ In this display, you can compare a collection to a savegame.  Both savegame fold
 - __Missing__ : This mod is active or used in the savegame, but you do not have the file in your collection
 - __DLC__ : This mod is paid DLC content from Giants
 - __Version Mismatch__ : The version of the mod used in the savegame and the version in your collection don't match.  For single player, this will fix itself on load, however, for multi-player play, this will prevent you from joining.
+
+__Special Note__ : Some classes of mods will almost always appear as "unused", even if they are in fact used - notable among them are mods that add the ability to buy already in-game consumables (bales, lime, fertilizer, etc) - so, when making a list of "unused" mods to deactivate, please pay special attention to what the mod does for you.
 
 ### Version Check
 
