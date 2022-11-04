@@ -241,16 +241,16 @@ function createMainWindow () {
 
 	windows.main.on('minimize', () => {
 		if ( tray ) {
-			
 			if ( firstMin ) {
-				const dialogOpts = {
-					type    : 'info',
+				const bubbleOpts = {
+					icon    : trayIcon,
 					title   : myTranslator.syncStringLookup('minimize_message_title'),
-					message : myTranslator.syncStringLookup('minimize_message_title'),
-					detail  : myTranslator.syncStringLookup('minimize_message'),
+					content : myTranslator.syncStringLookup('minimize_message'),
 				}
 
-				dialog.showMessageBox(dialogOpts)
+				tray.displayBalloon(bubbleOpts)
+
+				setTimeout(() => { tray.removeBalloon() }, 5000)
 			}
 			
 			firstMin = false
