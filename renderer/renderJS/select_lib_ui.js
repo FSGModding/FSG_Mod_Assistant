@@ -123,6 +123,8 @@ const select_lib = {
 		const inverseSearch = rawSearchTerm.startsWith('!')
 		const searchTerm    = ( inverseSearch ) ? rawSearchTerm.substring(1) : rawSearchTerm
 
+		fsgUtil.byId(`${table}__filter_clear`).classList[(rawSearchTerm === '') ? 'add' : 'remove']('d-none')
+		
 		theseMods.forEach((modRow) => {
 			modRow.classList.remove('d-none')
 

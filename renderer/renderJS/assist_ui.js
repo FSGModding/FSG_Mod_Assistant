@@ -167,6 +167,7 @@ function makeModCollection(id, name, modsRows) {
 							<div class="input-group input-group-sm mb-0">
 								<span class="input-group-text bg-gradient">${getText('filter_only')}</span>
 								<input type="text" id="${id}_mods__filter" onkeyup="select_lib.filter('${id}_mods')" class="form-control mod-row-filter">
+								<span id="${id}_mods__filter_clear" onclick="clientClearInput('${id}_mods__filter')" class="form-control-clear gg-erase form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; color:black;"></span>
 							</div>
 						</div>
 						<div class="col col-auto">
@@ -213,6 +214,12 @@ function makeModRow(id, thisMod, badges, modId) {
 </tr>`
 }
 
+
+function clientClearInput(id) {
+	const filterId = id.replace('__filter', '')
+	fsgUtil.byId(id).value = ''
+	select_lib.filter(filterId)
+}
 
 function clientBatchOperation(mode) {
 	const selectedMods = []
