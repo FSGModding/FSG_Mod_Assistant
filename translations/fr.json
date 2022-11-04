@@ -207,5 +207,11 @@
 	"user_pref_setting_game_args": "Arguments de jeu",
 	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-ModHub",
-	"savegmae_nohub__title": "Ce mod n'est pas sur le modhub du jeu"
+	"savegame_nohub__title": "Ce mod n'est pas sur le modhub du jeu",
+	"update_restart": "Redémarrer",
+	"update_later": "Plus tard",
+	"update_title": "Mise à jour de l'application",
+	"update_detail": "Une nouvelle version a été téléchargée. Redémarrez l'application pour appliquer les mises à jour.",
+	"launcher_error_title": "Chemin du jeu non trouvé",
+	"launcher_error_message": "Veuillez définir le chemin du jeu dans les préférences"
 }

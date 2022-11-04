@@ -207,5 +207,11 @@
 	"user_pref_setting_game_args": "Spiel-Argumente",
 	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-ModHub",
-	"savegmae_nohub__title": "Diese Mod ist nicht im Modhub des Spiels enthalten"
+	"savegame_nohub__title": "Diese Mod ist nicht im Modhub des Spiels enthalten",
+	"update_restart": "Restart",
+	"update_later": "Später",
+	"update_title": "Aktualisierung der Anwendung",
+	"update_detail": "Es wurde eine neue Version heruntergeladen. Starten Sie die Anwendung neu, um die Updates anzuwenden",
+	"launcher_error_title": "Spielpfad nicht gefunden",
+	"launcher_error_message": "Bitte stellen Sie den Spielpfad in den Einstellungen ein"
 }

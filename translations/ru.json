@@ -207,5 +207,11 @@
 	"user_pref_setting_game_args": "Аргументы игры",
 	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-ModHub",
-	"savegmae_nohub__title": "Этого мода нет на внутриигровом модхабе"
+	"savegame_nohub__title": "Этого мода нет на внутриигровом модхабе",
+	"update_restart": "Перезагрузка",
+	"update_later": "Позже",
+	"update_title": "Обновление приложения",
+	"update_detail": "Была загружена новая версия. Перезапустите приложение, чтобы применить обновления.",
+	"launcher_error_title": "Путь игры не найден",
+	"launcher_error_message": "Пожалуйста, установите путь игры в настройках"
 }

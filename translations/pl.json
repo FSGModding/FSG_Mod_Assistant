@@ -207,5 +207,11 @@
 	"user_pref_setting_game_args": "Parametry startowe",
 	"user_pref_setting_game_args_example": "(np. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-ModHub",
-	"savegmae_nohub__title": "Tego moda nie ma na modhubie"
+	"savegame_nohub__title": "Tego moda nie ma na modhubie",
+	"update_restart": "Restart",
+	"update_later": "Później",
+	"update_title": "Aktualizacja aplikacji",
+	"update_detail": "Została pobrana nowa wersja. Uruchom ponownie aplikację, aby zastosować aktualizacje.",
+	"launcher_error_title": "Game Path Not Found",
+	"launcher_error_message": "Proszę ustawić ścieżkę gry w preferencjach"
 }

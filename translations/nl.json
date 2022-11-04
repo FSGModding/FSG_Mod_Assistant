@@ -207,5 +207,11 @@
 	"user_pref_setting_game_args": "Spelargumenten",
 	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-ModHub",
-	"savegmae_nohub__title": "Deze mod staat niet op de in-game modhub."
+	"savegame_nohub__title": "Deze mod staat niet op de in-game modhub.",
+	"update_restart": "Herstart",
+	"update_later": "Later",
+	"update_title": "Update toepassing",
+	"update_detail": "Er is een nieuwe versie gedownload. Herstart de applicatie om de updates toe te passen.",
+	"launcher_error_title": "Spelpad niet gevonden",
+	"launcher_error_message": "Stel het spelpad in bij voorkeuren"
 }

@@ -23,6 +23,10 @@ let updaterInterval = null
 
 log.log.info(`ModAssist Logger: ${mcDetail.version}`)
 
+const translator       = require('./lib/translate.js')
+const myTranslator     = new translator.translator(translator.getSystemLocale())
+myTranslator.mcVersion = mcDetail.version
+
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock ) {
 	autoUpdater.on('update-checking-for-update', () => { log.log.info('Checking for update', 'auto-update') })
 	autoUpdater.on('update-available', () => { log.log.info('Update Available', 'auto-update') })
@@ -33,10 +37,10 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock ) {
 		clearInterval(updaterInterval)
 		const dialogOpts = {
 			type    : 'info',
-			buttons : ['Restart', 'Later'],
-			title   : 'Application Update',
+			buttons : [myTranslator.syncStringLookup('update_restart'), myTranslator.syncStringLookup('update_later')],
+			title   : myTranslator.syncStringLookup('update_title'),
 			message : process.platform === 'win32' ? releaseNotes : releaseName,
-			detail  : 'A new version has been downloaded. Restart the application to apply the updates.',
+			detail  : myTranslator.syncStringLookup('update_detail'),
 		}
 		dialog.showMessageBox(dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) { autoUpdater.quitAndInstall() }
@@ -96,7 +100,6 @@ pathGuesses.forEach((testPath) => {
 	}
 })
 
-const translator                            = require('./lib/translate.js')
 const { modFileChecker, notModFileChecker } = require('./lib/single-mod-checker.js')
 
 const settingsSchema = {
@@ -121,9 +124,6 @@ const mcStore = new Store({schema : settingsSchema})
 const maCache = new Store({name : 'mod_cache'})
 
 const newModsList = []
-
-const myTranslator     = new translator.translator(translator.getSystemLocale())
-myTranslator.mcVersion = mcDetail.version
 
 let modFolders    = new Set()
 let modFoldersMap = {}
@@ -245,7 +245,7 @@ function createMainWindow () {
 			if ( firstMin ) {
 				const dialogOpts = {
 					type    : 'info',
-					title   : 'Application Update',
+					title   : myTranslator.syncStringLookup('minimize_message_title'),
 					message : myTranslator.syncStringLookup('minimize_message_title'),
 					detail  : myTranslator.syncStringLookup('minimize_message'),
 				}
@@ -614,8 +614,8 @@ ipcMain.on('toMain_startFarmSim', () => {
 	} else {
 		const dialogOpts = {
 			type    : 'info',
-			title   : 'Game Path Not Found',
-			message : 'Please set the game path in preferences',
+			title   : myTranslator.syncStringLookup('launcher_error_title'),
+			message : myTranslator.syncStringLookup('launcher_error_message'),
 		}
 		dialog.showMessageBox(dialogOpts)
 		log.log.warning('Game path not set!', 'game-launcher')

@@ -207,5 +207,11 @@
 	"user_pref_setting_game_args"            : "Game Arguments",
 	"user_pref_setting_game_args_example"    : "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub"                         : "Non-ModHub",
-	"savegmae_nohub__title"                  : "This mod is not on the in-game modhub"
+	"savegame_nohub__title"                  : "This mod is not on the in-game modhub",
+	"update_restart"                         : "Restart",
+	"update_later"                           : "Later",
+	"update_title"                           : "Application Update",
+	"update_detail"                          : "A new version has been downloaded. Restart the application to apply the updates.",
+	"launcher_error_title"                   : "Game Path Not Found",
+	"launcher_error_message"                 : "Please set the game path in preferences"
 }
