@@ -1,6 +1,6 @@
 # FSG Mod Assistant
 
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/FSGModding/FSG_Mod_Assistant) [![Build/release](https://github.com/FSGModding/FSG_Mod_Assistant/actions/workflows/build.yml/badge.svg)](https://github.com/FSGModding/FSG_Mod_Assistant/actions/workflows/build.yml) ![GitHub Release Date](https://img.shields.io/github/release-date/FSGModding/FSG_Mod_Assistant) ![GitHub all releases](https://img.shields.io/github/downloads/FSGModding/FSG_Mod_Assistant/total)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/FSGModding/FSG_Mod_Assistant) [![Build/release](https://github.com/FSGModding/FSG_Mod_Assistant/actions/workflows/build.yml/badge.svg)](https://github.com/FSGModding/FSG_Mod_Assistant/actions/workflows/build.yml) ![GitHub Release Date](https://img.shields.io/github/release-date/FSGModding/FSG_Mod_Assistant) ![GitHub all releases](https://img.shields.io/github/downloads/FSGModding/FSG_Mod_Assistant/total) [![Crowdin](https://badges.crowdin.net/fsg-mod-assistant/localized.svg)](https://crowdin.com/project/fsg-mod-assistant)
 
 This is a mod folder switcher with extra tools
 
