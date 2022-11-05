@@ -8,6 +8,8 @@
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net } = require('electron')
 
+
+const isPortable = typeof process.env.PORTABLE_EXECUTABLE_DIR !== 'undefined'
 const gotTheLock = app.requestSingleInstanceLock()
 
 if ( !gotTheLock ) { app.quit() }
@@ -27,7 +29,7 @@ const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = mcDetail.version
 
-if ( process.platform === 'win32' && app.isPackaged && gotTheLock ) {
+if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
 	autoUpdater.on('update-checking-for-update', () => { log.log.info('Checking for update', 'auto-update') })
 	autoUpdater.on('update-available', () => { log.log.info('Update Available', 'auto-update') })
 	autoUpdater.on('update-not-available', () => { log.log.info('No Update Available', 'auto-update') })
