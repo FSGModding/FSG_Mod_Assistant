@@ -581,9 +581,13 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			event.sender.send('fromMain_getText_return', [l10nEntry, mcDetail.version])
 		} else if ( l10nEntry === 'clean_cache_size' ) {
 			const cleanString = myTranslator.syncStringLookup(l10nEntry)
-			const cacheStats = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json'))
+			let cacheSize = 0
+			try {
+				const cacheStats = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json'))
+				cacheSize = cacheStats.size/(1024*1024)
+			} catch { /* ignore */ }
 
-			event.sender.send('fromMain_getText_return', [l10nEntry, `${cleanString} ${(cacheStats.size/(1024*1024)).toFixed(2)}MB`])
+			event.sender.send('fromMain_getText_return', [l10nEntry, `${cleanString} ${cacheSize.toFixed(2)}MB`])
 		} else {
 			myTranslator.stringLookup(l10nEntry).then((text) => {
 				event.sender.send('fromMain_getText_return', [l10nEntry, text])
