@@ -169,6 +169,12 @@ let foldersDirty = true
 let firstMin     = true
 
 let gameSettings    = mcStore.get('game_settings')
+
+if ( ! gameSettings.endsWith('.xml') ) {
+	gameSettings = path.join(pathBestGuess, 'gameSettings.xml')
+	mcStore.set('game_settings', gameSettings)
+}
+
 let gameSettingsXML = null
 let overrideFolder  = null
 let overrideIndex   = '999'
@@ -693,7 +699,6 @@ ipcMain.on('toMain_setGamePath', (event) => {
 	}).then((result) => {
 		if ( ! result.canceled ) {
 			mcStore.set('game_path', result.filePaths[0])
-			gameSettings = result.filePaths[0]
 			parseSettings()
 			refreshClientModList()
 			event.sender.send( 'fromMain_allSettings', mcStore.store )
@@ -800,6 +805,12 @@ function modIdsToRecords(mods) {
 
 /** Business Functions */
 function parseSettings(newSetting = false) {
+	if ( ! gameSettings.endsWith('.xml') ) {
+		log.log.danger(`Game settings is not an xml file ${gameSettings}, fixing`, 'game-settings')
+		gameSettings = path.join(pathBestGuess, 'gameSettings.xml')
+		mcStore.set('game_settings', gameSettings)
+	}
+
 	let   XMLString = ''
 	const XMLParser = new fxml.XMLParser({
 		commentPropName    : '#comment',
