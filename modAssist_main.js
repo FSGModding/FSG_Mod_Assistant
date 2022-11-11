@@ -506,8 +506,8 @@ function loadingWindow_noCount() {
    (____)(__)   \___) */
 
 /** File operation buttons */
-ipcMain.on('toMain_makeInactive', () => { parseSettings('DISABLE') })
-ipcMain.on('toMain_makeActive',   (event, newList) => { parseSettings(modFoldersMap[newList]) })
+ipcMain.on('toMain_makeInactive', () => { parseSettings({ disable : true }) })
+ipcMain.on('toMain_makeActive',   (event, newList) => { parseSettings({ newFolder : modFoldersMap[newList] }) })
 ipcMain.on('toMain_openMods',     (event, mods) => {
 	const thisCollectionFolder = modFoldersMap[mods[0].split('--')[0]]
 	const thisMod = modIdToRecord(mods[0])
@@ -858,7 +858,7 @@ function modIdsToRecords(mods) {
 
 
 /** Business Functions */
-function parseSettings(newSetting = false) {
+function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
 	if ( ! gameSettings.endsWith('.xml') ) {
 		log.log.danger(`Game settings is not an xml file ${gameSettings}, fixing`, 'game-settings')
 		gameSettings = path.join(pathBestGuess, 'gameSettings.xml')
@@ -896,12 +896,32 @@ function parseSettings(newSetting = false) {
 		})
 	}
 
-	if ( newSetting !== false ) {
+	if ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) {
 		loadingWindow_open('set')
 		loadingWindow_noCount()
 
-		gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( newSetting !== 'DISABLE' )
-		gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( newSetting !== 'DISABLE' ) ? newSetting : ''
+		if ( newFolder !== null ) {
+			gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = true
+			gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = newFolder
+		}
+
+		if ( disable === true ) {
+			gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = true
+			gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ''
+		}
+
+		if ( userName !== null ) {
+			gameSettingsXML.gameSettings.onlinePresenceName = userName
+		}
+
+		if ( password !== null ) {
+			gameSettingsXML.gameSettings.joinGame['@_password'] = password
+		}
+
+		if ( serverName !== null ) {
+			gameSettingsXML.gameSettings.joinGame['@_serverName'] = serverName
+		}
+
 		
 		const builder    = new fxml.XMLBuilder({
 			commentPropName           : '#comment',
