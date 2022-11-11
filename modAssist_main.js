@@ -117,6 +117,7 @@ const settingsSchema = {
 	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
 	game_path         : { type : 'string', default : foundGame },
 	cache_version     : { type : 'string', default : '0.0.0' },
+	rel_notes         : { type : 'string', default : '0.0.0' },
 	game_args         : { type : 'string', default : '' },
 }
 
@@ -152,6 +153,7 @@ const junkRegex = new RegExp(ignoreList.join('|'))
 
 let tray    = null
 const windows = {
+	change  : null,
 	confirm : null,
 	debug   : null,
 	detail  : null,
@@ -331,6 +333,18 @@ function createConfirmWindow(type, modRecords, origList) {
 	windows.confirm.loadFile(path.join(pathRender, file_HTML))
 
 	windows.confirm.on('closed', () => { windows.confirm = null; windows.main.focus() })
+}
+
+function createChangeLogWindow() {
+	if ( windows.change ) {
+		windows.change.focus()
+		return
+	}
+
+	windows.change = createSubWindow({ parent : 'main', center : true, fixed : true, width : 650, height : 330, preload : 'aChangelogWindow' })
+
+	windows.change.loadFile(path.join(pathRender, 'a_changelog.html'))
+	windows.change.on('closed', () => { windows.change = null; windows.main.focus() })
 }
 
 function createFolderWindow() {
@@ -611,6 +625,7 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 /** Detail window operation */
 ipcMain.on('toMain_openModDetail', (event, thisMod) => { createDetailWindow(modIdToRecord(thisMod)) })
+ipcMain.on('toMain_showChangelog', () => { createChangeLogWindow() } )
 /** END: Detail window operation */
 
 
@@ -1066,6 +1081,12 @@ function processModFolders_post(newFolder = false) {
 	parseSettings()
 	refreshClientModList()
 	loadingWindow_hide()
+
+	if ( mcStore.get('game_args') !== mcDetail.version ) {
+		log.log.info('Show changelog')
+		createChangeLogWindow()
+		/* TODO: update version to not show */
+	}
 }
 
 function loadModHub() {

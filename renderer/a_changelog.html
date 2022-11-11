@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/changelog_ui.js"></script>
+	<style>
+		::-webkit-scrollbar { display: none; }
+	</style>
+	<script type="text/javascript">
+		document.onkeydown = function(evt) {
+			evt = evt || window.event
+			if (evt.keyCode == 27) { window.mods.closeWindow() }
+		}
+		window.onerror = function (message, file, line, col, error) {
+			window.log.debug(error.message, 'changelog'); return false
+		}
+	</script>
+</head>
+<body>
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100">
+				<div class="col-7">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+				</div>
+				<div class="col-5">
+					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill"><span class="h4">Changelog</span></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-auto"><img style="width: auto; height: 200px" src="img/sidebar.png"></div>
+			<div class="col">
+				<ul>
+					<li>ADD: Changelog displayed once per version</li>
+					<li>Next Item</li>
+					<li>Next Item</li>
+					<li>Next Item</li>
+					<li>Next Item</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

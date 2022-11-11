@@ -4,7 +4,7 @@
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
 
-// Prefs window preLoad
+// Changelog window preLoad
 
 const {contextBridge, ipcRenderer} = require('electron')
 
@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld(
 		receive         : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getText_return',
+				'fromMain_getText_return_title',
 				'fromMain_l10n_refresh'
 			]
 		
@@ -37,20 +38,6 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		closeWindow   : () => { ipcRenderer.send('toMain_closeSubWindow', 'prefs') },
-		cleanCache    : () => { ipcRenderer.send('toMain_cleanCacheFile') },
-		setGamePath   : () => { ipcRenderer.send('toMain_setGamePath') },
-		setPrefFile   : () => { ipcRenderer.send('toMain_setPrefFile') },
-		showChangelog : () => { ipcRenderer.send('toMain_showChangelog') },
-		setPref : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
-		receive   : ( channel, func ) => {
-			const validChannels = [
-				'fromMain_allSettings',
-			]
-		
-			if ( validChannels.includes( channel ) ) {
-				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
-			}
-		},
+		closeWindow  : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'change') },
 	}
 )

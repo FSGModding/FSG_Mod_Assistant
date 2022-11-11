@@ -32,20 +32,32 @@
 		</div>
 
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="row ms-2">
-				<div class="col-8">
-					<h5><l10n name="user_pref_title_game_path"></l10n></h5>
-					<p class="ps-2"><l10n name="user_pref_blurb_game_path"></l10n></p>
-					<em class="ps-2 text-monospace small" id="game_path">TODO: FIX THIS</em>
-				</div>
-				<div class="col-4">
-					<div class="d-block btn btn-success btn-sm w-100 mt-5 mx-auto mb-3" onclick="window.mods.setGamePath()"><l10n name="user_pref_button_game_path"></l10n></div>
-				</div>
+			<div class="col-8">
+				<h5><l10n name="user_pref_title_changelog"></l10n></h5>
+				<p class="ps-2"><l10n name="user_pref_blurb_changelog"></l10n></p>
 			</div>
-			<div class="row ms-2 mt-2">
-				<label for="game_args" class="col-6 col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
-				<div class="col-6">
-					<input onchange="clientSetPref('game_args')" type="text" class="form-control form-control-sm" id="game_args">
+			<div class="col-4">
+				<div class="d-block btn btn-success btn-sm w-100 mt-5 mx-auto mb-3" onclick="window.mods.showChangelog()"><l10n name="user_pref_button_changelog"></l10n></div>
+			</div>
+		</div>
+
+		<div class="row mx-4 mb-3 pb-2 border-bottom">
+			
+			<div class="col-8">
+				<h5><l10n name="user_pref_title_game_path"></l10n></h5>
+				<p class="ps-2"><l10n name="user_pref_blurb_game_path"></l10n></p>
+				<em class="ps-2 text-monospace small" id="game_path">TODO: FIX THIS</em>
+			</div>
+			<div class="col-4">
+				<div class="d-block btn btn-success btn-sm w-100 mt-5 mx-auto mb-3" onclick="window.mods.setGamePath()"><l10n name="user_pref_button_game_path"></l10n></div>
+			</div>
+			
+			<div class="col-12 mt-3 mx-2">
+				<div class="row">
+					<label for="game_args" class="col-6 col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+					<div class="col-6">
+						<input onchange="clientSetPref('game_args')" type="text" class="form-control form-control-sm" id="game_args">
+					</div>
 				</div>
 				<div class="col-12 text-end"><small class="text-muted"><l10n name="user_pref_setting_game_args_example"></l10n></small>	</div>
 			</div>
