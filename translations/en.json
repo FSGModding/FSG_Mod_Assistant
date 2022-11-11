@@ -213,7 +213,7 @@
 	"update_title"                           : "Application Update",
 	"update_detail"                          : "A new version has been downloaded. Restart the application to apply the updates.",
 	"launcher_error_title"                   : "Game Path Not Found",
-	"launcher_error_message"                 : "Please set the game path in preferences",
+	"launcher_error_message"                 : "Please set the game path in preferences (not set, or not valid!)",
 	"user_pref_title_changelog"              : "Changelog",
 	"user_pref_blurb_changelog"              : "Show the most recent changelog for the application",
 	"user_pref_button_changelog"             : "Open Changelog"

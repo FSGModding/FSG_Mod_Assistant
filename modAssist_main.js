@@ -638,9 +638,9 @@ ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('update-log', 
 
 /** Game launcher */
 ipcMain.on('toMain_startFarmSim', () => {
-	if ( mcStore.get('game_path') !== '' ) {
+	const progPath = mcStore.get('game_path')
+	if ( progPath !== '' && fs.existsSync(progPath) ) {
 		const cp       = require('child_process')
-		const progPath = mcStore.get('game_path')
 		const child    = cp.spawn(progPath, mcStore.get('game_args').split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
 		child.unref()
 	} else {
@@ -650,7 +650,7 @@ ipcMain.on('toMain_startFarmSim', () => {
 			message : myTranslator.syncStringLookup('launcher_error_message'),
 		}
 		dialog.showMessageBox(dialogOpts)
-		log.log.warning('Game path not set!', 'game-launcher')
+		log.log.warning('Game path not set or invalid!', 'game-launcher')
 	}
 })
 /** END: game launcher */
