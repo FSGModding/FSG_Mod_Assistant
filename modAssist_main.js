@@ -724,6 +724,45 @@ ipcMain.on('toMain_setGamePath', (event) => {
 })
 /** END: Preferences window operation */
 
+/** Export operation */
+ipcMain.on('toMain_exportList', (event, collection) => {
+	const csvTable = []
+	csvTable.push('"Mod","Title","Version","Author","Link"')
+
+	modList[collection].mods.forEach((mod) => {
+		const modHubID   = modHubList.mods[mod.fileDetail.shortName] || null
+		const modHubLink = ( modHubID !== null ) ? `https://www.farming-simulator.com/mod.php?mod_id=${modHubID}` : ''
+		csvTable.push(`"${mod.fileDetail.shortName}.zip","${mod.l10n.title.replaceAll('"', '\'')}","${mod.modDesc.version}","${mod.modDesc.author.replaceAll('"', '\'')}","${modHubLink}"`)
+	})
+
+	dialog.showSaveDialog(windows.main, {
+		defaultPath : path.join(app.getPath('desktop'), `${modList[collection].name}.csv`),
+		filters     : [
+			{ name : 'CSV', extensions : ['csv'] },
+		],
+	}).then(async (result) => {
+		if ( result.canceled ) {
+			log.log.notice('Save CSV Cancelled', 'csv-export')
+		} else {
+			try {
+				fs.writeFileSync(result.filePath, csvTable.join('\n'))
+				dialog.showMessageBoxSync(windows.main, {
+					message : myTranslator.syncStringLookup('save_csv_worked'),
+					type    : 'info',
+				})
+			} catch (err) {
+				log.log.warning(`Could not save csv file : ${err}`, 'csv-export')
+				dialog.showMessageBoxSync(windows.main, {
+					message : myTranslator.syncStringLookup('save_csv_failed'),
+					type    : 'warning',
+				})
+			}
+		}
+	}).catch((unknownError) => {
+		log.log.warning(`Could not save csv file : ${unknownError}`, 'csv-export')
+	})
+})
+/** END: Export operation */
 
 /** Savegame window operation */
 ipcMain.on('toMain_openSave',       (event, collection) => { createSavegameWindow(collection) })

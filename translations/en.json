@@ -216,5 +216,12 @@
 	"launcher_error_message"                 : "Please set the game path in preferences (not set, or not valid!)",
 	"user_pref_title_changelog"              : "Changelog",
 	"user_pref_blurb_changelog"              : "Show the most recent changelog for the application",
-	"user_pref_button_changelog"             : "Open Changelog"
+	"user_pref_button_changelog"             : "Open Changelog",
+	"export_button"                          : "<gg-icon class=\"gg-export\"></gg-icon>",
+	"export_button__title"                   : "Export List to CSV",
+	"notes_button"                           : "<gg-icon class=\"gg-notes\"></gg-icon>",
+	"notes_button__title"                    : "Edit Folder Details",
+	"save_csv_worked"                        : "Collection Exported to CSV List",
+	"save_csv_failed"                        : "Unable to export CSV collection list (check debug log)"
+
 }
