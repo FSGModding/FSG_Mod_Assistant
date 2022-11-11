@@ -1082,10 +1082,10 @@ function processModFolders_post(newFolder = false) {
 	refreshClientModList()
 	loadingWindow_hide()
 
-	if ( mcStore.get('game_args') !== mcDetail.version ) {
-		log.log.info('Show changelog')
+	if ( mcStore.get('rel_notes') !== mcDetail.version ) {
+		mcStore.set('rel_notes', mcDetail.version )
+		log.log.info('New version detected, show changelog')
 		createChangeLogWindow()
-		/* TODO: update version to not show */
 	}
 }
 
