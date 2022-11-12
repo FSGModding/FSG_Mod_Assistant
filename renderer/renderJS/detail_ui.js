@@ -6,7 +6,7 @@
 
 // Detail window UI
 
-/* global l10n, fsgUtil, bootstrap, getText */
+/* global l10n, fsgUtil, bootstrap, getText, clientGetKeyMap, clientGetKeyMapSimple */
 
 
 /*  __ ____   ______        
@@ -40,7 +40,7 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord) => {
+window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict) => {
 	const mhVer = ( modhubRecord[1] !== null ) ? modhubRecord[1] : `<em>${getText(modhubRecord[0] === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
 
 	const idMap = {
@@ -65,7 +65,19 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord) => {
 		fsgUtil.byId(key).innerHTML = idMap[key]
 	})
 
-	if ( modRecord.issues.length < 1 ) {
+	const keyBinds = []
+	Object.keys(modRecord.modDesc.binds).forEach((action) => {
+		const thisBinds = []
+		modRecord.modDesc.binds[action].forEach((keyCombo) => { thisBinds.push(clientGetKeyMapSimple(keyCombo))})
+		keyBinds.push(`${action} :: ${thisBinds.join(' / ')}`)
+	})
+	
+	fsgUtil.byId('keyBinds').innerHTML = ( keyBinds.length > 0 ) ? keyBinds.join('\n') : getText('detail_key_none')
+
+	const bindingIssue     = bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName]
+	const bindingIssueTest = typeof bindingIssue !== 'undefined'
+
+	if ( modRecord.issues.length < 1 && !bindingIssueTest ) {
 		fsgUtil.byId('problem_div').classList.add('d-none')
 	} else {
 		const problems = []
@@ -77,10 +89,28 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord) => {
 			}
 			problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
 		})
+
+		if ( bindingIssueTest ) {
+			Object.keys(bindingIssue).forEach((keyCombo) => {
+				const actualKey = clientGetKeyMap(keyCombo)
+				const confList  = bindingIssue[keyCombo].join(', ')
+				const issueText = `${getText('bind_conflict')} : ${actualKey} :: ${confList}`
+				problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
+			})
+		}
+
 		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`
 	}
 
 	const extraBadges = []
+
+	if ( Object.keys(modRecord.modDesc.binds).length > 0 ) {
+		if ( typeof bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) {
+			extraBadges.push(fsgUtil.badge('danger', 'keys_bad'))
+		} else {
+			extraBadges.push(fsgUtil.badge('success', 'keys_ok'))
+		}
+	}
 
 	if ( modhubRecord[0] !== null && modRecord.modDesc.version !== modhubRecord[1]) {
 		extraBadges.push(fsgUtil.badge('light', 'update'))

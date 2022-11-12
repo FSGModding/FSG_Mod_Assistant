@@ -152,11 +152,11 @@
 	"savegame_scriptonly"                    : "Script",
 	"savegame_versionmismatch__title"        : "The version you have does not match the version in the save",
 	"savegame_versionmismatch"               : "Version",
-	"select_all__title"                      : "Select All",
+	"select_all__title"                      : "Select All (CTRL+A)",
 	"select_all"                             : "all",
-	"select_invert__title"                   : "Invert Selection",
+	"select_invert__title"                   : "Invert Selection (CTRL+I)",
 	"select_invert"                          : "invert",
-	"select_none__title"                     : "Deselect All",
+	"select_none__title"                     : "Deselect All (SHIFT+CTRL+A)",
 	"select_none"                            : "none",
 	"select_pick"                            : "Select",
 	"show_broken__title"                     : "Show Broken Mods",
@@ -235,7 +235,12 @@
 	"notes_blurb_admin"                      : "Server admin password, informational purposes only",
 	"notes_title_notes"                      : "Notes",
 	"notes_blurb_notes"                      : "Additional Collection Notes",
-	"notes_usage_blurb"                      : "<strong>Please Note:</strong> To activate any changes here you must press the \"Set Active\" button for this collection again!"
-	
-
+	"notes_usage_blurb"                      : "<strong>Please Note:</strong> To activate any changes here you must press the \"Set Active\" button for this collection again!",
+	"mod_badge_keys_ok"                      : "keys",
+	"mod_badge_keys_ok__title"               : "This mod adds keybindings to the game",
+	"mod_badge_keys_bad"                     : "keys",
+	"mod_badge_keys_bad__title"              : "This mod adds keybindings to the game, some may conflict",
+	"bind_conflict"                          : "Possible key binding conflict",
+	"detail_key_binds"                       : "Key Bindings",
+	"detail_key_none"                        : "This mod does not appear to add key bindings"
 }

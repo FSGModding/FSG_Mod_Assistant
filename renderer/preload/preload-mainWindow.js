@@ -66,6 +66,8 @@ contextBridge.exposeInMainWorld(
 			const validChannels = [
 				'fromMain_modList',
 				'fromMain_selectAllOpen',
+				'fromMain_selectNoneOpen',
+				'fromMain_selectInvertOpen'
 			]
 		
 			if ( validChannels.includes( channel ) ) {

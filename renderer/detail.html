@@ -11,6 +11,7 @@
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="renderJS/key_lookup_table.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/detail_ui.js"></script>
 	<style>
@@ -65,6 +66,8 @@
 		</div>
 		<div class="px-3 border-bottom mb-2">
 			<h4><l10n name="detail_dev_info"></l10n></h4>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_key_binds"></l10n></h6>
+			<div style="white-space: pre-wrap; line-height: 2.2em" class="px-5 font-monospace" id="keyBinds"></div>
 			<h6 class="i18n mt-4 ms-4"><l10n name="detail_extra_files"></l10n></h6>
 			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="extraFiles"></div>
 			<h6 class="i18n mt-4 ms-4"><l10n name="detail_big_files"></l10n></h6>

@@ -6,6 +6,7 @@
 		".git/objects",
 		".vscode",
 		".vscode-insiders",
+		"renderer/renderJS/key_lookup_table.js",
 		"translations/de.json",
 		"translations/es.json",
 		"translations/fr.json",
@@ -14,6 +15,7 @@
 		"translations/ru.json",
 	],
 	"cSpell.words": [
+		"actionbinding",
 		"asar",
 		"astragon",
 		"backreference",
@@ -47,6 +49,7 @@
 		"hprof",
 		"iconfilename",
 		"ingame",
+		"inputbinding",
 		"isloaded",
 		"isused",
 		"jtsage",

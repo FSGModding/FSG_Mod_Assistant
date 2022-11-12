@@ -132,6 +132,7 @@ const newModsList = []
 let modFolders    = new Set()
 let modFoldersMap = {}
 let modList       = {}
+let bindConflict  = {}
 let countTotal    = 0
 let countMods     = 0
 let modHubList    = {}
@@ -185,6 +186,12 @@ let overrideIndex   = '999'
 let overrideActive  = null
 
 /** Upgrade Cache Version Here */
+
+if ( mcStore.get('cache_version') < '1.0.2' ) {
+	log.log.warning('Invalid Mod Cache (old), resetting.')
+	maCache.clear()
+	log.log.info('Mod Cache Cleared')
+}
 
 mcStore.set('cache_version', mcDetail.version)
 
@@ -306,6 +313,14 @@ function createMainWindow () {
 			windows.main.webContents.send('fromMain_selectAllOpen')
 			event.preventDefault()
 		}
+		if (input.control && input.shift && input.key.toLowerCase() === 'a') {
+			windows.main.webContents.send('fromMain_selectNoneOpen')
+			event.preventDefault()
+		}
+		if (input.control && input.key.toLowerCase() === 'i') {
+			windows.main.webContents.send('fromMain_selectInvertOpen')
+			event.preventDefault()
+		}
 		if ( input.alt && input.control && input.key.toLowerCase() === 'd' ) {
 			createDebugWindow()
 			event.preventDefault()
@@ -372,14 +387,14 @@ function createDetailWindow(thisModRecord) {
 
 	if ( windows.detail ) {
 		windows.detail.focus()
-		windows.detail.webContents.send('fromMain_modRecord', thisModRecord, modhubRecord)
+		windows.detail.webContents.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict)
 		return
 	}
 
 	windows.detail = createSubWindow({ parent : 'main', preload : 'detailWindow', maximize : mcStore.get('detail_window_max') })
 
 	windows.detail.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord)
+		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict)
 		if ( devDebug ) { windows.detail.webContents.openDevTools() }
 	})
 
@@ -869,7 +884,8 @@ function refreshClientModList() {
 		modFoldersMap,
 		newModsList,
 		modHubList,
-		modHubVersion
+		modHubVersion,
+		bindConflict
 	)
 }
 
@@ -1179,6 +1195,45 @@ function processModFolders_post(newFolder = false) {
 		}
 	})
 	foldersDirty = false
+
+	bindConflict = {}
+
+	Object.keys(modList).forEach((collection) => {
+		bindConflict[collection] = {}
+		const collectionBinds    = {}
+
+		modList[collection].mods.forEach((thisMod) => {
+			Object.keys(thisMod.modDesc.binds).forEach((actName) => {
+				thisMod.modDesc.binds[actName].forEach((keyCombo) => {
+					if ( keyCombo === '' ) { return }
+
+					const safeCat   = thisMod.modDesc.actions[actName] || 'UNKNOWN'
+					const thisCombo = `${safeCat}--${keyCombo}`
+
+					collectionBinds[thisCombo] ??= []
+					collectionBinds[thisCombo].push(thisMod.fileDetail.shortName)
+				})
+			})
+		})
+		Object.keys(collectionBinds).forEach((keyCombo) => {
+			if ( collectionBinds[keyCombo].length > 1 ) {
+				collectionBinds[keyCombo].forEach((modName) => {
+					bindConflict[collection][modName] ??= {}
+					bindConflict[collection][modName][keyCombo] = collectionBinds[keyCombo].filter((w) => w !== modName)
+					if ( bindConflict[collection][modName][keyCombo].length === 0 ) {
+						delete bindConflict[collection][modName][keyCombo]
+					}
+				})
+			}
+		})
+		Object.keys(bindConflict).forEach((collection) => {
+			Object.keys(bindConflict[collection]).forEach((modName) => {
+				if ( Object.keys(bindConflict[collection][modName]).length === 0 ) {
+					delete bindConflict[collection][modName]
+				}
+			})
+		})
+	})
 
 	parseSettings()
 	refreshClientModList()

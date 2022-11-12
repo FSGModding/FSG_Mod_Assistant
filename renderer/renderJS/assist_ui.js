@@ -48,6 +48,20 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
+window.mods.receive('fromMain_selectInvertOpen', () => {
+	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
+	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
+
+	if ( lastOpenID !== null ) { select_lib.click_invert(lastOpenID) }
+})
+
+window.mods.receive('fromMain_selectNoneOpen', () => {
+	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
+	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
+
+	if ( lastOpenID !== null ) { select_lib.click_none(lastOpenID) }
+})
+
 window.mods.receive('fromMain_selectAllOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
@@ -58,7 +72,7 @@ window.mods.receive('fromMain_selectAllOpen', () => {
 
 let lastLocale = 'en'
 
-window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList, modHubVersion) => {
+window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList, modHubVersion, bindConflict) => {
 	lastLocale = currLocale
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -82,6 +96,13 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 
 			sizeOfFolder += thisMod.fileDetail.fileSize
 
+			if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
+				if ( typeof bindConflict[collection][thisMod.fileDetail.shortName] !== 'undefined' ) {
+					extraBadges.push(fsgUtil.badge('danger', 'keys_bad'))
+				} else {
+					extraBadges.push(fsgUtil.badge('success', 'keys_ok'))
+				}
+			}
 			if ( modVer !== null && thisMod.modDesc.version !== modVer) {
 				extraBadges.push(fsgUtil.badge('light', 'update'))
 			}
