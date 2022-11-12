@@ -138,6 +138,7 @@ let countMods     = 0
 let modHubList    = {}
 let modHubVersion = {}
 let lastFolderLoc = null
+let lastGameSettings = {}
 
 
 const ignoreList = [
@@ -459,14 +460,14 @@ function createSavegameWindow(collection) {
 function createNotesWindow(collection) {
 	if ( windows.notes ) {
 		windows.notes.focus()
-		windows.notes.webContents.send('fromMain_collectionName', collection, modList[collection].name, modNote.store)
+		windows.notes.webContents.send('fromMain_collectionName', collection, modList[collection].name, modNote.store, lastGameSettings)
 		return
 	}
 
 	windows.notes = createSubWindow({ parent : 'main', preload : 'notesWindow', maximize : mcStore.get('detail_window_max') })
 
 	windows.notes.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_collectionName', collection, modList[collection].name, modNote.store)
+		event.sender.send('fromMain_collectionName', collection, modList[collection].name, modNote.store, lastGameSettings)
 		if ( devDebug ) { windows.notes.webContents.openDevTools() }
 	})
 
@@ -993,6 +994,12 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		gameSettingsXML = XMLParser.parse(XMLString)
 		overrideActive  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']
 		overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory']
+		lastGameSettings = {
+			username : gameSettingsXML.gameSettings.onlinePresenceName || '',
+			password : gameSettingsXML.gameSettings.joinGame['@_password'] || '',
+			server   : gameSettingsXML.gameSettings.joinGame['@_serverName'] || '',
+		}
+
 	} catch (e) {
 		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
 	}

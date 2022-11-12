@@ -31,15 +31,20 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
-window.mods.receive('fromMain_collectionName', (collection, collectionName, allNotes) => {
+window.mods.receive('fromMain_collectionName', (collection, collectionName, allNotes, lastGameSettings) => {
 	thisCollection = collection
 	fsgUtil.byId('collection_name').innerHTML = collectionName
 
 	fsgUtil.query('input').forEach((element) => {
 		let thisValue = ''
+		
+		let thisPlaceholder = lastGameSettings[element.id.replace('notes_', '')]
 		if ( typeof allNotes[collection] !== 'undefined' ) {
-			thisValue = allNotes[collection][element.id]
+			thisValue       = allNotes[collection][element.id]
+			thisPlaceholder = ( typeof thisValue !== 'undefined' ) ? '' : thisPlaceholder
 		}
+
+		element.placeholder = ( typeof thisPlaceholder !== 'undefined' ) ? thisPlaceholder : ''
 		element.value =  ( typeof thisValue !== 'undefined' ) ? thisValue : ''
 	})
 
