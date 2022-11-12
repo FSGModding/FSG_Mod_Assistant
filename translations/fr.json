@@ -235,5 +235,12 @@
 	"notes_blurb_admin": "Mot de passe de l'administrateur du serveur, à titre d'information uniquement",
 	"notes_title_notes": "Notes",
 	"notes_blurb_notes": "Notes supplémentaires sur la collection",
-	"notes_usage_blurb": "<strong>Veuillez noter : </strong>Pour activer tout changement ici, vous devez appuyer à nouveau sur le bouton \"Set Active\" de cette collection !"
+	"notes_usage_blurb": "<strong>Veuillez noter : </strong>Pour activer tout changement ici, vous devez appuyer à nouveau sur le bouton \"Set Active\" de cette collection !",
+	"mod_badge_keys_ok": "clés",
+	"mod_badge_keys_ok__title": "Ce mod ajoute des raccourcis clavier au jeu",
+	"mod_badge_keys_bad": "clés",
+	"mod_badge_keys_bad__title": "Ce mod ajoute des raccourcis clavier au jeu, certains peuvent entrer en conflit",
+	"bind_conflict": "Conflit possible entre les clés",
+	"detail_key_binds": "Fixations des clés",
+	"detail_key_none": "Ce mod ne semble pas ajouter de liaisons de touches"
 }

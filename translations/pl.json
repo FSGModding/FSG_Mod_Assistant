@@ -235,5 +235,12 @@
 	"notes_blurb_admin": "Hasło administratora serwera, tylko w celach informacyjnych",
 	"notes_title_notes": "Uwagi",
 	"notes_blurb_notes": "Dodatkowe uwagi dotyczące zbiorów",
-	"notes_usage_blurb": "<strong>Please Note:</strong> Aby aktywować wszelkie zmiany tutaj, musisz ponownie nacisnąć przycisk \"Ustaw Aktywność\" dla tej kolekcji!"
+	"notes_usage_blurb": "<strong>Please Note:</strong> Aby aktywować wszelkie zmiany tutaj, musisz ponownie nacisnąć przycisk \"Ustaw Aktywność\" dla tej kolekcji!",
+	"mod_badge_keys_ok": "klucze",
+	"mod_badge_keys_ok__title": "Ten mod dodaje keybindingi do gry",
+	"mod_badge_keys_bad": "klucze",
+	"mod_badge_keys_bad__title": "Ten mod dodaje keybindingi do gry, niektóre mogą wchodzić w konflikt",
+	"bind_conflict": "Możliwy konflikt wiązania kluczy",
+	"detail_key_binds": "Wiązania kluczowe",
+	"detail_key_none": "Ten mod nie wydaje się dodawać przypisań klawiszy"
 }

@@ -235,5 +235,12 @@
 	"notes_blurb_admin": "Server admin wachtwoord, alleen voor informatieve doeleinden",
 	"notes_title_notes": "Notes",
 	"notes_blurb_notes": "Aanvullende Collectie Aantekeningen",
-	"notes_usage_blurb": "<strong>Let op:</strong> Om eventuele wijzigingen hier te activeren moet u opnieuw op de knop \"Actief instellen\" voor deze collectie drukken!"
+	"notes_usage_blurb": "<strong>Let op:</strong> Om eventuele wijzigingen hier te activeren moet u opnieuw op de knop \"Actief instellen\" voor deze collectie drukken!",
+	"mod_badge_keys_ok": "sleutels",
+	"mod_badge_keys_ok__title": "Deze mod voegt keybindings toe aan het spel.",
+	"mod_badge_keys_bad": "sleutels",
+	"mod_badge_keys_bad__title": "Deze mod voegt keybindings toe aan het spel, sommige kunnen conflicteren.",
+	"bind_conflict": "Mogelijke sleutelbinding conflict",
+	"detail_key_binds": "Sleutelbindingen",
+	"detail_key_none": "Deze mod lijkt geen toetsenbindingen toe te voegen"
 }

@@ -235,5 +235,12 @@
 	"notes_blurb_admin": "Contraseña de administrador del servidor, sólo con fines informativos",
 	"notes_title_notes": "Notas",
 	"notes_blurb_notes": "Notas adicionales de la colección",
-	"notes_usage_blurb": "<strong>Nota:</strong> ¡Para activar cualquier cambio aquí debe pulsar el botón de \"Establecer Activo\" para esta colección de nuevo!"
+	"notes_usage_blurb": "<strong>Nota:</strong> ¡Para activar cualquier cambio aquí debe pulsar el botón de \"Establecer Activo\" para esta colección de nuevo!",
+	"mod_badge_keys_ok": "llaves",
+	"mod_badge_keys_ok__title": "Este mod añade combinaciones de teclas al juego",
+	"mod_badge_keys_bad": "llaves",
+	"mod_badge_keys_bad__title": "Este mod añade combinaciones de teclas al juego, algunas pueden entrar en conflicto",
+	"bind_conflict": "Posible conflicto de unión de llaves",
+	"detail_key_binds": "Enlaces de llaves",
+	"detail_key_none": "Este mod no parece añadir enlaces de teclas"
 }
