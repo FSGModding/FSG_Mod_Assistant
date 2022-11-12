@@ -27,6 +27,7 @@ ___Contents___
         - [Action Buttons](#action-buttons)
         - [Search Feature](#search-feature)
           - [Search Buttons](#search-buttons)
+    - [Folder Details Window](#folder-details-window)
     - [Detail Window](#detail-window)
     - [Move and Copy](#move-and-copy)
     - [Delete](#delete)
@@ -35,8 +36,10 @@ ___Contents___
     - [Version Check](#version-check)
     - [Edit Folders](#edit-folders)
     - [User Preferences](#user-preferences)
+      - [Changelog](#changelog)
       - [Game Path](#game-path)
       - [gameSettings.xml](#gamesettingsxml)
+      - [Development Controls](#development-controls)
       - [Mod Cache](#mod-cache)
   - [Tips and Tricks](#tips-and-tricks)
   - [Something didn't work?!?](#something-didnt-work)
@@ -119,6 +122,7 @@ In this area you will see a list of all of the collections (folders) that you ha
   - __Red Background__ : A red background indicates a mod or file that Mod Assistant thinks will not work in game
   - __Green Background__ : This mod is currently selected
 - Badges
+  - __Keys__ : This mod contains added key bindings.  When green, these keybinds do not conflict with another mod in the collection.  When red, they appear to conflict (although, in some cases this is fine - but if you can't use a mod, this could provide a helpful clue as to why)
   - __Update__ : The version of the mod you have does not match the version on modhub
   - __New__ : This file has been added to this collection since the last scan
   - __Recent__ : This mod has recently been updated or released on the modHub
@@ -142,6 +146,8 @@ The active list is marked with a green check over the folder.
 
 - __Collection Checkbox__ : You can use this checkbox to quick select all or none of the mods in the list.  Additionally, shift-select for a range of mods is available.
 - __Compare to SaveGame__ : This will prompt you for a savegame (folder or zip file) and will compare what mods the save game expects to the mods in the collection.
+- __Export Button__ : This allows you to export the collection as a CSV file containing the mod name, version, author, and if applicable, a link to the modhub page
+- __Details Edit__ : This button brings up the collection details that will allow you to keep notes on the collection, and set your user name, password, and server name filter for multiplayer use.
 - __Move To...__ : This will prompt you which collection you wish to move the selected files into. This button is only available when a one or more files are selected.
 - __Copy To...__ : This will prompt you which collection you wish to copy the selected files into. This button is only available when a one or more files are selected.
 - __Delete__ : This will prompt you to make sure you wish to delete the selected files. This button is only available when a one or more files are selected.
@@ -161,6 +167,21 @@ This allows you to refine which parts of the collection you see.  This is a simp
 - __Select None__ : Clear selection on this collection
 - __Select All__ : Select all on this collection
 - __Select Invert__ : Invert selection on this collection
+
+### Folder Details Window
+
+![folder detail](screen_shots/015-notes.png)
+
+This screen allows you to keep notes on a collection, and set some of the multiplayer server details to speed things up.
+
+- __Player Name__ : This is the name that is displayed in-game
+- __Server Name__ : This value is pre-filled in the server list screen to filter
+- __Server Password__ : This value is pre-filled in the password box when attempting to join a server that requires a password
+- __Server Website__ : This is a place to keep the administration address for a multiplayer server.
+- __Admin Password__ : This is a place to note the admin password for the server.
+- __Notes__ : This is a freeform notes input
+
+Keep in mind that all of these details are stored in ___plain text___ both in mod assistant's config files, __and__ FS 20222's files.
 
 ### Detail Window
 
@@ -229,13 +250,21 @@ This display will let you change which collections are loaded, and open them in 
 
 Clicking the `...` button in the upper right corner of the main window will open user preferences.  Most of these are straight forward (window sizes, maximization selection, and UI language override).
 
+#### Changelog
+
+This displays what is new in the current version
+
 #### Game Path
 
-This option lets you set the path to the game `.EXE` file if it was not found automatically, so that the `Launch FS22` button on the main screen works.
+This option lets you set the path to the game `.EXE` file if it was not found automatically, so that the `Launch FS22` button on the main screen works.  Additionally, you can set command line parameters here.
 
 #### gameSettings.xml
 
 This option lets you override where the app looks for the gameSettings.xml file. Once in a while, the app may fail to detect it automatically - this is also useful if you have multiple installs of the game.
+
+#### Development Controls
+
+You can use this checkbox to easily enable the in-game development controls and console commands.
 
 #### Mod Cache
 
@@ -254,3 +283,5 @@ Please open an issue and let me know what.  If it is specific to a mod, let me k
 ### The Mod Cache
 
 This app uses a mod cache based on mod file name, size, and date. As such, it only needs to scan a mod once. Unzipped mods, broken mods, and files that don't appear to be mods are not added to the cache.  The `broken mods` item is important as if you have a _lot_ of broken mods in your mod folder, it can slow down the startup of the app.
+
+Also, be aware, that sometimes when adding a new feature, the cache may need to be re-created, making the loading time increase a great deal
