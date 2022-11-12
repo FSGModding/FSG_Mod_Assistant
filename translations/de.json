@@ -242,5 +242,7 @@
 	"mod_badge_keys_bad__title": "Diese Mod fügt dem Spiel Tastenkombinationen hinzu, einige können in Konflikt geraten",
 	"bind_conflict": "Möglicher Konflikt bei der Tastenbindung",
 	"detail_key_binds": "Schlüsselbindungen",
-	"detail_key_none": "Diese Mod scheint keine Tastenbelegungen hinzuzufügen"
+	"detail_key_none": "Diese Mod scheint keine Tastenbelegungen hinzuzufügen",
+	"user_pref_title_dev": "Entwicklungskontrollen",
+	"user_pref_blurb_dev": "Entwicklungssteuerungen und Konsolenbefehle im Spiel aktivieren"
 }

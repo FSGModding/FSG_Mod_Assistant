@@ -242,5 +242,7 @@
 	"mod_badge_keys_bad__title": "Este mod añade combinaciones de teclas al juego, algunas pueden entrar en conflicto",
 	"bind_conflict": "Posible conflicto de unión de llaves",
 	"detail_key_binds": "Enlaces de llaves",
-	"detail_key_none": "Este mod no parece añadir enlaces de teclas"
+	"detail_key_none": "Este mod no parece añadir enlaces de teclas",
+	"user_pref_title_dev": "Controles de desarrollo",
+	"user_pref_blurb_dev": "Habilitar los controles de desarrollo del juego y los comandos de la consola"
 }

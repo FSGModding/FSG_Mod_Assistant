@@ -242,5 +242,7 @@
 	"mod_badge_keys_bad__title"              : "This mod adds keybindings to the game, some may conflict",
 	"bind_conflict"                          : "Possible key binding conflict",
 	"detail_key_binds"                       : "Key Bindings",
-	"detail_key_none"                        : "This mod does not appear to add key bindings"
+	"detail_key_none"                        : "This mod does not appear to add key bindings",
+	"user_pref_title_dev"                    : "Development Controls",
+	"user_pref_blurb_dev"                    : "Enable in-game Development Controls and Console commands"
 }

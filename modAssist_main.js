@@ -181,9 +181,11 @@ if ( ! gameSettings.endsWith('.xml') ) {
 }
 
 let gameSettingsXML = null
+let gameXML         = null
 let overrideFolder  = null
 let overrideIndex   = '999'
 let overrideActive  = null
+let devControls     = false
 
 /** Upgrade Cache Version Here */
 
@@ -422,14 +424,14 @@ function createDebugWindow() {
 function createPrefsWindow() {
 	if ( windows.prefs ) {
 		windows.prefs.focus()
-		windows.prefs.webContents.send( 'fromMain_allSettings', mcStore.store )
+		windows.prefs.webContents.send( 'fromMain_allSettings', mcStore.store, devControls )
 		return
 	}
 
 	windows.prefs = createSubWindow({ parent : 'main', preload : 'prefsWindow', width : 800, height : 500, title : myTranslator.syncStringLookup('user_pref_title_main') })
 
 	windows.prefs.webContents.on('did-finish-load', (event) => {
-		event.sender.send( 'fromMain_allSettings', mcStore.store )
+		event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
 	})
 
 	windows.prefs.loadFile(path.join(pathRender, 'prefs.html'))
@@ -701,9 +703,13 @@ ipcMain.on('toMain_startFarmSim', () => {
 ipcMain.on('toMain_openPrefs', () => { createPrefsWindow() })
 ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setPref', (event, name, value) => {
-	mcStore.set(name, value)
-	if ( name === 'lock_lang' ) { mcStore.set('force_lang', myTranslator.currentLocale) }
-	event.sender.send( 'fromMain_allSettings', mcStore.store )
+	if ( name === 'dev_mode' ) {
+		parseGameXML(value)
+	} else {
+		mcStore.set(name, value)
+		if ( name === 'lock_lang' ) { mcStore.set('force_lang', myTranslator.currentLocale) }
+	}
+	event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
 })
 ipcMain.on('toMain_cleanCacheFile', (event) => {
 	const localStore = maCache.store
@@ -739,7 +745,7 @@ ipcMain.on('toMain_setPrefFile', (event) => {
 			gameSettings = result.filePaths[0]
 			parseSettings()
 			refreshClientModList()
-			event.sender.send( 'fromMain_allSettings', mcStore.store )
+			event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
 		}
 	}).catch((unknownError) => {
 		log.log.danger(`Could not read specified gamesettings : ${unknownError}`, 'game-settings')
@@ -758,7 +764,7 @@ ipcMain.on('toMain_setGamePath', (event) => {
 			mcStore.set('game_path', result.filePaths[0])
 			parseSettings()
 			refreshClientModList()
-			event.sender.send( 'fromMain_allSettings', mcStore.store )
+			event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
 		}
 	}).catch((unknownError) => {
 		log.log.danger(`Could not read specified game EXE : ${unknownError}`, 'game-path')
@@ -916,6 +922,51 @@ function modIdsToRecords(mods) {
 /** END: Utility & Convenience Functions */
 
 
+function parseGameXML(devMode = null) {
+	const gameXMLFile = gameSettings.replace('gameSettings.xml', 'game.xml')
+
+	let   XMLString = ''
+	const XMLParser = new fxml.XMLParser({
+		commentPropName    : '#comment',
+		ignoreAttributes   : false,
+		numberParseOptions : { leadingZeros : true, hex : true, skipLike : /[0-9]\.[0-9]{6}/ },
+	})
+	
+	try {
+		XMLString = fs.readFileSync(gameXMLFile, 'utf8')
+	} catch (e) {
+		log.log.danger(`Could not read game xml ${e}`, 'game-xml')
+		return
+	}
+
+	try {
+		gameXML = XMLParser.parse(XMLString)
+		devControls = gameXML.game.development.controls
+	} catch (e) {
+		log.log.danger(`Could not read game xml ${e}`, 'game-xml')
+	}
+	
+	if ( devMode !== null ) {
+		gameXML.game.development.controls = devMode
+
+		const builder    = new fxml.XMLBuilder({
+			commentPropName           : '#comment',
+			ignoreAttributes          : false,
+			suppressBooleanAttributes : false,
+			format                    : true,
+			indentBy                  : '    ',
+			suppressEmptyNode         : true,
+		})
+
+		try {
+			fs.writeFileSync(gameXMLFile, builder.build(gameXML))
+		} catch (e) {
+			log.log.danger(`Could not write game xml ${e}`, 'game-xml')
+		}
+
+		parseGameXML(null)
+	}
+}
 /** Business Functions */
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
 	if ( ! gameSettings.endsWith('.xml') ) {
@@ -1236,6 +1287,7 @@ function processModFolders_post(newFolder = false) {
 	})
 
 	parseSettings()
+	parseGameXML()
 	refreshClientModList()
 	loadingWindow_hide()
 

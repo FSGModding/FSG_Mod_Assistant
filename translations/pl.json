@@ -242,5 +242,7 @@
 	"mod_badge_keys_bad__title": "Ten mod dodaje keybindingi do gry, niektóre mogą wchodzić w konflikt",
 	"bind_conflict": "Możliwy konflikt wiązania kluczy",
 	"detail_key_binds": "Wiązania kluczowe",
-	"detail_key_none": "Ten mod nie wydaje się dodawać przypisań klawiszy"
+	"detail_key_none": "Ten mod nie wydaje się dodawać przypisań klawiszy",
+	"user_pref_title_dev": "Kontrole rozwoju",
+	"user_pref_blurb_dev": "Włącz w grze Development Controls i polecenia konsoli"
 }

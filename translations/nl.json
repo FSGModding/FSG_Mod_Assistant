@@ -242,5 +242,7 @@
 	"mod_badge_keys_bad__title": "Deze mod voegt keybindings toe aan het spel, sommige kunnen conflicteren.",
 	"bind_conflict": "Mogelijke sleutelbinding conflict",
 	"detail_key_binds": "Sleutelbindingen",
-	"detail_key_none": "Deze mod lijkt geen toetsenbindingen toe te voegen"
+	"detail_key_none": "Deze mod lijkt geen toetsenbindingen toe te voegen",
+	"user_pref_title_dev": "Ontwikkelingscontroles",
+	"user_pref_blurb_dev": "Activeer in-game ontwikkelingsbesturing en console commando's"
 }
