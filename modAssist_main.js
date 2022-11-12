@@ -125,6 +125,7 @@ const Store   = require('electron-store')
 const { saveFileChecker } = require('./lib/savegame-parser.js')
 const mcStore = new Store({schema : settingsSchema})
 const maCache = new Store({name : 'mod_cache'})
+const modNote = new Store({name : 'col_notes'})
 
 const newModsList = []
 
@@ -160,6 +161,7 @@ const windows = {
 	folder  : null,
 	load    : null,
 	main    : null,
+	notes   : null,
 	prefs   : null,
 	resolve : null,
 	save    : null,
@@ -437,6 +439,24 @@ function createSavegameWindow(collection) {
 	windows.save.on('closed', () => { windows.save = null; windows.main.focus() })
 }
 
+function createNotesWindow(collection) {
+	if ( windows.notes ) {
+		windows.notes.focus()
+		windows.notes.webContents.send('fromMain_collectionName', collection, modList[collection].name, modNote.store)
+		return
+	}
+
+	windows.notes = createSubWindow({ parent : 'main', preload : 'notesWindow', maximize : mcStore.get('detail_window_max') })
+
+	windows.notes.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('fromMain_collectionName', collection, modList[collection].name, modNote.store)
+		if ( devDebug ) { windows.notes.webContents.openDevTools() }
+	})
+
+	windows.notes.loadFile(path.join(pathRender, 'notes.html'))
+	windows.notes.on('closed', () => { windows.notes = null; windows.main.focus() })
+}
+
 function createResolveWindow(modSet, shortName) {
 	if ( windows.resolve ) {
 		windows.resolve.webContents.send('fromMain_modSet', modSet, shortName)
@@ -507,7 +527,14 @@ function loadingWindow_noCount() {
 
 /** File operation buttons */
 ipcMain.on('toMain_makeInactive', () => { parseSettings({ disable : true }) })
-ipcMain.on('toMain_makeActive',   (event, newList) => { parseSettings({ newFolder : modFoldersMap[newList] }) })
+ipcMain.on('toMain_makeActive',   (event, newList) => {
+	parseSettings({
+		newFolder  : modFoldersMap[newList],
+		userName   : modNote.get(`${newList}.notes_username`, null),
+		password   : modNote.get(`${newList}.notes_password`, null),
+		serverName : modNote.get(`${newList}.notes_server`, null),
+	})
+})
 ipcMain.on('toMain_openMods',     (event, mods) => {
 	const thisCollectionFolder = modFoldersMap[mods[0].split('--')[0]]
 	const thisMod = modIdToRecord(mods[0])
@@ -723,6 +750,22 @@ ipcMain.on('toMain_setGamePath', (event) => {
 	})
 })
 /** END: Preferences window operation */
+
+
+/** Notes Operation */
+ipcMain.on('toMain_openNotes', (event, collection) => { createNotesWindow(collection) })
+ipcMain.on('toMain_setNote', (event, id, value, collection) => {
+	if ( value === '' ) {
+		modNote.delete(`${collection}.${id}`)
+	} else {
+		modNote.set(`${collection}.${id}`, value)
+	}
+
+	createNotesWindow(collection)
+})
+
+/** END: Notes Operation */
+
 
 /** Export operation */
 ipcMain.on('toMain_exportList', (event, collection) => {

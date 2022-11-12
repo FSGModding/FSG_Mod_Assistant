@@ -222,6 +222,20 @@
 	"notes_button"                           : "<gg-icon class=\"gg-notes\"></gg-icon>",
 	"notes_button__title"                    : "Edit Folder Details",
 	"save_csv_worked"                        : "Collection Exported to CSV List",
-	"save_csv_failed"                        : "Unable to export CSV collection list (check debug log)"
+	"save_csv_failed"                        : "Unable to export CSV collection list (check debug log)",
+	"notes_title_username"                   : "Player Name",
+	"notes_blurb_username"                   : "This is the name for your player when joining the server",
+	"notes_title_server"                     : "Server Name",
+	"notes_blurb_server"                     : "This value is pre-populated in the server search bar",
+	"notes_title_password"                   : "Server Password",
+	"notes_blurb_password"                   : "This is the default value for the server password popup",
+	"notes_title_website"                    : "Server Website",
+	"notes_blurb_website"                    : "Web address for the server, informational purposes only",
+	"notes_title_admin"                      : "Admin Password",
+	"notes_blurb_admin"                      : "Server admin password, informational purposes only",
+	"notes_title_notes"                      : "Notes",
+	"notes_blurb_notes"                      : "Additional Collection Notes",
+	"notes_usage_blurb"                      : "<strong>Please Note:</strong> To activate any changes here you must press the \"Set Active\" button for this collection again!"
+	
 
 }

@@ -51,7 +51,6 @@ window.mods.receive('fromMain_collectionName', (collection, modList) => {
 })
 
 window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
-	console.log(modHubList)
 	const fullModSet       = new Set()
 	const haveModSet       = {}
 	const modSetHTML       = []
@@ -90,7 +89,6 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 			isModHub        : typeof modHubList.mods[thisMod] !== 'undefined',
 		}
 
-		console.log(thisMod, thisModDetail.isModHub)
 		if ( thisMod.startsWith('pdlc_')) {
 			thisModDetail.isDLC     = true
 			thisModDetail.isPresent = true
