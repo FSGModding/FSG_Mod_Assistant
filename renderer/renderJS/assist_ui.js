@@ -72,7 +72,7 @@ window.mods.receive('fromMain_selectAllOpen', () => {
 
 let lastLocale = 'en'
 
-window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList, modHubVersion, bindConflict) => {
+window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList, modHubVersion, bindConflict, notes) => {
 	lastLocale = currLocale
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -125,10 +125,17 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 			modRows.push(makeModRow( `${collection}--${thisMod.uuid}`, thisMod, theseBadges, modId))
 
 		})
+
+		let collWebsite = ''
+		if ( typeof notes[collection] !== 'undefined' && typeof notes[collection].notes_website !== 'undefined' ) {
+			collWebsite = notes[collection].notes_website
+		}
+		
 		modTable.push(makeModCollection(
 			collection,
 			`${modList[collection].name} (${modList[collection].mods.length}) <small>[${fsgUtil.bytesToHR(sizeOfFolder, currLocale)}]</small>`,
-			modRows
+			modRows,
+			collWebsite
 		))
 		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, modList[collection].name, selectedList, false, modFoldersMap[collection]))
 
@@ -166,7 +173,7 @@ function clientMakeListActive() {
 	}
 }
 
-function makeModCollection(id, name, modsRows) {
+function makeModCollection(id, name, modsRows, website) {
 	return `<tr class="mod-table-folder">
 	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
 		${fsgUtil.getIconSVG('folder')}
@@ -175,6 +182,7 @@ function makeModCollection(id, name, modsRows) {
 		${name}
 	</td>
 	<td class="text-end">
+		${ website !== '' ? `<a target="_blank" class="btn btn-secondary btn-sm me-2" href="${website}"><gg-icon class="gg-globe-alt"></gg-icon></a>`: ''}
 		<button class="btn btn-dark btn-sm me-2" onclick="window.mods.exportList('${id}')">${getText('export_button')}</button>
 		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('${id}')">${getText('notes_button')}</button>
 		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')">${getText('check_save')}</button>

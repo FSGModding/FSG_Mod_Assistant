@@ -46,11 +46,21 @@ window.mods.receive('fromMain_collectionName', (collection, collectionName, allN
 
 		element.placeholder = ( typeof thisPlaceholder !== 'undefined' ) ? thisPlaceholder : ''
 		element.value =  ( typeof thisValue !== 'undefined' ) ? thisValue : ''
+		element.classList.add('is-valid')
+		element.classList.remove('is-invalid')
 	})
+
+	fsgUtil.byId('notes_notes').innerHTML = allNotes[collection].notes_notes || ''
 
 	processL10N()
 })
 
+function clientMarkIP(id) {
+	const formControl = fsgUtil.byId(id)
+
+	formControl.classList.remove('is-valid')
+	formControl.classList.add('is-invalid')
+}
 function clientSetNote(id) {
 	const formControl = fsgUtil.byId(id)
 	

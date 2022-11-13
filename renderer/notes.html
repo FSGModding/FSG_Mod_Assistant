@@ -10,7 +10,10 @@
 	<script type="text/javascript">
 		document.onkeydown = function(evt) {
 			evt = evt || window.event
-			if (evt.keyCode == 27) { window.mods.closeWindow() }
+			if (evt.keyCode == 27) { 
+				document.activeElement.blur()
+				window.mods.closeWindow()
+			}
 		}
 		window.onerror = function (message, file, line, col, error) {
 			window.log.debug(error.message, 'prefs'); return false
@@ -40,7 +43,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_username"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onchange="clientSetNote('notes_username')" type="text" class="form-control form-control-sm" id="notes_username">
+				<input onkeyup="clientMarkIP('notes_username')" onblur="clientSetNote('notes_username')" type="text" class="form-control form-control-sm" id="notes_username">
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -49,7 +52,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_server"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onchange="clientSetNote('notes_server')" type="text" class="form-control form-control-sm" id="notes_server">
+				<input onkeyup="clientMarkIP('notes_server')" onblur="clientSetNote('notes_server')" type="text" class="form-control form-control-sm" id="notes_server">
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -58,7 +61,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_password"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onchange="clientSetNote('notes_password')" type="text" class="form-control form-control-sm" id="notes_password">
+				<input onkeyup="clientMarkIP('notes_password')" onblur="clientSetNote('notes_password')" type="text" class="form-control form-control-sm" id="notes_password">
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -67,7 +70,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_website"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onchange="clientSetNote('notes_website')" type="text" class="form-control form-control-sm" id="notes_website">
+				<input onkeyup="clientMarkIP('notes_website')" onblur="clientSetNote('notes_website')" type="text" class="form-control form-control-sm" id="notes_website">
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -76,7 +79,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_admin"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onchange="clientSetNote('notes_admin')" type="text" class="form-control form-control-sm" id="notes_admin">
+				<input onkeyup="clientMarkIP('notes_admin')" onblur="clientSetNote('notes_admin')" type="text" class="form-control form-control-sm" id="notes_admin">
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -85,7 +88,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_notes"></l10n></p>
 			</div>
 			<div class="col-6">
-				<textarea onchange="clientSetNote('notes_notes')" rows="4" class="form-control form-control-sm" id="notes_notes"></textarea>
+				<textarea onblur="clientSetNote('notes_notes')" rows="4" class="form-control form-control-sm" id="notes_notes"></textarea>
 			</div>
 		</div>
 

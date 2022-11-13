@@ -892,7 +892,8 @@ function refreshClientModList() {
 		newModsList,
 		modHubList,
 		modHubVersion,
-		bindConflict
+		bindConflict,
+		modNote.store
 	)
 }
 
