@@ -40,7 +40,8 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict) => {
+window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict, thisLocale) => {
+	console.log(thisLocale)
 	const mhVer = ( modhubRecord[1] !== null ) ? modhubRecord[1] : `<em>${getText(modhubRecord[0] === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
 
 	const idMap = {
@@ -68,7 +69,7 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 	const keyBinds = []
 	Object.keys(modRecord.modDesc.binds).forEach((action) => {
 		const thisBinds = []
-		modRecord.modDesc.binds[action].forEach((keyCombo) => { thisBinds.push(clientGetKeyMapSimple(keyCombo))})
+		modRecord.modDesc.binds[action].forEach((keyCombo) => { thisBinds.push(clientGetKeyMapSimple(keyCombo, thisLocale))})
 		keyBinds.push(`${action} :: ${thisBinds.join(' / ')}`)
 	})
 	
@@ -92,7 +93,7 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 
 		if ( bindingIssueTest ) {
 			Object.keys(bindingIssue).forEach((keyCombo) => {
-				const actualKey = clientGetKeyMap(keyCombo)
+				const actualKey = clientGetKeyMap(keyCombo, thisLocale)
 				const confList  = bindingIssue[keyCombo].join(', ')
 				const issueText = `${getText('bind_conflict')} : ${actualKey} :: ${confList}`
 				problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)

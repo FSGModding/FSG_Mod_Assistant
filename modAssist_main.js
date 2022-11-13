@@ -390,14 +390,14 @@ function createDetailWindow(thisModRecord) {
 
 	if ( windows.detail ) {
 		windows.detail.focus()
-		windows.detail.webContents.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict)
+		windows.detail.webContents.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict, myTranslator.currentLocale)
 		return
 	}
 
 	windows.detail = createSubWindow({ parent : 'main', preload : 'detailWindow', maximize : mcStore.get('detail_window_max') })
 
 	windows.detail.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict)
+		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict, myTranslator.currentLocale)
 		if ( devDebug ) { windows.detail.webContents.openDevTools() }
 	})
 
