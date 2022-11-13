@@ -49,8 +49,10 @@ window.mods.receive('fromMain_collectionName', (collection, collectionName, allN
 		element.classList.add('is-valid')
 		element.classList.remove('is-invalid')
 	})
-
-	fsgUtil.byId('notes_notes').innerHTML = allNotes[collection].notes_notes || ''
+	
+	if ( typeof allNotes[collection] !== 'undefined' ) {
+		fsgUtil.byId('notes_notes').innerHTML = allNotes[collection].notes_notes || ''
+	}
 
 	processL10N()
 })
