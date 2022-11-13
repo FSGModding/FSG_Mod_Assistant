@@ -620,13 +620,51 @@ ipcMain.on('toMain_removeFolder',   (event, folder) => {
 	if ( modFolders.delete(folder) ) {
 		log.log.notice(`Folder removed from list ${folder}`, 'folder-opts')
 		mcStore.set('modFolders', Array.from(modFolders))
+		Object.keys(modList).forEach((collection) => {
+			if ( modList[collection].fullPath === folder ) { delete modList[collection] }
+		})
+		Object.keys(modFoldersMap).forEach((collection) => {
+			if ( modFoldersMap[collection] === folder ) { delete modFoldersMap[collection]}
+		})
+		windows.folder.webContents.send('fromMain_getFolders', modList)
 		foldersDirty = true
+
 	} else {
 		log.log.warning(`Folder NOT removed from list ${folder}`, 'folder-opts')
 	}
 })
-/** END: Folder Window Operation */
 
+ipcMain.on('toMain_reorderFolder', (event, from, to) => {
+	const newOrder = Array.from(modFolders)
+	const item     = newOrder.splice(from, 1)[0]
+	newOrder.splice(to, 0, item)
+	
+	const reorder_modList       = {}
+	const reorder_modFoldersMap = {}
+
+	newOrder.forEach((path) => {
+		Object.keys(modFoldersMap).forEach((collection) => {
+			if ( modFoldersMap[collection] === path ) {
+				reorder_modFoldersMap[collection] = modFoldersMap[collection]
+			}
+		})
+		Object.keys(modList).forEach((collection) => {
+			if ( modList[collection].fullPath === path ) {
+				reorder_modList[collection] = modList[collection]
+			}
+		})
+	})
+
+	modFolders    = new Set(newOrder)
+	modList       = reorder_modList
+	modFoldersMap = reorder_modFoldersMap
+
+	mcStore.set('modFolders', Array.from(modFolders))
+
+	windows.folder.webContents.send('fromMain_getFolders', modList)
+	foldersDirty = true
+})
+/** END: Folder Window Operation */
 
 
 /** Logging Operation */

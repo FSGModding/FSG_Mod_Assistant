@@ -38,11 +38,12 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		closeWindow  : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'folder') },
-		homeDirMap   : ( path ) => { return ipcRenderer.sendSync('toMain_homeDirRevamp', path) },
-		removeFolder : ( folder ) => { ipcRenderer.send('toMain_removeFolder', folder) },
-		openFolder   : ( folder ) => { ipcRenderer.send('toMain_openFolder', folder) },
-		receive      : ( channel, func ) => {
+		closeWindow   : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'folder') },
+		homeDirMap    : ( path ) => { return ipcRenderer.sendSync('toMain_homeDirRevamp', path) },
+		removeFolder  : ( folder ) => { ipcRenderer.send('toMain_removeFolder', folder) },
+		openFolder    : ( folder ) => { ipcRenderer.send('toMain_openFolder', folder) },
+		reorderFolder : ( from, to ) => { ipcRenderer.send('toMain_reorderFolder', from, to) },
+		receive       : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getFolders',
 			]
