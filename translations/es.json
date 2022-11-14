@@ -244,5 +244,16 @@
 	"detail_key_binds": "Enlaces de llaves",
 	"detail_key_none": "Este mod no parece añadir enlaces de teclas",
 	"user_pref_title_dev": "Controles de desarrollo",
-	"user_pref_blurb_dev": "Habilitar los controles de desarrollo del juego y los comandos de la consola"
+	"user_pref_blurb_dev": "Habilitar los controles de desarrollo del juego y los comandos de la consola",
+	"notes_blurb_website_dl": "Permitir la descarga directa de mods desde este sitio",
+	"admin_button": "<gg-icon class=\"gg-globe-alt\"></gg-icon>",
+	"download_button": "<gg-icon class=\"gg-software-download\"></gg-icon>",
+	"admin_button__title": "Abrir página web de administración para esta colección",
+	"download_button__title": "Descargar (¡y sustituir!) todos los mods del servidor",
+	"download_title": "Mod Download",
+	"download_started": "Descargando el set completo de mods para",
+	"download_finished": "Cuando se haya completado, el escáner del probador se iniciará automáticamente",
+	"download_failed": "La descarga ha fallado, por favor compruebe el registro de depuración para más detalles.\n\nEsto suele significar que la URL del sitio web del servidor es incorrecta, o que se ha desactivado la descarga de mods.\n\nColección",
+	"loading_download_subtitle": "Por favor, espere, esto puede tardar un minuto",
+	"loading_download_title": "Descarga de Mods"
 }

@@ -43,9 +43,12 @@ window.mods.receive('fromMain_collectionName', (collection, collectionName, allN
 			thisValue       = allNotes[collection][element.id]
 			thisPlaceholder = ( typeof thisValue !== 'undefined' ) ? '' : thisPlaceholder
 		}
-
-		element.placeholder = ( typeof thisPlaceholder !== 'undefined' ) ? thisPlaceholder : ''
-		element.value =  ( typeof thisValue !== 'undefined' ) ? thisValue : ''
+		if ( element.getAttribute('type') === 'checkbox' ) {
+			element.checked = (thisValue !== '') ? thisValue : false
+		} else {
+			element.placeholder = ( typeof thisPlaceholder !== 'undefined' ) ? thisPlaceholder : ''
+			element.value =  ( typeof thisValue !== 'undefined' ) ? thisValue : ''
+		}
 		element.classList.add('is-valid')
 		element.classList.remove('is-invalid')
 	})
@@ -66,5 +69,9 @@ function clientMarkIP(id) {
 function clientSetNote(id) {
 	const formControl = fsgUtil.byId(id)
 	
-	window.mods.setNote(id, formControl.value, thisCollection)
+	if ( formControl.getAttribute('type') === 'checkbox' ) {
+		window.mods.setNote(id, formControl.checked, thisCollection)
+	} else {
+		window.mods.setNote(id, formControl.value, thisCollection)
+	}
 }

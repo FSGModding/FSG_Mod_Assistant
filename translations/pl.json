@@ -244,5 +244,16 @@
 	"detail_key_binds": "Sktórty klawiszowe",
 	"detail_key_none": "Ten mod nie wydaje się dodawać sktórtów klawiszowych",
 	"user_pref_title_dev": "Funkcje deweloperskie",
-	"user_pref_blurb_dev": "Włącz w grze funkcje dewelkoperskie i komendy w konsoli"
+	"user_pref_blurb_dev": "Włącz w grze funkcje dewelkoperskie i komendy w konsoli",
+	"notes_blurb_website_dl": "Pozwól na bezpośrednie pobieranie modów z tego serwera",
+	"admin_button": "<gg-icon class=\"gg-globe-alt\"></gg-icon>",
+	"download_button": "<gg-icon class=\"gg-software-download\"></gg-icon>",
+	"admin_button__title": "Otwórz stronę administratora dla tej kolekcji",
+	"download_button__title": "Pobranie (i podmiana!) wszystkich modów z serwera",
+	"download_title": "Mod Download",
+	"download_started": "Pobieranie pełnego zestawu modów dla",
+	"download_finished": "Po zakończeniu, skanowanie testera rozpocznie się automatycznie",
+	"download_failed": "Pobieranie nie powiodło się, proszę sprawdzić dziennik debugowania, aby uzyskać więcej szczegółów.\n\nZazwyczaj oznacza to, że adres URL strony serwera jest nieprawidłowy lub pobieranie modów zostało wyłączone.\n\nKolekcja",
+	"loading_download_subtitle": "Proszę czekać, to może potrwać minutę",
+	"loading_download_title": "Pobieranie modów"
 }

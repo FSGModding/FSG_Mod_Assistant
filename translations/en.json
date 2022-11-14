@@ -230,7 +230,7 @@
 	"notes_title_password"                   : "Server Password",
 	"notes_blurb_password"                   : "This is the default value for the server password popup",
 	"notes_title_website"                    : "Server Website",
-	"notes_blurb_website"                    : "Web address for the server, informational purposes only",
+	"notes_blurb_website"                    : "Web address for the server (http://example.net:8080/)",
 	"notes_title_admin"                      : "Admin Password",
 	"notes_blurb_admin"                      : "Server admin password, informational purposes only",
 	"notes_title_notes"                      : "Notes",
@@ -244,5 +244,16 @@
 	"detail_key_binds"                       : "Key Bindings",
 	"detail_key_none"                        : "This mod does not appear to add key bindings",
 	"user_pref_title_dev"                    : "Development Controls",
-	"user_pref_blurb_dev"                    : "Enable in-game Development Controls and Console commands"
+	"user_pref_blurb_dev"                    : "Enable in-game Development Controls and Console commands",
+	"notes_blurb_website_dl"                 : "Allow direct Mod Download from this server",
+	"admin_button"                           : "<gg-icon class=\"gg-globe-alt\"></gg-icon>",
+	"download_button"                        : "<gg-icon class=\"gg-software-download\"></gg-icon>",
+	"admin_button__title"                    : "Open Admin Webpage for this collection",
+	"download_button__title"                 : "Download (and replace!) all mods from server",
+	"download_title"                         : "Mod Download",
+	"download_started"                       : "Downloading full mod set for",
+	"download_finished"                      : "When complete, the tester scanner will automatically begin",
+	"download_failed"                        : "Download failed, please check the debug log for more details.\n\nThis usually means the server website URL is incorrect, or downloading mods has been turned off.\n\nCollection",
+	"loading_download_subtitle"              : "Please wait, this could take a minute",
+	"loading_download_title"                 : "Downloading Mods"
 }

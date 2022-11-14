@@ -244,5 +244,16 @@
 	"detail_key_binds": "Schlüsselbindungen",
 	"detail_key_none": "Diese Mod scheint keine Tastenbelegungen hinzuzufügen",
 	"user_pref_title_dev": "Entwicklungskontrollen",
-	"user_pref_blurb_dev": "Entwicklungssteuerungen und Konsolenbefehle im Spiel aktivieren"
+	"user_pref_blurb_dev": "Entwicklungssteuerungen und Konsolenbefehle im Spiel aktivieren",
+	"notes_blurb_website_dl": "Erlaubt direkten Mod-Download von dieser Seite",
+	"admin_button": "<gg-icon class=\"gg-globe-alt\"></gg-icon>",
+	"download_button": "<gg-icon class=\"gg-software-download\"></gg-icon>",
+	"admin_button__title": "Verwaltungswebseite für diese Sammlung öffnen",
+	"download_button__title": "Alle Mods vom Server herunterladen (und ersetzen!)",
+	"download_title": "Mod Download",
+	"download_started": "Download des kompletten Mod-Sets für",
+	"download_finished": "Wenn der Vorgang abgeschlossen ist, wird der Scanner des Prüfgeräts automatisch gestartet",
+	"download_failed": "Der Download ist fehlgeschlagen, bitte überprüfen Sie das Debug-Protokoll für weitere Details.\n\nDies bedeutet in der Regel, dass die URL der Server-Website nicht korrekt ist oder das Herunterladen von Mods deaktiviert wurde.\n\nSammlung",
+	"loading_download_subtitle": "Bitte warten Sie, das kann eine Minute dauern",
+	"loading_download_title": "Herunterladen von Mods"
 }

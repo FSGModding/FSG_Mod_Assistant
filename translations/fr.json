@@ -244,5 +244,16 @@
 	"detail_key_binds": "Fixations des clés",
 	"detail_key_none": "Ce mod ne semble pas ajouter de liaisons de touches",
 	"user_pref_title_dev": "Contrôles du développement",
-	"user_pref_blurb_dev": "Activer les commandes de développement et les commandes de la console dans le jeu"
+	"user_pref_blurb_dev": "Activer les commandes de développement et les commandes de la console dans le jeu",
+	"notes_blurb_website_dl": "Autoriser le téléchargement direct de Mod à partir de ce serveur",
+	"admin_button": "<gg-icon class=\"gg-globe-alt\"></gg-icon>",
+	"download_button": "<gg-icon class=\"gg-software-download\"></gg-icon>",
+	"admin_button__title": "Ouvrir une page Web d'administration pour cette collection",
+	"download_button__title": "Télécharger (et remplacer !) tous les mods du serveur",
+	"download_title": "Téléchargement du mod",
+	"download_started": "Téléchargement du jeu complet de mods pour",
+	"download_finished": "Une fois terminé, le scanner du testeur démarrera automatiquement",
+	"download_failed": "Le téléchargement a échoué, veuillez vérifier le journal de débogage pour plus de détails.\n\nCela signifie généralement que l'URL du site web du serveur est incorrecte, ou que le téléchargement des mods a été désactivé.\n\nCollection",
+	"loading_download_subtitle": "Veuillez patienter, cela peut prendre une minute",
+	"loading_download_title": "Télécharger des mods"
 }

@@ -123,7 +123,9 @@ const settingsSchema = {
 }
 
 const Store   = require('electron-store')
+const AdmZip  = require('adm-zip')
 const { saveFileChecker } = require('./lib/savegame-parser.js')
+
 const mcStore = new Store({schema : settingsSchema})
 const maCache = new Store({name : 'mod_cache'})
 const modNote = new Store({name : 'col_notes'})
@@ -480,7 +482,7 @@ function createNotesWindow(collection) {
 	})
 
 	windows.notes.loadFile(path.join(pathRender, 'notes.html'))
-	windows.notes.on('closed', () => { windows.notes = null; windows.main.focus() })
+	windows.notes.on('closed', () => { windows.notes = null; windows.main.focus(); processModFolders() })
 }
 
 function createResolveWindow(modSet, shortName) {
@@ -823,6 +825,7 @@ ipcMain.on('toMain_setGamePath', (event) => {
 /** Notes Operation */
 ipcMain.on('toMain_openNotes', (event, collection) => { createNotesWindow(collection) })
 ipcMain.on('toMain_setNote', (event, id, value, collection) => {
+	if ( id === 'notes_website' || id === 'notes_websiteDL') { foldersDirty = true }
 	if ( value === '' ) {
 		modNote.delete(`${collection}.${id}`)
 	} else {
@@ -834,6 +837,66 @@ ipcMain.on('toMain_setNote', (event, id, value, collection) => {
 
 /** END: Notes Operation */
 
+/** Download operation */
+ipcMain.on('toMain_downloadList', (event, collection) => {
+	const thisSite = modNote.get(`${collection}.notes_website`, null)
+	const thisDoDL = modNote.get(`${collection}.notes_websiteDL`, false)
+	const thisLink = `${thisSite}all_mods_download?onlyActive=true`
+
+	if ( thisSite === null || !thisDoDL ) { return }
+
+	dialog.showMessageBoxSync(windows.main, {
+		title   : myTranslator.syncStringLookup('download_title'),
+		message : `${myTranslator.syncStringLookup('download_started')} :: ${modList[collection].name}\n${myTranslator.syncStringLookup('download_finished')}`,
+		type    : 'info',
+	})
+
+	log.log.info(`Downloading Collection : ${collection}`, 'mod-download')
+	log.log.info(`Download Link : ${thisLink}`, 'mod-download')
+
+	loadingWindow_open('download')
+
+	const dlReq = net.request(thisLink)
+
+	dlReq.on('response', (response) => {
+		log.log.info(`Got download: ${response.statusCode}`, 'mod-download')
+
+		if ( response.statusCode < 200 || response.statusCode >= 400 ) {
+			dialog.showMessageBoxSync(windows.main, {
+				title   : myTranslator.syncStringLookup('download_title'),
+				message : `${myTranslator.syncStringLookup('download_failed')} :: ${modList[collection].name}`,
+				type    : 'error',
+			})
+		}
+
+		loadingWindow_total(response.headers['content-length'] || 0, true)
+
+		const zipResp = []
+
+		response.on('data', (chunk) => {
+			loadingWindow_current(chunk.length)
+			zipResp.push(chunk)
+		})
+
+		response.on('end',  () => {
+			try {
+				const asBytes = Buffer.concat(zipResp)
+				const thisZip = new AdmZip(asBytes)
+
+				thisZip.extractAllTo(modList[collection].fullPath, true)
+				foldersDirty = true
+				
+			} catch (e) {
+				log.log.warning(`Download failed : (${response.statusCode}) ${e}`, 'mod-download')
+			}
+			processModFolders()
+		})
+	})
+	dlReq.on('error', (error) => { log.log.info(`Network error : ${error}`, 'mod-download') })
+	dlReq.end()
+})
+
+/** END: download operation */
 
 /** Export operation */
 ipcMain.on('toMain_exportList', (event, collection) => {
@@ -1202,7 +1265,7 @@ function fileGetStats(folder, thisFile) {
 
 let loadingWait = null
 function processModFolders(newFolder) {
-	if ( !foldersDirty ) { return }
+	if ( !foldersDirty ) { loadingWindow_hide(); return }
 
 	loadingWindow_open('mods', 'main')
 	loadingWindow_total(0, true)

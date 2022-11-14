@@ -52,6 +52,7 @@ contextBridge.exposeInMainWorld(
 
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
+		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
 		openNotes  : (collection)   => { ipcRenderer.send('toMain_openNotes', collection ) },
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },

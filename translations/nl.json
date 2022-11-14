@@ -244,5 +244,16 @@
 	"detail_key_binds": "Toetskoppelingen",
 	"detail_key_none": "Deze mod lijkt geen toetskoppelingen toe te voegen",
 	"user_pref_title_dev": "Development Controls",
-	"user_pref_blurb_dev": "Activeer in-game Development Controls en Console commando's"
+	"user_pref_blurb_dev": "Activeer in-game Development Controls en Console commando's",
+	"notes_blurb_website_dl": "Directe Mod Download van deze server toestaan",
+	"admin_button": "<gg-icon class=\"gg-globe-alt\"></gg-icon>",
+	"download_button": "<gg-icon class=\"gg-software-download\"></gg-icon>",
+	"admin_button__title": "Open Admin Webpagina voor deze collectie",
+	"download_button__title": "Download (en vervang!) alle mods van de server",
+	"download_title": "Mod Download",
+	"download_started": "Downloading full mod set for",
+	"download_finished": "Als hij klaar is, begint de testscanner automatisch.",
+	"download_failed": "Downloaden is mislukt, controleer het debug-logboek voor meer details.\n\nDit betekent meestal dat de URL van de serverwebsite onjuist is, of dat het downloaden van mods is uitgeschakeld.\n\nCollectie",
+	"loading_download_subtitle": "Wacht even, dit kan even duren",
+	"loading_download_title": "Mods downloaden"
 }
