@@ -41,7 +41,6 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict, thisLocale) => {
-	console.log(thisLocale)
 	const mhVer = ( modhubRecord[1] !== null ) ? modhubRecord[1] : `<em>${getText(modhubRecord[0] === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
 
 	const idMap = {
@@ -116,7 +115,6 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 	}
 
 	if ( modhubRecord[0] !== null && modhubRecord[1] !== null && modRecord.modDesc.version !== modhubRecord[1]) {
-		console.log(modhubRecord)
 		extraBadges.push(fsgUtil.badge('light', 'update'))
 	}
 	if ( modhubRecord[2] ) {
@@ -124,6 +122,10 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 	}
 	if ( modhubRecord[0] === null ) {
 		extraBadges.push(fsgUtil.badge('dark', 'nonmh'))
+		fsgUtil.byId('modhub_link').classList.add('d-none')
+	} else {
+		const modhubLink = `https://www.farming-simulator.com/mod.php?mod_id=${modhubRecord[0]}`
+		fsgUtil.byId('modhub_link').innerHTML = `<a target="_BLANK" href="${modhubLink}">${modhubLink}</a>`
 	}
 
 	extraBadges.push(modRecord.badges)
