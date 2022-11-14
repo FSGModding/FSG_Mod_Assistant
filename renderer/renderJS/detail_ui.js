@@ -113,7 +113,8 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 		}
 	}
 
-	if ( modhubRecord[0] !== null && modRecord.modDesc.version !== modhubRecord[1]) {
+	if ( modhubRecord[0] !== null && modhubRecord[1] !== null && modRecord.modDesc.version !== modhubRecord[1]) {
+		console.log(modhubRecord)
 		extraBadges.push(fsgUtil.badge('light', 'update'))
 	}
 	if ( modhubRecord[2] ) {
