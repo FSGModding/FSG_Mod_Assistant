@@ -1397,6 +1397,7 @@ app.whenReady().then(() => {
 				loadModHub()
 			})
 		})
+		request.on('error', (error) => { log.log.info(`Network error : ${error}`, 'net-request') })
 		request.end()
 
 		const request2 = net.request(hubVerURL)
@@ -1410,6 +1411,7 @@ app.whenReady().then(() => {
 				loadModHubVer()
 			})
 		})
+		request2.on('error', (error) => { log.log.info(`Network error : ${error}`, 'net-request') })
 		request2.end()
 
 		app.on('second-instance', () => {
