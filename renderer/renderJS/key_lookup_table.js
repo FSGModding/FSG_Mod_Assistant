@@ -288,10 +288,10 @@ const localKeys = {
 		'KEY_ralt'                : 'ПРАВЫЙ ALT',
 		'KEY_lalt'                : 'ALT',
 		
-		'MOUSE_BUTTON_LEFT'       : '🖯 ВЛЕВО',
-		'MOUSE_BUTTON_MIDDLE'     : '🖯 MIDDLE',
-		'MOUSE_BUTTON_RIGHT'      : '🖯 ВПРАВО',
-		'MOUSE_BUTTON_WHEEL_UP'   : '🖯 КОЛЁИКО ВВЕРХ',
-		'MOUSE_BUTTON_WHEEL_DOWN' : '🖯 КОЛЁИКО ВНИЗ',
+		'MOUSE_BUTTON_LEFT'       : 'ЛЕВАЯ КЛАВИША МЫШИ',
+		'MOUSE_BUTTON_MIDDLE'     : 'СРЕДНЯЯ КЛАВИША МЫШИ',
+		'MOUSE_BUTTON_RIGHT'      : 'ПРАВАЯ КЛАВИША МЫШИ',
+		'MOUSE_BUTTON_WHEEL_UP'   : 'КОЛЁСИКО МЫШИ ВВЕРХ',
+		'MOUSE_BUTTON_WHEEL_DOWN' : 'КОЛЁСИКО МЫШИ ВНИЗ',
 	},
 }
