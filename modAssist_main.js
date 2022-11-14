@@ -17,6 +17,7 @@ if ( !gotTheLock ) { app.quit() }
 const { autoUpdater } = require('electron-updater')
 const { ma_logger }   = require('./lib/ma-logger.js')
 const mcDetail        = require('./package.json')
+const semverGt        = require('semver/functions/gt')
 const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
 
 const devDebug      = !(app.isPackaged)
@@ -190,10 +191,12 @@ let devControls     = false
 
 /** Upgrade Cache Version Here */
 
-if ( mcStore.get('cache_version') < '1.0.2' ) {
+if ( semverGt('1.0.2', mcStore.get('cache_version'))) {
 	log.log.warning('Invalid Mod Cache (old), resetting.')
 	maCache.clear()
 	log.log.info('Mod Cache Cleared')
+} else {
+	log.log.info('Mod Cache Version Good')
 }
 
 mcStore.set('cache_version', mcDetail.version)
