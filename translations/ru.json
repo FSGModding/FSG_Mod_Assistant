@@ -143,7 +143,7 @@
 	"savegame_inactive__title": "Это НЕ активировано в сохранении",
 	"savegame_inactive": "Неактивировано",
 	"savegame_isloaded__title": "Это активировано в сохранении",
-	"savegame_isloaded": "Активировано",
+	"savegame_isloaded": "Активирован",
 	"savegame_isused__title": "Это используется (приобретено) в сохранении",
 	"savegame_isused": "Используется",
 	"savegame_missing__title": "Этого файла нет в коллекции",
