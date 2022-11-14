@@ -403,6 +403,11 @@ function createDetailWindow(thisModRecord) {
 
 	windows.detail.loadFile(path.join(pathRender, 'detail.html'))
 	windows.detail.on('closed', () => { windows.detail = null; windows.main.focus() })
+
+	windows.detail.webContents.setWindowOpenHandler(({ url }) => {
+		shell.openExternal(url)
+		return { action : 'deny' }
+	})
 }
 
 function createDebugWindow() {

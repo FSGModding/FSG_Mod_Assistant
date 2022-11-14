@@ -66,6 +66,8 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 		fsgUtil.byId(key).innerHTML = idMap[key]
 	})
 
+	fsgUtil.byId('description').querySelectorAll('a').forEach((link) => { link.target = '_BLANK' })
+
 	const keyBinds = []
 	Object.keys(modRecord.modDesc.binds).forEach((action) => {
 		const thisBinds = []
