@@ -46,9 +46,10 @@
     "productName": "FSModAssistant",
     "files": [
       "!README.*",
-      "!/test/*",
-      "!/screen_shots/*",
+      "!test/*",
+      "!screen_shots/**",
       "!**/.vscode/*",
+      "!.github/*",
       "!/dist/*"
     ],
     "win": {
