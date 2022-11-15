@@ -278,6 +278,10 @@ This button lets you clean out the mod cache for the app.  Under most circumstan
 
 Please open an issue and let me know what.  If it is specific to a mod, let me know where to get the mod.  You can also hit CTRL+ALT+D in the app to bring up the debug log - sending that too might be a good idea.
 
+If the app hard crashes (you'll get a popup message), the crash log can be found in (v1.2.0+ only):
+
+`C:\Users\YOU\AppData\Roaming\fsg-mod-assistant` - please include `crash.log` and `assist.log` in your issue report.  Thanks!
+
 ## Technical Details
 
 ### The Mod Cache
