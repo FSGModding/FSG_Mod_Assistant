@@ -255,5 +255,12 @@
 	"download_finished": "Wenn der Vorgang abgeschlossen ist, wird der Scanner des Prüfgeräts automatisch gestartet",
 	"download_failed": "Der Download ist fehlgeschlagen, bitte überprüfen Sie das Debug-Protokoll für weitere Details.\n\nDies bedeutet in der Regel, dass die URL der Server-Website nicht korrekt ist oder das Herunterladen von Mods deaktiviert wurde.\n\nSammlung",
 	"loading_download_subtitle": "Bitte warten Sie, das kann eine Minute dauern",
-	"loading_download_title": "Herunterladen von Mods"
+	"loading_download_title": "Herunterladen von Mods",
+	"notes_title_favorite": "Favoritensammlung",
+	"notes_blurb_favorite": "Betrachten Sie diese Sammlung als Favoriten für \"Favoriten kopieren nach\" Funktion - Mehrere Favoritenordner werden unterstützt.",
+	"copy_fav_to": "Favoriten kopieren nach...",
+	"copy_fav_to__title": "Massenkopie des/der Lieblingsordner(s) in eine oder mehrere Sammlungen",
+	"confirm_multi_copy_blurb": "Um Mods zu kopieren, wählen Sie unten die Zielsammlung(en) aus - bestehende Dateien werden überschrieben",
+	"confirm_multi_copy_title": "Kopieren und Überschreiben von Mod-Dateien",
+	"open_hub__title": "Öffne die ModHub-Seite für diese Mod in deinem Standardbrowser"
 }

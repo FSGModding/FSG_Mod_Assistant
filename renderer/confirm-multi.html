@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/confirm_multi_ui.js"></script>
+	<style> ::-webkit-scrollbar { display: none; } </style>
+	<script type="text/javascript">
+		document.onkeydown = function(evt) {
+			evt = evt || window.event
+			if (evt.keyCode == 27) { window.mods.closeWindow() }
+		}
+		window.onerror = function (message, file, line, col, error) {
+			window.log.debug(error.message, 'multi-copy'); return false
+		}
+	</script>
+</head>
+<body>
+	
+	<div class="container-fluid user-select-none">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row gx-1 w-100">
+				<div class="col-7">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+				</div>
+				<div class="col-5">
+					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill"><l10n class="h5" name="confirm_multi_copy_title"></l10n></div>
+				</div>
+			</div>
+			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="confirm_multi_copy_blurb"></l10n></span>
+		</div>
+
+		<div class="row mx-2">
+			<div class="col-form-label"><l10n name="destination"></l10n></div>
+			<div id="dest_list"></div>
+		</div>
+		
+		<div class="mx-3">
+			<table class="table table-striped mt-4" id="confirm_list"></table>
+		</div>
+
+		<div class="btn btn-danger w-75 mx-auto d-block" onclick="clientDoCopy()"><l10n name="copy"></l10n></div>
+	</div>
+
+</body>
+</html>

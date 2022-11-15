@@ -255,5 +255,12 @@
 	"download_finished"                      : "When complete, the tester scanner will automatically begin",
 	"download_failed"                        : "Download failed, please check the debug log for more details.\n\nThis usually means the server website URL is incorrect, or downloading mods has been turned off.\n\nCollection",
 	"loading_download_subtitle"              : "Please wait, this could take a minute",
-	"loading_download_title"                 : "Downloading Mods"
+	"loading_download_title"                 : "Downloading Mods",
+	"notes_title_favorite"                   : "Favorite Collection",
+	"notes_blurb_favorite"                   : "Consider this collection to be favorites for \"Copy Favorites To\" Function - Multiple favorite folders supported.",
+	"copy_fav_to"                            : "Copy Favorites To...",
+	"copy_fav_to__title"                     : "Mass copy favorite folder(s) to one or more collections",
+	"confirm_multi_copy_blurb"               : "To copy mods, select the destination collection(s) below - existing files will be overwritten",
+	"confirm_multi_copy_title"               : "Copy and Overwrite Mod File(s)",
+	"open_hub__title"                        : "Open ModHub Page for this mod in your default browser"
 }

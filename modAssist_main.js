@@ -341,6 +341,21 @@ function createMainWindow () {
 	})
 }
 
+function createConfirmFav(mods, destinations) {
+	if ( mods.length < 1 ) { return }
+	if ( windows.confirm ) { windows.confirm.focus(); return }
+
+	windows.confirm = createSubWindow({ parent : 'main', preload : 'confirmMulti', width : 750, height : 500, fixed : true, center : true })
+
+	windows.confirm.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('fromMain_confirmList', mods, destinations, modList)
+	})
+
+	windows.confirm.loadFile(path.join(pathRender, 'confirm-multi.html'))
+
+	windows.confirm.on('closed', () => { windows.confirm = null; windows.main.focus() })
+}
+
 function createConfirmWindow(type, modRecords, origList) {
 	if ( modRecords.length < 1 ) { return }
 	if ( windows.confirm ) { windows.confirm.focus(); return }
@@ -580,6 +595,29 @@ ipcMain.on('toMain_openHub',     (event, mods) => {
 	}
 })
 
+ipcMain.on('toMain_copyFavorites',  () => {
+	const favCols     = []
+	const sourceFiles = []
+	let destCols      = Object.keys(modList)
+
+	Object.keys(modNote.store).forEach((collection) => {
+		if ( modNote.get(`${collection}.notes_favorite`, false) === true ) { favCols.push(collection) }
+	})
+
+	favCols.forEach((collection) => {
+		destCols = destCols.filter((item) => item !== collection )
+		modList[collection].mods.forEach((thisMod) => {
+			sourceFiles.push([
+				thisMod.fileDetail.fullPath,
+				collection,
+				thisMod.fileDetail.shortName,
+				thisMod.l10n.title
+			])
+		})
+	})
+
+	createConfirmFav(sourceFiles, destCols)
+})
 ipcMain.on('toMain_deleteMods',     (event, mods) => { createConfirmWindow('delete', modIdsToRecords(mods), mods) })
 ipcMain.on('toMain_moveMods',       (event, mods) => { createConfirmWindow('move', modIdsToRecords(mods), mods) })
 ipcMain.on('toMain_copyMods',       (event, mods) => { createConfirmWindow('copy', modIdsToRecords(mods), mods) })
@@ -825,7 +863,8 @@ ipcMain.on('toMain_setGamePath', (event) => {
 /** Notes Operation */
 ipcMain.on('toMain_openNotes', (event, collection) => { createNotesWindow(collection) })
 ipcMain.on('toMain_setNote', (event, id, value, collection) => {
-	if ( id === 'notes_website' || id === 'notes_websiteDL') { foldersDirty = true }
+	if ( id === 'notes_website' || id === 'notes_websiteDL' || id === 'notes_favorite' ) { foldersDirty = true }
+
 	if ( value === '' ) {
 		modNote.delete(`${collection}.${id}`)
 	} else {

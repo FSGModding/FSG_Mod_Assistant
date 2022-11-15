@@ -255,5 +255,12 @@
 	"download_finished": "Als hij klaar is, begint de testscanner automatisch.",
 	"download_failed": "Downloaden is mislukt, controleer het debug-logboek voor meer details.\n\nDit betekent meestal dat de URL van de serverwebsite onjuist is, of dat het downloaden van mods is uitgeschakeld.\n\nCollectie",
 	"loading_download_subtitle": "Wacht even, dit kan even duren",
-	"loading_download_title": "Mods downloaden"
+	"loading_download_title": "Mods downloaden",
+	"notes_title_favorite": "Favoriete Collectie",
+	"notes_blurb_favorite": "Beschouw deze collectie als favorieten voor \"Kopieer favorieten naar\". Functie - Meerdere favoriete mappen ondersteund.",
+	"copy_fav_to": "Kopieer favorieten naar...",
+	"copy_fav_to__title": "Favoriete map(pen) massaal kopiëren naar een of meer collecties",
+	"confirm_multi_copy_blurb": "Om mods te kopiëren, selecteer de doelcollectie(s) hieronder - bestaande bestanden worden overschreven.",
+	"confirm_multi_copy_title": "Kopieer en overschrijf Mod Bestand(en)",
+	"open_hub__title": "Open ModHub Pagina voor deze mod in je standaard browser"
 }

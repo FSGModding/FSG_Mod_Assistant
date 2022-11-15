@@ -255,5 +255,12 @@
 	"download_finished": "Po zakończeniu, skanowanie testera rozpocznie się automatycznie",
 	"download_failed": "Pobieranie nie powiodło się, proszę sprawdzić dziennik debugowania, aby uzyskać więcej szczegółów.\n\nZazwyczaj oznacza to, że adres URL strony serwera jest nieprawidłowy lub pobieranie modów zostało wyłączone.\n\nKolekcja",
 	"loading_download_subtitle": "Proszę czekać, to może potrwać minutę",
-	"loading_download_title": "Pobieranie modów"
+	"loading_download_title": "Pobieranie modów",
+	"notes_title_favorite": "Ulubiona kolekcja",
+	"notes_blurb_favorite": "Uznaj tę kolekcję za ulubioną dla \"Kopiuj Ulubione do \". Funkcja - Obsługa wielu folderów ulubionych.",
+	"copy_fav_to": "Copy Favorites To...",
+	"copy_fav_to__title": "Masowe kopiowanie ulubionego folderu (folderów) do jednej lub więcej kolekcji",
+	"confirm_multi_copy_blurb": "Aby skopiować mods, wybierz poniżej kolekcję (kolekcje) docelową - istniejące pliki zostaną nadpisane",
+	"confirm_multi_copy_title": "Copy and Overwrite Mod File(s)",
+	"open_hub__title": "Otwórz stronę ModHub dla tego moda w swojej domyślnej przeglądarce"
 }

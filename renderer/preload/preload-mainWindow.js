@@ -46,9 +46,10 @@ contextBridge.exposeInMainWorld(
 		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
 		editFolders     : () => { ipcRenderer.send('toMain_editFolders') },
 		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },
+		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
 		versionCheck    : () => { ipcRenderer.send('toMain_versionCheck' ) },
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
-		makeInactive     : () => { ipcRenderer.send('toMain_makeInactive' ) },
+		makeInactive    : () => { ipcRenderer.send('toMain_makeInactive' ) },
 
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },

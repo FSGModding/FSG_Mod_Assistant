@@ -114,6 +114,7 @@ const select_lib = {
 		moveButtons[2].classList[(countSelected > 0)?'remove':'add']('disabled')
 		moveButtons[3].classList[(countSelected === 1)?'remove':'add']('disabled')
 		moveButtons[4].classList[(hasHash)?'remove':'add']('disabled')
+		moveButtons[5].classList[(countSelected === 0)?'remove':'add']('disabled')
 	},
 	filter : (table) => {
 		const theseMods     = fsgUtil.byId(table).querySelectorAll('.mod-row')
@@ -135,7 +136,7 @@ const select_lib = {
 			if ( !showBroken  && modBadges.match('mod_badge_broken') ) { modRow.classList.add('d-none'); return }
 			if ( !showNonMods && modBadges.match('mod_badge_notmod') ) { modRow.classList.add('d-none'); return }
 
-			if ( searchTerm.length < ((inverseSearch) ? 3 : 2) ) { modRow.classList.remove('d-none'); return }
+			if ( searchTerm.length < 2 ) { modRow.classList.remove('d-none'); return }
 		
 			const modText = modRow.querySelector('td:nth-child(3)').innerText.toLowerCase()
 			const showMe  = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)

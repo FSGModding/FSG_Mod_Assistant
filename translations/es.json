@@ -255,5 +255,12 @@
 	"download_finished": "Cuando se haya completado, el escáner del probador se iniciará automáticamente",
 	"download_failed": "La descarga ha fallado, por favor compruebe el registro de depuración para más detalles.\n\nEsto suele significar que la URL del sitio web del servidor es incorrecta, o que se ha desactivado la descarga de mods.\n\nColección",
 	"loading_download_subtitle": "Por favor, espere, esto puede tardar un minuto",
-	"loading_download_title": "Descarga de Mods"
+	"loading_download_title": "Descarga de Mods",
+	"notes_title_favorite": "Colección favorita",
+	"notes_blurb_favorite": "Considere esta colección como favoritos para \"Copiar favoritos\" Función - Soporta múltiples carpetas de favoritos.",
+	"copy_fav_to": "Copiar favoritos a...",
+	"copy_fav_to__title": "Copiar en masa la(s) carpeta(s) favorita(s) a una o más colecciones",
+	"confirm_multi_copy_blurb": "Para copiar mods, seleccione la(s) colección(es) de destino a continuación - los archivos existentes se sobrescribirán",
+	"confirm_multi_copy_title": "Copiar y sobrescribir archivo(s) Mod",
+	"open_hub__title": "Abre la página de ModHub para este mod en tu navegador por defecto"
 }

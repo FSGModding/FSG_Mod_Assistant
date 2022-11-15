@@ -149,11 +149,19 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
 
+	Object.keys(notes).forEach((collection) => {
+		const thisFav = notes[collection].notes_favorite || false
+		if ( thisFav ) {
+			const favFolder = document.querySelector(`[data-bs-target="#${collection}_mods"] svg`)
+			favFolder.innerHTML += '<path d="m171,126.25l22.06,62.76l65.93,0l-54.22,35.49l21.94,61.46l-55.74,-38.21l-55.74,38.21l22.06,-61.46l-54.32,-35.49l66.06,0l21.94,-62.76l0.03,0z" fill="#7f7f00" id="svg_5"/>'
+		}
+	})
+
 	const activeFolder = document.querySelector(`[data-bs-target="#${currentList}_mods"] svg`)
 	if ( activeFolder !== null ) {
 		activeFolder.innerHTML += '<polygon fill="#43A047" points="290.088 61.432 117.084 251.493 46.709 174.18 26.183 197.535 117.084 296.592 310.614 83.982"></polygon>'
 	}
-	
+
 	select_lib.clear_range()
 
 	try {
