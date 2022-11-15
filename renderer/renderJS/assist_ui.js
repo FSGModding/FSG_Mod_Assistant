@@ -137,7 +137,7 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 		
 		modTable.push(makeModCollection(
 			collection,
-			`${modList[collection].name} (${modList[collection].mods.length}) <small>[${fsgUtil.bytesToHR(sizeOfFolder, currLocale)}]</small>`,
+			`${modList[collection].name} <small>[${modList[collection].mods.length}] [${fsgUtil.bytesToHR(sizeOfFolder, currLocale)}]</small>`,
 			modRows,
 			collWebsite,
 			collDL

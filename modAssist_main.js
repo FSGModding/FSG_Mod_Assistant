@@ -16,7 +16,6 @@ if ( !gotTheLock ) { app.quit() }
 
 const { autoUpdater } = require('electron-updater')
 const { ma_logger }   = require('./lib/ma-logger.js')
-const mcDetail        = require('./package.json')
 const semverGt        = require('semver/functions/gt')
 const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
 const path            = require('path')
@@ -27,7 +26,7 @@ const skipCache     = false && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 let updaterInterval = null
 
-log.log.info(`ModAssist Logger: ${mcDetail.version}`)
+log.log.info(`ModAssist Logger: ${app.getVersion()}`)
 
 process.on('uncaughtException', (err, origin) => {
 	fs.appendFileSync(
@@ -56,7 +55,7 @@ process.on('unhandledRejection', (err, origin) => {
 
 const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale())
-myTranslator.mcVersion = mcDetail.version
+myTranslator.mcVersion = app.getVersion()
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
 	autoUpdater.on('update-checking-for-update', () => { log.log.info('Checking for update', 'auto-update') })
@@ -227,7 +226,7 @@ if ( semverGt('1.0.2', mcStore.get('cache_version'))) {
 	log.log.info('Mod Cache Version Good')
 }
 
-mcStore.set('cache_version', mcDetail.version)
+mcStore.set('cache_version', app.getVersion())
 
 /** END: Upgrade Cache Version Here */
 
@@ -317,7 +316,7 @@ function createMainWindow () {
 
 	if ( !devDebug ) {
 		windows.splash = createSubWindow({ center : true, fixed : true, move : false, frame : false, width : 600, height : 300 })
-		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${mcDetail.version}`)
+		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${app.getVersion()}`)
 
 		windows.splash.on('closed', () => { windows.splash = null })
 
@@ -755,7 +754,7 @@ ipcMain.on('toMain_langList_send',   (event) => {
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	l10nSet.forEach((l10nEntry) => {
 		if ( l10nEntry === 'app_version' ) {
-			event.sender.send('fromMain_getText_return', [l10nEntry, mcDetail.version])
+			event.sender.send('fromMain_getText_return', [l10nEntry, app.getVersion()])
 		} else if ( l10nEntry === 'clean_cache_size' ) {
 			const cleanString = myTranslator.syncStringLookup(l10nEntry)
 			let cacheSize = 0
@@ -1473,8 +1472,8 @@ function processModFolders_post(newFolder = false) {
 	refreshClientModList()
 	loadingWindow_hide()
 
-	if ( mcStore.get('rel_notes') !== mcDetail.version ) {
-		mcStore.set('rel_notes', mcDetail.version )
+	if ( mcStore.get('rel_notes') !== app.getVersion() ) {
+		mcStore.set('rel_notes', app.getVersion() )
 		log.log.info('New version detected, show changelog')
 		createChangeLogWindow()
 	}
@@ -1566,7 +1565,7 @@ app.whenReady().then(() => {
 
 app.setAboutPanelOptions({
 	applicationName    : 'FS Mod Assist',
-	applicationVersion : mcDetail.version,
+	applicationVersion : app.getVersion(),
 	copyright          : '(c) 2022-present FSG Modding',
 	credits            : 'J.T.Sage <jtsage+datebox@gmail.com>',
 	website            : 'https://github.com/FSGModding/FSG_Mod_Assistant',

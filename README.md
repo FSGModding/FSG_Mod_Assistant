@@ -31,6 +31,7 @@ ___Contents___
     - [Detail Window](#detail-window)
     - [Move and Copy](#move-and-copy)
     - [Delete](#delete)
+    - [Copy Favorites](#copy-favorites)
     - [Savegame Compare](#savegame-compare)
       - [Badges Used](#badges-used)
     - [Version Check](#version-check)
@@ -108,6 +109,7 @@ __PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk
 
 - __Check Versions__ : Compare mod versions across different collections and resolve differences if desired.
 - __Launch FS22__ : Start the game.  If your game is not in the default e-shop or steam location, you will need to set the game path in the preferences screen first.
+- __Discord Join Button__ : Join the [Farm Sim Game Discord](http://fsg.gg) for a great farming & modding community, and help on this app if you need it.
 
 #### Collections Area
 
@@ -146,6 +148,8 @@ The active list is marked with a green check over the folder.
 
 - __Collection Checkbox__ : You can use this checkbox to quick select all or none of the mods in the list.  Additionally, shift-select for a range of mods is available.
 - __Compare to SaveGame__ : This will prompt you for a savegame (folder or zip file) and will compare what mods the save game expects to the mods in the collection.
+- __Server Button__ : Open the server admin link in your default web browser
+- __Download Button__ : Refresh all active mods from the server (if server download is configured and enabled)
 - __Export Button__ : This allows you to export the collection as a CSV file containing the mod name, version, author, and if applicable, a link to the modhub page
 - __Details Edit__ : This button brings up the collection details that will allow you to keep notes on the collection, and set your user name, password, and server name filter for multiplayer use.
 - __Move To...__ : This will prompt you which collection you wish to move the selected files into. This button is only available when a one or more files are selected.
@@ -153,20 +157,21 @@ The active list is marked with a green check over the folder.
 - __Delete__ : This will prompt you to make sure you wish to delete the selected files. This button is only available when a one or more files are selected.
 - __Show in Explorer__ : Open a windows explorer window with the selected file pre-selected. This button is only available when a single file is selected.
 - __Find on ModHub__ : Attempt to open this mod on the modhub. This button is only available when a single file is selected, and Mod Assistant knows it is on the modhub. The list of mods is updated roughly hourly, and is refreshed when you restart the app.
+- __Copy Favorites To...__ : Copy the contents of your favorite folder(s) to one or more other collections.
 
 ##### Search Feature
 
 ![collections search](screen_shots/005-collect_search.png)
 
-This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_25DU_Trailers` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
+This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_25DU_Trailers` and `FS22_36ftLowLoader` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
 
 ###### Search Buttons
 
 - __Show Non-Mods__ : hides files that Mod Assistant thinks are not mods
 - __Show Broken__ : hides mods that Mod Assistant believes are broken
-- __Select None__ : Clear selection on this collection
-- __Select All__ : Select all on this collection
-- __Select Invert__ : Invert selection on this collection
+- __Select None__ : Clear selection on this collection `SHIFT+CTRL+A`
+- __Select All__ : Select all on this collection `CTRL+A`
+- __Select Invert__ : Invert selection on this collection `CTRL+I`
 
 ### Folder Details Window
 
@@ -174,10 +179,12 @@ This allows you to refine which parts of the collection you see.  This is a simp
 
 This screen allows you to keep notes on a collection, and set some of the multiplayer server details to speed things up.
 
+- __Favorite Collection__ : Mark this collection as a set of "favorite" mods for quick copying to other collections.
 - __Player Name__ : This is the name that is displayed in-game
 - __Server Name__ : This value is pre-filled in the server list screen to filter
 - __Server Password__ : This value is pre-filled in the password box when attempting to join a server that requires a password
-- __Server Website__ : This is a place to keep the administration address for a multiplayer server.
+- __Server Website__ : This is a place to keep the administration address for a multiplayer server. This should be in the format http(s)://server.url:port/ - do not include the "index.html" at the end.
+- __Allow Direct Download__ : If this server has direct mod download enabled, check this box to let mod assistant download and replace all mods on demand.
 - __Admin Password__ : This is a place to note the admin password for the server.
 - __Notes__ : This is a freeform notes input
 
@@ -187,7 +194,7 @@ Keep in mind that all of these details are stored in ___plain text___ both in mo
 
 ![detail top](screen_shots/013-detail_top.png)
 
-Double clicking or right clicking on a mod in the main window will bring up the detail window where you can see details about the mod such as the file date, file size, if it uses scripts, how many store items it has, and the mod description.
+Double clicking or right clicking on a mod in the main window will bring up the detail window where you can see details about the mod such as the file date, file size, if it uses scripts, how many store items it has, and the mod description.  If the mod is on the modhub, the most recent modhub version will appear, along with a link to open the modhub page in your default browser.
 
 If problems or issues were found with the mod, you will also be presenting with detailed information on the issue, often with suggestions of how to fix them
 
@@ -206,6 +213,14 @@ In the move and copy dialog you will see a list of the selected mods, along with
 ![delete](screen_shots/007-delete.png)
 
 In the delete dialog you will see a list of the selected mods. This is a permanent action, it directly deletes these files, bypassing the recycling bin. To proceed, press the button at the bottom, to cancel simply close the popup window or press `[ESC]`
+
+### Copy Favorites
+
+![copy fav](screen_shots/016-copyfavs.png)
+
+This dialog is used to copy the contents of your favorite collection(s) to multiple non-favorite collections.  Check the collections you with to copy to.  This function will automatically overwrite files at the destination.
+
+The lower part of the screen shows what mods were found in the favorite collection(s).
 
 ### Savegame Compare
 
@@ -242,7 +257,7 @@ Check the box next to old versions of mods and press the `Yes, Copy Mod(s)` butt
 
 ![folders](screen_shots/011-folders.png)
 
-This display will let you change which collections are loaded, and open them in windows explorer if you wish.  In this example, I have "forgotten" the `test_mods` collection, which will update when I close the folder edit window.
+This display will let you change which collections are loaded, and open them in windows explorer if you wish.  Use the arrow buttons to move a collection up, down, to the top, or bottom.
 
 ### User Preferences
 

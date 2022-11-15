@@ -56,7 +56,7 @@ const makeRow = (row) => `<tr><td>${row[2]}</td><td>${row[3]}</td></tr>`
 
 const makeCheck = (id, name, dir) => `<div class="form-check form-switch mb-2">
 		<input class="form-check-input" type="checkbox" id="${id}">
-		<label class="ms-2 form-check-label" for="${id}">${name} <small>${dir}</small></label>
+		<label class="ms-2 form-check-label row" for="${id}"><div class="col-3">${name}</div><div class="col-9"><small>${dir}</small></div></label>
 	</div>`
 
 
