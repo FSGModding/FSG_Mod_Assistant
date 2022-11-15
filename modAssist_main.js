@@ -19,12 +19,40 @@ const { ma_logger }   = require('./lib/ma-logger.js')
 const mcDetail        = require('./package.json')
 const semverGt        = require('semver/functions/gt')
 const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
+const path            = require('path')
+const fs              = require('fs')
 
 const devDebug      = !(app.isPackaged)
 const skipCache     = false && !(app.isPackaged)
+const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 let updaterInterval = null
 
 log.log.info(`ModAssist Logger: ${mcDetail.version}`)
+
+process.on('uncaughtException', (err, origin) => {
+	fs.appendFileSync(
+		crashLog,
+		`Caught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}`
+	)
+	dialog.showMessageBoxSync(null, {
+		title   : 'Uncaught Error - Quitting',
+		message : `Caught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
+		type    : 'error',
+	})
+	app.quit()
+})
+process.on('unhandledRejection', (err, origin) => {
+	fs.appendFileSync(
+		crashLog,
+		`Caught rejection: ${err}\n\nException origin: ${origin}\n\n${err.stack}`
+	)
+	dialog.showMessageBoxSync(null, {
+		title   : 'Uncaught Error - Quitting',
+		message : `Caught rejection: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
+		type    : 'error',
+	})
+	app.quit()
+})
 
 const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale())
@@ -55,8 +83,6 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 	updaterInterval = setInterval(() => { autoUpdater.checkForUpdatesAndNotify() }, ( 30 * 60 * 1000))
 }
 
-const path       = require('path')
-const fs         = require('fs')
 const glob       = require('glob')
 const fxml       = require('fast-xml-parser')
 const crypto     = require('crypto')
