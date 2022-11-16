@@ -12,7 +12,7 @@
 const select_lib = {
 	last_select_mod   : null,
 	last_select_table : null,
-	clear_range       : () => { select_lib.last_select_mod = null; select_lib.last_select_table = null },
+	clear_range       : () => { select_lib.last_select_mod = null; select_lib.last_select_table = null; select_lib.update_color() },
 	click_row         : (modID) => {
 		const isShift   = window.event.shiftKey
 		const thisTable = document.getElementById(modID).closest('table').closest('tr').id

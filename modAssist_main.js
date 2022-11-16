@@ -566,12 +566,17 @@ function createVersionWindow() {
 }
 
 function loadingWindow_open(l10n) {
+	log.log.debug(`Load Window: ${l10n}`, 'load-window')
 	const winTitle    = myTranslator.syncStringLookup(`loading_${l10n}_title`)
 	const winSubTitle = myTranslator.syncStringLookup(`loading_${l10n}_subtitle`)
 	if ( windows.load ) {
 		windows.load.show()
 		windows.load.focus()
 		windows.load.webContents.send('formMain_loadingTitles', winTitle, winSubTitle)
+		setTimeout(() => {
+			windows.load.show()
+			windows.load.focus()
+		}, 250)
 		return
 	}
 }
@@ -586,6 +591,7 @@ function loadingWindow_current(amount = 1, reset = false) {
 	windows.load.webContents.send('fromMain_loadingCurrent', countMods)
 }
 function loadingWindow_hide(time = 1250) {
+	log.log.debug('Load Window: hide!', 'load-window')
 	setTimeout(() => { windows.load.hide() }, time)
 }
 function loadingWindow_noCount() {
@@ -1252,7 +1258,24 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 	}
 }
 
+let fileWait = null
 function fileOperation(type, fileMap, srcWindow = 'confirm') {
+	windows[srcWindow].close()
+
+	loadingWindow_open('files', 'main')
+	loadingWindow_total(fileMap.length, true)
+	loadingWindow_current(0, true)
+
+	fileWait = setInterval(() => {
+		if ( windows.load.isVisible() ) {
+			clearInterval(fileWait)
+			fileOperation_post(type, fileMap)
+		}
+	}, 250)
+}
+
+
+function fileOperation_post(type, fileMap) {
 	const fullPathMap = []
 
 	fileMap.forEach((file) => {
@@ -1263,14 +1286,7 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 		])
 	})
 
-	windows[srcWindow].close()
-	windows.main.focus()
-
 	foldersDirty = true
-
-	loadingWindow_open('files', 'main')
-	loadingWindow_total(fullPathMap.length, true)
-	loadingWindow_current(0, true)
 
 	fullPathMap.forEach((file) => {
 		try {
