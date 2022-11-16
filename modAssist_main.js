@@ -33,24 +33,28 @@ process.on('uncaughtException', (err, origin) => {
 		crashLog,
 		`Caught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}`
 	)
-	dialog.showMessageBoxSync(null, {
-		title   : 'Uncaught Error - Quitting',
-		message : `Caught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
-		type    : 'error',
-	})
-	app.quit()
+	if ( !isNetworkError(err) ) {
+		dialog.showMessageBoxSync(null, {
+			title   : 'Uncaught Error - Quitting',
+			message : `Caught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
+			type    : 'error',
+		})
+		app.quit()
+	}
 })
 process.on('unhandledRejection', (err, origin) => {
 	fs.appendFileSync(
 		crashLog,
 		`Caught rejection: ${err}\n\nException origin: ${origin}\n\n${err.stack}`
 	)
-	dialog.showMessageBoxSync(null, {
-		title   : 'Uncaught Error - Quitting',
-		message : `Caught rejection: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
-		type    : 'error',
-	})
-	app.quit()
+	if ( !isNetworkError(err) ) {
+		dialog.showMessageBoxSync(null, {
+			title   : 'Uncaught Error - Quitting',
+			message : `Caught rejection: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
+			type    : 'error',
+		})
+		app.quit()
+	}
 })
 
 const translator       = require('./lib/translate.js')
@@ -77,7 +81,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 		})
 	})
 
-	autoUpdater.checkForUpdatesAndNotify()
+	autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.notice(`Updater Issue: ${err}`, 'auto-update'))
 
 	updaterInterval = setInterval(() => { autoUpdater.checkForUpdatesAndNotify() }, ( 30 * 60 * 1000))
 }
@@ -586,6 +590,15 @@ function loadingWindow_hide(time = 1250) {
 }
 function loadingWindow_noCount() {
 	windows.load.webContents.send('fromMain_loadingNoCount')
+}
+
+function isNetworkError(errorObject) {
+	return errorObject.message === 'net::ERR_INTERNET_DISCONNECTED' ||
+		errorObject.message === 'net::ERR_PROXY_CONNECTION_FAILED' ||
+		errorObject.message === 'net::ERR_CONNECTION_RESET' ||
+		errorObject.message === 'net::ERR_CONNECTION_CLOSE' ||
+		errorObject.message === 'net::ERR_NAME_NOT_RESOLVED' ||
+		errorObject.message === 'net::ERR_CONNECTION_TIMED_OUT'
 }
 
 /*  ____  ____   ___ 
