@@ -6,7 +6,7 @@
 
 // Main Program
 
-const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, screen } = require('electron')
 
 const isPortable = typeof process.env.PORTABLE_EXECUTABLE_DIR !== 'undefined'
 const gotTheLock = app.requestSingleInstanceLock()
@@ -268,8 +268,27 @@ mcStore.set('cache_version', app.getVersion())
    ( \/\/ )(_  _)( \( )(  _ \ (  _  )( \/\/ )/ __)
     )    (  _)(_  )  (  )(_) ) )(_)(  )    ( \__ \
    (__/\__)(____)(_)\_)(____/ (_____)(__/\__)(___/ */
+function getRealCenter(winName) {
+	const realCenter  = { x : null, y : null }
+	const winSettings = mcStore.get(`wins.${winName}`)
+
+	if ( winName !== 'main' && windows.main !== null ) {
+		const winMainBounds = windows.main.getBounds()
+		const whichScreen = screen.getDisplayNearestPoint({x : winMainBounds.x, y : winMainBounds.y})
+		realCenter.x = (whichScreen.workArea.width / 2) + whichScreen.workArea.x
+		realCenter.y = (whichScreen.workArea.height / 2) + whichScreen.workArea.y
+	} else {
+		const primary = screen.getPrimaryDisplay()
+		realCenter.x = (primary.workArea.width / 2) + primary.workArea.x
+		realCenter.y = (primary.workArea.height / 2) + primary.workArea.y
+	}
+	realCenter.x = realCenter.x - ( winSettings.w / 2 )
+	realCenter.y = realCenter.y - ( winSettings.h / 2 )
+	return realCenter
+}
 
 function createSubWindow(winName, {noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null} = {}) {
+	const realCenter  = getRealCenter(winName)
 	const winSettings = mcStore.get(`wins.${winName}`)
 
 	const winOptions = {
@@ -282,13 +301,13 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 	const thisWindow = new BrowserWindow({
 		icon            : pathIcon,
 		parent          : ( parent === null ) ? null : windows[parent],
-		x               : winSettings.x > -1 ? winSettings.x : null,
-		y               : winSettings.y > -1 ? winSettings.y : null,
+		x               : winSettings.x > -1 ? winSettings.x : realCenter.x,
+		y               : winSettings.y > -1 ? winSettings.y : realCenter.y,
 		width           : winSettings.w,
 		height          : winSettings.h,
 		title           : winTitle,
 		minimizable     : winOptions.minimizable,
-		center          : winSettings.x === -1 && winSettings.y === -1,
+		//center          : winSettings.x === -1 && winSettings.y === -1,
 		alwaysOnTop     : winOptions.alwaysOnTop,
 		maximizable     : winOptions.maximizable,
 		fullscreenable  : winOptions.fullscreenable,
@@ -611,10 +630,11 @@ function createVersionWindow() {
 }
 
 function loadingWindow_open(l10n) {
-	log.log.debug(`Load Window: ${l10n}`, 'load-window')
+	const newCenter   = getRealCenter('load')
 	const winTitle    = myTranslator.syncStringLookup(`loading_${l10n}_title`)
 	const winSubTitle = myTranslator.syncStringLookup(`loading_${l10n}_subtitle`)
 	if ( windows.load ) {
+		windows.load.setBounds({x : newCenter.x, y : newCenter.y})
 		windows.load.show()
 		windows.load.focus()
 		windows.load.webContents.send('formMain_loadingTitles', winTitle, winSubTitle)
@@ -636,7 +656,6 @@ function loadingWindow_current(amount = 1, reset = false) {
 	windows.load.webContents.send('fromMain_loadingCurrent', countMods)
 }
 function loadingWindow_hide(time = 1250) {
-	log.log.debug('Load Window: hide!', 'load-window')
 	setTimeout(() => { windows.load.hide() }, time)
 }
 function loadingWindow_noCount() {
