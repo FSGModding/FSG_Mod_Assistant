@@ -258,5 +258,7 @@
 	"open_hub__title": "Abre la página de ModHub para este mod en tu navegador por defecto",
 	"user_pref_title_reset_window": "Restablecer las posiciones de las ventanas",
 	"user_pref_blurb_reset_window": "Mod Assistant guarda la ubicación, el tamaño y el estado maximizado de todas sus ventanas. Utiliza el botón de abajo para restablecer los valores predeterminados si es necesario",
-	"user_pref_button_reset_window": "Restablecer todas las ventanas"
+	"user_pref_button_reset_window": "Restablecer todas las ventanas",
+	"loading_zip_subtitle": "Por favor, espere, esto puede tardar un minuto",
+	"loading_zip_title": "Descomprimiendo Mods"
 }

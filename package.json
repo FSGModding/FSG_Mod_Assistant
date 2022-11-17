@@ -38,6 +38,7 @@
     "parse-dds": "^1.2.1",
     "pngjs": "^6.0.0",
     "semver": "^7.3.8",
+    "unzip-stream": "^0.3.1",
     "windows": "^0.1.2",
     "xml2js": "^0.4.23",
     "yargs": "^17.5.1"

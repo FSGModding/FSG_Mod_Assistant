@@ -258,5 +258,7 @@
 	"open_hub__title": "Otwórz stronę ModHub dla tego moda w swojej domyślnej przeglądarce",
 	"user_pref_title_reset_window": "Reset Window Positions",
 	"user_pref_blurb_reset_window": "Mod Assistant zapisuje lokalizację, rozmiar i zmaksymalizowany stan wszystkich swoich okien. Użyj poniższego przycisku, aby w razie potrzeby przywrócić ustawienia domyślne",
-	"user_pref_button_reset_window": "Resetuj wszystkie okna"
+	"user_pref_button_reset_window": "Resetuj wszystkie okna",
+	"loading_zip_subtitle": "Proszę czekać, to może potrwać minutę",
+	"loading_zip_title": "Rozpakowywanie modów"
 }

@@ -181,7 +181,7 @@ const settingsSchema = {
 }
 
 const Store   = require('electron-store')
-const AdmZip  = require('adm-zip')
+const unzip   = require('unzip-stream')
 const { saveFileChecker } = require('./lib/savegame-parser.js')
 
 const mcStore = new Store({schema : settingsSchema, migrations : settingsMig })
@@ -1029,28 +1029,50 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 
 		loadingWindow_total(response.headers['content-length'] || 0, true)
 
-		const zipResp = []
+		const dlPath      = path.join(app.getPath('temp'), `${collection}.zip`)
+		const writeStream = fs.createWriteStream(dlPath)
 
-		response.on('data', (chunk) => {
-			loadingWindow_current(chunk.length)
-			zipResp.push(chunk)
-		})
+		response.pipe(writeStream)
+		response.on('data', (chunk) => { loadingWindow_current(chunk.length) })
 
-		response.on('end',  () => {
+		writeStream.on('finish', () => {
+			writeStream.close()
+			log.log.info('Download complete, unzipping', 'mod-download')
 			try {
-				const asBytes = Buffer.concat(zipResp)
-				const thisZip = new AdmZip(asBytes)
+				let zipBytesSoFar   = 0
+				const zipBytesTotal = fs.statSync(dlPath).size
 
-				thisZip.extractAllTo(modList[collection].fullPath, true)
-				foldersDirty = true
-				
+				loadingWindow_open('zip')
+				loadingWindow_total(100, true)
+
+				const zipReadStream  = fs.createReadStream(dlPath)
+
+				zipReadStream.on('data', (chunk) => {
+					zipBytesSoFar += chunk.length
+					loadingWindow_current(((zipBytesSoFar/zipBytesTotal)*100).toFixed(2), true)
+				})
+
+				zipReadStream.on('error', (err) => {
+					loadingWindow_hide()
+					log.log.warning(`Download unzip failed : ${err}`, 'mod-download')
+				})
+
+				zipReadStream.on('end', () => {
+					log.log.info('Unzipping complete', 'mod-download')
+					zipReadStream.close()
+					foldersDirty = true
+					fs.unlinkSync(dlPath)
+					processModFolders()
+				})
+
+				zipReadStream.pipe(unzip.Extract({ path : modList[collection].fullPath }))
 			} catch (e) {
 				log.log.warning(`Download failed : (${response.statusCode}) ${e}`, 'mod-download')
+				loadingWindow_hide()
 			}
-			processModFolders()
 		})
 	})
-	dlReq.on('error', (error) => { log.log.info(`Network error : ${error}`, 'mod-download') })
+	dlReq.on('error', (error) => { log.log.info(`Network error : ${error}`, 'mod-download'); loadingWindow_hide() })
 	dlReq.end()
 })
 

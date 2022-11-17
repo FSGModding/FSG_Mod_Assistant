@@ -258,5 +258,7 @@
 	"open_hub__title"                        : "Open ModHub Page for this mod in your default browser",
 	"user_pref_title_reset_window"           : "Reset Window Positions",
 	"user_pref_blurb_reset_window"           : "Mod Assistant saves the location, size, and maximized state of all it's windows. Use the button below to reset to the defaults if needed",
-	"user_pref_button_reset_window"          : "Reset All Windows"
+	"user_pref_button_reset_window"          : "Reset All Windows",
+	"loading_zip_subtitle"                   : "Please wait, this could take a minute",
+	"loading_zip_title"                      : "Unzipping Mods"
 }

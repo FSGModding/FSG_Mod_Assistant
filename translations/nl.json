@@ -258,5 +258,7 @@
 	"open_hub__title": "Open ModHub Pagina voor deze mod in je standaard browser",
 	"user_pref_title_reset_window": "Reset Window Positions",
 	"user_pref_blurb_reset_window": "Mod Assistant bewaart de locatie, grootte en gemaximaliseerde status van alle vensters. Gebruik de onderstaande knop om de standaardwaarden te herstellen indien nodig",
-	"user_pref_button_reset_window": "Reset alle vensters"
+	"user_pref_button_reset_window": "Reset alle vensters",
+	"loading_zip_subtitle": "Wacht even, dit kan even duren",
+	"loading_zip_title": "Mods uitpakken"
 }
