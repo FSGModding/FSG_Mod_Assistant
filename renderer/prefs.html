@@ -99,55 +99,11 @@
 
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
 			<div class="col-8">
-				<h4><l10n name="user_pref_title_main_window"></l10n></h4>
-				<p class="ps-2"><l10n name="user_pref_blurb_main_window"></l10n></p>
+				<h4><l10n name="user_pref_title_reset_window"></l10n></h4>
+				<p class="ps-2"><l10n name="user_pref_blurb_reset_window"></l10n></p>
 			</div>
-			<div class="row ms-2">
-				<label for="main_window_x" class="col-6 col-form-label"><l10n name="user_pref_setting_window_x"></l10n></label>
-				<div class="col-6">
-					<input onchange="clientSetPref('main_window_x')" type="number" class="form-control form-control-sm" id="main_window_x" min="100" max="4096">
-				</div>
-			</div>
-			<div class="row ms-2">
-				<label for="main_window_y" class="col-6 col-form-label"><l10n name="user_pref_setting_window_y"></l10n></label>
-				<div class="col-6">
-					<input onchange="clientSetPref('main_window_y')" type="number" class="form-control form-control-sm" id="main_window_y" min="100" max="4096">
-				</div>
-			</div>
-			<div class="row ms-2">
-				<label class="col-6 form-check-label" for="main_window_max"><l10n name="user_pref_setting_window_max"></l10n></label>
-				<div class="col-6">
-					<div class="form-check form-switch">
-						<input onchange="clientSetPref('main_window_max')" class="form-check-input" type="checkbox" id="main_window_max">
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-8">
-				<h4><l10n name="user_pref_title_detail_window"></l10n></h4>
-				<p class="ps-2"><l10n name="user_pref_blurb_detail_window"></l10n></p>
-			</div>
-			<div class="row ms-2">
-				<label for="detail_window_x" class="col-6 col-form-label"><l10n name="user_pref_setting_window_x"></l10n></label>
-				<div class="col-6">
-					<input onchange="clientSetPref('detail_window_x')" type="number" class="form-control form-control-sm" id="detail_window_x" min="100" max="4096">
-				</div>
-			</div>
-			<div class="row ms-2">
-				<label for="detail_window_y" class="col-6 col-form-label"><l10n name="user_pref_setting_window_y"></l10n></label>
-				<div class="col-6">
-					<input onchange="clientSetPref('detail_window_y')" type="number" class="form-control form-control-sm" id="detail_window_y" min="100" max="4096">
-				</div>
-			</div>
-			<div class="row ms-2">
-				<label class="col-6 form-check-label" for="detail_window_max"><l10n name="user_pref_setting_window_max"></l10n></label>
-				<div class="col-6">
-					<div class="form-check form-switch">
-						<input onchange="clientSetPref('detail_window_max')" class="form-check-input" type="checkbox" id="detail_window_max">
-					</div>
-				</div>
+			<div class="col-4">
+				<div class="d-block btn btn-success btn-sm w-100 mt-5 mx-auto mb-3" onclick="window.mods.resetWindows()"><l10n name="user_pref_button_reset_window"></l10n></div>
 			</div>
 		</div>
 

@@ -8,7 +8,6 @@
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net } = require('electron')
 
-
 const isPortable = typeof process.env.PORTABLE_EXECUTABLE_DIR !== 'undefined'
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -83,7 +82,9 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 
 	autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.notice(`Updater Issue: ${err}`, 'auto-update'))
 
-	updaterInterval = setInterval(() => { autoUpdater.checkForUpdatesAndNotify() }, ( 30 * 60 * 1000))
+	updaterInterval = setInterval(() => {
+		autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.notice(`Updater Issue: ${err}`, 'auto-update'))
+	}, ( 30 * 60 * 1000))
 }
 
 const glob       = require('glob')
@@ -134,13 +135,26 @@ pathGuesses.forEach((testPath) => {
 
 const { modFileChecker, notModFileChecker } = require('./lib/single-mod-checker.js')
 
+const winDef = (w, h) => { return {
+	x : { type : 'number', default : -1 },
+	y : { type : 'number', default : -1 },
+	w : { type : 'number', default : w },
+	h : { type : 'number', default : h },
+	m : { type : 'boolean', default : false },
+}}
+
+const settingsMig = {
+	'>=1.2.1' : (store) => {
+		store.delete('main_window_x')
+		store.delete('main_window_y')
+		store.delete('main_window_max')
+		store.delete('detail_window_x')
+		store.delete('detail_window_y')
+		store.delete('detail_window_max')
+	},
+}
+
 const settingsSchema = {
-	main_window_x     : { type : 'number', maximum : 4096, minimum : 100, default : 1000 },
-	main_window_y     : { type : 'number', maximum : 4096, minimum : 100, default : 700 },
-	main_window_max   : { type : 'boolean', default : false },
-	detail_window_x   : { type : 'number', maximum : 4096, minimum : 100, default : 800 },
-	detail_window_y   : { type : 'number', maximum : 4096, minimum : 100, default : 500 },
-	detail_window_max : { type : 'boolean', default : false },
 	modFolders        : { type : 'array', default : [] },
 	lock_lang         : { type : 'boolean', default : false },
 	force_lang        : { type : 'string', default : '' },
@@ -149,13 +163,28 @@ const settingsSchema = {
 	cache_version     : { type : 'string', default : '0.0.0' },
 	rel_notes         : { type : 'string', default : '0.0.0' },
 	game_args         : { type : 'string', default : '' },
+	wins              : { type : 'object', default : {}, properties : {
+		load          : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
+		splash        : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
+		change        : { type : 'object', default : {}, properties : winDef(650, 350), additionalProperties : false },
+		confirm       : { type : 'object', default : {}, properties : winDef(750, 500), additionalProperties : false },
+		debug         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		detail        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		folder        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		main          : { type : 'object', default : {}, properties : winDef(1000, 700), additionalProperties : false },
+		notes         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		prefs         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		resolve       : { type : 'object', default : {}, properties : winDef(750, 600), additionalProperties : false },
+		save          : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		version       : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+	}},
 }
 
 const Store   = require('electron-store')
 const AdmZip  = require('adm-zip')
 const { saveFileChecker } = require('./lib/savegame-parser.js')
 
-const mcStore = new Store({schema : settingsSchema})
+const mcStore = new Store({schema : settingsSchema, migrations : settingsMig })
 const maCache = new Store({name : 'mod_cache'})
 const modNote = new Store({name : 'col_notes'})
 
@@ -240,25 +269,26 @@ mcStore.set('cache_version', app.getVersion())
     )    (  _)(_  )  (  )(_) ) )(_)(  )    ( \__ \
    (__/\__)(____)(_)\_)(____/ (_____)(__/\__)(___/ */
 
-function createSubWindow({noSelect = true, show = true, parent = null, title = null, maximize = false, fixed = false, center = false, frame = true, move = true, width = 'detail_window_x', height = 'detail_window_y', preload = null} = {}) {
+function createSubWindow(winName, {noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null} = {}) {
+	const winSettings = mcStore.get(`wins.${winName}`)
+
 	const winOptions = {
 		minimizable     : !fixed,
-		center          : center,
 		alwaysOnTop     : fixed && !devDebug,
 		maximizable     : !fixed,
 		fullscreenable  : !fixed,
-		width           : ( typeof width === 'number' ) ? width : mcStore.get(width),
-		height          : ( typeof height === 'number' ) ? height : mcStore.get(height),
 	}
 	const winTitle = ( title === null ) ? myTranslator.syncStringLookup('app_name') : title
 	const thisWindow = new BrowserWindow({
 		icon            : pathIcon,
 		parent          : ( parent === null ) ? null : windows[parent],
-		width           : winOptions.width,
-		height          : winOptions.height,
+		x               : winSettings.x > -1 ? winSettings.x : null,
+		y               : winSettings.y > -1 ? winSettings.y : null,
+		width           : winSettings.w,
+		height          : winSettings.h,
 		title           : winTitle,
 		minimizable     : winOptions.minimizable,
-		center          : winOptions.center,
+		center          : winSettings.x === -1 && winSettings.y === -1,
 		alwaysOnTop     : winOptions.alwaysOnTop,
 		maximizable     : winOptions.maximizable,
 		fullscreenable  : winOptions.fullscreenable,
@@ -283,17 +313,32 @@ function createSubWindow({noSelect = true, show = true, parent = null, title = n
 			}
 		})
 	}
+	if ( winName !== 'load' && winName !== 'splash' ) {
+		thisWindow.on('moved', () => {
+			const newRect = thisWindow.getBounds()
+			mcStore.set(`wins.${winName}.x`, newRect.x)
+			mcStore.set(`wins.${winName}.y`, newRect.y)
+		})
+		thisWindow.on('resized', () => {
+			const newRect = thisWindow.getBounds()
+			mcStore.set(`wins.${winName}.w`, newRect.width)
+			mcStore.set(`wins.${winName}.h`, newRect.height)
+		})
+		thisWindow.on('maximize', () => { mcStore.set(`wins.${winName}.m`, true) })
+		thisWindow.on('unmaximize', () => { mcStore.set(`wins.${winName}.m`, false) })
+	}
+
 	if ( !devDebug ) { thisWindow.removeMenu()}
-	if ( maximize )  { thisWindow.maximize() }
+	if ( winSettings.m )  { thisWindow.maximize() }
 	return thisWindow
 }
 
 function createMainWindow () {
-	windows.load = createSubWindow({ show : false, preload : 'loadingWindow', center : true, fixed : true, move : false, frame : false, width : 600, height : 300 })
+	windows.load = createSubWindow('load', { show : false, preload : 'loadingWindow', fixed : true, move : false, frame : false })
 	windows.load.loadFile(path.join(pathRender, 'loading.html'))
 	windows.load.on('close', (event) => { event.preventDefault() })
 
-	windows.main = createSubWindow({ noSelect : false, show : devDebug, preload : 'mainWindow', width : 'main_window_x', height : 'main_window_y', maximize : mcStore.get('main_window_max') })
+	windows.main = createSubWindow('main', { noSelect : false, show : devDebug, preload : 'mainWindow' })
 
 	windows.main.on('minimize', () => {
 		if ( tray ) {
@@ -319,7 +364,7 @@ function createMainWindow () {
 	})
 
 	if ( !devDebug ) {
-		windows.splash = createSubWindow({ center : true, fixed : true, move : false, frame : false, width : 600, height : 300 })
+		windows.splash = createSubWindow('splash', { center : true, fixed : true, move : false, frame : false })
 		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${app.getVersion()}`)
 
 		windows.splash.on('closed', () => { windows.splash = null })
@@ -374,7 +419,7 @@ function createConfirmFav(mods, destinations) {
 	if ( mods.length < 1 ) { return }
 	if ( windows.confirm ) { windows.confirm.focus(); return }
 
-	windows.confirm = createSubWindow({ parent : 'main', preload : 'confirmMulti', width : 750, height : 500, fixed : true, center : true })
+	windows.confirm = createSubWindow('confirm', { parent : 'main', preload : 'confirmMulti', fixed : true })
 
 	windows.confirm.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_confirmList', mods, destinations, modList)
@@ -393,7 +438,7 @@ function createConfirmWindow(type, modRecords, origList) {
 	const file_JS    = `confirm${type.charAt(0).toUpperCase()}${type.slice(1)}`
 	const collection = origList[0].split('--')[0]
 
-	windows.confirm = createSubWindow({ parent : 'main', preload : file_JS, width : 750, height : 500, fixed : true, center : true })
+	windows.confirm = createSubWindow('confirm', { parent : 'main', preload : file_JS, fixed : true })
 
 	windows.confirm.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_confirmList', modRecords, modList, modFoldersMap, collection)
@@ -410,7 +455,7 @@ function createChangeLogWindow() {
 		return
 	}
 
-	windows.change = createSubWindow({ parent : 'main', center : true, fixed : true, width : 650, height : 330, preload : 'aChangelogWindow' })
+	windows.change = createSubWindow('change', { parent : 'main', fixed : true, preload : 'aChangelogWindow' })
 
 	windows.change.loadFile(path.join(pathRender, 'a_changelog.html'))
 	windows.change.on('closed', () => { windows.change = null; windows.main.focus() })
@@ -423,7 +468,7 @@ function createFolderWindow() {
 		return
 	}
 
-	windows.folder = createSubWindow({ parent : 'main', center : true, preload : 'folderWindow' })
+	windows.folder = createSubWindow('folder', { parent : 'main', preload : 'folderWindow' })
 
 	windows.folder.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_getFolders', modList)
@@ -443,7 +488,7 @@ function createDetailWindow(thisModRecord) {
 		return
 	}
 
-	windows.detail = createSubWindow({ parent : 'main', preload : 'detailWindow', maximize : mcStore.get('detail_window_max') })
+	windows.detail = createSubWindow('detail', { parent : 'main', preload : 'detailWindow' })
 
 	windows.detail.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict, myTranslator.currentLocale)
@@ -466,7 +511,7 @@ function createDebugWindow() {
 		return
 	}
 
-	windows.debug = createSubWindow({ parent : 'main', preload : 'debugWindow', width : 800, height : 500 })
+	windows.debug = createSubWindow('debug', { parent : 'main', preload : 'debugWindow' })
 
 	windows.debug.webContents.on('did-finish-load', (event) => {
 		event.sender.send('update-log', log.htmlLog)
@@ -483,7 +528,7 @@ function createPrefsWindow() {
 		return
 	}
 
-	windows.prefs = createSubWindow({ parent : 'main', preload : 'prefsWindow', width : 800, height : 500, title : myTranslator.syncStringLookup('user_pref_title_main') })
+	windows.prefs = createSubWindow('prefs', { parent : 'main', preload : 'prefsWindow', title : myTranslator.syncStringLookup('user_pref_title_main') })
 
 	windows.prefs.webContents.on('did-finish-load', (event) => {
 		event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
@@ -500,7 +545,7 @@ function createSavegameWindow(collection) {
 		return
 	}
 
-	windows.save = createSubWindow({ parent : 'main', preload : 'savegameWindow', maximize : mcStore.get('detail_window_max') })
+	windows.save = createSubWindow('save', { parent : 'main', preload : 'savegameWindow' })
 
 	windows.save.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_collectionName', collection, modList)
@@ -518,7 +563,7 @@ function createNotesWindow(collection) {
 		return
 	}
 
-	windows.notes = createSubWindow({ parent : 'main', preload : 'notesWindow', maximize : mcStore.get('detail_window_max') })
+	windows.notes = createSubWindow('notes', { parent : 'main', preload : 'notesWindow' })
 
 	windows.notes.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_collectionName', collection, modList[collection].name, modNote.store, lastGameSettings)
@@ -536,7 +581,7 @@ function createResolveWindow(modSet, shortName) {
 		return
 	}
 
-	windows.resolve = createSubWindow({ parent : 'version', preload : 'resolveWindow', width : 750, height : 600, fixed : true, center : true })
+	windows.resolve = createSubWindow('resolve', { parent : 'version', preload : 'resolveWindow', fixed : true })
 
 	windows.resolve.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_modSet', modSet, shortName)
@@ -554,7 +599,7 @@ function createVersionWindow() {
 		return
 	}
 
-	windows.version = createSubWindow({ parent : 'main', preload : 'versionWindow', maximize : mcStore.get('detail_window_max') })
+	windows.version = createSubWindow('version', { parent : 'main', preload : 'versionWindow' })
 
 	windows.version.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_modList', modList)
@@ -841,6 +886,17 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 		if ( name === 'lock_lang' ) { mcStore.set('force_lang', myTranslator.currentLocale) }
 	}
 	event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
+})
+ipcMain.on('toMain_resetWindows', () => {
+	mcStore.reset('wins')
+	const mainBounds = mcStore.get('wins.main')
+	const prefBounds = mcStore.get('wins.prefs')
+	windows.main.unmaximize()
+	windows.prefs.unmaximize()
+	windows.main.setBounds({x : 1, y : 1, width : mainBounds.w, height : mainBounds.h})
+	windows.prefs.setBounds({x : 1, y : 1, width : prefBounds.w, height : prefBounds.h})
+	windows.main.center()
+	windows.prefs.center()
 })
 ipcMain.on('toMain_cleanCacheFile', (event) => {
 	const localStore = maCache.store
