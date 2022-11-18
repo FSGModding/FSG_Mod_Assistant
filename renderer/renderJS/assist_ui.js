@@ -77,6 +77,7 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
+	const lastOpenQ   = (lastOpenAcc !== null) ? lastOpenAcc.querySelector('input.mod-row-filter').value : ''
 	const scrollStart = window.scrollY
 
 	const selectedList = ( currentList !== '999' && currentList !== '0') ? `collection--${currentList}` : currentList
@@ -169,6 +170,10 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 			element.classList.remove('collapsed')
 		})
 		document.getElementById(lastOpenID).classList.add('show')
+		if ( lastOpenQ !== '' ) {
+			document.getElementById(lastOpenID).querySelector('input.mod-row-filter').value = lastOpenQ
+			select_lib.filter(lastOpenID)
+		}
 		window.scrollTo(0, scrollStart)
 	} catch { /* nope */ }
 
