@@ -61,9 +61,9 @@ const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = app.getVersion()
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
-	autoUpdater.on('update-checking-for-update', () => { log.log.info('Checking for update', 'auto-update') })
+	autoUpdater.on('update-checking-for-update', () => { log.log.debug('Checking for update', 'auto-update') })
 	autoUpdater.on('update-available', () => { log.log.info('Update Available', 'auto-update') })
-	autoUpdater.on('update-not-available', () => { log.log.info('No Update Available', 'auto-update') })
+	autoUpdater.on('update-not-available', () => { log.log.debug('No Update Available', 'auto-update') })
 	autoUpdater.on('error', (message) => { log.log.warning(`Updater Failed: ${message}`, 'auto-update') })
 
 	autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
@@ -80,10 +80,10 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 		})
 	})
 
-	autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.notice(`Updater Issue: ${err}`, 'auto-update'))
+	autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.warning(`Updater Issue: ${err}`, 'auto-update'))
 
 	updaterInterval = setInterval(() => {
-		autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.notice(`Updater Issue: ${err}`, 'auto-update'))
+		autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.warning(`Updater Issue: ${err}`, 'auto-update'))
 	}, ( 30 * 60 * 1000))
 }
 
@@ -168,7 +168,7 @@ const settingsSchema = {
 		splash        : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
 		change        : { type : 'object', default : {}, properties : winDef(650, 350), additionalProperties : false },
 		confirm       : { type : 'object', default : {}, properties : winDef(750, 500), additionalProperties : false },
-		debug         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		debug         : { type : 'object', default : {}, properties : winDef(1000, 500), additionalProperties : false },
 		detail        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		folder        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		main          : { type : 'object', default : {}, properties : winDef(1000, 700), additionalProperties : false },
@@ -256,7 +256,7 @@ if ( semverGt('1.0.2', mcStore.get('cache_version'))) {
 	maCache.clear()
 	log.log.info('Mod Cache Cleared')
 } else {
-	log.log.info('Mod Cache Version Good')
+	log.log.debug('Mod Cache Version Good')
 }
 
 mcStore.set('cache_version', app.getVersion())
@@ -526,14 +526,14 @@ function createDetailWindow(thisModRecord) {
 function createDebugWindow() {
 	if ( windows.debug ) {
 		windows.debug.focus()
-		windows.debug.webContents.send('update-log', log.htmlLog)
+		windows.debug.webContents.send('fromMain_debugLog', log.htmlLog)
 		return
 	}
 
 	windows.debug = createSubWindow('debug', { parent : 'main', preload : 'debugWindow' })
 
 	windows.debug.webContents.on('did-finish-load', (event) => {
-		event.sender.send('update-log', log.htmlLog)
+		event.sender.send('fromMain_debugLog', log.htmlLog)
 	})
 
 	windows.debug.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
@@ -768,7 +768,7 @@ ipcMain.on('toMain_addFolder', () => {
 				log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
 			}
 		} else {
-			log.log.info('Add folder :: canceled, already exists in list', 'folder-opts')
+			log.log.debug('Add folder :: canceled by user', 'folder-opts')
 		}
 	}).catch((unknownError) => {
 		log.log.danger(`Could not read specified add folder : ${unknownError}`, 'folder-opts')
@@ -876,7 +876,7 @@ ipcMain.on('toMain_showChangelog', () => { createChangeLogWindow() } )
 /** Debug window operation */
 ipcMain.on('openDebugLogContents', () => { createDebugWindow() })
 ipcMain.on('openDebugLogFolder',   () => { shell.showItemInFolder(log.pathToLog) })
-ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('update-log', log.htmlLog) })
+ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('fromMain_debugLog', log.htmlLog) })
 /** END: Debug window operation */
 
 
@@ -1084,7 +1084,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 			}
 		})
 	})
-	dlReq.on('error', (error) => { log.log.info(`Network error : ${error}`, 'mod-download'); loadingWindow_hide() })
+	dlReq.on('error', (error) => { log.log.warning(`Network error : ${error}`, 'mod-download'); loadingWindow_hide() })
 	dlReq.end()
 })
 
@@ -1108,7 +1108,7 @@ ipcMain.on('toMain_exportList', (event, collection) => {
 		],
 	}).then(async (result) => {
 		if ( result.canceled ) {
-			log.log.notice('Save CSV Cancelled', 'csv-export')
+			log.log.debug('Save CSV Cancelled', 'csv-export')
 		} else {
 			try {
 				fs.writeFileSync(result.filePath, csvTable.join('\n'))
@@ -1401,12 +1401,15 @@ function fileOperation_post(type, fileMap) {
 		try {
 			switch ( type ) {
 				case 'copy' :
+					log.log.info(`Copy File : ${file[0]} -> ${file[1]}`, 'file-ops')
 					fs.copyFileSync(file[0], file[1])
 					break
 				case 'move' :
+					log.log.info(`Move File : ${file[0]} -> ${file[1]}`, 'file-ops')
 					fs.renameSync(file[0], file[1])
 					break
 				case 'delete' :
+					log.log.info(`Delete File : ${file[0]}`, 'file-ops')
 					fs.rmSync(file[0], { recursive : true } )
 					break
 				default :
@@ -1520,7 +1523,7 @@ function processModFolders_post(newFolder = false) {
 
 						if ( typeof localStore[thisMD5Sum] !== 'undefined') {
 							modList[cleanName].mods[modIndex] = localStore[thisMD5Sum]
-							log.log.info(`Adding mod FROM cache: ${localStore[thisMD5Sum].fileDetail.shortName}`, `mod-${localStore[thisMD5Sum].uuid}`)
+							log.log.debug(`Adding mod FROM cache: ${localStore[thisMD5Sum].fileDetail.shortName}`, `mod-${localStore[thisMD5Sum].uuid}`)
 							loadingWindow_current()
 							return
 						}
@@ -1621,7 +1624,7 @@ function loadModHub() {
 	try {
 		const rawData = fs.readFileSync(path.join(app.getPath('userData'), 'modHubData.json'))
 		modHubList = JSON.parse(rawData)
-		log.log.info('Loaded modHubData.json', 'local-cache')
+		log.log.debug('Loaded modHubData.json', 'local-cache')
 	} catch (e) {
 		log.log.warning('Loading modHubData.json failed: ${e}', 'local-cache')
 	}
@@ -1630,7 +1633,7 @@ function loadModHubVer() {
 	try {
 		const rawData = fs.readFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'))
 		modHubVersion = JSON.parse(rawData)
-		log.log.info('Loaded modHubVersion.json', 'local-cache')
+		log.log.debug('Loaded modHubVersion.json', 'local-cache')
 	} catch (e) {
 		log.log.warning('Loading modHubVersion.json failed: ${e}', 'local-cache')
 	}

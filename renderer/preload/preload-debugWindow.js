@@ -20,10 +20,6 @@ contextBridge.exposeInMainWorld(
 	}
 )
 
-ipcRenderer.on('update-log', ( _, logContents ) => {
-	document.getElementById('debug_log').innerHTML = logContents//.replaceAll('\n', '<br>\n')
-})
-
 contextBridge.exposeInMainWorld(
 	'l10n', {
 		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
@@ -45,6 +41,15 @@ contextBridge.exposeInMainWorld(
 	{
 		getDebugLogContents  : () => { ipcRenderer.send('getDebugLogContents') },
 		openDebugLogFolder   : () => { ipcRenderer.send('openDebugLogFolder') },
+		receive   : ( channel, func ) => {
+			const validChannels = [
+				'fromMain_debugLog',
+			]
+		
+			if ( validChannels.includes( channel ) ) {
+				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+			}
+		},
 	}
 )
 

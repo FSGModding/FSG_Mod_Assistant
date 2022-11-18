@@ -35,6 +35,19 @@
 			  </div>
 			</div>
 		</div>
+		<div class="input-group input-group-sm btn-group w-100 mt-2 mb-2 px-1">
+			<span class="input-group-text" id="basic-addon1">Show: </span>
+			<input type="checkbox" class="btn-check filter_only" id="debug_debug" onchange="window.debug.getDebugLogContents()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="debug_debug">DEBUG</label>
+			<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="window.debug.getDebugLogContents()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
+			<input type="checkbox" checked class="btn-check filter_only" id="debug_notice" onchange="window.debug.getDebugLogContents()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="debug_notice">NOTICE</label>
+			<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="window.debug.getDebugLogContents()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
+			<input type="checkbox" checked class="btn-check filter_only" id="debug_danger" onchange="window.debug.getDebugLogContents()" autocomplete="off">
+			<label class="btn btn-outline-success btn-sm border" for="debug_danger">DANGER</label>
+		</div>
 		
 		<div style="white-space: pre-wrap" class="ps-3 font-monospace small user-select-all no-wrap" id="debug_log"></div>
 	</div>

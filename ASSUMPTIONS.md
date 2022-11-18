@@ -29,4 +29,3 @@ Only readable ZIP files are valid - however, the Giants engine is more forgiving
 ## Mod "working" concerns
 
 There is really no way we can automate the test to see if a mod actually functions in game - this is to weed out the garbage from the high and low quality mods.
-

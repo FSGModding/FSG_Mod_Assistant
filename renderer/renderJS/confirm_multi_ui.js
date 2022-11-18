@@ -62,10 +62,7 @@ const makeCheck = (id, name, dir) => `<div class="form-check form-switch mb-2">
 
 function clientDoCopy() {
 	const realDestinations = fsgUtil.query(':checked')
-
-	console.log(realDestinations)
-
-	const fileMap = []
+	const fileMap          = []
 
 	lastSourceMods.forEach((mod) => {
 		realDestinations.forEach((realDest) => {

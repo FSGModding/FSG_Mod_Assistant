@@ -32,6 +32,22 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
+window.debug.receive('fromMain_debugLog', (data) => {
+	const showThese = []
+	const showData  = []
+	const levelInfo = new RegExp(/<span class="log_level .+?">(.+?)<\/span>/)
+
+	document.querySelectorAll(':checked').forEach((element) => {
+		showThese.push(element.id.replace('debug_', '').toUpperCase())
+	})
+
+	data.split('\n').forEach((line) => {
+		if ( showThese.includes(line.match(levelInfo)[1].trim()) ) { showData.push(line) }
+	})
+
+	document.getElementById('debug_log').innerHTML = showData.join('\n')
+})
+
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 })

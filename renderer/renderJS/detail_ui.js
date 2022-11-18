@@ -166,5 +166,3 @@ function checkX(amount, showCount = true) {
 	}
 	return `${(showCount)?amount:''} ${returner}`
 }
-
-
