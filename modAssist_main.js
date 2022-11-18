@@ -175,7 +175,7 @@ const settingsSchema = {
 		notes         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		prefs         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		resolve       : { type : 'object', default : {}, properties : winDef(750, 600), additionalProperties : false },
-		save          : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		save          : { type : 'object', default : {}, properties : winDef(900, 500), additionalProperties : false },
 		version       : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 	}},
 }
@@ -631,8 +631,8 @@ function createVersionWindow() {
 
 function loadingWindow_open(l10n) {
 	const newCenter   = getRealCenter('load')
-	const winTitle    = myTranslator.syncStringLookup(`loading_${l10n}_title`)
-	const winSubTitle = myTranslator.syncStringLookup(`loading_${l10n}_subtitle`)
+	const winTitle    = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_title` : 'app_name')
+	const winSubTitle = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_subtitle` : 'launch_fs22')
 	if ( windows.load ) {
 		try {
 			windows.load.setBounds({x : newCenter.x, y : newCenter.y})
@@ -884,6 +884,9 @@ ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('update-log', 
 ipcMain.on('toMain_startFarmSim', () => {
 	const progPath = mcStore.get('game_path')
 	if ( progPath !== '' && fs.existsSync(progPath) ) {
+		loadingWindow_open('launch')
+		loadingWindow_noCount()
+		loadingWindow_hide(3500)
 		const cp       = require('child_process')
 		const child    = cp.spawn(progPath, mcStore.get('game_args').split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
 		child.unref()

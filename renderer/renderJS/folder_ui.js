@@ -87,8 +87,8 @@ function makeFolderLine(path, name, num, last) {
 					<div class="col-6"><h4>${name}</h4></div>
 					<div class="col-6">
 						<div class="btn-group w-100">
-							<button class="btn btn-sm btn-success open_folder">${getText('open_folder')}</button>
-							<button class="btn btn-sm btn-danger remove_folder">${getText('remove_folder')}</button>
+							<button class="btn btn-sm btn-success open_folder" style="line-height: 1.1em">${getText('open_folder')}</button>
+							<button class="btn btn-sm btn-danger remove_folder" style="line-height: 1.1em">${getText('remove_folder')}</button>
 						</div>
 					</div>
 				</div>

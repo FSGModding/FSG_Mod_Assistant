@@ -165,6 +165,9 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 	select_lib.clear_range()
 
 	try {
+		document.querySelectorAll(`[data-bs-target="#${lastOpenID}"]`).forEach((element) => {
+			element.classList.remove('collapsed')
+		})
 		document.getElementById(lastOpenID).classList.add('show')
 		window.scrollTo(0, scrollStart)
 	} catch { /* nope */ }
