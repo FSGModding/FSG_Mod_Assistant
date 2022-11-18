@@ -282,8 +282,8 @@ function getRealCenter(winName) {
 		realCenter.x = (primary.workArea.width / 2) + primary.workArea.x
 		realCenter.y = (primary.workArea.height / 2) + primary.workArea.y
 	}
-	realCenter.x = realCenter.x - ( winSettings.w / 2 )
-	realCenter.y = realCenter.y - ( winSettings.h / 2 )
+	realCenter.x = Math.floor(realCenter.x - ( winSettings.w / 2 ))
+	realCenter.y = Math.floor(realCenter.y - ( winSettings.h / 2 ))
 	return realCenter
 }
 
@@ -301,8 +301,8 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 	const thisWindow = new BrowserWindow({
 		icon            : pathIcon,
 		parent          : ( parent === null ) ? null : windows[parent],
-		x               : winSettings.x > -1 ? winSettings.x : realCenter.x,
-		y               : winSettings.y > -1 ? winSettings.y : realCenter.y,
+		x               : winSettings.x > -1 ? Math.floor(winSettings.x) : realCenter.x,
+		y               : winSettings.y > -1 ? Math.floor(winSettings.y) : realCenter.y,
 		width           : winSettings.w,
 		height          : winSettings.h,
 		title           : winTitle,
@@ -634,7 +634,12 @@ function loadingWindow_open(l10n) {
 	const winTitle    = myTranslator.syncStringLookup(`loading_${l10n}_title`)
 	const winSubTitle = myTranslator.syncStringLookup(`loading_${l10n}_subtitle`)
 	if ( windows.load ) {
-		windows.load.setBounds({x : newCenter.x, y : newCenter.y})
+		try {
+			windows.load.setBounds({x : newCenter.x, y : newCenter.y})
+		} catch (e) {
+			windows.load.center()
+			log.log.debug(`Center window in display failed : ${e}`, 'load-window')
+		}
 		windows.load.show()
 		windows.load.focus()
 		windows.load.webContents.send('formMain_loadingTitles', winTitle, winSubTitle)
@@ -912,8 +917,12 @@ ipcMain.on('toMain_resetWindows', () => {
 	const prefBounds = mcStore.get('wins.prefs')
 	windows.main.unmaximize()
 	windows.prefs.unmaximize()
-	windows.main.setBounds({x : 1, y : 1, width : mainBounds.w, height : mainBounds.h})
-	windows.prefs.setBounds({x : 1, y : 1, width : prefBounds.w, height : prefBounds.h})
+	try {
+		windows.main.setBounds({width : Math.floor(mainBounds.w), height : Math.floor(mainBounds.h)})
+		windows.prefs.setBounds({width : Math.floor(prefBounds.w), height : Math.floor(prefBounds.h)})
+	} catch (e) {
+		log.log.debug(`Reset failed : ${e}`, 'reset-windows')
+	}
 	windows.main.center()
 	windows.prefs.center()
 })
