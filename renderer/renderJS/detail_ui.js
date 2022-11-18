@@ -164,7 +164,7 @@ function checkX(amount, showCount = true) {
 	} else {
 		returner += fsgUtil.getIcon('x', 'danger')
 	}
-	return `${returner} ${(showCount)?amount:''}`
+	return `${(showCount)?amount:''} ${returner}`
 }
 
 

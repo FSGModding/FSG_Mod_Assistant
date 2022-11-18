@@ -116,21 +116,21 @@
 
 			<div class="row px-3 pt-1"><!-- source mods -->
 				<div class="col">
-					<div class="btn-group d-flex" role="group">
-						<button type="button" class="btn btn-sm btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n class="small" name="folder_add"></l10n></button>
-						<button type="button" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n class="small" name="folder_edit"></l10n></button>
-						<button type="button" class="btn btn-sm btn-secondary" onclick="mods.refreshFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n class="small" name="folder_refresh"></l10n></button>
+					<div class="btn-group d-flex h-100" role="group">
+						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n class="small" name="folder_add"></l10n></button>
+						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n class="small" name="folder_edit"></l10n></button>
+						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-secondary" onclick="mods.refreshFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n class="small" name="folder_refresh"></l10n></button>
 					</div>
 				</div>
 				<div class="col">
-					<div class="input-group w-100">
+					<div class="input-group w-100 h-100">
 						<select class="form-select form-select-sm" id="collectionSelect"></select>
 						<button class="btn btn-sm btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
 						<button class="btn btn-danger btn-sm" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
 					</div>
 				</div>
 				<div class="col-2">
-					<button class="btn btn-success btn-sm w-100" type="button" onclick="mods.versionCheck()"><l10n name="version_check"></l10n></button>
+					<button class="btn btn-success btn-sm w-100 h-100" style="line-height: 1.1em"  type="button" onclick="mods.versionCheck()"><l10n name="version_check"></l10n></button>
 				</div>
 			</div><!-- end: source mods-->
 		</div>
@@ -141,12 +141,12 @@
 			</div>
 			<div class="col-2 p-0"><!-- buttons -->
 				<div id="moveButtons" class="p-2" style="position: absolute; top: 120px;">
-					<button onclick="clientBatchOperation('move')" type="button" style="height: 12vh" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
-					<button onclick="clientBatchOperation('copy')" type="button" style="height: 12vh" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
-					<button onclick="clientBatchOperation('delete')" type="button" style="height: 12vh" class="w-100 mb-2 btn btn-danger rounded-4 disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
-					<button onclick="clientBatchOperation('open')" type="button" style="height: 10vh" class="w-100 mb-2 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_from_list"></l10n></button>
-					<button onclick="clientBatchOperation('hub')" type="button" style="height: 10vh" class="w-100 mb-2 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_hub"></l10n></button>
-					<button onclick="mods.copyFavorites()" type="button" style="height: 12vh" class="w-100 mb-2 btn btn-warning rounded-4"><gg-icon class="gg-chevron-double-down-r"></gg-icon><br /><l10n class="small" name="copy_fav_to"></l10n></button>
+					<button onclick="clientBatchOperation('move')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
+					<button onclick="clientBatchOperation('copy')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
+					<button onclick="clientBatchOperation('delete')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-danger rounded-4 disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
+					<button onclick="clientBatchOperation('open')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_from_list"></l10n></button>
+					<button onclick="clientBatchOperation('hub')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_hub"></l10n></button>
+					<button onclick="mods.copyFavorites()" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-warning rounded-4"><gg-icon class="gg-chevron-double-down-r"></gg-icon><br /><l10n class="small" name="copy_fav_to"></l10n></button>
 				</div>
 			</div><!-- end: buttons-->
 		</div>
