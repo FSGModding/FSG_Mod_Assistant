@@ -260,5 +260,8 @@
 	"user_pref_blurb_reset_window": "Mod Assistant enregistre l'emplacement, la taille et l'état maximisé de toutes ses fenêtres. Utilisez le bouton ci-dessous pour rétablir les valeurs par défaut si nécessaire",
 	"user_pref_button_reset_window": "Réinitialiser toutes les fenêtres",
 	"loading_zip_subtitle": "Veuillez patienter, cela peut prendre une minute",
-	"loading_zip_title": "Dézipper les mods"
+	"loading_zip_title": "Dézipper les mods",
+	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
+	"search_all__title": "Recherche dans toutes les collections",
+	"search_all_window": "Trouver tout"
 }

@@ -260,5 +260,8 @@
 	"user_pref_blurb_reset_window": "Mod Assistant zapisuje lokalizację, rozmiar i zmaksymalizowany stan wszystkich swoich okien. Użyj poniższego przycisku, aby w razie potrzeby przywrócić ustawienia domyślne",
 	"user_pref_button_reset_window": "Resetuj wszystkie okna",
 	"loading_zip_subtitle": "Proszę czekać, to może potrwać minutę",
-	"loading_zip_title": "Rozpakowywanie modów"
+	"loading_zip_title": "Rozpakowywanie modów",
+	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
+	"search_all__title": "Szukaj we wszystkich zbiorach",
+	"search_all_window": "Znajdź wszystkie"
 }

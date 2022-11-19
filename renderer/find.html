@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/icons.css">
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/find_ui.js"></script>
+	<script type="text/javascript">
+		document.onkeydown = function(evt) {
+			evt = evt || window.event
+			if (evt.keyCode == 27) { 
+				document.activeElement.blur()
+				window.mods.closeWindow()
+			}
+		}
+		window.onerror = function (message, file, line, col, error) {
+			window.log.debug(error.message, 'find'); return false
+		}
+	</script>
+</head>
+<body>
+	
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100">
+				<div class="col-7">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+				</div>
+				<div class="col-5">
+					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill"><l10n name="search_all_window" class="h4"></l10n></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="input-group input-group-sm mb-4">
+			<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
+			<input type="text" id="mods__filter" onkeyup="clientFilter()" class="form-control mod-row-filter">
+			<span id="mods__filter_clear" onclick="clientClearInput()" class="form-control-clear gg-erase form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; color:black;"></span>
+		</div>
+
+		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped" id="full_table"></table>
+	</div>
+
+</body>
+</html>

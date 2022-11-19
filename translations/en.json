@@ -260,5 +260,8 @@
 	"user_pref_blurb_reset_window"           : "Mod Assistant saves the location, size, and maximized state of all it's windows. Use the button below to reset to the defaults if needed",
 	"user_pref_button_reset_window"          : "Reset All Windows",
 	"loading_zip_subtitle"                   : "Please wait, this could take a minute",
-	"loading_zip_title"                      : "Unzipping Mods"
+	"loading_zip_title"                      : "Unzipping Mods",
+	"search_all"                             : "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
+	"search_all__title"                      : "Search in all Collections",
+	"search_all_window"                      : "Find All"
 }

@@ -260,5 +260,8 @@
 	"user_pref_blurb_reset_window": "Mod Assistant speichert die Position, Größe und den maximierten Zustand aller Fenster. Verwenden Sie die Schaltfläche unten, um bei Bedarf auf die Standardeinstellungen zurückzusetzen",
 	"user_pref_button_reset_window": "Alle Fenster zurücksetzen",
 	"loading_zip_subtitle": "Bitte warten Sie, das kann eine Minute dauern",
-	"loading_zip_title": "Mods entpacken"
+	"loading_zip_title": "Mods entpacken",
+	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
+	"search_all__title": "Suche in allen Sammlungen",
+	"search_all_window": "Alle finden"
 }

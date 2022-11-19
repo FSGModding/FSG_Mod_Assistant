@@ -174,6 +174,7 @@ const settingsSchema = {
 		confirm       : { type : 'object', default : {}, properties : winDef(750, 500), additionalProperties : false },
 		debug         : { type : 'object', default : {}, properties : winDef(1000, 500), additionalProperties : false },
 		detail        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		find          : { type : 'object', default : {}, properties : winDef(800, 600), additionalProperties : false },
 		folder        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		main          : { type : 'object', default : {}, properties : winDef(1000, 700), additionalProperties : false },
 		notes         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
@@ -225,6 +226,7 @@ const windows = {
 	confirm : null,
 	debug   : null,
 	detail  : null,
+	find    : null,
 	folder  : null,
 	load    : null,
 	main    : null,
@@ -272,6 +274,11 @@ mcStore.set('cache_version', app.getVersion())
    ( \/\/ )(_  _)( \( )(  _ \ (  _  )( \/\/ )/ __)
     )    (  _)(_  )  (  )(_) ) )(_)(  )    ( \__ \
    (__/\__)(____)(_)\_)(____/ (_____)(__/\__)(___/ */
+function destroyAndFocus(winName) {
+	windows[winName] = null
+	if ( windows.main !== null ) { windows.main.focus() }
+}
+
 function getRealCenter(winName) {
 	const realCenter  = { x : null, y : null }
 	const winSettings = mcStore.get(`wins.${winName}`)
@@ -297,7 +304,7 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 
 	const winOptions = {
 		minimizable     : !fixed,
-		alwaysOnTop     : fixed && !devDebug,
+		alwaysOnTop     : fixed,
 		maximizable     : !fixed,
 		fullscreenable  : !fixed,
 	}
@@ -382,8 +389,10 @@ function createMainWindow () {
 		}
 	})
 	windows.main.on('closed',   () => {
+		windows.main = null
 		if ( tray ) { tray.destroy() }
 		windows.load.destroy()
+		app.quit()
 	})
 
 	if ( !devDebug ) {
@@ -450,7 +459,7 @@ function createConfirmFav(mods, destinations) {
 
 	windows.confirm.loadFile(path.join(pathRender, 'confirm-multi.html'))
 
-	windows.confirm.on('closed', () => { windows.confirm = null; windows.main.focus() })
+	windows.confirm.on('closed', () => { destroyAndFocus('confirm') })
 }
 
 function createConfirmWindow(type, modRecords, origList) {
@@ -469,7 +478,7 @@ function createConfirmWindow(type, modRecords, origList) {
 
 	windows.confirm.loadFile(path.join(pathRender, file_HTML))
 
-	windows.confirm.on('closed', () => { windows.confirm = null; windows.main.focus() })
+	windows.confirm.on('closed', () => { destroyAndFocus('confirm') })
 }
 
 function createChangeLogWindow() {
@@ -481,7 +490,7 @@ function createChangeLogWindow() {
 	windows.change = createSubWindow('change', { parent : 'main', fixed : true, preload : 'aChangelogWindow' })
 
 	windows.change.loadFile(path.join(pathRender, 'a_changelog.html'))
-	windows.change.on('closed', () => { windows.change = null; windows.main.focus() })
+	windows.change.on('closed', () => { destroyAndFocus('change') })
 }
 
 function createFolderWindow() {
@@ -498,7 +507,7 @@ function createFolderWindow() {
 	})
 
 	windows.folder.loadFile(path.join(pathRender, 'folders.html'))
-	windows.folder.on('closed', () => { windows.folder = null; windows.main.focus(); processModFolders() })
+	windows.folder.on('closed', () => { destroyAndFocus('folder'); processModFolders() })
 }
 
 function createDetailWindow(thisModRecord) {
@@ -519,12 +528,30 @@ function createDetailWindow(thisModRecord) {
 	})
 
 	windows.detail.loadFile(path.join(pathRender, 'detail.html'))
-	windows.detail.on('closed', () => { windows.detail = null; windows.main.focus() })
+	windows.detail.on('closed', () => { destroyAndFocus('detail') })
 
 	windows.detail.webContents.setWindowOpenHandler(({ url }) => {
 		shell.openExternal(url)
 		return { action : 'deny' }
 	})
+}
+
+function createFindWindow() {
+	if ( windows.find ) {
+		windows.find.focus()
+		windows.find.webContents.send('fromMain_modRecords', modList)
+		return
+	}
+
+	windows.find = createSubWindow('find', { preload : 'findWindow' })
+
+	windows.find.webContents.on('did-finish-load', async (event) => {
+		event.sender.send('fromMain_modRecords', modList)
+		if ( devDebug ) { windows.find.webContents.openDevTools() }
+	})
+
+	windows.find.loadFile(path.join(pathRender, 'find.html'))
+	windows.find.on('closed', () => { destroyAndFocus('find') })
 }
 
 function createDebugWindow() {
@@ -534,14 +561,14 @@ function createDebugWindow() {
 		return
 	}
 
-	windows.debug = createSubWindow('debug', { parent : 'main', preload : 'debugWindow' })
+	windows.debug = createSubWindow('debug', { preload : 'debugWindow' })
 
 	windows.debug.webContents.on('did-finish-load', (event) => {
 		event.sender.send('fromMain_debugLog', log.htmlLog)
 	})
 
 	windows.debug.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
-	windows.debug.on('closed', () => { windows.debug = null; windows.main.focus() })
+	windows.debug.on('closed', () => { destroyAndFocus('debug') })
 }
 
 function createPrefsWindow() {
@@ -558,7 +585,7 @@ function createPrefsWindow() {
 	})
 
 	windows.prefs.loadFile(path.join(pathRender, 'prefs.html'))
-	windows.prefs.on('closed', () => { windows.prefs = null; windows.main.focus() })
+	windows.prefs.on('closed', () => { destroyAndFocus('prefs') })
 }
 
 function createSavegameWindow(collection) {
@@ -576,7 +603,7 @@ function createSavegameWindow(collection) {
 	})
 
 	windows.save.loadFile(path.join(pathRender, 'savegame.html'))
-	windows.save.on('closed', () => { windows.save = null; windows.main.focus() })
+	windows.save.on('closed', () => { destroyAndFocus('save') })
 }
 
 function createNotesWindow(collection) {
@@ -594,7 +621,7 @@ function createNotesWindow(collection) {
 	})
 
 	windows.notes.loadFile(path.join(pathRender, 'notes.html'))
-	windows.notes.on('closed', () => { windows.notes = null; windows.main.focus(); processModFolders() })
+	windows.notes.on('closed', () => { destroyAndFocus('notes'); processModFolders() })
 }
 
 function createResolveWindow(modSet, shortName) {
@@ -612,7 +639,7 @@ function createResolveWindow(modSet, shortName) {
 	})
 
 	windows.resolve.loadFile(path.join(pathRender, 'resolve.html'))
-	windows.resolve.on('closed', () => { windows.resolve = null; windows.version.focus() })
+	windows.resolve.on('closed', () => { destroyAndFocus('resolve') })
 }
 
 function createVersionWindow() {
@@ -630,7 +657,7 @@ function createVersionWindow() {
 	})
 
 	windows.version.loadFile(path.join(pathRender, 'versions.html'))
-	windows.version.on('closed', () => { windows.version = null; windows.main.focus() })
+	windows.version.on('closed', () => { destroyAndFocus('version') })
 }
 
 function loadingWindow_open(l10n) {
@@ -907,6 +934,10 @@ ipcMain.on('toMain_startFarmSim', () => {
 	}
 })
 /** END: game launcher */
+
+/** Find window operation */
+ipcMain.on('toMain_openFind', () => { createFindWindow() })
+/** END : Find window operation*/
 
 /** Preferences window operation */
 ipcMain.on('toMain_openPrefs', () => { createPrefsWindow() })

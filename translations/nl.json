@@ -260,5 +260,8 @@
 	"user_pref_blurb_reset_window": "Mod Assistant bewaart de locatie, grootte en gemaximaliseerde status van alle vensters. Gebruik de onderstaande knop om de standaardwaarden te herstellen indien nodig",
 	"user_pref_button_reset_window": "Reset alle vensters",
 	"loading_zip_subtitle": "Wacht even, dit kan even duren",
-	"loading_zip_title": "Mods uitpakken"
+	"loading_zip_title": "Mods uitpakken",
+	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
+	"search_all__title": "Zoeken in alle collecties",
+	"search_all_window": "Alles vinden"
 }
