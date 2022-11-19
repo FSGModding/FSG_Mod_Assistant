@@ -39,20 +39,24 @@ process.on('uncaughtException', (err, origin) => {
 			type    : 'error',
 		})
 		app.quit()
+	} else {
+		log.log.debug(`Network error: ${err}`, 'net-error-exception')
 	}
 })
 process.on('unhandledRejection', (err, origin) => {
 	fs.appendFileSync(
 		crashLog,
-		`Caught rejection: ${err}\n\nException origin: ${origin}\n\n${err.stack}`
+		`Caught rejection: ${err}\n\nRejection origin: ${origin}\n\n${err.stack}`
 	)
 	if ( !isNetworkError(err) ) {
 		dialog.showMessageBoxSync(null, {
 			title   : 'Uncaught Error - Quitting',
-			message : `Caught rejection: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
+			message : `Caught rejection: ${err}\n\nRejection origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
 			type    : 'error',
 		})
 		app.quit()
+	} else {
+		log.log.debug(`Network error: ${err}`, 'net-error-rejection')
 	}
 })
 
