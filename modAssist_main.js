@@ -1411,8 +1411,14 @@ function fileOperation_post(type, fileMap) {
 					fs.copyFileSync(file[0], file[1])
 					break
 				case 'move' :
-					log.log.info(`Move File : ${file[0]} -> ${file[1]}`, 'file-ops')
-					fs.renameSync(file[0], file[1])
+					if ( path.parse(file[0]).root !== path.parse(file[1]).root ) {
+						log.log.info(`Move (cp+rm) File : ${file[0]} -> ${file[1]}`, 'file-ops')
+						fs.copyFileSync(file[0], file[1])
+						fs.rmSync(file[0])
+					} else {
+						log.log.info(`Move (rename) File : ${file[0]} -> ${file[1]}`, 'file-ops')
+						fs.renameSync(file[0], file[1])
+					}
 					break
 				case 'delete' :
 					log.log.info(`Delete File : ${file[0]}`, 'file-ops')
