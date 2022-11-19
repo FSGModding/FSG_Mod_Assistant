@@ -104,7 +104,7 @@ function makeModRow(thisMod) {
 		<div class="search-string">${thisMod.name}<br /><small>${thisMod.title} - <em>${thisMod.author}</em></small></div>
 	</td>
 	<td class="text-end pe-4">
-		<dl class="row g-0">${versions.join('')}</dl>
+		<small><dl class="row g-0">${versions.join('')}</dl></small>
 	</td>
 </tr>`
 }
