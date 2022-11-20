@@ -1130,12 +1130,13 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 /** Export operation */
 ipcMain.on('toMain_exportList', (event, collection) => {
 	const csvTable = []
-	csvTable.push('"Mod","Title","Version","Author","Link"')
+	csvTable.push('"Mod","Title","Version","Author","ModHub","Link"')
 
 	modList[collection].mods.forEach((mod) => {
-		const modHubID   = modHubList.mods[mod.fileDetail.shortName] || null
-		const modHubLink = ( modHubID !== null ) ? `https://www.farming-simulator.com/mod.php?mod_id=${modHubID}` : ''
-		csvTable.push(`"${mod.fileDetail.shortName}.zip","${mod.l10n.title.replaceAll('"', '\'')}","${mod.modDesc.version}","${mod.modDesc.author.replaceAll('"', '\'')}","${modHubLink}"`)
+		const modHubID    = modHubList.mods[mod.fileDetail.shortName] || null
+		const modHubLink  = ( modHubID !== null ) ? `https://www.farming-simulator.com/mod.php?mod_id=${modHubID}` : ''
+		const modHubYesNo = ( modHubID !== null ) ? 'yes' : 'no'
+		csvTable.push(`"${mod.fileDetail.shortName}.zip","${mod.l10n.title.replaceAll('"', '\'')}","${mod.modDesc.version}","${mod.modDesc.author.replaceAll('"', '\'')}","${modHubYesNo}","${modHubLink}"`)
 	})
 
 	dialog.showSaveDialog(windows.main, {
