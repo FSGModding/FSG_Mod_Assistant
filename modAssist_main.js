@@ -1477,38 +1477,48 @@ function fileGetStats(folder, thisFile) {
 	let isFolder = null
 	let date     = null
 	let size     = null
+	let error    = false
 
-	if ( thisFile.isSymbolicLink() ) {
-		const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
-		const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
-		isFolder = thisSymLinkStat.isDirectory()
-		date     = thisSymLinkStat.ctime
+	try {
+		if ( thisFile.isSymbolicLink() ) {
+			const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
+			const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
+			isFolder = thisSymLinkStat.isDirectory()
+			date     = thisSymLinkStat.ctime
 
-		if ( !isFolder ) { size = thisSymLinkStat.size }
-	} else {
-		isFolder = thisFile.isDirectory()
-	}
+			if ( !isFolder ) { size = thisSymLinkStat.size }
+		} else {
+			isFolder = thisFile.isDirectory()
+		}
 
-	if ( ! thisFile.isSymbolicLink() ) {
-		const theseStats = fs.statSync(path.join(folder, thisFile.name))
-		if ( !isFolder ) { size = theseStats.size }
-		date = theseStats.ctime
-		
-	}
-	if ( isFolder ) {
-		let bytes = 0
-		glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
-			try {
-				const stats = fs.statSync(path.join(folder, thisFile.name, file))
-				if ( stats.isFile() ) { bytes += stats.size }
-			} catch { /* Do Nothing if we can't read it. */ }
-		})
-		size = bytes
+		if ( ! thisFile.isSymbolicLink() ) {
+			const theseStats = fs.statSync(path.join(folder, thisFile.name))
+			if ( !isFolder ) { size = theseStats.size }
+			date = theseStats.ctime
+			
+		}
+		if ( isFolder ) {
+			let bytes = 0
+			glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
+				try {
+					const stats = fs.statSync(path.join(folder, thisFile.name, file))
+					if ( stats.isFile() ) { bytes += stats.size }
+				} catch { /* Do Nothing if we can't read it. */ }
+			})
+			size = bytes
+		}
+	} catch (e) {
+		log.log.warning(`Unable to stat file ${thisFile.name} in ${folder} : ${e}`, 'file-stat')
+		isFolder = false
+		size     = 0
+		date     = new Date(1969, 1, 1, 0, 0, 0, 0)
+		error    = true
 	}
 	return {
 		folder : isFolder,
 		size   : size,
 		date   : date,
+		error  : error,
 	}
 }
 
@@ -1557,9 +1567,14 @@ function processModFolders_post(newFolder = false) {
 						return
 					}
 
-					modIndex++
-
 					const thisFileStats = fileGetStats(folder, thisFile)
+
+					if ( thisFileStats.error ) {
+						loadingWindow_current()
+						return
+					}
+
+					modIndex++
 
 					if ( !thisFileStats.folder && !skipCache ) {
 						const hashString = `${thisFile.name}-${thisFileStats.size}-${thisFileStats.date.toISOString()}`

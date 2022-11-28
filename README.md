@@ -12,6 +12,7 @@ ___Contents___
 
 - [FSG Mod Assistant](#fsg-mod-assistant)
   - [What this does](#what-this-does)
+    - [A Special Note About SymLinks](#a-special-note-about-symlinks)
   - [What is a Broken Mod?](#what-is-a-broken-mod)
   - [Usage](#usage)
     - [Download options](#download-options)
@@ -50,6 +51,18 @@ ___Contents___
 ## What this does
 
 At it's core functionality, this is a file manager, and it has the ability to edit FS22's `gameSettings.xml` file to set one of your mod collections as the mod location the game reads. __For the security conscious__, it's sole communication with the internet is the self-updater for the program, and pulling a list of modHub mods from a server - all of your mods are tested locally - if you prefer to update manually, you can safely block this app in your firewall - although that will break the "Open on ModHub" button. There is also a portable (no-install) version if you prefer that.
+
+### A Special Note About SymLinks
+
+One method to keep the size of a mod collection down is to use symlinks - Mod Assist is aware of symlinks, and will treat them much like the game does - like any other mod file.  Mod Assist does not have any sort of built in sym link functions, you'll need a third party app or advanced knowledge of the command line to create them.
+
+When doing file operations
+
+- `Move`ing a symlink will move the __LINK DESCRIPTOR__ (the linked file remains unchanged)
+- `Copy`ing a symlink will copy the __ORIGINAL FILE__ (the linked file is duplicated)
+- `Delete`ing a symlink will delete the __LINK DESCRIPTOR__ (the linked file remains unchanged)
+
+Note that invalid links in your folders will be ignored, however a warning message will be added to the debug log.
 
 ## What is a Broken Mod?
 
