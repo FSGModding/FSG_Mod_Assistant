@@ -1601,13 +1601,13 @@ function processModFolders_post(newFolder = false) {
 							maCache.set(thisModDetail.md5Sum, thisModDetail.storable)
 						}
 					} catch (e) {
-						log.log.danger(`Couldn't process ${thisFile.name}: ${e}`, 'folder-reader')
+						log.log.danger(`Couldn't process file: ${thisFile.name} :: ${e}`, 'folder-reader')
 					}
 
 					loadingWindow_current()
 				})
 			} catch (e) {
-				log.log.danger(`Couldn't process ${folder}: ${e}`, 'folder-reader')
+				log.log.danger(`Couldn't process folder: ${folder} :: ${e}`, 'folder-reader')
 			}
 		}
 	})
@@ -1706,33 +1706,35 @@ app.whenReady().then(() => {
 		tray.setToolTip('FSG Mod Assist')
 		tray.on('click', () => { windows.main.show() })
 
-		const request = net.request(hubURL)
+		if ( net.isOnline() ) {
+			const request = net.request(hubURL)
 
-		request.on('response', (response) => {
-			log.log.info(`Got modHubData.json: ${response.statusCode}`, 'local-cache')
-			let mhResp = ''
-			response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
-			response.on('end',  () => {
-				fs.writeFileSync(path.join(app.getPath('userData'), 'modHubData.json'), mhResp)
-				loadModHub()
+			request.on('response', (response) => {
+				log.log.info(`Got modHubData.json: ${response.statusCode}`, 'local-cache')
+				let mhResp = ''
+				response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
+				response.on('end',  () => {
+					fs.writeFileSync(path.join(app.getPath('userData'), 'modHubData.json'), mhResp)
+					loadModHub()
+				})
 			})
-		})
-		request.on('error', (error) => { log.log.info(`Network error : ${error}`, 'net-request') })
-		request.end()
+			request.on('error', (error) => { log.log.info(`Network error : ${error}`, 'net-request') })
+			request.end()
 
-		const request2 = net.request(hubVerURL)
+			const request2 = net.request(hubVerURL)
 
-		request2.on('response', (response) => {
-			log.log.info(`Got modHubVersion.json: ${response.statusCode}`, 'local-cache')
-			let mhResp = ''
-			response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
-			response.on('end',  () => {
-				fs.writeFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'), mhResp)
-				loadModHubVer()
+			request2.on('response', (response) => {
+				log.log.info(`Got modHubVersion.json: ${response.statusCode}`, 'local-cache')
+				let mhResp = ''
+				response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
+				response.on('end',  () => {
+					fs.writeFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'), mhResp)
+					loadModHubVer()
+				})
 			})
-		})
-		request2.on('error', (error) => { log.log.info(`Network error : ${error}`, 'net-request') })
-		request2.end()
+			request2.on('error', (error) => { log.log.info(`Network error : ${error}`, 'net-request') })
+			request2.end()
+		}
 
 		app.on('second-instance', () => {
 			// Someone tried to run a second instance, we should focus our window.
