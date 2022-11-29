@@ -263,5 +263,7 @@
 	"loading_zip_title": "Dézipper les mods",
 	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
 	"search_all__title": "Recherche dans toutes les collections",
-	"search_all_window": "Trouver tout"
+	"search_all_window": "Trouver tout",
+	"folder_alpha": "Trier par ordre alphabétique",
+	"folder_alpha__title": "Réorganiser tous les dossiers par ordre alphabétique"
 }

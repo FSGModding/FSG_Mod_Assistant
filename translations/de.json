@@ -263,5 +263,7 @@
 	"loading_zip_title": "Mods entpacken",
 	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
 	"search_all__title": "Suche in allen Sammlungen",
-	"search_all_window": "Alle finden"
+	"search_all_window": "Alle finden",
+	"folder_alpha": "Alphabetisch sortieren",
+	"folder_alpha__title": "Alle Ordner alphabetisch neu sortieren"
 }

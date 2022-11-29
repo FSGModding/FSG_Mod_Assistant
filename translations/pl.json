@@ -263,5 +263,7 @@
 	"loading_zip_title": "Rozpakowywanie modów",
 	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
 	"search_all__title": "Szukaj we wszystkich folderach",
-	"search_all_window": "Znajdź wszystkie"
+	"search_all_window": "Znajdź wszystkie",
+	"folder_alpha": "Sortuj alfabetycznie",
+	"folder_alpha__title": "Ponownie uporządkuj wszystkie foldery alfabetycznie"
 }

@@ -263,5 +263,7 @@
 	"loading_zip_title": "Mods uitpakken",
 	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
 	"search_all__title": "Zoeken in alle collecties",
-	"search_all_window": "Alles vinden"
+	"search_all_window": "Alles vinden",
+	"folder_alpha": "Alfabetisch sorteren",
+	"folder_alpha__title": "Alle mappen alfabetisch herschikken"
 }

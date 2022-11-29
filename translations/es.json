@@ -263,5 +263,7 @@
 	"loading_zip_title": "Descomprimiendo Mods",
 	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
 	"search_all__title": "Buscar en todas las colecciones",
-	"search_all_window": "Buscar todo"
+	"search_all_window": "Buscar todo",
+	"folder_alpha": "Ordenar alfabéticamente",
+	"folder_alpha__title": "Reordenar todas las carpetas alfabéticamente"
 }

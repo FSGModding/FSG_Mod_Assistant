@@ -43,6 +43,7 @@ contextBridge.exposeInMainWorld(
 		removeFolder  : ( folder ) => { ipcRenderer.send('toMain_removeFolder', folder) },
 		openFolder    : ( folder ) => { ipcRenderer.send('toMain_openFolder', folder) },
 		reorderFolder : ( from, to ) => { ipcRenderer.send('toMain_reorderFolder', from, to) },
+		reorderAlpha  : () => { ipcRenderer.send('toMain_reorderFolderAlpha') },
 		receive       : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getFolders',

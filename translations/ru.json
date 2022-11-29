@@ -263,5 +263,7 @@
 	"loading_zip_title": "Распаковка модов",
 	"search_all": "<gg-icon class=\"gg-search mb-1\"></gg-icon>",
 	"search_all__title": "Искать во всех коллекциях",
-	"search_all_window": "Найти все"
+	"search_all_window": "Найти все",
+	"folder_alpha": "Сортировать по алфавиту",
+	"folder_alpha__title": "Переупорядочить все папки в алфавитном порядке"
 }

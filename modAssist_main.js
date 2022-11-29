@@ -861,6 +861,40 @@ ipcMain.on('toMain_reorderFolder', (event, from, to) => {
 /** END: Folder Window Operation */
 
 
+ipcMain.on('toMain_reorderFolderAlpha', () => {
+	const newOrder = []
+	const collator = new Intl.Collator()
+
+	Object.keys(modList).forEach((collection) => {
+		newOrder.push({name : modList[collection].name, collection : collection})
+	})
+
+	newOrder.sort((a, b) =>
+		collator.compare(a.name, b.name) ||
+		collator.compare(a.collection, b.collection)
+	)
+
+	const newModFolders    = new Set()
+	const newModList       = {}
+	const newModFoldersMap = {}
+
+	newOrder.forEach((order) => {
+		newModFolders.add(modFoldersMap[order.collection])
+		newModList[order.collection]       = modList[order.collection]
+		newModFoldersMap[order.collection] = modFoldersMap[order.collection]
+	})
+
+	modFolders    = newModFolders
+	modList       = newModList
+	modFoldersMap = newModFoldersMap
+
+	mcStore.set('modFolders', Array.from(modFolders))
+
+	windows.folder.webContents.send('fromMain_getFolders', modList)
+	foldersDirty = true
+})
+
+
 /** Logging Operation */
 ipcMain.on('toMain_log', (event, level, process, text) => { log.log[level](text, process) })
 /** END: Logging Operation */
