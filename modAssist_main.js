@@ -1755,6 +1755,10 @@ app.whenReady().then(() => {
 			myTranslator.currentLocale = mcStore.get('force_lang')
 		}
 
+		if (process.platform === 'win32') {
+			app.setAppUserModelId('jtsage.fsmodassist')
+		}
+		
 		tray = new Tray(trayIcon)
 
 		const template = [
