@@ -265,5 +265,7 @@
 	"search_all__title": "Zoeken in alle collecties",
 	"search_all_window": "Alles vinden",
 	"folder_alpha": "Alfabetisch sorteren",
-	"folder_alpha__title": "Alle mappen alfabetisch herschikken"
+	"folder_alpha__title": "Alle mappen alfabetisch herschikken",
+	"user_pref_title_led": "Gebruik Giants LED",
+	"user_pref_blurb_led": "Indien actief, laat het je weten wanneer je een collectie activeert of het spel wat visueler start."
 }

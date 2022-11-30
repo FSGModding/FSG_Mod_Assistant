@@ -265,5 +265,7 @@
 	"search_all__title": "Suche in allen Sammlungen",
 	"search_all_window": "Alle finden",
 	"folder_alpha": "Alphabetisch sortieren",
-	"folder_alpha__title": "Alle Ordner alphabetisch neu sortieren"
+	"folder_alpha__title": "Alle Ordner alphabetisch neu sortieren",
+	"user_pref_title_led": "Giants-LED verwenden",
+	"user_pref_blurb_led": "Wenn sie aktiv ist, sollte man beim Aktivieren einer Sammlung oder beim Starten des Spiels etwas visueller informiert werden"
 }

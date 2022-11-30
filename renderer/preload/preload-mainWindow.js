@@ -51,6 +51,7 @@ contextBridge.exposeInMainWorld(
 		versionCheck    : () => { ipcRenderer.send('toMain_versionCheck' ) },
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
 		makeInactive    : () => { ipcRenderer.send('toMain_makeInactive' ) },
+		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
 
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },

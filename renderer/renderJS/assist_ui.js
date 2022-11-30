@@ -190,6 +190,7 @@ function clientMakeListActive() {
 	const activePick = fsgUtil.byId('collectionSelect').value.replace('collection--', '')
 
 	if ( activePick !== '0' && activePick !== '999' ) {
+		blinkLED()
 		window.mods.makeActive(activePick)
 	}
 }
@@ -305,10 +306,51 @@ function clientBatchOperation(mode) {
 	}
 }
 
+function clientOpenFarmSim() {
+	spinLED()
+	window.mods.startFarmSim()
+}
+
 window.addEventListener('hide.bs.collapse', () => { select_lib.clear_all() })
 window.addEventListener('show.bs.collapse', () => { select_lib.clear_all() })
 
-window.addEventListener('DOMContentLoaded', () => {	processL10N() })
+const giantsLED = {	filters : [{ vendorId : 0x340d, productId : 0x1710 }] }
+
+async function spinLED() {
+	if ( ! window.mods.isLEDActive() ) { return }
+	
+	try {
+		const clientLED = await navigator.hid.requestDevice(giantsLED)
+
+		await clientLED[0].open()
+		await clientLED[0].sendReport(0x00, new Uint8Array([0xFF, 0x01, 0x66, 0xC8, 0xFF, 0xAD, 0x52, 0x81, 0xD6]))
+		setTimeout(async () => {
+			await clientLED[0].sendReport(0x00, new Uint8Array([0xFF, 0x00, 0x00, 0x64, 0x00, 0x32, 0x9E, 0xD7, 0x0D]))
+			await clientLED[0].close()
+		}, 2500)
+	} catch (e) {
+		window.log.info('Unable to spin LED (no light?)', 'main')
+	}
+}
+
+async function blinkLED() {
+	if ( ! window.mods.isLEDActive() ) { return }
+	
+	try {
+		const clientLED = await navigator.hid.requestDevice(giantsLED)
+
+		await clientLED[0].open()
+		await clientLED[0].sendReport(0x00, new Uint8Array([0xFF, 0x07, 0xFF, 0x64, 0xFF, 0xEB, 0x7D, 0x9A, 0x03]))
+		setTimeout(async () => {
+			await clientLED[0].sendReport(0x00, new Uint8Array([0xFF, 0x00, 0x00, 0x64, 0x00, 0x32, 0x9E, 0xD7, 0x0D]))
+			await clientLED[0].close()
+		}, 1000)
+	} catch (e) {
+		window.log.info('Unable to spin LED (no light?)', 'main')
+	}
+}
+
+window.addEventListener('DOMContentLoaded', () => { processL10N() })
 
 window.addEventListener('click', () => {
 	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })

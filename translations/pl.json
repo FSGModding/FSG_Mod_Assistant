@@ -265,5 +265,7 @@
 	"search_all__title": "Szukaj we wszystkich folderach",
 	"search_all_window": "Znajdź wszystkie",
 	"folder_alpha": "Sortuj alfabetycznie",
-	"folder_alpha__title": "Ponownie uporządkuj wszystkie foldery alfabetycznie"
+	"folder_alpha__title": "Ponownie uporządkuj wszystkie foldery alfabetycznie",
+	"user_pref_title_led": "Użyj Giants LED",
+	"user_pref_blurb_led": "Gdy jest aktywny, powiadamia o aktywacji kolekcji lub rozpoczęciu gry nieco bardziej wizualnie"
 }

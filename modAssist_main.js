@@ -167,6 +167,7 @@ const settingsSchema = {
 	cache_version     : { type : 'string', default : '0.0.0' },
 	rel_notes         : { type : 'string', default : '0.0.0' },
 	game_args         : { type : 'string', default : '' },
+	led_active        : { type : 'boolean', default : true },
 	wins              : { type : 'object', default : {}, properties : {
 		load          : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
 		splash        : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
@@ -318,7 +319,6 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 		height          : winSettings.h,
 		title           : winTitle,
 		minimizable     : winOptions.minimizable,
-		//center          : winSettings.x === -1 && winSettings.y === -1,
 		alwaysOnTop     : winOptions.alwaysOnTop,
 		maximizable     : winOptions.maximizable,
 		fullscreenable  : winOptions.fullscreenable,
@@ -407,6 +407,19 @@ function createMainWindow () {
 	}
 
 	windows.main.loadFile(path.join(pathRender, 'main.html'))
+
+	windows.main.webContents.session.setPermissionCheckHandler((webContents, permission) => {
+		if (permission === 'hid') { return true }
+		return false
+	})
+
+	windows.main.webContents.session.on('select-hid-device', (event, details, callback) => {
+		event.preventDefault()
+		const selectedDevice = details.deviceList.find((device) => {
+			return device.vendorId === 0x340d && device.productId === 0x1710
+		})
+		callback(selectedDevice?.deviceId)
+	})
 
 	windows.main.webContents.on('did-finish-load', () => {
 		const showCount = setInterval(() => {

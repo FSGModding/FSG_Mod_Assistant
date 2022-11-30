@@ -265,5 +265,7 @@
 	"search_all__title"                      : "Search in all Collections",
 	"search_all_window"                      : "Find All",
 	"folder_alpha"                           : "Sort Alphabetically",
-	"folder_alpha__title"                    : "Re-Order all folders alphabetically"
+	"folder_alpha__title"                    : "Re-Order all folders alphabetically",
+	"user_pref_title_led"                    : "Use Giants LED",
+	"user_pref_blurb_led"                    : "When active, notify you when activating a collection or starting the game a bit more visually"
 }
