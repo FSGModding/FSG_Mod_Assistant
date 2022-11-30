@@ -8,7 +8,7 @@ function getKeyMap(key, locale) {
 	let thisKey = null
 
 	thisKey ??= keyMap[key]
-	try { thisKey ??= localKeys[locale][key] } catch { /* ignore */ }
+	thisKey ??= localKeys?.[locale]?.[key]
 	thisKey ??= localKeys.en[key]
 
 	return `<span class="btn disabled btn-sm btn-outline-light small">${thisKey}</span>`

@@ -129,10 +129,10 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 
 		let collWebsite = ''
 		let collDL      = false
-		if ( typeof notes[collection] !== 'undefined' && typeof notes[collection].notes_websiteDL !== 'undefined' ) {
+		if ( typeof notes?.[collection]?.notes_websiteDL !== 'undefined' ) {
 			collDL = notes[collection].notes_websiteDL
 		}
-		if ( typeof notes[collection] !== 'undefined' && typeof notes[collection].notes_website !== 'undefined' ) {
+		if ( typeof notes?.[collection]?.notes_website !== 'undefined' ) {
 			collWebsite = notes[collection].notes_website
 		}
 		
