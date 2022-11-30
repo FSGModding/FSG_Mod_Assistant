@@ -314,41 +314,31 @@ function clientOpenFarmSim() {
 window.addEventListener('hide.bs.collapse', () => { select_lib.clear_all() })
 window.addEventListener('show.bs.collapse', () => { select_lib.clear_all() })
 
-const giantsLED = {	filters : [{ vendorId : 0x340d, productId : 0x1710 }] }
+const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
 
-async function spinLED() {
+async function spinLED()  { operateLED('spin') }
+async function blinkLED() { operateLED('blink') }
+async function operateLED(type = 'spin') {
 	if ( ! window.mods.isLEDActive() ) { return }
 	
 	try {
 		const clientLED = await navigator.hid.requestDevice(giantsLED)
 
-		await clientLED[0].open()
-		await clientLED[0].sendReport(0x00, new Uint8Array([0xFF, 0x01, 0x66, 0xC8, 0xFF, 0xAD, 0x52, 0x81, 0xD6]))
+		if ( clientLED.length < 1 ) { return }
+
+		const clientLEDDevice = clientLED[0]
+
+		await clientLEDDevice.open()
+		await clientLEDDevice.sendReport(0x00, fsgUtil.led[type])
 		setTimeout(async () => {
-			await clientLED[0].sendReport(0x00, new Uint8Array([0xFF, 0x00, 0x00, 0x64, 0x00, 0x32, 0x9E, 0xD7, 0x0D]))
-			await clientLED[0].close()
+			await clientLEDDevice.sendReport(0x00, fsgUtil.led.off)
+			await clientLEDDevice.close()
 		}, 2500)
 	} catch (e) {
-		window.log.info('Unable to spin LED (no light?)', 'main')
+		window.log.debug(`Unable to spin LED (no light?) : ${e}`, 'main')
 	}
 }
 
-async function blinkLED() {
-	if ( ! window.mods.isLEDActive() ) { return }
-	
-	try {
-		const clientLED = await navigator.hid.requestDevice(giantsLED)
-
-		await clientLED[0].open()
-		await clientLED[0].sendReport(0x00, new Uint8Array([0xFF, 0x07, 0xFF, 0x64, 0xFF, 0xEB, 0x7D, 0x9A, 0x03]))
-		setTimeout(async () => {
-			await clientLED[0].sendReport(0x00, new Uint8Array([0xFF, 0x00, 0x00, 0x64, 0x00, 0x32, 0x9E, 0xD7, 0x0D]))
-			await clientLED[0].close()
-		}, 1000)
-	} catch (e) {
-		window.log.info('Unable to spin LED (no light?)', 'main')
-	}
-}
 
 window.addEventListener('DOMContentLoaded', () => { processL10N() })
 

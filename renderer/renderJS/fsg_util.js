@@ -9,6 +9,13 @@
 const getText = (text) => `<l10n name="${text}"></l10n>`
 
 const fsgUtil = {
+	led        : {
+		vendor     : 0x340d,
+		product    : 0x1710,
+		spin       : new Uint8Array([0xFF, 0x01, 0x66, 0xC8, 0xFF, 0xAD, 0x52, 0x81, 0xD6]),
+		blink      : new Uint8Array([0xFF, 0x07, 0xFF, 0x64, 0xFF, 0xEB, 0x7D, 0x9A, 0x03]),
+		off        : new Uint8Array([0xFF, 0x00, 0x00, 0x64, 0x00, 0x32, 0x9E, 0xD7, 0x0D]),
+	},
 	byId       : ( id )    => { return document.getElementById( id ) },
 	query      : ( query ) => { return document.querySelectorAll( query ) },
 	getIconSVG : ( type )  => {
