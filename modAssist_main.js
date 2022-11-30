@@ -1382,9 +1382,9 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		overrideActive  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']
 		overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory']
 		lastGameSettings = {
-			username : gameSettingsXML.gameSettings.onlinePresenceName || '',
-			password : gameSettingsXML.gameSettings.joinGame['@_password'] || '',
-			server   : gameSettingsXML.gameSettings.joinGame['@_serverName'] || '',
+			username : gameSettingsXML.gameSettings?.onlinePresenceName || '',
+			password : gameSettingsXML.gameSettings?.joinGame?.['@_password'] || '',
+			server   : gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] || '',
 		}
 
 	} catch (e) {
@@ -1418,11 +1418,11 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 			gameSettingsXML.gameSettings.onlinePresenceName = userName
 		}
 
-		if ( password !== null ) {
+		if ( password !== null && typeof gameSettingsXML.gameSettings?.joinGame?.['@_password'] !== 'undefined' ) {
 			gameSettingsXML.gameSettings.joinGame['@_password'] = password
 		}
 
-		if ( serverName !== null ) {
+		if ( serverName !== null && typeof gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] !== 'undefined') {
 			gameSettingsXML.gameSettings.joinGame['@_serverName'] = serverName
 		}
 
