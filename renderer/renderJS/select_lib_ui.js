@@ -62,6 +62,7 @@ const select_lib = {
 		select_lib.filter(tableID)
 	},
 	click_only        : (tableID, checkList) => {
+		fsgUtil.byId(`${tableID}__filter`).value = ''
 		select_lib.get_checks(tableID).forEach((check) => { check.checked = checkList.includes(check.id) })
 		select_lib.bulk_table(tableID)
 	},
@@ -70,11 +71,19 @@ const select_lib = {
 		select_lib.bulk_table(tableID)
 	},
 	click_all         : (tableID) => {
-		select_lib.get_checks(tableID).forEach((check) => {check.checked = true})
+		select_lib.get_checks(tableID).forEach((check) => {
+			if ( ! check.parentElement.parentElement.classList.contains('d-none') ) {
+				check.checked = true
+			}
+		})
 		select_lib.bulk_table(tableID)
 	},
 	click_invert      : (tableID) => {
-		select_lib.get_checks(tableID).forEach((check) => {check.checked = !check.checked})
+		select_lib.get_checks(tableID).forEach((check) => {
+			if ( ! check.parentElement.parentElement.classList.contains('d-none') ) {
+				check.checked = !check.checked
+			}
+		})
 		select_lib.bulk_table(tableID)
 	},
 	clear_all         : () => {
