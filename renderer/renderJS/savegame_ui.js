@@ -143,15 +143,20 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 			thisModDetail.usedBy   = null
 		}
 
-		if ( thisModDetail.isUsed === false ) {
-			selectList.unused.push(`${thisCollection}--${haveModSet[thisMod].uuid}`)
+		const thisUUID = haveModSet?.[thisMod]?.uuid
+
+		if ( typeof thisUUID !== 'undefined' && thisUUID !== null ) {
+			if ( thisModDetail.isUsed === false ) {
+				selectList.unused.push(`${thisCollection}--${thisUUID}`)
+			}
+			if ( thisModDetail.isLoaded === false ) {
+				selectList.inactive.push(`${thisCollection}--${thisUUID}`)
+			}
+			if ( thisModDetail.isModHub === false ) {
+				selectList.nohub.push(`${thisCollection}--${thisUUID}`)
+			}
 		}
-		if ( thisModDetail.isLoaded === false ) {
-			selectList.inactive.push(`${thisCollection}--${haveModSet[thisMod].uuid}`)
-		}
-		if ( thisModDetail.isModHub === false ) {
-			selectList.nohub.push(`${thisCollection}--${haveModSet[thisMod].uuid}`)
-		}
+
 		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm))
 	})
 
