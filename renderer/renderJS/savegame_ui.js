@@ -15,6 +15,11 @@
    |__|______|______||__|__| */
 
 let thisCollection = null
+const selectList = {
+	inactive : [],
+	unused   : [],
+	nohub    : [],
+}
 
 function processL10N()          { clientGetL10NEntries() }
 function clientGetL10NEntries() {
@@ -34,6 +39,9 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
 		let thisTitle = item.closest('span')
 		thisTitle ??= item.closest('label')
+		if ( thisTitle === null ) {
+			thisTitle = item.closest('button')
+		}
 		thisTitle.title = data[1]
 		new bootstrap.Tooltip(thisTitle)
 	})
@@ -54,6 +62,10 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 	const fullModSet       = new Set()
 	const haveModSet       = {}
 	const modSetHTML       = []
+
+	selectList.inactive = []
+	selectList.unused   = []
+	selectList.nohub    = []
 
 	if ( savegame.errorList.length > 0 ) {
 		const errors = []
@@ -130,6 +142,16 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 			thisModDetail.isLoaded = true
 			thisModDetail.usedBy   = null
 		}
+
+		if ( thisModDetail.isUsed === false ) {
+			selectList.unused.push(`${thisCollection}--${haveModSet[thisMod].uuid}`)
+		}
+		if ( thisModDetail.isLoaded === false ) {
+			selectList.inactive.push(`${thisCollection}--${haveModSet[thisMod].uuid}`)
+		}
+		if ( thisModDetail.isModHub === false ) {
+			selectList.nohub.push(`${thisCollection}--${haveModSet[thisMod].uuid}`)
+		}
 		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm))
 	})
 
@@ -190,6 +212,12 @@ function makeLine(name, mod, singleFarm) {
 	return thisHTML.join('')
 }
 
+
+function clientSelectMain(type) {
+	if ( selectList[type].length > 0 ) {
+		window.mods.selectInMain(selectList[type])
+	}
+}
 
 function clientChangeFilter() {
 	const filtersActive = fsgUtil.query('.filter_only:checked').length

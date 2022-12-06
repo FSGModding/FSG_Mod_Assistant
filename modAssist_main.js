@@ -608,7 +608,7 @@ function createSavegameWindow(collection) {
 		return
 	}
 
-	windows.save = createSubWindow('save', { parent : 'main', preload : 'savegameWindow' })
+	windows.save = createSubWindow('save', { preload : 'savegameWindow' })
 
 	windows.save.webContents.on('did-finish-load', async (event) => {
 		event.sender.send('fromMain_collectionName', collection, modList)
@@ -1217,6 +1217,10 @@ ipcMain.on('toMain_exportList', (event, collection) => {
 
 /** Savegame window operation */
 ipcMain.on('toMain_openSave',       (event, collection) => { createSavegameWindow(collection) })
+ipcMain.on('toMain_selectInMain',   (event, selectList) => {
+	windows.main.focus()
+	windows.main.webContents.send('fromMain_selectOnly', selectList)
+})
 ipcMain.on('toMain_openSaveFolder', () => { openSaveGame(false) })
 ipcMain.on('toMain_openSaveZIP',    () => { openSaveGame(true) })
 

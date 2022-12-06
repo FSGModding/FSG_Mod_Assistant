@@ -267,5 +267,6 @@
 	"folder_alpha": "Sortuj alfabetycznie",
 	"folder_alpha__title": "Ponownie uporządkuj wszystkie foldery alfabetycznie",
 	"user_pref_title_led": "Użyj Giants LED",
-	"user_pref_blurb_led": "Gdy jest aktywny, powiadamia o aktywacji kolekcji lub rozpoczęciu gry nieco bardziej wizualnie"
+	"user_pref_blurb_led": "Gdy jest aktywny, powiadamia o aktywacji kolekcji lub rozpoczęciu gry nieco bardziej wizualnie",
+	"select_main": "Wybierz w oknie głównym"
 }

@@ -69,6 +69,16 @@ window.mods.receive('fromMain_selectAllOpen', () => {
 	if ( lastOpenID !== null ) { select_lib.click_all(lastOpenID) }
 })
 
+window.mods.receive('fromMain_selectOnly', (selectList) => {
+	const tableID   = `${selectList[0].split('--')[0]}_mods`
+	const checkList = []
+	selectList.forEach((id) => { checkList.push(`${id}__checkbox`) })
+
+	fsgUtil.byId(tableID).classList.add('show')
+	document.querySelectorAll(`[data-bs-target="#${tableID}"]`).forEach((element) => { element.classList.remove('collapsed') })
+	select_lib.click_only(tableID, checkList)
+})
+
 
 let lastLocale = 'en'
 

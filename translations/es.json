@@ -267,5 +267,6 @@
 	"folder_alpha": "Ordenar alfabéticamente",
 	"folder_alpha__title": "Reordenar todas las carpetas alfabéticamente",
 	"user_pref_title_led": "Utilice Giants LED",
-	"user_pref_blurb_led": "Cuando está activo, te notifica cuando se activa una colección o se inicia el juego un poco más visualmente"
+	"user_pref_blurb_led": "Cuando está activo, te notifica cuando se activa una colección o se inicia el juego un poco más visualmente",
+	"select_main": "Seleccionar en la ventana principal"
 }

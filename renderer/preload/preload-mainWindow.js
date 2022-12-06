@@ -71,7 +71,8 @@ contextBridge.exposeInMainWorld(
 				'fromMain_modList',
 				'fromMain_selectAllOpen',
 				'fromMain_selectNoneOpen',
-				'fromMain_selectInvertOpen'
+				'fromMain_selectInvertOpen',
+				'fromMain_selectOnly'
 			]
 		
 			if ( validChannels.includes( channel ) ) {

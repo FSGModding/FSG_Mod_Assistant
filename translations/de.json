@@ -267,5 +267,6 @@
 	"folder_alpha": "Alphabetisch sortieren",
 	"folder_alpha__title": "Alle Ordner alphabetisch neu sortieren",
 	"user_pref_title_led": "Giants-LED verwenden",
-	"user_pref_blurb_led": "Wenn sie aktiv ist, sollte man beim Aktivieren einer Sammlung oder beim Starten des Spiels etwas visueller informiert werden"
+	"user_pref_blurb_led": "Wenn sie aktiv ist, sollte man beim Aktivieren einer Sammlung oder beim Starten des Spiels etwas visueller informiert werden",
+	"select_main": "Im Hauptfenster auswählen"
 }

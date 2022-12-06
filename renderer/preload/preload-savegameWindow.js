@@ -38,9 +38,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		openFolder : () => { ipcRenderer.send('toMain_openSaveFolder')},
-		openZIP    : () => { ipcRenderer.send('toMain_openSaveZIP')},
-		receive    : ( channel, func ) => {
+		selectInMain : (selectList) => { ipcRenderer.send('toMain_selectInMain', selectList)},
+		openFolder   : () => { ipcRenderer.send('toMain_openSaveFolder')},
+		openZIP      : () => { ipcRenderer.send('toMain_openSaveZIP')},
+		receive      : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_collectionName',
 				'fromMain_saveInfo',

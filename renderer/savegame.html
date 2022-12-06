@@ -57,6 +57,12 @@
 			<input type="checkbox" class="btn-check filter_only" id="check_savegame_nohub" onchange="clientChangeFilter()" autocomplete="off">
 			<label class="btn btn-outline-success btn-sm border" for="check_savegame_nohub"><l10n name="savegame_nohub"></l10n></label>
 		</div>
+		<div class="input-group input-group-sm btn-group w-100 mt-2 px-1">
+			<span class="input-group-text" id="basic-addon1"><l10n name="select_main"></l10n></span>
+			<button class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('unused')" for="check_savegame_unused"><l10n name="savegame_unused"></l10n></button>
+			<button class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('inactive')" for="check_savegame_inactive"><l10n name="savegame_inactive"></l10n></button>
+			<button class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('nohub')" for="check_savegame_nohub"><l10n name="savegame_nohub"></l10n></label>
+		</div>
 
 		<div class="list-group mx-2 my-3" id="modList"></div>
 

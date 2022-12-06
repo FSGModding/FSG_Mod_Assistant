@@ -61,6 +61,10 @@ const select_lib = {
 		select_lib.update_color()
 		select_lib.filter(tableID)
 	},
+	click_only        : (tableID, checkList) => {
+		select_lib.get_checks(tableID).forEach((check) => { check.checked = checkList.includes(check.id) })
+		select_lib.bulk_table(tableID)
+	},
 	click_none        : (tableID) => {
 		select_lib.get_checks(tableID).forEach((check) => {check.checked = false})
 		select_lib.bulk_table(tableID)
