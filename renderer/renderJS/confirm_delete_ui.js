@@ -30,18 +30,15 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
-let lastModRecords = null
-let lastCollection = null
+let lastRec = null
 
-window.mods.receive('fromMain_confirmList', (modRecords, fullList, folderMap, collection) => {
-	lastModRecords = modRecords
-	lastCollection = collection
-	
+window.mods.receive('fromMain_confirmList', (confList) => {
+	lastRec = confList
 
 	const confirmHTML = []
 
-	lastModRecords.forEach((mod) => {
-		const printPath = window.mods.homeDirMap(`${folderMap[lastCollection]}\\${fsgUtil.basename(mod.fileDetail.fullPath)}`)
+	confList.records.forEach((mod) => {
+		const printPath = window.mods.homeDirMap(`${confList.foldersMap[confList.collection]}\\${fsgUtil.basename(mod.fileDetail.fullPath)}`)
 		confirmHTML.push('<div class="row border-bottom">')
 		confirmHTML.push(`<h3 class="mb-0 mt-2">${mod.fileDetail.shortName}</h3>`)
 		confirmHTML.push(`<p class="font-monospace small">${printPath}</h3>`)
@@ -55,8 +52,8 @@ window.mods.receive('fromMain_confirmList', (modRecords, fullList, folderMap, co
 function clientDeleteButton() {
 	const fileMap = []
 
-	lastModRecords.forEach((mod) => {
-		fileMap.push([lastCollection, lastCollection, mod.fileDetail.fullPath])
+	lastRec.records.forEach((mod) => {
+		fileMap.push([lastRec.collection, lastRec.collection, mod.fileDetail.fullPath])
 	})
 
 	window.mods.realDeleteFile(fileMap)

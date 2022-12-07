@@ -31,24 +31,18 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-let lastFullList   = null
-let lastModRecords = null
-let lastCollection = null
-let lastFolderMap  = null
+let lastRec = null
 
-window.mods.receive('fromMain_confirmList', (modRecords, fullList, folderMap, collection) => {
+window.mods.receive('fromMain_confirmList', (confList) => {
 	const selectOpts = []
 
 	selectOpts.push(['...', 0])
 
-	lastModRecords = modRecords
-	lastFullList   = fullList
-	lastCollection = collection
-	lastFolderMap  = folderMap
+	lastRec = confList
 
-	Object.keys(folderMap).forEach((safeName) => {
-		if ( safeName !== collection ) {
-			selectOpts.push([fsgUtil.basename(folderMap[safeName]), safeName])
+	Object.keys(confList.foldersMap).forEach((safeName) => {
+		if ( safeName !== confList.collection ) {
+			selectOpts.push([fsgUtil.basename(confList.foldersMap[safeName]), safeName])
 		}
 	})
 
@@ -65,8 +59,8 @@ function updateConfirmList() {
 	const confirmHTML  = []
 	const selectedDest = fsgUtil.byId('select_destination').value
 
-	lastModRecords.forEach((mod) => {
-		const printPath = window.mods.homeDirMap(`${lastFolderMap[lastCollection]}\\${fsgUtil.basename(mod.fileDetail.fullPath)}`)
+	lastRec.records.forEach((mod) => {
+		const printPath = window.mods.homeDirMap(`${lastRec.foldersMap[lastRec.collection]}\\${fsgUtil.basename(mod.fileDetail.fullPath)}`)
 		confirmHTML.push(`<div class="row border-bottom">
 			<div class="col col-auto">
 				<div class="p-2" style="width: 110px; height:110px;">
@@ -105,7 +99,7 @@ function updateConfirmList() {
 
 function findConflict(collection, shortName, folder) {
 	let foundConf = false
-	lastFullList[collection].mods.forEach((mod) => {
+	lastRec.list[collection].mods.forEach((mod) => {
 		if ( !foundConf && shortName === mod.fileDetail.shortName && folder === mod.fileDetail.isFolder ) {
 			foundConf = true
 		}
@@ -120,14 +114,14 @@ function clientDoCopy() {
 
 	const fileMap = []
 
-	lastModRecords.forEach((mod) => {
+	lastRec.records.forEach((mod) => {
 		const includeMeElement = fsgUtil.byId(mod.uuid)
 
 		if ( includeMeElement.getAttribute('type') === 'checkbox' && includeMeElement.checked === true ) {
-			fileMap.push([destination, lastCollection, mod.fileDetail.fullPath])
+			fileMap.push([destination, lastRec.collection, mod.fileDetail.fullPath])
 		}
 		if ( includeMeElement.getAttribute('type') === 'hidden' && includeMeElement.value ) {
-			fileMap.push([destination, lastCollection, mod.fileDetail.fullPath])
+			fileMap.push([destination, lastRec.collection, mod.fileDetail.fullPath])
 		}
 	})
 
@@ -142,14 +136,14 @@ function clientDoMove() {
 
 	const fileMap = []
 
-	lastModRecords.forEach((mod) => {
+	lastRec.records.forEach((mod) => {
 		const includeMeElement = fsgUtil.byId(mod.uuid)
 
 		if ( includeMeElement.getAttribute('type') === 'checkbox' && includeMeElement.checked === true ) {
-			fileMap.push([destination, lastCollection, mod.fileDetail.fullPath])
+			fileMap.push([destination, lastRec.collection, mod.fileDetail.fullPath])
 		}
 		if ( includeMeElement.getAttribute('type') === 'hidden' && includeMeElement.value ) {
-			fileMap.push([destination, lastCollection, mod.fileDetail.fullPath])
+			fileMap.push([destination, lastRec.collection, mod.fileDetail.fullPath])
 		}
 	})
 

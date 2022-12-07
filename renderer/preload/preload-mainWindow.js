@@ -63,7 +63,7 @@ contextBridge.exposeInMainWorld(
 		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
 		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },
 
-		debugLog  : () => { ipcRenderer.send('openDebugLogContents') },
+		debugLog  : () => { ipcRenderer.send('toMain_openDebugLog') },
 		openMod   : (modID) => { ipcRenderer.send('toMain_openModDetail', modID) },
 
 		receive   : ( channel, func ) => {

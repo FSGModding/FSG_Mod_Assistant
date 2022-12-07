@@ -486,7 +486,12 @@ function createConfirmWindow(type, modRecords, origList) {
 	windows.confirm = createSubWindow('confirm', { parent : 'main', preload : file_JS, fixed : true })
 
 	windows.confirm.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_confirmList', modRecords, modList, modFoldersMap, collection)
+		event.sender.send('fromMain_confirmList', {
+			records    : modRecords,
+			list       : modList,
+			foldersMap : modFoldersMap,
+			collection : collection,
+		})
 	})
 
 	windows.confirm.loadFile(path.join(pathRender, file_HTML))
@@ -954,9 +959,9 @@ ipcMain.on('toMain_showChangelog', () => { createChangeLogWindow() } )
 
 
 /** Debug window operation */
-ipcMain.on('openDebugLogContents', () => { createDebugWindow() })
-ipcMain.on('openDebugLogFolder',   () => { shell.showItemInFolder(log.pathToLog) })
-ipcMain.on('getDebugLogContents',  (event) => { event.sender.send('fromMain_debugLog', log.htmlLog) })
+ipcMain.on('toMain_openDebugLog',    () => { createDebugWindow() })
+ipcMain.on('toMain_openDebugFolder', () => { shell.showItemInFolder(log.pathToLog) })
+ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_debugLog', log.htmlLog) })
 /** END: Debug window operation */
 
 
@@ -1274,16 +1279,23 @@ ipcMain.on('toMain_homeDirRevamp', (event, thisPath) => { event.returnValue = th
 function refreshClientModList() {
 	windows.main.webContents.send(
 		'fromMain_modList',
-		myTranslator.deferCurrentLocale(),
-		modList,
-		[myTranslator.syncStringLookup('override_disabled'), myTranslator.syncStringLookup('override_unknown')],
-		overrideIndex,
-		modFoldersMap,
-		newModsList,
-		modHubList,
-		modHubVersion,
-		bindConflict,
-		modNote.store
+		{
+			currentLocale          : myTranslator.deferCurrentLocale(),
+			modList                : modList,
+			l10n                   : {
+				disable : myTranslator.syncStringLookup('override_disabled'),
+				unknown : myTranslator.syncStringLookup('override_unknown'),
+			},
+			activeCollection       : overrideIndex,
+			foldersMap             : modFoldersMap,
+			newMods                : newModsList,
+			modHub                 : {
+				list               : modHubList,
+				version            : modHubVersion,
+			},
+			bindConflict           : bindConflict,
+			notes                  : modNote.store,
+		}
 	)
 }
 
@@ -1730,22 +1742,46 @@ function processModFolders_post(newFolder = false) {
 	}
 }
 
-function loadModHub() {
+function loadSaveFile(filename) {
 	try {
-		const rawData = fs.readFileSync(path.join(app.getPath('userData'), 'modHubData.json'))
-		modHubList = JSON.parse(rawData)
-		log.log.debug('Loaded modHubData.json', 'local-cache')
+		const rawData = fs.readFileSync(path.join(app.getPath('userData'), filename))
+		const jsonData = JSON.parse(rawData)
+
+		switch (filename) {
+			case 'modHubData.json' :
+				modHubList = jsonData
+				break
+			case 'modHubVersion.json' :
+				modHubVersion = jsonData
+				break
+			default :
+				break
+		}
+
+		log.log.debug(`Loaded ${filename}`, 'local-cache')
 	} catch (e) {
-		log.log.warning('Loading modHubData.json failed: ${e}', 'local-cache')
+		log.log.warning(`Loading ${filename} failed: ${e}`, 'local-cache')
 	}
 }
-function loadModHubVer() {
-	try {
-		const rawData = fs.readFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'))
-		modHubVersion = JSON.parse(rawData)
-		log.log.debug('Loaded modHubVersion.json', 'local-cache')
-	} catch (e) {
-		log.log.warning('Loading modHubVersion.json failed: ${e}', 'local-cache')
+
+function dlSaveFile(url, filename) {
+	if ( net.isOnline() ) {
+		const request = net.request(url)
+
+		request.on('response', (response) => {
+			log.log.info(`Got ${filename}: ${response.statusCode}`, 'local-cache')
+			let responseData = ''
+			response.on('data', (chunk) => { responseData = responseData + chunk.toString() })
+			response.on('end',  () => {
+				fs.writeFileSync(path.join(app.getPath('userData'), filename), responseData)
+				loadSaveFile(filename)
+			})
+		})
+		request.on('error', (error) => {
+			loadSaveFile(filename)
+			log.log.info(`Network error : ${url} :: ${error}`, 'net-request')
+		})
+		request.end()
 	}
 }
 /** END: Business Functions */
@@ -1776,35 +1812,8 @@ app.whenReady().then(() => {
 		tray.setToolTip('FSG Mod Assist')
 		tray.on('click', () => { windows.main.show() })
 
-		if ( net.isOnline() ) {
-			const request = net.request(hubURL)
-
-			request.on('response', (response) => {
-				log.log.info(`Got modHubData.json: ${response.statusCode}`, 'local-cache')
-				let mhResp = ''
-				response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
-				response.on('end',  () => {
-					fs.writeFileSync(path.join(app.getPath('userData'), 'modHubData.json'), mhResp)
-					loadModHub()
-				})
-			})
-			request.on('error', (error) => { log.log.info(`Network error : ${error}`, 'net-request') })
-			request.end()
-
-			const request2 = net.request(hubVerURL)
-
-			request2.on('response', (response) => {
-				log.log.info(`Got modHubVersion.json: ${response.statusCode}`, 'local-cache')
-				let mhResp = ''
-				response.on('data', (chunk) => { mhResp = mhResp + chunk.toString() })
-				response.on('end',  () => {
-					fs.writeFileSync(path.join(app.getPath('userData'), 'modHubVersion.json'), mhResp)
-					loadModHubVer()
-				})
-			})
-			request2.on('error', (error) => { log.log.info(`Network error : ${error}`, 'net-request') })
-			request2.end()
-		}
+		dlSaveFile(hubURL, 'modHubData.json')
+		dlSaveFile(hubVerURL, 'modHubVersion.json')
 
 		app.on('second-instance', () => {
 			// Someone tried to run a second instance, we should focus our window.

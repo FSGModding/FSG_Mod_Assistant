@@ -39,8 +39,8 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'debug',
 	{
-		getDebugLogContents  : () => { ipcRenderer.send('getDebugLogContents') },
-		openDebugLogFolder   : () => { ipcRenderer.send('openDebugLogFolder') },
+		getDebugLogContents  : () => { ipcRenderer.send('toMain_getDebugLog') },
+		openDebugLogFolder   : () => { ipcRenderer.send('toMain_openDebugFolder') },
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_debugLog',
@@ -55,6 +55,6 @@ contextBridge.exposeInMainWorld(
 
 window.addEventListener('DOMContentLoaded', () => {
 	setInterval(() => {
-		ipcRenderer.send('getDebugLogContents')
+		ipcRenderer.send('toMain_getDebugLog')
 	}, (autoUpdateTimeSeconds * 1000))
 })

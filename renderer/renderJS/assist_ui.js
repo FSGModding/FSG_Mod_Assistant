@@ -82,33 +82,33 @@ window.mods.receive('fromMain_selectOnly', (selectList) => {
 
 let lastLocale = 'en'
 
-window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, currentList, modFoldersMap, newList, modHubList, modHubVersion, bindConflict, notes) => {
-	lastLocale = currLocale
+window.mods.receive('fromMain_modList', (opts) => {
+	lastLocale = opts.currentLocale
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 	const lastOpenQ   = (lastOpenAcc !== null) ? lastOpenAcc.querySelector('input.mod-row-filter').value : ''
 	const scrollStart = window.scrollY
 
-	const selectedList = ( currentList !== '999' && currentList !== '0') ? `collection--${currentList}` : currentList
+	const selectedList = ( opts.activeCollection !== '999' && opts.activeCollection !== '0') ? `collection--${opts.activeCollection}` : opts.activeCollection
 	const modTable     = []
 	const optList      = []
 	
-	optList.push(fsgUtil.buildSelectOpt('0', `--${extraL10n[0]}--`, selectedList, true))
+	optList.push(fsgUtil.buildSelectOpt('0', `--${opts.l10n.disable}--`, selectedList, true))
 	
-	Object.keys(modList).forEach((collection) => {
+	Object.keys(opts.modList).forEach((collection) => {
 		const modRows      = []
 		let   sizeOfFolder = 0
 
-		modList[collection].mods.forEach((thisMod) => {
+		opts.modList[collection].mods.forEach((thisMod) => {
 			const extraBadges = []
-			const modId       = modHubList.mods[thisMod.fileDetail.shortName] || null
-			const modVer      = modHubVersion[modId] || null
+			const modId       = opts.modHub.list.mods[thisMod.fileDetail.shortName] || null
+			const modVer      = opts.modHub.version[modId] || null
 
 			sizeOfFolder += thisMod.fileDetail.fileSize
 
 			if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
-				if ( typeof bindConflict[collection][thisMod.fileDetail.shortName] !== 'undefined' ) {
+				if ( typeof opts.bindConflict[collection][thisMod.fileDetail.shortName] !== 'undefined' ) {
 					extraBadges.push(fsgUtil.badge('danger', 'keys_bad'))
 				} else {
 					extraBadges.push(fsgUtil.badge('success', 'keys_ok'))
@@ -117,10 +117,10 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 			if ( modVer !== null && thisMod.modDesc.version !== modVer) {
 				extraBadges.push(fsgUtil.badge('light', 'update'))
 			}
-			if ( newList.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
+			if ( opts.newMods.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
 				extraBadges.push(fsgUtil.badge('success', 'new'))
 			}
-			if ( modId !== null && modHubList.last.includes(modId) ) {
+			if ( modId !== null && opts.modHub.list.last.includes(modId) ) {
 				extraBadges.push(fsgUtil.badge('success', 'recent'))
 			}
 			if ( modId === null ) {
@@ -139,36 +139,36 @@ window.mods.receive('fromMain_modList', (currLocale, modList, extraL10n, current
 
 		let collWebsite = ''
 		let collDL      = false
-		if ( typeof notes?.[collection]?.notes_websiteDL !== 'undefined' ) {
-			collDL = notes[collection].notes_websiteDL
+		if ( typeof opts.notes?.[collection]?.notes_websiteDL !== 'undefined' ) {
+			collDL = opts.notes[collection].notes_websiteDL
 		}
-		if ( typeof notes?.[collection]?.notes_website !== 'undefined' ) {
-			collWebsite = notes[collection].notes_website
+		if ( typeof opts.notes?.[collection]?.notes_website !== 'undefined' ) {
+			collWebsite = opts.notes[collection].notes_website
 		}
 		
 		modTable.push(makeModCollection(
 			collection,
-			`${modList[collection].name} <small>[${modList[collection].mods.length}] [${fsgUtil.bytesToHR(sizeOfFolder, currLocale)}]</small>`,
+			`${opts.modList[collection].name} <small>[${opts.modList[collection].mods.length}] [${fsgUtil.bytesToHR(sizeOfFolder, opts.currentLocale)}]</small>`,
 			modRows,
 			collWebsite,
 			collDL
 		))
-		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, modList[collection].name, selectedList, false, modFoldersMap[collection]))
+		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, opts.modList[collection].name, selectedList, false, opts.foldersMap[collection]))
 
 	})
-	optList.push(fsgUtil.buildSelectOpt('999', `--${extraL10n[1]}--`, selectedList, true))
+	optList.push(fsgUtil.buildSelectOpt('999', `--${opts.l10n.unknown}--`, selectedList, true))
 	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
 
-	Object.keys(notes).forEach((collection) => {
-		const thisFav = notes[collection].notes_favorite || false
+	Object.keys(opts.notes).forEach((collection) => {
+		const thisFav = opts?.notes[collection]?.notes_favorite || false
 		if ( thisFav ) {
 			const favFolder = document.querySelector(`[data-bs-target="#${collection}_mods"] svg`)
 			favFolder.innerHTML += '<path d="m171,126.25l22.06,62.76l65.93,0l-54.22,35.49l21.94,61.46l-55.74,-38.21l-55.74,38.21l22.06,-61.46l-54.32,-35.49l66.06,0l21.94,-62.76l0.03,0z" fill="#7f7f00" id="svg_5"/>'
 		}
 	})
 
-	const activeFolder = document.querySelector(`[data-bs-target="#${currentList}_mods"] svg`)
+	const activeFolder = document.querySelector(`[data-bs-target="#${opts.activeCollection}_mods"] svg`)
 	if ( activeFolder !== null ) {
 		activeFolder.innerHTML += '<polygon fill="#43A047" points="290.088 61.432 117.084 251.493 46.709 174.18 26.183 197.535 117.084 296.592 310.614 83.982"></polygon>'
 	}
