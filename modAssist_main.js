@@ -79,7 +79,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 			message : process.platform === 'win32' ? releaseNotes : releaseName,
 			detail  : myTranslator.syncStringLookup('update_detail'),
 		}
-		dialog.showMessageBox(dialogOpts).then((returnValue) => {
+		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) { autoUpdater.quitAndInstall() }
 		})
 	})
@@ -976,7 +976,7 @@ ipcMain.on('toMain_startFarmSim', () => {
 			title   : myTranslator.syncStringLookup('launcher_error_title'),
 			message : myTranslator.syncStringLookup('launcher_error_message'),
 		}
-		dialog.showMessageBox(dialogOpts)
+		dialog.showMessageBox(windows.main, dialogOpts)
 		log.log.warning('Game path not set or invalid!', 'game-launcher')
 	}
 })
