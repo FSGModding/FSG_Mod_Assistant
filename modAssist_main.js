@@ -964,9 +964,8 @@ ipcMain.on('toMain_openDebugFolder', () => { shell.showItemInFolder(log.pathToLo
 ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_debugLog', log.htmlLog) })
 /** END: Debug window operation */
 
-
 /** Game launcher */
-ipcMain.on('toMain_startFarmSim', () => {
+function gameLauncher() {
 	const progPath = mcStore.get('game_path')
 	if ( progPath !== '' && fs.existsSync(progPath) ) {
 		loadingWindow_open('launch')
@@ -984,7 +983,9 @@ ipcMain.on('toMain_startFarmSim', () => {
 		dialog.showMessageBox(windows.main, dialogOpts)
 		log.log.warning('Game path not set or invalid!', 'game-launcher')
 	}
-})
+}
+
+ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 /** END: game launcher */
 
 /** Find window operation */
@@ -1805,6 +1806,7 @@ app.whenReady().then(() => {
 			{ label : 'FSG Mod Assist', /*icon : pathIcon, */enabled : false },
 			{ type  : 'separator' },
 			{ label : myTranslator.syncStringLookup('tray_show'), click : () => { windows.main.show() } },
+			{ label : myTranslator.syncStringLookup('launch_fs22'), click : () => { gameLauncher() } },
 			{ label : myTranslator.syncStringLookup('tray_quit'), click : () => { windows.main.close() } },
 		]
 		const contextMenu = Menu.buildFromTemplate(template)
