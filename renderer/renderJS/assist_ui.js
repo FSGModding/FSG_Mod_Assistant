@@ -81,8 +81,10 @@ window.mods.receive('fromMain_selectOnly', (selectList) => {
 
 
 let lastLocale = 'en'
+let lastQuickLists = {}
 
 window.mods.receive('fromMain_modList', (opts) => {
+	lastQuickLists = {}
 	lastLocale = opts.currentLocale
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -133,7 +135,13 @@ window.mods.receive('fromMain_modList', (opts) => {
 				theseBadges = theseBadges.replace(fsgUtil.badge('danger', 'broken'), '')
 			}
 
-			modRows.push(makeModRow( `${collection}--${thisMod.uuid}`, thisMod, theseBadges, modId))
+			modRows.push(makeModRow(
+				`${collection}--${thisMod.uuid}`,
+				thisMod,
+				theseBadges,
+				modId,
+				metDepend(thisMod.modDesc.depend, collection, opts.modList[collection].mods)
+			))
 
 		})
 
@@ -190,6 +198,26 @@ window.mods.receive('fromMain_modList', (opts) => {
 	processL10N()
 })
 
+
+function metDepend(depends, collection, collectionMods) {
+	if ( typeof depends === 'undefined' || depends.length === 0 ) { return true }
+
+	if ( typeof lastQuickLists[collection] === 'undefined' ) {
+		lastQuickLists[collection] = new Set()
+		collectionMods.forEach((mod) => {
+			lastQuickLists[collection].add(mod.fileDetail.shortName)
+		})
+	}
+	let hasAllDeps = true
+
+	depends.forEach((thisDep) => {
+		if ( ! lastQuickLists[collection].has(thisDep) ) {
+			hasAllDeps = false
+			return
+		}
+	})
+	return hasAllDeps
+}
 
 function clientMakeListInactive() {
 	fsgUtil.byId('collectionSelect').value = 0
@@ -261,7 +289,9 @@ function makeModCollection(id, name, modsRows, website, dlEnabled) {
 }
 
 
-function makeModRow(id, thisMod, badges, modId) {
+function makeModRow(id, thisMod, badges, modId, metDepend) {
+	const theseBadges = ( metDepend ) ? badges : fsgUtil.badge('warning', 'depend') + badges
+
 	return `<tr onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
 	<td>
 		<input type="checkbox" class="form-check-input mod-row-checkbox" id="${id}__checkbox">
@@ -270,7 +300,7 @@ function makeModRow(id, thisMod, badges, modId) {
 		<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
 	</td>
 	<td>
-		<div class="bg-light"></div>${thisMod.fileDetail.shortName}<br /><small>${thisMod.l10n.title} - <em>${thisMod.modDesc.author}</em></small><div class="issue_badges">${badges}</div>
+		<div class="bg-light"></div>${thisMod.fileDetail.shortName}<br /><small>${thisMod.l10n.title} - <em>${thisMod.modDesc.author}</em></small><div class="issue_badges">${theseBadges}</div>
 	</td>
 	<td class="text-end pe-4">
 		${thisMod.modDesc.version}<br /><em class="small">${( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : ''}</em>

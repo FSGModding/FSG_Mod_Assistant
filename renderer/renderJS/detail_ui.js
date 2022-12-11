@@ -60,6 +60,7 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 		bigFiles       : (( modRecord.fileDetail.tooBigFiles.length > 0 ) ? modRecord.fileDetail.tooBigFiles.join('\n') : getText('detail_extra_clean')),
 		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 )  ? modRecord.fileDetail.spaceFiles.join('\n')  : getText('detail_extra_clean')),
 		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 )  ? modRecord.fileDetail.pngTexture.join('\n')  : getText('detail_extra_clean')),
+		depends        : (( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 )  ? modRecord.modDesc.depend.join('\n')  : getText('detail_depend_clean')),
 	}
 	Object.keys(idMap).forEach((key) => {
 		fsgUtil.byId(key).innerHTML = idMap[key]
@@ -126,6 +127,10 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 	} else {
 		const modhubLink = `https://www.farming-simulator.com/mod.php?mod_id=${modhubRecord[0]}`
 		fsgUtil.byId('modhub_link').innerHTML = `<a target="_BLANK" href="${modhubLink}">${modhubLink}</a>`
+	}
+
+	if ( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 ) {
+		extraBadges.push(fsgUtil.badge('success', 'depend_flag'))
 	}
 
 	extraBadges.push(modRecord.badges)
