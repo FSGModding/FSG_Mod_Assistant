@@ -710,7 +710,7 @@ function loadingWindow_current(amount = 1, reset = false) {
 	windows.load.webContents.send('fromMain_loadingCurrent', countMods)
 }
 function loadingWindow_hide(time = 1250) {
-	setTimeout(() => { windows.load.hide() }, time)
+	setTimeout(() => { if ( windows.load !== null ) { windows.load.hide() } }, time)
 }
 function loadingWindow_noCount() {
 	windows.load.webContents.send('fromMain_loadingNoCount')
