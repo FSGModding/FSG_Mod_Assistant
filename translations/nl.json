@@ -268,5 +268,11 @@
 	"folder_alpha__title": "Alle mappen alfabetisch herschikken",
 	"user_pref_title_led": "Gebruik Giants LED",
 	"user_pref_blurb_led": "Indien actief, laat het je weten wanneer je een collectie activeert of het spel wat visueler start.",
-	"select_main": "Selecteer in het hoofdvenster"
+	"select_main": "Selecteer in het hoofdvenster",
+	"mod_badge_depend": "afhangen",
+	"mod_badge_depend_flag": "afhangen",
+	"mod_badge_depend_flag__title": "Deze mod hangt af van andere mods",
+	"mod_badge_depend__title": "Deze mod heeft onvervulde afhankelijkheden in deze collectie",
+	"detail_depend": "Mod Dependencies",
+	"detail_depend_clean": "Deze mod heeft geen andere mod afhankelijkheden"
 }

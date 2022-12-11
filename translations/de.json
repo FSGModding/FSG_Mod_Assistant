@@ -268,5 +268,11 @@
 	"folder_alpha__title": "Alle Ordner alphabetisch neu sortieren",
 	"user_pref_title_led": "Giants-LED verwenden",
 	"user_pref_blurb_led": "Wenn sie aktiv ist, sollte man beim Aktivieren einer Sammlung oder beim Starten des Spiels etwas visueller informiert werden",
-	"select_main": "Im Hauptfenster auswählen"
+	"select_main": "Im Hauptfenster auswählen",
+	"mod_badge_depend": "abhängen",
+	"mod_badge_depend_flag": "abhängen",
+	"mod_badge_depend_flag__title": "Dieser Mod hängt von anderen Mods ab",
+	"mod_badge_depend__title": "Diese Mod hat unerfüllte Abhängigkeiten in dieser Sammlung",
+	"detail_depend": "Mod-Abhängigkeiten",
+	"detail_depend_clean": "Diese Mod hat keine anderen Mod-Abhängigkeiten"
 }

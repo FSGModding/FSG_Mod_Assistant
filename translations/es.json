@@ -268,5 +268,11 @@
 	"folder_alpha__title": "Reordenar todas las carpetas alfabéticamente",
 	"user_pref_title_led": "Utilice Giants LED",
 	"user_pref_blurb_led": "Cuando está activo, te notifica cuando se activa una colección o se inicia el juego un poco más visualmente",
-	"select_main": "Seleccionar en la ventana principal"
+	"select_main": "Seleccionar en la ventana principal",
+	"mod_badge_depend": "depender",
+	"mod_badge_depend_flag": "depender",
+	"mod_badge_depend_flag__title": "Este mod depende de otros mods",
+	"mod_badge_depend__title": "Este mod tiene dependencias no satisfechas en esta colección",
+	"detail_depend": "Mod Dependencies",
+	"detail_depend_clean": "Este mod no tiene otras dependencias"
 }

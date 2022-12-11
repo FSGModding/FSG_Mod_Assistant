@@ -268,5 +268,11 @@
 	"folder_alpha__title": "Ponownie uporządkuj wszystkie foldery alfabetycznie",
 	"user_pref_title_led": "Użyj Giants LED",
 	"user_pref_blurb_led": "Gdy jest aktywny, powiadamia o aktywacji kolekcji lub rozpoczęciu gry nieco bardziej wizualnie",
-	"select_main": "Wybierz w oknie głównym"
+	"select_main": "Wybierz w oknie głównym",
+	"mod_badge_depend": "zależny",
+	"mod_badge_depend_flag": "zależny",
+	"mod_badge_depend_flag__title": "Ten mod zależy od innych modów",
+	"mod_badge_depend__title": "Ten mod ma niespełnione zależności w tej kolekcji",
+	"detail_depend": "Zależności modów",
+	"detail_depend_clean": "Ten mod nie ma żadnych innych zależności od modów"
 }
