@@ -300,7 +300,7 @@ function makeModRow(id, thisMod, badges, modId, metDepend) {
 		<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
 	</td>
 	<td>
-		<div class="bg-light"></div>${thisMod.fileDetail.shortName}<br /><small>${thisMod.l10n.title} - <em>${thisMod.modDesc.author}</em></small><div class="issue_badges">${theseBadges}</div>
+		<div class="bg-light"></div><span class="mod-short-name">${thisMod.fileDetail.shortName}</span><br /><small>${thisMod.l10n.title} - <em>${thisMod.modDesc.author}</em></small><div class="issue_badges">${theseBadges}</div>
 	</td>
 	<td class="text-end pe-4">
 		${thisMod.modDesc.version}<br /><em class="small">${( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : ''}</em>

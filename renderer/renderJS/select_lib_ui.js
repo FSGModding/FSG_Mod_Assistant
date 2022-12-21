@@ -63,7 +63,13 @@ const select_lib = {
 	},
 	click_only        : (tableID, checkList) => {
 		fsgUtil.byId(`${tableID}__filter`).value = ''
-		select_lib.get_checks(tableID).forEach((check) => { check.checked = checkList.includes(check.id) })
+		select_lib.get_checks(tableID).forEach((check) => {
+			const modRow = check.parentElement.parentElement
+			check.checked = checkList.includes(check.id)
+			if ( modRow.classList.contains('mod-disabled') && modRow.querySelector('.mod-short-name').innerText.endsWith('.csv') ) {
+				check.checked = false
+			}
+		})
 		select_lib.bulk_table(tableID)
 	},
 	click_none        : (tableID) => {
