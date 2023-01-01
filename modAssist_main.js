@@ -918,7 +918,14 @@ ipcMain.on('toMain_log', (event, level, process, text) => { log.log[level](text,
 /** END: Logging Operation */
 
 /** l10n Operation */
-ipcMain.on('toMain_langList_change', (event, lang) => { myTranslator.currentLocale = lang; event.sender.send('fromMain_l10n_refresh') })
+ipcMain.on('toMain_langList_change', (event, lang) => {
+	myTranslator.currentLocale = lang
+	Object.keys(windows).forEach((thisWindow) => {
+		if ( windows[thisWindow] !== null ) {
+			windows[thisWindow].webContents.send('fromMain_l10n_refresh')
+		}
+	})
+})
 ipcMain.on('toMain_langList_send',   (event) => {
 	myTranslator.getLangList().then((langList) => {
 		event.sender.send('fromMain_langList_return', langList, myTranslator.deferCurrentLocale())

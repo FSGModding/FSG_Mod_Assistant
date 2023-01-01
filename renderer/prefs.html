@@ -126,6 +126,9 @@
 				<label class="ps-2 form-check-label" for="lock_lang"><l10n name="user_pref_setting_lock_lang"></l10n></label>
 			</div>
 			<div class="col-4">
+				<div class="">
+					<select onchange="clientChangeL10N()" class="form-select" id="language_select"></select>
+				</div>
 				<div class="form-check form-switch form-control-lg">
 					<input onchange="clientSetPref('lock_lang')" class="form-check-input mt-5" type="checkbox" id="lock_lang">
 				</div>

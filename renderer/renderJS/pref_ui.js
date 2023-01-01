@@ -13,7 +13,8 @@
    |  |_|  |_|  --  ||     |
    |__|______|______||__|__| */
 
-function processL10N()          { clientGetL10NEntries() }
+function processL10N()          { clientGetL10NEntries(); l10n.langList_send() }
+function clientChangeL10N()     { l10n.langList_change(fsgUtil.byId('language_select').value) }
 function clientGetL10NEntries() {
 	const l10nSendItems = new Set()
 
@@ -28,6 +29,12 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
+
+window.l10n.receive('fromMain_langList_return', (listData, selected) => {
+	fsgUtil.byId('language_select').innerHTML = listData.map((x) => {
+		return fsgUtil.buildSelectOpt(x[0], x[1], selected)
+	}).join('')
+})
 
 window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
 	updatePrefs(allSettings, devControls)

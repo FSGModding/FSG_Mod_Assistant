@@ -21,14 +21,11 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'l10n', {
-		langList_change : ( lang )  => { ipcRenderer.send('toMain_langList_change', lang) },
-		langList_send   : ()        => { ipcRenderer.send('toMain_langList_send') },
 		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
 		receive         : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getText_return_title',
 				'fromMain_getText_return',
-				'fromMain_langList_return',
 				'fromMain_l10n_refresh'
 			]
 		
