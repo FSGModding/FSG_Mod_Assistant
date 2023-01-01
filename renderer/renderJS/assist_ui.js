@@ -310,8 +310,8 @@ function clientClearInput(id) {
 }
 
 function clientBatchOperation(mode) {
-	const selectedMods = []
-	const allModRows   = fsgUtil.query('.mod-row')
+	const selectedMods   = []
+	const allModRows     = fsgUtil.query('.mod-row')
 
 	allModRows.forEach((thisRow) => {
 		if ( thisRow.querySelector('.mod-row-checkbox').checked ) {
@@ -330,9 +330,17 @@ function clientBatchOperation(mode) {
 			if ( selectedMods.length > 0 ) { window.mods.deleteMods(selectedMods) }
 			break
 		case 'open':
+			if ( select_lib.last_alt_select !== null ) {
+				selectedMods.length = 0
+				selectedMods.push(select_lib.last_alt_select)
+			}
 			if ( selectedMods.length === 1 ) { window.mods.openMods(selectedMods) }
 			break
 		case 'hub':
+			if ( select_lib.last_alt_hash && select_lib.last_alt_select !== null ) {
+				selectedMods.length = 0
+				selectedMods.push(select_lib.last_alt_select)
+			}
 			if ( selectedMods.length === 1 ) { window.mods.openHub(selectedMods) }
 			break
 		default:

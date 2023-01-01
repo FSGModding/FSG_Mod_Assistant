@@ -10,10 +10,30 @@
 /* global fsgUtil */
 
 const select_lib = {
+	last_alt_select   : null,
+	last_alt_hash     : false,
 	last_select_mod   : null,
 	last_select_table : null,
 	clear_range       : () => { select_lib.last_select_mod = null; select_lib.last_select_table = null; select_lib.update_color() },
+	click_alt         : (modID) => {
+		select_lib.last_alt_select = modID
+		const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
+
+		if ( fsgUtil.byId(modID).classList.contains('has-hash') ) {
+			select_lib.last_alt_hash = true
+			moveButtons[4].classList.remove('disabled')
+
+		}
+		moveButtons[3].classList.remove('disabled')
+	},
 	click_row         : (modID) => {
+		if ( window.event.altKey ) {
+			select_lib.click_alt(modID)
+			return
+		}
+		
+		select_lib.last_alt_select = null
+		select_lib.last_alt_hash   = false
 		const isShift   = window.event.shiftKey
 		const thisTable = document.getElementById(modID).closest('table').closest('tr').id
 
