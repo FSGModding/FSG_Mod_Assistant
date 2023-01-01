@@ -274,5 +274,6 @@
 	"mod_badge_depend_flag__title": "Ten mod zależy od innych modów",
 	"mod_badge_depend__title": "Ten mod ma niespełnione zależności w tej kolekcji",
 	"detail_depend": "Zależności modów",
-	"detail_depend_clean": "Ten mod nie ma żadnych innych zależności od modów"
+	"detail_depend_clean": "Ten mod nie ma żadnych innych zależności od modów",
+	"savegame_filter_only": "Filtruj"
 }

@@ -274,5 +274,6 @@
 	"mod_badge_depend_flag__title": "Dieser Mod hängt von anderen Mods ab",
 	"mod_badge_depend__title": "Diese Mod hat unerfüllte Abhängigkeiten in dieser Sammlung",
 	"detail_depend": "Mod-Abhängigkeiten",
-	"detail_depend_clean": "Diese Mod hat keine anderen Mod-Abhängigkeiten"
+	"detail_depend_clean": "Diese Mod hat keine anderen Mod-Abhängigkeiten",
+	"savegame_filter_only": "Limit To"
 }

@@ -274,5 +274,6 @@
 	"mod_badge_depend_flag__title": "Deze mod hangt af van andere mods",
 	"mod_badge_depend__title": "Deze mod heeft onvervulde afhankelijkheden in deze collectie",
 	"detail_depend": "Mod Dependencies",
-	"detail_depend_clean": "Deze mod heeft geen andere mod afhankelijkheden"
+	"detail_depend_clean": "Deze mod heeft geen andere mod afhankelijkheden",
+	"savegame_filter_only": "Grenzen aan"
 }

@@ -274,5 +274,6 @@
 	"mod_badge_depend_flag__title"           : "This mod depends on other mods",
 	"mod_badge_depend__title"                : "This mod has unmet dependencies in this collection",
 	"detail_depend"                          : "Mod Dependencies",
-	"detail_depend_clean"                    : "This mod has no other mod dependencies"
+	"detail_depend_clean"                    : "This mod has no other mod dependencies",
+	"savegame_filter_only"                   : "Limit To"
 }
