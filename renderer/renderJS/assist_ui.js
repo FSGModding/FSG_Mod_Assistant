@@ -389,7 +389,7 @@ window.addEventListener('click', () => {
 })
 
 window.addEventListener('scroll', () => {
-	const scrollValue = this.scrollY +  120
+	const scrollValue = this.scrollY +  102
 	const moveButtons = fsgUtil.byId('moveButtons')
 	try {
 		moveButtons.style.top = `${scrollValue}px`

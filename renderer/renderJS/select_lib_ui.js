@@ -81,6 +81,9 @@ const select_lib = {
 		select_lib.update_color()
 		select_lib.filter(tableID)
 	},
+	change_count      : ( newCount ) => {
+		fsgUtil.byId('select_quantity').innerHTML = newCount
+	},
 	click_only        : (tableID, checkList) => {
 		fsgUtil.byId(`${tableID}__filter`).value = ''
 		select_lib.get_checks(tableID).forEach((check) => {
@@ -154,6 +157,8 @@ const select_lib = {
 		moveButtons[3].classList[(countSelected === 1)?'remove':'add']('disabled')
 		moveButtons[4].classList[(hasHash)?'remove':'add']('disabled')
 		moveButtons[5].classList[(countSelected === 0)?'remove':'add']('disabled')
+
+		select_lib.change_count(countSelected)
 	},
 	filter : (table) => {
 		const theseMods     = fsgUtil.byId(table).querySelectorAll('.mod-row')
