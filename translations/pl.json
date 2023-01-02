@@ -169,11 +169,9 @@
 	"tray_show": "Pokaż",
 	"user_pref_blurb_clean_cache": "Ten przycisk pozwala na wyczyszczenie pliku cache Mod Assist. Jeśli usunąłeś wiele modów, powinieneś uruchomić ten przycisk, ponieważ prawdopodobnie masz tam sporo nieaktualnych danych. Pamiętaj, że ta operacja może trochę potrwać, a po jej zakończeniu pojawi się okienko informacyjne.",
 	"user_pref_blurb_game_settings": "Pozwala to ustawić domyślną lokalizację gameSettings.xml. Uwaga: Aby zawsze zachować aktualną lokalizację, wyłącz to po załadowaniu gameSettings.xml",
-	"user_pref_blurb_lang": "Pozwala to na zmianę wykrytego języka w Mod Checker. Uwaga: Aby zastosować zmiany, wyłącz i ponownie włącz program.",
 	"user_pref_button_clean_cache": "Wyczyść pamięć podręczną",
 	"user_pref_button_game_settings": "Zmień plik gameSettings.xml",
 	"user_pref_clean_cache_did": "Mod Cache został wyczyszczony z wszystkich modów nie znajdujących się w aktualnych kolekcjach.",
-	"user_pref_setting_lock_lang": "Zawsze używaj bieżącego języka (nie wykrywaj przy starcie)",
 	"user_pref_title_clean_cache": "Mod Cache",
 	"user_pref_title_game_settings": "gameSettings.xml",
 	"user_pref_title_lang": "Język",
@@ -275,5 +273,9 @@
 	"mod_badge_depend__title": "Ten mod ma niespełnione zależności w tej kolekcji",
 	"detail_depend": "Zależności modów",
 	"detail_depend_clean": "Ten mod nie ma żadnych innych zależności od modów",
-	"savegame_filter_only": "Filtruj"
+	"savegame_filter_only": "Filtruj",
+	"user_pref_blurb_lang": "Pozwala to tymczasowo zastąpić wykryty język dla Mod Assistant",
+	"user_pref_blurb2_lang": "Aby zablokować ustawienie języka, użyj pola wyboru - jeśli chcesz zmienić języki na stałe, wyłącz je, ustaw język i włącz ponownie",
+	"user_pref_setting_lock_lang": "Pomiń wykrywanie języka przy starcie",
+	"select_quantity": "Wybrane :"
 }

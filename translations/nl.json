@@ -169,11 +169,9 @@
 	"tray_show": "Toon",
 	"user_pref_blurb_clean_cache": "Met deze knop kun je het cache-bestand van Mod Assist opschonen.  Als je veel mods hebt verwijderd, moet je dit uitvoeren, omdat er waarschijnlijk veel oude gegevens in staan. Deze operatie kan even duren, er verschijnt een infovenster als het klaar is.",
 	"user_pref_blurb_game_settings": "Hiermee kun je de standaard locatie van gameSettings.xml instellen.",
-	"user_pref_blurb_lang": "Hiermee kun je de gedetecteerde taal voor Mod Assistant opheffen. Opmerking: om te veranderen, schakel uit en weer aan.",
 	"user_pref_button_clean_cache": "Schone cache",
 	"user_pref_button_game_settings": "GameSettings.xml-bestand wijzigen",
 	"user_pref_clean_cache_did": "Mod Cache is opgeschoond van alle mods die niet in de huidige collecties zitten.",
-	"user_pref_setting_lock_lang": "Gebruik altijd de huidige taal (niet detecteren bij starten)",
 	"user_pref_title_clean_cache": "Mod Cache",
 	"user_pref_title_game_settings": "gameSettings.xml",
 	"user_pref_title_lang": "Taal",
@@ -275,5 +273,9 @@
 	"mod_badge_depend__title": "Deze mod heeft onvervulde afhankelijkheden in deze collectie",
 	"detail_depend": "Mod Dependencies",
 	"detail_depend_clean": "Deze mod heeft geen andere mod afhankelijkheden",
-	"savegame_filter_only": "Grenzen aan"
+	"savegame_filter_only": "Grenzen aan",
+	"user_pref_blurb_lang": "Hiermee kun je de gedetecteerde taal voor Mod Assistant tijdelijk opheffen.",
+	"user_pref_blurb2_lang": "Gebruik het selectievakje om uw taalinstelling te vergrendelen - als u permanent van taal wilt veranderen, schakelt u het uit, stelt u de taal in en schakelt u het weer in",
+	"user_pref_setting_lock_lang": "Skip language detection on start",
+	"select_quantity": "Geselecteerd:"
 }

@@ -169,11 +169,9 @@
 	"tray_show": "Afficher",
 	"user_pref_blurb_clean_cache": "Ce bouton vous permet de nettoyer le fichier cache de Mod Assist.  Si vous avez supprimé un grand nombre de mods, vous devriez exécuter cette opération, car vous avez probablement un bon nombre de données périmées dans ce fichier. Veuillez noter que cette opération peut prendre un certain temps, une boîte d'information s'affiche à la fin.",
 	"user_pref_blurb_game_settings": "Ceci vous permet de définir l'emplacement par défaut de gameSettings.xml. Remarque : pour conserver votre emplacement actuel, désactivez cette option après avoir chargé un gameSettings.xml",
-	"user_pref_blurb_lang": "Ceci vous permet de déterminer la langue à afficher dans Mod Checker. Note : pour l'appliquer, il faut désactiver puis réactiver.",
 	"user_pref_button_clean_cache": "Nettoyer le cache",
 	"user_pref_button_game_settings": "Modifier le fichier gameSettings.xml",
 	"user_pref_clean_cache_did": "Le cache des mods a été nettoyé de tous les mods qui ne font pas partie des collections actuelles.",
-	"user_pref_setting_lock_lang": "Toujours utiliser la langue courante (ne pas détecter au démarrage)",
 	"user_pref_title_clean_cache": "Mod Cache",
 	"user_pref_title_game_settings": "gameSettings.xml",
 	"user_pref_title_lang": "Langue",
@@ -275,5 +273,9 @@
 	"mod_badge_depend__title": "Ce mod a des dépendances non satisfaites dans cette collection",
 	"detail_depend": "Dépendances du mod",
 	"detail_depend_clean": "Ce mod n'a pas d'autres dépendances",
-	"savegame_filter_only": "Limiter à"
+	"savegame_filter_only": "Limiter à",
+	"user_pref_blurb_lang": "Ceci vous permet de remplacer temporairement la langue détectée pour Mod Assistant.",
+	"user_pref_blurb2_lang": "Pour verrouiller vos paramètres de langue, utilisez la case à cocher - si vous souhaitez changer de langue de façon permanente, désactivez-la, définissez la langue et réactivez-la",
+	"user_pref_setting_lock_lang": "Sauter la détection de la langue au démarrage",
+	"select_quantity": "Sélectionné :"
 }

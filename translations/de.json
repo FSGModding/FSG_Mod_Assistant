@@ -169,11 +169,9 @@
 	"tray_show": "anzeigen",
 	"user_pref_blurb_clean_cache": "Mit dieser Schaltfläche können Sie die Cache-Datei von Mod Assist leeren.  Wenn Sie viele Mods gelöscht haben, sollten Sie diesen Vorgang ausführen, da Sie wahrscheinlich eine ganze Menge veralteter Daten darin haben. Bitte beachten Sie, dass dieser Vorgang eine Weile dauern kann, bis er abgeschlossen ist; nach Beendigung erscheint ein Infobox-Popup.",
 	"user_pref_blurb_game_settings": "Damit können Sie den Standardspeicherort der Datei gameSettings.xml festlegen.",
-	"user_pref_blurb_lang": "Damit können Sie die erkannte Sprache für den Mod-Assistenten außer Kraft setzen. Hinweis: Um die Sprache zu ändern, schalten Sie die Option aus und wieder ein.",
 	"user_pref_button_clean_cache": "Cache löschen",
 	"user_pref_button_game_settings": "Datei gameSettings.xml ändern",
 	"user_pref_clean_cache_did": "Der Mod-Cache wurde von allen Mods bereinigt, die sich nicht in den aktuellen Sammlungen befinden.",
-	"user_pref_setting_lock_lang": "Immer die aktuelle Sprache verwenden (beim Start nicht erkennen)",
 	"user_pref_title_clean_cache": "Mod Cache",
 	"user_pref_title_game_settings": "gameSettings.xml",
 	"user_pref_title_lang": "Sprache",
@@ -275,5 +273,9 @@
 	"mod_badge_depend__title": "Diese Mod hat unerfüllte Abhängigkeiten in dieser Sammlung",
 	"detail_depend": "Mod-Abhängigkeiten",
 	"detail_depend_clean": "Diese Mod hat keine anderen Mod-Abhängigkeiten",
-	"savegame_filter_only": "Limit To"
+	"savegame_filter_only": "Limit To",
+	"user_pref_blurb_lang": "Damit können Sie die erkannte Sprache für den Mod-Assistenten vorübergehend außer Kraft setzen.",
+	"user_pref_blurb2_lang": "Wenn Sie die Sprache dauerhaft ändern möchten, schalten Sie das Kontrollkästchen aus, stellen Sie die Sprache ein und schalten Sie es wieder ein",
+	"user_pref_setting_lock_lang": "Spracherkennung beim Start überspringen",
+	"select_quantity": "Ausgewählt :"
 }

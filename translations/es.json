@@ -169,11 +169,9 @@
 	"tray_show": "Mostrar",
 	"user_pref_blurb_clean_cache": "Este botón te permite limpiar el archivo de caché de Mod Assist.  Si has borrado muchos mods, deberías ejecutar esto, ya que probablemente tengas bastantes datos obsoletos ahí. Por favor, ten en cuenta que esta operación puede tardar un poco en completarse, hay un cuadro de información emergente cuando termina.",
 	"user_pref_blurb_game_settings": "Esto permite establecer la ubicación por defecto de gameSettings.xml.",
-	"user_pref_blurb_lang": "Esto le permite anular el idioma detectado para Mod Assistant. Nota: para cambiar, desactive y active de nuevo.",
 	"user_pref_button_clean_cache": "Limpiar la caché",
 	"user_pref_button_game_settings": "Cambiar el archivo gameSettings.xml",
 	"user_pref_clean_cache_did": "Se ha limpiado la caché de los mods que no están en las colecciones actuales",
-	"user_pref_setting_lock_lang": "Utilizar siempre el idioma actual (no detectar al inicio)",
 	"user_pref_title_clean_cache": "Mod Cache",
 	"user_pref_title_game_settings": "gameSettings.xml",
 	"user_pref_title_lang": "Idioma",
@@ -275,5 +273,9 @@
 	"mod_badge_depend__title": "Este mod tiene dependencias no satisfechas en esta colección",
 	"detail_depend": "Mod Dependencies",
 	"detail_depend_clean": "Este mod no tiene otras dependencias",
-	"savegame_filter_only": "Limit To"
+	"savegame_filter_only": "Limit To",
+	"user_pref_blurb_lang": "Esto le permite anular temporalmente el idioma detectado para Mod Assistant",
+	"user_pref_blurb2_lang": "Para bloquear la configuración del idioma, utilice la casilla de verificación; si desea cambiar de idioma permanentemente, desactívela, configure el idioma y actívela de nuevo",
+	"user_pref_setting_lock_lang": "Omitir la detección de idioma al iniciar",
+	"select_quantity": "Seleccionado :"
 }
