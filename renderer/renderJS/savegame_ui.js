@@ -20,6 +20,16 @@ const selectList = {
 	unused   : [],
 	nohub    : [],
 }
+const selectCount = {
+	dlc        : 0,
+	missing    : 0,
+	scriptonly : 0,
+	isloaded   : 0,
+	isused     : 0,
+	inactive   : 0,
+	unused     : 0,
+	nohub      : 0,
+}
 
 function processL10N()          { clientGetL10NEntries() }
 function clientGetL10NEntries() {
@@ -67,6 +77,15 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 	selectList.unused   = []
 	selectList.nohub    = []
 
+	selectCount.isloaded   = 0
+	selectCount.dlc        = 0
+	selectCount.missing    = 0
+	selectCount.scriptonly = 0
+	selectCount.isused     = 0
+	selectCount.unused     = 0
+	selectCount.inactive   = 0
+	selectCount.nohub      = 0
+
 	if ( savegame.errorList.length > 0 ) {
 		const errors = []
 
@@ -88,6 +107,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 	Object.keys(savegame.mods).forEach((thisMod) => { fullModSet.add(thisMod) })
 
 	Array.from(fullModSet).sort().forEach((thisMod) => {
+		if ( thisMod.endsWith('.csv') ) { return }
 		const thisModDetail = {
 			title           : null,
 			version         : null,
@@ -162,9 +182,22 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 
 	fsgUtil.byId('modList').innerHTML = modSetHTML.join('')
 
+	selectCount.nohub    = selectList.nohub.length
+	selectCount.inactive = selectList.inactive.length
+	selectCount.unused   = selectList.unused.length
+
+	updateCounts()
 	processL10N()
 })
 
+function updateCounts() {
+	fsgUtil.query('.quantity').forEach((qty) => {
+		const labelName = qty.parentElement.parentElement.getAttribute('for').replace('check_savegame_', '')
+		qty.innerHTML = selectCount[labelName]
+	})
+	//console.log(selectCount)
+
+}
 function makeLine(name, mod, singleFarm) {
 	const badges   = ['versionMismatch', 'scriptOnly', 'isUsed', 'isLoaded']
 	const thisHTML = []
@@ -196,9 +229,11 @@ function makeLine(name, mod, singleFarm) {
 	}
 	if ( mod.isDLC ) {
 		thisHTML.push(fsgUtil.badge('info bg-gradient rounded-1 ms-1', 'savegame_dlc', true))
+		selectCount.dlc++
 	}
 	if ( !mod.isPresent ) {
 		thisHTML.push(fsgUtil.badge('danger bg-gradient rounded-1 ms-1', 'savegame_missing', true))
+		selectCount.missing++
 	}
 	if ( !mod.isUsed ) {
 		thisHTML.push(fsgUtil.badge('warning bg-gradient rounded-1 ms-1', 'savegame_unused', true))
@@ -208,6 +243,9 @@ function makeLine(name, mod, singleFarm) {
 	}
 	badges.forEach((badge) => {
 		if ( mod[badge] === true ) {
+			if ( badge === 'scriptonly' ) { selectCount.scriptonly++ }
+			if ( badge === 'isUsed' )     { selectCount.isused++ }
+			if ( badge === 'isLoaded' )   { selectCount.isloaded++ }
 			thisHTML.push(fsgUtil.badge('dark bg-gradient rounded-1 ms-1', `savegame_${badge.toLowerCase()}`, true))
 		}
 	})
