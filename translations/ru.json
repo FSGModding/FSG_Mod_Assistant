@@ -277,5 +277,6 @@
 	"detail_depend": "Зависимости мода",
 	"detail_depend_clean": "У этого мода нет зависимостей от других модов",
 	"savegame_filter_only": "Выбрать",
-	"select_quantity": "Выбрано:"
+	"select_quantity": "Выбрано:",
+	"confirm_key_shortcuts": "Для быстрого переключения перезаписи файлов :: <em>CTRL+A</em>: включить все | <em>CTRL+SHIFT+A</em>: выключить все"
 }

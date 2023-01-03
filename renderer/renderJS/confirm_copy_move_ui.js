@@ -33,6 +33,13 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 let lastRec = null
 
+window.mods.receive('fromMain_subWindowSelectAll', () => {
+	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = true })
+})
+window.mods.receive('fromMain_subWindowSelectNone', () => {
+	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = false })
+})
+
 window.mods.receive('fromMain_confirmList', (confList) => {
 	const selectOpts = []
 

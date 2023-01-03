@@ -277,5 +277,6 @@
 	"user_pref_blurb_lang": "Esto le permite anular temporalmente el idioma detectado para Mod Assistant",
 	"user_pref_blurb2_lang": "Para bloquear la configuración del idioma, utilice la casilla de verificación; si desea cambiar de idioma permanentemente, desactívela, configure el idioma y actívela de nuevo",
 	"user_pref_setting_lock_lang": "Omitir la detección de idioma al iniciar",
-	"select_quantity": "Seleccionado :"
+	"select_quantity": "Seleccionado :",
+	"confirm_key_shortcuts": "Para activar rápidamente la sobrescritura de archivos :: <em>CTRL+A</em> : activar todo | <em>CTRL+SHIFT+A</em> : desactivar todo"
 }

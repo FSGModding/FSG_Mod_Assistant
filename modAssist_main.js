@@ -335,6 +335,11 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 	if ( noSelect ) {
 		thisWindow.webContents.on('before-input-event', (event, input) => {
 			if (input.control && input.code === 'KeyA') {
+				thisWindow.webContents.send('fromMain_subWindowSelectAll')
+				event.preventDefault()
+			}
+			if (input.control && input.shift && input.code === 'KeyA') {
+				thisWindow.webContents.send('fromMain_subWindowSelectNone')
 				event.preventDefault()
 			}
 			if ( input.alt && input.control && input.code === 'KeyD' ) {

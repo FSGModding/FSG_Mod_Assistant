@@ -43,6 +43,8 @@ contextBridge.exposeInMainWorld(
 		receive      : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_confirmList',
+				'fromMain_subWindowSelectAll',
+				'fromMain_subWindowSelectNone',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

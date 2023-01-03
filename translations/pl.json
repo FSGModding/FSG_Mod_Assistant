@@ -277,5 +277,6 @@
 	"user_pref_blurb_lang": "Pozwala to tymczasowo zastąpić wykryty język dla Mod Assistant",
 	"user_pref_blurb2_lang": "Aby zablokować ustawienie języka, użyj pola wyboru - jeśli chcesz zmienić języki na stałe, wyłącz je, ustaw język i włącz ponownie",
 	"user_pref_setting_lock_lang": "Pomiń wykrywanie języka przy starcie",
-	"select_quantity": "Wybrane :"
+	"select_quantity": "Wybrane :",
+	"confirm_key_shortcuts": "Aby szybko włączyć nadpisywanie plików :: <em>CTRL+A</em> : włącz wszystko | <em>CTRL+SHIFT+A</em> : wyłącz wszystko"
 }
