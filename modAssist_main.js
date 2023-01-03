@@ -334,10 +334,10 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 	})
 	if ( noSelect ) {
 		thisWindow.webContents.on('before-input-event', (event, input) => {
-			if (input.control && input.key.toLowerCase() === 'a') {
+			if (input.control && input.code === 'KeyA') {
 				event.preventDefault()
 			}
-			if ( input.alt && input.control && input.key.toLowerCase() === 'd' ) {
+			if ( input.alt && input.control && input.code === 'KeyD' ) {
 				createDebugWindow()
 				event.preventDefault()
 			}
@@ -436,19 +436,19 @@ function createMainWindow () {
 	})
 
 	windows.main.webContents.on('before-input-event', (event, input) => {
-		if (input.control && input.key.toLowerCase() === 'a') {
+		if (input.control && input.code === 'KeyA') {
 			windows.main.webContents.send('fromMain_selectAllOpen')
 			event.preventDefault()
 		}
-		if (input.control && input.shift && input.key.toLowerCase() === 'a') {
+		if (input.control && input.shift && input.code === 'KeyA' ) {
 			windows.main.webContents.send('fromMain_selectNoneOpen')
 			event.preventDefault()
 		}
-		if (input.control && input.key.toLowerCase() === 'i') {
+		if (input.control && input.code === 'KeyI') {
 			windows.main.webContents.send('fromMain_selectInvertOpen')
 			event.preventDefault()
 		}
-		if ( input.alt && input.control && input.key.toLowerCase() === 'd' ) {
+		if ( input.alt && input.control && input.code === 'KeyD' ) {
 			createDebugWindow()
 			event.preventDefault()
 		}
