@@ -243,7 +243,7 @@ function makeLine(name, mod, singleFarm) {
 	}
 	badges.forEach((badge) => {
 		if ( mod[badge] === true ) {
-			if ( badge === 'scriptonly' ) { selectCount.scriptonly++ }
+			if ( badge === 'scriptOnly' ) { selectCount.scriptonly++ }
 			if ( badge === 'isUsed' )     { selectCount.isused++ }
 			if ( badge === 'isLoaded' )   { selectCount.isloaded++ }
 			thisHTML.push(fsgUtil.badge('dark bg-gradient rounded-1 ms-1', `savegame_${badge.toLowerCase()}`, true))
