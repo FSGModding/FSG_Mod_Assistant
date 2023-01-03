@@ -44,6 +44,8 @@ contextBridge.exposeInMainWorld(
 		receive      : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modSet',
+				'fromMain_subWindowSelectAll',
+				'fromMain_subWindowSelectNone',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

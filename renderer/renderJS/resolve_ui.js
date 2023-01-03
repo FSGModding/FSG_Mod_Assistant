@@ -40,6 +40,12 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
+window.mods.receive('fromMain_subWindowSelectAll', () => {
+	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = true })
+})
+window.mods.receive('fromMain_subWindowSelectNone', () => {
+	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = false })
+})
 
 window.mods.receive('fromMain_modSet', (modSet, shortName) => {
 	let version = [0, '0.0.0.0', null]
