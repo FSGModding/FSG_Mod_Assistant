@@ -28,9 +28,10 @@ let updaterInterval = null
 log.log.info(`ModAssist Logger: ${app.getVersion()}`)
 
 process.on('uncaughtException', (err, origin) => {
+	const rightNow = new Date()
 	fs.appendFileSync(
 		crashLog,
-		`Caught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}`
+		`Exception Timestamp : ${rightNow.toISOString()}\n\nCaught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}`
 	)
 	if ( !isNetworkError(err) ) {
 		dialog.showMessageBoxSync(null, {
@@ -44,9 +45,10 @@ process.on('uncaughtException', (err, origin) => {
 	}
 })
 process.on('unhandledRejection', (err, origin) => {
+	const rightNow = new Date()
 	fs.appendFileSync(
 		crashLog,
-		`Caught rejection: ${err}\n\nRejection origin: ${origin}\n\n${err.stack}`
+		`Rejection Timestamp : ${rightNow.toISOString()}\n\nCaught rejection: ${err}\n\nRejection origin: ${origin}\n\n${err.stack}`
 	)
 	if ( !isNetworkError(err) ) {
 		dialog.showMessageBoxSync(null, {
@@ -65,6 +67,7 @@ const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = app.getVersion()
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
+	autoUpdater.logger = log.log
 	autoUpdater.on('update-checking-for-update', () => { log.log.debug('Checking for update', 'auto-update') })
 	autoUpdater.on('update-available', () => { log.log.info('Update Available', 'auto-update') })
 	autoUpdater.on('update-not-available', () => { log.log.debug('No Update Available', 'auto-update') })
@@ -707,18 +710,28 @@ function loadingWindow_open(l10n) {
 function loadingWindow_total(amount, reset = false) {
 	countTotal = ( reset ) ? amount : amount + countTotal
 
-	windows.load.webContents.send('fromMain_loadingTotal', countTotal)
+	if ( ! windows.load.isDestroyed() ) {
+		windows.load.webContents.send('fromMain_loadingTotal', countTotal)
+	}
 }
 function loadingWindow_current(amount = 1, reset = false) {
 	countMods = ( reset ) ? amount : amount + countMods
 
-	windows.load.webContents.send('fromMain_loadingCurrent', countMods)
+	if ( ! windows.load.isDestroyed() ) {
+		windows.load.webContents.send('fromMain_loadingCurrent', countMods)
+	}
 }
 function loadingWindow_hide(time = 1250) {
-	setTimeout(() => { if ( windows.load !== null ) { windows.load.hide() } }, time)
+	setTimeout(() => {
+		if ( windows.load !== null && ! windows.load.isDestroyed() ) {
+			windows.load.hide()
+		}
+	}, time)
 }
 function loadingWindow_noCount() {
-	windows.load.webContents.send('fromMain_loadingNoCount')
+	if ( ! windows.load.isDestroyed() ) {
+		windows.load.webContents.send('fromMain_loadingNoCount')
+	}
 }
 
 function isNetworkError(errorObject) {
