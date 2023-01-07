@@ -278,5 +278,8 @@
 	"user_pref_blurb2_lang": "Para bloquear la configuración del idioma, utilice la casilla de verificación; si desea cambiar de idioma permanentemente, desactívela, configure el idioma y actívela de nuevo",
 	"user_pref_setting_lock_lang": "Omitir la detección de idioma al iniciar",
 	"select_quantity": "Seleccionado :",
-	"confirm_key_shortcuts": "Para activar rápidamente la sobrescritura de archivos :: <em>CTRL+A</em> : activar todo | <em>CTRL+SHIFT+A</em> : desactivar todo"
+	"confirm_key_shortcuts": "Para activar rápidamente la sobrescritura de archivos :: <em>CTRL+A</em> : activar todo | <em>CTRL+SHIFT+A</em> : desactivar todo",
+	"pref_feedback_bad_url": "URL no válida - Debe ser la raíz del servidor y terminar con una barra.",
+	"pref_feedback_limit 16": "Límite de 16 caracteres",
+	"pref_feedback_limit_30": "Límite de 30 caracteres"
 }

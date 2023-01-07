@@ -49,8 +49,8 @@ window.mods.receive('fromMain_collectionName', (collection, collectionName, allN
 			element.placeholder = ( typeof thisPlaceholder !== 'undefined' ) ? thisPlaceholder : ''
 			element.value =  ( typeof thisValue !== 'undefined' ) ? thisValue : ''
 		}
-		element.classList.add('is-valid')
-		element.classList.remove('is-invalid')
+
+		clientCheckValid(element.id)
 	})
 	
 	if ( typeof allNotes[collection] !== 'undefined' ) {
@@ -60,11 +60,49 @@ window.mods.receive('fromMain_collectionName', (collection, collectionName, allN
 	processL10N()
 })
 
-function clientMarkIP(id) {
-	const formControl = fsgUtil.byId(id)
+function clientCheckValid(id, inProgress = false) {
+	
+	const formControl  = fsgUtil.byId(id)
+	const formValue    = formControl.value
+	const formFeedback = fsgUtil.byId(`${id}_feedback`)
 
-	formControl.classList.remove('is-valid')
-	formControl.classList.add('is-invalid')
+	let validCheck = true
+
+	switch ( id ) {
+		case 'notes_website' :
+			if (! ( formValue === '' || ( formValue.startsWith('http') && formValue.endsWith('/') ))) {
+				validCheck = false
+			}
+			break
+		case 'notes_password' :
+			if ( formValue.length > 16 ) { validCheck = false }
+			break
+		case 'notes_username' :
+			if ( formValue.length > 30 ) { validCheck = false }
+			break
+		default :
+			break
+	}
+
+	if ( formFeedback !== null ) {
+		if ( validCheck ) {
+			formFeedback.classList.add('d-none')
+		} else {
+			formFeedback.classList.remove('d-none')
+		}
+	}
+
+	if ( validCheck && !inProgress ) {
+		formControl.classList.add('is-valid')
+		formControl.classList.remove('is-invalid')
+	} else {
+		formControl.classList.remove('is-valid')
+		formControl.classList.add('is-invalid')
+	}
+}
+
+function clientMarkIP(id) {
+	clientCheckValid(id, true)
 }
 function clientSetNote(id) {
 	const formControl = fsgUtil.byId(id)

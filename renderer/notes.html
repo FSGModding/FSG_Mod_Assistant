@@ -55,6 +55,7 @@
 			</div>
 			<div class="col-6">
 				<input onkeyup="clientMarkIP('notes_username')" onblur="clientSetNote('notes_username')" type="text" class="form-control form-control-sm mt-4" id="notes_username">
+				<div id="notes_username_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_30"></l10n></div>
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -73,6 +74,7 @@
 			</div>
 			<div class="col-6">
 				<input onkeyup="clientMarkIP('notes_password')" onblur="clientSetNote('notes_password')" type="text" class="form-control form-control-sm mt-4" id="notes_password">
+				<div id="notes_password_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_16"></l10n></div>
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -82,6 +84,7 @@
 			</div>
 			<div class="col-6">
 				<input onkeyup="clientMarkIP('notes_website')" onblur="clientSetNote('notes_website')" type="text" class="form-control form-control-sm mt-4" id="notes_website">
+				<div id="notes_website_feedback" class="invalid-feedback"><l10n name="pref_feedback_bad_url"></l10n></div>
 			</div>
 			<div class="col-6">
 				<p class="ps-2"><l10n name="notes_blurb_website_dl"></l10n></p>

@@ -278,5 +278,8 @@
 	"user_pref_blurb2_lang": "Gebruik het selectievakje om uw taalinstelling te vergrendelen - als u permanent van taal wilt veranderen, schakelt u het uit, stelt u de taal in en schakelt u het weer in",
 	"user_pref_setting_lock_lang": "Skip language detection on start",
 	"select_quantity": "Geselecteerd:",
-	"confirm_key_shortcuts": "Om het overschrijven van bestanden snel aan te zetten: <em>CTRL+A</em> : alles aanzetten | <em>CTRL+SHIFT+A</em> : alles uitzetten"
+	"confirm_key_shortcuts": "Om het overschrijven van bestanden snel aan te zetten: <em>CTRL+A</em> : alles aanzetten | <em>CTRL+SHIFT+A</em> : alles uitzetten",
+	"pref_feedback_bad_url": "Ongeldige URL - Moet server root zijn en eindigen met een schuine streep.",
+	"pref_feedback_limit 16": "Limiet van 16 tekens",
+	"pref_feedback_limit_30": "Limiet van 30 tekens"
 }

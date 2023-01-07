@@ -195,9 +195,8 @@ function updateCounts() {
 		const labelName = qty.parentElement.parentElement.getAttribute('for').replace('check_savegame_', '')
 		qty.innerHTML = selectCount[labelName]
 	})
-	//console.log(selectCount)
-
 }
+
 function makeLine(name, mod, singleFarm) {
 	const badges   = ['versionMismatch', 'scriptOnly', 'isUsed', 'isLoaded']
 	const thisHTML = []
