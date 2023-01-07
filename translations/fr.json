@@ -280,6 +280,7 @@
 	"select_quantity": "Sélectionné :",
 	"confirm_key_shortcuts": "Pour basculer rapidement l'écrasement des fichiers : : <em>CTRL+A</em> : tout activer | <em>CTRL+SHIFT+A</em> : tout désactiver",
 	"pref_feedback_bad_url": "URL invalide - Doit être la racine du serveur et se terminer par une barre oblique.",
-	"pref_feedback_limit 16": "Limite de 16 caractères",
-	"pref_feedback_limit_30": "Limite de 30 caractères"
+	"pref_feedback_limit_16": "Limite de 16 caractères",
+	"pref_feedback_limit_30": "Limite de 30 caractères",
+	"select_in_main": "Sélectionner dans la fenêtre principale"
 }

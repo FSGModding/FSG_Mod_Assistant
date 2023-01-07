@@ -14,6 +14,21 @@ const select_lib = {
 	last_alt_hash     : false,
 	last_select_mod   : null,
 	last_select_table : null,
+	open_table        : (tableID) => {
+		fsgUtil.byId(tableID).classList.add('show')
+		document.querySelectorAll(`[data-bs-target="#${tableID}"]`).forEach((element) => {
+			element.classList.remove('collapsed')
+		})
+	},
+	close_all         : (openTable = false) => {
+		document.querySelectorAll('.collapse.show').forEach((element) => {
+			element.classList.remove('show')
+		})
+		document.querySelectorAll('.folder-name:not(.collapsed),.folder-icon:not(.collapsed)').forEach((element) => {
+			element.classList.add('collapsed')
+		})
+		if ( openTable !== false ) { select_lib.open_table(openTable) }
+	},
 	clear_range       : () => { select_lib.last_select_mod = null; select_lib.last_select_table = null; select_lib.update_color() },
 	click_alt         : (modID) => {
 		select_lib.last_alt_select = modID
@@ -160,7 +175,10 @@ const select_lib = {
 
 		select_lib.change_count(countSelected)
 	},
-	filter : (table) => {
+	filter : (table, forceValue = false) => {
+		if ( forceValue !== false ) {
+			fsgUtil.byId(`${table}__filter`).value = forceValue
+		}
 		const theseMods     = fsgUtil.byId(table).querySelectorAll('.mod-row')
 		const rawSearchTerm = fsgUtil.byId(`${table}__filter`).value.toLowerCase()
 		const showNonMods   = fsgUtil.byId(`${table}__show_non_mod`).checked

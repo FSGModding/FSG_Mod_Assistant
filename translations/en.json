@@ -280,6 +280,7 @@
 	"select_quantity"                        : "Selected :",
 	"confirm_key_shortcuts"                  : "To quickly toggle file overwriting :: <em>CTRL+A</em> : toggle all on | <em>CTRL+SHIFT+A</em> : toggle all off",
 	"pref_feedback_bad_url"                  : "Invalid URL - Must be server root, and end with slash",
-	"pref_feedback_limit 16"                 : "16 Character Limit",
-	"pref_feedback_limit_30"                 : "30 Character Limit"
+	"pref_feedback_limit_16"                 : "16 Character Limit",
+	"pref_feedback_limit_30"                 : "30 Character Limit",
+	"select_in_main"                         : "Select in Main Window"
 }

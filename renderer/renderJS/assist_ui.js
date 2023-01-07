@@ -68,9 +68,17 @@ window.mods.receive('fromMain_selectOnly', (selectList) => {
 	const checkList = []
 	selectList.forEach((id) => { checkList.push(`${id}__checkbox`) })
 
-	fsgUtil.byId(tableID).classList.add('show')
-	document.querySelectorAll(`[data-bs-target="#${tableID}"]`).forEach((element) => { element.classList.remove('collapsed') })
+	select_lib.close_all(tableID)
 	select_lib.click_only(tableID, checkList)
+})
+
+window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
+	const tableID = `${selectMod.split('--')[0]}_mods`
+	const checkList = [selectMod.split('--')[1]]
+
+	select_lib.close_all(tableID)
+	select_lib.click_only(tableID, checkList)
+	select_lib.filter(tableID, filterText)
 })
 
 
@@ -178,13 +186,10 @@ window.mods.receive('fromMain_modList', (opts) => {
 	select_lib.clear_range()
 
 	try {
-		document.querySelectorAll(`[data-bs-target="#${lastOpenID}"]`).forEach((element) => {
-			element.classList.remove('collapsed')
-		})
-		document.getElementById(lastOpenID).classList.add('show')
+		select_lib.open_table(lastOpenID)
+
 		if ( lastOpenQ !== '' ) {
-			document.getElementById(lastOpenID).querySelector('input.mod-row-filter').value = lastOpenQ
-			select_lib.filter(lastOpenID)
+			select_lib.filter(lastOpenID, lastOpenQ)
 		}
 		window.scrollTo(0, scrollStart)
 	} catch { /* nope */ }
@@ -305,8 +310,8 @@ function makeModRow(id, thisMod, badges, modId, metDepend) {
 
 function clientClearInput(id) {
 	const filterId = id.replace('__filter', '')
-	fsgUtil.byId(id).value = ''
-	select_lib.filter(filterId)
+
+	select_lib.filter(filterId, '')
 }
 
 function clientBatchOperation(mode) {

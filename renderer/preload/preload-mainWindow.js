@@ -69,7 +69,8 @@ contextBridge.exposeInMainWorld(
 				'fromMain_selectAllOpen',
 				'fromMain_selectNoneOpen',
 				'fromMain_selectInvertOpen',
-				'fromMain_selectOnly'
+				'fromMain_selectOnly',
+				'fromMain_selectOnlyFilter',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

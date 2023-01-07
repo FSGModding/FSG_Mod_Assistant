@@ -1015,6 +1015,25 @@ ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 
 /** Find window operation */
 ipcMain.on('toMain_openFind', () => { createFindWindow() })
+
+ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
+	const template = [
+		{ label : myTranslator.syncStringLookup('select_in_main'), sublabel : thisMod.name },
+		{ type : 'separator' },
+	]
+	thisMod.collect.forEach((instance) => {
+		template.push({
+			label : `${instance.name} :: ${instance.version}`,
+			click : () => {
+				windows.main.focus()
+				windows.main.webContents.send('fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
+			},
+		})
+	})
+	
+	const menu = Menu.buildFromTemplate(template)
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
 /** END : Find window operation*/
 
 /** Preferences window operation */

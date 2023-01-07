@@ -280,6 +280,7 @@
 	"select_quantity": "Ausgewählt :",
 	"confirm_key_shortcuts": "Schnelles Überschreiben von Dateien :: <em>CTRL+A</em> : alles einschalten | <em>CTRL+SHIFT+A</em> : alles ausschalten",
 	"pref_feedback_bad_url": "Ungültige URL - Muss Server-Root sein und mit Schrägstrich enden",
-	"pref_feedback_limit 16": "16-Zeichen-Grenze",
-	"pref_feedback_limit_30": "30 Zeichen Limit"
+	"pref_feedback_limit_16": "16-Zeichen-Grenze",
+	"pref_feedback_limit_30": "30-Zeichen-Grenze",
+	"select_in_main": "Im Hauptfenster auswählen"
 }

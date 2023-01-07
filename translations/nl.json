@@ -280,6 +280,7 @@
 	"select_quantity": "Geselecteerd:",
 	"confirm_key_shortcuts": "Om het overschrijven van bestanden snel aan te zetten: <em>CTRL+A</em> : alles aanzetten | <em>CTRL+SHIFT+A</em> : alles uitzetten",
 	"pref_feedback_bad_url": "Ongeldige URL - Moet server root zijn en eindigen met een schuine streep.",
-	"pref_feedback_limit 16": "Limiet van 16 tekens",
-	"pref_feedback_limit_30": "Limiet van 30 tekens"
+	"pref_feedback_limit_16": "Limiet van 16 tekens",
+	"pref_feedback_limit_30": "Limiet van 30 tekens",
+	"select_in_main": "Selecteer in het hoofdvenster"
 }

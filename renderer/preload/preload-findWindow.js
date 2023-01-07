@@ -39,6 +39,7 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'mods', {
 		closeWindow  : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'find') },
+		rightClick   : ( thisMod ) => { ipcRenderer.send('toMain_findContextMenu', thisMod )},
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modRecords',

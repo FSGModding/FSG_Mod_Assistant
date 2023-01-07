@@ -280,6 +280,7 @@
 	"select_quantity": "Seleccionado :",
 	"confirm_key_shortcuts": "Para activar rápidamente la sobrescritura de archivos :: <em>CTRL+A</em> : activar todo | <em>CTRL+SHIFT+A</em> : desactivar todo",
 	"pref_feedback_bad_url": "URL no válida - Debe ser la raíz del servidor y terminar con una barra.",
-	"pref_feedback_limit 16": "Límite de 16 caracteres",
-	"pref_feedback_limit_30": "Límite de 30 caracteres"
+	"pref_feedback_limit_16": "Límite de 16 caracteres",
+	"pref_feedback_limit_30": "Límite de 30 caracteres",
+	"select_in_main": "Seleccionar en la ventana principal"
 }

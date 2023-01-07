@@ -67,6 +67,7 @@ window.mods.receive('fromMain_modRecords', (modList) => {
 				fullList[mod.fileDetail.shortName].collect.push({
 					version : mod.modDesc.version,
 					name    : modList[collection].name,
+					fullId  : `${collection}--${mod.uuid}`,
 				})
 			}
 		})
@@ -130,9 +131,26 @@ function clientFilter() {
 	})
 }
 
-window.addEventListener('DOMContentLoaded', () => {	processL10N() })
+function clientRightClick(id) {
+	const thisMod = fullList[id.replace('__mod', '')]
+
+	if ( typeof thisMod !== 'undefined' ) {
+		window.mods.rightClick({
+			name    : thisMod.name,
+			collect : thisMod.collect,
+		})
+	}
+}
+window.addEventListener('DOMContentLoaded', () => {
+	processL10N()
+	document.getElementById('full_table').addEventListener('contextmenu', (e) => {
+		clientRightClick(e.target.closest('tr').id)
+	})
+})
 
 window.addEventListener('click', () => {
 	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
 })
+
+
 
