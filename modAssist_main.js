@@ -707,18 +707,18 @@ function loadingWindow_open(l10n) {
 		return
 	}
 }
-function loadingWindow_total(amount, reset = false) {
+function loadingWindow_total(amount, reset = false, inMB = false) {
 	countTotal = ( reset ) ? amount : amount + countTotal
 
 	if ( ! windows.load.isDestroyed() ) {
-		windows.load.webContents.send('fromMain_loadingTotal', countTotal)
+		windows.load.webContents.send('fromMain_loadingTotal', countTotal, inMB)
 	}
 }
-function loadingWindow_current(amount = 1, reset = false) {
+function loadingWindow_current(amount = 1, reset = false, inMB = false) {
 	countMods = ( reset ) ? amount : amount + countMods
 
 	if ( ! windows.load.isDestroyed() ) {
-		windows.load.webContents.send('fromMain_loadingCurrent', countMods)
+		windows.load.webContents.send('fromMain_loadingCurrent', countMods, inMB)
 	}
 }
 function loadingWindow_hide(time = 1250) {
@@ -1139,7 +1139,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 	log.log.info(`Downloading Collection : ${collection}`, 'mod-download')
 	log.log.info(`Download Link : ${thisLink}`, 'mod-download')
 
-	loadingWindow_open('download')
+	
 
 	const dlReq = net.request(thisLink)
 
@@ -1152,52 +1152,55 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 				message : `${myTranslator.syncStringLookup('download_failed')} :: ${modList[collection].name}`,
 				type    : 'error',
 			})
-		}
+		} else {
+			loadingWindow_open('download')
 
-		loadingWindow_total(response.headers['content-length'] || 0, true)
+			loadingWindow_total(response.headers['content-length'] || 0, true, true)
+			loadingWindow_current(0, true, true)
 
-		const dlPath      = path.join(app.getPath('temp'), `${collection}.zip`)
-		const writeStream = fs.createWriteStream(dlPath)
+			const dlPath      = path.join(app.getPath('temp'), `${collection}.zip`)
+			const writeStream = fs.createWriteStream(dlPath)
 
-		response.pipe(writeStream)
-		response.on('data', (chunk) => { loadingWindow_current(chunk.length) })
+			response.pipe(writeStream)
+			response.on('data', (chunk) => { loadingWindow_current(chunk.length, false, true) })
 
-		writeStream.on('finish', () => {
-			writeStream.close()
-			log.log.info('Download complete, unzipping', 'mod-download')
-			try {
-				let zipBytesSoFar   = 0
-				const zipBytesTotal = fs.statSync(dlPath).size
+			writeStream.on('finish', () => {
+				writeStream.close()
+				log.log.info('Download complete, unzipping', 'mod-download')
+				try {
+					let zipBytesSoFar   = 0
+					const zipBytesTotal = fs.statSync(dlPath).size
 
-				loadingWindow_open('zip')
-				loadingWindow_total(100, true)
+					loadingWindow_open('zip')
+					loadingWindow_total(100, true)
 
-				const zipReadStream  = fs.createReadStream(dlPath)
+					const zipReadStream  = fs.createReadStream(dlPath)
 
-				zipReadStream.on('data', (chunk) => {
-					zipBytesSoFar += chunk.length
-					loadingWindow_current(((zipBytesSoFar/zipBytesTotal)*100).toFixed(2), true)
-				})
+					zipReadStream.on('data', (chunk) => {
+						zipBytesSoFar += chunk.length
+						loadingWindow_current(((zipBytesSoFar/zipBytesTotal)*100).toFixed(2), true)
+					})
 
-				zipReadStream.on('error', (err) => {
+					zipReadStream.on('error', (err) => {
+						loadingWindow_hide()
+						log.log.warning(`Download unzip failed : ${err}`, 'mod-download')
+					})
+
+					zipReadStream.on('end', () => {
+						log.log.info('Unzipping complete', 'mod-download')
+						zipReadStream.close()
+						foldersDirty = true
+						fs.unlinkSync(dlPath)
+						processModFolders()
+					})
+
+					zipReadStream.pipe(unzip.Extract({ path : modList[collection].fullPath }))
+				} catch (e) {
+					log.log.warning(`Download failed : (${response.statusCode}) ${e}`, 'mod-download')
 					loadingWindow_hide()
-					log.log.warning(`Download unzip failed : ${err}`, 'mod-download')
-				})
-
-				zipReadStream.on('end', () => {
-					log.log.info('Unzipping complete', 'mod-download')
-					zipReadStream.close()
-					foldersDirty = true
-					fs.unlinkSync(dlPath)
-					processModFolders()
-				})
-
-				zipReadStream.pipe(unzip.Extract({ path : modList[collection].fullPath }))
-			} catch (e) {
-				log.log.warning(`Download failed : (${response.statusCode}) ${e}`, 'mod-download')
-				loadingWindow_hide()
-			}
-		})
+				}
+			})
+		}
 	})
 	dlReq.on('error', (error) => { log.log.warning(`Network error : ${error}`, 'mod-download'); loadingWindow_hide() })
 	dlReq.end()
