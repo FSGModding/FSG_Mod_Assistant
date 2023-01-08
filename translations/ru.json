@@ -279,8 +279,8 @@
 	"savegame_filter_only": "Выбрать",
 	"select_quantity": "Выбрано:",
 	"confirm_key_shortcuts": "Переключения выбора при замене копируемыми файлами :: <em>CTRL+A</em> : выбрать все | <em>CTRL+SHIFT+A</em> : отменить весь выбор",
-	"pref_feedback_bad_url": "Неверный URL - должен быть корнем сервера и заканчиваться слэшем",
-	"pref_feedback_limit_16": "Ограничение в 16 символов",
-	"pref_feedback_limit_30": "Ограничение в 30 символов",
-	"select_in_main": "Выберите в главном окне"
+	"pref_feedback_bad_url": "Недопустимый URL-адрес. Должен быть корневым адресом сервера и заканчиваться косой чертой",
+	"pref_feedback_limit_16": "Максимум 16 знаков",
+	"pref_feedback_limit_30": "Максимум 30 знаков",
+	"select_in_main": "Выбрать в главном окне"
 }
