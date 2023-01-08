@@ -1657,13 +1657,24 @@ function processModFolders(newFolder) {
 function processModFolders_post(newFolder = false) {
 	if ( newFolder === false ) { modList = {}; modFoldersMap = {}}
 
-	// Cleaner for no-longer existing folders.
-	modFolders.forEach((folder) => { if ( ! fs.existsSync(folder) ) { modFolders.delete(folder) } })
+	// Cleaner for no-longer existing folders, count contents of others
+	modFolders.forEach((folder) => {
+		if ( ! fs.existsSync(folder) ) {
+			modFolders.delete(folder)
+		} else {
+			try {
+				const folderSize = fs.readdirSync(folder, {withFileTypes : true})
+				loadingWindow_total(folderSize.length)
+			} catch (e) {
+				log.log.danger(`Couldn't count folder: ${folder} :: ${e}`, 'folder-reader')
+			}
+		}
+	})
+
 	mcStore.set('modFolders', Array.from(modFolders))
 
 	modFolders.forEach((folder) => {
 		const cleanName = `col_${crypto.createHash('md5').update(folder).digest('hex')}`
-		//const cleanName = folder.replaceAll('\\', '-').replaceAll(':', '').replace(/[^\w-]/gi, '_')
 		const shortName = path.basename(folder)
 		const localStore = maCache.store
 
@@ -1673,8 +1684,6 @@ function processModFolders_post(newFolder = false) {
 
 			try {
 				const folderContents = fs.readdirSync(folder, {withFileTypes : true})
-
-				loadingWindow_total(folderContents.length)
 
 				let modIndex = -1
 				folderContents.forEach((thisFile) => {
