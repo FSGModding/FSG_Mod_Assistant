@@ -94,7 +94,7 @@ function makeModRow(thisMod) {
 	const versions = []
 
 	thisMod.collect.forEach((collection) => {
-		versions.push(`<dt class="col-9 mb-1">${collection.name}</dt><dd class="col-3 mb-1">${collection.version}</dd>`)
+		versions.push(`<dt class="col-9 mb-1 overflow-hidden">${collection.name}</dt><dd class="col-3 mb-1 ps-1">${collection.version}</dd>`)
 	})
 
 	return `<tr id="${id}">
