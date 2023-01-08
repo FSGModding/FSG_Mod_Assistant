@@ -49,7 +49,8 @@ window.mods.receive('fromMain_confirmList', (confList) => {
 
 	Object.keys(confList.foldersMap).forEach((safeName) => {
 		if ( safeName !== confList.collection ) {
-			selectOpts.push([fsgUtil.basename(confList.foldersMap[safeName]), safeName])
+			const humanName = `${fsgUtil.basename(confList.foldersMap[safeName])}${window.mods.getCollDesc(safeName)}`
+			selectOpts.push([humanName, safeName])
 		}
 	})
 

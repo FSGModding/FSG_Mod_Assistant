@@ -282,5 +282,7 @@
 	"pref_feedback_bad_url"                  : "Invalid URL - Must be server root, and end with slash",
 	"pref_feedback_limit_16"                 : "16 Character Limit",
 	"pref_feedback_limit_30"                 : "30 Character Limit",
-	"select_in_main"                         : "Select in Main Window"
+	"select_in_main"                         : "Select in Main Window",
+	"notes_title_tagline"                    : "Collection Description",
+	"notes_blurb_tagline"                    : "A short tagline or description of this collection"
 }

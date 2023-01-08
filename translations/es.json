@@ -282,5 +282,7 @@
 	"pref_feedback_bad_url": "URL no válida - Debe ser la raíz del servidor y terminar con una barra.",
 	"pref_feedback_limit_16": "Límite de 16 caracteres",
 	"pref_feedback_limit_30": "Límite de 30 caracteres",
-	"select_in_main": "Seleccionar en la ventana principal"
+	"select_in_main": "Seleccionar en la ventana principal",
+	"notes_title_tagline": "Descripción de la colección",
+	"notes_blurb_tagline": "Un breve eslogan o descripción de esta colección"
 }

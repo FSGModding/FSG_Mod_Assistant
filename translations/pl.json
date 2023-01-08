@@ -282,5 +282,7 @@
 	"pref_feedback_bad_url": "Nieprawidłowy URL - Musi być korzeniem serwera i kończyć się ukośnikiem",
 	"pref_feedback_limit_16": "Limit 16 znaków",
 	"pref_feedback_limit_30": "Limit 30 znaków",
-	"select_in_main": "Wybierz w oknie głównym"
+	"select_in_main": "Wybierz w oknie głównym",
+	"notes_title_tagline": "Opis kolekcji",
+	"notes_blurb_tagline": "Krótki tagline lub opis tej kolekcji"
 }

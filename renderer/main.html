@@ -30,26 +30,42 @@
 			overflow-y: scroll !important;
 			overflow-x: auto !important;
 		}
+		.overflow-custom2 {
+			overflow-y: scroll !important;
+			overflow-x: hidden !important;
+		}
 		::-webkit-scrollbar {
- 			display: none;
+			width: 10px;
+		}
+		::-webkit-scrollbar-track {
+			background: #2f2e2e; 
+		}
+		::-webkit-scrollbar-thumb {
+			background: #3b3b3b;
+			border-radius: 10px;
+		}
+		::-webkit-scrollbar-thumb:hover {
+			background: #4a4a4a; 
 		}
 
-		td.folder-name:not(.collapsed)::after {
+		td.folder-icon:not(.collapsed)::after {
 			content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' viewBox='0 0 320 512'%3E%3Cpath style='fill:white;' d='M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z'/%3E%3C/svg%3E");
-			padding: 0 7px;
-			vertical-align: middle;
+			/* padding: 0 7px; */
+			padding-left: 7px;
+			vertical-align: text-top;
 		}
-		td.folder-name.collapsed::after {
+		td.folder-icon.collapsed::after {
 			content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='20' viewBox='0 0 256 512'%3E%3Cpath style='fill:white;' d='M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z'/%3E%3C/svg%3E");
-			padding: 0 5px;
-			vertical-align: middle;
+			padding-left: 3px;
+			/* padding: 0 5px; */
+			vertical-align: text-top;
 		}
 		td.mod-table-folder-details .badge {
 			font-size: 50%;
 			vertical-align: middle;
 		}
 		td.folder-icon {
-			width: 30px;
+			width: 66px;
 			vertical-align: middle;
 		}
 		td.folder-name {
@@ -87,7 +103,7 @@
 	</style>
 	
 </head>
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100 overflow-custom2">
 	<main class="flex-shrink-0">
 	<div class="container-fluid px-0 user-select-none">
 		<div class="fixed-top pt-2 pb-2 bg-body" id="main-header">
@@ -96,7 +112,6 @@
 					<h2 class="ps-2 mastHead">
 						<l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n>
 					</h2>
-					
 				</div>
 				<div class="col-2"></div>
 				<div class="col-1">
@@ -105,7 +120,6 @@
 				<div class="col-3 text-end">
 					<button onclick="clientOpenFarmSim()" class="btn btn-info w-75" id="open_prefs"><l10n name="launch_fs22"></l10n></button>
 					<button onclick="window.mods.openPreferences()" class="btn btn-outline-light ms-2" id="open_prefs"><l10n name="preferences_button"></l10n></button>
-					
 				</div>
 			</div>
 
@@ -130,7 +144,8 @@
 			</div><!-- end: source mods-->
 		</div>
 		
-		<div class="row overflow-custom px-2" style="margin-top: 105px;">
+		<div class="row overflow-hidden px-2" style="margin-top: 105px;">
+			<!-- <div class="row overflow-custom px-2" style="margin-top: 105px;"></div> -->
 			<div class="col-10">
 				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
 			</div>

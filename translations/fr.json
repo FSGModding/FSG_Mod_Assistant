@@ -282,5 +282,7 @@
 	"pref_feedback_bad_url": "URL invalide - Doit être la racine du serveur et se terminer par une barre oblique.",
 	"pref_feedback_limit_16": "Limite de 16 caractères",
 	"pref_feedback_limit_30": "Limite de 30 caractères",
-	"select_in_main": "Sélectionner dans la fenêtre principale"
+	"select_in_main": "Sélectionner dans la fenêtre principale",
+	"notes_title_tagline": "Description de la collection",
+	"notes_blurb_tagline": "Une courte accroche ou description de cette collection"
 }

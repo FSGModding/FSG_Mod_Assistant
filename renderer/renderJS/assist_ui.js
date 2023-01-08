@@ -149,11 +149,15 @@ window.mods.receive('fromMain_modList', (opts) => {
 
 		let collWebsite = ''
 		let collDL      = false
+		let collTagLine = null
 		if ( typeof opts.notes?.[collection]?.notes_websiteDL !== 'undefined' ) {
 			collDL = opts.notes[collection].notes_websiteDL
 		}
 		if ( typeof opts.notes?.[collection]?.notes_website !== 'undefined' ) {
 			collWebsite = opts.notes[collection].notes_website
+		}
+		if ( typeof opts.notes?.[collection]?.notes_tagline !== 'undefined' ) {
+			collTagLine = opts.notes[collection].notes_tagline
 		}
 		
 		modTable.push(makeModCollection(
@@ -161,9 +165,12 @@ window.mods.receive('fromMain_modList', (opts) => {
 			`${opts.modList[collection].name} <small>[${opts.modList[collection].mods.length}] [${fsgUtil.bytesToHR(sizeOfFolder, opts.currentLocale)}]</small>`,
 			modRows,
 			collWebsite,
-			collDL
+			collDL,
+			collTagLine
 		))
-		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, opts.modList[collection].name, selectedList, false, opts.foldersMap[collection]))
+		const selectCollName = `${opts.modList[collection].name}${window.mods.getCollDesc(collection)}`
+		
+		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, selectCollName, selectedList, false, opts.foldersMap[collection]))
 
 	})
 	optList.push(fsgUtil.buildSelectOpt('999', `--${opts.l10n.unknown}--`, selectedList, true))
@@ -232,15 +239,15 @@ function clientMakeListActive() {
 	}
 }
 
-function makeModCollection(id, name, modsRows, website, dlEnabled) {
+function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine) {
 	return `<tr class="mod-table-folder">
 	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
 		${fsgUtil.getIconSVG('folder')}
 	</td>
 	<td class="folder-name collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
-		${name}
+		<div class="d-inline-block">${name}${tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : ''}</div>
 	</td>
-	<td class="text-end">
+	<td class="align-middle text-end">
 		${ website !== '' ? `<a target="_blank" class="btn btn-secondary btn-sm me-2" href="${website}">${getText('admin_button')}</a>`: ''}
 		${ dlEnabled ? `<button class="btn btn-secondary btn-sm me-2" onclick="window.mods.download('${id}')">${getText('download_button')}</button>`: ''}
 		<button class="btn btn-dark btn-sm me-2" onclick="window.mods.exportList('${id}')">${getText('export_button')}</button>

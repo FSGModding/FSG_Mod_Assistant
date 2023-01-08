@@ -282,5 +282,7 @@
 	"pref_feedback_bad_url": "Ongeldige URL - Moet server root zijn en eindigen met een schuine streep.",
 	"pref_feedback_limit_16": "Limiet van 16 tekens",
 	"pref_feedback_limit_30": "Limiet van 30 tekens",
-	"select_in_main": "Selecteer in het hoofdvenster"
+	"select_in_main": "Selecteer in het hoofdvenster",
+	"notes_title_tagline": "Collectie omschrijving",
+	"notes_blurb_tagline": "Een korte tagline of beschrijving van deze collectie"
 }

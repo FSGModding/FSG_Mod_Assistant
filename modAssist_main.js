@@ -1037,6 +1037,11 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 /** END : Find window operation*/
 
 /** Preferences window operation */
+ipcMain.on('toMain_getCollDesc', (event, collection) => {
+	const tagLine = modNote.get(`${collection}.notes_tagline`, null)
+
+	event.returnValue = ( tagLine !== null ) ? ` [${tagLine}]` : ''
+})
 ipcMain.on('toMain_openPrefs', () => { createPrefsWindow() })
 ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setPref', (event, name, value) => {
@@ -1128,7 +1133,7 @@ ipcMain.on('toMain_setGamePath', (event) => {
 /** Notes Operation */
 ipcMain.on('toMain_openNotes', (event, collection) => { createNotesWindow(collection) })
 ipcMain.on('toMain_setNote', (event, id, value, collection) => {
-	if ( id === 'notes_website' || id === 'notes_websiteDL' || id === 'notes_favorite' ) { foldersDirty = true }
+	if ( id === 'notes_website' || id === 'notes_websiteDL' || id === 'notes_favorite' || id === 'notes_tagline' ) { foldersDirty = true }
 
 	if ( value === '' ) {
 		modNote.delete(`${collection}.${id}`)

@@ -282,5 +282,7 @@
 	"pref_feedback_bad_url": "Ungültige URL - Muss Server-Root sein und mit Schrägstrich enden",
 	"pref_feedback_limit_16": "16-Zeichen-Grenze",
 	"pref_feedback_limit_30": "30-Zeichen-Grenze",
-	"select_in_main": "Im Hauptfenster auswählen"
+	"select_in_main": "Im Hauptfenster auswählen",
+	"notes_title_tagline": "Beschreibung der Sammlung",
+	"notes_blurb_tagline": "Ein kurzer Slogan oder eine Beschreibung dieser Sammlung"
 }
