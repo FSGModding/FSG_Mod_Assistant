@@ -1,8 +1,8 @@
 # FSG Mod Assistant
 
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/FSGModding/FSG_Mod_Assistant) [![Build/release](https://github.com/FSGModding/FSG_Mod_Assistant/actions/workflows/build.yml/badge.svg)](https://github.com/FSGModding/FSG_Mod_Assistant/actions/workflows/build.yml) ![GitHub Release Date](https://img.shields.io/github/release-date/FSGModding/FSG_Mod_Assistant) ![GitHub all releases](https://img.shields.io/github/downloads/FSGModding/FSG_Mod_Assistant/total) [![Crowdin](https://badges.crowdin.net/fsg-mod-assistant/localized.svg)](https://crowdin.com/project/fsg-mod-assistant)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/FSGModding/FSG_Mod_Assistant) ![GitHub Release Date](https://img.shields.io/github/release-date/FSGModding/FSG_Mod_Assistant) ![GitHub all releases](https://img.shields.io/github/downloads/FSGModding/FSG_Mod_Assistant/total) [![Crowdin](https://badges.crowdin.net/fsg-mod-assistant/localized.svg)](https://crowdin.com/project/fsg-mod-assistant)
 
-This is a mod folder switcher with extra tools
+___This is a mod folder switcher with extra tools___
 
 - Check mods to ensure that they (probably) work in game
 - Check a collection against a save game to see what is used and what is not
@@ -13,6 +13,7 @@ ___Contents___
 - [FSG Mod Assistant](#fsg-mod-assistant)
   - [What this does](#what-this-does)
     - [A Special Note About SymLinks](#a-special-note-about-symlinks)
+    - [Translations and Localizations](#translations-and-localizations)
   - [What is a Broken Mod?](#what-is-a-broken-mod)
   - [Usage](#usage)
     - [Download options](#download-options)
@@ -25,6 +26,7 @@ ___Contents___
       - [Collections Area](#collections-area)
         - [Color Coding and Badges](#color-coding-and-badges)
         - [Active List](#active-list)
+        - [Mouse Controls](#mouse-controls)
         - [Action Buttons](#action-buttons)
         - [Search Feature](#search-feature)
           - [Search Buttons](#search-buttons)
@@ -42,7 +44,10 @@ ___Contents___
       - [Game Path](#game-path)
       - [gameSettings.xml](#gamesettingsxml)
       - [Development Controls](#development-controls)
+      - [Giants LED](#giants-led)
       - [Mod Cache](#mod-cache)
+      - [Reset Window Positions](#reset-window-positions)
+      - [Language](#language)
   - [Tips and Tricks](#tips-and-tricks)
   - [Something didn't work?!?](#something-didnt-work)
   - [Technical Details](#technical-details)
@@ -50,11 +55,11 @@ ___Contents___
 
 ## What this does
 
-At it's core functionality, this is a file manager, and it has the ability to edit FS22's `gameSettings.xml` file to set one of your mod collections as the mod location the game reads. __For the security conscious__, it's sole communication with the internet is the self-updater for the program, and pulling a list of modHub mods from a server - all of your mods are tested locally - if you prefer to update manually, you can safely block this app in your firewall - although that will break the "Open on ModHub" button. There is also a portable (no-install) version if you prefer that.
+At it's core functionality, this is a file manager, and it has the ability to edit FS22's `gameSettings.xml` file to set one of your mod collections as the mod location the game reads.
 
 ### A Special Note About SymLinks
 
-One method to keep the size of a mod collection down is to use symlinks - Mod Assist is aware of symlinks, and will treat them much like the game does - like any other mod file.  Mod Assist does not have any sort of built in sym link functions, you'll need a third party app or advanced knowledge of the command line to create them.
+One method to keep the size of a mod collection down is to use symlinks - Mod Assistant is aware of symlinks, and will treat them much like the game does - like any other mod file.  Mod Assistant does not have any sort of built in sym link functions, you'll need a third party app or advanced knowledge of the command line to create them.
 
 When doing file operations
 
@@ -63,6 +68,12 @@ When doing file operations
 - `Delete`ing a symlink will delete the __LINK DESCRIPTOR__ (the linked file remains unchanged)
 
 Note that invalid links in your folders will be ignored, however a warning message will be added to the debug log.
+
+Due to how windows handles the permission for creating symlinks, it is not currently possible for Mod Assistant to make them
+
+### Translations and Localizations
+
+Some effort has been made to produce a version of Mod Assistant in your preferred language, but as the creators only speak english, we need help on this.  We accept we have an active [CrowdIn](https://crowdin.com/project/fsg-mod-assistant) project
 
 ## What is a Broken Mod?
 
@@ -120,6 +131,8 @@ __PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk
 
 #### Other Buttons
 
+- __Hamburger / Dots Button__ : User Preferences
+- __Magnifying Glass__ : Search across all collections
 - __Check Versions__ : Compare mod versions across different collections and resolve differences if desired.
 - __Launch FS22__ : Start the game.  If your game is not in the default e-shop or steam location, you will need to set the game path in the preferences screen first.
 - __Discord Join Button__ : Join the [Farm Sim Game Discord](http://fsg.gg) for a great farming & modding community, and help on this app if you need it.
@@ -137,6 +150,7 @@ In this area you will see a list of all of the collections (folders) that you ha
   - __Red Background__ : A red background indicates a mod or file that Mod Assistant thinks will not work in game
   - __Green Background__ : This mod is currently selected
 - Badges
+  - __Depend__ : This mod has un-met dependencies.
   - __Keys__ : This mod contains added key bindings.  When green, these keybinds do not conflict with another mod in the collection.  When red, they appear to conflict (although, in some cases this is fine - but if you can't use a mod, this could provide a helpful clue as to why)
   - __Update__ : The version of the mod you have does not match the version on modhub
   - __New__ : This file has been added to this collection since the last scan
@@ -157,9 +171,15 @@ __Special Note:__ - The Issue badge is based on all the possible issues we know 
 
 The active list is marked with a green check over the folder.
 
+##### Mouse Controls
+
+- __ALT+Click__ : Will re-enable the "Find on ModHub" and "Show in Explorer" buttons for the clicked mod when selecting multiples
+- __Left Click__ : Select / De-Select
+- __Left Click, SHIFT + Left Click__ : Select a range
+- __Right Click or Double Left Click__ : Open mod details page
+
 ##### Action Buttons
 
-- __Collection Checkbox__ : You can use this checkbox to quick select all or none of the mods in the list.  Additionally, shift-select for a range of mods is available.
 - __Compare to SaveGame__ : This will prompt you for a savegame (folder or zip file) and will compare what mods the save game expects to the mods in the collection.
 - __Server Button__ : Open the server admin link in your default web browser
 - __Download Button__ : Refresh all active mods from the server (if server download is configured and enabled)
@@ -176,7 +196,7 @@ The active list is marked with a green check over the folder.
 
 ![collections search](screen_shots/005-collect_search.png)
 
-This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_25DU_Trailers` and `FS22_36ftLowLoader` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
+This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_22_Series` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
 
 ###### Search Buttons
 
@@ -193,7 +213,8 @@ This allows you to refine which parts of the collection you see.  This is a simp
 This screen allows you to keep notes on a collection, and set some of the multiplayer server details to speed things up.
 
 - __Favorite Collection__ : Mark this collection as a set of "favorite" mods for quick copying to other collections.
-- __Player Name__ : This is the name that is displayed in-game
+- __Collection Description__ : A description or tagline for this collection
+- __Player Name__ : This is the name that is displayed in-game (multiplayer)
 - __Server Name__ : This value is pre-filled in the server list screen to filter
 - __Server Password__ : This value is pre-filled in the password box when attempting to join a server that requires a password
 - __Server Website__ : This is a place to keep the administration address for a multiplayer server. This should be in the format http(s)://server.url:port/ - do not include the "index.html" at the end.
@@ -220,6 +241,8 @@ The bottom section of the detail window is for developers, and contains a list o
 ![move and copy](screen_shots/006-move_copy.png)
 
 In the move and copy dialog you will see a list of the selected mods, along with a dropdown that will let you choose the destination for the files.  If the file already exists at that location, you will be warned and prompted to `Overwrite File?`, leaving this box unchecked will ignore the file.  To proceed, press the button at the bottom, to cancel simply close the popup window or press `[ESC]`
+
+To toggle all the overwrite checkboxes on and off you can use `CTRL+A` and `CTRL+SHIFT+A`
 
 ### Delete
 
@@ -254,6 +277,10 @@ In this display, you can compare a collection to a savegame.  Both savegame fold
 
 __Special Note__ : Some classes of mods will almost always appear as "unused", even if they are in fact used - notable among them are mods that add the ability to buy already in-game consumables (bales, lime, fertilizer, etc) - so, when making a list of "unused" mods to deactivate, please pay special attention to what the mod does for you.
 
+The __Limit To__ buttons will filter the list to just those class(es) of mods.  Note the total displayed is per-class, not what is in the current filtered view.
+
+The __Select in Main Window__ buttons will select those mods in the main window.
+
 ### Version Check
 
 ![version overview](screen_shots/009-version_overview.png)
@@ -266,11 +293,15 @@ On this screen, you will be reminded of the name of the mod you are working with
 
 Check the box next to old versions of mods and press the `Yes, Copy Mod(s)` button to update those collections with the latest version of the mod.
 
+To toggle all checkboxes quickly, you can use `CTRL+A` and `CTRL+SHIFT+A`
+
 ### Edit Folders
 
 ![folders](screen_shots/011-folders.png)
 
 This display will let you change which collections are loaded, and open them in windows explorer if you wish.  Use the arrow buttons to move a collection up, down, to the top, or bottom.
+
+You can use the __Sort Alphabetically__ button to quickly alpha-sort the list
 
 ### User Preferences
 
@@ -294,9 +325,21 @@ This option lets you override where the app looks for the gameSettings.xml file.
 
 You can use this checkbox to easily enable the in-game development controls and console commands.
 
+#### Giants LED
+
+If you have the LED light that came with the collectors edition, Mod Assistant can use it for some notifications.
+
 #### Mod Cache
 
 This button lets you clean out the mod cache for the app.  Under most circumstances, you will need to rarely use this - but if you have recently deleted a large number of mods, this may speed up operation of the app.
+
+#### Reset Window Positions
+
+By default Mod Assistant remembers the size and placement of all of it's windows.  If something goes wrong, use this button to reset to default.
+
+#### Language
+
+Use this section to change the display language and optionally force Mod Assistant not to guess the proper language on startup.
 
 ## Tips and Tricks
 
