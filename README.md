@@ -39,6 +39,7 @@ ___Contents___
       - [Badges Used](#badges-used)
     - [Version Check](#version-check)
     - [Edit Folders](#edit-folders)
+    - [Search All Collections](#search-all-collections)
     - [User Preferences](#user-preferences)
       - [Changelog](#changelog)
       - [Game Path](#game-path)
@@ -302,6 +303,14 @@ To toggle all checkboxes quickly, you can use `CTRL+A` and `CTRL+SHIFT+A`
 This display will let you change which collections are loaded, and open them in windows explorer if you wish.  Use the arrow buttons to move a collection up, down, to the top, or bottom.
 
 You can use the __Sort Alphabetically__ button to quickly alpha-sort the list
+
+### Search All Collections
+
+![search all](screen_shots/017-search_all.png)
+
+This display allows you to search for a text string across all collections.
+
+Right clicking on an entry will allow you to select a specific instance of a mod in the main window
 
 ### User Preferences
 
