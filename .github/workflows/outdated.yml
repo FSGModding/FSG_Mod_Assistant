@@ -20,15 +20,18 @@ jobs:
 
       - name: Get Outdated Versions
         id: outdated-versions
-        run: npm run depends > ./outdated_versions.md
+        run: |
+          echo 'DEP_OUTPUT<<EOF' >> $GITHUB_ENV
+          npm run depends >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
         
       - if: ${{ success() }}
         name: Create issue from file
         id: broken-link-report
-        uses: peter-evans/create-issue-from-file@b4f9ee0a9d4abbfc6986601d9b1a4f8f8e74c77e
+        uses: nashmaniac/create-issue-action@v1.1
         with:
-          token: ${{ secrets.github_token }}
-
-          title: "Dependencies are out of date"
-          content-filepath: ./outdated_versions.md
-          repository: ${{ env.GITHUB_ACTION_REPOSITORY }}
+          title: Dependencies are outdated
+          token: ${{secrets.GITHUB_TOKEN}}
+          labels: depend
+          body: ${{env.DEP_OUTPUT}}
+        
