@@ -32,7 +32,7 @@ jobs:
 
       - if: ${{ success() }}
         name : Versions are outdated summary
-        run : echo "${{ env.DEP_OUTPUT }} > $GITHUB_STEP_SUMMARY"
+        run : echo "${{ env.DEP_OUTPUT }}" > $GITHUB_STEP_SUMMARY
 
       - if: ${{ success() }}
         name: Create issue when outdated
