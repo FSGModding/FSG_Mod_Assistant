@@ -24,14 +24,18 @@ jobs:
           echo 'DEP_OUTPUT<<EOF' >> $GITHUB_ENV
           npm run depends >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
-        
+      
+      - if: ${{ success() }}
+        name : Versions are outdated
+        run : echo "${{ env.action_state }}"
+
       - if: ${{ success() }}
         name: Create issue from file
         id: broken-link-report
-        uses: nashmaniac/create-issue-action@v1.1
+
+        uses: actions-ecosystem/action-create-issue@v1
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           title: Dependencies are outdated
-          token: ${{secrets.GITHUB_TOKEN}}
-          labels: depend
           body: ${{env.DEP_OUTPUT}}
-        
+          labels: depend
