@@ -1,0 +1,21 @@
+name: Yarn Package Check
+
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 7 * * 0'
+
+jobs:
+  outdated-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: yarn --ignore-engines
+
+      - name: outdated version
+        uses: ycjcl868/outdated-version-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
