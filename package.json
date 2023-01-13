@@ -1,6 +1,6 @@
 {
   "name": "fsg-mod-assistant",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "FSG Farm Sim Mod Assistant",
   "main": "modAssist_main.js",
   "homepage": "https://github.com/FSGModding/FSG_Mod_Assistant#readme",
@@ -24,7 +24,7 @@
   "devDependencies": {
     "@babel/core": "^7.19.1",
     "@babel/eslint-parser": "^7.19.1",
-    "electron": "^20.2.0",
+    "electron": "^22.0.0",
     "electron-builder": "^23.3.3",
     "eslint": "^8.24.0"
   },

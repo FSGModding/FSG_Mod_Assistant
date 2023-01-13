@@ -26,6 +26,11 @@ const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 let updaterInterval = null
 
 log.log.info(`ModAssist Logger: ${app.getVersion()}`)
+log.log.info(` - Node.js Version: ${process.versions.node}`)
+log.log.info(` - Electron Version: ${process.versions.electron}`)
+log.log.info(` - Chrome Version: ${process.versions.chrome}`)
+
+
 
 process.on('uncaughtException', (err, origin) => {
 	const rightNow = new Date()
