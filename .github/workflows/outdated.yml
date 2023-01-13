@@ -18,6 +18,11 @@ jobs:
         with:
           node-version: 18
 
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
+
       - name: Get Outdated Versions
         id: outdated-versions
         run: |
