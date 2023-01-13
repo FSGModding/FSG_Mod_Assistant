@@ -19,7 +19,8 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "test": "node ./test/mod-reader-test.js && node ./test/save-reader-test.js && node ./test/translate-check.js",
-    "langtest": "node ./test/translate-check.js"
+    "langtest": "node ./test/translate-check.js",
+    "depends" : "node ./test/outdated-deps.js"
   },
   "devDependencies": {
     "@babel/core": "^7.19.1",
