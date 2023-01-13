@@ -3,10 +3,10 @@ name: Build/release
 on:
   push:
     tags:
-      - '*'
+      - v*
 
 jobs:
-  release:
+  tagged_release:
     runs-on: ${{ matrix.os }}
 
     strategy:
