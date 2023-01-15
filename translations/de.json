@@ -284,5 +284,11 @@
 	"pref_feedback_limit_30": "30-Zeichen-Grenze",
 	"select_in_main": "Im Hauptfenster auswählen",
 	"notes_title_tagline": "Beschreibung der Sammlung",
-	"notes_blurb_tagline": "Ein kurzer Slogan oder eine Beschreibung dieser Sammlung"
+	"notes_blurb_tagline": "Ein kurzer Slogan oder eine Beschreibung dieser Sammlung",
+	"make_zip": "ZIP-Datei exportieren",
+	"make_zip__title": "Erstellen Sie eine ZIP-Datei ausgewählter Mods zum Teilen oder Verteilen",
+	"save_zip_worked": "Sammlung in ZIP-Datei exportiert",
+	"save_zip_failed": "ZIP-Datei kann nicht gespeichert werden (Debug-Protokoll prüfen)",
+	"loading_makezip_subtitle": "Bitte warten Sie, das kann eine Minute dauern",
+	"loading_makezip_title": "Zipping Mods"
 }

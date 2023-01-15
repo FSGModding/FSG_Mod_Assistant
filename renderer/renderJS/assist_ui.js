@@ -355,6 +355,9 @@ function clientBatchOperation(mode) {
 			}
 			if ( selectedMods.length === 1 ) { window.mods.openHub(selectedMods) }
 			break
+		case 'zip':
+			if ( selectedMods.length > 0 ) { window.mods.zipMods(selectedMods) }
+			break
 		default:
 			break
 	}
@@ -398,12 +401,4 @@ window.addEventListener('DOMContentLoaded', () => { processL10N() })
 
 window.addEventListener('click', () => {
 	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
-})
-
-window.addEventListener('scroll', () => {
-	const scrollValue = this.scrollY +  102
-	const moveButtons = fsgUtil.byId('moveButtons')
-	try {
-		moveButtons.style.top = `${scrollValue}px`
-	} catch { return }
 })

@@ -284,5 +284,11 @@
 	"pref_feedback_limit_30": "Límite de 30 caracteres",
 	"select_in_main": "Seleccionar en la ventana principal",
 	"notes_title_tagline": "Descripción de la colección",
-	"notes_blurb_tagline": "Un breve eslogan o descripción de esta colección"
+	"notes_blurb_tagline": "Un breve eslogan o descripción de esta colección",
+	"make_zip": "Exportar archivo ZIP",
+	"make_zip__title": "Crea un archivo ZIP con los mods seleccionados para compartirlos o distribuirlos",
+	"save_zip_worked": "Colección exportada a archivo ZIP",
+	"save_zip_failed": "No se ha podido guardar el archivo ZIP (compruebe el registro de depuración)",
+	"loading_makezip_subtitle": "Por favor, espere, esto puede tardar un minuto",
+	"loading_makezip_title": "Mods de cremallera"
 }

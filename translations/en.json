@@ -284,5 +284,12 @@
 	"pref_feedback_limit_30"                 : "30 Character Limit",
 	"select_in_main"                         : "Select in Main Window",
 	"notes_title_tagline"                    : "Collection Description",
-	"notes_blurb_tagline"                    : "A short tagline or description of this collection"
+	"notes_blurb_tagline"                    : "A short tagline or description of this collection",
+	"make_zip"                               : "Export ZIP File",
+	"make_zip__title"                        : "Make a ZIP file of selected mods for sharing or distribution",
+	"save_zip_worked"                        : "Collection Exported to ZIP File",
+	"save_zip_failed"                        : "Unable to save ZIP file (check debug log)",
+	"loading_makezip_subtitle"               : "Please wait, this could take a minute",
+	"loading_makezip_title"                  : "Zipping Mods"
+
 }

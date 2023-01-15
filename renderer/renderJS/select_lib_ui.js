@@ -32,7 +32,7 @@ const select_lib = {
 	clear_range       : () => { select_lib.last_select_mod = null; select_lib.last_select_table = null; select_lib.update_color() },
 	click_alt         : (modID) => {
 		select_lib.last_alt_select = modID
-		const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
+		const moveButtons = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
 
 		if ( fsgUtil.byId(modID).classList.contains('has-hash') ) {
 			select_lib.last_alt_hash = true
@@ -132,7 +132,7 @@ const select_lib = {
 	},
 	clear_all         : () => {
 		const allMods      = fsgUtil.query('.mod-row')
-		const moveButtons  = fsgUtil.byId('moveButtons').querySelectorAll('button')
+		const moveButtons  = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
 		const allModChecks = fsgUtil.query('.mod-row-checkbox')
 		const filterBoxes  = fsgUtil.query('.mod-row-filter')
 		const filterChecks = fsgUtil.query('.mod-row-filter_check')
@@ -164,7 +164,7 @@ const select_lib = {
 			})
 		})
 
-		const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
+		const moveButtons = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
 
 		moveButtons[0].classList[(countSelected > 0)?'remove':'add']('disabled')
 		moveButtons[1].classList[(countSelected > 0)?'remove':'add']('disabled')
@@ -172,6 +172,7 @@ const select_lib = {
 		moveButtons[3].classList[(countSelected === 1)?'remove':'add']('disabled')
 		moveButtons[4].classList[(hasHash)?'remove':'add']('disabled')
 		moveButtons[5].classList[(countSelected === 0)?'remove':'add']('disabled')
+		moveButtons[6].classList[(countSelected > 0)?'remove':'add']('disabled')
 
 		select_lib.change_count(countSelected)
 	},

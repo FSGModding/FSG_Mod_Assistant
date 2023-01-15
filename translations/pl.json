@@ -284,5 +284,11 @@
 	"pref_feedback_limit_30": "Limit 30 znaków",
 	"select_in_main": "Wybierz w oknie głównym",
 	"notes_title_tagline": "Opis folderu z modami",
-	"notes_blurb_tagline": "Tagi lub krótki opis tego folderu"
+	"notes_blurb_tagline": "Tagi lub krótki opis tego folderu",
+	"make_zip": "Eksportuj plik ZIP",
+	"make_zip__title": "Zrób plik ZIP z wybranymi modami do udostępnienia lub dystrybucji",
+	"save_zip_worked": "Kolekcja wyeksportowana do pliku ZIP",
+	"save_zip_failed": "Nie można zapisać pliku ZIP (sprawdź dziennik debugowania)",
+	"loading_makezip_subtitle": "Proszę czekać, to może potrwać minutę",
+	"loading_makezip_title": "Modele do suwaków"
 }

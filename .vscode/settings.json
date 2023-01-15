@@ -12,6 +12,7 @@
 		"translations/fr.json",
 		"translations/nl.json",
 		"translations/pl.json",
+		"translations/pt.json",
 		"translations/ru.json",
 	],
 	"cSpell.words": [
@@ -57,6 +58,7 @@
 		"keybinds",
 		"Kverneland",
 		"langtest",
+		"makezip",
 		"mapid",
 		"maximizable",
 		"minimizable",

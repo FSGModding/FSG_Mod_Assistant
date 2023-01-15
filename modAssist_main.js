@@ -196,6 +196,8 @@ const settingsSchema = {
 
 const Store   = require('electron-store')
 const unzip   = require('unzip-stream')
+const makeZip = require('archiver')
+
 const { saveFileChecker } = require('./lib/savegame-parser.js')
 
 const mcStore = new Store({schema : settingsSchema, migrations : settingsMig })
@@ -1274,6 +1276,77 @@ ipcMain.on('toMain_exportList', (event, collection) => {
 		}
 	}).catch((unknownError) => {
 		log.log.warning(`Could not save csv file : ${unknownError}`, 'csv-export')
+	})
+})
+
+ipcMain.on('toMain_exportZip', (event, selectedMods) => {
+	const filePaths = []
+
+	modIdsToRecords(selectedMods).forEach((mod) => {
+		filePaths.push([mod.fileDetail.shortName, mod.fileDetail.fullPath])
+	})
+
+	dialog.showSaveDialog(windows.main, {
+		defaultPath : app.getPath('desktop'),
+		filters     : [
+			{ name : 'ZIP', extensions : ['zip'] },
+		],
+	}).then(async (result) => {
+		if ( result.canceled ) {
+			log.log.debug('Export ZIP Cancelled', 'zip-export')
+		} else {
+			try {
+				loadingWindow_open('makezip')
+				loadingWindow_total(filePaths.length, true)
+				loadingWindow_current(0, true)
+				const zipOutput  = fs.createWriteStream(result.filePath)
+				const zipArchive = makeZip('zip', {
+					zlib : { level : 6 },
+				})
+				
+				zipOutput.on('close', () => {
+					log.log.info(`ZIP file created : ${result.filePath}`, 'zip-export')
+				})
+
+				zipArchive.on('error', (err) => {
+					loadingWindow_hide()
+					log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
+					setTimeout(() => {
+						dialog.showMessageBoxSync(windows.main, {
+							message : myTranslator.syncStringLookup('save_zip_failed'),
+							type    : 'warning',
+						})
+					}, 1500)
+				})
+
+				zipArchive.on('warning', (err) => {
+					log.log.warning(`Problem with ZIP file : ${err}`, 'zip-export')
+				})
+
+				zipArchive.on('entry', (entry) => {
+					loadingWindow_current()
+					log.log.info(`Added file to ZIP : ${entry.name}`, 'zip-export')
+				})
+
+				zipArchive.pipe(zipOutput)
+				filePaths.forEach((thisFile) => {
+					zipArchive.file(thisFile[1], { name : `${thisFile[0]}.zip` })
+				})
+				zipArchive.finalize().then(() => { loadingWindow_hide() })
+
+			} catch (err) {
+				log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
+				loadingWindow_hide()
+				setTimeout(() => {
+					dialog.showMessageBoxSync(windows.main, {
+						message : myTranslator.syncStringLookup('save_zip_failed'),
+						type    : 'warning',
+					})
+				}, 1500)
+			}
+		}
+	}).catch((unknownError) => {
+		log.log.warning(`Could not create zip file : ${unknownError}`, 'zip-export')
 	})
 })
 /** END: Export operation */

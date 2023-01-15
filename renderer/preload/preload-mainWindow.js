@@ -58,6 +58,7 @@ contextBridge.exposeInMainWorld(
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
+		zipMods    : (selectedMods) => { ipcRenderer.send('toMain_exportZip', selectedMods) },
 		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
 		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },
 

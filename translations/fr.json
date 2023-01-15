@@ -284,5 +284,11 @@
 	"pref_feedback_limit_30": "Limite de 30 caractères",
 	"select_in_main": "Sélectionner dans la fenêtre principale",
 	"notes_title_tagline": "Description de la collection",
-	"notes_blurb_tagline": "Une courte accroche ou description de cette collection"
+	"notes_blurb_tagline": "Une courte accroche ou description de cette collection",
+	"make_zip": "Exporter le fichier ZIP",
+	"make_zip__title": "Créer un fichier ZIP des mods sélectionnés pour le partage ou la distribution",
+	"save_zip_worked": "Collection exportée dans un fichier ZIP",
+	"save_zip_failed": "Impossible d'enregistrer le fichier ZIP (vérifier le journal de débogage)",
+	"loading_makezip_subtitle": "Veuillez patienter, cela peut prendre une minute",
+	"loading_makezip_title": "Zipping Mods"
 }

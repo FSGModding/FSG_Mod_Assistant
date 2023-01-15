@@ -98,8 +98,10 @@
 		.issue_badges>span {
 			margin-left: 3px;
 		}
-
-
+		.operation_button {
+			height: 13.5%;
+			line-height: 1.1em
+		}
 	</style>
 	
 </head>
@@ -150,14 +152,17 @@
 				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
 			</div>
 			<div class="col-2 p-0"><!-- buttons -->
-				<div id="moveButtons" class="p-2" style="position: absolute; top: 102px;">
+				<div id="moveButtons" class="px-2" style="height: calc(100vh - 142px); position: fixed; top: 102px;">
 					<div class="badge bg-dark bg-gradient d-block mb-2 mx-auto"><l10n class="fw-normal" name="select_quantity"></l10n> <span id="select_quantity">0</span></div>
-					<button onclick="clientBatchOperation('move')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
-					<button onclick="clientBatchOperation('copy')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-success rounded-4 disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
-					<button onclick="clientBatchOperation('delete')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-danger rounded-4 disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
-					<button onclick="clientBatchOperation('open')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_from_list"></l10n></button>
-					<button onclick="clientBatchOperation('hub')" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_hub"></l10n></button>
-					<button onclick="mods.copyFavorites()" type="button" style="height: 11vh; line-height: 1.1em" class="w-100 mb-2 btn btn-warning rounded-4"><gg-icon class="gg-chevron-double-down-r"></gg-icon><br /><l10n class="small" name="copy_fav_to"></l10n></button>
+					<div id="moveButtonsInt" style="height: calc(100% - 28px);">
+						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
+						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
+						<button onclick="clientBatchOperation('delete')" type="button" class="operation_button w-100 mb-1 btn btn-danger rounded-4 disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
+						<button onclick="clientBatchOperation('open')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_from_list"></l10n></button>
+						<button onclick="clientBatchOperation('hub')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_hub"></l10n></button>
+						<button onclick="mods.copyFavorites()" type="button" class="operation_button w-100 mb-1 btn btn-warning rounded-4"><gg-icon class="gg-chevron-double-down-r"></gg-icon><br /><l10n class="small" name="copy_fav_to"></l10n></button>
+						<button onclick="clientBatchOperation('zip')" type="button" class="operation_button w-100 btn btn-primary rounded-4 disabled"><gg-icon class="gg-share"></gg-icon><br /><l10n class="small" name="make_zip"></l10n></button>
+					</div>
 				</div>
 			</div><!-- end: buttons-->
 		</div>

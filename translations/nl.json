@@ -284,5 +284,11 @@
 	"pref_feedback_limit_30": "Limiet van 30 tekens",
 	"select_in_main": "Selecteer in het hoofdvenster",
 	"notes_title_tagline": "Collectie omschrijving",
-	"notes_blurb_tagline": "Een korte tagline of beschrijving van deze collectie"
+	"notes_blurb_tagline": "Een korte tagline of beschrijving van deze collectie",
+	"make_zip": "Exporteer ZIP-bestand",
+	"make_zip__title": "Maak een ZIP-bestand van geselecteerde mods om te delen of te verspreiden",
+	"save_zip_worked": "Collectie geëxporteerd naar ZIP-bestand",
+	"save_zip_failed": "Kan ZIP-bestand niet opslaan (controleer debug-log)",
+	"loading_makezip_subtitle": "Wacht even, dit kan even duren",
+	"loading_makezip_title": "Zipping Mods"
 }
