@@ -41,11 +41,12 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict, thisLocale) => {
-	const mhVer = ( modhubRecord[1] !== null ) ? modhubRecord[1] : `<em>${getText(modhubRecord[0] === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
+	const mhVer   = ( modhubRecord[1] !== null ) ? modhubRecord[1] : `<em>${getText(modhubRecord[0] === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
+	const modDate = new Date(Date.parse(modRecord.fileDetail.fileDate))
 
 	const idMap = {
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
-		file_date      : modRecord.fileDetail.fileDate.substring(0, 16),
+		file_date      : modDate.toLocaleString(thisLocale, {timeZoneName : 'short'}),
 		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? modRecord.l10n.title : modRecord.fileDetail.shortName),
 		mod_location   : modRecord.fileDetail.fullPath,
 		mod_author     : modRecord.modDesc.author,
