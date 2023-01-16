@@ -6,7 +6,7 @@
 
 // Main Program
 
-const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, screen } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, screen, clipboard } = require('electron')
 
 const isPortable = typeof process.env.PORTABLE_EXECUTABLE_DIR !== 'undefined'
 const gotTheLock = app.requestSingleInstanceLock()
@@ -70,6 +70,15 @@ process.on('unhandledRejection', (err, origin) => {
 const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = app.getVersion()
+myTranslator.iconOverrides = {
+	preferences_button : 'list',
+	export_button      : 'filetype-csv',
+	notes_button       : 'journal-text',
+	admin_button       : 'globe2',
+	download_button    : 'cloud-download',
+	search_all         : 'search',
+	admin_pass_button  : 'key',
+}
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
 	autoUpdater.logger = log.log
@@ -757,6 +766,8 @@ function isNetworkError(errorObject) {
     _)(_  )___/( (__ 
    (____)(__)   \___) */
 
+ipcMain.on('toMain_populateClipboard', (event, text) => { clipboard.writeText(text, 'selection') })
+
 /** File operation buttons */
 ipcMain.on('toMain_makeInactive', () => { parseSettings({ disable : true }) })
 ipcMain.on('toMain_makeActive',   (event, newList) => {
@@ -1140,7 +1151,14 @@ ipcMain.on('toMain_setGamePath', (event) => {
 /** Notes Operation */
 ipcMain.on('toMain_openNotes', (event, collection) => { createNotesWindow(collection) })
 ipcMain.on('toMain_setNote', (event, id, value, collection) => {
-	if ( id === 'notes_website' || id === 'notes_websiteDL' || id === 'notes_favorite' || id === 'notes_tagline' ) { foldersDirty = true }
+	const dirtyActions = [
+		'notes_website',
+		'notes_websiteDL',
+		'notes_favorite',
+		'notes_tagline',
+		'notes_admin',
+	]
+	if ( dirtyActions.includes(id) ) { foldersDirty = true }
 
 	if ( value === '' ) {
 		modNote.delete(`${collection}.${id}`)

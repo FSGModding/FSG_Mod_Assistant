@@ -50,6 +50,7 @@ contextBridge.exposeInMainWorld(
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
 		makeInactive    : () => { ipcRenderer.send('toMain_makeInactive' ) },
 		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
+		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
 
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },

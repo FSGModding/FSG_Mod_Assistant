@@ -146,27 +146,15 @@ window.mods.receive('fromMain_modList', (opts) => {
 			))
 
 		})
-
-		let collWebsite = ''
-		let collDL      = false
-		let collTagLine = null
-		if ( typeof opts.notes?.[collection]?.notes_websiteDL !== 'undefined' ) {
-			collDL = opts.notes[collection].notes_websiteDL
-		}
-		if ( typeof opts.notes?.[collection]?.notes_website !== 'undefined' ) {
-			collWebsite = opts.notes[collection].notes_website
-		}
-		if ( typeof opts.notes?.[collection]?.notes_tagline !== 'undefined' ) {
-			collTagLine = opts.notes[collection].notes_tagline
-		}
 		
 		modTable.push(makeModCollection(
 			collection,
 			`${opts.modList[collection].name} <small>[${opts.modList[collection].mods.length}] [${fsgUtil.bytesToHR(sizeOfFolder, opts.currentLocale)}]</small>`,
 			modRows,
-			collWebsite,
-			collDL,
-			collTagLine
+			fsgUtil.notesDefault(opts.notes, collection, 'notes_website'),
+			fsgUtil.notesDefault(opts.notes, collection, 'notes_websiteDL', false),
+			fsgUtil.notesDefault(opts.notes, collection, 'notes_tagline'),
+			fsgUtil.notesDefault(opts.notes, collection, 'notes_admin')
 		))
 		const selectCollName = `${opts.modList[collection].name}${window.mods.getCollDesc(collection)}`
 		
@@ -239,7 +227,7 @@ function clientMakeListActive() {
 	}
 }
 
-function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine) {
+function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, adminPass) {
 	return `<tr class="mod-table-folder">
 	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
 		${fsgUtil.getIconSVG('folder')}
@@ -248,7 +236,8 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine) {
 		<div class="d-inline-block">${name}${tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : ''}</div>
 	</td>
 	<td class="align-middle text-end">
-		${ website !== '' ? `<a target="_blank" class="btn btn-secondary btn-sm me-2" href="${website}">${getText('admin_button')}</a>`: ''}
+		${ adminPass !== null ? `<button class="btn btn-secondary btn-sm me-2" onclick="window.mods.popClipboard('${adminPass}')">${getText('admin_pass_button')}</button>`: ''}
+		${ website !== null ? `<a target="_blank" class="btn btn-secondary btn-sm me-2" href="${website}">${getText('admin_button')}</a>`: ''}
 		${ dlEnabled ? `<button class="btn btn-secondary btn-sm me-2" onclick="window.mods.download('${id}')">${getText('download_button')}</button>`: ''}
 		<button class="btn btn-dark btn-sm me-2" onclick="window.mods.exportList('${id}')">${getText('export_button')}</button>
 		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('${id}')">${getText('notes_button')}</button>

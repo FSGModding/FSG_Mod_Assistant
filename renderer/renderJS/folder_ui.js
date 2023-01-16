@@ -67,10 +67,10 @@ function moveBtn(icon, num, dest, disable) {
 }
 
 function upBtn(num, disable) {
-	return `${moveBtn('↟', num, 0, disable)}${moveBtn('↑', num, num-1, disable)}`
+	return `${moveBtn('<i class="bi bi-align-top"></i>', num, 0, disable)}${moveBtn('<i class="bi bi-chevron-up"></i>', num, num-1, disable)}`
 }
 function dnBtn(num, last, disable) {
-	return `${moveBtn('↓', num, num+1, disable)}${moveBtn('↡', num, last, disable)}`
+	return `${moveBtn('<i class="bi bi-chevron-down"></i>', num, num+1, disable)}${moveBtn('<i class="bi bi-align-bottom"></i>', num, last, disable)}`
 }
 
 function makeFolderLine(path, name, num, last) {
