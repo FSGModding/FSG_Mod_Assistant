@@ -88,7 +88,7 @@
 	"mod_badge_pconly": "ПК",
 	"mod_badge_problem__title": "Этот мод имеет проблемы, не нарушающие игру",
 	"mod_badge_problem": "проблемы",
-	"mod_badge_recent__title": "Этот мод был недавно добавлен или обновлён на ModHub.",
+	"mod_badge_recent__title": "Этот мод был недавно добавлен или обновлён с ModHub",
 	"mod_badge_recent": "новейший",
 	"mod_badge_update__title": "Отличается от версии на ModHub",
 	"mod_badge_update": "изменён",
@@ -285,10 +285,10 @@
 	"select_in_main": "Выбрать в главном окне",
 	"notes_title_tagline": "Описание коллекции",
 	"notes_blurb_tagline": "Краткий слоган или описание этой коллекции",
-	"make_zip": "Экспортировать ZIP-файл",
-	"make_zip__title": "Создать ZIP-файл выбранных модов для совместного использования или распространения",
+	"make_zip": "Экспорт в ZIP-файл",
+	"make_zip__title": "Создать ZIP-файл выбранных модов для обмена или распространения",
 	"save_zip_worked": "Коллекция экспортирована в ZIP-файл",
-	"save_zip_failed": "Невозможно сохранить ZIP-файл (проверьте журнал отладки)",
+	"save_zip_failed": "Не получилось создать ZIP-файл (проверьте журнал отладки)",
 	"loading_makezip_subtitle": "Пожалуйста, подождите, это может занять минуту",
-	"loading_makezip_title": "Zipping Mods"
+	"loading_makezip_title": "Архивирование модов"
 }
