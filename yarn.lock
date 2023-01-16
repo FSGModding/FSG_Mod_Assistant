@@ -1061,11 +1061,6 @@ debug@^2.6.8:
   dependencies:
     ms "2.0.0"
 
-decode-dxt@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/decode-dxt/-/decode-dxt-1.0.1.tgz#89953b8323c9e1db2316c9add6903f4174ce6a65"
-  integrity sha512-sf+Jrp7l23K71gGrQPOvZReY12/sYEXKExx9kXtsKyosLqwQ/+ZhNvQLzAZLPqzdGLXcMQrTrEinYGtt36jFmA==
-
 decompress-response@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/decompress-response/-/decompress-response-6.0.0.tgz#ca387612ddb7e104bd16d85aab00d5ecf09c66fc"
@@ -2264,11 +2259,6 @@ parent-module@^1.0.0:
   integrity sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==
   dependencies:
     callsites "^3.0.0"
-
-parse-dds@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/parse-dds/-/parse-dds-1.2.1.tgz#b16533e00c4db91178b3460271361df4cb328164"
-  integrity sha512-oE88N8mzUi9d26tAaKVc0clxi6AjeTSWpLwgtcEVjXTYY1MW58w8FctmM9gGgvFd6YGu1/eFFYVeDVnlMsKBtA==
 
 path-exists@^3.0.0:
   version "3.0.0"
