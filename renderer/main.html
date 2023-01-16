@@ -115,13 +115,18 @@
 						<l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n>
 					</h2>
 				</div>
-				<div class="col-2"></div>
-				<div class="col-1">
-					<button class="btn btn-outline-light w-100" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
+				<div class="col-1"></div>
+				<div class="col-3">
+					<button onclick="clientOpenFarmSim()" class="btn btn-info w-100" id="launch_fs22">
+						<img src="img/fsicon.png" style="height: 24px" class="float-start img-fluid"/>
+						<l10n name="launch_fs22"></l10n>
+					</button>
 				</div>
-				<div class="col-3 text-end">
-					<button onclick="clientOpenFarmSim()" class="btn btn-info w-75" id="open_prefs"><l10n name="launch_fs22"></l10n></button>
-					<button onclick="window.mods.openPreferences()" class="btn btn-outline-light ms-2" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+				<div class="col-2 text-end">
+					<div class="btn-group w-100">
+						<button class="btn btn-outline-light w-50" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
+						<button onclick="window.mods.openPreferences()" class="btn btn-outline-light w-50" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+					</div>
 				</div>
 			</div>
 
@@ -130,7 +135,7 @@
 					<div class="btn-group d-flex h-100" role="group">
 						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-success" onclick="mods.addFolder()"><gg-icon class="gg-folder-add"></gg-icon> <l10n class="small" name="folder_add"></l10n></button>
 						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n class="small" name="folder_edit"></l10n></button>
-						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-secondary" onclick="mods.refreshFolders()"><gg-icon class="gg-folder"></gg-icon> <l10n class="small" name="folder_refresh"></l10n></button>
+						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-secondary" onclick="mods.refreshFolders()"><gg-icon class="gg-sync"></gg-icon> <l10n class="small" name="folder_refresh"></l10n></button>
 					</div>
 				</div>
 				<div class="col">
@@ -155,10 +160,10 @@
 					<div class="badge bg-dark bg-gradient d-block mb-2 mx-auto"><l10n class="fw-normal" name="select_quantity"></l10n> <span id="select_quantity">0</span></div>
 					<div id="moveButtonsInt" style="height: calc(100% - 28px);">
 						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><gg-icon class="gg-move-task"></gg-icon><br /><l10n class="small" name="move_to_list"></l10n></button>
-						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><gg-icon class="gg-copy"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
+						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><gg-icon class="gg-file-add"></gg-icon><br /><l10n class="small" name="copy_to_list"></l10n></button>
 						<button onclick="clientBatchOperation('delete')" type="button" class="operation_button w-100 mb-1 btn btn-danger rounded-4 disabled"><gg-icon class="gg-file-remove"></gg-icon><br /><l10n class="small" name="remove_from_list"></l10n></button>
 						<button onclick="clientBatchOperation('open')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_from_list"></l10n></button>
-						<button onclick="clientBatchOperation('hub')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-file-document"></gg-icon><br /><l10n class="small" name="open_hub"></l10n></button>
+						<button onclick="clientBatchOperation('hub')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><gg-icon class="gg-search-loading"></gg-icon><br /><l10n class="small" name="open_hub"></l10n></button>
 						<button onclick="mods.copyFavorites()" type="button" class="operation_button w-100 mb-1 btn btn-warning rounded-4"><gg-icon class="gg-chevron-double-down-r"></gg-icon><br /><l10n class="small" name="copy_fav_to"></l10n></button>
 						<button onclick="clientBatchOperation('zip')" type="button" class="operation_button w-100 btn btn-primary rounded-4 disabled"><gg-icon class="gg-share"></gg-icon><br /><l10n class="small" name="make_zip"></l10n></button>
 					</div>
