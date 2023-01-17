@@ -285,5 +285,9 @@
 	"save_zip_failed": "Не получилось создать ZIP-файл (проверьте журнал отладки)",
 	"loading_makezip_subtitle": "Пожалуйста, подождите, это может занять минуту",
 	"loading_makezip_title": "Архивирование модов",
-	"admin_pass_button__title": "Копировать пароль администратора веб-страницы в буфер обмена"
+	"admin_pass_button__title": "Копировать пароль администратора веб-страницы в буфер обмена",
+	"folder_top_button__title": "Переместить папку в начало",
+	"folder_up_button__title": "Переместить папку вверх",
+	"folder_down_button__title": "Переместить папку вниз",
+	"folder_bot_button__title": "Переместить папку в самый низ"
 }

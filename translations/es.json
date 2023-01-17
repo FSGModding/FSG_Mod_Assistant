@@ -285,5 +285,9 @@
 	"loading_makezip_title": "Mods de cremallera",
 	"notes_title_admin": "Contraseña de administración del sitio web del servidor",
 	"notes_blurb_admin": "Contraseña de administración del sitio web del servidor, informativa y disponible a través del botón de copia rápida de la pantalla principal",
-	"admin_pass_button__title": "Copiar contraseña de administración de página web al portapapeles"
+	"admin_pass_button__title": "Copiar contraseña de administración de página web al portapapeles",
+	"folder_top_button__title": "Mover carpeta a la parte superior",
+	"folder_up_button__title": "Mover carpeta arriba",
+	"folder_down_button__title": "Mover carpeta abajo",
+	"folder_bot_button__title": "Mover carpeta al fondo"
 }

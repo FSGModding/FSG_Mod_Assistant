@@ -285,5 +285,9 @@
 	"loading_makezip_title": "Modele do suwaków",
 	"notes_title_admin": "Hasło administratora strony internetowej serwera",
 	"notes_blurb_admin": "Hasło do administracji strony internetowej serwera, informacyjne i dostępne poprzez przycisk szybkiego kopiowania na ekranie głównym",
-	"admin_pass_button__title": "Kopiowanie hasła do administracji strony internetowej do schowka"
+	"admin_pass_button__title": "Kopiowanie hasła do administracji strony internetowej do schowka",
+	"folder_top_button__title": "Przenieś folder na górę",
+	"folder_up_button__title": "Przesuń folder w górę",
+	"folder_down_button__title": "Przesuń folder w dół",
+	"folder_bot_button__title": "Przesuń folder na dół"
 }

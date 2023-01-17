@@ -285,5 +285,9 @@
 	"loading_makezip_title": "Zipping Mods",
 	"notes_title_admin": "Server-Website-Administrator-Passwort",
 	"notes_blurb_admin": "Passwort für die Verwaltung der Server-Website, informativ und über die Schaltfläche \"Schnellkopie\" auf dem Hauptbildschirm verfügbar",
-	"admin_pass_button__title": "Passwort für die Webseitenverwaltung in die Zwischenablage kopieren"
+	"admin_pass_button__title": "Passwort für die Webseitenverwaltung in die Zwischenablage kopieren",
+	"folder_top_button__title": "Ordner nach oben verschieben",
+	"folder_up_button__title": "Ordner nach oben verschieben",
+	"folder_down_button__title": "Ordner nach unten verschieben",
+	"folder_bot_button__title": "Ordner nach unten verschieben"
 }

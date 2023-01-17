@@ -285,5 +285,9 @@
 	"save_zip_failed"                        : "Unable to save ZIP file (check debug log)",
 	"loading_makezip_subtitle"               : "Please wait, this could take a minute",
 	"loading_makezip_title"                  : "Zipping Mods",
-	"admin_pass_button__title"               : "Copy Webpage administration password to clipboard"
+	"admin_pass_button__title"               : "Copy Webpage administration password to clipboard",
+	"folder_top_button__title"               : "Move folder to top",
+	"folder_up_button__title"                : "Move folder up",
+	"folder_down_button__title"              : "Move folder down",
+	"folder_bot_button__title"               : "Move folder to bottom"
 }

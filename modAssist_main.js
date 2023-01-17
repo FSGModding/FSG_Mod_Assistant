@@ -78,6 +78,10 @@ myTranslator.iconOverrides = {
 	download_button    : 'cloud-download',
 	search_all         : 'search',
 	admin_pass_button  : 'key',
+	folder_top_button  : 'align-top',
+	folder_up_button   : 'chevron-up',
+	folder_down_button : 'chevron-down',
+	folder_bot_button  : 'align-bottom',
 }
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {

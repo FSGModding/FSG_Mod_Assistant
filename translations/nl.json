@@ -285,5 +285,9 @@
 	"loading_makezip_title": "Zipping Mods",
 	"notes_title_admin": "Server Website Admin Wachtwoord",
 	"notes_blurb_admin": "Server website administratie wachtwoord, informatief en beschikbaar via snelle kopieer knop op hoofdscherm",
-	"admin_pass_button__title": "Kopieer Webpage administratie wachtwoord naar klembord"
+	"admin_pass_button__title": "Kopieer Webpage administratie wachtwoord naar klembord",
+	"folder_top_button__title": "Verplaats map naar boven",
+	"folder_up_button__title": "Verplaats map naar boven",
+	"folder_down_button__title": "Verplaats map naar beneden",
+	"folder_bot_button__title": "Verplaats map naar beneden"
 }

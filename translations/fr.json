@@ -285,5 +285,9 @@
 	"loading_makezip_title": "Zipping Mods",
 	"notes_title_admin": "Mot de passe de l'administrateur du site Web du serveur",
 	"notes_blurb_admin": "Mot de passe d'administration du site web du serveur, informatif et disponible via le bouton de copie rapide sur l'écran principal",
-	"admin_pass_button__title": "Copier le mot de passe d'administration de la page Web dans le presse-papiers"
+	"admin_pass_button__title": "Copier le mot de passe d'administration de la page Web dans le presse-papiers",
+	"folder_top_button__title": "Déplacer le dossier en haut",
+	"folder_up_button__title": "Déplacer le dossier vers le haut",
+	"folder_down_button__title": "Déplacer le dossier vers le bas",
+	"folder_bot_button__title": "Déplacer le dossier en bas"
 }

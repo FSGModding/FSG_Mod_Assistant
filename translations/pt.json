@@ -285,5 +285,9 @@
 	"loading_makezip_title": "Modos de fecho de correr",
 	"notes_title_admin": "Palavra-passe de administrador do website do servidor",
 	"notes_blurb_admin": "Senha de administração do sítio web do servidor, informativa e disponível através de botão de cópia rápida no ecrã principal",
-	"admin_pass_button__title": "Copiar password de administração da página Web para a área de transferência"
+	"admin_pass_button__title": "Copiar password de administração da página Web para a área de transferência",
+	"folder_top_button__title": "Mover pasta para o topo",
+	"folder_up_button__title": "Mover pasta para cima",
+	"folder_down_button__title": "Mover pasta para baixo",
+	"folder_bot_button__title": "Mover pasta para o fundo"
 }
