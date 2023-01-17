@@ -20,7 +20,7 @@ function clientGetL10NEntries() {
 	const l10nSendItems = new Set()
 
 	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullError(thisL10nItem, 'name'))
+		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
 	})
 
 	l10n.getText_send(l10nSendItems)
@@ -47,15 +47,15 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 	const idMap = {
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
 		file_date      : modDate.toLocaleString(thisLocale, {timeZoneName : 'short'}),
-		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? modRecord.l10n.title : modRecord.fileDetail.shortName),
+		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
 		mod_location   : modRecord.fileDetail.fullPath,
-		mod_author     : modRecord.modDesc.author,
+		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
 		version        : modRecord.modDesc.version,
 		mh_version     : mhVer,
 		has_scripts    : checkX(modRecord.modDesc.scriptFiles),
 		store_items    : checkX(modRecord.modDesc.storeItems),
 		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
-		description    : modRecord.l10n.description,
+		description    : fsgUtil.escapeSpecial(modRecord.l10n.description),
 		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
 		extraFiles     : (( modRecord.fileDetail.extraFiles.length > 0 )  ? modRecord.fileDetail.extraFiles.join('\n')  : getText('detail_extra_clean')),
 		bigFiles       : (( modRecord.fileDetail.tooBigFiles.length > 0 ) ? modRecord.fileDetail.tooBigFiles.join('\n') : getText('detail_extra_clean')),

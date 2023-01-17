@@ -960,6 +960,9 @@ ipcMain.on('toMain_log', (event, level, process, text) => { log.log[level](text,
 /** l10n Operation */
 ipcMain.on('toMain_langList_change', (event, lang) => {
 	myTranslator.currentLocale = lang
+
+	mcStore.set('force_lang', myTranslator.currentLocale)
+
 	Object.keys(windows).forEach((thisWindow) => {
 		if ( windows[thisWindow] !== null ) {
 			windows[thisWindow].webContents.send('fromMain_l10n_refresh')
@@ -986,6 +989,9 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			event.sender.send('fromMain_getText_return', [l10nEntry, `${cleanString} ${cacheSize.toFixed(2)}MB`])
 		} else {
 			myTranslator.stringLookup(l10nEntry).then((text) => {
+				if ( text === null || text === '' ) {
+					log.log.debug(`Null or empty translator string: ${l10nEntry} :: locale: ${myTranslator.currentLocale}`)
+				}
 				event.sender.send('fromMain_getText_return', [l10nEntry, text])
 			})
 			myTranslator.stringTitleLookup(l10nEntry).then((text) => {
@@ -1774,8 +1780,8 @@ function processModFolders_post(newFolder = false) {
 	mcStore.set('modFolders', Array.from(modFolders))
 
 	modFolders.forEach((folder) => {
-		const cleanName = `col_${crypto.createHash('md5').update(folder).digest('hex')}`
-		const shortName = path.basename(folder)
+		const cleanName  = `col_${crypto.createHash('md5').update(folder).digest('hex')}`
+		const shortName  = path.basename(folder)
 		const localStore = maCache.store
 
 		if ( folder === newFolder || newFolder === false ) {
@@ -1842,6 +1848,7 @@ function processModFolders_post(newFolder = false) {
 						}
 					} catch (e) {
 						log.log.danger(`Couldn't process file: ${thisFile.name} :: ${e}`, 'folder-reader')
+						modIndex--
 					}
 
 					loadingWindow_current()
@@ -1952,7 +1959,7 @@ function dlSaveFile(url, filename) {
 
 app.whenReady().then(() => {
 	if ( gotTheLock ) {
-		if ( mcStore.has('force_lang') && mcStore.has('lock_lang') ) {
+		if ( mcStore.has('force_lang') && mcStore.get('lock_lang', false) ) {
 			// If language is locked, switch to it.
 			myTranslator.currentLocale = mcStore.get('force_lang')
 		}

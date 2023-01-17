@@ -36,7 +36,7 @@ function clientGetL10NEntries() {
 	const l10nSendItems = new Set()
 
 	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullError(thisL10nItem, 'name'))
+		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
 	})
 
 	l10n.getText_send(l10nSendItems)
@@ -154,7 +154,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 			} else if ( thisModDetail.version !== haveModSet[thisMod].modDesc.version ) {
 				thisModDetail.versionMismatch = true
 			}
-			thisModDetail.title = haveModSet[thisMod].l10n.title
+			thisModDetail.title = fsgUtil.escapeSpecial(haveModSet[thisMod].l10n.title)
 		}
 
 		if ( thisMod === savegame.mapMod ) {

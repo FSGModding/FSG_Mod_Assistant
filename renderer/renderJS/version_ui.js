@@ -19,7 +19,7 @@ function clientGetL10NEntries() {
 	const l10nSendItems = new Set()
 
 	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullError(thisL10nItem, 'name'))
+		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
 	})
 
 	l10n.getText_send(l10nSendItems)
@@ -51,7 +51,7 @@ window.mods.receive('fromMain_modList', (modList) => {
 			const modVer  = mod.modDesc.version
 
 			if ( ! mod.fileDetail.isFolder ) {
-				nameTitleMap[modName] ??= mod.l10n.title
+				nameTitleMap[modName] ??= fsgUtil.escapeSpecial(mod.l10n.title)
 				nameIconMap[modName]  ??= mod.modDesc.iconImageCache
 				versionList[modName]  ??= []
 				versionList[modName].push([collection, modVer])

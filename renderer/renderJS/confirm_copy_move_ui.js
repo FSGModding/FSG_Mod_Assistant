@@ -19,7 +19,7 @@ function clientGetL10NEntries() {
 	const l10nSendItems = new Set()
 
 	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullError(thisL10nItem, 'name'))
+		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
 	})
 
 	l10n.getText_send(l10nSendItems)
@@ -76,7 +76,7 @@ function updateConfirmList() {
 				</div>
 			</div>
 			<div class="col">
-				<h4 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${mod.l10n.title}</span></h4>
+				<h4 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${fsgUtil.escapeSpecial(mod.l10n.title)}</span></h4>
 				<p class="font-monospace small mb-1">${printPath}</p>`)
 
 		if ( selectedDest === '0' ) {

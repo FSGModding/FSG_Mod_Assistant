@@ -49,6 +49,13 @@ const fsgUtil = {
 			return attribValue
 		}
 	},
+	getAttribNullEmpty : (element, attrib) => {
+		const attribValue = element.getAttribute(attrib)
+	
+		return ( typeof attribValue === 'undefined' || attribValue === null ) ?
+			null :
+			attribValue
+	},
 	buildBS : (name, value) => `data-bs-${name}="${value}"`,
 	bytesToHR : ( inBytes, locale ) => {
 		const thisLocale = ( locale !== null ) ? locale : 'en'
@@ -82,6 +89,13 @@ const fsgUtil = {
 		const thisValue = notes?.[collection]?.[key]
 
 		return ( typeof thisValue === 'undefined' || thisValue === '' ) ? defaultValue : thisValue
+	},
+	escapeSpecial : ( text ) => {
+		return text.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;')
 	},
 	badge : (color, name, fullName = false) => `<span class="badge bg-${color}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
 }

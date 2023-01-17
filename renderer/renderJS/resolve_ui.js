@@ -23,7 +23,7 @@ function clientGetL10NEntries() {
 	const l10nSendItems = new Set()
 
 	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullError(thisL10nItem, 'name'))
+		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
 	})
 
 	l10n.getText_send(l10nSendItems)
@@ -98,7 +98,7 @@ function makeLine(mod, version) {
 		return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-dark">
 			<div class="ms-2 me-auto">
 				<div class="fw-bold">${mod[2].fileDetail.shortName}</div>
-				<div class="small">${mod[2].l10n.title}</div>
+				<div class="small">${fsgUtil.escapeSpecial(mod[2].l10n.title)}</div>
 				<div class="text-black small ps-3">${getText('destination')} ${mod[3]} :: ${getText('version_same')}</div>
 			</div>
 		</li>`
@@ -107,7 +107,7 @@ function makeLine(mod, version) {
 	return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-danger">
 		<div class="ms-2 me-auto">
 			<div class="fw-bold">${mod[2].fileDetail.shortName} <span class="small">${mod[1]}</span></div>
-			<div class="small">${mod[2].l10n.title}</div>
+			<div class="small">${fsgUtil.escapeSpecial(mod[2].l10n.title)}</div>
 			<div class="text-black small ps-3">${getText('destination')} ${mod[3]}</div>
 		</div>
 		<input class="form-check-input form-check me-1" type="checkbox" name="modToCopy[]" value="${mod[0]}">

@@ -19,7 +19,7 @@ function clientGetL10NEntries() {
 	const l10nSendItems = new Set()
 
 	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullError(thisL10nItem, 'name'))
+		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
 	})
 
 	l10n.getText_send(l10nSendItems)
@@ -105,46 +105,49 @@ window.mods.receive('fromMain_modList', (opts) => {
 		let   sizeOfFolder = 0
 
 		opts.modList[collection].mods.forEach((thisMod) => {
-			const extraBadges = []
-			const modId       = opts.modHub.list.mods[thisMod.fileDetail.shortName] || null
-			const modVer      = opts.modHub.version[modId] || null
+			try {
+				const extraBadges = []
+				const modId       = opts.modHub.list.mods[thisMod.fileDetail.shortName] || null
+				const modVer      = opts.modHub.version[modId] || null
 
-			sizeOfFolder += thisMod.fileDetail.fileSize
+				sizeOfFolder += thisMod.fileDetail.fileSize
 
-			if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
-				if ( typeof opts.bindConflict[collection][thisMod.fileDetail.shortName] !== 'undefined' ) {
-					extraBadges.push(fsgUtil.badge('danger', 'keys_bad'))
-				} else {
-					extraBadges.push(fsgUtil.badge('success', 'keys_ok'))
+				if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
+					if ( typeof opts.bindConflict[collection][thisMod.fileDetail.shortName] !== 'undefined' ) {
+						extraBadges.push(fsgUtil.badge('danger', 'keys_bad'))
+					} else {
+						extraBadges.push(fsgUtil.badge('success', 'keys_ok'))
+					}
 				}
-			}
-			if ( modVer !== null && thisMod.modDesc.version !== modVer) {
-				extraBadges.push(fsgUtil.badge('light', 'update'))
-			}
-			if ( opts.newMods.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
-				extraBadges.push(fsgUtil.badge('success', 'new'))
-			}
-			if ( modId !== null && opts.modHub.list.last.includes(modId) ) {
-				extraBadges.push(fsgUtil.badge('success', 'recent'))
-			}
-			if ( modId === null ) {
-				extraBadges.push(fsgUtil.badge('dark', 'nonmh'))
-			}
+				if ( modVer !== null && thisMod.modDesc.version !== modVer) {
+					extraBadges.push(fsgUtil.badge('light', 'update'))
+				}
+				if ( opts.newMods.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
+					extraBadges.push(fsgUtil.badge('success', 'new'))
+				}
+				if ( modId !== null && opts.modHub.list.last.includes(modId) ) {
+					extraBadges.push(fsgUtil.badge('success', 'recent'))
+				}
+				if ( modId === null ) {
+					extraBadges.push(fsgUtil.badge('dark', 'nonmh'))
+				}
 
-			let theseBadges = thisMod.badges + extraBadges.join('')
+				let theseBadges = thisMod.badges + extraBadges.join('')
 
-			if ( theseBadges.match('mod_badge_broken') && theseBadges.match('mod_badge_notmod') ) {
-				theseBadges = theseBadges.replace(fsgUtil.badge('danger', 'broken'), '')
+				if ( theseBadges.match('mod_badge_broken') && theseBadges.match('mod_badge_notmod') ) {
+					theseBadges = theseBadges.replace(fsgUtil.badge('danger', 'broken'), '')
+				}
+
+				modRows.push(makeModRow(
+					`${collection}--${thisMod.uuid}`,
+					thisMod,
+					theseBadges,
+					modId,
+					metDepend(thisMod.modDesc.depend, collection, opts.modList[collection].mods)
+				))
+			} catch (e) {
+				window.log.notice(`Error building mod row: ${e}`, 'main')
 			}
-
-			modRows.push(makeModRow(
-				`${collection}--${thisMod.uuid}`,
-				thisMod,
-				theseBadges,
-				modId,
-				metDepend(thisMod.modDesc.depend, collection, opts.modList[collection].mods)
-			))
-
 		})
 		
 		modTable.push(makeModCollection(
@@ -303,7 +306,7 @@ function makeModRow(id, thisMod, badges, modId, metDepend) {
 		<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
 	</td>
 	<td>
-		<div class="bg-light"></div><span class="mod-short-name">${thisMod.fileDetail.shortName}</span><br /><small>${thisMod.l10n.title} - <em>${thisMod.modDesc.author}</em></small><div class="issue_badges">${theseBadges}</div>
+		<div class="bg-light"></div><span class="mod-short-name">${thisMod.fileDetail.shortName}</span><br /><small>${fsgUtil.escapeSpecial(thisMod.l10n.title)} - <em>${fsgUtil.escapeSpecial(thisMod.modDesc.author)}</em></small><div class="issue_badges">${theseBadges}</div>
 	</td>
 	<td class="text-end pe-4">
 		${thisMod.modDesc.version}<br /><em class="small">${( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : ''}</em>
