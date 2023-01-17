@@ -322,13 +322,13 @@ function getRealCenter(winName) {
 	return realCenter
 }
 
-function createSubWindow(winName, {noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null} = {}) {
+function createSubWindow(winName, {noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null, fixedOnTop = true} = {}) {
 	const realCenter  = getRealCenter(winName)
 	const winSettings = mcStore.get(`wins.${winName}`)
 
 	const winOptions = {
 		minimizable     : !fixed,
-		alwaysOnTop     : fixed,
+		alwaysOnTop     : fixedOnTop && fixed,
 		maximizable     : !fixed,
 		fullscreenable  : !fixed,
 	}
@@ -392,7 +392,7 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 }
 
 function createMainWindow () {
-	windows.load = createSubWindow('load', { show : false, preload : 'loadingWindow', fixed : true, move : false, frame : false })
+	windows.load = createSubWindow('load', { fixedOnTop : false, show : false, preload : 'loadingWindow', fixed : true, move : false, frame : false })
 	windows.load.loadFile(path.join(pathRender, 'loading.html'))
 	windows.load.on('close', (event) => { event.preventDefault() })
 
