@@ -174,8 +174,16 @@ window.mods.receive('fromMain_modList', (opts) => {
 	})
 
 	const activeFolder = document.querySelector(`[data-bs-target="#${opts.activeCollection}_mods"] svg`)
+
 	if ( activeFolder !== null ) {
-		activeFolder.innerHTML += '<polygon fill="#43A047" points="290.088 61.432 117.084 251.493 46.709 174.18 26.183 197.535 117.084 296.592 310.614 83.982"></polygon>'
+		let currentInner = activeFolder.innerHTML
+		
+		currentInner = currentInner.replace('#FFC843', '#225511')
+		currentInner = currentInner.replace('#E0B03B', '#44bb22')
+		currentInner = currentInner.replace('#7f7f00', '#b3a50b')
+		currentInner += '<polygon fill="#eeeeee" points="290.088 61.432 117.084 251.493 46.709 174.18 26.183 197.535 117.084 296.592 310.614 83.982"></polygon>'
+
+		activeFolder.innerHTML = currentInner
 	}
 
 	select_lib.clear_range()
