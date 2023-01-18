@@ -90,12 +90,16 @@ const fsgUtil = {
 
 		return ( typeof thisValue === 'undefined' || thisValue === '' ) ? defaultValue : thisValue
 	},
+	escapeDesc : ( text ) => {
+		return text.replaceAll(/&/g, '&amp;')
+			.replaceAll(/<(?!(a |\/a))/g, '&lt;')
+	},
 	escapeSpecial : ( text ) => {
-		return text.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;')
-			.replace(/'/g, '&#39;')
+		return text.replaceAll(/&/g, '&amp;')
+			.replaceAll(/</g, '&lt;')
+			.replaceAll(/>/g, '&gt;')
+			.replaceAll(/"/g, '&quot;')
+			.replaceAll(/'/g, '&#39;')
 	},
 	badge : (color, name, fullName = false) => `<span class="badge bg-${color}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
 }

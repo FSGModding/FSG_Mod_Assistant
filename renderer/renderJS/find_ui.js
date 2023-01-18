@@ -65,7 +65,7 @@ window.mods.receive('fromMain_modRecords', (modList) => {
 					collect   : [],
 				}
 				fullList[mod.fileDetail.shortName].collect.push({
-					version : mod.modDesc.version,
+					version : fsgUtil.escapeSpecial(mod.modDesc.version),
 					name    : modList[collection].name,
 					fullId  : `${collection}--${mod.uuid}`,
 				})
