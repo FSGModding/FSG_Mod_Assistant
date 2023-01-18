@@ -632,6 +632,11 @@ function createPrefsWindow() {
 
 	windows.prefs.loadFile(path.join(pathRender, 'prefs.html'))
 	windows.prefs.on('closed', () => { destroyAndFocus('prefs') })
+
+	windows.prefs.webContents.setWindowOpenHandler(({ url }) => {
+		shell.openExternal(url)
+		return { action : 'deny' }
+	})
 }
 
 function createSavegameWindow(collection) {

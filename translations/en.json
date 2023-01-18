@@ -289,5 +289,6 @@
 	"folder_top_button__title"               : "Move folder to top",
 	"folder_up_button__title"                : "Move folder up",
 	"folder_down_button__title"              : "Move folder down",
-	"folder_bot_button__title"               : "Move folder to bottom"
+	"folder_bot_button__title"               : "Move folder to bottom",
+	"translate_blurb_tagline"                : "Feel free to support the translation effort on"
 }
