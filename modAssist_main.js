@@ -1113,13 +1113,15 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 		modList[collection].mods.forEach((mod) => { md5Set.delete(mod.md5Sum) })
 	})
 
-	loadingWindow_total(md5Set.size, true)
-	loadingWindow_current(0, true)
+	setTimeout(() => {
+		loadingWindow_total(md5Set.size, true)
+		loadingWindow_current(0, true)
 
-	md5Set.forEach((md5) => { maCache.delete(md5); loadingWindow_current() })
+		md5Set.forEach((md5) => { maCache.delete(md5); loadingWindow_current() })
 
-	loadingWindow_hide(1500)
-	event.sender.send('fromMain_l10n_refresh')
+		loadingWindow_hide(1500)
+		event.sender.send('fromMain_l10n_refresh')
+	}, 1500)
 })
 ipcMain.on('toMain_setPrefFile', (event) => {
 	dialog.showOpenDialog(windows.prefs, {
