@@ -291,5 +291,6 @@
 	"folder_down_button__title"              : "Move folder down",
 	"folder_bot_button__title"               : "Move folder to bottom",
 	"translate_blurb_tagline"                : "Feel free to support the translation effort on",
-	"filter_badges"                          : "Limit to Tags"
+	"filter_badges"                          : "Limit to Tags",
+	"filter_tag_reset"                       : "RESET"
 }

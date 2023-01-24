@@ -161,7 +161,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 					thisMod.fileDetail.shortName,
 					thisMod.l10n.title,
 					thisMod.modDesc.author
-				].join(' ')
+				].join(' ').toLowerCase()
 
 				displayBadges.forEach((badge) => {
 					if ( typeof searchTagMap?.[badge]?.push === 'function' ) {
@@ -314,10 +314,8 @@ function makeModRow(id, thisMod, badges, modId) {
 }
 
 
-function clientClearInput(id) {
-	const filterId = id.replace('__filter', '')
-
-	select_lib.filter(filterId, '')
+function clientClearInput() {
+	select_lib.filter(null, '')
 }
 
 function clientBatchOperation(mode) {
@@ -367,8 +365,8 @@ function clientOpenFarmSim() {
 	window.mods.startFarmSim()
 }
 
-window.addEventListener('hide.bs.collapse', () => { select_lib.clear_all() })
-window.addEventListener('show.bs.collapse', () => { select_lib.clear_all() })
+// window.addEventListener('hide.bs.collapse', () => { select_lib.clear_all() })
+// window.addEventListener('show.bs.collapse', () => { select_lib.clear_all() })
 
 const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
 

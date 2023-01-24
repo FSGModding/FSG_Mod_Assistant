@@ -165,8 +165,10 @@
 							<l10n name="filter_badges"></l10n>
 							<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-white text-black" id="tag_filter_count">0</span>
 						</button>
-						<form class="dropdown-menu px-0 py-0 mt-1">
-							<div class="btn-group-vertical btn-group-sm w-100">
+						<div class="dropdown-menu px-0 py-0 mt-1">
+							<div id="filter__tags" class="btn-group-vertical btn-group-sm w-100">
+								<button class="btn btn-outline-warning text-center" onclick="select_lib.tag_reset()"><l10n name="filter_tag_reset"></l10n></button>
+
 								<input type="checkbox" id="tag_filter__broken" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
 								<label class="btn btn-outline-light" for="tag_filter__broken"><l10n name="mod_badge_broken"></l10n></label>
 
@@ -197,7 +199,7 @@
 								<input type="checkbox" id="tag_filter__nonmh" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
 								<label class="btn btn-outline-light" for="tag_filter__nonmh"><l10n name="mod_badge_nonmh"></l10n></label>
 							</div>
-						</form>
+						</div>
 					</div>
 				</div>
 				<div class="col col-auto">
@@ -208,20 +210,6 @@
 						<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
 					</div>
 				</div>
-				<!-- <select name="filter__tags" id="filter__tags" onchange="select_lib.filter()" class="form-control"  multiple="multiple">
-					
-					<option value="mod_badge_new">mod_badge_new</option>
-					<option value="mod_badge_nomp">mod_badge_nomp</option>
-					<option value="mod_badge_notmod">mod_badge_notmod</option>
-					<option value="mod_badge_pconly">mod_badge_pconly</option>
-					<option value="mod_badge_problem">mod_badge_problem</option>
-					<option value="mod_badge_recent">mod_badge_recent</option>
-					<option value="mod_badge_update">mod_badge_update</option>
-					<option value="mod_badge_nonmh">mod_badge_nonmh</option>
-					<option value="mod_badge_keys_ok">mod_badge_keys_ok</option>
-					<option value="mod_badge_keys_bad">mod_badge_keys_bad</option>
-					<option value="mod_badge_depend_flag">mod_badge_depend_flag</option>
-				</select> -->
 			</div>
 		</div>
 		
