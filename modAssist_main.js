@@ -282,9 +282,28 @@ let devControls     = false
 /** Upgrade Cache Version Here */
 
 if ( semverGt('1.0.2', mcStore.get('cache_version'))) {
-	log.log.warning('Invalid Mod Cache (old), resetting.')
+	log.log.warning('Invalid Mod Cache (very old), resetting.')
 	maCache.clear()
 	log.log.info('Mod Cache Cleared')
+} else if ( semverGt('1.9.3', mcStore.get('cache_version'))) {
+	log.log.debug('Mod Cache 1.9.3 Update Running')
+	const oldCache = maCache.store
+	const tagRegEx = /"mod_badge_(.+?)"/g
+
+	Object.keys(oldCache).forEach((key) => {
+		if ( typeof oldCache[key].badgeArray === 'undefined' ) {
+			oldCache[key].badgeArray = []
+
+			if ( typeof oldCache[key].badges !== 'undefined' ) {
+				const tagMatch = [...oldCache[key].badges.matchAll(tagRegEx)]
+
+				tagMatch.forEach((match) => { oldCache[key].badgeArray.push(match[1].toLowerCase()) })
+				delete oldCache[key].badges
+			}
+		}
+	})
+	maCache.store = oldCache
+
 } else {
 	log.log.debug('Mod Cache Version Good')
 }

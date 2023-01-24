@@ -82,11 +82,26 @@ window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 })
 
 
-let lastLocale = 'en'
-let lastQuickLists = {}
+let lastLocale      = 'en'
+let lastQuickLists  = {}
+let searchStringMap = {}
+let searchTagMap    = {}
 
 window.mods.receive('fromMain_modList', (opts) => {
-	lastQuickLists = {}
+	lastQuickLists  = {}
+	searchStringMap = {}
+	searchTagMap    = {
+		broken  : [],
+		folder  : [],
+		new     : [],
+		nomp    : [],
+		notmod  : [],
+		pconly  : [],
+		problem : [],
+		recent  : [],
+		update  : [],
+		nonmh   : [],
+	}
 	lastLocale = opts.currentLocale
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -106,45 +121,61 @@ window.mods.receive('fromMain_modList', (opts) => {
 
 		opts.modList[collection].mods.forEach((thisMod) => {
 			try {
-				const extraBadges = []
-				const modId       = opts.modHub.list.mods[thisMod.fileDetail.shortName] || null
-				const modVer      = opts.modHub.version[modId] || null
+				const displayBadges = thisMod.badgeArray || []
+				const modId         = opts.modHub.list.mods[thisMod.fileDetail.shortName] || null
+				const modVer        = opts.modHub.version[modId] || null
+				const modColUUID    = `${collection}--${thisMod.uuid}`
 
 				sizeOfFolder += thisMod.fileDetail.fileSize
 
 				if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
 					if ( typeof opts.bindConflict[collection][thisMod.fileDetail.shortName] !== 'undefined' ) {
-						extraBadges.push(fsgUtil.badge('danger', 'keys_bad'))
+						displayBadges.push('keys_bad')
 					} else {
-						extraBadges.push(fsgUtil.badge('success', 'keys_ok'))
+						displayBadges.push('keys_ok')
 					}
 				}
 				if ( modVer !== null && thisMod.modDesc.version !== modVer) {
-					extraBadges.push(fsgUtil.badge('light', 'update'))
+					displayBadges.push('update')
 				}
 				if ( opts.newMods.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
-					extraBadges.push(fsgUtil.badge('success', 'new'))
+					displayBadges.push('new')
 				}
 				if ( modId !== null && opts.modHub.list.last.includes(modId) ) {
-					extraBadges.push(fsgUtil.badge('success', 'recent'))
+					displayBadges.push('recent')
 				}
 				if ( modId === null ) {
-					extraBadges.push(fsgUtil.badge('dark', 'nonmh'))
+					displayBadges.push('nonmh')
 				}
 
-				let theseBadges = thisMod.badges + extraBadges.join('')
-
-				if ( theseBadges.match('mod_badge_broken') && theseBadges.match('mod_badge_notmod') ) {
-					theseBadges = theseBadges.replace(fsgUtil.badge('danger', 'broken'), '')
+				if ( displayBadges.includes('broken') && displayBadges.includes('notmod') ) {
+					const brokenIdx = displayBadges.indexOf('broken')
+					displayBadges.splice(brokenIdx, brokenIdx !== -1 ? 1 : 0)
 				}
+
+				if ( ! metDepend(thisMod.modDesc.depend, collection, opts.modList[collection].mods) ) {
+					displayBadges.unshift('depend')
+				}
+
+				searchStringMap[modColUUID] = [
+					thisMod.fileDetail.shortName,
+					thisMod.l10n.title,
+					thisMod.modDesc.author
+				].join(' ')
+
+				displayBadges.forEach((badge) => {
+					if ( typeof searchTagMap?.[badge]?.push === 'function' ) {
+						searchTagMap[badge].push(modColUUID)
+					}
+				})
 
 				modRows.push(makeModRow(
-					`${collection}--${thisMod.uuid}`,
+					modColUUID,
 					thisMod,
-					theseBadges,
-					modId,
-					metDepend(thisMod.modDesc.depend, collection, opts.modList[collection].mods)
+					displayBadges,
+					modId
 				))
+
 			} catch (e) {
 				window.log.notice(`Error building mod row: ${e}`, 'main')
 			}
@@ -263,18 +294,10 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, admi
 }
 
 
-function makeModRow(id, thisMod, badges, modId, metDepend) {
-	const theseBadges = ( metDepend ) ? badges : fsgUtil.badge('warning', 'depend') + badges
+function makeModRow(id, thisMod, badges, modId) {
+	const badgeHTML = Array.from(badges, (badge) => fsgUtil.badge(false, badge))
 
-	const data_searchString = fsgUtil.escapeSpecial([thisMod.fileDetail.shortName, thisMod.l10n.title, thisMod.modDesc.author].join(' '))
-	const data_tags = []
-
-	const tagRegEx = /"mod_badge_(.+?)"/g
-	const tagMatch = [...theseBadges.matchAll(tagRegEx)]
-
-	tagMatch.forEach((match) => { data_tags.push(match[1].toLowerCase()) })
-
-	return `<tr data-tags="${data_tags.join(' ')}" data-search="${data_searchString}" onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
+	return `<tr onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
 	<td>
 		<input type="checkbox" class="form-check-input mod-row-checkbox" id="${id}__checkbox">
 	</td>
@@ -282,7 +305,7 @@ function makeModRow(id, thisMod, badges, modId, metDepend) {
 		<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
 	</td>
 	<td>
-		<div class="bg-light"></div><span class="mod-short-name">${thisMod.fileDetail.shortName}</span><br /><small>${fsgUtil.escapeSpecial(thisMod.l10n.title)} - <em>${fsgUtil.escapeSpecial(thisMod.modDesc.author)}</em></small><div class="issue_badges">${theseBadges}</div>
+		<div class="bg-light"></div><span class="mod-short-name">${thisMod.fileDetail.shortName}</span><br /><small>${fsgUtil.escapeSpecial(thisMod.l10n.title)} - <em>${fsgUtil.escapeSpecial(thisMod.modDesc.author)}</em></small><div class="issue_badges">${badgeHTML.join(' ')}</div>
 	</td>
 	<td class="text-end pe-4">
 		${fsgUtil.escapeSpecial(thisMod.modDesc.version)}<br /><em class="small">${( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : ''}</em>

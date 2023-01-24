@@ -101,5 +101,20 @@ const fsgUtil = {
 			.replaceAll(/"/g, '&quot;')
 			.replaceAll(/'/g, '&#39;')
 	},
-	badge : (color, name, fullName = false) => `<span class="badge bg-${color}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
+	badgeDefault : {
+		broken   : 'danger',
+		problem  : 'warning',
+		nomp     : 'secondary',
+		pconly   : 'info',
+		folder   : 'primary',
+		notmod   : 'danger',
+		update   : 'light',
+		keys_bad : 'danger',
+		keys_ok  : 'success',
+		new      : 'success',
+		recent   : 'success',
+		nonmh    : 'dark',
+		depend   : 'warning',
+	},
+	badge : (color, name, fullName = false) => `<span class="badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
 }
