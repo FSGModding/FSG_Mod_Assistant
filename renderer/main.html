@@ -100,8 +100,8 @@
 <body class="d-flex flex-column h-100 overflow-custom2">
 	<main class="flex-shrink-0">
 	<div class="container-fluid px-0 user-select-none">
-		<div class="fixed-top pt-2 pb-2 bg-body" id="main-header">
-			<div class="row w-100 mb-2">
+		<div class="fixed-top pt-2 bg-body" id="main-header">
+			<div class="row w-100 mb-1">
 				<div class="col-6 border-bottom">
 					<h2 class="ps-2 mastHead">
 						<l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n>
@@ -122,7 +122,7 @@
 				</div>
 			</div>
 
-			<div class="row px-3 pt-1"><!-- source mods -->
+			<div class="row px-3 py-1"><!-- source mods -->
 				<div class="col">
 					<div class="btn-group d-flex h-100" role="group">
 						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-success" onclick="mods.addFolder()"><i class="bi bi-folder-plus"></i> <l10n class="small" name="folder_add"></l10n></button>
@@ -141,14 +141,96 @@
 					<button class="btn btn-success btn-sm w-100 h-100" style="line-height: 1.1em"  type="button" onclick="mods.versionCheck()"><l10n name="version_check"></l10n></button>
 				</div>
 			</div><!-- end: source mods-->
+			<div class="row py-1 px-3 border-top border-bottom">
+				<div class="col">
+					<div class="input-group input-group-sm mb-0">
+						<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
+						<input type="text" id="filter_input" onkeyup="select_lib.filter()" class="form-control mod-row-filter rounded-end">
+						<span id="filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; color:black;"></span>
+					</div>
+				</div>
+				<div class="col col-auto">
+					<div class="btn-group btn-group-sm">
+						<input type="checkbox" id="filter__show_non_mod" onchange="select_lib.filter()" class="btn-check mod-row-filter_check" autocomplete="off" checked>
+						<label class="btn btn-outline-success" for="filter__show_non_mod"><l10n name="show_non_mod"></l10n></label>
+	
+						<input type="checkbox" id="filter__show_broken" onchange="select_lib.filter()" class="btn-check mod-row-filter_check" autocomplete="off" checked>
+						<label class="btn btn-outline-success" for="filter__show_broken"><l10n name="show_broken"></l10n></label>
+					</div>
+				</div>
+				
+				<div class="col col-auto">
+					<div class="dropdown">
+						<button type="button" class="btn btn-sm btn-primary pe-3 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+							<l10n name="filter_badges"></l10n>
+							<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-white text-black" id="tag_filter_count">0</span>
+						</button>
+						<form class="dropdown-menu px-0 py-0 mt-1">
+							<div class="btn-group-vertical btn-group-sm w-100">
+								<input type="checkbox" id="tag_filter__broken" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__broken"><l10n name="mod_badge_broken"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__folder" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__folder"><l10n name="mod_badge_folder"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__new" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__new"><l10n name="mod_badge_new"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__nomp" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__nomp"><l10n name="mod_badge_nomp"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__notmod" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__notmod"><l10n name="mod_badge_notmod"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__pconly" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__pconly"><l10n name="mod_badge_pconly"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__problem" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__problem"><l10n name="mod_badge_problem"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__recent" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__recent"><l10n name="mod_badge_recent"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__update" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__update"><l10n name="mod_badge_update"></l10n></label>
+
+								<input type="checkbox" id="tag_filter__nonmh" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter__nonmh"><l10n name="mod_badge_nonmh"></l10n></label>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="col col-auto">
+					<div class="btn-group btn-group-sm input-group input-group-sm">
+						<span class="input-group-text"><l10n name="select_pick"></l10n></span>
+						<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
+						<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
+						<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
+					</div>
+				</div>
+				<!-- <select name="filter__tags" id="filter__tags" onchange="select_lib.filter()" class="form-control"  multiple="multiple">
+					
+					<option value="mod_badge_new">mod_badge_new</option>
+					<option value="mod_badge_nomp">mod_badge_nomp</option>
+					<option value="mod_badge_notmod">mod_badge_notmod</option>
+					<option value="mod_badge_pconly">mod_badge_pconly</option>
+					<option value="mod_badge_problem">mod_badge_problem</option>
+					<option value="mod_badge_recent">mod_badge_recent</option>
+					<option value="mod_badge_update">mod_badge_update</option>
+					<option value="mod_badge_nonmh">mod_badge_nonmh</option>
+					<option value="mod_badge_keys_ok">mod_badge_keys_ok</option>
+					<option value="mod_badge_keys_bad">mod_badge_keys_bad</option>
+					<option value="mod_badge_depend_flag">mod_badge_depend_flag</option>
+				</select> -->
+			</div>
 		</div>
 		
-		<div class="row overflow-hidden px-2" style="margin-top: 105px;">
+		<div class="row overflow-hidden px-2" style="margin-top: 135px;">
 			<div class="col-10">
 				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
 			</div>
 			<div class="col-2 p-0"><!-- buttons -->
-				<div id="moveButtons" class="px-2" style="height: calc(100vh - 152px); position: fixed; top: 112px;">
+				<div id="moveButtons" class="px-2" style="height: calc(100vh - 178px); position: fixed; top: 140px;">
 					<div class="badge bg-dark bg-gradient d-block mb-2 mx-auto"><l10n class="fw-normal" name="select_quantity"></l10n> <span id="select_quantity">0</span></div>
 					<div id="moveButtonsInt" style="height: calc(100% - 28px);">
 						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-arrow-down"></i><br /><l10n class="small" name="move_to_list"></l10n></button>

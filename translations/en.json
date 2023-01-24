@@ -77,7 +77,7 @@
 	"mod_badge_broken__title"                : "This mod is broken",
 	"mod_badge_broken"                       : "broken",
 	"mod_badge_folder__title"                : "This is a folder",
-	"mod_badge_folder"                       : "Folder",
+	"mod_badge_folder"                       : "folder",
 	"mod_badge_new__title"                   : "This file is new since the last scan",
 	"mod_badge_new"                          : "new",
 	"mod_badge_nomp__title"                  : "This can't be used in multiplayer",
@@ -290,5 +290,6 @@
 	"folder_up_button__title"                : "Move folder up",
 	"folder_down_button__title"              : "Move folder down",
 	"folder_bot_button__title"               : "Move folder to bottom",
-	"translate_blurb_tagline"                : "Feel free to support the translation effort on"
+	"translate_blurb_tagline"                : "Feel free to support the translation effort on",
+	"filter_badges"                          : "Limit to Tags"
 }
