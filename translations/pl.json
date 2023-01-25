@@ -158,10 +158,6 @@
 	"select_none__title": "Odznacz wszystko",
 	"select_none": "Brak",
 	"select_pick": "Wybierz",
-	"show_broken__title": "Pokaż uszkodzone mody",
-	"show_broken": "Pokaż uszkodzone",
-	"show_non_mod__title": "Pokaż pliki nie-mody",
-	"show_non_mod": "Pokaż nie-mody",
 	"status-processing-title": "Przetwarzanie modów...",
 	"status-set-list-title": "Ustawianie folderu z modami...",
 	"tray_quit": "Zamknij",
@@ -290,5 +286,9 @@
 	"folder_up_button__title": "Przesuń folder w górę",
 	"folder_down_button__title": "Przesuń folder w dół",
 	"folder_bot_button__title": "Przesuń folder na dół",
-	"translate_blurb_tagline": "Zachęcamy do wspierania wysiłków na rzecz tłumaczenia na"
+	"translate_blurb_tagline": "Zachęcamy do wspierania wysiłków na rzecz tłumaczenia na",
+	"filter_badges": "Limit na tagi",
+	"filter_out_badges": "Hide Tags",
+	"filter_tag_reset": "RESET",
+	"empty_or_filtered": "Pusta kolekcja lub wszystkie mody ukryte przez filtry"
 }

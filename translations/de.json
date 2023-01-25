@@ -158,10 +158,6 @@
 	"select_none__title": "Alle abwählen",
 	"select_none": "keine",
 	"select_pick": "Wählen Sie",
-	"show_broken__title": "Kaputte Mods anzeigen",
-	"show_broken": "Gebrochene anzeigen",
-	"show_non_mod__title": "Nicht-Mod-Dateien anzeigen",
-	"show_non_mod": "Nicht-Mods anzeigen",
 	"status-processing-title": "Verarbeitung von Mods...",
 	"status-set-list-title": "Spiel-Mod-Ordner einstellen...",
 	"tray_quit": "Beenden Sie",
@@ -290,5 +286,9 @@
 	"folder_up_button__title": "Ordner nach oben verschieben",
 	"folder_down_button__title": "Ordner nach unten verschieben",
 	"folder_bot_button__title": "Ordner nach unten verschieben",
-	"translate_blurb_tagline": "Unterstützen Sie die Übersetzungsarbeit auf"
+	"translate_blurb_tagline": "Unterstützen Sie die Übersetzungsarbeit auf",
+	"filter_badges": "Begrenzung auf Tags",
+	"filter_out_badges": "Hide Tags",
+	"filter_tag_reset": "RESET",
+	"empty_or_filtered": "Leere Sammlung oder alle Mods durch Filter versteckt"
 }

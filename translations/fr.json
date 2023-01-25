@@ -158,10 +158,6 @@
 	"select_none__title": "Désélectionner tout (SHIFT+CTRL+A)",
 	"select_none": "aucun",
 	"select_pick": "Sélectionnez",
-	"show_broken__title": "Afficher les mods cassés",
-	"show_broken": "Montrer cassé",
-	"show_non_mod__title": "Afficher les fichiers non mod",
-	"show_non_mod": "Afficher les non-mods",
 	"status-processing-title": "Modes de traitement...",
 	"status-set-list-title": "Réglage du dossier de modélisation du jeu...",
 	"tray_quit": "Arrêtez",
@@ -290,5 +286,9 @@
 	"folder_up_button__title": "Déplacer le dossier vers le haut",
 	"folder_down_button__title": "Déplacer le dossier vers le bas",
 	"folder_bot_button__title": "Déplacer le dossier en bas",
-	"translate_blurb_tagline": "N'hésitez pas à soutenir l'effort de traduction sur"
+	"translate_blurb_tagline": "N'hésitez pas à soutenir l'effort de traduction sur",
+	"filter_badges": "Limite aux balises",
+	"filter_out_badges": "Hide Tags",
+	"filter_tag_reset": "RESET",
+	"empty_or_filtered": "Collection vide ou tous les mods cachés par des filtres"
 }

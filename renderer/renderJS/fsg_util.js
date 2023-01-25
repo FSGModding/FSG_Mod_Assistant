@@ -25,7 +25,7 @@ const fsgUtil = {
 			case 'x':
 				return '<i class="bi bi-x-circle"></i>'
 			case 'folder':
-				return '<svg enable-background="new 0 0 347.479 347.479" version="1.1" viewBox="0 0 347.48 347.48" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" width="25" height="25">' +
+				return '<svg enable-background="new 0 0 347.479 347.479" version="1.1" viewBox="0 0 347.48 347.48" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="margin-left: 15px;">' +
 				'<path d="m292.25 79.766h-188.61v-8.544c0-5.974-4.888-10.862-10.862-10.862h-62.368c-5.975 0-10.862 4.888-10.862 10.862v8.544h-3.258c-8.962 0-16.294 7.332-16.294 16.293v174.77c0 8.961 7.332 16.293 16.293 16.293h275.96c8.961 0 16.293-7.332 16.293-16.293v-174.77c1e-3 -8.961-7.331-16.293-16.293-16.293z" fill="#E0B03B"/>'+
 				'<rect x="23.243" y="95.385" width="262.06" height="176.11" fill="#fff"/>' +
 				'<path d="m312.43 271.29c-2.135 8.704-11.213 15.825-20.175 15.825h-275.96c-8.961 0-14.547-7.121-12.412-15.825l34.598-141.05c2.135-8.704 11.213-15.825 20.175-15.825h275.96c8.961 0 14.547 7.121 12.412 15.825l-34.598 141.05z" fill="#FFC843"/>' +
@@ -101,5 +101,20 @@ const fsgUtil = {
 			.replaceAll(/"/g, '&quot;')
 			.replaceAll(/'/g, '&#39;')
 	},
-	badge : (color, name, fullName = false) => `<span class="badge bg-${color}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
+	badgeDefault : {
+		broken   : 'danger',
+		problem  : 'warning',
+		nomp     : 'secondary',
+		pconly   : 'info',
+		folder   : 'primary',
+		notmod   : 'danger',
+		update   : 'light',
+		keys_bad : 'danger',
+		keys_ok  : 'success',
+		new      : 'success',
+		recent   : 'success',
+		nonmh    : 'dark',
+		depend   : 'warning',
+	},
+	badge : (color, name, fullName = false) => `<span class="badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
 }

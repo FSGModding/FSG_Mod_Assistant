@@ -82,16 +82,31 @@ window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 })
 
 
-let lastLocale = 'en'
-let lastQuickLists = {}
+let lastLocale      = 'en'
+let lastQuickLists  = {}
+let searchStringMap = {}
+let searchTagMap    = {}
 
 window.mods.receive('fromMain_modList', (opts) => {
-	lastQuickLists = {}
+	lastQuickLists  = {}
+	searchStringMap = {}
+	searchTagMap    = {
+		broken  : [],
+		folder  : [],
+		new     : [],
+		nomp    : [],
+		notmod  : [],
+		pconly  : [],
+		problem : [],
+		recent  : [],
+		update  : [],
+		nonmh   : [],
+	}
 	lastLocale = opts.currentLocale
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
-	const lastOpenQ   = (lastOpenAcc !== null) ? lastOpenAcc.querySelector('input.mod-row-filter').value : ''
+	const lastOpenQ   = (lastOpenAcc !== null) ? fsgUtil.byId('filter_input').value : ''
 	const scrollStart = window.scrollY
 
 	const selectedList = ( opts.activeCollection !== '999' && opts.activeCollection !== '0') ? `collection--${opts.activeCollection}` : opts.activeCollection
@@ -106,45 +121,61 @@ window.mods.receive('fromMain_modList', (opts) => {
 
 		opts.modList[collection].mods.forEach((thisMod) => {
 			try {
-				const extraBadges = []
-				const modId       = opts.modHub.list.mods[thisMod.fileDetail.shortName] || null
-				const modVer      = opts.modHub.version[modId] || null
+				const displayBadges = thisMod.badgeArray || []
+				const modId         = opts.modHub.list.mods[thisMod.fileDetail.shortName] || null
+				const modVer        = opts.modHub.version[modId] || null
+				const modColUUID    = `${collection}--${thisMod.uuid}`
 
 				sizeOfFolder += thisMod.fileDetail.fileSize
 
 				if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
 					if ( typeof opts.bindConflict[collection][thisMod.fileDetail.shortName] !== 'undefined' ) {
-						extraBadges.push(fsgUtil.badge('danger', 'keys_bad'))
+						displayBadges.push('keys_bad')
 					} else {
-						extraBadges.push(fsgUtil.badge('success', 'keys_ok'))
+						displayBadges.push('keys_ok')
 					}
 				}
 				if ( modVer !== null && thisMod.modDesc.version !== modVer) {
-					extraBadges.push(fsgUtil.badge('light', 'update'))
+					displayBadges.push('update')
 				}
 				if ( opts.newMods.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
-					extraBadges.push(fsgUtil.badge('success', 'new'))
+					displayBadges.push('new')
 				}
 				if ( modId !== null && opts.modHub.list.last.includes(modId) ) {
-					extraBadges.push(fsgUtil.badge('success', 'recent'))
+					displayBadges.push('recent')
 				}
 				if ( modId === null ) {
-					extraBadges.push(fsgUtil.badge('dark', 'nonmh'))
+					displayBadges.push('nonmh')
 				}
 
-				let theseBadges = thisMod.badges + extraBadges.join('')
-
-				if ( theseBadges.match('mod_badge_broken') && theseBadges.match('mod_badge_notmod') ) {
-					theseBadges = theseBadges.replace(fsgUtil.badge('danger', 'broken'), '')
+				if ( displayBadges.includes('broken') && displayBadges.includes('notmod') ) {
+					const brokenIdx = displayBadges.indexOf('broken')
+					displayBadges.splice(brokenIdx, brokenIdx !== -1 ? 1 : 0)
 				}
+
+				if ( ! metDepend(thisMod.modDesc.depend, collection, opts.modList[collection].mods) ) {
+					displayBadges.unshift('depend')
+				}
+
+				searchStringMap[modColUUID] = [
+					thisMod.fileDetail.shortName,
+					thisMod.l10n.title,
+					thisMod.modDesc.author
+				].join(' ').toLowerCase()
+
+				displayBadges.forEach((badge) => {
+					if ( typeof searchTagMap?.[badge]?.push === 'function' ) {
+						searchTagMap[badge].push(modColUUID)
+					}
+				})
 
 				modRows.push(makeModRow(
-					`${collection}--${thisMod.uuid}`,
+					modColUUID,
 					thisMod,
-					theseBadges,
-					modId,
-					metDepend(thisMod.modDesc.depend, collection, opts.modList[collection].mods)
+					displayBadges,
+					modId
 				))
+
 			} catch (e) {
 				window.log.notice(`Error building mod row: ${e}`, 'main')
 			}
@@ -152,12 +183,13 @@ window.mods.receive('fromMain_modList', (opts) => {
 		
 		modTable.push(makeModCollection(
 			collection,
-			`${opts.modList[collection].name} <small>[${opts.modList[collection].mods.length}] [${fsgUtil.bytesToHR(sizeOfFolder, opts.currentLocale)}]</small>`,
+			`${opts.modList[collection].name} <small>[${fsgUtil.bytesToHR(sizeOfFolder, opts.currentLocale)}]</small>`,
 			modRows,
 			fsgUtil.notesDefault(opts.notes, collection, 'notes_website'),
 			fsgUtil.notesDefault(opts.notes, collection, 'notes_websiteDL', false),
 			fsgUtil.notesDefault(opts.notes, collection, 'notes_tagline'),
-			fsgUtil.notesDefault(opts.notes, collection, 'notes_admin')
+			fsgUtil.notesDefault(opts.notes, collection, 'notes_admin'),
+			opts.modList[collection].mods.length
 		))
 		const selectCollName = `${opts.modList[collection].name}${window.mods.getCollDesc(collection)}`
 		
@@ -200,6 +232,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 		window.scrollTo(0, scrollStart)
 	} catch { /* nope */ }
 
+	select_lib.filter()
 	processL10N()
 })
 
@@ -238,9 +271,11 @@ function clientMakeListActive() {
 	}
 }
 
-function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, adminPass) {
+function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount) {
+	const totCount = modCount > 999 ? '999+' : modCount
 	return `<tr class="mod-table-folder">
 	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
+		<div class="badge rounded-pill bg-primary bg-gradient position-absolute" style="width: 30px; font-size: 0.5em; transform: translateY(-20%)!important">${totCount}</div>
 		${fsgUtil.getIconSVG('folder')}
 	</td>
 	<td class="folder-name collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
@@ -257,46 +292,14 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, admi
 </tr>
 <tr class="mod-table-folder-detail collapse accordion-collapse" data-bs-parent="#mod-collections" id="${id}_mods">
 	<td class="mod-table-folder-details px-0 ps-4" colspan="3">
-		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">
-			<tr>
-				<td colspan="4">
-					<div class="row g-2 mb-1">
-						<div class="col">
-							<div class="input-group input-group-sm mb-0">
-								<span class="input-group-text bg-gradient">${getText('filter_only')}</span>
-								<input type="text" id="${id}_mods__filter" onkeyup="select_lib.filter('${id}_mods')" class="form-control mod-row-filter">
-								<span id="${id}_mods__filter_clear" onclick="clientClearInput('${id}_mods__filter')" class="form-control-clear gg-erase form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; color:black;"></span>
-							</div>
-						</div>
-						<div class="col col-auto">
-							<div class="btn-group btn-group-sm">
-								<input type="checkbox" id="${id}_mods__show_non_mod" onchange="select_lib.filter('${id}_mods')" class="btn-check mod-row-filter_check" autocomplete="off" checked>
-								<label class="btn btn-outline-success" for="${id}_mods__show_non_mod">${getText('show_non_mod')}</label>
-
-								<input type="checkbox" id="${id}_mods__show_broken" onchange="select_lib.filter('${id}_mods')" class="btn-check mod-row-filter_check" autocomplete="off" checked>
-								<label class="btn btn-outline-success" for="${id}_mods__show_broken">${getText('show_broken')}</label>
-							</div>
-						</div>
-						<div class="col col-auto">
-							<div class="btn-group btn-group-sm input-group input-group-sm">
-								<span class="input-group-text">${getText('select_pick')}</span>
-								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_none('${id}_mods')">${getText('select_none')}</button>
-								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_all('${id}_mods')">${getText('select_all')}</button>
-								<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_invert('${id}_mods')">${getText('select_invert')}</button>
-							</div>
-						</div>
-					</div>
-				</td>
-			</tr>
-			${modsRows.join('')}
-		</table>
+		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>
+		<span class="no-mods-found d-block fst-italic small text-center d-none">${getText('empty_or_filtered')}</span>
 	</td>
 </tr>`
 }
 
-
-function makeModRow(id, thisMod, badges, modId, metDepend) {
-	const theseBadges = ( metDepend ) ? badges : fsgUtil.badge('warning', 'depend') + badges
+function makeModRow(id, thisMod, badges, modId) {
+	const badgeHTML = Array.from(badges, (badge) => fsgUtil.badge(false, badge))
 
 	return `<tr onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
 	<td>
@@ -306,7 +309,7 @@ function makeModRow(id, thisMod, badges, modId, metDepend) {
 		<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
 	</td>
 	<td>
-		<div class="bg-light"></div><span class="mod-short-name">${thisMod.fileDetail.shortName}</span><br /><small>${fsgUtil.escapeSpecial(thisMod.l10n.title)} - <em>${fsgUtil.escapeSpecial(thisMod.modDesc.author)}</em></small><div class="issue_badges">${theseBadges}</div>
+		<div class="bg-light"></div><span class="mod-short-name">${thisMod.fileDetail.shortName}</span><br /><small>${fsgUtil.escapeSpecial(thisMod.l10n.title)} - <em>${fsgUtil.escapeSpecial(thisMod.modDesc.author)}</em></small><div class="issue_badges">${badgeHTML.join(' ')}</div>
 	</td>
 	<td class="text-end pe-4">
 		${fsgUtil.escapeSpecial(thisMod.modDesc.version)}<br /><em class="small">${( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : ''}</em>
@@ -315,10 +318,8 @@ function makeModRow(id, thisMod, badges, modId, metDepend) {
 }
 
 
-function clientClearInput(id) {
-	const filterId = id.replace('__filter', '')
-
-	select_lib.filter(filterId, '')
+function clientClearInput() {
+	select_lib.filter(null, '')
 }
 
 function clientBatchOperation(mode) {
@@ -368,8 +369,8 @@ function clientOpenFarmSim() {
 	window.mods.startFarmSim()
 }
 
-window.addEventListener('hide.bs.collapse', () => { select_lib.clear_all() })
-window.addEventListener('show.bs.collapse', () => { select_lib.clear_all() })
+window.addEventListener('hide.bs.collapse', () => { select_lib.click_none() })
+window.addEventListener('show.bs.collapse', () => { select_lib.click_none() })
 
 const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
 

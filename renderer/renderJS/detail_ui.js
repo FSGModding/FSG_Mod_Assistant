@@ -106,24 +106,24 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`
 	}
 
-	const extraBadges = []
+	const displayBadges = modRecord.badgeArray || []
 
 	if ( Object.keys(modRecord.modDesc.binds).length > 0 ) {
 		if ( typeof bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) {
-			extraBadges.push(fsgUtil.badge('danger', 'keys_bad'))
+			displayBadges.push('keys_bad')
 		} else {
-			extraBadges.push(fsgUtil.badge('success', 'keys_ok'))
+			displayBadges.push('keys_ok')
 		}
 	}
 
 	if ( modhubRecord[0] !== null && modhubRecord[1] !== null && modRecord.modDesc.version !== modhubRecord[1]) {
-		extraBadges.push(fsgUtil.badge('light', 'update'))
+		displayBadges.push('update')
 	}
 	if ( modhubRecord[2] ) {
-		extraBadges.push(fsgUtil.badge('success', 'recent'))
+		displayBadges.push('recent')
 	}
 	if ( modhubRecord[0] === null ) {
-		extraBadges.push(fsgUtil.badge('dark', 'nonmh'))
+		displayBadges.push('nonmh')
 		fsgUtil.byId('modhub_link').classList.add('d-none')
 	} else {
 		const modhubLink = `https://www.farming-simulator.com/mod.php?mod_id=${modhubRecord[0]}`
@@ -131,15 +131,15 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 	}
 
 	if ( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 ) {
-		extraBadges.push(fsgUtil.badge('success', 'depend_flag'))
+		displayBadges.push('depend_flag')
 	}
 
-	extraBadges.push(modRecord.badges)
-	let theseBadges = extraBadges.join('')
-
-	if ( theseBadges.match('mod_badge_broken') && theseBadges.match('mod_badge_notmod') ) {
-		theseBadges = theseBadges.replace(fsgUtil.badge('danger', 'broken'), '')
+	if ( displayBadges.includes('broken') && displayBadges.includes('notmod') ) {
+		const brokenIdx = displayBadges.indexOf('broken')
+		displayBadges.splice(brokenIdx, brokenIdx !== -1 ? 1 : 0)
 	}
+
+	const theseBadges = Array.from(displayBadges, (badge) => fsgUtil.badge(false, badge)).join(' ')
 
 	textOrHide(
 		'badges',

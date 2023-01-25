@@ -19,6 +19,7 @@ const selectList = {
 	inactive : [],
 	unused   : [],
 	nohub    : [],
+	active   : [],
 }
 const selectCount = {
 	dlc        : 0,
@@ -29,6 +30,7 @@ const selectCount = {
 	inactive   : 0,
 	unused     : 0,
 	nohub      : 0,
+	active     : 0,
 }
 
 function processL10N()          { clientGetL10NEntries() }
@@ -76,6 +78,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 	selectList.inactive = []
 	selectList.unused   = []
 	selectList.nohub    = []
+	selectList.active   = []
 
 	selectCount.isloaded   = 0
 	selectCount.dlc        = 0
@@ -85,6 +88,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 	selectCount.unused     = 0
 	selectCount.inactive   = 0
 	selectCount.nohub      = 0
+	selectCount.active     = 0
 
 	if ( savegame.errorList.length > 0 ) {
 		const errors = []
@@ -175,6 +179,9 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 			if ( thisModDetail.isModHub === false ) {
 				selectList.nohub.push(`${thisCollection}--${thisUUID}`)
 			}
+			if ( thisModDetail.isLoaded === true ) {
+				selectList.active.push(`${thisCollection}--${thisUUID}`)
+			}
 		}
 
 		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm))
@@ -185,6 +192,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 	selectCount.nohub    = selectList.nohub.length
 	selectCount.inactive = selectList.inactive.length
 	selectCount.unused   = selectList.unused.length
+	selectCount.active   = selectList.active.length
 
 	updateCounts()
 	processL10N()
