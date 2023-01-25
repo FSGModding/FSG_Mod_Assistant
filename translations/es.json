@@ -158,10 +158,6 @@
 	"select_none__title": "Deseleccionar todo",
 	"select_none": "ninguno",
 	"select_pick": "Seleccione",
-	"show_broken__title": "Mostrar mods rotos",
-	"show_broken": "Mostrar roto",
-	"show_non_mod__title": "Mostrar archivos no mod",
-	"show_non_mod": "Mostrar los no-mods",
 	"status-processing-title": "Procesamiento de mods...",
 	"status-set-list-title": "Configuración de la carpeta de mods del juego...",
 	"tray_quit": "Quit",
@@ -290,5 +286,9 @@
 	"folder_up_button__title": "Mover carpeta arriba",
 	"folder_down_button__title": "Mover carpeta abajo",
 	"folder_bot_button__title": "Mover carpeta al fondo",
-	"translate_blurb_tagline": "No dude en apoyar el esfuerzo de traducción en"
+	"translate_blurb_tagline": "No dude en apoyar el esfuerzo de traducción en",
+	"filter_badges": "Limitar a etiquetas",
+	"filter_out_badges": "Ocultar etiquetas",
+	"filter_tag_reset": "RESET",
+	"empty_or_filtered": "Colección vacía o todos los mods ocultos por filtros"
 }

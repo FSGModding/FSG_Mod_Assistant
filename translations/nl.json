@@ -158,10 +158,6 @@
 	"select_none__title": "Deselecteer alles (SHIFT+CTRL+A)",
 	"select_none": "geen",
 	"select_pick": "Selecteer",
-	"show_broken__title": "Toon Gebroken Mods",
-	"show_broken": "Toon Gebroken",
-	"show_non_mod__title": "Toon Non Mod Files",
-	"show_non_mod": "Toon Non-Mods",
 	"status-processing-title": "Mods verwerken...",
 	"status-set-list-title": "Game Mod Map instellen...",
 	"tray_quit": "Stop",
@@ -290,5 +286,9 @@
 	"folder_up_button__title": "Verplaats map naar boven",
 	"folder_down_button__title": "Verplaats map naar beneden",
 	"folder_bot_button__title": "Verplaats map naar beneden",
-	"translate_blurb_tagline": "Voel je vrij om de vertaling te steunen op"
+	"translate_blurb_tagline": "Voel je vrij om de vertaling te steunen op",
+	"filter_badges": "Beperk tot Tags",
+	"filter_out_badges": "Hide Tags",
+	"filter_tag_reset": "RESET",
+	"empty_or_filtered": "Lege collectie of alle mods verborgen door filters"
 }

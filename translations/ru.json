@@ -158,10 +158,6 @@
 	"select_none__title": "Отменить весь выбор (SHIFT+CTRL+A)",
 	"select_none": "ничего",
 	"select_pick": "Выбрать",
-	"show_broken__title": "Показать неработающие моды",
-	"show_broken": "Неработающие",
-	"show_non_mod__title": "Показать файлы, не являющиеся модами",
-	"show_non_mod": "Не моды",
 	"status-processing-title": "Обработка модов…",
 	"status-set-list-title": "Настройка папки с игровыми модами…",
 	"tray_quit": "Выйти",
@@ -290,5 +286,9 @@
 	"folder_up_button__title": "Переместить папку выше",
 	"folder_down_button__title": "Переместить папку ниже",
 	"folder_bot_button__title": "Переместить папку в самый низ",
-	"translate_blurb_tagline": "Помочь с работой над переводом можно на сайте"
+	"translate_blurb_tagline": "Помочь с работой над переводом можно на сайте",
+	"filter_badges": "Ограничение по тегам",
+	"filter_out_badges": "Скрыть теги",
+	"filter_tag_reset": "СБРОС",
+	"empty_or_filtered": "Пустая коллекция или все моды скрыты фильтрами"
 }

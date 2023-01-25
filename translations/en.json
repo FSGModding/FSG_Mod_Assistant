@@ -158,10 +158,6 @@
 	"select_none__title"                     : "Deselect All (SHIFT+CTRL+A)",
 	"select_none"                            : "none",
 	"select_pick"                            : "Select",
-	"show_broken__title"                     : "Show Broken Mods",
-	"show_broken"                            : "Show Broken",
-	"show_non_mod__title"                    : "Show Non Mod Files",
-	"show_non_mod"                           : "Show Non-Mods",
 	"status-processing-title"                : "Processing Mods...",
 	"status-set-list-title"                  : "Setting Game Mod Folder...",
 	"tray_quit"                              : "Quit",
@@ -292,5 +288,7 @@
 	"folder_bot_button__title"               : "Move folder to bottom",
 	"translate_blurb_tagline"                : "Feel free to support the translation effort on",
 	"filter_badges"                          : "Limit to Tags",
-	"filter_tag_reset"                       : "RESET"
+	"filter_out_badges"                      : "Hide Tags",
+	"filter_tag_reset"                       : "RESET",
+	"empty_or_filtered"                      : "Empty collection or all mods hidden by filters"
 }

@@ -183,12 +183,13 @@ window.mods.receive('fromMain_modList', (opts) => {
 		
 		modTable.push(makeModCollection(
 			collection,
-			`${opts.modList[collection].name} <small>[${opts.modList[collection].mods.length}] [${fsgUtil.bytesToHR(sizeOfFolder, opts.currentLocale)}]</small>`,
+			`${opts.modList[collection].name} <small>[${fsgUtil.bytesToHR(sizeOfFolder, opts.currentLocale)}]</small>`,
 			modRows,
 			fsgUtil.notesDefault(opts.notes, collection, 'notes_website'),
 			fsgUtil.notesDefault(opts.notes, collection, 'notes_websiteDL', false),
 			fsgUtil.notesDefault(opts.notes, collection, 'notes_tagline'),
-			fsgUtil.notesDefault(opts.notes, collection, 'notes_admin')
+			fsgUtil.notesDefault(opts.notes, collection, 'notes_admin'),
+			opts.modList[collection].mods.length
 		))
 		const selectCollName = `${opts.modList[collection].name}${window.mods.getCollDesc(collection)}`
 		
@@ -231,6 +232,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 		window.scrollTo(0, scrollStart)
 	} catch { /* nope */ }
 
+	select_lib.filter()
 	processL10N()
 })
 
@@ -269,9 +271,11 @@ function clientMakeListActive() {
 	}
 }
 
-function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, adminPass) {
+function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount) {
+	const totCount = modCount > 999 ? '999+' : modCount
 	return `<tr class="mod-table-folder">
 	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
+		<div class="badge rounded-pill bg-primary bg-gradient position-absolute" style="width: 30px; font-size: 0.5em; transform: translateY(-20%)!important">${totCount}</div>
 		${fsgUtil.getIconSVG('folder')}
 	</td>
 	<td class="folder-name collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
@@ -289,10 +293,10 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, admi
 <tr class="mod-table-folder-detail collapse accordion-collapse" data-bs-parent="#mod-collections" id="${id}_mods">
 	<td class="mod-table-folder-details px-0 ps-4" colspan="3">
 		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>
+		<span class="no-mods-found d-block fst-italic small text-center d-none">${getText('empty_or_filtered')}</span>
 	</td>
 </tr>`
 }
-
 
 function makeModRow(id, thisMod, badges, modId) {
 	const badgeHTML = Array.from(badges, (badge) => fsgUtil.badge(false, badge))
@@ -365,8 +369,8 @@ function clientOpenFarmSim() {
 	window.mods.startFarmSim()
 }
 
-// window.addEventListener('hide.bs.collapse', () => { select_lib.clear_all() })
-// window.addEventListener('show.bs.collapse', () => { select_lib.clear_all() })
+window.addEventListener('hide.bs.collapse', () => { select_lib.click_none() })
+window.addEventListener('show.bs.collapse', () => { select_lib.click_none() })
 
 const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
 

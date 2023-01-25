@@ -95,10 +95,10 @@ const select_lib = {
 	get_checks        : (tableID) => {
 		return document.getElementById(tableID).querySelectorAll('.mod-row-checkbox')
 	},
-	bulk_table        : (tableID) => {
+	bulk_table        : () => {
 		select_lib.clear_range()
 		select_lib.update_color()
-		select_lib.filter(tableID)
+		select_lib.filter()
 	},
 	change_count      : ( newCount ) => {
 		fsgUtil.byId('select_quantity').innerHTML = newCount
@@ -112,42 +112,53 @@ const select_lib = {
 				check.checked = false
 			}
 		})
-		select_lib.bulk_table(tableID)
+		select_lib.bulk_table()
 	},
-	click_none        : (tableID) => {
-		select_lib.get_checks(tableID).forEach((check) => {check.checked = false})
-		select_lib.bulk_table(tableID)
-	},
-	click_all         : (tableID) => {
-		select_lib.get_checks(tableID).forEach((check) => {
-			if ( ! check.parentElement.parentElement.classList.contains('d-none') ) {
-				check.checked = true
-			}
+	click_none        : () => {
+		fsgUtil.byId('mod-collections').querySelectorAll('.mod-row-checkbox:checked').forEach((check) => {
+			check.checked = false
 		})
-		select_lib.bulk_table(tableID)
+		select_lib.bulk_table()
 	},
-	click_invert      : (tableID) => {
-		select_lib.get_checks(tableID).forEach((check) => {
-			if ( ! check.parentElement.parentElement.classList.contains('d-none') ) {
-				check.checked = !check.checked
-			}
+	click_all         : () => {
+		select_lib.get_open_tables().forEach((tableID) => {
+			select_lib.get_checks(tableID.id).forEach((check) => {
+				if ( ! check.parentElement.parentElement.classList.contains('d-none') ) {
+					check.checked = true
+				}
+			})
 		})
-		select_lib.bulk_table(tableID)
+		select_lib.bulk_table()
+	},
+	click_invert      : () => {
+		select_lib.get_open_tables().forEach((tableID) => {
+			select_lib.get_checks(tableID.id).forEach((check) => {
+				if ( ! check.parentElement.parentElement.classList.contains('d-none') ) {
+					check.checked = !check.checked
+				}
+			})
+		})
+		select_lib.bulk_table()
+	},
+	get_open_tables   : () => {
+		return fsgUtil.byId('mod-collections').querySelectorAll('.collapse.show')
 	},
 	clear_all         : () => {
-		const allMods      = fsgUtil.query('.mod-row')
-		const moveButtons  = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
-		const allModChecks = fsgUtil.query('.mod-row-checkbox')
-		const filterInput  = fsgUtil.byId('filter_input')
-		const filterTags   = fsgUtil.query('.filter_tag_buttons')
-		const filterChecks = fsgUtil.query('.mod-row-filter_check')
+		const allMods       = fsgUtil.query('.mod-row')
+		const moveButtons   = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
+		const allModChecks  = fsgUtil.query('.mod-row-checkbox')
+		const filterInput   = fsgUtil.byId('filter_input')
+		const filterTags    = fsgUtil.query('.filter_tag_buttons')
+		const filterOutTags = fsgUtil.query('.filter_out_tag_buttons')
+		const filterChecks  = fsgUtil.query('.mod-row-filter_check')
 
 		filterInput.value = ''
-		filterTags.forEach(  (thisCheck) => { thisCheck.checked = false })
-		allModChecks.forEach((thisCheck) => { thisCheck.checked = false })
-		filterChecks.forEach((thisCheck) => { thisCheck.checked = true })
-		moveButtons.forEach( (button)    => { button.classList.add('disabled') })
-		allMods.forEach(     (thisMod)   => { thisMod.classList.remove('d-none') })
+		filterTags.forEach(   (thisCheck) => { thisCheck.checked = false })
+		filterOutTags.forEach((thisCheck) => { thisCheck.checked = false })
+		allModChecks.forEach( (thisCheck) => { thisCheck.checked = false })
+		filterChecks.forEach( (thisCheck) => { thisCheck.checked = true })
+		moveButtons.forEach(  (button)    => { button.classList.add('disabled') })
+		allMods.forEach(      (thisMod)   => { thisMod.classList.remove('d-none') })
 
 		select_lib.clear_range()
 		select_lib.update_color()
@@ -188,18 +199,29 @@ const select_lib = {
 		}
 
 		const tagLimit      = fsgUtil.byId('filter__tags').querySelectorAll(':checked')
+		const tagHiders     = fsgUtil.byId('filter_out__tags').querySelectorAll(':checked')
 		const theseMods     = fsgUtil.byId('mod-collections').querySelectorAll('.mod-row')
 		const rawSearchTerm = fsgUtil.byId('filter_input').value.toLowerCase()
-		const showNonMods   = fsgUtil.byId('filter__show_non_mod').checked
-		const showBroken    = fsgUtil.byId('filter__show_broken').checked
 		const inverseSearch = rawSearchTerm.startsWith('!')
 		const searchTerm    = ( inverseSearch ) ? rawSearchTerm.substring(1) : rawSearchTerm
 
 		fsgUtil.byId('tag_filter_count').innerHTML = tagLimit.length
+		fsgUtil.byId('tag_filter_out_count').innerHTML = tagHiders.length
 		fsgUtil.byId('filter_clear').classList[(rawSearchTerm === '') ? 'add' : 'remove']('d-none')
 
 		const shownByTags_sets = []
+		const hideByTags_array = []
+
 		let showOnlyTags = false
+
+		if ( tagHiders.length > 0 ) {
+			tagHiders.forEach((element) => {
+				const thisTag = element.id.split('__')[1]
+				hideByTags_array.push(...searchTagMap[thisTag])
+			})
+		}
+
+		const hideByTags_set = new Set(hideByTags_array)
 
 		if ( tagLimit.length > 0 ) {
 			tagLimit.forEach((element) => {
@@ -217,8 +239,7 @@ const select_lib = {
 
 			if ( modRow.querySelector('.mod-row-checkbox').checked ) { return }
 		
-			if ( !showBroken  && searchTagMap.broken.includes(modRowUUID) ) { modRow.classList.add('d-none'); return }
-			if ( !showNonMods && searchTagMap.notmod.includes(modRowUUID) ) { modRow.classList.add('d-none'); return }
+			if ( hideByTags_set.has(modRowUUID) ) { modRow.classList.add('d-none'); return }
 
 			if ( showOnlyTags !== false ) {
 				if ( ! showOnlyTags.has(modRowUUID) ) { modRow.classList.add('d-none'); return }
@@ -231,9 +252,25 @@ const select_lib = {
 
 			modRow.classList[(showMe?'remove':'add')]('d-none')
 		})
+
+		fsgUtil.query('.mod-table-folder-detail').forEach((table) => {
+			const shownRows = table.querySelectorAll('.mod-row:not(.d-none)')
+			if ( shownRows.length === 0 ) {
+				table.querySelector('span.no-mods-found').classList.remove('d-none')
+			} else {
+				table.querySelector('span.no-mods-found').classList.add('d-none')
+			}
+
+		})
 	},
 	tag_reset : () => {
 		const filterTags   = fsgUtil.query('.filter_tag_buttons')
+
+		filterTags.forEach(  (thisCheck) => { thisCheck.checked = false })
+		select_lib.filter()
+	},
+	out_tag_reset : () => {
+		const filterTags   = fsgUtil.query('.filter_out_tag_buttons')
 
 		filterTags.forEach(  (thisCheck) => { thisCheck.checked = false })
 		select_lib.filter()

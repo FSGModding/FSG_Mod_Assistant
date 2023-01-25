@@ -64,7 +64,7 @@
 			vertical-align: middle;
 		}
 		td.folder-icon {
-			width: 66px;
+			width: 81px;
 			vertical-align: middle;
 		}
 		td.folder-name {
@@ -149,7 +149,7 @@
 						<span id="filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; color:black;"></span>
 					</div>
 				</div>
-				<div class="col col-auto">
+				<!-- <div class="col col-auto">
 					<div class="btn-group btn-group-sm">
 						<input type="checkbox" id="filter__show_non_mod" onchange="select_lib.filter()" class="btn-check mod-row-filter_check" autocomplete="off" checked>
 						<label class="btn btn-outline-success" for="filter__show_non_mod"><l10n name="show_non_mod"></l10n></label>
@@ -157,7 +157,52 @@
 						<input type="checkbox" id="filter__show_broken" onchange="select_lib.filter()" class="btn-check mod-row-filter_check" autocomplete="off" checked>
 						<label class="btn btn-outline-success" for="filter__show_broken"><l10n name="show_broken"></l10n></label>
 					</div>
+				</div> -->
+
+				<div class="col col-auto">
+					<div class="dropdown">
+						<button type="button" class="btn btn-sm btn-primary pe-3 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+							<l10n name="filter_out_badges"></l10n>
+							<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-white text-black" id="tag_filter_out_count">0</span>
+						</button>
+						<div class="dropdown-menu px-0 py-0 mt-1">
+							<div id="filter_out__tags" class="btn-group-vertical btn-group-sm w-100">
+								<button class="btn btn-outline-warning text-center" onclick="select_lib.out_tag_reset()"><l10n name="filter_tag_reset"></l10n></button>
+
+								<input type="checkbox" id="tag_filter_out__broken" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__broken"><l10n name="mod_badge_broken"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__folder" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__folder"><l10n name="mod_badge_folder"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__new" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__new"><l10n name="mod_badge_new"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__nomp" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__nomp"><l10n name="mod_badge_nomp"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__notmod" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__notmod"><l10n name="mod_badge_notmod"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__pconly" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__pconly"><l10n name="mod_badge_pconly"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__problem" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__problem"><l10n name="mod_badge_problem"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__recent" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__recent"><l10n name="mod_badge_recent"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__update" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__update"><l10n name="mod_badge_update"></l10n></label>
+
+								<input type="checkbox" id="tag_filter_out__nonmh" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
+								<label class="btn btn-outline-light" for="tag_filter_out__nonmh"><l10n name="mod_badge_nonmh"></l10n></label>
+							</div>
+						</div>
+					</div>
 				</div>
+
 				
 				<div class="col col-auto">
 					<div class="dropdown">
