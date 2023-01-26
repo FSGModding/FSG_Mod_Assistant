@@ -68,7 +68,7 @@
 	"loading_cache_title": "limpeza de cache",
 	"loading_files_subtitle": "Mover, copiar ou excluir",
 	"loading_files_title": "Organizar mods",
-	"loading_mods_subtitle": "Lendo e testando (isso pode demorar um pouco)",
+	"loading_mods_subtitle": "Lendo e testando <small>(isso pode demorar um pouco)</small>",
 	"loading_mods_title": "Mods de processamento",
 	"loading_set_subtitle": "Configuração da coleção ativa",
 	"loading_set_title": "Alterar gameSettings.xml",

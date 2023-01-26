@@ -68,7 +68,7 @@
 	"loading_cache_title": "Czyszczenie pamięci podręcznej",
 	"loading_files_subtitle": "Przenoszenie, kopiowanie lub usuwanie",
 	"loading_files_title": "Organizowanie modów",
-	"loading_mods_subtitle": "Czytanie i testowanie (to może zająć trochę czasu)",
+	"loading_mods_subtitle": "Czytanie i testowanie <small>(to może zająć trochę czasu)</small>",
 	"loading_mods_title": "Przetwarzanie modów",
 	"loading_set_subtitle": "Ustawienie aktywnego folderu",
 	"loading_set_title": "Edycja gameSettings.xml",

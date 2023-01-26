@@ -98,17 +98,20 @@
 		#display_mod_container { margin-top: 135px; }
 		#moveButtons { height: calc(100vh - 188px); position: fixed; top: 150px; }
 
-		.es [name="version_check"] { font-size: 0.9em; }
+		@media screen and (max-width: 1019px) {
 
-		.nl [name="app_name"] { font-size: calc(1.325rem + .55vw); }
-		.nl #display_mod_container { margin-top: 145px; }
-		.nl #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			.es [name="version_check"] { font-size: 0.9em; }
 
-		.pt #display_mod_container { margin-top: 145px; }
-		.pt #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			.nl [name="app_name"] { font-size: calc(1.325rem + .55vw); }
+			.nl #display_mod_container { margin-top: 145px; }
+			.nl #moveButtons { height: calc(100vh - 198px); top: 160px; }
 
-		.ru #display_mod_container { margin-top: 145px; }
-		.ru #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			.pt #display_mod_container { margin-top: 145px; }
+			.pt #moveButtons { height: calc(100vh - 198px); top: 160px; }
+
+			.ru #display_mod_container { margin-top: 145px; }
+			.ru #moveButtons { height: calc(100vh - 198px); top: 160px; }
+		}
 	</style>
 	
 </head>
