@@ -94,10 +94,26 @@
 			height: 13.5%;
 			line-height: 1.1em
 		}
+
+		#display_mod_container { margin-top: 135px; }
+		#moveButtons { height: calc(100vh - 188px); position: fixed; top: 150px; }
+
+		.es [name="version_check"] { font-size: 0.9em; }
+
+		.nl [name="app_name"] { font-size: calc(1.325rem + .55vw); }
+		.nl #display_mod_container { margin-top: 145px; }
+		.nl #moveButtons { height: calc(100vh - 198px); top: 160px; }
+
+		.pt #display_mod_container { margin-top: 145px; }
+		.pt #moveButtons { height: calc(100vh - 198px); top: 160px; }
+
+		.ru #display_mod_container { margin-top: 145px; }
+		.ru #moveButtons { height: calc(100vh - 198px); top: 160px; }
 	</style>
 	
 </head>
 <body class="d-flex flex-column h-100 overflow-custom2">
+	<div id="lang-style-div">
 	<main class="flex-shrink-0">
 	<div class="container-fluid px-0 user-select-none">
 		<div class="fixed-top pt-2 bg-body" id="main-header">
@@ -250,12 +266,12 @@
 			</div>
 		</div>
 		
-		<div class="row overflow-hidden px-2" style="margin-top: 135px;">
+		<div class="row overflow-hidden px-2" id="display_mod_container">
 			<div class="col-10">
 				<table id="mod-collections" class="w-100 table accordion border-top mt-3"></table><br />
 			</div>
 			<div class="col-2 p-0"><!-- buttons -->
-				<div id="moveButtons" class="px-2" style="height: calc(100vh - 188px); position: fixed; top: 150px;">
+				<div id="moveButtons" class="px-2">
 					<div id="moveButtonsInt" style="height: calc(100% - 0px);">
 						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-arrow-down"></i><br /><l10n class="small" name="move_to_list"></l10n></button>
 						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-plus"></i><br /><l10n class="small" name="copy_to_list"></l10n></button>
@@ -285,8 +301,15 @@
 					</ul>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="w-75 btn btn-warning" onclick="clientOpenGame_IGNORE()"><l10n name="active_no_match_ignore"></l10n></button>
-					<button type="button" class="w-75 btn btn-success" onclick="clientOpenGame_FIX()"><l10n name="active_no_match_fix"></l10n></button>
+					<div class="row">
+						<div class="col-3">
+							<img src="img/facepalm.png" class="w-100">
+						</div>
+						<div class="col-9">
+							<button type="button" class="w-100 mb-2 btn btn-warning" onclick="clientOpenGame_IGNORE()"><l10n name="active_no_match_ignore"></l10n></button>
+							<button type="button" class="w-100 btn btn-success" onclick="clientOpenGame_FIX()"><l10n name="active_no_match_fix"></l10n></button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -314,6 +337,6 @@
 			</div>
 		</div>
 	</footer>
-
+	</div>
 </body>
 </html>

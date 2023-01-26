@@ -40,7 +40,10 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 		}
 	})
 })
-window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
+window.l10n.receive('fromMain_l10n_refresh', () => {
+	fsgUtil.byId('lang-style-div').setAttribute('class', window.l10n.getText_sync('language_code'))
+	processL10N()
+})
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -105,6 +108,8 @@ window.mods.receive('fromMain_modList', (opts) => {
 		nonmh   : [],
 	}
 	lastLocale = opts.currentLocale
+
+	fsgUtil.byId('lang-style-div').setAttribute('class', opts.currentLocale)
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null

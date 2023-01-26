@@ -998,6 +998,11 @@ ipcMain.on('toMain_langList_send',   (event) => {
 		event.sender.send('fromMain_langList_return', langList, myTranslator.deferCurrentLocale())
 	})
 })
+
+ipcMain.on('toMain_getText_sync', (event, text) => {
+	event.returnValue = myTranslator.syncStringLookup(text)
+})
+
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	l10nSet.forEach((l10nEntry) => {
 		if ( l10nEntry === 'app_version' ) {
