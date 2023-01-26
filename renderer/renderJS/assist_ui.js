@@ -86,6 +86,8 @@ let lastLocale      = 'en'
 let lastQuickLists  = {}
 let searchStringMap = {}
 let searchTagMap    = {}
+let lastList        = null
+let fullList        = {}
 
 window.mods.receive('fromMain_modList', (opts) => {
 	lastQuickLists  = {}
@@ -113,7 +115,11 @@ window.mods.receive('fromMain_modList', (opts) => {
 	const modTable     = []
 	const optList      = []
 	
+	lastList = selectedList
+	fullList = {}
+
 	optList.push(fsgUtil.buildSelectOpt('0', `--${opts.l10n.disable}--`, selectedList, true))
+	fullList[0] = `--${opts.l10n.disable}--`
 	
 	Object.keys(opts.modList).forEach((collection) => {
 		const modRows      = []
@@ -194,9 +200,11 @@ window.mods.receive('fromMain_modList', (opts) => {
 		const selectCollName = `${opts.modList[collection].name}${window.mods.getCollDesc(collection)}`
 		
 		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, selectCollName, selectedList, false, opts.foldersMap[collection]))
+		fullList[`collection--${collection}`] = selectCollName
 
 	})
 	optList.push(fsgUtil.buildSelectOpt('999', `--${opts.l10n.unknown}--`, selectedList, true))
+	fullList[999] = `--${opts.l10n.unknown}--`
 	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
 
@@ -317,10 +325,7 @@ function makeModRow(id, thisMod, badges, modId) {
 </tr>`
 }
 
-
-function clientClearInput() {
-	select_lib.filter(null, '')
-}
+function clientClearInput() { select_lib.filter(null, '') }
 
 function clientBatchOperation(mode) {
 	const selectedMods   = []
@@ -365,8 +370,29 @@ function clientBatchOperation(mode) {
 }
 
 function clientOpenFarmSim() {
+	const currentList = fsgUtil.byId('collectionSelect').value
+	if ( currentList === lastList ) {
+		// Selected is active, no confirm
+		spinLED()
+		window.mods.startFarmSim()
+	} else {
+		// Different, ask confirmation
+		fsgUtil.byId('no_match_game_list').innerHTML = fullList[lastList]
+		fsgUtil.byId('no_match_ma_list').innerHTML = fullList[currentList]
+		mismatchDialog.show()
+	}
+}
+
+function clientOpenGame_IGNORE() {
+	mismatchDialog.hide()
 	spinLED()
+	fsgUtil.byId('collectionSelect').value = lastList
 	window.mods.startFarmSim()
+}
+
+function clientOpenGame_FIX() {
+	mismatchDialog.hide()
+	clientMakeListActive()
 }
 
 window.addEventListener('hide.bs.collapse', () => { select_lib.click_none() })
@@ -397,8 +423,13 @@ async function operateLED(type = 'spin') {
 	}
 }
 
+let mismatchDialog = null
 
-window.addEventListener('DOMContentLoaded', () => { processL10N() })
+window.addEventListener('DOMContentLoaded', () => {
+	processL10N()
+	mismatchDialog = new bootstrap.Modal(document.getElementById('open_game_modal'), {backdrop : 'static'})
+	mismatchDialog.hide()
+})
 
 window.addEventListener('click', () => {
 	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })

@@ -290,5 +290,11 @@
 	"filter_badges": "Beperk tot Tags",
 	"filter_out_badges": "Hide Tags",
 	"filter_tag_reset": "RESET",
-	"empty_or_filtered": "Lege collectie of alle mods verborgen door filters"
+	"empty_or_filtered": "Lege collectie of alle mods verborgen door filters",
+	"active_no_match_title": "Active Collection Mismatch!",
+	"active_no_match_body": "Je huidige actieve collectie in het spel is niet de collectie die is geselecteerd in de Mod Assistant collectie keuzelijst",
+	"active_no_match_fix": "Oeps, maak geselecteerde collectie actief",
+	"active_no_match_ignore": "Dat is Ok, negeer het en begin het spel",
+	"active_no_match_game_list": "Actief in het spel",
+	"active_no_match_ma_list": "Geselecteerd in mod assistant"
 }

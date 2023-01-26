@@ -290,5 +290,11 @@
 	"filter_badges": "Limite aux balises",
 	"filter_out_badges": "Hide Tags",
 	"filter_tag_reset": "RESET",
-	"empty_or_filtered": "Collection vide ou tous les mods cachés par des filtres"
+	"empty_or_filtered": "Collection vide ou tous les mods cachés par des filtres",
+	"active_no_match_title": "Collection active non conforme !",
+	"active_no_match_body": "Votre collection actuellement active dans le jeu n'est pas la collection sélectionnée dans la liste déroulante du sélecteur de collection de Mod Assistant",
+	"active_no_match_fix": "Oups, rendre active la collection sélectionnée",
+	"active_no_match_ignore": "C'est bon, ignorez-le et commencez le jeu",
+	"active_no_match_game_list": "Actif dans le jeu",
+	"active_no_match_ma_list": "Sélectionné dans mod assistant"
 }

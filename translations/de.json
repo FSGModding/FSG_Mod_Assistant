@@ -290,5 +290,11 @@
 	"filter_badges": "Begrenzung auf Tags",
 	"filter_out_badges": "Hide Tags",
 	"filter_tag_reset": "RESET",
-	"empty_or_filtered": "Leere Sammlung oder alle Mods durch Filter versteckt"
+	"empty_or_filtered": "Leere Sammlung oder alle Mods durch Filter versteckt",
+	"active_no_match_title": "Active Collection Mismatch!",
+	"active_no_match_body": "Ihre derzeit aktive Sammlung im Spiel ist nicht die Sammlung, die in der Sammlungsauswahl des Mod Assistant ausgewählt wurde",
+	"active_no_match_fix": "Ups, ausgewählte Sammlung aktiv machen",
+	"active_no_match_ignore": "Das ist in Ordnung, ignorieren Sie es und beginnen Sie das Spiel",
+	"active_no_match_game_list": "Aktiv im Spiel",
+	"active_no_match_ma_list": "Ausgewählt im Mod-Assistenten"
 }

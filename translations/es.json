@@ -290,5 +290,11 @@
 	"filter_badges": "Limitar a etiquetas",
 	"filter_out_badges": "Ocultar etiquetas",
 	"filter_tag_reset": "RESET",
-	"empty_or_filtered": "Colección vacía o todos los mods ocultos por filtros"
+	"empty_or_filtered": "Colección vacía o todos los mods ocultos por filtros",
+	"active_no_match_title": "¡No coinciden las colecciones activas!",
+	"active_no_match_body": "Tu colección activa en el juego no es la colección seleccionada en el menú desplegable del asistente de modulación",
+	"active_no_match_fix": "Oops, Make Selected Collection Active",
+	"active_no_match_ignore": "No pasa nada, ignóralo y empieza el juego",
+	"active_no_match_game_list": "Activo en el juego",
+	"active_no_match_ma_list": "Seleccionado en asistente mod"
 }

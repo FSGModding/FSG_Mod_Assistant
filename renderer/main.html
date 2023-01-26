@@ -141,7 +141,7 @@
 					<button class="btn btn-success btn-sm w-100 h-100" style="line-height: 1.1em"  type="button" onclick="mods.versionCheck()"><l10n name="version_check"></l10n></button>
 				</div>
 			</div><!-- end: source mods-->
-			<div class="row py-1 px-3 border-top border-bottom">
+			<div class="row py-2 px-3 border-top border-bottom">
 				<div class="col">
 					<div class="input-group input-group-sm mb-0">
 						<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
@@ -240,10 +240,11 @@
 				</div>
 				<div class="col col-auto">
 					<div class="btn-group btn-group-sm input-group input-group-sm">
-						<span class="input-group-text"><l10n name="select_pick"></l10n></span>
-						<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
-						<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
-						<button class="btn btn-btn btn-outline-light" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
+						<span class="input-group-text border-light border-opacity-25"><l10n name="select_pick"></l10n></span>
+						<button class="btn btn-btn btn-outline-light border-light border-opacity-25" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
+						<button class="btn btn-btn btn-outline-light border-light border-opacity-25" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
+						<button class="btn btn-btn btn-outline-light border-light border-opacity-25" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
+						<span class="input-group-text text-white border-light border-opacity-25" id="select_quantity">0</span>
 					</div>
 				</div>
 			</div>
@@ -251,12 +252,11 @@
 		
 		<div class="row overflow-hidden px-2" style="margin-top: 135px;">
 			<div class="col-10">
-				<table id="mod-collections" class="w-100 table accordion border-top my-2"></table><br />
+				<table id="mod-collections" class="w-100 table accordion border-top mt-3"></table><br />
 			</div>
 			<div class="col-2 p-0"><!-- buttons -->
-				<div id="moveButtons" class="px-2" style="height: calc(100vh - 178px); position: fixed; top: 140px;">
-					<div class="badge bg-dark bg-gradient d-block mb-2 mx-auto"><l10n class="fw-normal" name="select_quantity"></l10n> <span id="select_quantity">0</span></div>
-					<div id="moveButtonsInt" style="height: calc(100% - 28px);">
+				<div id="moveButtons" class="px-2" style="height: calc(100vh - 188px); position: fixed; top: 150px;">
+					<div id="moveButtonsInt" style="height: calc(100% - 0px);">
 						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-arrow-down"></i><br /><l10n class="small" name="move_to_list"></l10n></button>
 						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-plus"></i><br /><l10n class="small" name="copy_to_list"></l10n></button>
 						<button onclick="clientBatchOperation('delete')" type="button" class="operation_button w-100 mb-1 btn btn-danger rounded-4 disabled"><i class="bi bi-file-earmark-x"></i><br /><l10n class="small" name="remove_from_list"></l10n></button>
@@ -269,6 +269,29 @@
 			</div><!-- end: buttons-->
 		</div>
 	</div>
+
+	<div class="modal" id="open_game_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><l10n name="active_no_match_title"></l10n></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p class="m-0"><l10n name="active_no_match_body"></l10n></p>
+					<ul class="m-0 py-2">
+						<li><strong><l10n name="active_no_match_game_list"></l10n>:</strong> <span id="no_match_game_list"></span></li>
+						<li><strong><l10n name="active_no_match_ma_list"></l10n>:</strong> <span id="no_match_ma_list"></span></li>
+					</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="w-75 btn btn-warning" onclick="clientOpenGame_IGNORE()"><l10n name="active_no_match_ignore"></l10n></button>
+					<button type="button" class="w-75 btn btn-success" onclick="clientOpenGame_FIX()"><l10n name="active_no_match_fix"></l10n></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	</main>
 
 	<footer class="footer fixed-bottom mt-auto bg-dark small" id="main-footer">

@@ -290,5 +290,11 @@
 	"filter_badges": "Limite a etiquetas",
 	"filter_out_badges": "Esconder Etiquetas",
 	"filter_tag_reset": "RESET",
-	"empty_or_filtered": "Colecção vazia ou todos os mods escondidos por filtros"
+	"empty_or_filtered": "Colecção vazia ou todos os mods escondidos por filtros",
+	"active_no_match_title": "Descoordenação Activa de Colecções",
+	"active_no_match_body": "A sua colecção actualmente activa no jogo não é a colecção seleccionada no colector de colecção Mod Assistant drop down",
+	"active_no_match_fix": "Oops, tornar activa a recolha selectiva",
+	"active_no_match_ignore": "Está bem, Ignora-o e começa o jogo",
+	"active_no_match_game_list": "Activo no jogo",
+	"active_no_match_ma_list": "Seleccionado no mod assistant"
 }

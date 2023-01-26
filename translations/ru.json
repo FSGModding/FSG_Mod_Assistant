@@ -290,5 +290,11 @@
 	"filter_badges": "Оставить с метками",
 	"filter_out_badges": "Скрыть с метками",
 	"filter_tag_reset": "ОТМЕНИТЬ",
-	"empty_or_filtered": "Пустая коллекция или все моды скрыты фильтрами"
+	"empty_or_filtered": "Пустая коллекция или все моды скрыты фильтрами",
+	"active_no_match_title": "Несоответствие активной коллекции!",
+	"active_no_match_body": "Ваша текущая активная коллекция в игре не является коллекцией, выбранной в выпадающем списке коллекций Mod Assistant",
+	"active_no_match_fix": "Упс, сделайте выбранную коллекцию активной",
+	"active_no_match_ignore": "Все в порядке, не обращайте внимания и начинайте игру",
+	"active_no_match_game_list": "Активен в игре",
+	"active_no_match_ma_list": "Выбран в mod assistant"
 }
