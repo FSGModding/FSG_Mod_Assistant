@@ -384,6 +384,7 @@ function clientOpenFarmSim() {
 		// Different, ask confirmation
 		fsgUtil.byId('no_match_game_list').innerHTML = fullList[lastList]
 		fsgUtil.byId('no_match_ma_list').innerHTML = fullList[currentList]
+		fastBlinkLED()
 		mismatchDialog.show()
 	}
 }
@@ -407,7 +408,8 @@ const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgU
 
 async function spinLED()  { operateLED('spin') }
 async function blinkLED() { operateLED('blink') }
-async function operateLED(type = 'spin') {
+async function fastBlinkLED() { operateLED('blink', 1000) }
+async function operateLED(type = 'spin', time = 2500) {
 	if ( ! window.mods.isLEDActive() ) { return }
 	
 	try {
@@ -422,7 +424,7 @@ async function operateLED(type = 'spin') {
 		setTimeout(async () => {
 			await clientLEDDevice.sendReport(0x00, fsgUtil.led.off)
 			await clientLEDDevice.close()
-		}, 2500)
+		}, time)
 	} catch (e) {
 		window.log.debug(`Unable to spin LED (no light?) : ${e}`, 'main')
 	}
