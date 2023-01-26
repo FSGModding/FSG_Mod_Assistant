@@ -77,7 +77,7 @@
 	"mod_badge_broken__title": "Этот мод с ошибками",
 	"mod_badge_broken": "с ошибками",
 	"mod_badge_folder__title": "Это папка",
-	"mod_badge_folder": "Папка",
+	"mod_badge_folder": "папка",
 	"mod_badge_new__title": "Этот файл новый с момента последнего сканирования",
 	"mod_badge_new": "новый",
 	"mod_badge_nomp__title": "Нельзя использовать в многопользовательской игре",
@@ -287,8 +287,8 @@
 	"folder_down_button__title": "Переместить папку ниже",
 	"folder_bot_button__title": "Переместить папку в самый низ",
 	"translate_blurb_tagline": "Помочь с работой над переводом можно на сайте",
-	"filter_badges": "Ограничение по тегам",
-	"filter_out_badges": "Скрыть теги",
-	"filter_tag_reset": "СБРОС",
+	"filter_badges": "Оставить с метками",
+	"filter_out_badges": "Скрыть с метками",
+	"filter_tag_reset": "ОТМЕНИТЬ",
 	"empty_or_filtered": "Пустая коллекция или все моды скрыты фильтрами"
 }
