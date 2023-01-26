@@ -23,13 +23,13 @@ ___Contents___
       - [Collections Buttons](#collections-buttons)
       - [gameSettings Buttons](#gamesettings-buttons)
       - [Other Buttons](#other-buttons)
+      - [Filter Area](#filter-area)
+        - [Search Buttons](#search-buttons)
       - [Collections Area](#collections-area)
         - [Color Coding and Badges](#color-coding-and-badges)
         - [Active List](#active-list)
         - [Mouse Controls](#mouse-controls)
         - [Action Buttons](#action-buttons)
-        - [Search Feature](#search-feature)
-          - [Search Buttons](#search-buttons)
     - [Folder Details Window](#folder-details-window)
     - [Detail Window](#detail-window)
     - [Move and Copy](#move-and-copy)
@@ -116,7 +116,7 @@ __PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk
 
 ### Main Screen
 
-![main](screen_shots/001-main_program.png)
+![main-2](screen_shots/overview_buttons_01.png)
 
 #### Collections Buttons
 
@@ -138,10 +138,24 @@ __PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk
 - __Launch FS22__ : Start the game.  If your game is not in the default e-shop or steam location, you will need to set the game path in the preferences screen first.
 - __Discord Join Button__ : Join the [Farm Sim Game Discord](http://fsg.gg) for a great farming & modding community, and help on this app if you need it.
 
+#### Filter Area
+
+![main-2](screen_shots/overview_filter.png)
+![main-2](screen_shots/005-collect_search.png)
+
+This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_25DU_Trailers` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
+
+##### Search Buttons
+
+- __Hide Tags__ : hides mods with these tags on them
+- __Limit to Tags__ : only show mods with these tags (inclusive all)
+- __Select None__ : Clear selection on this collection `SHIFT+CTRL+A`
+- __Select All__ : Select all on this collection `CTRL+A`
+- __Select Invert__ : Invert selection on this collection `CTRL+I`
+
 #### Collections Area
 
-![collections](screen_shots/002-main_program_collect.png)
-![collections zoom](screen_shots/003-collect_detail.png)
+![main](screen_shots/overview_all.png)
 
 In this area you will see a list of all of the collections (folders) that you have added.
 
@@ -192,20 +206,6 @@ The active list is marked with a green check over the folder.
 - __Show in Explorer__ : Open a windows explorer window with the selected file pre-selected. This button is only available when a single file is selected.
 - __Find on ModHub__ : Attempt to open this mod on the modhub. This button is only available when a single file is selected, and Mod Assistant knows it is on the modhub. The list of mods is updated roughly hourly, and is refreshed when you restart the app.
 - __Copy Favorites To...__ : Copy the contents of your favorite folder(s) to one or more other collections.
-
-##### Search Feature
-
-![collections search](screen_shots/005-collect_search.png)
-
-This allows you to refine which parts of the collection you see.  This is a simple full text search, however preceding the search string with `!` will show mods that do _not_ match the string.  In this example, `FS22_22_Series` is still shown, even though it does not match the string, because it was selected prior to searching.  This is a safety measure so you do not accidentally move, copy, or delete files you were not intending to.
-
-###### Search Buttons
-
-- __Show Non-Mods__ : hides files that Mod Assistant thinks are not mods
-- __Show Broken__ : hides mods that Mod Assistant believes are broken
-- __Select None__ : Clear selection on this collection `SHIFT+CTRL+A`
-- __Select All__ : Select all on this collection `CTRL+A`
-- __Select Invert__ : Invert selection on this collection `CTRL+I`
 
 ### Folder Details Window
 
