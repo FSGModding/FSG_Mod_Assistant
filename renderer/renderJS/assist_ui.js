@@ -119,6 +119,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 	const selectedList = ( opts.activeCollection !== '999' && opts.activeCollection !== '0') ? `collection--${opts.activeCollection}` : opts.activeCollection
 	const modTable     = []
 	const optList      = []
+	const scrollTable  = []
 	
 	lastList = selectedList
 	fullList = {}
@@ -128,6 +129,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 	
 	Object.keys(opts.modList).forEach((collection) => {
 		const modRows      = []
+		const scrollRows   = []
 		let   sizeOfFolder = 0
 
 		opts.modList[collection].mods.forEach((thisMod) => {
@@ -180,6 +182,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 					}
 				})
 
+				scrollRows.push(`<div class="${collection}_mods ${modColUUID} scroll_mod d-none flex-grow-1 bg-opacity-25"></div>`)
 				modRows.push(makeModRow(
 					modColUUID,
 					thisMod,
@@ -202,6 +205,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 			fsgUtil.notesDefault(opts.notes, collection, 'notes_admin'),
 			opts.modList[collection].mods.length
 		))
+		scrollTable.push(`<div class="${collection} flex-grow-1" style="width: 6px;"></div>${scrollRows.join('')}`)
 		const selectCollName = `${opts.modList[collection].name}${window.mods.getCollDesc(collection)}`
 		
 		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, selectCollName, selectedList, false, opts.foldersMap[collection]))
@@ -212,6 +216,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 	fullList[999] = `--${opts.l10n.unknown}--`
 	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
+	fsgUtil.byId('scroll-bar-fake').innerHTML  = scrollTable.join('')
 
 	Object.keys(opts.notes).forEach((collection) => {
 		const thisFav = opts?.notes[collection]?.notes_favorite || false
@@ -288,7 +293,7 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, admi
 	const totCount = modCount > 999 ? '999+' : modCount
 	return `<tr class="mod-table-folder">
 	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
-		<div class="badge rounded-pill bg-primary bg-gradient position-absolute" style="width: 30px; font-size: 0.5em; transform: translateY(-20%)!important">${totCount}</div>
+		<div class="badge rounded-pill bg-primary bg-gradient float-start" style="width: 30px; height: 13px; margin-bottom: -15px; font-size: 0.5em; transform: translateY(-20%)!important">${totCount}</div>
 		${fsgUtil.getIconSVG('folder')}
 	</td>
 	<td class="folder-name collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
@@ -401,8 +406,10 @@ function clientOpenGame_FIX() {
 	clientMakeListActive()
 }
 
-window.addEventListener('hide.bs.collapse', () => { select_lib.click_none() })
-window.addEventListener('show.bs.collapse', () => { select_lib.click_none() })
+//window.addEventListener('hide.bs.collapse', () => { select_lib.click_none() })
+//window.addEventListener('show.bs.collapse', () => { select_lib.click_none() })
+window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })
+window.addEventListener('shown.bs.collapse', () => { select_lib.click_none() })
 
 const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
 

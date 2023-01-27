@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-100">
+<html class="h-100 overflow-hidden">
 <head>
 	<!-- _______           __ _______               __         __   
 		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
@@ -37,14 +37,22 @@
 			width: 10px;
 		}
 		::-webkit-scrollbar-track {
-			background: #2f2e2e; 
+			/* background: #2f2e2e;  */
+			/* background: rgb(59 59 59 / 20%); */
+			background: transparent;
 		}
 		::-webkit-scrollbar-thumb {
 			background: #3b3b3b;
-			border-radius: 10px;
+			/* border-radius: 10px; */
 		}
 		::-webkit-scrollbar-thumb:hover {
 			background: #4a4a4a; 
+		}
+		::-webkit-scrollbar-track-piece:start {
+			margin-top: 142px;
+		}
+		::-webkit-scrollbar-track-piece:end {
+			margin-bottom: 35px;
 		}
 
 		td.folder-icon:not(.collapsed)::after {
@@ -116,6 +124,9 @@
 	
 </head>
 <body class="d-flex flex-column h-100 overflow-custom2">
+	<div id="scroll-bar-fake" class="position-fixed d-flex flex-column" style="width: 6px; height: calc(100vh - 176px); top:141px; right:2px; background-color:rgba(66, 66, 66, 0.273)">
+
+	</div>
 	<div id="lang-style-div">
 	<main class="flex-shrink-0">
 	<div class="container-fluid px-0 user-select-none">
@@ -274,7 +285,7 @@
 				<table id="mod-collections" class="w-100 table accordion border-top mt-3"></table><br />
 			</div>
 			<div class="col-2 p-0"><!-- buttons -->
-				<div id="moveButtons" class="px-2">
+				<div id="moveButtons" class="px-2" style="width:16.5%">
 					<div id="moveButtonsInt" style="height: calc(100% - 0px);">
 						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-arrow-down"></i><br /><l10n class="small" name="move_to_list"></l10n></button>
 						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-plus"></i><br /><l10n class="small" name="copy_to_list"></l10n></button>

@@ -14,6 +14,29 @@ const select_lib = {
 	last_alt_hash     : false,
 	last_select_mod   : null,
 	last_select_table : null,
+	clear_scroll_display      : () => {
+		fsgUtil.query('.scroll_mod').forEach((element) => {
+			element.classList.add('d-none')
+		})
+	},
+	clear_scroll_color      : () => {
+		fsgUtil.query('.scroll_mod').forEach((element) => {
+			element.classList.remove('bg-success')
+			element.classList.remove('rounded-top')
+			element.classList.remove('rounded-bottom')
+		})
+	},
+	update_scroll     : () => {
+		const openTables = select_lib.get_open_tables()
+
+		select_lib.clear_scroll_display()
+
+		openTables.forEach((tableID) => {
+			const modsClass = tableID.id
+			const scrollMods = fsgUtil.query(`.${modsClass}`)
+			scrollMods.forEach((element) => { element.classList.remove('d-none') })
+		})
+	},
 	open_table        : (tableID) => {
 		fsgUtil.byId(tableID).classList.add('show')
 		document.querySelectorAll(`[data-bs-target="#${tableID}"]`).forEach((element) => {
@@ -97,7 +120,6 @@ const select_lib = {
 	},
 	bulk_table        : () => {
 		select_lib.clear_range()
-		select_lib.update_color()
 		select_lib.filter()
 	},
 	change_count      : ( newCount ) => {
@@ -164,9 +186,12 @@ const select_lib = {
 		select_lib.update_color()
 	},
 	update_color      : () => {
+		select_lib.clear_scroll_color()
 		const allModRows    = fsgUtil.query('.mod-row')
 		let   countSelected = 0
 		let   hasHash       = false
+		let   isFirst       = true
+		let   wasLast       = null
 
 		allModRows.forEach((thisRow) => {
 			const isChecked = thisRow.querySelector(`#${thisRow.id}__checkbox`).checked
@@ -174,12 +199,31 @@ const select_lib = {
 			if ( isChecked ) {
 				countSelected += 1
 				hasHash = ( countSelected === 1 ) && thisRow.classList.contains('has-hash')
+
+				const thisScroller = document.querySelector(`.${thisRow.id}`)
+				wasLast = thisScroller
+				thisScroller.classList.add('bg-success')
+				if ( isFirst ) {
+					thisScroller.classList.add('rounded-top')
+					isFirst = false
+				}
+			} else {
+				isFirst = true
+				if ( wasLast !== null ) {
+					wasLast.classList.add('rounded-bottom')
+					wasLast = null
+				}
 			}
 
 			thisRow.querySelectorAll('td').forEach((thisTD) => {
 				thisTD.classList[( isChecked ? 'add' : 'remove' )]('table-success')
 			})
 		})
+		
+		if ( wasLast !== null ) {
+			wasLast.classList.add('rounded-bottom')
+			wasLast = null
+		}
 
 		const moveButtons = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
 
@@ -194,6 +238,7 @@ const select_lib = {
 		select_lib.change_count(countSelected)
 	},
 	filter : (table, forceValue = false) => {
+		select_lib.update_scroll()
 		if ( forceValue !== false ) {
 			fsgUtil.byId('filter_input').value = forceValue
 		}
@@ -239,10 +284,18 @@ const select_lib = {
 
 			if ( modRow.querySelector('.mod-row-checkbox').checked ) { return }
 		
-			if ( hideByTags_set.has(modRowUUID) ) { modRow.classList.add('d-none'); return }
+			if ( hideByTags_set.has(modRowUUID) ) {
+				select_lib.scroll_hide(modRowUUID)
+				modRow.classList.add('d-none')
+				return
+			}
 
 			if ( showOnlyTags !== false ) {
-				if ( ! showOnlyTags.has(modRowUUID) ) { modRow.classList.add('d-none'); return }
+				if ( ! showOnlyTags.has(modRowUUID) ) {
+					select_lib.scroll_hide(modRowUUID)
+					modRow.classList.add('d-none')
+					return
+				}
 			}
 
 			if ( searchTerm.length < 2 ) { return }
@@ -250,7 +303,11 @@ const select_lib = {
 			const modText = searchStringMap[modRowUUID]
 			const showMe  = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
 
-			modRow.classList[(showMe?'remove':'add')]('d-none')
+			if ( !showMe ) {
+				select_lib.scroll_hide(modRowUUID)
+				modRow.classList.add('d-none')
+			}
+			//modRow.classList[(showMe?'remove':'add')]('d-none')
 		})
 
 		fsgUtil.query('.mod-table-folder-detail').forEach((table) => {
@@ -262,6 +319,9 @@ const select_lib = {
 			}
 
 		})
+	},
+	scroll_hide : (modID) => {
+		fsgUtil.query(`.${modID}`).forEach((element) => {element.classList.add('d-none')})
 	},
 	tag_reset : () => {
 		const filterTags   = fsgUtil.query('.filter_tag_buttons')
