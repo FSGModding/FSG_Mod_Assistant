@@ -20,6 +20,7 @@
     "dist": "electron-builder",
     "test": "node ./test/mod-reader-test.js && node ./test/save-reader-test.js && node ./test/translate-check.js",
     "langtest": "node ./test/translate-check.js",
+    "langfix": "node ./test/translate-fix.js",
     "depends": "node ./test/outdated-deps.js"
   },
   "devDependencies": {
