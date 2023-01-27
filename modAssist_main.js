@@ -101,7 +101,15 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 			detail  : myTranslator.syncStringLookup('update_detail'),
 		}
 		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
-			if (returnValue.response === 0) { autoUpdater.quitAndInstall() }
+			if (returnValue.response === 0) {
+				if ( tray ) { tray.destroy() }
+				Object.keys(windows).forEach((thisWin) => {
+					if ( thisWin !== 'main' && windows[thisWin] !== null ) {
+						windows[thisWin].destroy()
+					}
+				})
+				autoUpdater.quitAndInstall()
+			}
 		})
 	})
 
