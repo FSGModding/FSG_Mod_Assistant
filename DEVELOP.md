@@ -36,7 +36,6 @@ Mod Assistant requires Yarn to build.  Note that for windows, you may have to ru
 
 - [Yarn Install](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable)
 
-
 ## Build and Run
 
 If using VSCode, the build files already exist, just press `F5` to run the program.  If running from the command line, use

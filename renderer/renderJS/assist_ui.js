@@ -205,7 +205,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 			fsgUtil.notesDefault(opts.notes, collection, 'notes_admin'),
 			opts.modList[collection].mods.length
 		))
-		scrollTable.push(`<div class="${collection} flex-grow-1" style="width: 6px;"></div>${scrollRows.join('')}`)
+		scrollTable.push(`<div class="${collection} scroll_col flex-grow-1"></div>${scrollRows.join('')}`)
 		const selectCollName = `${opts.modList[collection].name}${window.mods.getCollDesc(collection)}`
 		
 		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, selectCollName, selectedList, false, opts.foldersMap[collection]))
