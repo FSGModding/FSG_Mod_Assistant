@@ -1,5 +1,4 @@
 node_modules
 dist
-lib/out
-lib/conflicts.json
 .DS_Store
+yarn-error.log
