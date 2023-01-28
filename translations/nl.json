@@ -296,5 +296,6 @@
 	"active_no_match_fix": "Oeps, maak geselecteerde collectie actief",
 	"active_no_match_ignore": "Dat is Ok, negeer het en begin het spel",
 	"active_no_match_game_list": "Actief in het spel",
-	"active_no_match_ma_list": "Geselecteerd in mod assistant"
+	"active_no_match_ma_list": "Geselecteerd in mod assistant",
+	"button_gamelog__title": "Bekijk spelverslag"
 }

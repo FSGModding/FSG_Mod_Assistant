@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/gamelog_ui.js"></script>
+
+	<style>
+		.logLine {
+			user-select: text;
+			white-space: pre-wrap;
+			padding-left: 4em!important;
+			text-indent: -4em;
+		}
+	</style>
+</head>
+<body>
+	
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top border-bottom bg-body ">
+			<div class="row w-100 pt-2 bg-body border-bottom">
+				<div class="col-8">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+				</div>
+				<div class="col-4 text-end">
+				<div class="btn-group w-100 ms-auto me-1">
+					<button type="button" onclick="window.gamelog.openGameLogFolder()" class="btn btn-success btn-sm"><i class="bi bi-save"></i></button>
+					<button type="button" onclick="window.gamelog.getGameLogContents()" class="btn btn-dark btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
+				</div>
+				</div>
+			</div>
+			<div class="input-group input-group-sm btn-group w-100 mt-2 mb-2 px-1">
+				<span class="input-group-text" id="basic-addon1">Show: </span>
+				<input type="checkbox" class="btn-check filter_only" id="debug_dupes" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label class="btn btn-outline-success btn-sm border" for="debug_dupes">DUPLICATES</label>
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_other" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label class="btn btn-outline-success btn-sm border" for="debug_other">OTHER</label>
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_cpad" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label class="btn btn-outline-success btn-sm border" for="debug_cpad">CP / AD</label>
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_mod_loading" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label class="btn btn-outline-success btn-sm border" for="debug_mod_loading">MOD LOAD</label>
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_lua_error" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label class="btn btn-outline-success btn-sm border" for="debug_lua_error">LUA ERROR</label>
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_error" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label class="btn btn-outline-success btn-sm border" for="debug_error">ERROR</label>
+			</div>
+		</div>
+		<div class="px-2">
+		<table class="font-monospace small table-borderless table table-sm" style="" id="game_log"></table>
+		</div>
+	</div>
+
+</body>
+</html>

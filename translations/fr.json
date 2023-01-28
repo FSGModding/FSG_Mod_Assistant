@@ -296,5 +296,6 @@
 	"active_no_match_fix": "Oups, rendre active la collection sélectionnée",
 	"active_no_match_ignore": "C'est bon, ignorez-le et commencez le jeu",
 	"active_no_match_game_list": "Actif dans le jeu",
-	"active_no_match_ma_list": "Sélectionné dans mod assistant"
+	"active_no_match_ma_list": "Sélectionné dans mod assistant",
+	"button_gamelog__title": "Voir le journal de jeu"
 }

@@ -296,5 +296,6 @@
 	"active_no_match_fix": "Ups, ausgewählte Sammlung aktiv machen",
 	"active_no_match_ignore": "Das ist in Ordnung, ignorieren Sie es und beginnen Sie das Spiel",
 	"active_no_match_game_list": "Aktiv im Spiel",
-	"active_no_match_ma_list": "Ausgewählt im Mod-Assistenten"
+	"active_no_match_ma_list": "Ausgewählt im Mod-Assistenten",
+	"button_gamelog__title": "Spielprotokoll anzeigen"
 }

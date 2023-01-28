@@ -296,5 +296,6 @@
 	"active_no_match_fix": "Ой, активировать выбранную коллекцию",
 	"active_no_match_ignore": "Всё в порядке, игнорировать это и запустить игру",
 	"active_no_match_game_list": "Активировано в игре",
-	"active_no_match_ma_list": "Выбрано в Mod Assistant"
+	"active_no_match_ma_list": "Выбрано в Mod Assistant",
+	"button_gamelog__title": "Просмотр журнала игр"
 }

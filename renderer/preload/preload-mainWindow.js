@@ -43,6 +43,7 @@ contextBridge.exposeInMainWorld(
 		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
 		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },
+		openGameLog     : () => { ipcRenderer.send('toMain_openGameLog') },
 		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
 		editFolders     : () => { ipcRenderer.send('toMain_editFolders') },
 		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },

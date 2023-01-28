@@ -296,5 +296,6 @@
 	"active_no_match_fix"                    : "Oops, Make Selected Collection Active",
 	"active_no_match_ignore"                 : "That's Ok, Ignore it and Start Game",
 	"active_no_match_game_list"              : "Active in game",
-	"active_no_match_ma_list"                : "Selected in mod assistant"
+	"active_no_match_ma_list"                : "Selected in mod assistant",
+	"button_gamelog__title"                  : "View Game Log"
 }

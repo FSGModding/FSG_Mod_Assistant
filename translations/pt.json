@@ -296,5 +296,6 @@
 	"active_no_match_fix": "Oops, tornar activa a recolha selectiva",
 	"active_no_match_ignore": "Está bem, Ignora-o e começa o jogo",
 	"active_no_match_game_list": "Activo no jogo",
-	"active_no_match_ma_list": "Seleccionado no mod assistant"
+	"active_no_match_ma_list": "Seleccionado no mod assistant",
+	"button_gamelog__title": "Ver registo do jogo"
 }

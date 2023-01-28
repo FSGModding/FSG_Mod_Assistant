@@ -44,6 +44,7 @@ process.on('uncaughtException', (err, origin) => {
 			message : `Caught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
 			type    : 'error',
 		})
+		gameLogFile.close()
 		app.quit()
 	} else {
 		log.log.debug(`Network error: ${err}`, 'net-error-exception')
@@ -61,6 +62,7 @@ process.on('unhandledRejection', (err, origin) => {
 			message : `Caught rejection: ${err}\n\nRejection origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
 			type    : 'error',
 		})
+		gameLogFile.close()
 		app.quit()
 	} else {
 		log.log.debug(`Network error: ${err}`, 'net-error-rejection')
@@ -82,6 +84,7 @@ myTranslator.iconOverrides = {
 	folder_up_button   : 'chevron-up',
 	folder_down_button : 'chevron-down',
 	folder_bot_button  : 'align-bottom',
+	button_gamelog     : 'file-earmark-text',
 }
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
@@ -103,6 +106,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) {
 				if ( tray ) { tray.destroy() }
+				gameLogFile.close()
 				Object.keys(windows).forEach((thisWin) => {
 					if ( thisWin !== 'main' && windows[thisWin] !== null ) {
 						windows[thisWin].destroy()
@@ -137,6 +141,9 @@ const trayIcon      = !app.isPackaged
 let pathBestGuess = userHome
 let foundPath     = false
 let foundGame     = ''
+
+let gameLogFile       = null
+let gameLogFileBounce = false
 
 const gameExeName = 'FarmingSimulator2022.exe'
 const gameGuesses = [
@@ -206,6 +213,7 @@ const settingsSchema = {
 		detail        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		find          : { type : 'object', default : {}, properties : winDef(800, 600), additionalProperties : false },
 		folder        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		gamelog       : { type : 'object', default : {}, properties : winDef(1000, 500), additionalProperties : false },
 		main          : { type : 'object', default : {}, properties : winDef(1000, 700), additionalProperties : false },
 		notes         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		prefs         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
@@ -260,6 +268,7 @@ const windows = {
 	detail  : null,
 	find    : null,
 	folder  : null,
+	gamelog : null,
 	load    : null,
 	main    : null,
 	notes   : null,
@@ -447,6 +456,7 @@ function createMainWindow () {
 		windows.main = null
 		if ( tray ) { tray.destroy() }
 		windows.load.destroy()
+		gameLogFile.close()
 		app.quit()
 	})
 
@@ -642,6 +652,23 @@ function createDebugWindow() {
 
 	windows.debug.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
 	windows.debug.on('closed', () => { destroyAndFocus('debug') })
+}
+function createGameLogWindow() {
+	if ( windows.gamelog ) {
+		windows.gamelog.focus()
+		readGameLog()
+		return
+	}
+
+	windows.gamelog = createSubWindow('gamelog', { preload : 'gamelogWindow' })
+
+	windows.gamelog.webContents.on('did-finish-load', () => {
+		readGameLog()
+		if ( devDebug ) { windows.gamelog.webContents.openDevTools() }
+	})
+
+	windows.gamelog.loadFile(path.join(app.getAppPath(), 'renderer', 'gamelog.html'))
+	windows.gamelog.on('closed', () => { destroyAndFocus('gamelog') })
 }
 
 function createPrefsWindow() {
@@ -1047,6 +1074,22 @@ ipcMain.on('toMain_openModDetail', (event, thisMod) => { createDetailWindow(modI
 ipcMain.on('toMain_showChangelog', () => { createChangeLogWindow() } )
 /** END: Detail window operation */
 
+/** Debug window operation */
+ipcMain.on('toMain_openGameLog',    () => { createGameLogWindow() })
+ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(path.join(path.dirname(gameSettings), 'log.txt')) })
+ipcMain.on('toMain_getGameLog', () => { readGameLog() })
+
+function readGameLog() {
+	if ( windows.gamelog === null ) { return }
+	try {
+		const gameLogContents = fs.readFileSync(path.join(path.dirname(gameSettings), 'log.txt'), {encoding : 'utf8', flag : 'r'})
+
+		windows.gamelog.webContents.send('fromMain_gameLog', gameLogContents)
+	} catch (e) {
+		log.log.warning(`Could not read game log file: ${e}`, 'game-log')
+	}
+}
+/** END: Debug window operation */
 
 /** Debug window operation */
 ipcMain.on('toMain_openDebugLog',    () => { createDebugWindow() })
@@ -1575,6 +1618,18 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		log.log.danger(`Game settings is not an xml file ${gameSettings}, fixing`, 'game-settings')
 		gameSettings = path.join(pathBestGuess, 'gameSettings.xml')
 		mcStore.set('game_settings', gameSettings)
+	}
+
+	if ( gameLogFile === null ) {
+		gameLogFile = fs.watch(path.join(path.dirname(gameSettings), 'log.txt'), (event, filename) => {
+			if ( filename ) {
+				if ( gameLogFileBounce ) return
+				gameLogFileBounce = setTimeout(() => {
+					gameLogFileBounce = false
+					readGameLog()
+				}, 1000)
+			}
+		})
 	}
 
 	let   XMLString = ''

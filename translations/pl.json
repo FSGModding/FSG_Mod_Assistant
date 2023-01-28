@@ -296,5 +296,6 @@
 	"active_no_match_fix": "Ups, uaktywnij wybraną kolekcję",
 	"active_no_match_ignore": "To dobrze, zignoruj to i zacznij grę.",
 	"active_no_match_game_list": "Aktywny w grze",
-	"active_no_match_ma_list": "Wybrany w asystenturze mod"
+	"active_no_match_ma_list": "Wybrany w asystenturze mod",
+	"button_gamelog__title": "Zobacz Game Log"
 }
