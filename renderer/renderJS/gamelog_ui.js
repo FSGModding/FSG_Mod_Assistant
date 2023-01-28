@@ -33,6 +33,9 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.gamelog.receive('fromMain_gameLog', (data) => {
+	const autoScroll = fsgUtil.byId('auto_scroll').checked || false
+
+	console.log(autoScroll)
 	const showThese = new Set()
 	const showData  = []
 	const logRegExp = {
@@ -114,7 +117,7 @@ window.gamelog.receive('fromMain_gameLog', (data) => {
 	}
 	
 
-	document.querySelectorAll(':checked').forEach((element) => {
+	document.querySelectorAll('.filter_only:checked').forEach((element) => {
 		showThese.add(element.id.replace('debug_', '').toLowerCase())
 	})
 
@@ -187,6 +190,10 @@ window.gamelog.receive('fromMain_gameLog', (data) => {
 	}
 
 	document.getElementById('game_log').innerHTML = showData.join('')
+
+	if ( autoScroll ) {
+		window.scrollTo(0, document.body.scrollHeight)
+	}
 })
 
 window.addEventListener('DOMContentLoaded', () => {
