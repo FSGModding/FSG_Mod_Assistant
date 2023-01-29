@@ -100,6 +100,18 @@
 
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
 			<div class="col-8">
+				<h5><l10n name="user_pref_title_use_one_drive"></l10n></h5>
+				<p class="ps-2"><l10n name="user_pref_blurb_use_one_drive"></l10n></p>
+			</div>
+			<div class="col-4">
+				<div class="form-check form-switch form-control-lg">
+					<input onchange="clientSetPref('use_one_drive')" class="form-check-input mt-2" type="checkbox" id="use_one_drive">
+				</div>
+			</div>
+		</div>
+
+		<div class="row mx-4 mb-3 pb-2 border-bottom">
+			<div class="col-8">
 				<h5><l10n name="user_pref_title_clean_cache"></l10n></h5>
 				<p class="ps-2"><l10n name="user_pref_blurb_clean_cache"></l10n></p>
 				<p class="ps-2"><l10n name="clean_cache_size"></l10n></p>

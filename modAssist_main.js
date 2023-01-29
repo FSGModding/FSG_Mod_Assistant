@@ -197,6 +197,7 @@ const settingsMig = {
 const settingsSchema = {
 	modFolders        : { type : 'array', default : [] },
 	lock_lang         : { type : 'boolean', default : false },
+	use_one_drive     : { type : 'boolean', default : false },
 	force_lang        : { type : 'string', default : '' },
 	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
 	game_path         : { type : 'string', default : foundGame },
@@ -1883,6 +1884,7 @@ function fileOperation_post(type, fileMap) {
 function fileGetStats(folder, thisFile) {
 	let isFolder = null
 	let date     = null
+	let b_date    = null
 	let size     = null
 	let error    = false
 
@@ -1892,6 +1894,7 @@ function fileGetStats(folder, thisFile) {
 			const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
 			isFolder = thisSymLinkStat.isDirectory()
 			date     = thisSymLinkStat.ctime
+			b_date    = thisSymLinkStat.birthtime
 
 			if ( !isFolder ) { size = thisSymLinkStat.size }
 		} else {
@@ -1901,7 +1904,8 @@ function fileGetStats(folder, thisFile) {
 		if ( ! thisFile.isSymbolicLink() ) {
 			const theseStats = fs.statSync(path.join(folder, thisFile.name))
 			if ( !isFolder ) { size = theseStats.size }
-			date = theseStats.ctime
+			date  = theseStats.ctime
+			b_date = theseStats.birthtime
 			
 		}
 		if ( isFolder ) {
@@ -1925,6 +1929,7 @@ function fileGetStats(folder, thisFile) {
 		folder : isFolder,
 		size   : size,
 		date   : date,
+		b_date : b_date,
 		error  : error,
 	}
 }
@@ -1955,6 +1960,7 @@ async function processModFolders(newFolder) {
 }
 
 function processModFolders_post(newFolder = false, localStore) {
+	const useOneDrive = mcStore.get('use_one_drive', false)
 	const readingPromises = []
 	if ( newFolder === false ) { modList = {}; modFoldersMap = {}}
 
@@ -2001,7 +2007,7 @@ function processModFolders_post(newFolder = false, localStore) {
 					readingPromises.push(
 						new Promise((resolve) => {
 							setTimeout(() => {
-								processModFileSingleton(folder, thisFile, localStore, cleanName, thisFileStats)
+								processModFileSingleton(folder, thisFile, localStore, cleanName, thisFileStats, useOneDrive)
 								resolve(true)
 							}, 10)
 						})
@@ -2017,9 +2023,9 @@ function processModFolders_post(newFolder = false, localStore) {
 	return readingPromises
 }
 
-async function processModFileSingleton (folder, thisFile, localStore, cleanName, thisFileStats) {
+async function processModFileSingleton (folder, thisFile, localStore, cleanName, thisFileStats, useOneDrive) {
 	if ( !thisFileStats.folder && !skipCache ) {
-		const hashString = `${thisFile.name}-${thisFileStats.size}-${thisFileStats.date.toISOString()}`
+		const hashString = `${thisFile.name}-${thisFileStats.size}-${(useOneDrive)?thisFileStats.b_date.toISOString():thisFileStats.date.toISOString()}`
 		const thisMD5Sum = crypto.createHash('md5').update(hashString).digest('hex')
 
 		if ( typeof localStore[thisMD5Sum] !== 'undefined') {
@@ -2047,7 +2053,7 @@ async function processModFileSingleton (folder, thisFile, localStore, cleanName,
 			path.join(folder, thisFile.name),
 			thisFileStats.folder,
 			thisFileStats.size,
-			thisFileStats.date,
+			(useOneDrive) ? thisFileStats.b_date : thisFileStats.date,
 			log,
 			myTranslator.deferCurrentLocale
 		)

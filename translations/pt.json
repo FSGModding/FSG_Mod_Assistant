@@ -300,5 +300,7 @@
 	"button_gamelog__title": "Ver registo do jogo",
 	"context_main_title": "Operações de recolha",
 	"context_main_copy": "Cópia",
-	"context_mod_detail": "Mostrar detalhes"
+	"context_mod_detail": "Mostrar detalhes",
+	"user_pref_title_use_one_drive": "Use o modo OneDrive Sync",
+	"user_pref_blurb_use_one_drive": "Ligue este modo se a sua colecção de mod está sincronizada com a OneDrive, utiliza vários computadores, e o Mod Assistant digitaliza novamente de raiz toda a sua colecção em cada actualização"
 }

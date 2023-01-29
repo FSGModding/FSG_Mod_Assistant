@@ -300,5 +300,7 @@
 	"button_gamelog__title": "Просмотр журнала игры",
 	"context_main_title": "Управление коллекцией",
 	"context_main_copy": "Копировать",
-	"context_mod_detail": "Показать подробности"
+	"context_mod_detail": "Показать подробности",
+	"user_pref_title_use_one_drive": "Использовать режим синхронизации OneDrive",
+	"user_pref_blurb_use_one_drive": "Включите этот режим, если ваша коллекция модов синхронизирована с OneDrive, вы используете несколько компьютеров, и Mod Assistant заново сканирует всю вашу коллекцию при каждом обновлении"
 }
