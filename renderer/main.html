@@ -335,8 +335,13 @@
 					</a>
 				</div>
 				<div class="col align-self-center">
-					<l10n class="text-white-50" name="latest_version_link_blurb"></l10n> <a target="_blank" class="text-white-50" href="https://github.com/FSGModding/FSG_Mod_Assistant/releases">github.com</a>
-					<a class="text-white-50" style="cursor: pointer" onclick="mods.debugLog()">[<l10n name="open_debug_log"></l10n>]</a>
+					<l10n class="text-white-50" name="latest_version_link_blurb"></l10n> <a target="_blank" class="text-white-50 btn btn-sm btn-primary small" href="https://github.com/FSGModding/FSG_Mod_Assistant/releases">github.com</a>
+					<a class="text-white-50 btn btn-sm btn-primary small position-relative" id="debugLogButton" style="cursor: pointer" onclick="mods.debugLog()">
+						<l10n name="open_debug_log"></l10n>
+						<span id="debug_danger_bubble" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+							<span class="visually-hidden">New alerts</span>
+						  </span>
+					</a>
 				</div>
 				<div class="col-2 align-self-center">
 					<a target="_blank" href="https://discord.gg/NxrDJYNC7Q">

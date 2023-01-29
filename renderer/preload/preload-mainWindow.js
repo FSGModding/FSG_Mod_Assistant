@@ -77,7 +77,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_selectNoneOpen',
 				'fromMain_selectInvertOpen',
 				'fromMain_selectOnly',
-				'fromMain_selectOnlyFilter',
+				'fromMain_debugLogDanger',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

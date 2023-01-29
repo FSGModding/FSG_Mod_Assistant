@@ -16,7 +16,7 @@ if ( !gotTheLock ) { app.quit() }
 const { autoUpdater } = require('electron-updater')
 const { ma_logger }   = require('./lib/ma-logger.js')
 const semverGt        = require('semver/functions/gt')
-const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
+const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock, debugDangerCallback)
 const path            = require('path')
 const fs              = require('fs')
 
@@ -330,6 +330,11 @@ mcStore.set('cache_version', app.getVersion())
 /** END: Upgrade Cache Version Here */
 
 
+function debugDangerCallback() {
+	if ( windows.main !== null ) {
+		windows.main.webContents.send('fromMain_debugLogDanger')
+	}
+}
 /*  _    _  ____  _  _  ____   _____  _    _  ___ 
    ( \/\/ )(_  _)( \( )(  _ \ (  _  )( \/\/ )/ __)
     )    (  _)(_  )  (  )(_) ) )(_)(  )    ( \__ \

@@ -45,6 +45,9 @@ window.l10n.receive('fromMain_l10n_refresh', () => {
 	processL10N()
 })
 
+window.mods.receive('fromMain_debugLogDanger', () => {
+	fsgUtil.byId('debug_danger_bubble').classList.remove('d-none')
+})
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
