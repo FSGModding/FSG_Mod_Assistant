@@ -34,11 +34,9 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 window.gamelog.receive('fromMain_gameLog', (data) => {
 	const autoScroll = fsgUtil.byId('auto_scroll').checked || false
-
-	console.log(autoScroll)
-	const showThese = new Set()
-	const showData  = []
-	const logRegExp = {
+	const showThese  = new Set()
+	const showData   = []
+	const logRegExp  = {
 		time : {
 			regex : [
 				new RegExp(/(^\d\d\d\d-\d\d-\d\d \d\d:\d\d )/)
