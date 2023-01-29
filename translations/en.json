@@ -297,5 +297,8 @@
 	"active_no_match_ignore"                 : "That's Ok, Ignore it and Start Game",
 	"active_no_match_game_list"              : "Active in game",
 	"active_no_match_ma_list"                : "Selected in mod assistant",
-	"button_gamelog__title"                  : "View Game Log"
+	"button_gamelog__title"                  : "View Game Log",
+	"context_main_title"                     : "Collection Operations",
+	"context_main_copy"                      : "Copy",
+	"context_mod_detail"                     : "Show Details"
 }

@@ -1074,6 +1074,92 @@ ipcMain.on('toMain_openModDetail', (event, thisMod) => { createDetailWindow(modI
 ipcMain.on('toMain_showChangelog', () => { createChangeLogWindow() } )
 /** END: Detail window operation */
 
+
+ipcMain.on('toMain_modContextMenu', async (event, modID) => {
+	const thisMod   = modIdToRecord(modID)
+	const thisModId = modHubList.mods[thisMod.fileDetail.shortName] || null
+
+	const template = [
+		{ label : thisMod.fileDetail.shortName},
+		{ type : 'separator' },
+		{ label : myTranslator.syncStringLookup('context_mod_detail'), click : () => {
+			createDetailWindow(thisMod)
+		}},
+		{ type : 'separator' },
+		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {
+			const thisCollectionFolder = modFoldersMap[modID.split('--')[0]]
+
+			if ( thisMod !== null ) {
+				shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
+			}
+		}}
+	]
+	
+	if ( thisModId !== null ) {
+		template.push({ label : myTranslator.syncStringLookup('open_hub'), click : () => {
+			shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisModId}`)
+		}})
+	}
+
+	template.push({ type : 'separator' })
+	template.push({ label : myTranslator.syncStringLookup('copy_to_list'), click : () => {
+		createConfirmWindow('copy', [thisMod], [modID])
+	}})
+	template.push({ label : myTranslator.syncStringLookup('move_to_list'), click : () => {
+		createConfirmWindow('move', [thisMod], [modID])
+	}})
+	template.push({ label : myTranslator.syncStringLookup('remove_from_list'), click : () => {
+		createConfirmWindow('delete', [thisMod], [modID])
+	}})
+
+	const menu = Menu.buildFromTemplate(template)
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
+
+ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
+	const tagLine  = modNote.get(`${collection}.notes_tagline`, null)
+	const subLabel = `${modList[collection].name}${tagLine === null ? '' : ` :: ${tagLine}`}`
+	const template = [
+		{ label : myTranslator.syncStringLookup('context_main_title').padEnd(subLabel.length, ' '), sublabel : subLabel },
+		{ type : 'separator' },
+		{ label : myTranslator.syncStringLookup('list-active'), click : () => {
+			parseSettings({
+				newFolder  : modFoldersMap[collection],
+				userName   : modNote.get(`${collection}.notes_username`, null),
+				password   : modNote.get(`${collection}.notes_password`, null),
+				serverName : modNote.get(`${collection}.notes_server`, null),
+			})
+		}},
+		{ type : 'separator' },
+		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {
+			shell.openPath(modFoldersMap[collection])
+		}}
+	]
+
+	const noteItems = ['username', 'password', 'website', 'admin', 'server']
+	let foundOne = false
+	
+	noteItems.forEach((noteItem) => {
+		const thisNoteItem = modNote.get(`${collection}.notes_${noteItem}`, null)
+		if ( thisNoteItem !== null ) {
+			if ( !foundOne ) {
+				template.push({ type : 'separator' })
+				foundOne = true
+			}
+
+			template.push({
+				label : `${myTranslator.syncStringLookup('context_main_copy')} : ${myTranslator.syncStringLookup(`notes_title_${noteItem}`)}`,
+				click : () => {
+					clipboard.writeText(thisNoteItem, 'selection') },
+			})
+		}
+	})
+	
+	const menu = Menu.buildFromTemplate(template)
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
+
+
 /** Debug window operation */
 ipcMain.on('toMain_openGameLog',    () => { createGameLogWindow() })
 ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(path.join(path.dirname(gameSettings), 'log.txt')) })

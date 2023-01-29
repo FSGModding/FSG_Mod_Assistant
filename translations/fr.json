@@ -297,5 +297,8 @@
 	"active_no_match_ignore": "C'est bon, ignorez-le et commencez le jeu",
 	"active_no_match_game_list": "Actif dans le jeu",
 	"active_no_match_ma_list": "Sélectionné dans mod assistant",
-	"button_gamelog__title": "Voir le journal de jeu"
+	"button_gamelog__title": "Voir le journal de jeu",
+	"context_main_title": "Opérations de collecte",
+	"context_main_copy": "Copie",
+	"context_mod_detail": "Afficher les détails"
 }

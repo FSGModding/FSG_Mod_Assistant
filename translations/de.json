@@ -297,5 +297,8 @@
 	"active_no_match_ignore": "Das ist in Ordnung, ignorieren Sie es und beginnen Sie das Spiel",
 	"active_no_match_game_list": "Aktiv im Spiel",
 	"active_no_match_ma_list": "Ausgewählt im Mod-Assistenten",
-	"button_gamelog__title": "Spielprotokoll anzeigen"
+	"button_gamelog__title": "Spielprotokoll anzeigen",
+	"context_main_title": "Erhebungsmaßnahmen",
+	"context_main_copy": "Kopieren",
+	"context_mod_detail": "Details anzeigen"
 }

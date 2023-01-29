@@ -291,7 +291,7 @@ function clientMakeListActive() {
 
 function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount) {
 	const totCount = modCount > 999 ? '999+' : modCount
-	return `<tr class="mod-table-folder">
+	return `<tr class="mod-table-folder" oncontextmenu="window.mods.openCText('${id}')">
 	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
 		<div class="badge rounded-pill bg-primary bg-gradient float-start" style="width: 30px; height: 13px; margin-bottom: -15px; font-size: 0.5em; transform: translateY(-20%)!important">${totCount}</div>
 		${fsgUtil.getIconSVG('folder')}
@@ -319,7 +319,7 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, admi
 function makeModRow(id, thisMod, badges, modId) {
 	const badgeHTML = Array.from(badges, (badge) => fsgUtil.badge(false, badge))
 
-	return `<tr onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.openMod('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
+	return `<tr onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.modCText('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
 	<td>
 		<input type="checkbox" class="form-check-input mod-row-checkbox" id="${id}__checkbox">
 	</td>

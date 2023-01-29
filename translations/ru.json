@@ -297,5 +297,8 @@
 	"active_no_match_ignore": "Всё в порядке, игнорировать это и запустить игру",
 	"active_no_match_game_list": "Активировано в игре",
 	"active_no_match_ma_list": "Выбрано в Mod Assistant",
-	"button_gamelog__title": "Просмотр журнала игр"
+	"button_gamelog__title": "Просмотр журнала игр",
+	"context_main_title": "Операции по инкассации",
+	"context_main_copy": "Копия",
+	"context_mod_detail": "Показать подробности"
 }

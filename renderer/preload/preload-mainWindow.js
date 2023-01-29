@@ -58,6 +58,8 @@ contextBridge.exposeInMainWorld(
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
 		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
 		openNotes  : (collection)   => { ipcRenderer.send('toMain_openNotes', collection ) },
+		openCText  : (collection)   => { ipcRenderer.send('toMain_mainContextMenu', collection ) },
+		modCText   : (selectedMod)  => { ipcRenderer.send('toMain_modContextMenu', selectedMod ) },
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
