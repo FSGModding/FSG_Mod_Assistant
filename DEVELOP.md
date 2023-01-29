@@ -40,6 +40,10 @@ Mod Assistant requires Yarn to build.  Note that for windows, you may have to ru
 
 If using VSCode, the build files already exist, just press `F5` to run the program.  If running from the command line, use
 
+Before running for the first time, you must build the dependencies. Run yarn in the repo folder.
+
+`# yarn`
+
 ### Run Development Version
 
 `# .\node_modules\.bin\electron .`
