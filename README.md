@@ -19,6 +19,7 @@ ___Contents___
     - [Download options](#download-options)
     - [Updating](#updating)
   - [How to Use](#how-to-use)
+    - [Initial Install Video](#initial-install-video)
     - [Main Screen](#main-screen)
       - [Collections Buttons](#collections-buttons)
       - [gameSettings Buttons](#gamesettings-buttons)
@@ -113,6 +114,10 @@ Either download the new version and install over top, or, the program will self-
 ## How to Use
 
 __PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk so that this app can run as fast as possible - but the initial scanning process is in depth, and ___not very fast___.  So, be aware than when you add a folder of a lot of mods, it may take a bit of time to scan them for the first time. Mod Assistant goes out of it's way to only scan a "version" of a file once, so subsequent loads on the program will be much, much fast.  If you are interested in the details of the cache, see below.
+
+### Initial Install Video
+
+[![Install Video](https://markdown-videos.deta.dev/youtube/elzFhp2EBEs)](https://youtu.be/elzFhp2EBEs)
 
 ### Main Screen
 
