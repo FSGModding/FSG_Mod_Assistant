@@ -229,9 +229,9 @@ const makeZip = require('archiver')
 
 const { saveFileChecker } = require('./lib/savegame-parser.js')
 
-const mcStore = new Store({schema : settingsSchema, migrations : settingsMig })
-const maCache = new Store({name : 'mod_cache'})
-const modNote = new Store({name : 'col_notes'})
+const mcStore = new Store({schema : settingsSchema, migrations : settingsMig, clearInvalidConfig : true })
+const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
+const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 
 const newModsList = []
 
@@ -1930,7 +1930,7 @@ function fileGetStats(folder, thisFile) {
 }
 
 let loadingWait = null
-function processModFolders(newFolder) {
+async function processModFolders(newFolder) {
 	if ( !foldersDirty ) { loadingWindow_hide(); return }
 
 	loadingWindow_open('mods', 'main')
@@ -1940,12 +1940,22 @@ function processModFolders(newFolder) {
 	loadingWait = setInterval(() => {
 		if ( windows.load.isVisible() ) {
 			clearInterval(loadingWait)
-			processModFolders_post(newFolder)
+			const localStore      = maCache.store
+			const processPromises = processModFolders_post(newFolder, localStore)
+
+			Promise.all(processPromises).then(() => {
+				maCache.store = localStore
+				foldersDirty  = false
+
+				processModBindConflict()
+				processModFolders_post_after()
+			})
 		}
 	}, 250)
 }
 
-function processModFolders_post(newFolder = false) {
+function processModFolders_post(newFolder = false, localStore) {
+	const readingPromises = []
 	if ( newFolder === false ) { modList = {}; modFoldersMap = {}}
 
 	// Cleaner for no-longer existing folders, count contents of others
@@ -1967,7 +1977,6 @@ function processModFolders_post(newFolder = false) {
 	modFolders.forEach((folder) => {
 		const cleanName  = `col_${crypto.createHash('md5').update(folder).digest('hex')}`
 		const shortName  = path.basename(folder)
-		const localStore = maCache.store
 
 		if ( folder === newFolder || newFolder === false ) {
 			modFoldersMap[cleanName] = folder
@@ -1976,7 +1985,6 @@ function processModFolders_post(newFolder = false) {
 			try {
 				const folderContents = fs.readdirSync(folder, {withFileTypes : true})
 
-				let modIndex = -1
 				folderContents.forEach((thisFile) => {
 					if ( junkRegex.test(thisFile.name) ) {
 						loadingWindow_current()
@@ -1990,61 +1998,83 @@ function processModFolders_post(newFolder = false) {
 						return
 					}
 
-					modIndex++
-
-					if ( !thisFileStats.folder && !skipCache ) {
-						const hashString = `${thisFile.name}-${thisFileStats.size}-${thisFileStats.date.toISOString()}`
-						const thisMD5Sum = crypto.createHash('md5').update(hashString).digest('hex')
-
-						if ( typeof localStore[thisMD5Sum] !== 'undefined') {
-							modList[cleanName].mods[modIndex] = localStore[thisMD5Sum]
-							log.log.debug(`Adding mod FROM cache: ${localStore[thisMD5Sum].fileDetail.shortName}`, `mod-${localStore[thisMD5Sum].uuid}`)
-							loadingWindow_current()
-							return
-						}
-					}
-
-					if ( !thisFileStats.folder && !thisFile.name.endsWith('.zip') ) {
-						modList[cleanName].mods[modIndex] = new notModFileChecker(
-							path.join(folder, thisFile.name),
-							false,
-							thisFileStats.size,
-							thisFileStats.date,
-							log
-						)
-						loadingWindow_current()
-						return
-					}
-
-					try {
-						const thisModDetail = new modFileChecker(
-							path.join(folder, thisFile.name),
-							thisFileStats.folder,
-							thisFileStats.size,
-							thisFileStats.date,
-							log,
-							myTranslator.deferCurrentLocale
-						)
-						modList[cleanName].mods[modIndex] = thisModDetail
-						if ( thisModDetail.md5Sum !== null ) {
-							log.log.info('Adding mod to cache', `mod-${thisModDetail.uuid}`)
-							newModsList.push(thisModDetail.md5Sum)
-							maCache.set(thisModDetail.md5Sum, thisModDetail.storable)
-						}
-					} catch (e) {
-						log.log.danger(`Couldn't process file: ${thisFile.name} :: ${e}`, 'folder-reader')
-						modIndex--
-					}
-
-					loadingWindow_current()
+					readingPromises.push(
+						new Promise((resolve) => {
+							setTimeout(() => {
+								processModFileSingleton(folder, thisFile, localStore, cleanName, thisFileStats)
+								resolve(true)
+							}, 10)
+						})
+					)
 				})
+				
 			} catch (e) {
 				log.log.danger(`Couldn't process folder: ${folder} :: ${e}`, 'folder-reader')
 			}
 		}
 	})
-	foldersDirty = false
 
+	return readingPromises
+}
+
+async function processModFileSingleton (folder, thisFile, localStore, cleanName, thisFileStats) {
+	if ( !thisFileStats.folder && !skipCache ) {
+		const hashString = `${thisFile.name}-${thisFileStats.size}-${thisFileStats.date.toISOString()}`
+		const thisMD5Sum = crypto.createHash('md5').update(hashString).digest('hex')
+
+		if ( typeof localStore[thisMD5Sum] !== 'undefined') {
+			modList[cleanName].mods.push(localStore[thisMD5Sum])
+			log.log.debug(`Adding mod FROM cache: ${localStore[thisMD5Sum].fileDetail.shortName}`, `mod-${localStore[thisMD5Sum].uuid}`)
+			loadingWindow_current()
+			return
+		}
+	}
+
+	if ( !thisFileStats.folder && !thisFile.name.endsWith('.zip') ) {
+		modList[cleanName].mods.push(new notModFileChecker(
+			path.join(folder, thisFile.name),
+			false,
+			thisFileStats.size,
+			thisFileStats.date,
+			log
+		))
+		loadingWindow_current()
+		return
+	}
+
+	try {
+		const thisModDetail = new modFileChecker(
+			path.join(folder, thisFile.name),
+			thisFileStats.folder,
+			thisFileStats.size,
+			thisFileStats.date,
+			log,
+			myTranslator.deferCurrentLocale
+		)
+		const storable = thisModDetail.storable
+		modList[cleanName].mods.push(thisModDetail)
+
+		if ( thisModDetail.md5Sum !== null ) {
+			log.log.info('Adding mod to cache', `mod-${thisModDetail.uuid}`)
+			newModsList.push(thisModDetail.md5Sum)
+			localStore[thisModDetail.md5Sum] = storable
+		}
+	} catch (e) {
+		log.log.danger(`Couldn't process file: ${thisFile.name} :: ${e}`, 'folder-reader')
+		modList[cleanName].mods.push(new notModFileChecker(
+			path.join(folder, thisFile.name),
+			false,
+			thisFileStats.size,
+			thisFileStats.date,
+			log
+		))
+	}
+
+	loadingWindow_current()
+
+}
+
+function processModBindConflict() {
 	bindConflict = {}
 
 	Object.keys(modList).forEach((collection) => {
@@ -2083,7 +2113,9 @@ function processModFolders_post(newFolder = false) {
 			})
 		})
 	})
+}
 
+function processModFolders_post_after() {
 	parseSettings()
 	parseGameXML()
 	refreshClientModList()

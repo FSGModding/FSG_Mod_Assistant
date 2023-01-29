@@ -116,5 +116,5 @@ const fsgUtil = {
 		nonmh    : 'dark',
 		depend   : 'warning',
 	},
-	badge : (color, name, fullName = false) => `<span class="badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
+	badge : (color, name, fullName = false) => `<span class="badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name.toLowerCase()]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
 }

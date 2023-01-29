@@ -225,7 +225,10 @@ window.mods.receive('fromMain_modList', (opts) => {
 		const thisFav = opts?.notes[collection]?.notes_favorite || false
 		if ( thisFav ) {
 			const favFolder = document.querySelector(`[data-bs-target="#${collection}_mods"] svg`)
-			favFolder.innerHTML += '<path d="m171,126.25l22.06,62.76l65.93,0l-54.22,35.49l21.94,61.46l-55.74,-38.21l-55.74,38.21l22.06,-61.46l-54.32,-35.49l66.06,0l21.94,-62.76l0.03,0z" fill="#7f7f00" id="svg_5"/>'
+
+			if ( favFolder !== null ) {
+				favFolder.innerHTML += '<path d="m171,126.25l22.06,62.76l65.93,0l-54.22,35.49l21.94,61.46l-55.74,-38.21l-55.74,38.21l22.06,-61.46l-54.32,-35.49l66.06,0l21.94,-62.76l0.03,0z" fill="#7f7f00" id="svg_5"/>'
+			}
 		}
 	})
 
@@ -409,8 +412,6 @@ function clientOpenGame_FIX() {
 	clientMakeListActive()
 }
 
-//window.addEventListener('hide.bs.collapse', () => { select_lib.click_none() })
-//window.addEventListener('show.bs.collapse', () => { select_lib.click_none() })
 window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })
 window.addEventListener('shown.bs.collapse', () => { select_lib.click_none() })
 

@@ -307,7 +307,6 @@ const select_lib = {
 				select_lib.scroll_hide(modRowUUID)
 				modRow.classList.add('d-none')
 			}
-			//modRow.classList[(showMe?'remove':'add')]('d-none')
 		})
 
 		fsgUtil.query('.mod-table-folder-detail').forEach((table) => {
