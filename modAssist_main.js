@@ -451,7 +451,11 @@ function createMainWindow () {
 
 				tray.displayBalloon(bubbleOpts)
 
-				setTimeout(() => { tray.removeBalloon() }, 5000)
+				setTimeout(() => {
+					if ( tray && !tray.isDestroyed() ) {
+						tray.removeBalloon()
+					}
+				}, 5000)
 			}
 			
 			firstMin = false
