@@ -541,7 +541,7 @@ function createNamedWindow(winName, windowArgs) {
 	}
 }
 
-const subWindowDev = new Set(['confirm'])
+const subWindowDev = new Set(['confirm', 'detail'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -603,35 +603,16 @@ const subWindows   = {
 		refocusCallback : true,
 		handleURLinWin  : true,
 	},
+	detail : {
+		winName         : 'detail',
+		HTMLFile        : 'detail.html',
+		subWindowArgs   : { parent : 'main', preload : 'detailWindow' },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_modRecord', 'detail', false) },
+		refocusCallback : true,
+		handleURLinWin  : true,
+	},
 }
 
-
-function createDetailWindow(thisModRecord) {
-	if ( thisModRecord === null ) { return }
-	//const modhubRecord = modCollect.modHubFullRecord(thisModRecord)
-
-	if ( windows.detail ) {
-		windows.detail.focus()
-		// TODO: this is wrong!  Get rid of modhubRecord
-		windows.detail.webContents.send('fromMain_modRecord', thisModRecord, modhubRecord, modCollect.bindConflict, myTranslator.currentLocale)
-		return
-	}
-
-	windows.detail = createSubWindow('detail', { parent : 'main', preload : 'detailWindow' })
-
-	windows.detail.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord, modCollect.bindConflict, myTranslator.currentLocale)
-		if ( devDebug ) { windows.detail.webContents.openDevTools() }
-	})
-
-	windows.detail.loadFile(path.join(pathRender, 'detail.html'))
-	windows.detail.on('closed', () => { destroyAndFocus('detail') })
-
-	windows.detail.webContents.setWindowOpenHandler(({ url }) => {
-		shell.openExternal(url)
-		return { action : 'deny' }
-	})
-}
 
 function createFindWindow() {
 	if ( windows.find ) {
@@ -1031,7 +1012,7 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 
 /** Detail window operation */
-ipcMain.on('toMain_openModDetail', (event, thisMod) => { createDetailWindow(modIdToRecord(thisMod)) })
+ipcMain.on('toMain_openModDetail', (event, thisMod) => { createNamedWindow('detail', {selected : modCollect.modColUUIDToRecord(thisMod) }) })
 /** END: Detail window operation */
 /** Changelog window operation */
 ipcMain.on('toMain_showChangelog', () => { createNamedWindow('change') } )
@@ -1045,7 +1026,8 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		{ label : thisMod.fileDetail.shortName},
 		{ type : 'separator' },
 		{ label : myTranslator.syncStringLookup('context_mod_detail'), click : () => {
-			createDetailWindow(thisMod)
+			createNamedWindow('detail', {selected : thisMod})
+			//createDetailWindow({selected : thisMod})
 		}},
 		{ type : 'separator' },
 		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {

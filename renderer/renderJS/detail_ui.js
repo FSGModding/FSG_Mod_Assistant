@@ -40,13 +40,15 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict, thisLocale) => {
-	const mhVer   = ( modhubRecord[1] !== null ) ? modhubRecord[1] : `<em>${getText(modhubRecord[0] === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
-	const modDate = new Date(Date.parse(modRecord.fileDetail.fileDate))
+window.mods.receive('fromMain_modRecord', (modCollect) => {
+	console.log(modCollect)
+	const modRecord = modCollect.opts.selected
+	const mhVer     = ( modRecord.modHub.id !== null ) ? modRecord.modHub.version : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
+	const modDate   = new Date(Date.parse(modRecord.fileDetail.fileDate))
 
 	const idMap = {
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
-		file_date      : modDate.toLocaleString(thisLocale, {timeZoneName : 'short'}),
+		file_date      : modDate.toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'}),
 		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
 		mod_location   : modRecord.fileDetail.fullPath,
 		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
@@ -72,13 +74,13 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 	const keyBinds = []
 	Object.keys(modRecord.modDesc.binds).forEach((action) => {
 		const thisBinds = []
-		modRecord.modDesc.binds[action].forEach((keyCombo) => { thisBinds.push(clientGetKeyMapSimple(keyCombo, thisLocale))})
+		modRecord.modDesc.binds[action].forEach((keyCombo) => { thisBinds.push(clientGetKeyMapSimple(keyCombo, modCollect.currentLocale))})
 		keyBinds.push(`${action} :: ${thisBinds.join(' / ')}`)
 	})
 	
 	fsgUtil.byId('keyBinds').innerHTML = ( keyBinds.length > 0 ) ? keyBinds.join('\n') : getText('detail_key_none')
 
-	const bindingIssue     = bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName]
+	const bindingIssue     = modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName]
 	const bindingIssueTest = typeof bindingIssue !== 'undefined'
 
 	if ( modRecord.issues.length < 1 && !bindingIssueTest ) {
@@ -96,7 +98,7 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 
 		if ( bindingIssueTest ) {
 			Object.keys(bindingIssue).forEach((keyCombo) => {
-				const actualKey = clientGetKeyMap(keyCombo, thisLocale)
+				const actualKey = clientGetKeyMap(keyCombo, modCollect.currentLocale)
 				const confList  = bindingIssue[keyCombo].join(', ')
 				const issueText = `${getText('bind_conflict')} : ${actualKey} :: ${confList}`
 				problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
@@ -109,24 +111,24 @@ window.mods.receive('fromMain_modRecord', (modRecord, modhubRecord, bindConflict
 	const displayBadges = modRecord.badgeArray || []
 
 	if ( Object.keys(modRecord.modDesc.binds).length > 0 ) {
-		if ( typeof bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) {
+		if ( typeof modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) {
 			displayBadges.push('keys_bad')
 		} else {
 			displayBadges.push('keys_ok')
 		}
 	}
 
-	if ( modhubRecord[0] !== null && modhubRecord[1] !== null && modRecord.modDesc.version !== modhubRecord[1]) {
+	if ( modRecord.modHub.id !== null && modRecord.modHub.version !== null && modRecord.modDesc.version !== modRecord.modHub.version ) {
 		displayBadges.push('update')
 	}
-	if ( modhubRecord[2] ) {
+	if ( modRecord.modHub.recent ) {
 		displayBadges.push('recent')
 	}
-	if ( modhubRecord[0] === null ) {
+	if ( modRecord.modHub.id === null ) {
 		displayBadges.push('nonmh')
 		fsgUtil.byId('modhub_link').classList.add('d-none')
 	} else {
-		const modhubLink = `https://www.farming-simulator.com/mod.php?mod_id=${modhubRecord[0]}`
+		const modhubLink = `https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}`
 		fsgUtil.byId('modhub_link').innerHTML = `<a target="_BLANK" href="${modhubLink}">${modhubLink}</a>`
 	}
 
