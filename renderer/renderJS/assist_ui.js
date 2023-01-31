@@ -82,6 +82,8 @@ window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 	const tableID = `${selectMod.split('--')[0]}_mods`
 	const checkList = [selectMod.split('--')[1]]
 
+	console.log(checkList)
+	
 	select_lib.close_all(tableID)
 	select_lib.click_only(tableID, checkList)
 	select_lib.filter(tableID, filterText)
@@ -89,14 +91,13 @@ window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 
 
 let lastLocale      = 'en'
-let lastQuickLists  = {}
 let searchStringMap = {}
 let searchTagMap    = {}
 let lastList        = null
 let fullList        = {}
 
-window.mods.receive('fromMain_modList', (opts) => {
-	lastQuickLists  = {}
+
+window.mods.receive('fromMain_modList', (modCollect) => {
 	searchStringMap = {}
 	searchTagMap    = {
 		broken  : [],
@@ -110,70 +111,58 @@ window.mods.receive('fromMain_modList', (opts) => {
 		update  : [],
 		nonmh   : [],
 	}
-	lastLocale = opts.currentLocale
+	lastLocale = modCollect.opts.currentLocale
 
-	fsgUtil.byId('lang-style-div').setAttribute('class', opts.currentLocale)
+	fsgUtil.byId('lang-style-div').setAttribute('class', modCollect.opts.currentLocale)
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 	const lastOpenQ   = (lastOpenAcc !== null) ? fsgUtil.byId('filter_input').value : ''
 	const scrollStart = window.scrollY
 
-	const selectedList = ( opts.activeCollection !== '999' && opts.activeCollection !== '0') ? `collection--${opts.activeCollection}` : opts.activeCollection
 	const modTable     = []
 	const optList      = []
 	const scrollTable  = []
-	
-	lastList = selectedList
+
+	/* List selection */
+	lastList = ( modCollect.opts.activeCollection !== '999' && modCollect.opts.activeCollection !== '0') ? `collection--${modCollect.opts.activeCollection}` : modCollect.opts.activeCollection
 	fullList = {}
 
-	optList.push(fsgUtil.buildSelectOpt('0', `--${opts.l10n.disable}--`, selectedList, true))
-	fullList[0] = `--${opts.l10n.disable}--`
-	
-	Object.keys(opts.modList).forEach((collection) => {
-		const modRows      = []
-		const scrollRows   = []
-		let   sizeOfFolder = 0
+	fullList[0] = `--${modCollect.opts.l10n.disable}--`
+	optList.push(fsgUtil.buildSelectOpt('0', `--${modCollect.opts.l10n.disable}--`, lastList, true))
 
-		opts.modList[collection].mods.forEach((thisMod) => {
+	modCollect.set_Collections.forEach((collectKey) => {
+		fullList[`collection--${collectKey}`] = modCollect.modList[collectKey].fullName
+		optList.push(fsgUtil.buildSelectOpt(`collection--${collectKey}`, modCollect.modList[collectKey].fullName, lastList, false, modCollect.collectionToFolder[collectKey]))
+		
+	})
+
+	fullList[999] = `--${modCollect.opts.l10n.unknown}--`
+	optList.push(fsgUtil.buildSelectOpt('999', `--${modCollect.opts.l10n.unknown}--`, lastList, true))
+
+	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
+	/* END : List selection */
+
+
+	modCollect.set_Collections.forEach((collectKey) => {
+		const thisCollection = modCollect.modList[collectKey]
+		const collectNotes   = modCollect.collectionNotes?.[collectKey]
+		const modRows        = []
+		const scrollRows     = []
+		const sizeOfFolder   = thisCollection.folderSize
+
+		thisCollection.alphaSort.forEach((modKey) => {
 			try {
-				const displayBadges = thisMod.badgeArray || []
-				const modId         = opts.modHub.list.mods[thisMod.fileDetail.shortName] || null
-				const modVer        = opts.modHub.version[modId] || null
-				const modColUUID    = `${collection}--${thisMod.uuid}`
+				const thisMod       = thisCollection.mods[modKey.split('::')[1]]
+				const displayBadges = doBadgeSet(
+					thisMod.badgeArray,
+					thisMod,
+					thisCollection,
+					modCollect.newMods,
+					modCollect.bindConflict?.[collectKey]
+				)
 
-				sizeOfFolder += thisMod.fileDetail.fileSize
-
-				if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
-					if ( typeof opts.bindConflict[collection][thisMod.fileDetail.shortName] !== 'undefined' ) {
-						displayBadges.push('keys_bad')
-					} else {
-						displayBadges.push('keys_ok')
-					}
-				}
-				if ( modVer !== null && thisMod.modDesc.version !== modVer) {
-					displayBadges.push('update')
-				}
-				if ( opts.newMods.includes(thisMod.md5Sum) && !thisMod.canNotUse ) {
-					displayBadges.push('new')
-				}
-				if ( modId !== null && opts.modHub.list.last.includes(modId) ) {
-					displayBadges.push('recent')
-				}
-				if ( modId === null ) {
-					displayBadges.push('nonmh')
-				}
-
-				if ( displayBadges.includes('broken') && displayBadges.includes('notmod') ) {
-					const brokenIdx = displayBadges.indexOf('broken')
-					displayBadges.splice(brokenIdx, brokenIdx !== -1 ? 1 : 0)
-				}
-
-				if ( ! metDepend(thisMod.modDesc.depend, collection, opts.modList[collection].mods) ) {
-					displayBadges.unshift('depend')
-				}
-
-				searchStringMap[modColUUID] = [
+				searchStringMap[thisMod.colUUID] = [
 					thisMod.fileDetail.shortName,
 					thisMod.l10n.title,
 					thisMod.modDesc.author
@@ -181,16 +170,16 @@ window.mods.receive('fromMain_modList', (opts) => {
 
 				displayBadges.forEach((badge) => {
 					if ( typeof searchTagMap?.[badge]?.push === 'function' ) {
-						searchTagMap[badge].push(modColUUID)
+						searchTagMap[badge].push(thisMod.colUUID)
 					}
 				})
 
-				scrollRows.push(`<div class="${collection}_mods ${modColUUID} scroll_mod d-none flex-grow-1 bg-opacity-25"></div>`)
+				scrollRows.push(fsgUtil.buildScrollMod(collectKey, thisMod.colUUID))
 				modRows.push(makeModRow(
-					modColUUID,
+					thisMod.colUUID,
 					thisMod,
 					displayBadges,
-					modId
+					thisMod.modHub.id
 				))
 
 			} catch (e) {
@@ -199,32 +188,26 @@ window.mods.receive('fromMain_modList', (opts) => {
 		})
 		
 		modTable.push(makeModCollection(
-			collection,
-			`${opts.modList[collection].name} <small>[${fsgUtil.bytesToHR(sizeOfFolder, opts.currentLocale)}]</small>`,
+			collectKey,
+			`${thisCollection.name} <small>[${fsgUtil.bytesToHR(sizeOfFolder, lastLocale)}]</small>`,
 			modRows,
-			fsgUtil.notesDefault(opts.notes, collection, 'notes_website'),
-			fsgUtil.notesDefault(opts.notes, collection, 'notes_websiteDL', false),
-			fsgUtil.notesDefault(opts.notes, collection, 'notes_tagline'),
-			fsgUtil.notesDefault(opts.notes, collection, 'notes_admin'),
-			opts.modList[collection].mods.length
+			fsgUtil.notesDefault(collectNotes, 'notes_website'),
+			fsgUtil.notesDefault(collectNotes, 'notes_websiteDL', false),
+			fsgUtil.notesDefault(collectNotes, 'notes_tagline'),
+			fsgUtil.notesDefault(collectNotes, 'notes_admin'),
+			thisCollection.dependSet.size
 		))
-		scrollTable.push(`<div class="${collection} scroll_col flex-grow-1"></div>${scrollRows.join('')}`)
-		const selectCollName = `${opts.modList[collection].name}${window.mods.getCollDesc(collection)}`
-		
-		optList.push(fsgUtil.buildSelectOpt(`collection--${collection}`, selectCollName, selectedList, false, opts.foldersMap[collection]))
-		fullList[`collection--${collection}`] = selectCollName
-
+		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	})
-	optList.push(fsgUtil.buildSelectOpt('999', `--${opts.l10n.unknown}--`, selectedList, true))
-	fullList[999] = `--${opts.l10n.unknown}--`
-	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
+	
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
 	fsgUtil.byId('scroll-bar-fake').innerHTML  = scrollTable.join('')
 
-	Object.keys(opts.notes).forEach((collection) => {
-		const thisFav = opts?.notes[collection]?.notes_favorite || false
+	modCollect.set_Collections.forEach((collectKey) => {
+		const thisFav = fsgUtil.notesDefault(modCollect.collectionNotes?.[collectKey], 'notes_favorite', false)
+
 		if ( thisFav ) {
-			const favFolder = document.querySelector(`[data-bs-target="#${collection}_mods"] svg`)
+			const favFolder = document.querySelector(`[data-bs-target="#${collectKey}_mods"] svg`)
 
 			if ( favFolder !== null ) {
 				favFolder.innerHTML += '<path d="m171,126.25l22.06,62.76l65.93,0l-54.22,35.49l21.94,61.46l-55.74,-38.21l-55.74,38.21l22.06,-61.46l-54.32,-35.49l66.06,0l21.94,-62.76l0.03,0z" fill="#7f7f00" id="svg_5"/>'
@@ -232,7 +215,7 @@ window.mods.receive('fromMain_modList', (opts) => {
 		}
 	})
 
-	const activeFolder = document.querySelector(`[data-bs-target="#${opts.activeCollection}_mods"] svg`)
+	const activeFolder = document.querySelector(`[data-bs-target="#${modCollect.opts.activeCollection}_mods"] svg`)
 
 	if ( activeFolder !== null ) {
 		let currentInner = activeFolder.innerHTML
@@ -254,31 +237,56 @@ window.mods.receive('fromMain_modList', (opts) => {
 			select_lib.filter(lastOpenID, lastOpenQ)
 		}
 		window.scrollTo(0, scrollStart)
-	} catch { /* nope */ }
+	} catch {
+		// Don't Care
+	}
 
 	select_lib.filter()
 	processL10N()
 })
 
 
-function metDepend(depends, collection, collectionMods) {
-	if ( typeof depends === 'undefined' || depends.length === 0 ) { return true }
+function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts) {
+	const theseBadges = originalBadges || []
 
-	if ( typeof lastQuickLists[collection] === 'undefined' ) {
-		lastQuickLists[collection] = new Set()
-		collectionMods.forEach((mod) => {
-			lastQuickLists[collection].add(mod.fileDetail.shortName)
-		})
+	if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
+		theseBadges.push(typeof bindConflicts[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok')
 	}
-	let hasAllDeps = true
 
-	depends.forEach((thisDep) => {
-		if ( ! lastQuickLists[collection].has(thisDep) ) {
-			hasAllDeps = false
-			return
-		}
-	})
-	return hasAllDeps
+	if ( thisMod.modHub.version !== null && thisMod.modDesc.version !== thisMod.modHub.version) {
+		theseBadges.push('update')
+	}
+
+	if ( newMods.has(thisMod.md5Sum) && !thisMod.canNotUse ) {
+		theseBadges.push('new')
+	}
+
+	if ( thisMod.modHub.recent ) {
+		theseBadges.push('recent')
+	}
+
+	if ( thisMod.modHub.id === null ) {
+		theseBadges.push('nonmh')
+	}
+
+	if ( theseBadges.includes('broken') && theseBadges.includes('notmod') ) {
+		const brokenIdx = theseBadges.indexOf('broken')
+		theseBadges.splice(brokenIdx, brokenIdx !== -1 ? 1 : 0)
+	}
+
+	if ( typeof thisMod.modDesc.depend !== 'undefined' && thisMod.modDesc.depend.length > 0 ) {
+		let hasAllDeps = true
+
+		thisMod.modDesc.depend.forEach((thisDep) => {
+			if ( ! thisCollection.dependSet.has(thisDep) ) {
+				hasAllDeps = false
+				return
+			}
+		})
+		if ( !hasAllDeps ) { theseBadges.unshift('depend')}
+	}
+
+	return Array.from(new Set(theseBadges))
 }
 
 function clientMakeListInactive() {

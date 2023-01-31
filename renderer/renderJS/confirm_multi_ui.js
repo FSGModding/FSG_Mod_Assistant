@@ -32,27 +32,33 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 let lastSourceMods = null
 
-window.mods.receive('fromMain_confirmList', (mods, destinations, modList) => {
-	lastSourceMods = mods
+window.mods.receive('fromMain_confirmList', (modCollect) => {
+	console.log(modCollect)
+
+	lastSourceMods = modCollect.opts.sourceFiles
 
 	const destChecks = []
 	const confRows   = []
 
-	destinations.forEach((collection) => {
-		destChecks.push(makeCheck(collection, modList[collection].name, window.mods.homeDirMap(modList[collection].fullPath)))
+	modCollect.opts.destinations.forEach((collectKey) => {
+		destChecks.push(makeCheck(
+			collectKey,
+			modCollect.collectionToName[collectKey],
+			modCollect.collectionToFolderRelative[collectKey]
+		))
 	})
 
-	mods.forEach((mod) => {
-		confRows.push(makeRow(mod))
+	modCollect.opts.sourceFiles.forEach((source) => {
+		confRows.push(makeRow(source))
 	})
 
-	fsgUtil.byId('dest_list').innerHTML = destChecks.join('')
+	fsgUtil.byId('dest_list').innerHTML    = destChecks.join('')
 	fsgUtil.byId('confirm_list').innerHTML = confRows.join('')
 
 	processL10N()
 })
 
-const makeRow = (row) => `<tr><td>${row[2]}</td><td>${row[3]}</td></tr>`
+const makeRow = (row) => `<tr><td>${row.shortName}</td><td>${row.title}</td></tr>`
 
 const makeCheck = (id, name, dir) => `<div class="form-check form-switch mb-2">
 		<input class="form-check-input" type="checkbox" id="${id}">
@@ -64,9 +70,9 @@ function clientDoCopy() {
 	const realDestinations = fsgUtil.query(':checked')
 	const fileMap          = []
 
-	lastSourceMods.forEach((mod) => {
+	lastSourceMods.forEach((source) => {
 		realDestinations.forEach((realDest) => {
-			fileMap.push([realDest.id, mod[1], mod[0]])
+			fileMap.push([realDest.id, source.collectKey, source.fullPath])
 		})
 	})
 

@@ -19,8 +19,8 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "test": "node ./test/mod-reader-test.js && node ./test/save-reader-test.js && node ./test/translate-check.js",
-    "langtest": "node ./test/translate-check.js",
-    "langfix": "node ./test/translate-fix.js",
+    "lang_test": "node ./test/translate-check.js",
+    "lang_fix": "node ./test/translate-fix.js",
     "depends": "node ./test/outdated-deps.js"
   },
   "devDependencies": {
@@ -40,7 +40,6 @@
     "pngjs": "^6.0.0",
     "semver": "^7.3.8",
     "unzip-stream": "^0.3.1",
-    "windows": "^0.1.2",
     "xml2js": "^0.4.23",
     "yargs": "^17.5.1"
   },

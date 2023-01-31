@@ -31,43 +31,26 @@ log.log.info(` - Electron Version: ${process.versions.electron}`)
 log.log.info(` - Chrome Version: ${process.versions.chrome}`)
 
 
-
-process.on('uncaughtException', (err, origin) => {
+function handleUnhandled(type, err, origin) {
 	const rightNow = new Date()
 	fs.appendFileSync(
 		crashLog,
-		`Exception Timestamp : ${rightNow.toISOString()}\n\nCaught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}`
+		`${type} Timestamp : ${rightNow.toISOString()}\n\nCaught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}`
 	)
 	if ( !isNetworkError(err) ) {
 		dialog.showMessageBoxSync(null, {
-			title   : 'Uncaught Error - Quitting',
-			message : `Caught exception: ${err}\n\nException origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
+			title   : `Uncaught ${type} - Quitting`,
+			message : `Caught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
 			type    : 'error',
 		})
-		gameLogFile.close()
+		if ( gameLogFile ) { gameLogFile.close() }
 		app.quit()
 	} else {
-		log.log.debug(`Network error: ${err}`, 'net-error-exception')
+		log.log.debug(`Network error: ${err}`, `net-error-${type}`)
 	}
-})
-process.on('unhandledRejection', (err, origin) => {
-	const rightNow = new Date()
-	fs.appendFileSync(
-		crashLog,
-		`Rejection Timestamp : ${rightNow.toISOString()}\n\nCaught rejection: ${err}\n\nRejection origin: ${origin}\n\n${err.stack}`
-	)
-	if ( !isNetworkError(err) ) {
-		dialog.showMessageBoxSync(null, {
-			title   : 'Uncaught Error - Quitting',
-			message : `Caught rejection: ${err}\n\nRejection origin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
-			type    : 'error',
-		})
-		gameLogFile.close()
-		app.quit()
-	} else {
-		log.log.debug(`Network error: ${err}`, 'net-error-rejection')
-	}
-})
+}
+process.on('uncaughtException', (err, origin) => { handleUnhandled('exception', err, origin) })
+process.on('unhandledRejection', (err, origin) => { handleUnhandled('rejection', err, origin) })
 
 const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale())
@@ -106,7 +89,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) {
 				if ( tray ) { tray.destroy() }
-				gameLogFile.close()
+				if ( gameLogFile ) { gameLogFile.close() }
 				Object.keys(windows).forEach((thisWin) => {
 					if ( thisWin !== 'main' && windows[thisWin] !== null ) {
 						windows[thisWin].destroy()
@@ -124,10 +107,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 	}, ( 30 * 60 * 1000))
 }
 
-const glob       = require('glob')
-const fxml       = require('fast-xml-parser')
-const crypto     = require('crypto')
-
+const fxml          = require('fast-xml-parser')
 const userHome      = require('os').homedir()
 const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
@@ -151,14 +131,10 @@ const gameGuesses = [
 	'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Farming Simulator 22'
 ]
 const pathGuesses = [
+	path.join(app.getPath('documents'), 'My Games', 'FarmingSimulator2022'),
 	path.join(userHome, 'OneDrive', 'Documents', 'My Games', 'FarmingSimulator2022'),
 	path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
 ]
-try {
-	const winUtil    = require('windows')
-	const userFolder = winUtil.registry('HKEY_CURRENT_USER/SOFTWARE/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders').Personal.value
-	pathGuesses.unshift(path.join(userFolder, 'My Games', 'FarmingSimulator2022'))
-} catch { /* do nothing */ }
 
 gameGuesses.forEach((testPath) => {
 	if ( fs.existsSync(path.join(testPath, gameExeName)) ) {
@@ -173,7 +149,7 @@ pathGuesses.forEach((testPath) => {
 	}
 })
 
-const { modFileChecker, notModFileChecker } = require('./lib/single-mod-checker.js')
+const { modFileCollection } = require('./lib/modCheckLib.js')
 
 const winDef = (w, h) => { return {
 	x : { type : 'number', default : -1 },
@@ -234,32 +210,24 @@ const mcStore = new Store({schema : settingsSchema, migrations : settingsMig, cl
 const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 
-const newModsList = []
+const modCollect = new modFileCollection(
+	log,
+	modNote,
+	maCache,
+	app.getPath('home'),
+	{
+		hide  : loadingWindow_hide,
+		count : loadingWindow_current,
+	},
+	myTranslator.deferCurrentLocale,
+	skipCache
+)
 
-let modFolders    = new Set()
-let modFoldersMap = {}
-let modList       = {}
-let bindConflict  = {}
-let countTotal    = 0
-let countMods     = 0
-let modHubList    = {'mods' : {}, 'last' : []}
-let modHubVersion = {}
-let lastFolderLoc = null
+const loadWindowCount = { total : 0, current : 0}
+
+let modFolders       = new Set()
+let lastFolderLoc    = null
 let lastGameSettings = {}
-
-
-const ignoreList = [
-	'^npm-debug\\.log$',
-	'^\\..*\\.swp$',
-	'^Thumbs\\.db$',
-	'^thumbs\\.db$',
-	'^ehthumbs\\.db$',
-	'^Desktop\\.ini$',
-	'^desktop\\.ini$',
-	'@eaDir$',
-]
-
-const junkRegex = new RegExp(ignoreList.join('|'))
 
 let tray    = null
 const windows = {
@@ -332,14 +300,14 @@ mcStore.set('cache_version', app.getVersion())
 
 
 function debugDangerCallback() {
-	if ( windows.main !== null ) {
-		windows.main.webContents.send('fromMain_debugLogDanger')
-	}
+	if ( windows.main !== null ) { windows.main.webContents.send('fromMain_debugLogDanger') }
 }
+
 /*  _    _  ____  _  _  ____   _____  _    _  ___ 
    ( \/\/ )(_  _)( \( )(  _ \ (  _  )( \/\/ )/ __)
     )    (  _)(_  )  (  )(_) ) )(_)(  )    ( \__ \
    (__/\__)(____)(_)\_)(____/ (_____)(__/\__)(___/ */
+
 function destroyAndFocus(winName) {
 	windows[winName] = null
 	if ( windows.main !== null ) { windows.main.focus() }
@@ -535,14 +503,15 @@ function createMainWindow () {
 	})
 }
 
-function createConfirmFav(mods, destinations) {
-	if ( mods.length < 1 ) { return }
+function createConfirmFav(windowArgs) {
 	if ( windows.confirm ) { windows.confirm.focus(); return }
 
 	windows.confirm = createSubWindow('confirm', { parent : 'main', preload : 'confirmMulti', fixed : true })
 
-	windows.confirm.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_confirmList', mods, destinations, modList)
+	windows.confirm.webContents.on('did-finish-load', async () => {
+		sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false)
+
+		if ( devDebug ) { windows.confirm.webContents.openDevTools() }
 	})
 
 	windows.confirm.loadFile(path.join(pathRender, 'confirm-multi.html'))
@@ -560,13 +529,17 @@ function createConfirmWindow(type, modRecords, origList) {
 
 	windows.confirm = createSubWindow('confirm', { parent : 'main', preload : file_JS, fixed : true })
 
-	windows.confirm.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_confirmList', {
-			records    : modRecords,
-			list       : modList,
-			foldersMap : modFoldersMap,
-			collection : collection,
-		})
+	windows.confirm.webContents.on('did-finish-load', async () => {
+		sendModList(
+			{
+				records : modRecords,
+				originCollectKey : collection,
+			},
+			'fromMain_confirmList',
+			'confirm',
+			false
+		)
+		if ( devDebug ) { windows.confirm.webContents.openDevTools() }
 	})
 
 	windows.confirm.loadFile(path.join(pathRender, file_HTML))
@@ -605,18 +578,19 @@ function createFolderWindow() {
 
 function createDetailWindow(thisModRecord) {
 	if ( thisModRecord === null ) { return }
-	const modhubRecord = modRecordToModHub(thisModRecord)
+	//const modhubRecord = modCollect.modHubFullRecord(thisModRecord)
 
 	if ( windows.detail ) {
 		windows.detail.focus()
-		windows.detail.webContents.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict, myTranslator.currentLocale)
+		// TODO: this is wrong!  Get rid of modhubRecord
+		windows.detail.webContents.send('fromMain_modRecord', thisModRecord, modhubRecord, modCollect.bindConflict, myTranslator.currentLocale)
 		return
 	}
 
 	windows.detail = createSubWindow('detail', { parent : 'main', preload : 'detailWindow' })
 
 	windows.detail.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord, bindConflict, myTranslator.currentLocale)
+		event.sender.send('fromMain_modRecord', thisModRecord, modhubRecord, modCollect.bindConflict, myTranslator.currentLocale)
 		if ( devDebug ) { windows.detail.webContents.openDevTools() }
 	})
 
@@ -796,19 +770,18 @@ function loadingWindow_open(l10n) {
 		return
 	}
 }
-function loadingWindow_total(amount, reset = false, inMB = false) {
-	countTotal = ( reset ) ? amount : amount + countTotal
+function loadingWindow_doCount(whichCount, amount, reset, inMB) {
+	loadWindowCount[whichCount] = ( reset ) ? amount : amount + loadWindowCount[whichCount]
 
 	if ( ! windows.load.isDestroyed() ) {
-		windows.load.webContents.send('fromMain_loadingTotal', countTotal, inMB)
+		windows.load.webContents.send(`fromMain_loading_${whichCount}`, loadWindowCount.total, inMB)
 	}
 }
+function loadingWindow_total(amount, reset = false, inMB = false) {
+	loadingWindow_doCount('total', amount, reset, inMB)
+}
 function loadingWindow_current(amount = 1, reset = false, inMB = false) {
-	countMods = ( reset ) ? amount : amount + countMods
-
-	if ( ! windows.load.isDestroyed() ) {
-		windows.load.webContents.send('fromMain_loadingCurrent', countMods, inMB)
-	}
+	loadingWindow_doCount('current', amount, reset, inMB)
 }
 function loadingWindow_hide(time = 1250) {
 	setTimeout(() => {
@@ -861,7 +834,7 @@ ipcMain.on('toMain_openMods',     (event, mods) => {
 })
 ipcMain.on('toMain_openHub',     (event, mods) => {
 	const thisMod = modIdToRecord(mods[0])
-	const thisModId = modHubList.mods[thisMod.fileDetail.shortName] || null
+	const thisModId = modHubData.modHubList.mods[thisMod.fileDetail.shortName] || null
 
 	if ( thisModId !== null ) {
 		shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisModId}`)
@@ -869,31 +842,43 @@ ipcMain.on('toMain_openHub',     (event, mods) => {
 })
 
 ipcMain.on('toMain_copyFavorites',  () => {
-	const favCols     = []
-	const sourceFiles = []
-	let destCols      = Object.keys(modList)
+	const sourceCollections      = []
+	const destinationCollections = []
+	const sourceFiles            = []
 
-	Object.keys(modNote.store).forEach((collection) => {
-		if ( modNote.get(`${collection}.notes_favorite`, false) === true ) { favCols.push(collection) }
+	modCollect.collections.forEach((collectKey) => {
+		const isFavorite = modNote.get(`${collectKey}.notes_favorite`, false)
+
+		if ( isFavorite ) {
+			sourceCollections.push(collectKey)
+		} else {
+			destinationCollections.push(collectKey)
+		}
 	})
 
-	favCols.forEach((collection) => {
-		destCols = destCols.filter((item) => item !== collection )
-		modList[collection].mods.forEach((thisMod) => {
-			sourceFiles.push([
-				thisMod.fileDetail.fullPath,
-				collection,
-				thisMod.fileDetail.shortName,
-				thisMod.l10n.title
-			])
+	sourceCollections.forEach((collectKey) => {
+		const thisCollection = modCollect.getModCollection(collectKey)
+		thisCollection.modSet.forEach((modKey) => {
+			sourceFiles.push({
+				fullPath   : thisCollection.mods[modKey].fileDetail.fullPath,
+				collectKey : collectKey,
+				shortName  : thisCollection.mods[modKey].fileDetail.shortName,
+				title      : thisCollection.mods[modKey].l10n.title,
+			})
 		})
 	})
 
-	createConfirmFav(sourceFiles, destCols)
+	if ( sourceFiles.length > 0 ) {
+		createConfirmFav({
+			sourceFiles  : sourceFiles,
+			destinations : destinationCollections,
+			sources      : sourceCollections,
+		})
+	}
 })
-ipcMain.on('toMain_deleteMods',     (event, mods) => { createConfirmWindow('delete', modIdsToRecords(mods), mods) })
-ipcMain.on('toMain_moveMods',       (event, mods) => { createConfirmWindow('move', modIdsToRecords(mods), mods) })
-ipcMain.on('toMain_copyMods',       (event, mods) => { createConfirmWindow('copy', modIdsToRecords(mods), mods) })
+ipcMain.on('toMain_deleteMods',     (event, mods) => { createConfirmWindow('delete', modCollect.modColUUIDsToRecords(mods), mods) })
+ipcMain.on('toMain_moveMods',       (event, mods) => { createConfirmWindow('move', modCollect.modColUUIDsToRecords(mods), mods) })
+ipcMain.on('toMain_copyMods',       (event, mods) => { createConfirmWindow('copy', modCollect.modColUUIDsToRecords(mods), mods) })
 ipcMain.on('toMain_realFileDelete', (event, fileMap) => { fileOperation('delete', fileMap) })
 ipcMain.on('toMain_realFileMove',   (event, fileMap) => { fileOperation('move', fileMap) })
 ipcMain.on('toMain_realFileCopy',   (event, fileMap) => { fileOperation('copy', fileMap) })
@@ -1087,7 +1072,7 @@ ipcMain.on('toMain_showChangelog', () => { createChangeLogWindow() } )
 
 ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	const thisMod   = modIdToRecord(modID)
-	const thisModId = modHubList.mods[thisMod.fileDetail.shortName] || null
+	const thisModId = modHubData.mods[thisMod.fileDetail.shortName] || null
 
 	const template = [
 		{ label : thisMod.fileDetail.shortName},
@@ -1369,14 +1354,12 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 
 	dialog.showMessageBoxSync(windows.main, {
 		title   : myTranslator.syncStringLookup('download_title'),
-		message : `${myTranslator.syncStringLookup('download_started')} :: ${modList[collection].name}\n${myTranslator.syncStringLookup('download_finished')}`,
+		message : `${myTranslator.syncStringLookup('download_started')} :: ${modCollect.mapCollectionToName(collection)}\n${myTranslator.syncStringLookup('download_finished')}`,
 		type    : 'info',
 	})
 
 	log.log.info(`Downloading Collection : ${collection}`, 'mod-download')
 	log.log.info(`Download Link : ${thisLink}`, 'mod-download')
-
-	
 
 	const dlReq = net.request(thisLink)
 
@@ -1431,7 +1414,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 						processModFolders()
 					})
 
-					zipReadStream.pipe(unzip.Extract({ path : modList[collection].fullPath }))
+					zipReadStream.pipe(unzip.Extract({ path : modCollect.mapCollectionToFolder(collection) }))
 				} catch (e) {
 					log.log.warning(`Download failed : (${response.statusCode}) ${e}`, 'mod-download')
 					loadingWindow_hide()
@@ -1610,59 +1593,38 @@ ipcMain.on('toMain_versionResolve',  (event, shortName) => {
 
 /** Utility & Convenience Functions */
 ipcMain.on('toMain_closeSubWindow', (event, thisWin) => { windows[thisWin].close() })
-ipcMain.on('toMain_homeDirRevamp', (event, thisPath) => { event.returnValue = thisPath.replaceAll(userHome, '~') })
 
 
-function refreshClientModList() {
-	windows.main.webContents.send(
-		'fromMain_modList',
+function sendModList(extraArgs = {}, eventName = 'fromMain_modList', toWindow = 'main', closeLoader = true) {
+	modCollect.toRenderer(extraArgs).then((modCollection) => {
+		windows[toWindow].webContents.send(eventName, modCollection)
+
+		if ( toWindow === 'main' && windows.version && windows.version.isVisible() ) {
+			windows.version.webContents.send(eventName, modCollection)
+		}
+		if ( closeLoader ) { loadingWindow_hide(1500) }
+	})
+}
+
+function refreshClientModList(closeLoader = true) {
+	sendModList(
 		{
 			currentLocale          : myTranslator.deferCurrentLocale(),
-			modList                : modList,
 			l10n                   : {
 				disable : myTranslator.syncStringLookup('override_disabled'),
 				unknown : myTranslator.syncStringLookup('override_unknown'),
 			},
 			activeCollection       : overrideIndex,
-			foldersMap             : modFoldersMap,
-			newMods                : newModsList,
-			modHub                 : {
-				list               : modHubList,
-				version            : modHubVersion,
-			},
-			bindConflict           : bindConflict,
-			notes                  : modNote.store,
-		}
+		},
+		'fromMain_modList',
+		'main',
+		closeLoader
 	)
 }
 
-function modRecordToModHub(mod) {
-	const modId = modHubList.mods[mod.fileDetail.shortName] || null
-	return [modId, (modHubVersion[modId] || null), modHubList.last.includes(modId)]
-}
-function modIdToRecord(id) {
-	const idParts = id.split('--')
-	let foundMod  = null
-	let foundCol  = null
-
-	modList[idParts[0]].mods.forEach((mod) => {
-		if ( foundMod === null && mod.uuid === idParts[1] ) {
-			foundMod = mod
-			foundCol = idParts[0]
-		}
-	})
-	foundMod.currentCollection = foundCol
-	return foundMod
-}
-
-function modIdsToRecords(mods) {
-	const theseMods = []
-	mods.forEach((inMod) => { theseMods.push(modIdToRecord(inMod)) })
-	return theseMods
-}
 /** END: Utility & Convenience Functions */
 
-
+/** Business Functions */
 function parseGameXML(devMode = null) {
 	const gameXMLFile = gameSettings.replace('gameSettings.xml', 'game.xml')
 
@@ -1708,7 +1670,7 @@ function parseGameXML(devMode = null) {
 		parseGameXML(null)
 	}
 }
-/** Business Functions */
+
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
 	if ( ! gameSettings.endsWith('.xml') ) {
 		log.log.danger(`Game settings is not an xml file ${gameSettings}, fixing`, 'game-settings')
@@ -1759,10 +1721,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 	if ( overrideActive === 'false' || overrideActive === false ) {
 		overrideIndex = '0'
 	} else {
-		overrideIndex = '999'
-		Object.keys(modFoldersMap).forEach((cleanName) => {
-			if ( modFoldersMap[cleanName] === overrideFolder ) { overrideIndex = cleanName }
-		})
+		overrideIndex = modCollect.mapFolderToCollection(overrideFolder) || '999'
 	}
 
 	if ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) {
@@ -1813,7 +1772,6 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 
 		parseSettings()
 		refreshClientModList()
-		loadingWindow_hide(1500)
 	}
 }
 
@@ -1833,15 +1791,14 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 	}, 250)
 }
 
-
 function fileOperation_post(type, fileMap) {
 	const fullPathMap = []
 
 	fileMap.forEach((file) => {
 		const thisFileName = path.basename(file[2])
 		fullPathMap.push([
-			path.join(modFoldersMap[file[1]], thisFileName), // source
-			path.join(modFoldersMap[file[0]], thisFileName), // dest
+			path.join(modCollect.mapCollectionToFolder(file[1]), thisFileName), // source
+			path.join(modCollect.mapCollectionToFolder(file[0]), thisFileName), // dest
 		])
 	})
 
@@ -1879,67 +1836,10 @@ function fileOperation_post(type, fileMap) {
 	})
 
 	processModFolders()
-	if ( windows.version && windows.version.isVisible() ) {
-		windows.version.webContents.send('fromMain_modList', modList)
-	}
-
-}
-
-function fileGetStats(folder, thisFile) {
-	let isFolder = null
-	let date     = null
-	let b_date    = null
-	let size     = null
-	let error    = false
-
-	try {
-		if ( thisFile.isSymbolicLink() ) {
-			const thisSymLink     = fs.readlinkSync(path.join(folder, thisFile.name))
-			const thisSymLinkStat = fs.lstatSync(path.join(folder, thisSymLink))
-			isFolder = thisSymLinkStat.isDirectory()
-			date     = thisSymLinkStat.ctime
-			b_date    = thisSymLinkStat.birthtime
-
-			if ( !isFolder ) { size = thisSymLinkStat.size }
-		} else {
-			isFolder = thisFile.isDirectory()
-		}
-
-		if ( ! thisFile.isSymbolicLink() ) {
-			const theseStats = fs.statSync(path.join(folder, thisFile.name))
-			if ( !isFolder ) { size = theseStats.size }
-			date  = theseStats.ctime
-			b_date = theseStats.birthtime
-			
-		}
-		if ( isFolder ) {
-			let bytes = 0
-			glob.sync('**', { cwd : path.join(folder, thisFile.name) }).forEach((file) => {
-				try {
-					const stats = fs.statSync(path.join(folder, thisFile.name, file))
-					if ( stats.isFile() ) { bytes += stats.size }
-				} catch { /* Do Nothing if we can't read it. */ }
-			})
-			size = bytes
-		}
-	} catch (e) {
-		log.log.warning(`Unable to stat file ${thisFile.name} in ${folder} : ${e}`, 'file-stat')
-		isFolder = false
-		size     = 0
-		date     = new Date(1969, 1, 1, 0, 0, 0, 0)
-		error    = true
-	}
-	return {
-		folder : isFolder,
-		size   : size,
-		date   : date,
-		b_date : b_date,
-		error  : error,
-	}
 }
 
 let loadingWait = null
-async function processModFolders(newFolder) {
+async function processModFolders() {
 	if ( !foldersDirty ) { loadingWindow_hide(); return }
 
 	loadingWindow_open('mods', 'main')
@@ -1949,206 +1849,54 @@ async function processModFolders(newFolder) {
 	loadingWait = setInterval(() => {
 		if ( windows.load.isVisible() ) {
 			clearInterval(loadingWait)
-			const localStore      = maCache.store
-			const processPromises = processModFolders_post(newFolder, localStore)
-
-			Promise.all(processPromises).then(() => {
-				maCache.store = localStore
-				foldersDirty  = false
-
-				processModBindConflict()
-				processModFolders_post_after()
-			})
+			processModFoldersOnDisk()
 		}
 	}, 250)
 }
 
-function processModFolders_post(newFolder = false, localStore) {
-	const useOneDrive = mcStore.get('use_one_drive', false)
-	const readingPromises = []
-	if ( newFolder === false ) { modList = {}; modFoldersMap = {}}
+function processModFoldersOnDisk() {
+	modCollect.syncSafe     = mcStore.get('use_one_drive', false)
+	modCollect.clearAll()
 
 	// Cleaner for no-longer existing folders, count contents of others
 	modFolders.forEach((folder) => {
-		if ( ! fs.existsSync(folder) ) {
-			modFolders.delete(folder)
-		} else {
-			try {
-				const folderSize = fs.readdirSync(folder, {withFileTypes : true})
-				loadingWindow_total(folderSize.length)
-			} catch (e) {
-				log.log.danger(`Couldn't count folder: ${folder} :: ${e}`, 'folder-reader')
-			}
-		}
+		if ( ! fs.existsSync(folder) ) { modFolders.delete(folder) }
 	})
 
 	mcStore.set('modFolders', Array.from(modFolders))
 
 	modFolders.forEach((folder) => {
-		const cleanName  = `col_${crypto.createHash('md5').update(folder).digest('hex')}`
-		const shortName  = path.basename(folder)
+		const thisCollectionStats = modCollect.addCollection(folder)
 
-		if ( folder === newFolder || newFolder === false ) {
-			modFoldersMap[cleanName] = folder
-			modList[cleanName]       = { name : shortName, fullPath : folder, mods : [] }
-
-			try {
-				const folderContents = fs.readdirSync(folder, {withFileTypes : true})
-
-				folderContents.forEach((thisFile) => {
-					if ( junkRegex.test(thisFile.name) ) {
-						loadingWindow_current()
-						return
-					}
-
-					const thisFileStats = fileGetStats(folder, thisFile)
-
-					if ( thisFileStats.error ) {
-						loadingWindow_current()
-						return
-					}
-
-					readingPromises.push(
-						new Promise((resolve) => {
-							setTimeout(() => {
-								processModFileSingleton(folder, thisFile, localStore, cleanName, thisFileStats, useOneDrive)
-								resolve(true)
-							}, 10)
-						})
-					)
-				})
-				
-			} catch (e) {
-				log.log.danger(`Couldn't process folder: ${folder} :: ${e}`, 'folder-reader')
-			}
-		}
+		loadingWindow_total(thisCollectionStats.fileCount)
 	})
 
-	return readingPromises
-}
+	modCollect.processMods()
 
-async function processModFileSingleton (folder, thisFile, localStore, cleanName, thisFileStats, useOneDrive) {
-	if ( !thisFileStats.folder && !skipCache ) {
-		const hashString = `${thisFile.name}-${thisFileStats.size}-${(useOneDrive)?thisFileStats.b_date.toISOString():thisFileStats.date.toISOString()}`
-		const thisMD5Sum = crypto.createHash('md5').update(hashString).digest('hex')
+	modCollect.processPromise.then(() => {
+		parseSettings()
+		parseGameXML()
+		refreshClientModList()
 
-		if ( typeof localStore[thisMD5Sum] !== 'undefined') {
-			modList[cleanName].mods.push(localStore[thisMD5Sum])
-			log.log.debug(`Adding mod FROM cache: ${localStore[thisMD5Sum].fileDetail.shortName}`, `mod-${localStore[thisMD5Sum].uuid}`)
-			loadingWindow_current()
-			return
+		if ( mcStore.get('rel_notes') !== app.getVersion() ) {
+			mcStore.set('rel_notes', app.getVersion() )
+			log.log.info('New version detected, show changelog')
+			createChangeLogWindow()
 		}
-	}
-
-	if ( !thisFileStats.folder && !thisFile.name.endsWith('.zip') ) {
-		modList[cleanName].mods.push(new notModFileChecker(
-			path.join(folder, thisFile.name),
-			false,
-			thisFileStats.size,
-			thisFileStats.date,
-			log
-		))
-		loadingWindow_current()
-		return
-	}
-
-	try {
-		const thisModDetail = new modFileChecker(
-			path.join(folder, thisFile.name),
-			thisFileStats.folder,
-			thisFileStats.size,
-			(useOneDrive) ? thisFileStats.b_date : thisFileStats.date,
-			log,
-			myTranslator.deferCurrentLocale
-		)
-		const storable = thisModDetail.storable
-		modList[cleanName].mods.push(thisModDetail)
-
-		if ( thisModDetail.md5Sum !== null ) {
-			log.log.info('Adding mod to cache', `mod-${thisModDetail.uuid}`)
-			newModsList.push(thisModDetail.md5Sum)
-			localStore[thisModDetail.md5Sum] = storable
-		}
-	} catch (e) {
-		log.log.danger(`Couldn't process file: ${thisFile.name} :: ${e}`, 'folder-reader')
-		modList[cleanName].mods.push(new notModFileChecker(
-			path.join(folder, thisFile.name),
-			false,
-			thisFileStats.size,
-			thisFileStats.date,
-			log
-		))
-	}
-
-	loadingWindow_current()
-
-}
-
-function processModBindConflict() {
-	bindConflict = {}
-
-	Object.keys(modList).forEach((collection) => {
-		bindConflict[collection] = {}
-		const collectionBinds    = {}
-
-		modList[collection].mods.forEach((thisMod) => {
-			Object.keys(thisMod.modDesc.binds).forEach((actName) => {
-				thisMod.modDesc.binds[actName].forEach((keyCombo) => {
-					if ( keyCombo === '' ) { return }
-
-					const safeCat   = thisMod.modDesc.actions[actName] || 'UNKNOWN'
-					const thisCombo = `${safeCat}--${keyCombo}`
-
-					collectionBinds[thisCombo] ??= []
-					collectionBinds[thisCombo].push(thisMod.fileDetail.shortName)
-				})
-			})
-		})
-		Object.keys(collectionBinds).forEach((keyCombo) => {
-			if ( collectionBinds[keyCombo].length > 1 ) {
-				collectionBinds[keyCombo].forEach((modName) => {
-					bindConflict[collection][modName] ??= {}
-					bindConflict[collection][modName][keyCombo] = collectionBinds[keyCombo].filter((w) => w !== modName)
-					if ( bindConflict[collection][modName][keyCombo].length === 0 ) {
-						delete bindConflict[collection][modName][keyCombo]
-					}
-				})
-			}
-		})
-		Object.keys(bindConflict).forEach((collection) => {
-			Object.keys(bindConflict[collection]).forEach((modName) => {
-				if ( Object.keys(bindConflict[collection][modName]).length === 0 ) {
-					delete bindConflict[collection][modName]
-				}
-			})
-		})
 	})
-}
-
-function processModFolders_post_after() {
-	parseSettings()
-	parseGameXML()
-	refreshClientModList()
-	loadingWindow_hide()
-
-	if ( mcStore.get('rel_notes') !== app.getVersion() ) {
-		mcStore.set('rel_notes', app.getVersion() )
-		log.log.info('New version detected, show changelog')
-		createChangeLogWindow()
-	}
 }
 
 function loadSaveFile(filename) {
 	try {
-		const rawData = fs.readFileSync(path.join(app.getPath('userData'), filename))
+		const rawData  = fs.readFileSync(path.join(app.getPath('userData'), filename))
 		const jsonData = JSON.parse(rawData)
 
 		switch (filename) {
 			case 'modHubData.json' :
-				modHubList = jsonData
+				modCollect.modHubList = jsonData
 				break
 			case 'modHubVersion.json' :
-				modHubVersion = jsonData
+				modCollect.modHubVersion = jsonData
 				break
 			default :
 				break
