@@ -42,16 +42,16 @@ window.mods.receive('fromMain_subWindowSelectNone', () => {
 })
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
-	lastModCollect = modCollect
-	lastFolderRelative = modCollect.collectionToFolderRelative[modCollect.opts.originalCollectKey]
-
 	console.log(modCollect)
+	lastModCollect     = modCollect
+	lastFolderRelative = modCollect.collectionToFolderRelative[modCollect.opts.originCollectKey]
+	
 	const selectHTML = []
 
 	selectHTML.push('<option value="0">...</option>')
 
 	modCollect.set_Collections.forEach((collectKey) => {
-		if ( collectKey !== modCollect.opts.originalCollectKey ) {
+		if ( collectKey !== modCollect.opts.originCollectKey ) {
 			selectHTML.push(`<option value="${collectKey}">${modCollect.collectionToFullName[collectKey]}</option>`)
 		}
 	})

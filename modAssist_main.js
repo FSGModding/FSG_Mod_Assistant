@@ -562,14 +562,15 @@ function createChangeLogWindow() {
 function createFolderWindow() {
 	if ( windows.folder ) {
 		windows.folder.focus()
-		windows.folder.webContents.send('fromMain_getFolders', modList)
+		sendModList({},	'fromMain_getFolders', 'folder', false )
 		return
 	}
 
 	windows.folder = createSubWindow('folder', { parent : 'main', preload : 'folderWindow' })
 
-	windows.folder.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_getFolders', modList)
+	windows.folder.webContents.on('did-finish-load', async () => {
+		sendModList({},	'fromMain_getFolders', 'folder', false )
+		if ( devDebug ) { windows.folder.webContents.openDevTools() }
 	})
 
 	windows.folder.loadFile(path.join(pathRender, 'folders.html'))
@@ -637,6 +638,7 @@ function createDebugWindow() {
 	windows.debug.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
 	windows.debug.on('closed', () => { destroyAndFocus('debug') })
 }
+
 function createGameLogWindow() {
 	if ( windows.gamelog ) {
 		windows.gamelog.focus()
@@ -774,7 +776,7 @@ function loadingWindow_doCount(whichCount, amount, reset, inMB) {
 	loadWindowCount[whichCount] = ( reset ) ? amount : amount + loadWindowCount[whichCount]
 
 	if ( ! windows.load.isDestroyed() ) {
-		windows.load.webContents.send(`fromMain_loading_${whichCount}`, loadWindowCount.total, inMB)
+		windows.load.webContents.send(`fromMain_loading_${whichCount}`, loadWindowCount[whichCount], inMB)
 	}
 }
 function loadingWindow_total(amount, reset = false, inMB = false) {
@@ -796,16 +798,7 @@ function loadingWindow_noCount() {
 	}
 }
 
-function isNetworkError(errorObject) {
-	return errorObject.message.startsWith('net::ERR_')// ||
-	// errorObject.message === 'net::ERR_INTERNET_DISCONNECTED' ||
-	// errorObject.message === 'net::ERR_PROXY_CONNECTION_FAILED' ||
-	// errorObject.message === 'net::ERR_CONNECTION_RESET' ||
-	// errorObject.message === 'net::ERR_CONNECTION_CLOSE' ||
-	// errorObject.message === 'net::ERR_NAME_NOT_RESOLVED' ||
-	// errorObject.message === 'net::ERR_CONNECTION_TIMED_OUT' ||
-	// errorObject.message === 'net::ERR_SSL_PROTOCOL_ERROR'
-}
+function isNetworkError(errorObject) { return errorObject.message.startsWith('net::ERR_') }
 
 /*  ____  ____   ___ 
    (_  _)(  _ \ / __)
@@ -818,23 +811,25 @@ ipcMain.on('toMain_populateClipboard', (event, text) => { clipboard.writeText(te
 ipcMain.on('toMain_makeInactive', () => { parseSettings({ disable : true }) })
 ipcMain.on('toMain_makeActive',   (event, newList) => {
 	parseSettings({
-		newFolder  : modFoldersMap[newList],
+		newFolder  : modCollect.mapCollectionToFolder(newList),
 		userName   : modNote.get(`${newList}.notes_username`, null),
 		password   : modNote.get(`${newList}.notes_password`, null),
 		serverName : modNote.get(`${newList}.notes_server`, null),
 	})
 })
+
 ipcMain.on('toMain_openMods',     (event, mods) => {
-	const thisCollectionFolder = modFoldersMap[mods[0].split('--')[0]]
-	const thisMod = modIdToRecord(mods[0])
+	const thisCollectionFolder = modCollect.mapCollectionToFolder(mods[0].split('--')[0])
+	const thisMod              = modCollect.modColUUIDToRecord(mods[0])
 
 	if ( thisMod !== null ) {
 		shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
 	}
 })
+
 ipcMain.on('toMain_openHub',     (event, mods) => {
-	const thisMod = modIdToRecord(mods[0])
-	const thisModId = modHubData.modHubList.mods[thisMod.fileDetail.shortName] || null
+	const thisMod   = modCollect.modColUUIDToRecord(mods[0])
+	const thisModId = thisMod.modHub.id
 
 	if ( thisModId !== null ) {
 		shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisModId}`)
@@ -926,86 +921,70 @@ ipcMain.on('toMain_removeFolder',   (event, folder) => {
 	if ( modFolders.delete(folder) ) {
 		log.log.notice(`Folder removed from list ${folder}`, 'folder-opts')
 		mcStore.set('modFolders', Array.from(modFolders))
-		Object.keys(modList).forEach((collection) => {
-			if ( modList[collection].fullPath === folder ) { delete modList[collection] }
-		})
-		Object.keys(modFoldersMap).forEach((collection) => {
-			if ( modFoldersMap[collection] === folder ) { delete modFoldersMap[collection]}
-		})
-		windows.folder.webContents.send('fromMain_getFolders', modList)
-		foldersDirty = true
 
+		const collectKey = modCollect.mapFolderToCollection(folder)
+
+		modCollect.removeCollection(collectKey)
+		
+		sendModList({},	'fromMain_getFolders', 'folder', false )
+
+		foldersDirty = true
 	} else {
 		log.log.warning(`Folder NOT removed from list ${folder}`, 'folder-opts')
 	}
 })
-
 ipcMain.on('toMain_reorderFolder', (event, from, to) => {
-	const newOrder = Array.from(modFolders)
-	const item     = newOrder.splice(from, 1)[0]
-	newOrder.splice(to, 0, item)
-	
-	const reorder_modList       = {}
-	const reorder_modFoldersMap = {}
+	const newOrder    = Array.from(modFolders)
+	const newSetOrder = new Set()
+	const item        = newOrder.splice(from, 1)[0]
 
+	newOrder.splice(to, 0, item)
 	newOrder.forEach((path) => {
-		Object.keys(modFoldersMap).forEach((collection) => {
-			if ( modFoldersMap[collection] === path ) {
-				reorder_modFoldersMap[collection] = modFoldersMap[collection]
-			}
-		})
-		Object.keys(modList).forEach((collection) => {
-			if ( modList[collection].fullPath === path ) {
-				reorder_modList[collection] = modList[collection]
-			}
-		})
+		newSetOrder.add(modCollect.mapFolderToCollection(path))
 	})
 
-	modFolders    = new Set(newOrder)
-	modList       = reorder_modList
-	modFoldersMap = reorder_modFoldersMap
+	modFolders                    = new Set(newOrder)
+	modCollect.newCollectionOrder = newSetOrder
 
 	mcStore.set('modFolders', Array.from(modFolders))
 
-	windows.folder.webContents.send('fromMain_getFolders', modList)
+	sendModList({},	'fromMain_getFolders', 'folder', false )
 	foldersDirty = true
 })
-/** END: Folder Window Operation */
-
-
 ipcMain.on('toMain_reorderFolderAlpha', () => {
 	const newOrder = []
 	const collator = new Intl.Collator()
 
-	Object.keys(modList).forEach((collection) => {
-		newOrder.push({name : modList[collection].name, collection : collection})
+	modCollect.collections.forEach((collectKey) => {
+		newOrder.push({
+			path       : modCollect.mapCollectionToFolder(collectKey),
+			name       : modCollect.mapCollectionToName(collectKey),
+			collectKey : collectKey,
+		})
 	})
 
 	newOrder.sort((a, b) =>
 		collator.compare(a.name, b.name) ||
-		collator.compare(a.collection, b.collection)
+		collator.compare(a.collectKey, b.collectKey)
 	)
 
 	const newModFolders    = new Set()
-	const newModList       = {}
-	const newModFoldersMap = {}
+	const newModSetOrder   = new Set()
 
-	newOrder.forEach((order) => {
-		newModFolders.add(modFoldersMap[order.collection])
-		newModList[order.collection]       = modList[order.collection]
-		newModFoldersMap[order.collection] = modFoldersMap[order.collection]
+	newOrder.forEach((orderPart) => {
+		newModFolders.add(orderPart.path)
+		newModSetOrder.add(orderPart.collectKey)
 	})
 
-	modFolders    = newModFolders
-	modList       = newModList
-	modFoldersMap = newModFoldersMap
+	modFolders                    = newModFolders
+	modCollect.newCollectionOrder = newModSetOrder
 
 	mcStore.set('modFolders', Array.from(modFolders))
 
-	windows.folder.webContents.send('fromMain_getFolders', modList)
+	sendModList({},	'fromMain_getFolders', 'folder', false )
 	foldersDirty = true
 })
-
+/** END: Folder Window Operation */
 
 /** Logging Operation */
 ipcMain.on('toMain_log', (event, level, process, text) => { log.log[level](text, process) })
@@ -1023,6 +1002,7 @@ ipcMain.on('toMain_langList_change', (event, lang) => {
 		}
 	})
 })
+
 ipcMain.on('toMain_langList_send',   (event) => {
 	myTranslator.getLangList().then((langList) => {
 		event.sender.send('fromMain_langList_return', langList, myTranslator.deferCurrentLocale())
@@ -1071,8 +1051,7 @@ ipcMain.on('toMain_showChangelog', () => { createChangeLogWindow() } )
 
 
 ipcMain.on('toMain_modContextMenu', async (event, modID) => {
-	const thisMod   = modIdToRecord(modID)
-	const thisModId = modHubData.mods[thisMod.fileDetail.shortName] || null
+	const thisMod   = modCollect.modColUUIDToRecord(modID)
 
 	const template = [
 		{ label : thisMod.fileDetail.shortName},
@@ -1082,7 +1061,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		}},
 		{ type : 'separator' },
 		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {
-			const thisCollectionFolder = modFoldersMap[modID.split('--')[0]]
+			const thisCollectionFolder = modCollect.mapCollectionToFolder(modID.split('--')[0])
 
 			if ( thisMod !== null ) {
 				shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
@@ -1090,9 +1069,9 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		}}
 	]
 	
-	if ( thisModId !== null ) {
+	if ( thisMod.modHub.id !== null ) {
 		template.push({ label : myTranslator.syncStringLookup('open_hub'), click : () => {
-			shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisModId}`)
+			shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisMod.modHub.id}`)
 		}})
 	}
 
@@ -1112,22 +1091,21 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 })
 
 ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
-	const tagLine  = modNote.get(`${collection}.notes_tagline`, null)
-	const subLabel = `${modList[collection].name}${tagLine === null ? '' : ` :: ${tagLine}`}`
+	const subLabel = modCollect.mapCollectionToFullName(collection)
 	const template = [
 		{ label : myTranslator.syncStringLookup('context_main_title').padEnd(subLabel.length, ' '), sublabel : subLabel },
-		{ type : 'separator' },
+		{ type  : 'separator' },
 		{ label : myTranslator.syncStringLookup('list-active'), click : () => {
 			parseSettings({
-				newFolder  : modFoldersMap[collection],
+				newFolder  : modCollect.mapCollectionToFolder(collection),
 				userName   : modNote.get(`${collection}.notes_username`, null),
 				password   : modNote.get(`${collection}.notes_password`, null),
 				serverName : modNote.get(`${collection}.notes_server`, null),
 			})
 		}},
-		{ type : 'separator' },
+		{ type  : 'separator' },
 		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {
-			shell.openPath(modFoldersMap[collection])
+			shell.openPath(modCollect.mapCollectionToFolder(collection))
 		}}
 	]
 
@@ -1226,11 +1204,6 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 /** END : Find window operation*/
 
 /** Preferences window operation */
-ipcMain.on('toMain_getCollDesc', (event, collection) => {
-	const tagLine = modNote.get(`${collection}.notes_tagline`, null)
-
-	event.returnValue = ( tagLine !== null ) ? ` [${tagLine}]` : ''
-})
 ipcMain.on('toMain_openPrefs', () => { createPrefsWindow() })
 ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setPref', (event, name, value) => {

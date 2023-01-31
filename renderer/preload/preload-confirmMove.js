@@ -37,9 +37,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		getCollDesc  : (coll) => { return ipcRenderer.sendSync('toMain_getCollDesc', coll) },
 		closeWindow  : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'confirm') },
-		homeDirMap   : ( path ) => { return ipcRenderer.sendSync('toMain_homeDirRevamp', path) },
 		realMoveFile : ( fileMap ) => { ipcRenderer.send('toMain_realFileMove', fileMap) },
 		receive      : ( channel, func ) => {
 			const validChannels = [

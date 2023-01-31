@@ -29,6 +29,7 @@ function clientGetL10NEntries() {
 window.l10n.receive('fromMain_getText_return', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
 })
+
 window.l10n.receive('fromMain_getText_return_title', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
 		const buttonItem = item.closest('button')
@@ -40,13 +41,21 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
-window.mods.receive('fromMain_getFolders', (modList) => {
+window.mods.receive('fromMain_getFolders', (modCollect) => {
+	console.log(modCollect)
+
 	let folderNum = 0
 	const localFolderList = []
-	const lastFolder      = Object.keys(modList).length - 1
+	const lastFolder      = modCollect.set_Collections.size - 1
 
-	Object.keys(modList).forEach((list) => {
-		localFolderList.push(makeFolderLine(modList[list].fullPath, modList[list].name, folderNum, lastFolder))
+	modCollect.set_Collections.forEach((collectKey) => {
+		localFolderList.push(makeFolderLine(
+			modCollect.collectionToFolder[collectKey],
+			modCollect.collectionToFolderRelative[collectKey],
+			modCollect.collectionToFullName[collectKey],
+			folderNum,
+			lastFolder
+		))
 		folderNum++
 	})
 
@@ -73,7 +82,7 @@ function dnBtn(num, last, disable) {
 	return `${moveBtn('<l10n name="folder_down_button"></l10n>', num, num+1, disable)}${moveBtn('<l10n name="folder_bot_button"></l10n>', num, last, disable)}`
 }
 
-function makeFolderLine(path, name, num, last) {
+function makeFolderLine(path, relPath, name, num, last) {
 	return `<div class="folderLine my-2 py-2 pb-3 border-bottom">
 		<div class="row">
 			<div class="col-2">
@@ -94,7 +103,7 @@ function makeFolderLine(path, name, num, last) {
 				</div>
 				<div class="row">
 					<div class="col-12 pt-2">
-						<em class="ps-2 folder-path" data-folder="${path}">${window.mods.homeDirMap(path)}</em>
+						<em class="ps-2 folder-path" data-folder="${path}">${relPath}</em>
 					</div>
 				</div>
 			</div>
