@@ -541,7 +541,7 @@ function createNamedWindow(winName, windowArgs) {
 	}
 }
 
-const subWindowDev = new Set(['find', 'detail', 'notes', 'version', 'resolve'])
+const subWindowDev = new Set(['save', 'find', 'detail', 'notes', 'version', 'resolve'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -639,29 +639,14 @@ const subWindows   = {
 		callback        : (windowArgs) => { windows.resolve.webContents.send('fromMain_modSet', windowArgs.modSet, windowArgs.shortName) },
 		refocusCallback : true,
 	},
+	save : {
+		winName         : 'save',
+		HTMLFile        : 'savegame.html',
+		subWindowArgs   : { preload : 'savegameWindow' },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_collectionName', 'save', false ) },
+		refocusCallback : true,
+	},
 }
-
-
-function createSavegameWindow(collection) {
-	if ( windows.save ) {
-		windows.save.focus()
-		windows.save.webContents.send('fromMain_collectionName', collection, modList)
-		return
-	}
-
-	windows.save = createSubWindow('save', { preload : 'savegameWindow' })
-
-	windows.save.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_collectionName', collection, modList)
-		if ( devDebug ) { windows.save.webContents.openDevTools() }
-	})
-
-	windows.save.loadFile(path.join(pathRender, 'savegame.html'))
-	windows.save.on('closed', () => { destroyAndFocus('save') })
-}
-
-
-
 
 
 function loadingWindow_open(l10n) {
@@ -929,17 +914,14 @@ ipcMain.on('toMain_langList_change', (event, lang) => {
 		}
 	})
 })
-
 ipcMain.on('toMain_langList_send',   (event) => {
 	myTranslator.getLangList().then((langList) => {
 		event.sender.send('fromMain_langList_return', langList, myTranslator.deferCurrentLocale())
 	})
 })
-
 ipcMain.on('toMain_getText_sync', (event, text) => {
 	event.returnValue = myTranslator.syncStringLookup(text)
 })
-
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	l10nSet.forEach((l10nEntry) => {
 		if ( l10nEntry === 'app_version' ) {
@@ -974,11 +956,13 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 /** Detail window operation */
 ipcMain.on('toMain_openModDetail', (event, thisMod) => { createNamedWindow('detail', {selected : modCollect.modColUUIDToRecord(thisMod) }) })
 /** END: Detail window operation */
+
 /** Changelog window operation */
 ipcMain.on('toMain_showChangelog', () => { createNamedWindow('change') } )
 /** END: Changelog window operation */
 
 
+/** Main window context menus */
 ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	const thisMod   = modCollect.modColUUIDToRecord(modID)
 
@@ -1019,7 +1003,6 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-
 ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const subLabel = modCollect.mapCollectionToFullName(collection)
 	const template = [
@@ -1061,6 +1044,7 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
+/** END: Main window context menus */
 
 
 /** Game log window operation */
@@ -1106,13 +1090,11 @@ function gameLauncher() {
 		log.log.warning('Game path not set or invalid!', 'game-launcher')
 	}
 }
-
 ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 /** END: game launcher */
 
 /** Find window operation */
 ipcMain.on('toMain_openFind', () => {  createNamedWindow('find') })
-
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 	const template = [
 		{ label : myTranslator.syncStringLookup('select_in_main'), sublabel : thisMod.name },
@@ -1160,6 +1142,11 @@ ipcMain.on('toMain_resetWindows', () => {
 	windows.main.center()
 	windows.prefs.center()
 })
+ipcMain.on('toMain_clearCacheFile', () => {
+	maCache.clear()
+	foldersDirty = true
+	processModFolders()
+})
 ipcMain.on('toMain_cleanCacheFile', (event) => {
 	const localStore = maCache.store
 	const md5Set     = new Set()
@@ -1168,15 +1155,25 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 
 	Object.keys(localStore).forEach((md5) => { md5Set.add(md5) })
 	
-	Object.keys(modList).forEach((collection) => {
-		modList[collection].mods.forEach((mod) => { md5Set.delete(mod.md5Sum) })
+	modCollect.collections.forEach((collectKey) => {
+		Object.values(modCollect.getModCollection(collectKey).mods).forEach((mod) => {
+			md5Set.delete(mod.md5Sum)
+		})
 	})
+
+	loadingWindow_total(md5Set.size, true)
+	loadingWindow_current(0, true)
 
 	setTimeout(() => {
 		loadingWindow_total(md5Set.size, true)
 		loadingWindow_current(0, true)
 
-		md5Set.forEach((md5) => { maCache.delete(md5); loadingWindow_current() })
+		md5Set.forEach((md5) => {
+			delete localStore[md5]
+			loadingWindow_current()
+		})
+
+		maCache.store = localStore
 
 		loadingWindow_hide(1500)
 		event.sender.send('fromMain_l10n_refresh')
@@ -1252,7 +1249,6 @@ ipcMain.on('toMain_setNote', (event, id, value, collectKey) => {
 		lastGameSettings : lastGameSettings,
 	})
 })
-
 /** END: Notes Operation */
 
 /** Download operation */
@@ -1263,11 +1259,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 
 	if ( thisSite === null || !thisDoDL ) { return }
 
-	dialog.showMessageBoxSync(windows.main, {
-		title   : myTranslator.syncStringLookup('download_title'),
-		message : `${myTranslator.syncStringLookup('download_started')} :: ${modCollect.mapCollectionToName(collection)}\n${myTranslator.syncStringLookup('download_finished')}`,
-		type    : 'info',
-	})
+	doDialogBox('main', { titleL10n : 'download_title', message : `${myTranslator.syncStringLookup('download_started')} :: ${modCollect.mapCollectionToName(collection)}\n${myTranslator.syncStringLookup('download_finished')}` })
 
 	log.log.info(`Downloading Collection : ${collection}`, 'mod-download')
 	log.log.info(`Download Link : ${thisLink}`, 'mod-download')
@@ -1278,11 +1270,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 		log.log.info(`Got download: ${response.statusCode}`, 'mod-download')
 
 		if ( response.statusCode < 200 || response.statusCode >= 400 ) {
-			dialog.showMessageBoxSync(windows.main, {
-				title   : myTranslator.syncStringLookup('download_title'),
-				message : `${myTranslator.syncStringLookup('download_failed')} :: ${modList[collection].name}`,
-				type    : 'error',
-			})
+			doDialogBox('main', { type : 'error', titleL10n : 'download_title', message : `${myTranslator.syncStringLookup('download_failed')} :: ${modCollect.mapCollectionToName(collection)}` })
 		} else {
 			loadingWindow_open('download')
 
@@ -1336,53 +1324,53 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 	dlReq.on('error', (error) => { log.log.warning(`Network error : ${error}`, 'mod-download'); loadingWindow_hide() })
 	dlReq.end()
 })
-
 /** END: download operation */
 
 /** Export operation */
+const csvRow = (entries) => entries.map((entry) => `"${entry.replaceAll('"', '""')}"`).join(',')
+
 ipcMain.on('toMain_exportList', (event, collection) => {
 	const csvTable = []
-	csvTable.push('"Mod","Title","Version","Author","ModHub","Link"')
 
-	modList[collection].mods.forEach((mod) => {
-		const modHubID    = modHubList.mods[mod.fileDetail.shortName] || null
+	csvTable.push(csvRow(['Mod', 'Title', 'Version', 'Author', 'ModHub', 'Link']))
+
+	modCollect.getModListFromCollection(collection).forEach((mod) => {
+		const modHubID    = mod.modHub.id
 		const modHubLink  = ( modHubID !== null ) ? `https://www.farming-simulator.com/mod.php?mod_id=${modHubID}` : ''
 		const modHubYesNo = ( modHubID !== null ) ? 'yes' : 'no'
-		csvTable.push(`"${mod.fileDetail.shortName}.zip","${mod.l10n.title.replaceAll('"', '\'')}","${mod.modDesc.version}","${mod.modDesc.author.replaceAll('"', '\'')}","${modHubYesNo}","${modHubLink}"`)
+		csvTable.push(csvRow([
+			`${mod.fileDetail.shortName}.zip`,
+			mod.l10n.title,
+			mod.modDesc.version,
+			mod.modDesc.author,
+			modHubYesNo,
+			modHubLink
+		]))
 	})
 
 	dialog.showSaveDialog(windows.main, {
-		defaultPath : path.join(app.getPath('desktop'), `${modList[collection].name}.csv`),
-		filters     : [
-			{ name : 'CSV', extensions : ['csv'] },
-		],
+		defaultPath : path.join(app.getPath('desktop'), `${modCollect.mapCollectionToName(collection)}.csv`),
+		filters     : [{ name : 'CSV', extensions : ['csv'] }],
 	}).then(async (result) => {
 		if ( result.canceled ) {
 			log.log.debug('Save CSV Cancelled', 'csv-export')
 		} else {
 			try {
 				fs.writeFileSync(result.filePath, csvTable.join('\n'))
-				dialog.showMessageBoxSync(windows.main, {
-					message : myTranslator.syncStringLookup('save_csv_worked'),
-					type    : 'info',
-				})
+				doDialogBox('main', { messageL10n : 'save_csv_worked' })
 			} catch (err) {
 				log.log.warning(`Could not save csv file : ${err}`, 'csv-export')
-				dialog.showMessageBoxSync(windows.main, {
-					message : myTranslator.syncStringLookup('save_csv_failed'),
-					type    : 'warning',
-				})
+				doDialogBox('main', { type : 'warning', messageL10n : 'save_csv_failed' })
 			}
 		}
 	}).catch((unknownError) => {
 		log.log.warning(`Could not save csv file : ${unknownError}`, 'csv-export')
 	})
 })
-
 ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 	const filePaths = []
 
-	modIdsToRecords(selectedMods).forEach((mod) => {
+	modCollect.modColUUIDsToRecords(selectedMods).forEach((mod) => {
 		filePaths.push([mod.fileDetail.shortName, mod.fileDetail.fullPath])
 	})
 
@@ -1412,10 +1400,7 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 					loadingWindow_hide()
 					log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
 					setTimeout(() => {
-						dialog.showMessageBoxSync(windows.main, {
-							message : myTranslator.syncStringLookup('save_zip_failed'),
-							type    : 'warning',
-						})
+						doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
 					}, 1500)
 				})
 
@@ -1438,10 +1423,7 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 				log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
 				loadingWindow_hide()
 				setTimeout(() => {
-					dialog.showMessageBoxSync(windows.main, {
-						message : myTranslator.syncStringLookup('save_zip_failed'),
-						type    : 'warning',
-					})
+					doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
 				}, 1500)
 			}
 		}
@@ -1452,7 +1434,7 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 /** END: Export operation */
 
 /** Savegame window operation */
-ipcMain.on('toMain_openSave',       (event, collection) => { createSavegameWindow(collection) })
+ipcMain.on('toMain_openSave',       (event, collection) => { createNamedWindow('save', { collectKey : collection }) })
 ipcMain.on('toMain_selectInMain',   (event, selectList) => {
 	windows.main.focus()
 	windows.main.webContents.send('fromMain_selectOnly', selectList)
@@ -1473,7 +1455,8 @@ function openSaveGame(zipMode = false) {
 		if ( !result.canceled ) {
 			try {
 				const thisSavegame = new saveFileChecker(result.filePaths[0], !zipMode, log)
-				windows.save.webContents.send('fromMain_saveInfo', modList, thisSavegame, modHubList)
+
+				sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
 			} catch (e) {
 				log.log.danger(`Load failed: ${e}`, 'savegame')
 			}
@@ -1592,7 +1575,6 @@ function parseGameXML(devMode = null) {
 		parseGameXML(null)
 	}
 }
-
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
 	if ( ! gameSettings.endsWith('.xml') ) {
 		log.log.danger(`Game settings is not an xml file ${gameSettings}, fixing`, 'game-settings')
@@ -1712,7 +1694,6 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 		}
 	}, 250)
 }
-
 function fileOperation_post(type, fileMap) {
 	const fullPathMap = []
 
@@ -1775,7 +1756,6 @@ async function processModFolders() {
 		}
 	}, 250)
 }
-
 function processModFoldersOnDisk() {
 	modCollect.syncSafe     = mcStore.get('use_one_drive', false)
 	modCollect.clearAll()
@@ -1852,6 +1832,18 @@ function dlSaveFile(url, filename) {
 }
 /** END: Business Functions */
 
+function doDialogBox(attachTo, {type = 'info', message = null, messageL10n = null, title = null, titleL10n = null }) {
+	const attachWin = ( attachTo === null ) ? null : windows[attachTo]
+
+	const thisTitle = ( title !== null ) ? title : myTranslator.syncStringLookup(( titleL10n === null ) ? 'app_name' : titleL10n)
+	const thisMessage = ( message !== null ) ? message : myTranslator.syncStringLookup(messageL10n)
+
+	dialog.showMessageBoxSync(attachWin, {
+		title   : thisTitle,
+		message : thisMessage,
+		type    : type,
+	})
+}
 
 
 app.whenReady().then(() => {
