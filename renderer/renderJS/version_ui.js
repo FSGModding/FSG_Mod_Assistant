@@ -37,16 +37,17 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-window.mods.receive('fromMain_modList', (modList) => {
+window.mods.receive('fromMain_modList', (modCollect) => {
 	const nameIconMap        = {}
 	const collectionMap      = {}
 	const nameTitleMap       = {}
 	const versionList        = {}
 	const versionListNoMatch = {}
 
-	Object.keys(modList).forEach((collection) => {
-		collectionMap[collection] = modList[collection].name
-		modList[collection].mods.forEach((mod) => {
+	modCollect.set_Collections.forEach((collectKey) => {
+		collectionMap[collectKey] = modCollect.collectionToName[collectKey]
+		modCollect.modList[collectKey].modSet.forEach((modKey) => {
+			const mod     = modCollect.modList[collectKey].mods[modKey]
 			const modName = mod.fileDetail.shortName
 			const modVer  = mod.modDesc.version
 
@@ -54,7 +55,7 @@ window.mods.receive('fromMain_modList', (modList) => {
 				nameTitleMap[modName] ??= fsgUtil.escapeSpecial(mod.l10n.title)
 				nameIconMap[modName]  ??= mod.modDesc.iconImageCache
 				versionList[modName]  ??= []
-				versionList[modName].push([collection, modVer])
+				versionList[modName].push([collectKey, modVer])
 			}
 		})
 	})

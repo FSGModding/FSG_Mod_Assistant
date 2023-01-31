@@ -42,9 +42,7 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 window.mods.receive('fromMain_getFolders', (modCollect) => {
-	console.log(modCollect)
-
-	let folderNum = 0
+	let   folderNum       = 0
 	const localFolderList = []
 	const lastFolder      = modCollect.set_Collections.size - 1
 

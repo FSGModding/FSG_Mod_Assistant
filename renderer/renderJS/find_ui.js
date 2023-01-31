@@ -52,7 +52,6 @@ let fullList     = {}
 let fullListSort = []
 
 window.mods.receive('fromMain_modRecords', (modCollect) => {
-	console.log(modCollect)
 	fullList = {}
 	modCollect.set_Collections.forEach((collectKey) => {
 		modCollect.modList[collectKey].modSet.forEach((modKey) => {

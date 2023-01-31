@@ -33,8 +33,6 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 let lastSourceMods = null
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
-	console.log(modCollect)
-
 	lastSourceMods = modCollect.opts.sourceFiles
 
 	const destChecks = []

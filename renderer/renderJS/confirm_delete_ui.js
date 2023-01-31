@@ -37,8 +37,6 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	lastRec            = modCollect.opts
 	lastFolderRelative = modCollect.collectionToFolderRelative[modCollect.opts.originCollectKey]
 
-	console.log(modCollect)
-
 	const confirmHTML = []
 
 	modCollect.opts.records.forEach((thisMod) => {

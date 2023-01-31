@@ -20,9 +20,9 @@
 			if (evt.keyCode == 116) { window.mods.refreshFolders() }
 		}
 
-		// window.onerror = function (message, file, line, col, error) {
-		// 	window.log.debug(error.message, 'main'); return false
-		// }
+		window.onerror = function (message, file, line, col, error) {
+			window.log.debug(error.message, 'main'); return false
+		}
 	</script>
 	<style>
 		.overflow-custom {

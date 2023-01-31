@@ -14,7 +14,6 @@
    |  |_|  |_|  --  ||     |
    |__|______|______||__|__| */
 
-let badVersionString = false
 let cacheShortName   = null
 let cacheCollection  = null
 
@@ -48,69 +47,84 @@ window.mods.receive('fromMain_subWindowSelectNone', () => {
 })
 
 window.mods.receive('fromMain_modSet', (modSet, shortName) => {
-	let version = [0, '0.0.0.0', null]
+	let latestVersion = { vString : null, vParts : [], collectKey : null }
 	const modHTML = []
 
 	fsgUtil.byId('modName').innerHTML = shortName
 	cacheShortName = shortName
 
 	modSet.forEach((mod) => {
-		version = compareVersion(version, mod[1], mod[0])
+		latestVersion = compareVersion(latestVersion, mod.version, mod.collectKey)
 	})
 
-	if ( badVersionString ) {
-		fsgUtil.byId('newVersion').innerHTML = 'ERROR - NON-NUMERIC VERSION FOUND'
-		fsgUtil.byId('copyButton').classList.add('disabled')
-	} else {
-		fsgUtil.byId('newVersion').innerHTML = version[1]
-		fsgUtil.byId('copyButton').classList.remove('disabled')
-		cacheCollection = version[2]
-	}
+	fsgUtil.byId('newVersion').innerHTML = latestVersion.vString
+	fsgUtil.byId('copyButton').classList.remove('disabled')
+	cacheCollection = latestVersion.collectKey
 
 	modSet.forEach((mod) => {
-		modHTML.push(makeLine(mod, version))
+		modHTML.push(makeLine(mod, latestVersion))
 	})
 
 	fsgUtil.byId('modSet').innerHTML = modHTML.join('')
 	processL10N()
 })
 
-function compareVersion(versionArray, thisVersion, collection) {
-	const verParts = thisVersion.split('.').reverse()
-	let thisVersionInt = 0
+function compareVersion(latestVersion, thisVersion, collectKey) {
+	const latestVersionRet = latestVersion
+	const thisVersionParts = thisVersion.split('.')
 
-	for ( let i = 0; i < verParts.length; i++ ) {
-		thisVersionInt += verParts[i] * Math.pow(10, i)
-		if ( isNaN(thisVersionInt) ) { badVersionString = true }
+	if ( latestVersion.vString === null ) {
+		latestVersionRet.collectKey = collectKey
+		latestVersionRet.vString    = thisVersion
+		latestVersionRet.vParts     = thisVersionParts
+		return latestVersionRet
+	}
+	
+	if ( latestVersion.vString === latestVersion ) {
+		return latestVersionRet
 	}
 
-	if ( thisVersionInt > versionArray[0] ) {
-		return [thisVersionInt, thisVersion, collection]
-		
+	if ( latestVersion.vParts.length !== thisVersionParts.length ) {
+		// Different number of parts, string compare.
+		if ( thisVersion > latestVersion.vString ) {
+			latestVersionRet.collectKey = collectKey
+			latestVersionRet.vString    = thisVersion
+			latestVersionRet.vParts     = thisVersionParts
+		}
+		return latestVersionRet
 	}
 
-	return versionArray
+	for ( let i = 0; i < latestVersion.vParts.length; i++ ) {
+		if ( latestVersion.vParts[i] < thisVersionParts[i] ) {
+			latestVersionRet.collectKey = collectKey
+			latestVersionRet.vString    = thisVersion
+			latestVersionRet.vParts     = thisVersionParts
+			return latestVersionRet
+		}
+	}
+
+	return latestVersionRet
 }
 
 
 function makeLine(mod, version) {
-	if ( mod[1] === version[1] ) { //same
+	if ( mod.version === version.vString ) { //same
 		return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-dark">
 			<div class="ms-2 me-auto">
-				<div class="fw-bold">${mod[2].fileDetail.shortName}</div>
-				<div class="small">${fsgUtil.escapeSpecial(mod[2].l10n.title)}</div>
-				<div class="text-black small ps-3">${getText('destination')} ${mod[3]} :: ${getText('version_same')}</div>
+				<div class="fw-bold">${mod.modRecord.fileDetail.shortName}</div>
+				<div class="small">${fsgUtil.escapeSpecial(mod.modRecord.l10n.title)}</div>
+				<div class="text-black small ps-3">${getText('destination')} ${mod.collectName} :: ${getText('version_same')}</div>
 			</div>
 		</li>`
 	}
 
 	return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-danger">
 		<div class="ms-2 me-auto">
-			<div class="fw-bold">${mod[2].fileDetail.shortName} <span class="small">${mod[1]}</span></div>
-			<div class="small">${fsgUtil.escapeSpecial(mod[2].l10n.title)}</div>
-			<div class="text-black small ps-3">${getText('destination')} ${mod[3]}</div>
+			<div class="fw-bold">${mod.modRecord.fileDetail.shortName} <span class="small">${mod.version}</span></div>
+			<div class="small">${fsgUtil.escapeSpecial(mod.modRecord.l10n.title)}</div>
+			<div class="text-black small ps-3">${getText('destination')} ${mod.collectName}</div>
 		</div>
-		<input class="form-check-input form-check me-1" type="checkbox" name="modToCopy[]" value="${mod[0]}">
+		<input class="form-check-input form-check me-1" type="checkbox" name="modToCopy[]" value="${mod.collectKey}">
 	</li>`
 }
 
@@ -122,6 +136,7 @@ function clientDoCopy() {
 		fileMap.push([thisCheck.value, cacheCollection, `${cacheShortName}.zip`])
 	})
 
+	
 	window.mods.realCopyFile(fileMap)
 }
 

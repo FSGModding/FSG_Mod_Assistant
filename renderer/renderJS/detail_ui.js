@@ -41,7 +41,6 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
-	console.log(modCollect)
 	const modRecord = modCollect.opts.selected
 	const mhVer     = ( modRecord.modHub.id !== null ) ? modRecord.modHub.version : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
 	const modDate   = new Date(Date.parse(modRecord.fileDetail.fileDate))

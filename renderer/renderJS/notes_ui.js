@@ -32,7 +32,6 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 window.mods.receive('fromMain_collectionName', (modCollect) => {
-	console.log(modCollect)
 	thisCollection = modCollect.opts.collectKey
 	
 	fsgUtil.byId('collection_name').innerHTML = modCollect.collectionToName[thisCollection]

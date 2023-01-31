@@ -541,7 +541,7 @@ function createNamedWindow(winName, windowArgs) {
 	}
 }
 
-const subWindowDev = new Set(['find', 'detail', 'notes'])
+const subWindowDev = new Set(['find', 'detail', 'notes', 'version', 'resolve'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -577,7 +577,7 @@ const subWindows   = {
 		winName         : 'folder',
 		HTMLFile        : 'folders.html',
 		subWindowArgs   : { parent : 'main', preload : 'folderWindow' },
-		callback        : () => { sendModList({},	'fromMain_getFolders', 'folder', false ) },
+		callback        : () => { sendModList({}, 'fromMain_getFolders', 'folder', false ) },
 		refocusCallback : true,
 		extraCloseFunc  : () => { processModFolders() },
 	},
@@ -615,14 +615,28 @@ const subWindows   = {
 		winName         : 'find',
 		HTMLFile        : 'find.html',
 		subWindowArgs   : { preload : 'findWindow' },
-		callback        : () => { sendModList({},	'fromMain_modRecords', 'find', false ) },
+		callback        : () => { sendModList({}, 'fromMain_modRecords', 'find', false ) },
 		refocusCallback : true,
 	},
 	notes : {
 		winName         : 'notes',
 		HTMLFile        : 'notes.html',
 		subWindowArgs   : { parent : 'main', preload : 'notesWindow' },
-		callback        : (windowArgs) => { sendModList(windowArgs,	'fromMain_collectionName', 'notes', false ) },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_collectionName', 'notes', false ) },
+		refocusCallback : true,
+	},
+	version : {
+		winName         : 'version',
+		HTMLFile        : 'versions.html',
+		subWindowArgs   : { parent : 'main', preload : 'versionWindow' },
+		callback        : () => { sendModList({}, 'fromMain_modList', 'version', false ) },
+		refocusCallback : true,
+	},
+	resolve : {
+		winName         : 'resolve',
+		HTMLFile        : 'resolve.html',
+		subWindowArgs   : { parent : 'version', preload : 'resolveWindow', fixed : true },
+		callback        : (windowArgs) => { windows.resolve.webContents.send('fromMain_modSet', windowArgs.modSet, windowArgs.shortName) },
 		refocusCallback : true,
 	},
 }
@@ -648,41 +662,7 @@ function createSavegameWindow(collection) {
 
 
 
-function createResolveWindow(modSet, shortName) {
-	if ( windows.resolve ) {
-		windows.resolve.webContents.send('fromMain_modSet', modSet, shortName)
-		windows.resolve.focus()
-		return
-	}
 
-	windows.resolve = createSubWindow('resolve', { parent : 'version', preload : 'resolveWindow', fixed : true })
-
-	windows.resolve.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modSet', modSet, shortName)
-		if ( devDebug ) { windows.resolve.webContents.openDevTools() }
-	})
-
-	windows.resolve.loadFile(path.join(pathRender, 'resolve.html'))
-	windows.resolve.on('closed', () => { destroyAndFocus('resolve') })
-}
-
-function createVersionWindow() {
-	if ( windows.version ) {
-		windows.version.webContents.send('fromMain_modList', modList)
-		windows.version.focus()
-		return
-	}
-
-	windows.version = createSubWindow('version', { parent : 'main', preload : 'versionWindow' })
-
-	windows.version.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modList', modList)
-		if ( devDebug ) { windows.version.webContents.openDevTools() }
-	})
-
-	windows.version.loadFile(path.join(pathRender, 'versions.html'))
-	windows.version.on('closed', () => { destroyAndFocus('version') })
-}
 
 function loadingWindow_open(l10n) {
 	const newCenter   = getRealCenter('load')
@@ -827,7 +807,7 @@ ipcMain.on('toMain_realFileCopy',   (event, fileMap) => { fileOperation('copy', 
 ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => {
 	fileOperation('copy', fileMap, 'resolve')
 	setTimeout(() => {
-		windows.version.webContents.send('fromMain_modList', modList)
+		sendModList({}, 'fromMain_modList', 'version', false )
 	}, 1500)
 })
 /** END: File operation buttons */
@@ -1506,18 +1486,29 @@ function openSaveGame(zipMode = false) {
 
 
 /** Version window operation */
-ipcMain.on('toMain_versionCheck',    () => { createVersionWindow() })
-ipcMain.on('toMain_refreshVersions', (event) => { event.sender.send('fromMain_modList', modList) } )
+ipcMain.on('toMain_versionCheck',    () => { createNamedWindow('version') })
+ipcMain.on('toMain_refreshVersions', () => { sendModList({}, 'fromMain_modList', 'version', false ) } )
 ipcMain.on('toMain_versionResolve',  (event, shortName) => {
 	const modSet = []
-	Object.keys(modList).forEach((collection) => {
-		modList[collection].mods.forEach((mod) => {
+
+	modCollect.collections.forEach((collectKey) => {
+		modCollect.getModCollection(collectKey).modSet.forEach((modKey) => {
+			const mod = modCollect.modColAndUUID(collectKey, modKey)
+		
 			if ( mod.fileDetail.shortName === shortName && !mod.fileDetail.isFolder ) {
-				modSet.push([collection, mod.modDesc.version, mod, modList[collection].name])
+				modSet.push({
+					collectKey  : collectKey,
+					version     : mod.modDesc.version,
+					modRecord   : mod,
+					collectName : modCollect.mapCollectionToName(collectKey),
+				})
 			}
 		})
 	})
-	createResolveWindow(modSet, shortName)
+	createNamedWindow('resolve', {
+		modSet : modSet,
+		shortName : shortName,
+	})
 })
 /** END: Version window operation */
 

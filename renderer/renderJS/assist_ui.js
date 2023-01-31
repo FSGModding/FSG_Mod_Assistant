@@ -182,7 +182,6 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 			} catch (e) {
 				window.log.notice(`Error building mod row: ${e}`, 'main')
-				console.log(thisCollection.mods[modKey.split('::')[1]])
 			}
 		})
 		

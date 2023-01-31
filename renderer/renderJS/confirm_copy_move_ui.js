@@ -42,7 +42,6 @@ window.mods.receive('fromMain_subWindowSelectNone', () => {
 })
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
-	console.log(modCollect)
 	lastModCollect     = modCollect
 	lastFolderRelative = modCollect.collectionToFolderRelative[modCollect.opts.originCollectKey]
 	
