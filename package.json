@@ -37,7 +37,7 @@
     "electron-updater": "^5.2.1",
     "fast-xml-parser": "^4.0.11",
     "glob": "^8.0.3",
-    "pngjs": "^6.0.0",
+    "jpeg-js": "^0.4.4",
     "semver": "^7.3.8",
     "unzip-stream": "^0.3.1",
     "xml2js": "^0.4.23",
