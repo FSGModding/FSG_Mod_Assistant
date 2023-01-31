@@ -376,7 +376,7 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 				event.preventDefault()
 			}
 			if ( input.alt && input.control && input.code === 'KeyD' ) {
-				createDebugWindow()
+				createNamedWindow('debug')
 				event.preventDefault()
 			}
 		})
@@ -492,7 +492,7 @@ function createMainWindow () {
 			event.preventDefault()
 		}
 		if ( input.alt && input.control && input.code === 'KeyD' ) {
-			createDebugWindow()
+			createNamedWindow('debug')
 			event.preventDefault()
 		}
 	})
@@ -503,79 +503,108 @@ function createMainWindow () {
 	})
 }
 
-function createConfirmFav(windowArgs) {
-	if ( windows.confirm ) { windows.confirm.focus(); return }
+function createNamedWindow(winName, windowArgs) {
+	const subWinDef  = subWindows[winName]
+	const thisWindow = subWinDef.winName
 
-	windows.confirm = createSubWindow('confirm', { parent : 'main', preload : 'confirmMulti', fixed : true })
-
-	windows.confirm.webContents.on('did-finish-load', async () => {
-		sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false)
-
-		if ( devDebug ) { windows.confirm.webContents.openDevTools() }
-	})
-
-	windows.confirm.loadFile(path.join(pathRender, 'confirm-multi.html'))
-
-	windows.confirm.on('closed', () => { destroyAndFocus('confirm') })
-}
-
-function createConfirmWindow(type, modRecords, origList) {
-	if ( modRecords.length < 1 ) { return }
-	if ( windows.confirm ) { windows.confirm.focus(); return }
-
-	const file_HTML  = `confirm-file${type.charAt(0).toUpperCase()}${type.slice(1)}.html`
-	const file_JS    = `confirm${type.charAt(0).toUpperCase()}${type.slice(1)}`
-	const collection = origList[0].split('--')[0]
-
-	windows.confirm = createSubWindow('confirm', { parent : 'main', preload : file_JS, fixed : true })
-
-	windows.confirm.webContents.on('did-finish-load', async () => {
-		sendModList(
-			{
-				records : modRecords,
-				originCollectKey : collection,
-			},
-			'fromMain_confirmList',
-			'confirm',
-			false
-		)
-		if ( devDebug ) { windows.confirm.webContents.openDevTools() }
-	})
-
-	windows.confirm.loadFile(path.join(pathRender, file_HTML))
-
-	windows.confirm.on('closed', () => { destroyAndFocus('confirm') })
-}
-
-function createChangeLogWindow() {
-	if ( windows.change ) {
-		windows.change.focus()
+	if ( windows[thisWindow] ) {
+		windows[thisWindow].focus()
+		if ( subWinDef.refocusCallback ) { subWinDef.callback(windowArgs) }
 		return
 	}
 
-	windows.change = createSubWindow('change', { parent : 'main', fixed : true, preload : 'aChangelogWindow' })
+	windows[thisWindow] = createSubWindow(subWinDef.winName, subWinDef.subWindowArgs)
 
-	windows.change.loadFile(path.join(pathRender, 'a_changelog.html'))
-	windows.change.on('closed', () => { destroyAndFocus('change') })
-}
+	windows[thisWindow].webContents.on('did-finish-load', async () => {
+		subWinDef.callback(windowArgs)
 
-function createFolderWindow() {
-	if ( windows.folder ) {
-		windows.folder.focus()
-		sendModList({},	'fromMain_getFolders', 'folder', false )
-		return
-	}
-
-	windows.folder = createSubWindow('folder', { parent : 'main', preload : 'folderWindow' })
-
-	windows.folder.webContents.on('did-finish-load', async () => {
-		sendModList({},	'fromMain_getFolders', 'folder', false )
-		if ( devDebug ) { windows.folder.webContents.openDevTools() }
+		if ( devDebug && subWindowDev.has(subWinDef.winName) ) {
+			windows[thisWindow].webContents.openDevTools()
+		}
 	})
 
-	windows.folder.loadFile(path.join(pathRender, 'folders.html'))
-	windows.folder.on('closed', () => { destroyAndFocus('folder'); processModFolders() })
+	windows[thisWindow].loadFile(path.join(pathRender, subWinDef.HTMLFile))
+
+	windows[thisWindow].on('closed', () => {
+		destroyAndFocus(subWinDef.winName)
+		if ( typeof subWinDef.extraCloseFunc === 'function' ) {
+			subWinDef.extraCloseFunc()
+		}
+		
+	})
+
+	if ( subWinDef.handleURLinWin ) {
+		windows[thisWindow].webContents.setWindowOpenHandler(({ url }) => {
+			shell.openExternal(url)
+			return { action : 'deny' }
+		})
+	}
 }
+
+const subWindowDev = new Set(['confirm'])
+const subWindows   = {
+	confirmFav : {
+		winName         : 'confirm',
+		HTMLFile        : 'confirm-multi.html',
+		subWindowArgs   : { parent : 'main', preload : 'confirmMulti', fixed : true },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false) },
+	},
+	confirmCopy : {
+		winName         : 'confirm',
+		HTMLFile        : 'confirm-fileCopy.html',
+		subWindowArgs   : { parent : 'main', preload : 'confirmCopy', fixed : true },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false) },
+	},
+	confirmMove : {
+		winName         : 'confirm',
+		HTMLFile        : 'confirm-fileMove.html',
+		subWindowArgs   : { parent : 'main', preload : 'confirmMove', fixed : true },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false) },
+	},
+	confirmDelete : {
+		winName         : 'confirm',
+		HTMLFile        : 'confirm-fileDelete.html',
+		subWindowArgs   : { parent : 'main', preload : 'confirmDelete', fixed : true },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false) },
+	},
+	change : {
+		winName         : 'change',
+		HTMLFile        : 'a_changelog.html',
+		subWindowArgs   : { parent : 'main', fixed : true, preload : 'aChangelogWindow' },
+		callback        : () => { return },
+	},
+	folder : {
+		winName         : 'folder',
+		HTMLFile        : 'folders.html',
+		subWindowArgs   : { parent : 'main', preload : 'folderWindow' },
+		callback        : () => { sendModList({},	'fromMain_getFolders', 'folder', false ) },
+		refocusCallback : true,
+		extraCloseFunc  : () => { processModFolders() },
+	},
+	debug : {
+		winName         : 'debug',
+		HTMLFile        : 'debug.html',
+		subWindowArgs   : { preload : 'debugWindow' },
+		callback        : () => { windows.debug.webContents.send('fromMain_debugLog', log.htmlLog) },
+		refocusCallback : true,
+	},
+	gamelog : {
+		winName         : 'gamelog',
+		HTMLFile        : 'gamelog.html',
+		subWindowArgs   : { preload : 'gamelogWindow' },
+		callback        : () => { readGameLog() },
+		refocusCallback : true,
+	},
+	prefs : {
+		winName         : 'prefs',
+		HTMLFile        : 'prefs.html',
+		subWindowArgs   : { parent : 'main', preload : 'prefsWindow' },
+		callback        : () => { windows.prefs.webContents.send( 'fromMain_allSettings', mcStore.store, devControls ) },
+		refocusCallback : true,
+		handleURLinWin  : true,
+	},
+}
+
 
 function createDetailWindow(thisModRecord) {
 	if ( thisModRecord === null ) { return }
@@ -622,62 +651,7 @@ function createFindWindow() {
 	windows.find.on('closed', () => { destroyAndFocus('find') })
 }
 
-function createDebugWindow() {
-	if ( windows.debug ) {
-		windows.debug.focus()
-		windows.debug.webContents.send('fromMain_debugLog', log.htmlLog)
-		return
-	}
 
-	windows.debug = createSubWindow('debug', { preload : 'debugWindow' })
-
-	windows.debug.webContents.on('did-finish-load', (event) => {
-		event.sender.send('fromMain_debugLog', log.htmlLog)
-	})
-
-	windows.debug.loadFile(path.join(app.getAppPath(), 'renderer', 'debug.html'))
-	windows.debug.on('closed', () => { destroyAndFocus('debug') })
-}
-
-function createGameLogWindow() {
-	if ( windows.gamelog ) {
-		windows.gamelog.focus()
-		readGameLog()
-		return
-	}
-
-	windows.gamelog = createSubWindow('gamelog', { preload : 'gamelogWindow' })
-
-	windows.gamelog.webContents.on('did-finish-load', () => {
-		readGameLog()
-		if ( devDebug ) { windows.gamelog.webContents.openDevTools() }
-	})
-
-	windows.gamelog.loadFile(path.join(app.getAppPath(), 'renderer', 'gamelog.html'))
-	windows.gamelog.on('closed', () => { destroyAndFocus('gamelog') })
-}
-
-function createPrefsWindow() {
-	if ( windows.prefs ) {
-		windows.prefs.focus()
-		windows.prefs.webContents.send( 'fromMain_allSettings', mcStore.store, devControls )
-		return
-	}
-
-	windows.prefs = createSubWindow('prefs', { parent : 'main', preload : 'prefsWindow', title : myTranslator.syncStringLookup('user_pref_title_main') })
-
-	windows.prefs.webContents.on('did-finish-load', (event) => {
-		event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
-	})
-
-	windows.prefs.loadFile(path.join(pathRender, 'prefs.html'))
-	windows.prefs.on('closed', () => { destroyAndFocus('prefs') })
-
-	windows.prefs.webContents.setWindowOpenHandler(({ url }) => {
-		shell.openExternal(url)
-		return { action : 'deny' }
-	})
-}
 
 function createSavegameWindow(collection) {
 	if ( windows.save ) {
@@ -864,16 +838,28 @@ ipcMain.on('toMain_copyFavorites',  () => {
 	})
 
 	if ( sourceFiles.length > 0 ) {
-		createConfirmFav({
-			sourceFiles  : sourceFiles,
-			destinations : destinationCollections,
-			sources      : sourceCollections,
-		})
+		//createConfirmFav({
+		createNamedWindow(
+			'confirmFav',
+			{
+				sourceFiles  : sourceFiles,
+				destinations : destinationCollections,
+				sources      : sourceCollections,
+			}
+		)
 	}
 })
-ipcMain.on('toMain_deleteMods',     (event, mods) => { createConfirmWindow('delete', modCollect.modColUUIDsToRecords(mods), mods) })
-ipcMain.on('toMain_moveMods',       (event, mods) => { createConfirmWindow('move', modCollect.modColUUIDsToRecords(mods), mods) })
-ipcMain.on('toMain_copyMods',       (event, mods) => { createConfirmWindow('copy', modCollect.modColUUIDsToRecords(mods), mods) })
+function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
+	if ( modIDS.length > 0 ) {
+		createNamedWindow(windowName, {
+			records : ( modRecords === null ) ? modCollect.modColUUIDsToRecords(modIDS) : modRecords,
+			originCollectKey : modIDS[0].split('--')[0],
+		})
+	}
+}
+ipcMain.on('toMain_deleteMods',     (event, mods) => { handleCopyMoveDelete('confirmDelete', mods) })
+ipcMain.on('toMain_moveMods',       (event, mods) => { handleCopyMoveDelete('confirmMove', mods) })
+ipcMain.on('toMain_copyMods',       (event, mods) => { handleCopyMoveDelete('confirmCopy', mods) })
 ipcMain.on('toMain_realFileDelete', (event, fileMap) => { fileOperation('delete', fileMap) })
 ipcMain.on('toMain_realFileMove',   (event, fileMap) => { fileOperation('move', fileMap) })
 ipcMain.on('toMain_realFileCopy',   (event, fileMap) => { fileOperation('copy', fileMap) })
@@ -914,7 +900,7 @@ ipcMain.on('toMain_addFolder', () => {
 		log.log.danger(`Could not read specified add folder : ${unknownError}`, 'folder-opts')
 	})
 })
-ipcMain.on('toMain_editFolders',    () => { createFolderWindow() })
+ipcMain.on('toMain_editFolders',    () => { createNamedWindow('folder') })
 ipcMain.on('toMain_openFolder',     (event, folder) => { shell.openPath(folder) })
 ipcMain.on('toMain_refreshFolders', () => { foldersDirty = true; processModFolders() })
 ipcMain.on('toMain_removeFolder',   (event, folder) => {
@@ -1046,8 +1032,10 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 /** Detail window operation */
 ipcMain.on('toMain_openModDetail', (event, thisMod) => { createDetailWindow(modIdToRecord(thisMod)) })
-ipcMain.on('toMain_showChangelog', () => { createChangeLogWindow() } )
 /** END: Detail window operation */
+/** Changelog window operation */
+ipcMain.on('toMain_showChangelog', () => { createNamedWindow('change') } )
+/** END: Changelog window operation */
 
 
 ipcMain.on('toMain_modContextMenu', async (event, modID) => {
@@ -1077,13 +1065,13 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 
 	template.push({ type : 'separator' })
 	template.push({ label : myTranslator.syncStringLookup('copy_to_list'), click : () => {
-		createConfirmWindow('copy', [thisMod], [modID])
+		handleCopyMoveDelete('confirmCopy', [modID], [thisMod])
 	}})
 	template.push({ label : myTranslator.syncStringLookup('move_to_list'), click : () => {
-		createConfirmWindow('move', [thisMod], [modID])
+		handleCopyMoveDelete('confirmMove', [modID], [thisMod])
 	}})
 	template.push({ label : myTranslator.syncStringLookup('remove_from_list'), click : () => {
-		createConfirmWindow('delete', [thisMod], [modID])
+		handleCopyMoveDelete('confirmDelete', [modID], [thisMod])
 	}})
 
 	const menu = Menu.buildFromTemplate(template)
@@ -1133,10 +1121,10 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 })
 
 
-/** Debug window operation */
-ipcMain.on('toMain_openGameLog',    () => { createGameLogWindow() })
+/** Game log window operation */
+ipcMain.on('toMain_openGameLog',       () => { createNamedWindow('gamelog') })
 ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(path.join(path.dirname(gameSettings), 'log.txt')) })
-ipcMain.on('toMain_getGameLog', () => { readGameLog() })
+ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
 
 function readGameLog() {
 	if ( windows.gamelog === null ) { return }
@@ -1148,10 +1136,10 @@ function readGameLog() {
 		log.log.warning(`Could not read game log file: ${e}`, 'game-log')
 	}
 }
-/** END: Debug window operation */
+/** END: Game log window operation */
 
 /** Debug window operation */
-ipcMain.on('toMain_openDebugLog',    () => { createDebugWindow() })
+ipcMain.on('toMain_openDebugLog',    () => { createNamedWindow('debug') })
 ipcMain.on('toMain_openDebugFolder', () => { shell.showItemInFolder(log.pathToLog) })
 ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_debugLog', log.htmlLog) })
 /** END: Debug window operation */
@@ -1204,7 +1192,7 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 /** END : Find window operation*/
 
 /** Preferences window operation */
-ipcMain.on('toMain_openPrefs', () => { createPrefsWindow() })
+ipcMain.on('toMain_openPrefs', () => { createNamedWindow('prefs') })
 ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setPref', (event, name, value) => {
 	if ( name === 'dev_mode' ) {
@@ -1854,7 +1842,7 @@ function processModFoldersOnDisk() {
 		if ( mcStore.get('rel_notes') !== app.getVersion() ) {
 			mcStore.set('rel_notes', app.getVersion() )
 			log.log.info('New version detected, show changelog')
-			createChangeLogWindow()
+			createNamedWindow('change')
 		}
 	})
 }
