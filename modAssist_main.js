@@ -541,7 +541,7 @@ function createNamedWindow(winName, windowArgs) {
 	}
 }
 
-const subWindowDev = new Set(['confirm', 'detail'])
+const subWindowDev = new Set(['find', 'detail', 'notes'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -611,27 +611,21 @@ const subWindows   = {
 		refocusCallback : true,
 		handleURLinWin  : true,
 	},
+	find : {
+		winName         : 'find',
+		HTMLFile        : 'find.html',
+		subWindowArgs   : { preload : 'findWindow' },
+		callback        : () => { sendModList({},	'fromMain_modRecords', 'find', false ) },
+		refocusCallback : true,
+	},
+	notes : {
+		winName         : 'notes',
+		HTMLFile        : 'notes.html',
+		subWindowArgs   : { parent : 'main', preload : 'notesWindow' },
+		callback        : (windowArgs) => { sendModList(windowArgs,	'fromMain_collectionName', 'notes', false ) },
+		refocusCallback : true,
+	},
 }
-
-
-function createFindWindow() {
-	if ( windows.find ) {
-		windows.find.focus()
-		windows.find.webContents.send('fromMain_modRecords', modList)
-		return
-	}
-
-	windows.find = createSubWindow('find', { preload : 'findWindow' })
-
-	windows.find.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_modRecords', modList)
-		if ( devDebug ) { windows.find.webContents.openDevTools() }
-	})
-
-	windows.find.loadFile(path.join(pathRender, 'find.html'))
-	windows.find.on('closed', () => { destroyAndFocus('find') })
-}
-
 
 
 function createSavegameWindow(collection) {
@@ -652,23 +646,7 @@ function createSavegameWindow(collection) {
 	windows.save.on('closed', () => { destroyAndFocus('save') })
 }
 
-function createNotesWindow(collection) {
-	if ( windows.notes ) {
-		windows.notes.focus()
-		windows.notes.webContents.send('fromMain_collectionName', collection, modList[collection].name, modNote.store, lastGameSettings)
-		return
-	}
 
-	windows.notes = createSubWindow('notes', { parent : 'main', preload : 'notesWindow' })
-
-	windows.notes.webContents.on('did-finish-load', async (event) => {
-		event.sender.send('fromMain_collectionName', collection, modList[collection].name, modNote.store, lastGameSettings)
-		if ( devDebug ) { windows.notes.webContents.openDevTools() }
-	})
-
-	windows.notes.loadFile(path.join(pathRender, 'notes.html'))
-	windows.notes.on('closed', () => { destroyAndFocus('notes'); processModFolders() })
-}
 
 function createResolveWindow(modSet, shortName) {
 	if ( windows.resolve ) {
@@ -830,6 +808,7 @@ ipcMain.on('toMain_copyFavorites',  () => {
 		)
 	}
 })
+
 function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
 	if ( modIDS.length > 0 ) {
 		createNamedWindow(windowName, {
@@ -838,6 +817,7 @@ function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
 		})
 	}
 }
+
 ipcMain.on('toMain_deleteMods',     (event, mods) => { handleCopyMoveDelete('confirmDelete', mods) })
 ipcMain.on('toMain_moveMods',       (event, mods) => { handleCopyMoveDelete('confirmMove', mods) })
 ipcMain.on('toMain_copyMods',       (event, mods) => { handleCopyMoveDelete('confirmCopy', mods) })
@@ -1151,7 +1131,7 @@ ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 /** END: game launcher */
 
 /** Find window operation */
-ipcMain.on('toMain_openFind', () => { createFindWindow() })
+ipcMain.on('toMain_openFind', () => {  createNamedWindow('find') })
 
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 	const template = [
@@ -1265,8 +1245,13 @@ ipcMain.on('toMain_setGamePath', (event) => {
 
 
 /** Notes Operation */
-ipcMain.on('toMain_openNotes', (event, collection) => { createNotesWindow(collection) })
-ipcMain.on('toMain_setNote', (event, id, value, collection) => {
+ipcMain.on('toMain_openNotes', (event, collectKey) => {
+	createNamedWindow('notes', {
+		collectKey : collectKey,
+		lastGameSettings : lastGameSettings,
+	})
+})
+ipcMain.on('toMain_setNote', (event, id, value, collectKey) => {
 	const dirtyActions = [
 		'notes_website',
 		'notes_websiteDL',
@@ -1277,12 +1262,15 @@ ipcMain.on('toMain_setNote', (event, id, value, collection) => {
 	if ( dirtyActions.includes(id) ) { foldersDirty = true }
 
 	if ( value === '' ) {
-		modNote.delete(`${collection}.${id}`)
+		modNote.delete(`${collectKey}.${id}`)
 	} else {
-		modNote.set(`${collection}.${id}`, value)
+		modNote.set(`${collectKey}.${id}`, value)
 	}
 
-	createNotesWindow(collection)
+	createNamedWindow('notes', {
+		collectKey : collectKey,
+		lastGameSettings : lastGameSettings,
+	})
 })
 
 /** END: Notes Operation */

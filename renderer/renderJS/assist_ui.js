@@ -80,9 +80,7 @@ window.mods.receive('fromMain_selectOnly', (selectList) => {
 
 window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 	const tableID = `${selectMod.split('--')[0]}_mods`
-	const checkList = [selectMod.split('--')[1]]
-
-	console.log(checkList)
+	const checkList = [`${selectMod}__checkbox`]
 	
 	select_lib.close_all(tableID)
 	select_lib.click_only(tableID, checkList)

@@ -126,8 +126,10 @@ const select_lib = {
 		fsgUtil.byId('select_quantity').innerHTML = newCount
 	},
 	click_only        : (tableID, checkList) => {
+		console.log(checkList)
 		fsgUtil.byId('filter_input').value = ''
 		select_lib.get_checks(tableID).forEach((check) => {
+			console.log(check.id)
 			const modRow = check.parentElement.parentElement
 			check.checked = checkList.includes(check.id)
 			if ( modRow.classList.contains('mod-disabled') && modRow.querySelector('.mod-short-name').innerText.endsWith('.csv') ) {

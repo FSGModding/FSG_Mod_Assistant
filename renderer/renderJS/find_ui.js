@@ -51,11 +51,12 @@ window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 let fullList     = {}
 let fullListSort = []
 
-window.mods.receive('fromMain_modRecords', (modList) => {
+window.mods.receive('fromMain_modRecords', (modCollect) => {
+	console.log(modCollect)
 	fullList = {}
-	Object.keys(modList).forEach((collection) => {
-		
-		modList[collection].mods.forEach((mod) => {
+	modCollect.set_Collections.forEach((collectKey) => {
+		modCollect.modList[collectKey].modSet.forEach((modKey) => {
+			const mod = modCollect.modList[collectKey].mods[modKey]
 			if ( ! mod.canNotUse ) {
 				fullList[mod.fileDetail.shortName] ??= {
 					name      : mod.fileDetail.shortName,
@@ -66,8 +67,8 @@ window.mods.receive('fromMain_modRecords', (modList) => {
 				}
 				fullList[mod.fileDetail.shortName].collect.push({
 					version : fsgUtil.escapeSpecial(mod.modDesc.version),
-					name    : modList[collection].name,
-					fullId  : `${collection}--${mod.uuid}`,
+					name    : modCollect.collectionToName[collectKey],
+					fullId  : `${collectKey}--${mod.uuid}`,
 				})
 			}
 		})
