@@ -752,17 +752,17 @@ ipcMain.on('toMain_copyFavorites',  () => {
 	sourceCollections.forEach((collectKey) => {
 		const thisCollection = modCollect.getModCollection(collectKey)
 		thisCollection.modSet.forEach((modKey) => {
+			const thisMod = thisCollection.mods[modKey]
 			sourceFiles.push({
-				fullPath   : thisCollection.mods[modKey].fileDetail.fullPath,
+				fullPath   : thisMod.fileDetail.fullPath,
 				collectKey : collectKey,
-				shortName  : thisCollection.mods[modKey].fileDetail.shortName,
-				title      : thisCollection.mods[modKey].l10n.title,
+				shortName  : thisMod.fileDetail.shortName,
+				title      : thisMod.l10n.title,
 			})
 		})
 	})
 
 	if ( sourceFiles.length > 0 ) {
-		//createConfirmFav({
 		createNamedWindow(
 			'confirmFav',
 			{
@@ -971,7 +971,6 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		{ type : 'separator' },
 		{ label : myTranslator.syncStringLookup('context_mod_detail'), click : () => {
 			createNamedWindow('detail', {selected : thisMod})
-			//createDetailWindow({selected : thisMod})
 		}},
 		{ type : 'separator' },
 		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {
@@ -1004,18 +1003,21 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
-	const subLabel = modCollect.mapCollectionToFullName(collection)
-	const template = [
+	const subLabel  = modCollect.mapCollectionToFullName(collection)
+	const colFolder = modCollect.mapCollectionToFolder(collection)
+	console.log(colFolder)
+	console.log(overrideFolder)
+	const template  = [
 		{ label : myTranslator.syncStringLookup('context_main_title').padEnd(subLabel.length, ' '), sublabel : subLabel },
 		{ type  : 'separator' },
-		{ label : myTranslator.syncStringLookup('list-active'), click : () => {
+		{ label : myTranslator.syncStringLookup('list-active'), enabled : (colFolder !== overrideFolder), click : () => {
 			parseSettings({
 				newFolder  : modCollect.mapCollectionToFolder(collection),
 				userName   : modNote.get(`${collection}.notes_username`, null),
 				password   : modNote.get(`${collection}.notes_password`, null),
 				serverName : modNote.get(`${collection}.notes_server`, null),
 			})
-		}},
+		} },
 		{ type  : 'separator' },
 		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {
 			shell.openPath(modCollect.mapCollectionToFolder(collection))
@@ -1709,27 +1711,28 @@ function fileOperation_post(type, fileMap) {
 
 	fullPathMap.forEach((file) => {
 		try {
-			switch ( type ) {
-				case 'copy' :
-					log.log.info(`Copy File : ${file[0]} -> ${file[1]}`, 'file-ops')
+			if ( type === 'copy' ) {
+				log.log.info(`Copy File : ${file[0]} -> ${file[1]}`, 'file-ops')
+				const sourceFileStat = fs.statSync(file[0])
+				if ( ! sourceFileStat.isDirectory() ) {
 					fs.copyFileSync(file[0], file[1])
-					break
-				case 'move' :
-					if ( path.parse(file[0]).root !== path.parse(file[1]).root ) {
-						log.log.info(`Move (cp+rm) File : ${file[0]} -> ${file[1]}`, 'file-ops')
-						fs.copyFileSync(file[0], file[1])
-						fs.rmSync(file[0])
-					} else {
-						log.log.info(`Move (rename) File : ${file[0]} -> ${file[1]}`, 'file-ops')
-						fs.renameSync(file[0], file[1])
-					}
-					break
-				case 'delete' :
-					log.log.info(`Delete File : ${file[0]}`, 'file-ops')
-					fs.rmSync(file[0], { recursive : true } )
-					break
-				default :
-					break
+				} else {
+					fs.cpSync(file[0], file[1], { recursive : true })
+				}
+			}
+			if ( type === 'move' ) {
+				if ( path.parse(file[0]).root !== path.parse(file[1]).root ) {
+					log.log.info(`Move (cp+rm) File : ${file[0]} -> ${file[1]}`, 'file-ops')
+					fs.copyFileSync(file[0], file[1])
+					fs.rmSync(file[0])
+				} else {
+					log.log.info(`Move (rename) File : ${file[0]} -> ${file[1]}`, 'file-ops')
+					fs.renameSync(file[0], file[1])
+				}
+			}
+			if ( type === 'delete' ) {
+				log.log.info(`Delete File : ${file[0]}`, 'file-ops')
+				fs.rmSync(file[0], { recursive : true } )
 			}
 		} catch (e) {
 			log.log.danger(`Could not ${type} file : ${e}`, `${type}-file`)

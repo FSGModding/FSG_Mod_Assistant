@@ -6,7 +6,7 @@
 
 // Debug window UI
 
-/* global l10n, fsgUtil */
+/* global l10n, fsgUtil, bootstrap */
 
 
 /*  __ ____   ______        
@@ -48,6 +48,20 @@ window.debug.receive('fromMain_debugLog', (data) => {
 	document.getElementById('debug_log').innerHTML = showData.join('\n')
 })
 
+function clientResetButtons() {
+	fsgUtil.query('.filter_only').forEach((element) => {
+		if ( element.id === 'debug_debug' ) {
+			element.checked = false
+		} else {
+			element.checked = true
+		}
+	})
+	window.gamelog.getDebugLogContents()
+}
+
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
+
+	const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+	tooltipTriggerList.map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl) )
 })

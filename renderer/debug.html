@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/debug_ui.js"></script>
 </head>
@@ -21,24 +22,25 @@
 				<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
 			</div>
 			<div class="col-4 text-end">
-			  <div class="btn-group w-100 ms-auto me-1">
-				<button type="button" onclick="debug.openDebugLogFolder()" class="btn btn-success btn-sm"><i class="bi bi-save"></i></button>
-				<button type="button" onclick="debug.getDebugLogContents()" class="btn btn-dark btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
-			  </div>
+				<div class="btn-group w-100 ms-auto me-1">
+					<button data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="debug.openDebugLogFolder()" class="btn btn-success btn-sm"><i class="bi bi-save"></i></button>
+					<button data-bs-toggle="tooltip" title="Refresh" type="button" onclick="debug.getDebugLogContents()" class="btn btn-dark btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
+				</div>
 			</div>
 		</div>
 		<div class="input-group input-group-sm btn-group w-100 mt-2 mb-2 px-1">
 			<span class="input-group-text" id="basic-addon1">Show: </span>
+			<button class="btn btn-outline-light border" onclick="clientResetButtons()">RESET</button>
 			<input type="checkbox" class="btn-check filter_only" id="debug_debug" onchange="window.debug.getDebugLogContents()" autocomplete="off">
-			<label class="btn btn-outline-success btn-sm border" for="debug_debug">DEBUG</label>
+			<label data-bs-toggle="tooltip" title="Developer Stuff" class="btn btn-outline-success btn-sm border" for="debug_debug">DEBUG</label>
 			<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="window.debug.getDebugLogContents()" autocomplete="off">
-			<label class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
+			<label data-bs-toggle="tooltip" title="Information" class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
 			<input type="checkbox" checked class="btn-check filter_only" id="debug_notice" onchange="window.debug.getDebugLogContents()" autocomplete="off">
-			<label class="btn btn-outline-success btn-sm border" for="debug_notice">NOTICE</label>
+			<label data-bs-toggle="tooltip" title="Subtle Warnings" class="btn btn-outline-success btn-sm border" for="debug_notice">NOTICE</label>
 			<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="window.debug.getDebugLogContents()" autocomplete="off">
-			<label class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
+			<label data-bs-toggle="tooltip" title="Strong Warnings" class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
 			<input type="checkbox" checked class="btn-check filter_only" id="debug_danger" onchange="window.debug.getDebugLogContents()" autocomplete="off">
-			<label class="btn btn-outline-success btn-sm border" for="debug_danger">DANGER</label>
+			<label data-bs-toggle="tooltip" title="Failures" class="btn btn-outline-success btn-sm border" for="debug_danger">DANGER</label>
 		</div>
 		
 		<div style="white-space: pre-wrap" class="ps-3 font-monospace small user-select-all no-wrap" id="debug_log"></div>

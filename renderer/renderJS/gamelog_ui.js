@@ -6,7 +6,7 @@
 
 // Debug window UI
 
-/* global l10n, fsgUtil */
+/* global l10n, fsgUtil, bootstrap */
 
 
 /*  __ ____   ______        
@@ -194,6 +194,20 @@ window.gamelog.receive('fromMain_gameLog', (data) => {
 	}
 })
 
+function clientResetButtons() {
+	fsgUtil.query('.filter_only').forEach((element) => {
+		if ( element.id === 'debug_dupes' ) {
+			element.checked = false
+		} else {
+			element.checked = true
+		}
+	})
+	window.gamelog.getGameLogContents()
+}
+
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
+
+	const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+	tooltipTriggerList.map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl) )
 })

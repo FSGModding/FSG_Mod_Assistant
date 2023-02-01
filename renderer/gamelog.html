@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/gamelog_ui.js"></script>
 
@@ -32,31 +33,32 @@
 				</div>
 				<div class="col-4 text-end">
 				<div class="btn-group w-100 ms-auto me-1">
-					<button type="button" onclick="window.gamelog.openGameLogFolder()" class="btn btn-success btn-sm"><i class="bi bi-save"></i></button>
-					<button type="button" onclick="window.gamelog.getGameLogContents()" class="btn btn-dark btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
+					<button data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="window.gamelog.openGameLogFolder()" class="btn btn-success btn-sm"><i class="bi bi-save"></i></button>
+					<button data-bs-toggle="tooltip" title="Refresh Log" type="button" onclick="window.gamelog.getGameLogContents()" class="btn btn-dark btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
 					<input type="checkbox" class="btn-check" id="auto_scroll" autocomplete="off">
-					<label class="btn btn-outline-success btn-sm border" for="auto_scroll"><i class="bi bi-align-bottom"></i></label>
+					<label data-bs-toggle="tooltip" title="Auto-Scroll to Bottom on change" class="btn btn-outline-success btn-sm border" for="auto_scroll"><i class="bi bi-align-bottom"></i></label>
 				</div>
 				</div>
 			</div>
 			<div class="input-group input-group-sm btn-group w-100 mt-2 mb-2 px-1">
 				<span class="input-group-text" id="basic-addon1">Show: </span>
+				<button class="btn btn-outline-light border" onclick="clientResetButtons()">RESET</button>
 				<input type="checkbox" class="btn-check filter_only" id="debug_dupes" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
-				<label class="btn btn-outline-success btn-sm border" for="debug_dupes">DUPLICATES</label>
+				<label data-bs-toggle="tooltip" title="Show Duplicate Entries" class="btn btn-outline-success btn-sm border" for="debug_dupes">DUPLICATES</label>
 				<input type="checkbox" checked class="btn-check filter_only" id="debug_other" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
-				<label class="btn btn-outline-success btn-sm border" for="debug_other">OTHER</label>
+				<label data-bs-toggle="tooltip" title="Everything Else" class="btn btn-outline-success btn-sm border" for="debug_other">OTHER</label>
 				<input type="checkbox" checked class="btn-check filter_only" id="debug_cpad" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
-				<label class="btn btn-outline-success btn-sm border" for="debug_cpad">CP / AD</label>
+				<label data-bs-toggle="tooltip" title="CoursePlay / AutoDrive" class="btn btn-outline-success btn-sm border" for="debug_cpad">CP / AD</label>
 				<input type="checkbox" checked class="btn-check filter_only" id="debug_mod_loading" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
-				<label class="btn btn-outline-success btn-sm border" for="debug_mod_loading">MOD LOAD</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_lua_error" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
-				<label class="btn btn-outline-success btn-sm border" for="debug_lua_error">LUA ERROR</label>
+				<label data-bs-toggle="tooltip" title="Mod Loading" class="btn btn-outline-success btn-sm border" for="debug_mod_loading">MOD LOAD</label>
 				<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
-				<label class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
+				<label data-bs-toggle="tooltip" title="Info: messages" class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
 				<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
-				<label class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
+				<label data-bs-toggle="tooltip" title="Warning: messages" class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
 				<input type="checkbox" checked class="btn-check filter_only" id="debug_error" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
-				<label class="btn btn-outline-success btn-sm border" for="debug_error">ERROR</label>
+				<label data-bs-toggle="tooltip" title="Error: messages" class="btn btn-outline-success btn-sm border" for="debug_error">ERROR</label>
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_lua_error" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<label data-bs-toggle="tooltip" title="Lua Errors" class="btn btn-outline-success btn-sm border" for="debug_lua_error">LUA ERROR</label>
 			</div>
 		</div>
 		<div class="px-2">
