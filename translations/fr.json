@@ -303,6 +303,6 @@
 	"context_mod_detail": "Afficher les détails",
 	"user_pref_title_use_one_drive": "Utiliser le mode de synchronisation OneDrive",
 	"user_pref_blurb_use_one_drive": "Activez ce mode si votre collection de mods est synchronisée avec OneDrive, vous utilisez plusieurs ordinateurs, et l'assistant de mod re-scanne à partir de zéro toute votre collection à chaque rafraîchissement",
-	"user_pref_blurb_clear_cache": "Ce bouton vous permet d'effacer et de reconstruire le fichier cache de Mod Assist.  Utilisez-le avec précaution, il peut prendre un certain temps avant d'être terminé",
-	"user_pref_button_clear_cache": "Effacer le cache [ATTENTION !]"
+	"user_pref_blurb_clear_cache": "Ce bouton vous permet d'effacer et de reconstruire le fichier cache du Mod Assist's. À utiliser avec précaution, cela peut prendre un certain temps pour terminer",
+	"user_pref_button_clear_cache": "Vider le cache [ATTENTION !]"
 }
