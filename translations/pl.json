@@ -302,5 +302,7 @@
 	"context_main_copy": "Kopiuj",
 	"context_mod_detail": "Pokaż szczegóły",
 	"user_pref_title_use_one_drive": "Użyj trybu synchronizacji OneDrive",
-	"user_pref_blurb_use_one_drive": "Włącz ten tryb, jeśli twój folder z modami jest synchronizowany z OneDrive lub jeśli używasz wielu komputerów, a Mod Asystent ponownie skanuje od zera cały twój folder przy każdym odświeżeniu"
+	"user_pref_blurb_use_one_drive": "Włącz ten tryb, jeśli twój folder z modami jest synchronizowany z OneDrive lub jeśli używasz wielu komputerów, a Mod Asystent ponownie skanuje od zera cały twój folder przy każdym odświeżeniu",
+	"user_pref_blurb_clear_cache": "Ten przycisk pozwala na wyczyszczenie i odbudowanie pliku cache Mod Assist.  Używaj z ostrożnością, ukończenie może zająć chwilę",
+	"user_pref_button_clear_cache": "Wyczyść pamięć podręczną [BĄDŹ OSTROŻNY!]"
 }

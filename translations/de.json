@@ -302,5 +302,7 @@
 	"context_main_copy": "Kopieren",
 	"context_mod_detail": "Details anzeigen",
 	"user_pref_title_use_one_drive": "OneDrive-Synchronisierungsmodus verwenden",
-	"user_pref_blurb_use_one_drive": "Schalten Sie diesen Modus ein, wenn Ihre Mod-Sammlung mit OneDrive synchronisiert ist, Sie mehrere Computer verwenden und Mod Assistant Ihre gesamte Sammlung bei jeder Aktualisierung von Grund auf neu scannt."
+	"user_pref_blurb_use_one_drive": "Schalten Sie diesen Modus ein, wenn Ihre Mod-Sammlung mit OneDrive synchronisiert ist, Sie mehrere Computer verwenden und Mod Assistant Ihre gesamte Sammlung bei jeder Aktualisierung von Grund auf neu scannt.",
+	"user_pref_blurb_clear_cache": "Mit dieser Schaltfläche können Sie die Cache-Datei von Mod Assist löschen und neu erstellen.  Seien Sie vorsichtig, es kann eine Weile dauern, bis der Vorgang abgeschlossen ist",
+	"user_pref_button_clear_cache": "Cache löschen [VORSICHT!]"
 }

@@ -1,6 +1,6 @@
 {
   "name": "fsg-mod-assistant",
-  "version": "1.10.2",
+  "version": "1.99.0",
   "description": "FSG Farm Sim Mod Assistant",
   "main": "modAssist_main.js",
   "homepage": "https://github.com/FSGModding/FSG_Mod_Assistant#readme",
@@ -19,8 +19,8 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "test": "node ./test/mod-reader-test.js && node ./test/save-reader-test.js && node ./test/translate-check.js",
-    "langtest": "node ./test/translate-check.js",
-    "langfix": "node ./test/translate-fix.js",
+    "lang_test": "node ./test/translate-check.js",
+    "lang_fix": "node ./test/translate-fix.js",
     "depends": "node ./test/outdated-deps.js"
   },
   "devDependencies": {
@@ -37,10 +37,9 @@
     "electron-updater": "^5.2.1",
     "fast-xml-parser": "^4.0.11",
     "glob": "^8.0.3",
-    "pngjs": "^6.0.0",
+    "jpeg-js": "^0.4.4",
     "semver": "^7.3.8",
     "unzip-stream": "^0.3.1",
-    "windows": "^0.1.2",
     "xml2js": "^0.4.23",
     "yargs": "^17.5.1"
   },

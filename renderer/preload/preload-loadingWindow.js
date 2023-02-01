@@ -24,7 +24,7 @@ ipcRenderer.on('fromMain_loadingNoCount', () => {
 	document.getElementById('statusProgBar').classList.add('d-none')
 })
 
-ipcRenderer.on('fromMain_loadingTotal', (event, count, inMB = false) => {
+ipcRenderer.on('fromMain_loading_total', (event, count, inMB = false) => {
 	const thisCount   = inMB ? toMB(count) : count
 	const thisElement = document.getElementById('statusTotal')
 	lastTotal = ( count < 1 ) ? 1 : count
@@ -32,7 +32,7 @@ ipcRenderer.on('fromMain_loadingTotal', (event, count, inMB = false) => {
 	if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
 })
 
-ipcRenderer.on('fromMain_loadingCurrent', (event, count, inMB = false) => {
+ipcRenderer.on('fromMain_loading_current', (event, count, inMB = false) => {
 	const thisCount   = inMB ? toMB(count, false) : count
 	const thisElement = document.getElementById('statusCurrent')
 	const thisProg    = document.getElementById('statusProgBarInner')

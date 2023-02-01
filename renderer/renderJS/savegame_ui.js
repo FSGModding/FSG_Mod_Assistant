@@ -61,19 +61,20 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-window.mods.receive('fromMain_collectionName', (collection, modList) => {
-	thisCollection = collection
+window.mods.receive('fromMain_collectionName', (modCollect) => {
+	thisCollection = modCollect.opts.collectKey
 
-	fsgUtil.byId('collection_name').innerHTML     = modList[collection].name
-	fsgUtil.byId('collection_location').innerHTML = modList[collection].fullPath
+	fsgUtil.byId('collection_name').innerHTML     = modCollect.collectionToName[thisCollection]
+	fsgUtil.byId('collection_location').innerHTML = modCollect.collectionToFolderRelative[thisCollection]
 
 	processL10N()
 })
 
-window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
-	const fullModSet       = new Set()
-	const haveModSet       = {}
-	const modSetHTML       = []
+window.mods.receive('fromMain_saveInfo', (modCollect) => {
+	const savegame   = modCollect.opts.thisSaveGame
+	const fullModSet = new Set()
+	const haveModSet = {}
+	const modSetHTML = []
 
 	selectList.inactive = []
 	selectList.unused   = []
@@ -103,7 +104,8 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 		</li>`)
 	}
 
-	modList[thisCollection].mods.forEach((thisMod) => {
+	
+	Object.values(modCollect.modList[thisCollection].mods).forEach((thisMod) => {
 		haveModSet[thisMod.fileDetail.shortName] = thisMod
 		fullModSet.add(thisMod.fileDetail.shortName)
 	})
@@ -122,7 +124,7 @@ window.mods.receive('fromMain_saveInfo', (modList, savegame, modHubList) => {
 			isDLC           : false,
 			usedBy          : null,
 			versionMismatch : false,
-			isModHub        : typeof modHubList.mods[thisMod] !== 'undefined',
+			isModHub        : typeof modCollect.modHub.list.mods[thisMod] !== 'undefined',
 		}
 
 		if ( thisMod.startsWith('pdlc_')) {

@@ -64,13 +64,13 @@ This package provides a number of test cases:
 
 See if translation files match keys
 
-`# npm run langtest`
+`# npm run lang_test`
 
 ### Fix translations
 
 If translation files are mismatched, this will fix it (english is master)
 
-`# npm run langfix`
+`# npm run lang_fix`
 
 ### Check Dependencies
 

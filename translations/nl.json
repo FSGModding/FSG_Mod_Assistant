@@ -302,5 +302,7 @@
 	"context_main_copy": "Kopie",
 	"context_mod_detail": "Toon details",
 	"user_pref_title_use_one_drive": "Gebruik OneDrive Sync Mode",
-	"user_pref_blurb_use_one_drive": "Zet deze modus aan als je modcollectie is gesynchroniseerd met OneDrive, je meerdere computers gebruikt en Mod Assistant bij elke verversing je hele collectie opnieuw scant."
+	"user_pref_blurb_use_one_drive": "Zet deze modus aan als je modcollectie is gesynchroniseerd met OneDrive, je meerdere computers gebruikt en Mod Assistant bij elke verversing je hele collectie opnieuw scant.",
+	"user_pref_blurb_clear_cache": "Met deze knop kun je het cache-bestand van Mod Assist wissen en opnieuw opbouwen.  Voorzichtig gebruiken, het kan even duren voordat het klaar is.",
+	"user_pref_button_clear_cache": "Cache wissen [WEES VOORZICHTIG.!]."
 }

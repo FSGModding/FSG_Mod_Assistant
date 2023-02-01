@@ -31,7 +31,8 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-let lastRec = null
+let lastModCollect     = null
+let lastFolderRelative = null
 
 window.mods.receive('fromMain_subWindowSelectAll', () => {
 	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = true })
@@ -40,24 +41,20 @@ window.mods.receive('fromMain_subWindowSelectNone', () => {
 	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = false })
 })
 
-window.mods.receive('fromMain_confirmList', (confList) => {
-	const selectOpts = []
+window.mods.receive('fromMain_confirmList', (modCollect) => {
+	lastModCollect     = modCollect
+	lastFolderRelative = modCollect.collectionToFolderRelative[modCollect.opts.originCollectKey]
+	
+	const selectHTML = []
 
-	selectOpts.push(['...', 0])
+	selectHTML.push('<option value="0">...</option>')
 
-	lastRec = confList
-
-	Object.keys(confList.foldersMap).forEach((safeName) => {
-		if ( safeName !== confList.collection ) {
-			const humanName = `${fsgUtil.basename(confList.foldersMap[safeName])}${window.mods.getCollDesc(safeName)}`
-			selectOpts.push([humanName, safeName])
+	modCollect.set_Collections.forEach((collectKey) => {
+		if ( collectKey !== modCollect.opts.originCollectKey ) {
+			selectHTML.push(`<option value="${collectKey}">${modCollect.collectionToFullName[collectKey]}</option>`)
 		}
 	})
 
-	const selectHTML = []
-	selectOpts.forEach((opt) => {
-		selectHTML.push(`<option value="${opt[1]}">${opt[0]}</option>`)
-	})
 	fsgUtil.byId('select_destination').innerHTML = selectHTML.join('')
 
 	updateConfirmList()
@@ -67,27 +64,27 @@ function updateConfirmList() {
 	const confirmHTML  = []
 	const selectedDest = fsgUtil.byId('select_destination').value
 
-	lastRec.records.forEach((mod) => {
-		const printPath = window.mods.homeDirMap(`${lastRec.foldersMap[lastRec.collection]}\\${fsgUtil.basename(mod.fileDetail.fullPath)}`)
+	lastModCollect.opts.records.forEach((thisMod) => {
+		const printPath = `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`
 		confirmHTML.push(`<div class="row border-bottom">
 			<div class="col col-auto">
 				<div class="p-2" style="width: 110px; height:110px;">
-					<img class="img-fluid" src="${fsgUtil.iconMaker(mod.modDesc.iconImageCache)}" />
+					<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
 				</div>
 			</div>
 			<div class="col">
-				<h4 class="mb-0 mt-2">${mod.fileDetail.shortName} <span class="ps-3 small text-muted">${fsgUtil.escapeSpecial(mod.l10n.title)}</span></h4>
+				<h4 class="mb-0 mt-2">${thisMod.fileDetail.shortName} <span class="ps-3 small text-muted">${fsgUtil.escapeSpecial(thisMod.l10n.title)}</span></h4>
 				<p class="font-monospace small mb-1">${printPath}</p>`)
 
 		if ( selectedDest === '0' ) {
 			confirmHTML.push(`<div class="row mt-0"><div class="col col-form-label">${getText('no_destination_selected')}</div></div>`)
-		} else if ( findConflict(selectedDest, mod.fileDetail.shortName, mod.fileDetail.isFolder) ) {
+		} else if ( findConflict(selectedDest, thisMod.fileDetail.shortName, thisMod.fileDetail.isFolder) ) {
 			confirmHTML.push(`<div class="row mt-0">
 				<div class="col-8 col-form-label">${getText('destination_full')}</div>
 				<div class="col-4 col-form-label">
 					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="" id="${mod.uuid}">
-						<label class="form-check-label" for="${mod.uuid}">${getText('overwrite')}</label>
+						<input class="form-check-input" type="checkbox" value="" id="${thisMod.uuid}">
+						<label class="form-check-label" for="${thisMod.uuid}">${getText('overwrite')}</label>
 					</div>
 				</div>
 			</div>`)
@@ -95,7 +92,7 @@ function updateConfirmList() {
 			confirmHTML.push(`<div class="row mt-0">
 				<div class="col col-form-label">${getText('destination_clear')}</div>
 			</div>
-			<input type="hidden" value="1" id="${mod.uuid}" />`)
+			<input type="hidden" value="1" id="${thisMod.uuid}" />`)
 		}
 
 		confirmHTML.push('</div></div>')
@@ -105,55 +102,44 @@ function updateConfirmList() {
 	processL10N()
 }
 
-function findConflict(collection, shortName, folder) {
+function findConflict(collectKey, shortName, folder) {
 	let foundConf = false
-	lastRec.list[collection].mods.forEach((mod) => {
-		if ( !foundConf && shortName === mod.fileDetail.shortName && folder === mod.fileDetail.isFolder ) {
+	lastModCollect.modList[collectKey].modSet.forEach((modKey) => {
+		const thisMod = lastModCollect.modList[collectKey].mods[modKey]
+
+		if ( !foundConf && shortName === thisMod.fileDetail.shortName && folder === thisMod.fileDetail.isFolder ) {
 			foundConf = true
 		}
 	})
 	return foundConf
 }
 
-function clientDoCopy() {
+function getSelectedMods() {
 	const destination = fsgUtil.byId('select_destination').value
 
 	if ( destination === '0' ) { return false }
 
 	const fileMap = []
 
-	lastRec.records.forEach((mod) => {
+	lastModCollect.opts.records.forEach((mod) => {
 		const includeMeElement = fsgUtil.byId(mod.uuid)
 
 		if ( includeMeElement.getAttribute('type') === 'checkbox' && includeMeElement.checked === true ) {
-			fileMap.push([destination, lastRec.collection, mod.fileDetail.fullPath])
+			fileMap.push([destination, lastModCollect.opts.originCollectKey, mod.fileDetail.fullPath])
 		}
 		if ( includeMeElement.getAttribute('type') === 'hidden' && includeMeElement.value ) {
-			fileMap.push([destination, lastRec.collection, mod.fileDetail.fullPath])
+			fileMap.push([destination, lastModCollect.opts.originCollectKey, mod.fileDetail.fullPath])
 		}
 	})
 
-	window.mods.realCopyFile(fileMap)
+	return fileMap
+}
+
+function clientDoCopy() {
+	window.mods.realCopyFile(getSelectedMods())
 }
 
 
 function clientDoMove() {
-	const destination = fsgUtil.byId('select_destination').value
-
-	if ( destination === '0' ) { return false }
-
-	const fileMap = []
-
-	lastRec.records.forEach((mod) => {
-		const includeMeElement = fsgUtil.byId(mod.uuid)
-
-		if ( includeMeElement.getAttribute('type') === 'checkbox' && includeMeElement.checked === true ) {
-			fileMap.push([destination, lastRec.collection, mod.fileDetail.fullPath])
-		}
-		if ( includeMeElement.getAttribute('type') === 'hidden' && includeMeElement.value ) {
-			fileMap.push([destination, lastRec.collection, mod.fileDetail.fullPath])
-		}
-	})
-
-	window.mods.realMoveFile(fileMap)
+	window.mods.realMoveFile(getSelectedMods())
 }

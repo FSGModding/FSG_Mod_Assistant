@@ -31,16 +31,17 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 })
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
-window.mods.receive('fromMain_collectionName', (collection, collectionName, allNotes, lastGameSettings) => {
-	thisCollection = collection
-	fsgUtil.byId('collection_name').innerHTML = collectionName
+window.mods.receive('fromMain_collectionName', (modCollect) => {
+	thisCollection = modCollect.opts.collectKey
+	
+	fsgUtil.byId('collection_name').innerHTML = modCollect.collectionToName[thisCollection]
 
 	fsgUtil.query('input').forEach((element) => {
 		let thisValue = ''
 		
-		let thisPlaceholder = lastGameSettings[element.id.replace('notes_', '')]
-		if ( typeof allNotes[collection] !== 'undefined' ) {
-			thisValue       = allNotes[collection][element.id]
+		let thisPlaceholder = modCollect.opts.lastGameSettings[element.id.replace('notes_', '')]
+		if ( typeof modCollect.collectionNotes[thisCollection] !== 'undefined' ) {
+			thisValue       = modCollect.collectionNotes[thisCollection][element.id]
 			thisPlaceholder = ( typeof thisValue !== 'undefined' ) ? '' : thisPlaceholder
 		}
 		if ( element.getAttribute('type') === 'checkbox' ) {
@@ -53,8 +54,8 @@ window.mods.receive('fromMain_collectionName', (collection, collectionName, allN
 		clientCheckValid(element.id)
 	})
 	
-	if ( typeof allNotes[collection] !== 'undefined' ) {
-		fsgUtil.byId('notes_notes').innerHTML = allNotes[collection].notes_notes || ''
+	if ( typeof modCollect.collectionNotes[thisCollection] !== 'undefined' ) {
+		fsgUtil.byId('notes_notes').innerHTML = modCollect.collectionNotes[thisCollection].notes_notes || ''
 	}
 
 	processL10N()

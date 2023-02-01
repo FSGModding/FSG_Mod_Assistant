@@ -39,7 +39,6 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		getCollDesc     : (coll) => { return ipcRenderer.sendSync('toMain_getCollDesc', coll) },
 		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
 		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },
@@ -77,6 +76,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_selectNoneOpen',
 				'fromMain_selectInvertOpen',
 				'fromMain_selectOnly',
+				'fromMain_selectOnlyFilter',
 				'fromMain_debugLogDanger',
 			]
 		

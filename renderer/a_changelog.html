@@ -42,66 +42,81 @@
 		<div class="row">
 			<div class="col-auto"><img style="width: auto; height: 200px" src="img/sidebar.png"></div>
 			<div class="col">
-				<h4>1.10.3</h4>
-				<ul>
-					<li>ADD: Right-click Context menus on collections and mods in the main window</li>
-					<li>ADD: Game log analyzer</li>
-					<li>CHANGE: Rework filter bar to include number of selected mods</li>
-					<li>CHANGE: Much better scrollbar in main window, includes selected mods in an overview</li>
-					<li>ADD: Dialog popup when the selected collection in the game and mod assistant do not match</li>
-					<li>ADD: Misc artwork on some dialogs</li>
+				<h4>What's New?</h4>
+				<ul class="list-group list-group-flush mb-3">
+					<li class="list-group-item bg-body">Complete rewrite of the scanning library. Roughly 300% faster and requires less than half the storage the old one did.</li>
+					<li class="list-group-item bg-body"><span class="badge text-bg-success">NEW FEATURE</span> Monitor and filter the game log from Mod Assistant</li>
+					<li class="list-group-item bg-body"><span class="badge text-bg-warning">NOTICE</span> Consider clearing your mod cache if upgrading from a previous version.  It will take a few minutes, but should improve performance. There is a "Clear" button in user preferences.</li>
 				</ul>
-				<h4>1.10.0 (since 1.9.0)</h4>
-				<ul>
-					<li>Rework mod filtering to a unified interface</li>
-					<li>FIX: Add "select active" mods to savegame compare</li>
-					<li>FIX: Cache cleaning could happen "invisibly", add a timeout</li>
-					<li>FIX: Uncaught error type on updater</li>
-					<li>FIX: More data sanitization</li>
-					<li>ADD: CrowdIn Link with the rest of the language settings in user preferences</li>
-					<li>FIX: Edge cases for the translator failing and not populating buttons and icons</li>
-					<li>CHANGE: Active collection icon is now green with a white check</li>
-					<li>ADD: Tooltips for folder management buttons</li>
-					<li>FIX: Loading / Status window should only be on top of other app windows, not *all* windows</li>
-				</ul>
-				<h4>1.9.0 (since 1.8.0)</h4>
-				<ul>
-					<li>ADD: Export to ZIP file option</li>
-					<li>ADD: Button to copy web admin password per-collection</li>
-					<li>FIX: Visual updates to main interface</li>
-					<li>FIX: Human readable dates in details page</li>
-					<li>UPDATE: Refactor DDS libraries</li>
-					<li>UPDATE: Change Icon Library to bootstrap-icons</li>
-				</ul>
-				<h4>1.8.0 (since 1.5.0)</h4>
-				<ul>
-					<li>UPDATE: update all Dependencies</li>
-					<li>BIG FIX: Fix autoupdater.  v1.6.x has been removed totally. v1.7.0 was the fix</li>
-					<li>ADD: pt.json Localization (thanks RagagelesOficial)</li>
-					<li>FIX: Count all mods in all folders prior to testing scan</li>
-					<li>ADD: Tag Line / Description for each collection</li>
-					<li>ADD: Scrollbar in main window (custom)</li>
-					<li>ADD: Right click menu on "Find All" screen to select a specific instance of a mod in main window</li>
-					<li>ADD: Progress meter on loading screens, use MB instead of Bytes where applicable</li>
-					<li>FIX: Mod Download now fails intelligently</li>
-					<li>ADD: Some sanity checking on Details/Notes for each folder (website URL structure, user name length, admin password length)</li>
-					<li>FIX: Some more fixes for the update process (unusual exception)</li>
-					<li>ADD: CTRL+A / CTRL+SHIFT+A to mass toggle file overwrite for copy/move mods</li>
-					<li>FIX: Keyboard shortcuts for non-Latin keyboards</li>
-					<li>FIX: Language select preference was unclear</li>
-					<li>ADD: Selected mod count in main window</li>
-					<li>ADD: Mod category count in savegame comparison</li>
-				</ul>
-				<h4>1.5.0 (since 1.4.0)</h4>
-				<ul>
-					<li>ADD: When multiple mods are selected, ALT+Clicking a mod will re-enable the "Find on ModHub" and "Show in Explorer" buttons</li>
-					<li>FIX: When changing language, change in every open window</li>
-					<li>FIX: Move the language button to preferences instead</li>
-					<li>FIX: If the modHubData.json file is broken, don't break the app</li>
-					<li>L10N: Split "filter / limit to" Heading for better context</li>
-					<li>FIX: Odd crash when updating</li>
-					<li>ADD: Ignore CSV files when selecting from savegame lists</li>
-					<li>ADD: Load Mod Dependencies, warn when not met.</li>
+
+
+				<h4>Added Features by Major Version</h4>
+				<ul class="list-group list-group-flush mb-3">
+					<li class="list-group-item bg-body">
+						2.0.0
+						<ul style="list-style:square;" >
+							<li>Re-write of mod scanner to improve performance</li>
+							<li>Sync safe scan mode for OneDrive and Google Drive mod collections</li>
+							<li>Right click context menus in main window</li>
+							<li>Game log file viewer</li>
+							<li>New filter UI display</li>
+							<li>Sanity checker when starting game</li>
+							<li>Custom scrollbar and background</li>
+						</ul>
+					</li>
+					<li class="list-group-item bg-body">
+						1.9.0
+						<ul style="list-style:square;" >
+							<li>Export multiple mods to ZIP file</li>
+							<li>Refactor of icon reader to be faster</li>
+						</ul>
+					</li>
+					<li class="list-group-item bg-body">
+						1.8.0
+						<ul style="list-style:square;" >
+							<li>Progress meter for loading screens</li>
+							<li>Collection description detail</li>
+							<li>Track mod dependencies</li>
+						</ul>
+					</li>
+					<li class="list-group-item bg-body">
+						1.5.0
+						<ul style="list-style:square;" >
+							<li>Track mod dependencies</li>
+						</ul>
+					</li>
+					<li class="list-group-item bg-body">
+						1.4.0
+						<ul style="list-style:square;" >
+							<li>Alphabetical collection sort</li>
+							<li>Allow selecting mod sets from savegame comparison</li>
+							<li>Add support for Giants LED (collectors edition)</li>
+						</ul>
+					</li>
+					<li class="list-group-item bg-body">
+						1.3.0
+						<ul style="list-style:square;" >
+							<li>Add "Search All Collections" window</li>
+							<li>Remember window placement and size</li>
+						</ul>
+					</li>
+					<li class="list-group-item bg-body">
+						1.2.0
+						<ul style="list-style:square;" >
+							<li>Download all mods from dedicated servers</li>
+							<li>Add favorite collections</li>
+						</ul>
+					</li>
+					<li class="list-group-item bg-body">
+						1.1.0
+						<ul style="list-style:square;" >
+							<li>Collection re-ordering now possible</li>
+							<li>Export collections to CSV list</li>
+							<li>Track notes and details per collection</li>
+							<li>Detect key binding conflicts</li>
+							<li>Toggle in-game Development Controls / Console</li>
+						</ul>
+					</li>
 				</ul>
 			</div>
 		</div>

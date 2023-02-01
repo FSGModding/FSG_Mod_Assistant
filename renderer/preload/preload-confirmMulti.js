@@ -37,9 +37,8 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		closeWindow  : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'confirm') },
-		homeDirMap   : ( path ) => { return ipcRenderer.sendSync('toMain_homeDirRevamp', path) },
-		realCopyFile : ( fileMap ) => { ipcRenderer.send('toMain_realFileCopy', fileMap) },
+		closeWindow  : ( )               => { ipcRenderer.send('toMain_closeSubWindow', 'confirm') },
+		realCopyFile : ( fileMap )       => { ipcRenderer.send('toMain_realFileCopy', fileMap) },
 		receive      : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_confirmList',
