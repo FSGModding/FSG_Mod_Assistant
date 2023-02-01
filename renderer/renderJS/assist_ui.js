@@ -447,14 +447,120 @@ async function operateLED(type = 'spin', time = 2500) {
 	}
 }
 
-let mismatchDialog = null
+let mismatchDialog      = null
+let dragDropOperation   = false
+let dragDropInFolder    = false
+let dragDropHasMultiple = false
+
 
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 	mismatchDialog = new bootstrap.Modal(document.getElementById('open_game_modal'), {backdrop : 'static'})
 	mismatchDialog.hide()
+	const dragTarget = fsgUtil.byId('drag_target')
+
+	dragTarget.addEventListener('dragenter', (event) => { clientDragEnter(event) })
+	dragTarget.addEventListener('dragleave', (event) => { clientDragLeave(event) })
+	dragTarget.addEventListener('dragover',  (event) => { clientDragOver(event) })
+	dragTarget.addEventListener('drop',      (event) => { clientDragDrop(event) })
 })
 
 window.addEventListener('click', () => {
 	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
 })
+
+
+function clientDragDrop(e) {
+	e.preventDefault()
+	e.stopPropagation()
+
+	dragDropOperation = false
+
+	fsgUtil.byId('drag_back').classList.add('d-none')
+	fsgUtil.byId('drag_add_file').classList.remove('bg-primary')
+	fsgUtil.byId('drag_add_folder').classList.remove('d-none', 'bg-primary')
+
+	const dt    = e.dataTransfer
+	const files = dt.files
+
+
+	if ( dragDropInFolder ) {
+		const newFolder = files[0].path
+		console.log(newFolder)
+		window.mods.dropFolder(newFolder)
+	} else {
+		const fileList = []
+		for ( const thisFile of files ) { fileList.push(thisFile.path) }
+		window.mods.dropFiles(fileList)
+	}
+
+	dragDropHasMultiple = false
+	dragDropInFolder    = false
+}
+
+function clientDragLeave(e) {
+	e.preventDefault()
+	e.stopPropagation()
+	if ( e.x <= 0 && e.y <= 0 ) {
+		dragDropOperation   = false
+		dragDropHasMultiple = false
+		dragDropInFolder    = false
+		fsgUtil.byId('drag_back').classList.add('d-none')
+
+		fsgUtil.byId('drag_add_file').classList.remove('bg-primary')
+		fsgUtil.byId('drag_add_folder').classList.remove('d-none', 'bg-primary')
+	}
+}
+
+function clientDragEnter(e) {
+	e.preventDefault()
+	e.stopPropagation()
+
+	if ( !dragDropOperation ) {
+		fsgUtil.byId('drag_back').classList.remove('d-none')
+	
+		if ( e.dataTransfer.items.length > 1 || e.dataTransfer.items[0].type !== '' ) {
+			// multiple, so no add folder.
+			dragDropHasMultiple = true
+			fsgUtil.byId('drag_add_folder').classList.add('d-none')
+		}
+
+	} else {
+		const addFolder = fsgUtil.byId('drag_add_folder')
+		const addFile   = fsgUtil.byId('drag_add_file')
+		let   thisID    = e.target.id
+
+		if ( thisID !== 'drag_add_folder' && thisID !== 'drag_add_file' ) {
+			if ( e.path.includes(addFolder) ) { thisID = 'drag_add_folder' }
+			if ( e.path.includes(addFile) )   { thisID = 'drag_add_file' }
+		}
+		if ( thisID === 'drag_add_folder' ) {
+			addFolder.classList.add('bg-primary')
+			addFile.classList.remove('bg-primary')
+			dragDropInFolder = true
+		}
+		if ( thisID === 'drag_add_file' ) {
+			addFolder.classList.remove('bg-primary')
+			addFile.classList.add('bg-primary')
+			dragDropInFolder = false
+		}
+	}
+
+	dragDropOperation = true
+}
+
+function clientDragOver(e) {
+	e.preventDefault()
+	e.stopPropagation()
+
+	e.dataTransfer.dropEffect = (dragDropInFolder ? 'link' : 'copy')
+}
+
+function clientDragBackground(e) {
+	const thisElement = fsgUtil.byId(e.target.id)
+	if ( thisElement ) {
+		const thisClass   = e.target.id === 'drag_add_file' ? 'bg-primary' : dragDropHasMultiple ? 'bg-danger' : 'bg-primary'
+		thisElement.classList[e.type==='mouseover'?'add':'remove'](thisClass)
+	}
+}
+

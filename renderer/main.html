@@ -117,7 +117,7 @@
 	</style>
 	
 </head>
-<body class="d-flex flex-column h-100 overflow-custom2">
+<body class="d-flex flex-column h-100 overflow-custom2" id="drag_target">
 	<div id="scroll-bar-fake" class="position-fixed d-flex flex-column">
 
 	</div>
@@ -351,6 +351,22 @@
 			</div>
 		</div>
 	</footer>
+	</div>
+	<div id="drag_back" class="d-none position-absolute w-100 h-100 text-center" style="z-index: 10000; background-color: #00000066">
+		<div class="row h-100">
+			<div id="drag_add_file" class="bg-opacity-50 col">
+				<div style="margin-top: 20vh">
+					<i class="bi bi-file-earmark-plus" style="font-size: 30vh"></i><br />
+					<l10n name="drop_add_files" class="display-6"></l10n>
+				</div>
+			</div>
+			<div id="drag_add_folder" class="bg-opacity-50 col-6 border-light border-start border-5">
+				<div style="margin-top: 20vh">
+					<i class="bi bi-folder-plus" style="font-size: 30vh"></i><br />
+					<l10n name="drop_add_folder" class="display-6"></l10n>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

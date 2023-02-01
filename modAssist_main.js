@@ -30,6 +30,9 @@ log.log.info(` - Node.js Version: ${process.versions.node}`)
 log.log.info(` - Electron Version: ${process.versions.electron}`)
 log.log.info(` - Chrome Version: ${process.versions.chrome}`)
 
+function debugDangerCallback() {
+	if ( typeof windows.main !== 'undefined' && windows.main !== null ) { windows.main.webContents.send('fromMain_debugLogDanger') }
+}
 
 function handleUnhandled(type, err, origin) {
 	const rightNow = new Date()
@@ -53,7 +56,7 @@ process.on('uncaughtException', (err, origin) => { handleUnhandled('exception', 
 process.on('unhandledRejection', (err, origin) => { handleUnhandled('rejection', err, origin) })
 
 const translator       = require('./lib/translate.js')
-const myTranslator     = new translator.translator(translator.getSystemLocale())
+const myTranslator     = new translator.translator(translator.getSystemLocale(), log)
 myTranslator.mcVersion = app.getVersion()
 myTranslator.iconOverrides = {
 	preferences_button : 'gear',
@@ -191,6 +194,7 @@ const settingsSchema = {
 		find          : { type : 'object', default : {}, properties : winDef(800, 600), additionalProperties : false },
 		folder        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		gamelog       : { type : 'object', default : {}, properties : winDef(1000, 500), additionalProperties : false },
+		import        : { type : 'object', default : {}, properties : winDef(750, 500), additionalProperties : false },
 		main          : { type : 'object', default : {}, properties : winDef(1000, 700), additionalProperties : false },
 		notes         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
 		prefs         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
@@ -238,6 +242,7 @@ const windows = {
 	find    : null,
 	folder  : null,
 	gamelog : null,
+	import  : null,
 	load    : null,
 	main    : null,
 	notes   : null,
@@ -299,9 +304,7 @@ mcStore.set('cache_version', app.getVersion())
 /** END: Upgrade Cache Version Here */
 
 
-function debugDangerCallback() {
-	if ( windows.main !== null ) { windows.main.webContents.send('fromMain_debugLogDanger') }
-}
+
 
 /*  _    _  ____  _  _  ____   _____  _    _  ___ 
    ( \/\/ )(_  _)( \( )(  _ \ (  _  )( \/\/ )/ __)
@@ -541,7 +544,7 @@ function createNamedWindow(winName, windowArgs) {
 	}
 }
 
-const subWindowDev = new Set(['save', 'find', 'detail', 'notes', 'version', 'resolve'])
+const subWindowDev = new Set(['import', 'save', 'find', 'detail', 'notes', 'version', 'resolve'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -645,6 +648,12 @@ const subWindows   = {
 		subWindowArgs   : { preload : 'savegameWindow' },
 		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_collectionName', 'save', false ) },
 		refocusCallback : true,
+	},
+	import : {
+		winName         : 'import',
+		HTMLFile        : 'confirm-import.html',
+		subWindowArgs   : { parent : 'main', preload : 'confirmImport', fixed : true },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'import', false) },
 	},
 }
 
@@ -789,6 +798,7 @@ ipcMain.on('toMain_copyMods',       (event, mods) => { handleCopyMoveDelete('con
 ipcMain.on('toMain_realFileDelete', (event, fileMap) => { fileOperation('delete', fileMap) })
 ipcMain.on('toMain_realFileMove',   (event, fileMap) => { fileOperation('move', fileMap) })
 ipcMain.on('toMain_realFileCopy',   (event, fileMap) => { fileOperation('copy', fileMap) })
+ipcMain.on('toMain_realFileImport', (event, fileMap) => { fileOperation('import', fileMap, 'import') })
 ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => {
 	fileOperation('copy', fileMap, 'resolve')
 	setTimeout(() => {
@@ -895,6 +905,23 @@ ipcMain.on('toMain_reorderFolderAlpha', () => {
 
 	sendModList({},	'fromMain_getFolders', 'folder', false )
 	foldersDirty = true
+})
+ipcMain.on('toMain_dropFolder', (event, newFolder) => {
+	if ( ! modFolders.has(newFolder) ) {
+		modFolders.add(newFolder)
+		foldersDirty = true
+		mcStore.set('modFolders', Array.from(modFolders))
+		processModFolders()
+	} else {
+		log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
+		doDialogBox('main', {
+			type        : 'error',
+			messageL10n : 'drop_folder_exists',
+		})
+	}
+})
+ipcMain.on('toMain_dropFiles', (event, files) => {
+	createNamedWindow('import', { files : files })
 })
 /** END: Folder Window Operation */
 
@@ -1522,6 +1549,7 @@ function refreshClientModList(closeLoader = true) {
 				unknown : myTranslator.syncStringLookup('override_unknown'),
 			},
 			activeCollection       : overrideIndex,
+			foldersDirty           : foldersDirty,
 		},
 		'fromMain_modList',
 		'main',
@@ -1700,18 +1728,27 @@ function fileOperation_post(type, fileMap) {
 	const fullPathMap = []
 
 	fileMap.forEach((file) => {
+		// fileMap is [destCollectKey, sourceCollectKey, fullPath (guess)]
+		// fullPathMap is [source, destination]
 		const thisFileName = path.basename(file[2])
-		fullPathMap.push([
-			path.join(modCollect.mapCollectionToFolder(file[1]), thisFileName), // source
-			path.join(modCollect.mapCollectionToFolder(file[0]), thisFileName), // dest
-		])
+		if ( type !== 'import' ) {
+			fullPathMap.push([
+				path.join(modCollect.mapCollectionToFolder(file[1]), thisFileName), // source
+				path.join(modCollect.mapCollectionToFolder(file[0]), thisFileName), // dest
+			])
+		} else {
+			fullPathMap.push([
+				file[2],
+				path.join(modCollect.mapCollectionToFolder(file[0]), thisFileName), // dest
+			])
+		}
 	})
 
 	foldersDirty = true
 
 	fullPathMap.forEach((file) => {
 		try {
-			if ( type === 'copy' ) {
+			if ( type === 'copy' || type === 'import' ) {
 				log.log.info(`Copy File : ${file[0]} -> ${file[1]}`, 'file-ops')
 				const sourceFileStat = fs.statSync(file[0])
 				if ( ! sourceFileStat.isDirectory() ) {

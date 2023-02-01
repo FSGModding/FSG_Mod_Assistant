@@ -304,5 +304,11 @@
 	"user_pref_title_use_one_drive"          : "Use OneDrive Sync Mode",
 	"user_pref_blurb_use_one_drive"          : "Turn this mode on if your mod collection is synced with OneDrive, you use multiple computers, and Mod Assistant re-scans from scratch your entire collection on every refresh",
 	"user_pref_blurb_clear_cache"            : "This button allows you to clear and rebuild Mod Assist's cache file.  Use with care, it may take a while to complete",
-	"user_pref_button_clear_cache"           : "Clear Cache [BE CAREFUL!]"
+	"user_pref_button_clear_cache"           : "Clear Cache [BE CAREFUL!]",
+	"drop_folder_exists"                     : "Sorry, that folder is already tracked by Mod Assistant",
+	"drop_add_folder"                        : "Add as collection to Mod Assistant",
+	"drop_add_files"                         : "Copy files to collection folder",
+	"confirm_import_title"                   : "Import Files",
+	"confirm_import_blurb"                   : "To import files, select the destination collection(s) below - existing files WILL be overwritten"
+
 }
