@@ -45,9 +45,6 @@ window.l10n.receive('fromMain_l10n_refresh', () => {
 	processL10N()
 })
 
-window.mods.receive('fromMain_debugLogDanger', () => {
-	fsgUtil.byId('debug_danger_bubble').classList.remove('d-none')
-})
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
@@ -87,13 +84,18 @@ window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 	select_lib.filter(tableID, filterText)
 })
 
+window.mods.receive('fromMain_dirtyUpdate', (dirtyFlag) => {
+	fsgUtil.byId('dirty_folders').classList[(dirtyFlag)?'remove':'add']('d-none')
+})
+window.mods.receive('fromMain_debugLogDanger', () => {
+	fsgUtil.byId('debug_danger_bubble').classList.remove('d-none')
+})
 
 let lastLocale      = 'en'
 let searchStringMap = {}
 let searchTagMap    = {}
 let lastList        = null
 let fullList        = {}
-
 
 window.mods.receive('fromMain_modList', (modCollect) => {
 	searchStringMap = {}
@@ -112,6 +114,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	lastLocale = modCollect.opts.currentLocale
 
 	fsgUtil.byId('lang-style-div').setAttribute('class', modCollect.opts.currentLocale)
+
+	fsgUtil.byId('dirty_folders').classList[(modCollect.opts.foldersDirty)?'remove':'add']('d-none')
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null

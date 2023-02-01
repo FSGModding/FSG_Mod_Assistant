@@ -152,7 +152,7 @@
 					<div class="btn-group d-flex h-100" role="group">
 						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-success" onclick="mods.addFolder()"><i class="bi bi-folder-plus"></i> <l10n class="small" name="folder_add"></l10n></button>
 						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><i class="bi bi-folder"></i> <l10n class="small" name="folder_edit"></l10n></button>
-						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-secondary" onclick="mods.refreshFolders()"><i class="bi bi-arrow-repeat"></i> <l10n class="small" name="folder_refresh"></l10n></button>
+						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-secondary position-relative" onclick="mods.refreshFolders()"><i class="bi bi-arrow-repeat"></i> <l10n class="small" name="folder_refresh"></l10n><span id="dirty_folders" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span></button>
 					</div>
 				</div>
 				<div class="col">

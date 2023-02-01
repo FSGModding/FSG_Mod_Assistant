@@ -230,6 +230,7 @@ const modCollect = new modFileCollection(
 const loadWindowCount = { total : 0, current : 0}
 
 let modFolders       = new Set()
+let modFoldersWatch  = []
 let lastFolderLoc    = null
 let lastGameSettings = {}
 
@@ -851,6 +852,7 @@ ipcMain.on('toMain_removeFolder',   (event, folder) => {
 		sendModList({},	'fromMain_getFolders', 'folder', false )
 
 		foldersDirty = true
+		sendFoldersDirtyUpdate()
 	} else {
 		log.log.warning(`Folder NOT removed from list ${folder}`, 'folder-opts')
 	}
@@ -872,6 +874,7 @@ ipcMain.on('toMain_reorderFolder', (event, from, to) => {
 
 	sendModList({},	'fromMain_getFolders', 'folder', false )
 	foldersDirty = true
+	sendFoldersDirtyUpdate()
 })
 ipcMain.on('toMain_reorderFolderAlpha', () => {
 	const newOrder = []
@@ -905,6 +908,7 @@ ipcMain.on('toMain_reorderFolderAlpha', () => {
 
 	sendModList({},	'fromMain_getFolders', 'folder', false )
 	foldersDirty = true
+	sendFoldersDirtyUpdate()
 })
 ipcMain.on('toMain_dropFolder', (event, newFolder) => {
 	if ( ! modFolders.has(newFolder) ) {
@@ -1265,7 +1269,10 @@ ipcMain.on('toMain_setNote', (event, id, value, collectKey) => {
 		'notes_tagline',
 		'notes_admin',
 	]
-	if ( dirtyActions.includes(id) ) { foldersDirty = true }
+	if ( dirtyActions.includes(id) ) {
+		foldersDirty = true
+		sendFoldersDirtyUpdate()
+	}
 
 	if ( value === '' ) {
 		modNote.delete(`${collectKey}.${id}`)
@@ -1800,9 +1807,14 @@ function processModFoldersOnDisk() {
 	modCollect.syncSafe     = mcStore.get('use_one_drive', false)
 	modCollect.clearAll()
 
+	modFoldersWatch = []
 	// Cleaner for no-longer existing folders, count contents of others
 	modFolders.forEach((folder) => {
-		if ( ! fs.existsSync(folder) ) { modFolders.delete(folder) }
+		if ( ! fs.existsSync(folder) ) {
+			modFolders.delete(folder)
+		} else {
+			modFoldersWatch.push(fs.watch(folder, updateFolderDirtyWatch))
+		}
 	})
 
 	mcStore.set('modFolders', Array.from(modFolders))
@@ -1816,6 +1828,7 @@ function processModFoldersOnDisk() {
 	modCollect.processMods()
 
 	modCollect.processPromise.then(() => {
+		foldersDirty = false
 		parseSettings()
 		parseGameXML()
 		refreshClientModList()
@@ -1826,6 +1839,17 @@ function processModFoldersOnDisk() {
 			createNamedWindow('change')
 		}
 	})
+}
+function updateFolderDirtyWatch(eventType, fileName) {
+	if ( eventType === 'rename' ) {
+		log.log.debug(`Folders now dirty due to ${fileName}`, 'folder-watcher')
+
+		foldersDirty = true
+		sendFoldersDirtyUpdate()
+	}
+}
+function sendFoldersDirtyUpdate() {
+	windows.main.webContents.send('fromMain_dirtyUpdate', foldersDirty)
 }
 
 function loadSaveFile(filename) {

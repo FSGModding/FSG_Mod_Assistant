@@ -68,7 +68,7 @@ contextBridge.exposeInMainWorld(
 
 		dropFolder : (folder) => { ipcRenderer.send('toMain_dropFolder', folder) },
 		dropFiles  : (files)  => { ipcRenderer.send('toMain_dropFiles', files) },
-		
+
 		debugLog  : () => { ipcRenderer.send('toMain_openDebugLog') },
 		openMod   : (modID) => { ipcRenderer.send('toMain_openModDetail', modID) },
 
@@ -81,6 +81,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_selectOnly',
 				'fromMain_selectOnlyFilter',
 				'fromMain_debugLogDanger',
+				'fromMain_dirtyUpdate',
 			]
 		
 			if ( validChannels.includes( channel ) ) {
