@@ -1036,8 +1036,6 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const subLabel  = modCollect.mapCollectionToFullName(collection)
 	const colFolder = modCollect.mapCollectionToFolder(collection)
-	console.log(colFolder)
-	console.log(overrideFolder)
 	const template  = [
 		{ label : myTranslator.syncStringLookup('context_main_title').padEnd(subLabel.length, ' '), sublabel : subLabel },
 		{ type  : 'separator' },
@@ -1842,10 +1840,12 @@ function processModFoldersOnDisk() {
 }
 function updateFolderDirtyWatch(eventType, fileName) {
 	if ( eventType === 'rename' ) {
-		log.log.debug(`Folders now dirty due to ${fileName}`, 'folder-watcher')
+		if ( ! fileName.endsWith('.tmp') ) {
+			log.log.debug(`Folders now dirty due to ${fileName}`, 'folder-watcher')
 
-		foldersDirty = true
-		sendFoldersDirtyUpdate()
+			foldersDirty = true
+			sendFoldersDirtyUpdate()
+		}
 	}
 }
 function sendFoldersDirtyUpdate() {

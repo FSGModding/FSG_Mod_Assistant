@@ -490,7 +490,6 @@ function clientDragDrop(e) {
 
 	if ( dragDropInFolder ) {
 		const newFolder = files[0].path
-		console.log(newFolder)
 		window.mods.dropFolder(newFolder)
 	} else {
 		const fileList = []
