@@ -304,5 +304,10 @@
 	"user_pref_title_use_one_drive": "Use o modo OneDrive Sync",
 	"user_pref_blurb_use_one_drive": "Ligue este modo se a sua colecção de mod está sincronizada com a OneDrive, utiliza vários computadores, e o Mod Assistant digitaliza novamente de raiz toda a sua colecção em cada actualização",
 	"user_pref_blurb_clear_cache": "Este botão permite-lhe limpar e reconstruir o ficheiro de cache do Mod Assist.  Use com cuidado, pode demorar algum tempo a completar",
-	"user_pref_button_clear_cache": "Cache claro [Sê cuidadoso!]"
+	"user_pref_button_clear_cache": "Cache claro [Sê cuidadoso!]",
+	"drop_folder_exists": "Desculpe, essa pasta já é rastreada pelo Mod Assistant",
+	"drop_add_folder": "Adicionar como colecção ao Mod Assistant",
+	"drop_add_files": "Copiar ficheiros para pasta de colecção",
+	"confirm_import_title": "Ficheiros de Importação",
+	"confirm_import_blurb": "Para importar ficheiros, seleccione a(s) colecção(s) de destino abaixo - os ficheiros existentes serão sobregravados"
 }

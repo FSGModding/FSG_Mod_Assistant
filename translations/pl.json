@@ -304,5 +304,10 @@
 	"user_pref_title_use_one_drive": "Użyj trybu synchronizacji OneDrive",
 	"user_pref_blurb_use_one_drive": "Włącz ten tryb, jeśli twój folder z modami jest synchronizowany z OneDrive lub jeśli używasz wielu komputerów, a Mod Asystent ponownie skanuje od zera cały twój folder przy każdym odświeżeniu",
 	"user_pref_blurb_clear_cache": "Ten przycisk pozwala na wyczyszczenie i odbudowanie pliku cache Mod Assist.  Używaj z ostrożnością, ukończenie może zająć chwilę",
-	"user_pref_button_clear_cache": "Wyczyść pamięć podręczną [BĄDŹ OSTROŻNY!]"
+	"user_pref_button_clear_cache": "Wyczyść pamięć podręczną [BĄDŹ OSTROŻNY!]",
+	"drop_folder_exists": "Przepraszamy, ten folder jest już śledzony przez Mod Assistant",
+	"drop_add_folder": "Dodaj jako kolekcję do Mod Assistant",
+	"drop_add_files": "Kopiowanie plików do folderu kolekcji",
+	"confirm_import_title": "Import Files",
+	"confirm_import_blurb": "Aby zaimportować pliki, wybierz poniżej kolekcję (kolekcje) docelową - istniejące pliki zostaną nadpisane"
 }

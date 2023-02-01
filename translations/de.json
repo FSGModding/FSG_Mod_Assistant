@@ -304,5 +304,10 @@
 	"user_pref_title_use_one_drive": "OneDrive-Synchronisierungsmodus verwenden",
 	"user_pref_blurb_use_one_drive": "Schalten Sie diesen Modus ein, wenn Ihre Mod-Sammlung mit OneDrive synchronisiert ist, Sie mehrere Computer verwenden und Mod Assistant Ihre gesamte Sammlung bei jeder Aktualisierung von Grund auf neu scannt.",
 	"user_pref_blurb_clear_cache": "Mit dieser Schaltfläche können Sie die Cache-Datei von Mod Assist löschen und neu erstellen.  Seien Sie vorsichtig, es kann eine Weile dauern, bis der Vorgang abgeschlossen ist",
-	"user_pref_button_clear_cache": "Cache löschen [VORSICHT!]"
+	"user_pref_button_clear_cache": "Cache löschen [VORSICHT!]",
+	"drop_folder_exists": "Tut mir leid, dieser Ordner wird bereits von Mod Assistant überwacht",
+	"drop_add_folder": "Als Sammlung zum Mod-Assistenten hinzufügen",
+	"drop_add_files": "Dateien in den Sammelordner kopieren",
+	"confirm_import_title": "Dateien importieren",
+	"confirm_import_blurb": "Um Dateien zu importieren, wählen Sie unten die Zielsammlung(en) aus - bestehende Dateien werden überschrieben"
 }
