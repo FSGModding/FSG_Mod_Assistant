@@ -56,7 +56,7 @@ const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale())
 myTranslator.mcVersion = app.getVersion()
 myTranslator.iconOverrides = {
-	preferences_button : 'list',
+	preferences_button : 'gear',
 	export_button      : 'filetype-csv',
 	notes_button       : 'journal-text',
 	admin_button       : 'globe2',
