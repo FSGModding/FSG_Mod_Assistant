@@ -28,7 +28,8 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 ## What is a Broken Mod?
 
 - If a mod file is named incorrectly and won't load in the game.
-  - Suggest it might be a copy if the name looks like a copy (and what the name probably should be)
+  - Suggest it might be a copy if the name looks like a copy
+    - and what the name probably should be
   - Suggest you extract it if it looks like a collection of mods
 
 - If a mod is not properly zipped.
@@ -52,17 +53,17 @@ Builds are available for the following:
 
 [Latest Release](https://github.com/FSGModding/FSG_Mod_Assistant/releases/latest)
 
-- win x64 Installer
-- win x64 portable (no need to install)
+- __win x64 Installer__ : with auto updating
+- __win x64 Portable__ : no need to install, but no auto updating
 
 ### Updating
 
-Either download the new version and install over top, or, the program will self-update itself every time you start it (downloads silently, installs on exit)
+Either download the new version and install over top, or, the program will self-update itself every time you start it (downloads silently, installs on demand or at exit)
 
-## How to Use
+### Mod Assistant Speed
 
-__PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk so that this app can run as fast as possible - but the initial scanning process is in depth, and ___not very fast___.  So, be aware than when you add a folder of a lot of mods, it may take a bit of time to scan them for the first time. Mod Assistant goes out of it's way to only scan a "version" of a file once, so subsequent loads on the program will be much, much fast.  If you are interested in the details of the cache, see below.
+__PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk so that this app can run as fast as possible - but the initial scanning process is in depth, and ___not very fast___.  So, be aware than when you add a folder of a lot of mods, it may take a bit of time to scan them for the first time. Mod Assistant goes out of it's way to only scan a "version" of a file once, so subsequent loads on the program will be much, much fast.  If you are interested in the details of the cache, see the FAQ.
 
-### Translations and Localizations
+## Translations and Localizations
 
 Some effort has been made to produce a version of Mod Assistant in your preferred language, but as the creators only speak english, we need help on this.  We accept we have an active [CrowdIn](https://crowdin.com/project/fsg-mod-assistant) project
