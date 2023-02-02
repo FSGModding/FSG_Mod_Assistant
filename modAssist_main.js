@@ -46,7 +46,7 @@ function handleUnhandled(type, err, origin) {
 			message : `Caught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
 			type    : 'error',
 		})
-		if ( gameLogFile ) { gameLogFile.close() }
+		if ( gameLogFile ) { gameLogFileWatch.close() }
 		app.quit()
 	} else {
 		log.log.debug(`Network error: ${err}`, `net-error-${type}`)
@@ -92,7 +92,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) {
 				if ( tray ) { tray.destroy() }
-				if ( gameLogFile ) { gameLogFile.close() }
+				if ( gameLogFile ) { gameLogFileWatch.close() }
 				Object.keys(windows).forEach((thisWin) => {
 					if ( thisWin !== 'main' && windows[thisWin] !== null ) {
 						windows[thisWin].destroy()
@@ -126,6 +126,7 @@ let foundPath     = false
 let foundGame     = ''
 
 let gameLogFile       = null
+let gameLogFileWatch  = null
 let gameLogFileBounce = false
 
 const gameExeName = 'FarmingSimulator2022.exe'
@@ -440,7 +441,7 @@ function createMainWindow () {
 		windows.main = null
 		if ( tray ) { tray.destroy() }
 		windows.load.destroy()
-		gameLogFile.close()
+		gameLogFileWatch.close()
 		app.quit()
 	})
 
@@ -1117,7 +1118,7 @@ ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
 function readGameLog() {
 	if ( windows.gamelog === null ) { return }
 	try {
-		const gameLogContents = fs.readFileSync(path.join(path.dirname(gameSettings), 'log.txt'), {encoding : 'utf8', flag : 'r'})
+		const gameLogContents = fs.readFileSync(gameLogFile, {encoding : 'utf8', flag : 'r'})
 
 		windows.gamelog.webContents.send('fromMain_gameLog', gameLogContents)
 	} catch (e) {
@@ -1650,16 +1651,31 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		mcStore.set('game_settings', gameSettings)
 	}
 
-	if ( gameLogFile === null ) {
-		gameLogFile = fs.watch(path.join(path.dirname(gameSettings), 'log.txt'), (event, filename) => {
-			if ( filename ) {
-				if ( gameLogFileBounce ) return
-				gameLogFileBounce = setTimeout(() => {
-					gameLogFileBounce = false
-					readGameLog()
-				}, 1000)
-			}
-		})
+	if ( gameLogFileWatch !== null ) {
+		gameLogFileWatch.close()
+		gameLogFileWatch = null
+	}
+
+	if ( gameLogFileWatch === null ) {
+		gameLogFile = path.join(path.dirname(gameSettings), 'log.txt')
+		log.log.debug(`Log file probable path: ${gameLogFile}`, 'game-log')
+
+		if ( fs.existsSync(gameLogFile) ) {
+			gameLogFileWatch = fs.watch(gameLogFile, (event, filename) => {
+				if ( filename ) {
+					if ( gameLogFileBounce ) return
+					gameLogFileBounce = setTimeout(() => {
+						gameLogFileBounce = false
+						readGameLog()
+					}, 1000)
+				}
+			})
+			gameLogFileWatch.on('error', (err) => {
+				log.log.warning(`Error with game log: ${err}`, 'game-log')
+			})
+		} else {
+			log.log.warning(`Game Log not found at: ${gameLogFile}`, 'game-log')
+		}
 	}
 
 	let   XMLString = ''
