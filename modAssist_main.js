@@ -336,7 +336,7 @@ function getRealCenter(winName) {
 	return realCenter
 }
 
-function createSubWindow(winName, {noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null, fixedOnTop = true} = {}) {
+function createSubWindow(winName, { skipTaskbar = false, noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null, fixedOnTop = true} = {}) {
 	const realCenter  = getRealCenter(winName)
 	const winSettings = mcStore.get(`wins.${winName}`)
 
@@ -362,8 +362,10 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 		movable         : move,
 		frame           : frame,
 		show            : show,
+		skipTaskbar     : skipTaskbar,
 		autoHideMenuBar : true,
 		webPreferences  : {
+			spellcheck       : false,
 			nodeIntegration  : false,
 			contextIsolation : true,
 			preload          : (preload === null ) ? null : path.join(pathPreload, `preload-${preload}.js`),
@@ -406,7 +408,7 @@ function createSubWindow(winName, {noSelect = true, show = true, parent = null, 
 }
 
 function createMainWindow () {
-	windows.load = createSubWindow('load', { fixedOnTop : false, show : false, preload : 'loadingWindow', fixed : true, move : false, frame : false })
+	windows.load = createSubWindow('load', { skipTaskbar : true, fixedOnTop : false, show : false, preload : 'loadingWindow', fixed : true, move : false, frame : false })
 	windows.load.loadFile(path.join(pathRender, 'loading.html'))
 	windows.load.on('close', (event) => { event.preventDefault() })
 
@@ -683,6 +685,10 @@ function loadingWindow_open(l10n) {
 function loadingWindow_doCount(whichCount, amount, reset, inMB) {
 	loadWindowCount[whichCount] = ( reset ) ? amount : amount + loadWindowCount[whichCount]
 
+	if ( whichCount === 'current' && windows.main !== null && ! windows.main.isDestroyed() ) {
+		windows.main.setProgressBar(Math.max(0, Math.min(1, loadWindowCount.current / loadWindowCount.total)))
+	}
+
 	if ( ! windows.load.isDestroyed() ) {
 		windows.load.webContents.send(`fromMain_loading_${whichCount}`, loadWindowCount[whichCount], inMB)
 	}
@@ -695,6 +701,9 @@ function loadingWindow_current(amount = 1, reset = false, inMB = false) {
 }
 function loadingWindow_hide(time = 1250) {
 	setTimeout(() => {
+		if ( windows.main !== null && ! windows.main.isDestroyed() ) {
+			windows.main.setProgressBar(-1)
+		}
 		if ( windows.load !== null && ! windows.load.isDestroyed() ) {
 			windows.load.hide()
 		}
@@ -1087,6 +1096,16 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
+ipcMain.on('toMain_notesContextMenu', async (event) => {
+	const template  = [
+		{ role : 'cut' },
+		{ role : 'copy' },
+		{ role : 'paste' },
+	]
+
+	const menu = Menu.buildFromTemplate(template)
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
 /** END: Main window context menus */
 
 
@@ -1403,6 +1422,7 @@ ipcMain.on('toMain_exportList', (event, collection) => {
 		} else {
 			try {
 				fs.writeFileSync(result.filePath, csvTable.join('\n'))
+				app.addRecentDocument(result.filePath)
 				doDialogBox('main', { messageL10n : 'save_csv_worked' })
 			} catch (err) {
 				log.log.warning(`Could not save csv file : ${err}`, 'csv-export')
@@ -1440,6 +1460,7 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 				
 				zipOutput.on('close', () => {
 					log.log.info(`ZIP file created : ${result.filePath}`, 'zip-export')
+					app.addRecentDocument(result.filePath)
 				})
 
 				zipArchive.on('error', (err) => {
@@ -1818,7 +1839,7 @@ function processModFoldersOnDisk() {
 	modCollect.clearAll()
 
 	modFoldersWatch = []
-	// Cleaner for no-longer existing folders, count contents of others
+	// Cleaner for no-longer existing folders, set watcher for others
 	modFolders.forEach((folder) => {
 		if ( ! fs.existsSync(folder) ) {
 			modFolders.delete(folder)
@@ -1922,6 +1943,9 @@ function doDialogBox(attachTo, {type = 'info', message = null, messageL10n = nul
 }
 
 
+
+
+
 app.whenReady().then(() => {
 	if ( gotTheLock ) {
 		if ( mcStore.has('force_lang') && mcStore.get('lock_lang', false) ) {
@@ -1950,13 +1974,25 @@ app.whenReady().then(() => {
 		dlSaveFile(hubURL, 'modHubData.json')
 		dlSaveFile(hubVerURL, 'modHubVersion.json')
 
-		app.on('second-instance', () => {
+		app.on('second-instance', (event, argv) => {
 			// Someone tried to run a second instance, we should focus our window.
+			if ( argv.includes('--start-game') ) { gameLauncher() }
 			if (windows.main) {
 				if ( windows.main.isMinimized()) { windows.main.show() }
 				windows.main.focus()
 			}
 		})
+
+		app.setUserTasks([
+			{
+				program   : process.execPath,
+				arguments : '--start-game',
+				iconPath  : trayIcon,
+				iconIndex : 0,
+				title     : myTranslator.syncStringLookup('launch_fs22'),
+				description : '',
+			}
+		])
 
 		createMainWindow()
 

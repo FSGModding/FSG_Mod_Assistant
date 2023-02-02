@@ -54,7 +54,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_tagline"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onkeyup="clientMarkIP('notes_tagline')" onblur="clientSetNote('notes_tagline')" type="text" class="form-control form-control-sm mt-4" id="notes_tagline">
+				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_tagline')" onblur="clientSetNote('notes_tagline')" type="text" class="form-control form-control-sm mt-4" id="notes_tagline">
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -63,7 +63,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_username"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onkeyup="clientMarkIP('notes_username')" onblur="clientSetNote('notes_username')" type="text" class="form-control form-control-sm mt-4" id="notes_username">
+				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_username')" onblur="clientSetNote('notes_username')" type="text" class="form-control form-control-sm mt-4" id="notes_username">
 				<div id="notes_username_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_30"></l10n></div>
 			</div>
 		</div>
@@ -73,7 +73,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_server"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onkeyup="clientMarkIP('notes_server')" onblur="clientSetNote('notes_server')" type="text" class="form-control form-control-sm mt-4" id="notes_server">
+				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_server')" onblur="clientSetNote('notes_server')" type="text" class="form-control form-control-sm mt-4" id="notes_server">
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -82,7 +82,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_password"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onkeyup="clientMarkIP('notes_password')" onblur="clientSetNote('notes_password')" type="text" class="form-control form-control-sm mt-4" id="notes_password">
+				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_password')" onblur="clientSetNote('notes_password')" type="text" class="form-control form-control-sm mt-4" id="notes_password">
 				<div id="notes_password_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_16"></l10n></div>
 			</div>
 		</div>
@@ -92,7 +92,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_website"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onkeyup="clientMarkIP('notes_website')" onblur="clientSetNote('notes_website')" type="text" class="form-control form-control-sm mt-4" id="notes_website">
+				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_website')" onblur="clientSetNote('notes_website')" type="text" class="form-control form-control-sm mt-4" id="notes_website">
 				<div id="notes_website_feedback" class="invalid-feedback"><l10n name="pref_feedback_bad_url"></l10n></div>
 			</div>
 			<div class="col-6">
@@ -110,7 +110,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_admin"></l10n></p>
 			</div>
 			<div class="col-6">
-				<input onkeyup="clientMarkIP('notes_admin')" onblur="clientSetNote('notes_admin')" type="text" class="form-control form-control-sm mt-4" id="notes_admin">
+				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_admin')" onblur="clientSetNote('notes_admin')" type="text" class="form-control form-control-sm mt-4" id="notes_admin">
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
@@ -119,7 +119,7 @@
 				<p class="ps-2"><l10n name="notes_blurb_notes"></l10n></p>
 			</div>
 			<div class="col-6">
-				<textarea onblur="clientSetNote('notes_notes')" rows="4" class="form-control form-control-sm" id="notes_notes"></textarea>
+				<textarea oncontextmenu="window.mods.openCText()" onblur="clientSetNote('notes_notes')" rows="4" class="form-control form-control-sm" id="notes_notes"></textarea>
 			</div>
 		</div>
 

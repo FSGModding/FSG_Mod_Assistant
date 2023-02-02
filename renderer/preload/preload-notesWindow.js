@@ -38,9 +38,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		openCText    : ()   => { ipcRenderer.send('toMain_notesContextMenu') },
 		closeWindow  : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'notes') },
 		setNote      : ( id, value, collection ) => ipcRenderer.send('toMain_setNote', id, value, collection),
-		receive   : ( channel, func ) => {
+		receive      : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_collectionName',
 				'fromMain_collectionNotes',

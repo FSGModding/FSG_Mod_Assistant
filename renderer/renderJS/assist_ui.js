@@ -541,7 +541,7 @@ function clientDragEnter(e) {
 		fsgUtil.byId('drag_back').classList.remove('d-none')
 	
 		if ( e.dataTransfer.items.length > 1 || e.dataTransfer.items[0].type !== '' ) {
-			// multiple, so no add folder.
+			// multiple, so can't add as collection.
 			fsgUtil.byId('drag_add_folder').classList.add('d-none')
 		}
 
