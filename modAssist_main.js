@@ -1852,7 +1852,7 @@ function processModFoldersOnDisk() {
 }
 function updateFolderDirtyWatch(eventType, fileName) {
 	if ( eventType === 'rename' ) {
-		if ( ! fileName.endsWith('.tmp') ) {
+		if ( ! fileName.endsWith('.tmp') && ! fileName.endsWith('.crdownload')) {
 			log.log.debug(`Folders now dirty due to ${fileName}`, 'folder-watcher')
 
 			foldersDirty = true
