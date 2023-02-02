@@ -309,5 +309,6 @@
 	"drop_add_folder": "Toevoegen als collectie aan Mod Assistant",
 	"drop_add_files": "Kopieer bestanden naar verzamelmap",
 	"confirm_import_title": "Bestanden importeren",
-	"confirm_import_blurb": "Selecteer hieronder de bestemmingsverzameling(en) om bestanden te importeren - bestaande bestanden ZULLEN worden overschreven."
+	"confirm_import_blurb": "Selecteer hieronder de bestemmingsverzameling(en) om bestanden te importeren - bestaande bestanden ZULLEN worden overschreven.",
+	"min_tray_button__title": "Minimaliseren naar lade"
 }

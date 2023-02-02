@@ -309,5 +309,6 @@
 	"drop_add_folder": "Dodaj jako kolekcję do Mod Assistant",
 	"drop_add_files": "Kopiowanie plików do folderu kolekcji",
 	"confirm_import_title": "Import Files",
-	"confirm_import_blurb": "Aby zaimportować pliki, wybierz poniżej kolekcję (kolekcje) docelową - istniejące pliki zostaną nadpisane"
+	"confirm_import_blurb": "Aby zaimportować pliki, wybierz poniżej kolekcję (kolekcje) docelową - istniejące pliki zostaną nadpisane",
+	"min_tray_button__title": "Minimalizuj do zasobnika"
 }

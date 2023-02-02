@@ -309,5 +309,6 @@
 	"drop_add_folder"                        : "Add as collection to Mod Assistant",
 	"drop_add_files"                         : "Copy files to collection folder",
 	"confirm_import_title"                   : "Import Files",
-	"confirm_import_blurb"                   : "To import files, select the destination collection(s) below - existing files WILL be overwritten"
+	"confirm_import_blurb"                   : "To import files, select the destination collection(s) below - existing files WILL be overwritten",
+	"min_tray_button__title"                 : "Minimize to tray"
 }

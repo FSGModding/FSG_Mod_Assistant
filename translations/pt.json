@@ -309,5 +309,6 @@
 	"drop_add_folder": "Adicionar como colecção ao Mod Assistant",
 	"drop_add_files": "Copiar ficheiros para pasta de colecção",
 	"confirm_import_title": "Ficheiros de Importação",
-	"confirm_import_blurb": "Para importar ficheiros, seleccione a(s) colecção(s) de destino abaixo - os ficheiros existentes serão sobregravados"
+	"confirm_import_blurb": "Para importar ficheiros, seleccione a(s) colecção(s) de destino abaixo - os ficheiros existentes serão sobregravados",
+	"min_tray_button__title": "Minimizar para bandeja"
 }

@@ -309,5 +309,6 @@
 	"drop_add_folder": "Ajouter en tant que collection au Mod Assistant",
 	"drop_add_files": "Copier les fichiers dans le dossier de collection",
 	"confirm_import_title": "Importer des fichiers",
-	"confirm_import_blurb": "Pour importer des fichiers, sélectionnez les collections de destination ci-dessous - les fichiers existants seront remplacés"
+	"confirm_import_blurb": "Pour importer des fichiers, sélectionnez les collections de destination ci-dessous - les fichiers existants seront remplacés",
+	"min_tray_button__title": "Réduire au plateau"
 }

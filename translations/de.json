@@ -309,5 +309,6 @@
 	"drop_add_folder": "Als Sammlung zum Mod-Assistenten hinzufügen",
 	"drop_add_files": "Dateien in den Sammelordner kopieren",
 	"confirm_import_title": "Dateien importieren",
-	"confirm_import_blurb": "Um Dateien zu importieren, wählen Sie unten die Zielsammlung(en) aus - bestehende Dateien werden überschrieben"
+	"confirm_import_blurb": "Um Dateien zu importieren, wählen Sie unten die Zielsammlung(en) aus - bestehende Dateien werden überschrieben",
+	"min_tray_button__title": "In die Ablage minimieren"
 }

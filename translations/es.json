@@ -309,5 +309,6 @@
 	"drop_add_folder": "Añadir como colección a Mod Assistant",
 	"drop_add_files": "Copiar archivos a carpeta de colección",
 	"confirm_import_title": "Importar archivos",
-	"confirm_import_blurb": "Para importar archivos, seleccione la(s) colección(es) de destino a continuación. Los archivos existentes se sobrescribirán."
+	"confirm_import_blurb": "Para importar archivos, seleccione la(s) colección(es) de destino a continuación. Los archivos existentes se sobrescribirán.",
+	"min_tray_button__title": "Minimizar a bandeja"
 }
