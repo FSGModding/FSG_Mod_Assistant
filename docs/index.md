@@ -22,7 +22,7 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 - [Savegame Compare](savegame.html)
 - [Version Check](versions.html)
 - [Search All Collections](search.html)
-- [User Preferences](prefrences.html)
+- [User Preferences](preferences.html)
 - [Frequently Asked Questions](faq.html)
 
 ## What is a Broken Mod?

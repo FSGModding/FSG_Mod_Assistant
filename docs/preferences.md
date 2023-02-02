@@ -1,8 +1,8 @@
-# FSG Mod Assistant
+# FSG Mod Assistant - Preferences Window
 
 [← Back to main](index.html)
 
-## Preferences Window
+## Options
 
 ### Game Path
 
@@ -48,4 +48,4 @@ The Mod Cache is how Mod Assistant is able to keep track of your mod files.  If 
 
 ![Languages](img/pref-lang.png)
 
-This section is for setting the language that Mod Assistant appears in.  In most cases, it will guess correctly, but if you wish to choose a new one, you can do so here.  The Lock function will stop Mod Assistant from guessing your language permanently, and use the one selected.  Make sure to set the lock _after_ selecting your language.
+This section is for setting the language that Mod Assistant appears in.  In most cases, it will guess correctly, but if you wish to choose a new one, you can do so here.  The Lock function will stop Mod Assistant from guessing your language permanently, and use the one selected.  Make sure to set the lock *after* selecting your language.
