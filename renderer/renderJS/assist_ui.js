@@ -462,15 +462,16 @@ window.addEventListener('DOMContentLoaded', () => {
 	mismatchDialog.hide()
 	const dragTarget = fsgUtil.byId('drag_target')
 
-	dragTarget.addEventListener('dragenter', (event) => { clientDragEnter(event) })
-	dragTarget.addEventListener('dragleave', (event) => { clientDragLeave(event) })
-	dragTarget.addEventListener('dragover',  (event) => { clientDragOver(event) })
-	dragTarget.addEventListener('drop',      (event) => { clientDragDrop(event) })
+	dragTarget.addEventListener('dragenter', clientDragEnter )
+	dragTarget.addEventListener('dragleave', clientDragLeave )
+	dragTarget.addEventListener('dragover',  clientDragOver )
+	dragTarget.addEventListener('drop',      clientDragDrop )
 })
 
-window.addEventListener('click', () => {
-	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
-})
+function clearTooltips() { fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() }) }
+
+window.mods.receive('fromMain_clearTooltips', clearTooltips)
+window.addEventListener('click', clearTooltips )
 
 function clientDragOut(e) {
 	e.preventDefault()
@@ -562,7 +563,6 @@ function clientDragEnter(e) {
 function clientDragOver(e) {
 	e.preventDefault()
 	e.stopPropagation()
-
 
 	e.dataTransfer.dropEffect = (dragDropInFolder ? 'link' : 'copy')
 }

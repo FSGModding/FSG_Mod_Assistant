@@ -39,6 +39,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		sendToTray      : () => { ipcRenderer.send('toMain_sendMainToTray') },
 		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
 		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },
@@ -83,6 +84,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_selectOnlyFilter',
 				'fromMain_debugLogDanger',
 				'fromMain_dirtyUpdate',
+				'fromMain_clearTooltips',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

@@ -46,7 +46,7 @@ function handleUnhandled(type, err, origin) {
 			message : `Caught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
 			type    : 'error',
 		})
-		if ( gameLogFile ) { gameLogFileWatch.close() }
+		if ( gameLogFileWatch ) { gameLogFileWatch.close() }
 		app.quit()
 	} else {
 		log.log.debug(`Network error: ${err}`, `net-error-${type}`)
@@ -71,6 +71,7 @@ myTranslator.iconOverrides = {
 	folder_down_button : 'chevron-down',
 	folder_bot_button  : 'align-bottom',
 	button_gamelog     : 'file-earmark-text',
+	min_tray_button    : 'chevron-bar-down',
 }
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
@@ -92,7 +93,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) {
 				if ( tray ) { tray.destroy() }
-				if ( gameLogFile ) { gameLogFileWatch.close() }
+				if ( gameLogFileWatch ) { gameLogFileWatch.close() }
 				Object.keys(windows).forEach((thisWin) => {
 					if ( thisWin !== 'main' && windows[thisWin] !== null ) {
 						windows[thisWin].destroy()
@@ -125,7 +126,6 @@ let pathBestGuess = userHome
 let foundPath     = false
 let foundGame     = ''
 
-let gameLogFile       = null
 let gameLogFileWatch  = null
 let gameLogFileBounce = false
 
@@ -181,6 +181,7 @@ const settingsSchema = {
 	force_lang        : { type : 'string', default : '' },
 	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
 	game_path         : { type : 'string', default : foundGame },
+	game_log_file     : { type : ['string', 'null'], default : null },
 	cache_version     : { type : 'string', default : '0.0.0' },
 	rel_notes         : { type : 'string', default : '0.0.0' },
 	game_args         : { type : 'string', default : '' },
@@ -365,6 +366,12 @@ function createSubWindow(winName, { skipTaskbar = false, noSelect = true, show =
 		show            : show,
 		skipTaskbar     : skipTaskbar,
 		autoHideMenuBar : true,
+		titleBarStyle   : winName === 'main' ? 'hidden' : 'default',
+		titleBarOverlay : {
+			color       : '#1f2021',
+			symbolColor : '#ffffff',
+			height      : 25,
+		},
 		webPreferences  : {
 			spellcheck       : false,
 			nodeIntegration  : false,
@@ -415,28 +422,10 @@ function createMainWindow () {
 
 	windows.main = createSubWindow('main', { noSelect : false, show : devDebug, preload : 'mainWindow' })
 
-	windows.main.on('minimize', () => {
-		if ( tray ) {
-			if ( firstMin ) {
-				const bubbleOpts = {
-					icon    : trayIcon,
-					title   : myTranslator.syncStringLookup('minimize_message_title'),
-					content : myTranslator.syncStringLookup('minimize_message'),
-				}
-
-				tray.displayBalloon(bubbleOpts)
-
-				setTimeout(() => {
-					if ( tray && !tray.isDestroyed() ) {
-						tray.removeBalloon()
-					}
-				}, 5000)
-			}
-			
-			firstMin = false
-			windows.main.hide()
-		}
+	windows.main.on('focus', () => {
+		windows.main.webContents.send('fromMain_clearTooltips')
 	})
+	
 	windows.main.on('closed',   () => {
 		windows.main = null
 		if ( tray ) { tray.destroy() }
@@ -723,6 +712,28 @@ function isNetworkError(errorObject) { return errorObject.message.startsWith('ne
     _)(_  )___/( (__ 
    (____)(__)   \___) */
 
+ipcMain.on('toMain_sendMainToTray', () => {
+	if ( tray ) {
+		if ( firstMin ) {
+			const bubbleOpts = {
+				icon    : trayIcon,
+				title   : myTranslator.syncStringLookup('minimize_message_title'),
+				content : myTranslator.syncStringLookup('minimize_message'),
+			}
+
+			tray.displayBalloon(bubbleOpts)
+
+			setTimeout(() => {
+				if ( tray && !tray.isDestroyed() ) {
+					tray.removeBalloon()
+				}
+			}, 5000)
+		}
+		
+		firstMin = false
+		windows.main.hide()
+	}
+})
 ipcMain.on('toMain_populateClipboard', (event, text) => { clipboard.writeText(text, 'selection') })
 
 /** File operation buttons */
@@ -1117,8 +1128,13 @@ ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
 
 function readGameLog() {
 	if ( windows.gamelog === null ) { return }
+
+	const thisGameLog = mcStore.get('game_log_file', null)
+
+	if ( thisGameLog === null ) { return }
+
 	try {
-		const gameLogContents = fs.readFileSync(gameLogFile, {encoding : 'utf8', flag : 'r'})
+		const gameLogContents = fs.readFileSync(thisGameLog, {encoding : 'utf8', flag : 'r'})
 
 		windows.gamelog.webContents.send('fromMain_gameLog', gameLogContents)
 	} catch (e) {
@@ -1599,6 +1615,38 @@ function refreshClientModList(closeLoader = true) {
 /** END: Utility & Convenience Functions */
 
 /** Business Functions */
+function loadGameLog(newPath = false) {
+	if ( newPath ) { mcStore.set('game_log_file', newPath) }
+
+	if ( newPath || gameLogFileWatch !== null ) {
+		gameLogFileWatch.close()
+		gameLogFileWatch = null
+	}
+
+	const thisGameLog = mcStore.get('game_log_file', null)
+
+	if ( thisGameLog !== null && gameLogFileWatch === null ) {
+		log.log.debug(`Trying to open game log: ${thisGameLog}`, 'game-log')
+
+		if ( fs.existsSync(thisGameLog) ) {
+			gameLogFileWatch = fs.watch(thisGameLog, (event, filename) => {
+				if ( filename ) {
+					if ( gameLogFileBounce ) return
+					gameLogFileBounce = setTimeout(() => {
+						gameLogFileBounce = false
+						readGameLog()
+					}, 1000)
+				}
+			})
+			gameLogFileWatch.on('error', (err) => {
+				log.log.warning(`Error with game log: ${err}`, 'game-log')
+				gameLogFileWatch = null
+			})
+		} else {
+			log.log.warning(`Game Log not found at: ${thisGameLog}`, 'game-log')
+		}
+	}
+}
 function parseGameXML(devMode = null) {
 	const gameXMLFile = gameSettings.replace('gameSettings.xml', 'game.xml')
 
@@ -1651,32 +1699,11 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		mcStore.set('game_settings', gameSettings)
 	}
 
-	if ( gameLogFileWatch !== null ) {
-		gameLogFileWatch.close()
-		gameLogFileWatch = null
+	if ( mcStore.get('game_log_file') === null ) {
+		mcStore.set('game_log_file', path.join(path.dirname(gameSettings), 'log.txt'))
 	}
 
-	if ( gameLogFileWatch === null ) {
-		gameLogFile = path.join(path.dirname(gameSettings), 'log.txt')
-		log.log.debug(`Log file probable path: ${gameLogFile}`, 'game-log')
-
-		if ( fs.existsSync(gameLogFile) ) {
-			gameLogFileWatch = fs.watch(gameLogFile, (event, filename) => {
-				if ( filename ) {
-					if ( gameLogFileBounce ) return
-					gameLogFileBounce = setTimeout(() => {
-						gameLogFileBounce = false
-						readGameLog()
-					}, 1000)
-				}
-			})
-			gameLogFileWatch.on('error', (err) => {
-				log.log.warning(`Error with game log: ${err}`, 'game-log')
-			})
-		} else {
-			log.log.warning(`Game Log not found at: ${gameLogFile}`, 'game-log')
-		}
-	}
+	if ( gameLogFileWatch === null ) { loadGameLog() }
 
 	let   XMLString = ''
 	const XMLParser = new fxml.XMLParser({

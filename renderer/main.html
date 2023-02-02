@@ -96,6 +96,18 @@
 			height: 13.5%;
 			line-height: 1.1em
 		}
+		.btn-launch:focus-visible { box-shadow: none!important;}
+		.btn-win_ui {
+			color: #ffffff;
+			height: 25px;
+			padding-top: 0px;
+			padding-bottom: 0px;
+			font-size: 13px;
+		}
+		.btn-win_ui:hover {
+			background-color: #4b4d5a;
+			color: #ffffff;
+		}
 
 		#display_mod_container { margin-top: 135px; }
 		#moveButtons { height: calc(100vh - 188px); position: fixed; top: 150px; }
@@ -124,26 +136,24 @@
 	<div id="lang-style-div">
 	<main class="flex-shrink-0">
 	<div class="container-fluid px-0 user-select-none">
-		<div class="fixed-top pt-2 bg-body" id="main-header">
+		<div class="fixed-top pt-0 bg-body" id="main-header">
 			<div class="row w-100 mb-1">
-				<div class="col-6 border-bottom">
+				<div class="col border-bottom mt-2" style="-webkit-app-region: drag;">
 					<h2 class="ps-2 mastHead">
 						<l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n>
 					</h2>
 				</div>
-				<div class="col-1"></div>
-				<div class="col-3">
-					<button onclick="clientOpenFarmSim()" class="btn btn-info w-100" id="launch_fs22">
+				<div class="col-3 pt-2 pe-4">
+					<button onclick="clientOpenFarmSim()" class="btn btn-info w-100 btn-launch"  id="launch_fs22">
 						<img src="img/fsicon.png" style="height: 24px" class="float-start img-fluid"/>
 						<l10n name="launch_fs22"></l10n>
 					</button>
 				</div>
-				<div class="col-2 text-end">
-					<div class="btn-group w-100">
-						<button class="btn btn-outline-light w-50" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
-						<button class="btn btn-outline-light w-50" onclick="window.mods.openGameLog()"><l10n name="button_gamelog"></l10n></button>
-						<button onclick="window.mods.openPreferences()" class="btn btn-outline-light w-50" id="open_prefs"><l10n name="preferences_button"></l10n></button>
-					</div>
+				<div class="m-0 p-0 rounded-bottom" style="background-color: #1f2021; height: 25px; width: 290px!important;">
+					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
+					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openGameLog()"><l10n name="button_gamelog"></l10n></button>
+					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openPreferences()" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+					<button class="btn-win_ui btn rounded-0" onclick="window.mods.sendToTray()"><l10n name="min_tray_button"></l10n></button>
 				</div>
 			</div>
 
