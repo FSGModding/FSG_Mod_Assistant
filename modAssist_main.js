@@ -1838,13 +1838,16 @@ function processModFoldersOnDisk() {
 	modCollect.syncSafe     = mcStore.get('use_one_drive', false)
 	modCollect.clearAll()
 
+	modFoldersWatch.forEach((oldWatcher) => { oldWatcher.close() })
 	modFoldersWatch = []
 	// Cleaner for no-longer existing folders, set watcher for others
 	modFolders.forEach((folder) => {
 		if ( ! fs.existsSync(folder) ) {
 			modFolders.delete(folder)
 		} else {
-			modFoldersWatch.push(fs.watch(folder, updateFolderDirtyWatch))
+			const thisWatch = fs.watch(folder, updateFolderDirtyWatch)
+			thisWatch.on('error', () => { log.log.warning(`Folder Watch Error: ${folder}`, 'folder-watcher') })
+			modFoldersWatch.push(thisWatch)
 		}
 	})
 
