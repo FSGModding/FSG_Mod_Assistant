@@ -430,7 +430,7 @@ function createMainWindow () {
 		windows.main = null
 		if ( tray ) { tray.destroy() }
 		windows.load.destroy()
-		gameLogFileWatch.close()
+		if ( gameLogFileWatch ) { gameLogFileWatch.close() }
 		app.quit()
 	})
 
@@ -537,7 +537,7 @@ function createNamedWindow(winName, windowArgs) {
 	}
 }
 
-const subWindowDev = new Set(['import', 'save', 'find', 'detail', 'notes', 'version', 'resolve'])
+const subWindowDev = new Set(['import', 'save', 'find', 'detail', 'notes', 'version', 'resolve', 'gamelog'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -1125,6 +1125,23 @@ ipcMain.on('toMain_notesContextMenu', async (event) => {
 ipcMain.on('toMain_openGameLog',       () => { createNamedWindow('gamelog') })
 ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(path.join(path.dirname(gameSettings), 'log.txt')) })
 ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
+ipcMain.on('toMain_changeGameLog',     () => {
+	dialog.showOpenDialog(windows.prefs, {
+		properties  : ['openFile'],
+		defaultPath : path.join(pathBestGuess, 'log.txt'),
+		filters     : [
+			{ name : 'Log Files', extensions : ['txt'] },
+			{ name : 'All', extensions : ['*'] },
+		],
+	}).then((result) => {
+		if ( ! result.canceled ) {
+			loadGameLog(result.filePaths[0])
+			readGameLog()
+		}
+	}).catch((unknownError) => {
+		log.log.danger(`Could not read specified log : ${unknownError}`, 'game-log')
+	})
+})
 
 function readGameLog() {
 	if ( windows.gamelog === null ) { return }
@@ -1136,7 +1153,7 @@ function readGameLog() {
 	try {
 		const gameLogContents = fs.readFileSync(thisGameLog, {encoding : 'utf8', flag : 'r'})
 
-		windows.gamelog.webContents.send('fromMain_gameLog', gameLogContents)
+		windows.gamelog.webContents.send('fromMain_gameLog', gameLogContents, thisGameLog)
 	} catch (e) {
 		log.log.warning(`Could not read game log file: ${e}`, 'game-log')
 	}
@@ -1644,6 +1661,7 @@ function loadGameLog(newPath = false) {
 			})
 		} else {
 			log.log.warning(`Game Log not found at: ${thisGameLog}`, 'game-log')
+			mcStore.set('game_log_file', null)
 		}
 	}
 }

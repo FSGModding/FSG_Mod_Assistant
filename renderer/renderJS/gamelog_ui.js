@@ -32,7 +32,8 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
 
 
-window.gamelog.receive('fromMain_gameLog', (data) => {
+window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
+	fsgUtil.byId('gameLogPath').innerHTML = fileName
 	const autoScroll = fsgUtil.byId('auto_scroll').checked || false
 	const showThese  = new Set()
 	const showData   = []

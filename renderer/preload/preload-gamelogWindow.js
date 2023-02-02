@@ -39,6 +39,7 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'gamelog',
 	{
+		changeGameLogFile   : () => { ipcRenderer.send('toMain_changeGameLog') },
 		getGameLogContents  : () => { ipcRenderer.send('toMain_getGameLog') },
 		openGameLogFolder   : () => { ipcRenderer.send('toMain_openGameLogFolder') },
 		receive   : ( channel, func ) => {
