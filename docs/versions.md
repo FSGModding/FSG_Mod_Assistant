@@ -32,4 +32,6 @@ However, if you want to synchronize some or all of the files, double click on th
 
 ![Resolve](img/version-004.png)
 
-In this window, fill the checkmark next to the collection or collections you would like to update, and hit the `Yes, Copy Mod(s)` button to proceed. Keep in mind, this will overwrite the old file.  If you wish to quickly select all collections to update, you can press `CTRL+A`
+In this window, fill the checkmark next to the collection or collections you would like to update, and hit the `Yes, Copy Mod(s)` button to proceed. Keep in mind, this will overwrite the old file.
+
+If you wish to quickly select all collections to update, you can press `CTRL+A`.  Likewise, `CTRL+SHIFT+A` will select no collections.
