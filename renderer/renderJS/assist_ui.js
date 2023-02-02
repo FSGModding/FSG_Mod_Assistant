@@ -335,7 +335,7 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, admi
 function makeModRow(id, thisMod, badges, modId) {
 	const badgeHTML = Array.from(badges, (badge) => fsgUtil.badge(false, badge))
 
-	return `<tr draggable="true" ondragend="clientDragOutEnd()" ondragstart="clientDragOut(event)" onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.modCText('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
+	return `<tr draggable="true" ondragstart="clientDragOut(event)" onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.modCText('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
 	<td>
 		<input type="checkbox" class="form-check-input mod-row-checkbox" id="${id}__checkbox">
 	</td>
@@ -454,7 +454,6 @@ async function operateLED(type = 'spin', time = 2500) {
 let mismatchDialog      = null
 let dragDropOperation   = false
 let dragDropInFolder    = false
-let dragDropOutgoing    = false
 
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -473,11 +472,7 @@ window.addEventListener('click', () => {
 	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
 })
 
-function clientDragOutEnd() {
-	dragDropOutgoing = false
-}
 function clientDragOut(e) {
-	dragDropOutgoing = true
 	e.preventDefault()
 	e.stopPropagation()
 
@@ -492,8 +487,6 @@ function clientDragOut(e) {
 function clientDragDrop(e) {
 	e.preventDefault()
 	e.stopPropagation()
-
-	if ( dragDropOutgoing ) { return }
 
 	dragDropOperation = false
 
@@ -520,7 +513,6 @@ function clientDragLeave(e) {
 	e.preventDefault()
 	e.stopPropagation()
 
-	if ( dragDropOutgoing ) { return }
 
 	if ( e.x <= 0 && e.y <= 0 ) {
 		dragDropOperation   = false
@@ -535,7 +527,6 @@ function clientDragEnter(e) {
 	e.preventDefault()
 	e.stopPropagation()
 
-	if ( dragDropOutgoing ) { return }
 
 	if ( !dragDropOperation ) {
 		fsgUtil.byId('drag_back').classList.remove('d-none')
@@ -572,7 +563,6 @@ function clientDragOver(e) {
 	e.preventDefault()
 	e.stopPropagation()
 
-	if ( dragDropOutgoing ) { return }
 
 	e.dataTransfer.dropEffect = (dragDropInFolder ? 'link' : 'copy')
 }
