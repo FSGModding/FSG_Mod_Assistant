@@ -568,6 +568,7 @@ const subWindows   = {
 		HTMLFile        : 'a_changelog.html',
 		subWindowArgs   : { parent : 'main', fixed : true, preload : 'aChangelogWindow' },
 		callback        : () => { return },
+		handleURLinWin  : true,
 	},
 	folder : {
 		winName         : 'folder',
