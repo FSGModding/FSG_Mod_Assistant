@@ -16,13 +16,13 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 
 - [Main Screen](main.html)
 - [Collection Management](collections.html)
-- [Folder Details Window](folder.html)
-- [Detail Window](detail.html)
+- [Collection Details Window](details.html)
 - [Import and Export](importexport.html)
 - [Move and Copy and Delete and Copy Favorites](fileoper.html)
 - [Savegame Compare](savegame.html)
 - [Version Check](versions.html)
 - [Search All Collections](search.html)
+- [Detail Window](detail.html)
 - [User Preferences](preferences.html)
 - [Frequently Asked Questions](faq.html)
 
