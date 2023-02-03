@@ -15,6 +15,7 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 ## Detailed Documentation
 
 - [Main Screen](main.html)
+- [Collection Management](collections.html)
 - [Folder Details Window](folder.html)
 - [Detail Window](detail.html)
 - [Import and Export](importexport.html)
