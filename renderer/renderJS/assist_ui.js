@@ -249,7 +249,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 
 function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts) {
-	const theseBadges = originalBadges || []
+	const theseBadges = [...originalBadges] || []
 
 	if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
 		theseBadges.push(typeof bindConflicts[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok')
