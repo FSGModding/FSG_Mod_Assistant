@@ -19,10 +19,6 @@
 			evt = evt || window.event
 			if (evt.keyCode == 116) { window.mods.refreshFolders() }
 		}
-
-		window.onerror = function (message, file, line, col, error) {
-			window.log.debug(error.message, 'main'); return false
-		}
 	</script>
 	<style>
 		.overflow-custom {
@@ -114,17 +110,17 @@
 
 		@media screen and (max-width: 1019px) {
 
-			.es [name="version_check"] { font-size: 0.9em; }
+			body[data-i18n="es"] [name="version_check"] { font-size: 0.9em; }
 
-			.nl [name="app_name"] { font-size: calc(1.325rem + .55vw); }
-			.nl #display_mod_container { margin-top: 145px; }
-			.nl #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			body[data-i18n="nl"] [name="app_name"] { font-size: calc(1.325rem + .55vw); }
+			body[data-i18n="nl"] #display_mod_container { margin-top: 145px; }
+			body[data-i18n="nl"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
 
-			.pt #display_mod_container { margin-top: 145px; }
-			.pt #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			body[data-i18n="pt"] #display_mod_container { margin-top: 145px; }
+			body[data-i18n="pt"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
 
-			.ru #display_mod_container { margin-top: 145px; }
-			.ru #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			body[data-i18n="ru"] #display_mod_container { margin-top: 145px; }
+			body[data-i18n="ru"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
 		}
 	</style>
 	

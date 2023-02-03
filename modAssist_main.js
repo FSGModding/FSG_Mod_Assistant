@@ -410,6 +410,10 @@ function createSubWindow(winName, { skipTaskbar = false, noSelect = true, show =
 		thisWindow.on('unmaximize', () => { mcStore.set(`wins.${winName}.m`, false) })
 	}
 
+	thisWindow.on('focus', () => {
+		thisWindow.webContents.send('fromMain_clearTooltips')
+	})
+
 	if ( !devDebug ) { thisWindow.removeMenu()}
 	if ( winSettings.m )  { thisWindow.maximize() }
 	return thisWindow
@@ -421,10 +425,6 @@ function createMainWindow () {
 	windows.load.on('close', (event) => { event.preventDefault() })
 
 	windows.main = createSubWindow('main', { noSelect : false, show : devDebug, preload : 'mainWindow' })
-
-	windows.main.on('focus', () => {
-		windows.main.webContents.send('fromMain_clearTooltips')
-	})
 	
 	windows.main.on('closed',   () => {
 		windows.main = null
@@ -963,7 +963,7 @@ ipcMain.on('toMain_langList_change', (event, lang) => {
 
 	Object.keys(windows).forEach((thisWindow) => {
 		if ( windows[thisWindow] !== null ) {
-			windows[thisWindow].webContents.send('fromMain_l10n_refresh')
+			windows[thisWindow].webContents.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 		}
 	})
 })
@@ -976,6 +976,8 @@ ipcMain.on('toMain_getText_sync', (event, text) => {
 	event.returnValue = myTranslator.syncStringLookup(text)
 })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
+	event.sender.send('fromMain_getText_return', ['__currentLocale__', myTranslator.currentLocale])
+
 	l10nSet.forEach((l10nEntry) => {
 		if ( l10nEntry === 'app_version' ) {
 			event.sender.send('fromMain_getText_return', [l10nEntry, app.getVersion()])
@@ -1273,7 +1275,7 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 		maCache.store = localStore
 
 		loadingWindow_hide(1500)
-		event.sender.send('fromMain_l10n_refresh')
+		event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 	}, 1500)
 })
 ipcMain.on('toMain_setPrefFile', (event) => {
@@ -1599,7 +1601,7 @@ ipcMain.on('toMain_versionResolve',  (event, shortName) => {
 
 
 /** Utility & Convenience Functions */
-ipcMain.on('toMain_closeSubWindow', (event, thisWin) => { windows[thisWin].close() })
+ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
 
 
 function sendModList(extraArgs = {}, eventName = 'fromMain_modList', toWindow = 'main', closeLoader = true) {

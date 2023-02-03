@@ -6,6 +6,8 @@
 
 // FSG Mod Assist Utilities (client side)
 
+/* global l10n, bootstrap */
+
 const getText = (text) => `<l10n name="${text}"></l10n>`
 
 const fsgUtil = {
@@ -125,4 +127,85 @@ const fsgUtil = {
 		depend   : 'warning',
 	},
 	badge : (color, name, fullName = false) => `<span class="badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name.toLowerCase()]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
+	makeCollectionCheckBox : ( { margin = 'ms-2', id = null, name = null, folder = null  } = {}) => {
+		return `<div class="form-check form-switch mb-2">
+			<input class="form-check-input" type="checkbox" id="${id}">
+			<label class="${margin} form-check-label row" for="${id}"><div class="col-3">${name}</div><div class="col-9"><small>${folder}</small></div></label>
+		</div>`
+	},
+	arrayToTableRow : (items) => {
+		if ( typeof items === 'string' ) {
+			return `<tr><td>${items}</td></tr>`
+		}
+
+		const itemsHTML = items.map((item) => `<td>${item}</td>`)
+		return `<tr>${itemsHTML.join('')}</tr>`
+	},
+	setTextOrHide : ( id, content, test ) => {
+		if ( test === null || test === '' ) {
+			fsgUtil.byId(id).classList.add('d-none')
+		} else {
+			fsgUtil.byId(id).innerHTML = content
+		}
+	},
+	clearTooltips : () => {
+		fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
+	},
 }
+
+/*  __ ____   ______        
+   |  |_   | |      |.-----.
+   |  |_|  |_|  --  ||     |
+   |__|______|______||__|__| */
+
+function processL10N()          { clientGetL10NEntries() }
+
+function clientGetL10NEntries() {
+	const l10nSendItems = new Set()
+
+	fsgUtil.query('l10n').forEach((thisL10nItem) => {
+		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
+	})
+
+	l10n.getText_send(l10nSendItems)
+}
+
+window.l10n.receive('fromMain_getText_return', (data) => {
+	if ( data[0] === '__currentLocale__'  ) {
+		document.body.setAttribute('data-i18n', data[1])
+	} else {
+		fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
+	}
+})
+
+window.l10n.receive('fromMain_getText_return_title', (data) => {
+	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
+
+		let thisTitle = item.closest('button')
+		thisTitle ??= item.closest('span')
+		thisTitle ??= item.closest('label')
+		if ( thisTitle !== null ) {
+			thisTitle.title = data[1]
+			new bootstrap.Tooltip(thisTitle)
+		}
+	})
+})
+
+window.l10n.receive('fromMain_l10n_refresh', (newLang) => {
+	document.body.setAttribute('data-i18n', newLang)
+	processL10N()
+})
+
+document.addEventListener('keydown', (event) => {
+	const evt = event || window.event
+	if (evt.code === 'Escape' && ! document.location.href.includes('main.html') ) {
+		window.win_ops.closeWindow()
+	}
+})
+
+window.addEventListener('error', (ErrorEvent) => {
+	window.log.warning(ErrorEvent.message, ErrorEvent.filename)
+})
+
+window?.win_ops?.receive('fromMain_clearTooltips', fsgUtil.clearTooltips)
+window.addEventListener('click', fsgUtil.clearTooltips)

@@ -38,12 +38,27 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow', 'version') },
 		openVersionResolve : (shortName) => { ipcRenderer.send('toMain_versionResolve', shortName)},
 		refreshList        : () => { ipcRenderer.send('toMain_refreshVersions') },
 		receive            : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modList',
+			]
+		
+			if ( validChannels.includes( channel ) ) {
+				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+			}
+		},
+	}
+)
+
+contextBridge.exposeInMainWorld(
+	'win_ops', {
+		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow') },
+		receive            : ( channel, func ) => {
+			const validChannels = [
+				'fromMain_clearTooltips',
+				'fromMain_themeSetting',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

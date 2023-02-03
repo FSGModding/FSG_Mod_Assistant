@@ -6,35 +6,7 @@
 
 // Version window UI
 
-/* global l10n, fsgUtil, bootstrap, getText */
-
-
-/*  __ ____   ______        
-   |  |_   | |      |.-----.
-   |  |_|  |_|  --  ||     |
-   |__|______|______||__|__| */
-
-function processL10N()          { clientGetL10NEntries() }
-function clientGetL10NEntries() {
-	const l10nSendItems = new Set()
-
-	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
-	})
-
-	l10n.getText_send(l10nSendItems)
-}
-
-window.l10n.receive('fromMain_getText_return', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
-})
-window.l10n.receive('fromMain_getText_return_title', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
-		item.closest('span').title = data[1]
-		new bootstrap.Tooltip(item.closest('span'))
-	})
-})
-window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
+/* global fsgUtil, processL10N, getText */
 
 
 window.mods.receive('fromMain_modList', (modCollect) => {

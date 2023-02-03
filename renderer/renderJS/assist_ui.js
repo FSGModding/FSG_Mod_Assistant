@@ -6,44 +6,7 @@
 
 // Main Window UI
 
-/* global l10n, fsgUtil, bootstrap, select_lib, getText */
-
-
-/*  __ ____   ______        
-   |  |_   | |      |.-----.
-   |  |_|  |_|  --  ||     |
-   |__|______|______||__|__| */
-
-function processL10N()          { clientGetL10NEntries() }
-function clientGetL10NEntries() {
-	const l10nSendItems = new Set()
-
-	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
-	})
-
-	l10n.getText_send(l10nSendItems)
-}
-
-window.l10n.receive('fromMain_getText_return', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
-})
-window.l10n.receive('fromMain_getText_return_title', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
-		const buttonItem = item.closest('button')
-		if ( buttonItem !== null ) {
-			buttonItem.title = data[1]
-			new bootstrap.Tooltip(buttonItem)
-		} else {
-			item.parentElement.title = data[1]
-			new bootstrap.Tooltip(item.parentElement)
-		}
-	})
-})
-window.l10n.receive('fromMain_l10n_refresh', () => {
-	fsgUtil.byId('lang-style-div').setAttribute('class', window.l10n.getText_sync('language_code'))
-	processL10N()
-})
+/* global fsgUtil, bootstrap, select_lib, getText */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -472,11 +435,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	dragTarget.addEventListener('dragover',  clientDragOver )
 	dragTarget.addEventListener('drop',      clientDragDrop )
 })
-
-function clearTooltips() { fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() }) }
-
-window.mods.receive('fromMain_clearTooltips', clearTooltips)
-window.addEventListener('click', clearTooltips )
 
 function clientDragOut(e) {
 	e.preventDefault()

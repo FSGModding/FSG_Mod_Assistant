@@ -38,11 +38,26 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		closeWindow  : ( ) => { ipcRenderer.send('toMain_closeSubWindow', 'find') },
 		rightClick   : ( thisMod ) => { ipcRenderer.send('toMain_findContextMenu', thisMod )},
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modRecords',
+			]
+		
+			if ( validChannels.includes( channel ) ) {
+				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+			}
+		},
+	}
+)
+
+contextBridge.exposeInMainWorld(
+	'win_ops', {
+		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow') },
+		receive            : ( channel, func ) => {
+			const validChannels = [
+				'fromMain_clearTooltips',
+				'fromMain_themeSetting',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

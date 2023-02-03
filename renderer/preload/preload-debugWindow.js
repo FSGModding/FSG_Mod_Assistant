@@ -53,6 +53,22 @@ contextBridge.exposeInMainWorld(
 	}
 )
 
+contextBridge.exposeInMainWorld(
+	'win_ops', {
+		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow') },
+		receive            : ( channel, func ) => {
+			const validChannels = [
+				'fromMain_clearTooltips',
+				'fromMain_themeSetting',
+			]
+		
+			if ( validChannels.includes( channel ) ) {
+				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+			}
+		},
+	}
+)
+
 window.addEventListener('DOMContentLoaded', () => {
 	setInterval(() => {
 		ipcRenderer.send('toMain_getDebugLog')

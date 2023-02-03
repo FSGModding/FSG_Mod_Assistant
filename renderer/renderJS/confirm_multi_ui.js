@@ -6,31 +6,16 @@
 
 // copy/move confirm UI
 
-/* global l10n, fsgUtil */
-
-
-/*  __ ____   ______        
-   |  |_   | |      |.-----.
-   |  |_|  |_|  --  ||     |
-   |__|______|______||__|__| */
-
-function processL10N()          { clientGetL10NEntries() }
-function clientGetL10NEntries() {
-	const l10nSendItems = new Set()
-
-	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
-	})
-
-	l10n.getText_send(l10nSendItems)
-}
-
-window.l10n.receive('fromMain_getText_return', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
-})
-window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
+/* global processL10N, fsgUtil */
 
 let lastSourceMods = null
+
+window.mods.receive('fromMain_subWindowSelectAll', () => {
+	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = true })
+})
+window.mods.receive('fromMain_subWindowSelectNone', () => {
+	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = false })
+})
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
 	lastSourceMods = modCollect.opts.sourceFiles
@@ -39,15 +24,16 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	const confRows   = []
 
 	modCollect.opts.destinations.forEach((collectKey) => {
-		destChecks.push(makeCheck(
-			collectKey,
-			modCollect.collectionToName[collectKey],
-			modCollect.collectionToFolderRelative[collectKey]
-		))
+		destChecks.push(fsgUtil.makeCollectionCheckBox({
+			id     : collectKey,
+			name   : modCollect.collectionToName[collectKey],
+			folder : modCollect.collectionToFolderRelative[collectKey],
+		}))
 	})
 
 	modCollect.opts.sourceFiles.forEach((source) => {
-		confRows.push(makeRow(source))
+		console.log(source)
+		confRows.push(fsgUtil.arrayToTableRow([source.shortName, source.title]))
 	})
 
 	fsgUtil.byId('dest_list').innerHTML    = destChecks.join('')
@@ -55,14 +41,6 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 
 	processL10N()
 })
-
-const makeRow = (row) => `<tr><td>${row.shortName}</td><td>${row.title}</td></tr>`
-
-const makeCheck = (id, name, dir) => `<div class="form-check form-switch mb-2">
-		<input class="form-check-input" type="checkbox" id="${id}">
-		<label class="ms-2 form-check-label row" for="${id}"><div class="col-3">${name}</div><div class="col-9"><small>${dir}</small></div></label>
-	</div>`
-
 
 function clientDoCopy() {
 	const realDestinations = fsgUtil.query(':checked')

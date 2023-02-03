@@ -18,15 +18,6 @@
 		::-webkit-scrollbar { display: none; }
 		#badges>span { margin-left: 3px; }
 	</style>
-	<script type="text/javascript">
-		document.onkeydown = function(evt) {
-			evt = evt || window.event
-			if (evt.keyCode == 27) { window.mods.closeWindow() }
-		}
-		window.onerror = function (message, file, line, col, error) {
-			window.log.debug(error.message, 'detail'); return false
-		}
-	</script>
 </head>
 <body>
 	<div class="container-fluid px-1 user-select-none">

@@ -13,15 +13,6 @@
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/confirm_multi_ui.js"></script>
 	<style> ::-webkit-scrollbar { display: none; } </style>
-	<script type="text/javascript">
-		document.onkeydown = function(evt) {
-			evt = evt || window.event
-			if (evt.keyCode == 27) { window.mods.closeWindow() }
-		}
-		window.onerror = function (message, file, line, col, error) {
-			window.log.debug(error.message, 'multi-copy'); return false
-		}
-	</script>
 </head>
 <body>
 	

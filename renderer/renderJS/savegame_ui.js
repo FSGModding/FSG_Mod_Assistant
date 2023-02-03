@@ -6,13 +6,8 @@
 
 // Detail window UI
 
-/* global l10n, fsgUtil, bootstrap, getText */
+/* global fsgUtil, processL10N, getText */
 
-
-/*  __ ____   ______        
-   |  |_   | |      |.-----.
-   |  |_|  |_|  --  ||     |
-   |__|______|______||__|__| */
 
 let thisCollection = null
 const selectList = {
@@ -32,34 +27,6 @@ const selectCount = {
 	nohub      : 0,
 	active     : 0,
 }
-
-function processL10N()          { clientGetL10NEntries() }
-function clientGetL10NEntries() {
-	const l10nSendItems = new Set()
-
-	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
-	})
-
-	l10n.getText_send(l10nSendItems)
-}
-
-window.l10n.receive('fromMain_getText_return', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
-})
-window.l10n.receive('fromMain_getText_return_title', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
-		let thisTitle = item.closest('span')
-		thisTitle ??= item.closest('label')
-		if ( thisTitle === null ) {
-			thisTitle = item.closest('button')
-		}
-		thisTitle.title = data[1]
-		new bootstrap.Tooltip(thisTitle)
-	})
-})
-window.l10n.receive('fromMain_l10n_refresh', () => { processL10N() })
-
 
 window.mods.receive('fromMain_collectionName', (modCollect) => {
 	thisCollection = modCollect.opts.collectKey
@@ -303,7 +270,3 @@ function clientChangeFilter() {
 		})
 	}
 }
-
-window.addEventListener('click', () => {
-	fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
-})
