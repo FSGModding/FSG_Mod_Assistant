@@ -14,8 +14,7 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 
 ## Detailed Documentation
 
-- [Main Screen Overview](main.html)
-
+- [Main Interface Overview](main.html)
 - [Filter Tools](filter.html)
 - [Collection Area](mods.html)
 - [Collection Management](collections.html)
@@ -27,6 +26,7 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 - [Search All Collections](search.html)
 - [Detail Window](moddetail.html)
 - [User Preferences](preferences.html)
+- [Game Log Viewer](gamelog.html)
 - [Frequently Asked Questions](faq.html)
 
 ## What is a Broken Mod?
@@ -59,6 +59,10 @@ Builds are available for the following:
 
 - __win x64 Installer__ : with auto updating
 - __win x64 Portable__ : no need to install, but no auto updating
+
+### Install Video
+
+[![Install Video](https://markdown-videos.deta.dev/youtube/elzFhp2EBEs)](https://youtu.be/elzFhp2EBEs)
 
 ### Updating
 
