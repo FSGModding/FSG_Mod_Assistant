@@ -22,11 +22,10 @@ These dropdowns allow you to filter mods by tag
 
 For more information about what the tags mean, see the [Collection Area](mods.html) section.
 
-### Hide Tags 
+### Hide Tags
 
 This will hide mods that have **any** of the selected tags.
 
 ### Limit to Tags
 
 This will hide mods that do not have **all** of the selected tags.
-
