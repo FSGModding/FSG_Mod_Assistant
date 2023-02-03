@@ -15,6 +15,7 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 ## Detailed Documentation
 
 - [Main Screen Overview](main.html)
+
 - [Filter Tools](filter.html)
 - [Collection Area](mods.html)
 - [Collection Management](collections.html)
