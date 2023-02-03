@@ -310,5 +310,10 @@
 	"drop_add_files": "Kopiowanie plików do folderu kolekcji",
 	"confirm_import_title": "Import Files",
 	"confirm_import_blurb": "Aby zaimportować pliki, wybierz poniżej kolekcję (kolekcje) docelową - istniejące pliki zostaną nadpisane",
-	"min_tray_button__title": "Minimalizuj do zasobnika"
+	"min_tray_button__title": "Minimalizuj do zasobnika",
+	"theme_name_system": "Postępuj zgodnie z ustawieniami systemu",
+	"theme_name_light": "Światło",
+	"theme_name_dark": "Mrok",
+	"user_pref_title_theme_color": "Kolor Temat",
+	"user_pref_blurb_theme_color": "Ustaw motyw kolorystyczny, którego wolisz, aby Mod Assistant używał, lub podążaj za preferencjami systemu"
 }

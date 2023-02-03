@@ -6,7 +6,7 @@
 
 // Main Program
 
-const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, screen, clipboard, nativeImage } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, screen, clipboard, nativeImage, nativeTheme } = require('electron')
 
 const isPortable = typeof process.env.PORTABLE_EXECUTABLE_DIR !== 'undefined'
 const gotTheLock = app.requestSingleInstanceLock()
@@ -126,6 +126,16 @@ let pathBestGuess = userHome
 let foundPath     = false
 let foundGame     = ''
 
+const themeColors = {
+	'dark' : {
+		background : '#2b3035',
+		font       : '#6d757a',
+	},
+	'light' : {
+		background : '#f8f9fa',
+		font       : '#7b8fa0',
+	},
+}
 let gameLogFileWatch  = null
 let gameLogFileBounce = false
 
@@ -186,6 +196,7 @@ const settingsSchema = {
 	rel_notes         : { type : 'string', default : '0.0.0' },
 	game_args         : { type : 'string', default : '' },
 	led_active        : { type : 'boolean', default : true },
+	color_theme       : { type : 'string', default : 'dark', enum : ['dark', 'light', 'system']},
 	wins              : { type : 'object', default : {}, properties : {
 		load          : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
 		splash        : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
@@ -265,6 +276,10 @@ if ( ! gameSettings.endsWith('.xml') ) {
 	gameSettings = path.join(pathBestGuess, 'gameSettings.xml')
 	mcStore.set('game_settings', gameSettings)
 }
+
+
+let currentColorTheme = mcStore.get('color_theme')
+if ( currentColorTheme === 'system' ) { currentColorTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light' }
 
 let gameSettingsXML = null
 let gameXML         = null
@@ -368,8 +383,8 @@ function createSubWindow(winName, { skipTaskbar = false, noSelect = true, show =
 		autoHideMenuBar : true,
 		titleBarStyle   : winName === 'main' ? 'hidden' : 'default',
 		titleBarOverlay : {
-			color       : '#1f2021',
-			symbolColor : '#ffffff',
+			color       : themeColors[currentColorTheme].background,
+			symbolColor : themeColors[currentColorTheme].font,
 			height      : 25,
 		},
 		webPreferences  : {
@@ -464,6 +479,7 @@ function createMainWindow () {
 		const showCount = setInterval(() => {
 			if ( windows.main.isVisible() ) {
 				clearInterval(showCount)
+				windows.main.webContents.send('fromMain_themeSetting', currentColorTheme)
 				if ( mcStore.has('modFolders') ) {
 					modFolders   = new Set(mcStore.get('modFolders'))
 					foldersDirty = true
@@ -512,6 +528,7 @@ function createNamedWindow(winName, windowArgs) {
 	windows[thisWindow] = createSubWindow(subWinDef.winName, subWinDef.subWindowArgs)
 
 	windows[thisWindow].webContents.on('did-finish-load', async () => {
+		windows[thisWindow].webContents.send('fromMain_themeSetting', currentColorTheme)
 		subWinDef.callback(windowArgs)
 
 		if ( devDebug && subWindowDev.has(subWinDef.winName) ) {
@@ -967,10 +984,47 @@ ipcMain.on('toMain_langList_change', (event, lang) => {
 		}
 	})
 })
+ipcMain.on('toMain_themeList_change', (event, theme) => {
+	mcStore.set('color_theme', theme)
+
+	currentColorTheme = ( theme === 'system' ) ? (nativeTheme.shouldUseDarkColors ? 'dark' : 'light') : theme
+
+	themeUpdater()
+})
+nativeTheme.on('updated', () => {
+	const savedTheme = mcStore.get('color_theme')
+	console.log(savedTheme)
+
+	if ( savedTheme === 'system' ) {
+		currentColorTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
+		themeUpdater()
+	}
+})
+function themeUpdater() {
+	Object.keys(windows).forEach((thisWinKey) => {
+		if ( windows[thisWinKey] !== null && windows[thisWinKey].isVisible() ) {
+			windows[thisWinKey].webContents.send('fromMain_themeSetting', currentColorTheme)
+			windows[thisWinKey].setTitleBarOverlay({
+				color       : themeColors[currentColorTheme].background,
+				symbolColor : themeColors[currentColorTheme].font,
+			})
+		}
+	})
+}
+
 ipcMain.on('toMain_langList_send',   (event) => {
 	myTranslator.getLangList().then((langList) => {
 		event.sender.send('fromMain_langList_return', langList, myTranslator.deferCurrentLocale())
 	})
+})
+ipcMain.on('toMain_themeList_send',   (event) => {
+	const themeOpts = [
+		['system', myTranslator.syncStringLookup('theme_name_system')],
+		['light', myTranslator.syncStringLookup('theme_name_light')],
+		['dark', myTranslator.syncStringLookup('theme_name_dark')],
+	]
+	
+	event.sender.send('fromMain_themeList_return', themeOpts, currentColorTheme)
 })
 ipcMain.on('toMain_getText_sync', (event, text) => {
 	event.returnValue = myTranslator.syncStringLookup(text)

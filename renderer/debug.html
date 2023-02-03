@@ -14,8 +14,7 @@
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/debug_ui.js"></script>
 </head>
-<body>
-	
+<body data-bs-theme="dark">
 	<div class="container-fluid px-1 user-select-none">
 		<div class="row w-100 pt-2 sticky-top bg-body border-bottom">
 			<div class="col-8">
@@ -24,7 +23,7 @@
 			<div class="col-4 text-end">
 				<div class="btn-group w-100 ms-auto me-1">
 					<button data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="debug.openDebugLogFolder()" class="btn btn-success btn-sm"><i class="bi bi-save"></i></button>
-					<button data-bs-toggle="tooltip" title="Refresh" type="button" onclick="debug.getDebugLogContents()" class="btn btn-dark btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
+					<button data-bs-toggle="tooltip" title="Refresh" type="button" onclick="debug.getDebugLogContents()" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
 				</div>
 			</div>
 		</div>

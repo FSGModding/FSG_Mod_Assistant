@@ -82,11 +82,11 @@ function compareVersion(latestVersion, thisVersion, collectKey) {
 
 function makeLine(mod, version) {
 	if ( mod.version === version.vString ) { //same
-		return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-dark">
+		return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-success">
 			<div class="ms-2 me-auto">
 				<div class="fw-bold">${mod.modRecord.fileDetail.shortName}</div>
-				<div class="small">${fsgUtil.escapeSpecial(mod.modRecord.l10n.title)}</div>
-				<div class="text-black small ps-3">${getText('destination')} ${mod.collectName} :: ${getText('version_same')}</div>
+				<div class="small text-body-tertiary">${fsgUtil.escapeSpecial(mod.modRecord.l10n.title)}</div>
+				<div class="small text-body-tertiary ps-3">${getText('destination')} ${mod.collectName} :: ${getText('version_same')}</div>
 			</div>
 		</li>`
 	}
@@ -94,8 +94,8 @@ function makeLine(mod, version) {
 	return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-danger">
 		<div class="ms-2 me-auto">
 			<div class="fw-bold">${mod.modRecord.fileDetail.shortName} <span class="small">${mod.version}</span></div>
-			<div class="small">${fsgUtil.escapeSpecial(mod.modRecord.l10n.title)}</div>
-			<div class="text-black small ps-3">${getText('destination')} ${mod.collectName}</div>
+			<div class="small text-body-tertiary">${fsgUtil.escapeSpecial(mod.modRecord.l10n.title)}</div>
+			<div class="small text-body-emphasis ps-3">${getText('destination')} ${mod.collectName}</div>
 		</div>
 		<input class="form-check-input form-check me-1" type="checkbox" name="modToCopy[]" value="${mod.collectKey}">
 	</li>`

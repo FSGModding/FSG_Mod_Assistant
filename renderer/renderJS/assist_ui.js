@@ -6,7 +6,7 @@
 
 // Main Window UI
 
-/* global fsgUtil, bootstrap, select_lib, getText */
+/* global processL10N, fsgUtil, bootstrap, select_lib, getText */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -284,10 +284,10 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, admi
 		<div class="d-inline-block">${name}${tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : ''}</div>
 	</td>
 	<td class="align-middle text-end">
-		${ adminPass !== null ? `<button class="btn btn-secondary btn-sm me-2" onclick="window.mods.popClipboard('${adminPass}')">${getText('admin_pass_button')}</button>`: ''}
-		${ website !== null ? `<a target="_blank" class="btn btn-secondary btn-sm me-2" href="${website}">${getText('admin_button')}</a>`: ''}
-		${ dlEnabled ? `<button class="btn btn-secondary btn-sm me-2" onclick="window.mods.download('${id}')">${getText('download_button')}</button>`: ''}
-		<button class="btn btn-dark btn-sm me-2" onclick="window.mods.exportList('${id}')">${getText('export_button')}</button>
+	${ dlEnabled ? `<button class="btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('${id}')">${getText('download_button')}</button>`: ''}
+		${ adminPass !== null ? `<button class="btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('${adminPass}')">${getText('admin_pass_button')}</button>`: ''}
+		${ website !== null ? `<a target="_blank" class="btn btn-outline-info btn-sm me-2" href="${website}">${getText('admin_button')}</a>`: ''}
+		<button class="btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('${id}')">${getText('export_button')}</button>
 		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('${id}')">${getText('notes_button')}</button>
 		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')">${getText('check_save')}</button>
 	</td>

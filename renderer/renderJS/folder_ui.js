@@ -40,7 +40,7 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 })
 
 function moveBtn(icon, num, dest, disable) {
-	return `<button onclick="clientMoveItem(${num}, ${dest})" class="btn btn-sm btn-outline-light ${disable?'disabled':''}">${icon}</button>`
+	return `<button onclick="clientMoveItem(${num}, ${dest})" class="btn btn-sm btn-outline-secondary ${disable?'disabled':''}">${icon}</button>`
 }
 
 function upBtn(num, disable) {

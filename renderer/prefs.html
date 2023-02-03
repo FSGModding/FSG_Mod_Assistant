@@ -8,8 +8,7 @@
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/pref_ui.js"></script>
 </head>
-<body>
-	
+<body data-bs-theme="dark">
 	<div class="container-fluid px-1 user-select-none">
 		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
 			<div class="row w-100">
@@ -130,13 +129,25 @@
 
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
 			<div class="col-8">
+				<h4><l10n name="user_pref_title_theme_color"></l10n></h4>
+				<p class="ps-2"><l10n name="user_pref_blurb_theme_color"></l10n></p>
+			</div>
+			<div class="col-4">
+				<div class="mt-4">
+					<select onchange="clientChangeTheme()" class="form-select" name="theme_select" id="theme_select"></select>
+				</div>
+			</div>
+		</div>
+
+		<div class="row mx-4 mb-3 pb-2 border-bottom">
+			<div class="col-8">
 				<h5><l10n name="user_pref_title_lang"></l10n></h5>
 				<p class="ps-2"><l10n name="user_pref_blurb_lang"></l10n></p>
 				
 			</div>
 			<div class="col-4">
 				<div class="mt-4">
-					<select onchange="clientChangeL10N()" class="form-select" id="language_select"></select>
+					<select onchange="clientChangeL10N()" class="form-select" name="language_select" id="language_select"></select>
 				</div>
 			</div>
 			<div class="col-12">

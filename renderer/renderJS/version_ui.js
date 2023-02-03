@@ -70,6 +70,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 function makeLine(type, realName, shortName, collections, icon) {
 	const color = ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger'
 	const l10n  = ( type === 'same' ) ? 'version_same' : 'version_diff'
+	const coll  = ( type === 'same' ) ? '' : 'text-body-emphasis'
 	const click = ( type === 'diff' ) ? `oncontextmenu="window.mods.openVersionResolve('${shortName}')" onDblClick="window.mods.openVersionResolve('${shortName}')"` : ''
 
 	return `<li ${click} class="list-group-item d-flex justify-content-between align-items-start ${color}">
@@ -80,7 +81,7 @@ function makeLine(type, realName, shortName, collections, icon) {
 			<div class="col-8">
 				<div class="fw-bold">${shortName}</div>
 				<div class="small">${realName}</div>
-				<div class="text-black small ps-3">${getText('version_collections')}: ${fsgUtil.escapeSpecial(collections.join(', '))}</div>
+				<div class="${coll} small ps-3">${getText('version_collections')}: ${fsgUtil.escapeSpecial(collections.join(', '))}</div>
 			</div>
 			<div class="col-2">
 				${fsgUtil.badge('dark', l10n, true)}

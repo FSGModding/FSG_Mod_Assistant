@@ -11,7 +11,7 @@ function getKeyMap(key, locale) {
 	thisKey ??= localKeys?.[locale]?.[key]
 	thisKey ??= localKeys.en[key]
 
-	return `<span class="btn disabled btn-sm btn-outline-light small">${thisKey}</span>`
+	return `<span class="btn disabled btn-sm btn-outline-secondary small">${thisKey}</span>`
 }
 const keyMap = {
 	'AXIS_X+'                 : '⤱ X+',

@@ -310,5 +310,10 @@
 	"drop_add_files": "Copier les fichiers dans le dossier de collection",
 	"confirm_import_title": "Importer des fichiers",
 	"confirm_import_blurb": "Pour importer des fichiers, sélectionnez les collections de destination ci-dessous - les fichiers existants seront remplacés",
-	"min_tray_button__title": "Réduire au plateau"
+	"min_tray_button__title": "Réduire au plateau",
+	"theme_name_system": "Suivre le réglage du système",
+	"theme_name_light": "Lumière",
+	"theme_name_dark": "Dark",
+	"user_pref_title_theme_color": "Thème de couleur",
+	"user_pref_blurb_theme_color": "Définissez le thème de couleurs que vous préférez que Mod Assistant utilise, ou suivez la préférence du système"
 }

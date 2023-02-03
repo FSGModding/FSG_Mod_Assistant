@@ -9,7 +9,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/select_lib_ui.js"></script>
@@ -21,10 +23,6 @@
 		}
 	</script>
 	<style>
-		.overflow-custom {
-			overflow-y: scroll !important;
-			overflow-x: auto !important;
-		}
 		.overflow-custom2 {
 			overflow-y: scroll !important;
 			overflow-x: hidden !important;
@@ -53,56 +51,9 @@
 		}
 		.scroll_col, .scroll_mod { width: 6px; }
 
-		td.folder-icon:not(.collapsed)::after {
-			content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' viewBox='0 0 320 512'%3E%3Cpath style='fill:white;' d='M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z'/%3E%3C/svg%3E");
-			padding-left: 7px;
-			vertical-align: text-top;
-		}
-		td.folder-icon.collapsed::after {
-			content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='20' viewBox='0 0 256 512'%3E%3Cpath style='fill:white;' d='M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z'/%3E%3C/svg%3E");
-			padding-left: 3px;
-			vertical-align: text-top;
-		}td.folder-icon {
-			width: 81px;
-			vertical-align: middle;
-		}
-
-		td.mod-table-folder-details .badge {
-			font-size: 50%;
-			vertical-align: middle;
-		}
-		
-		td.folder-name { vertical-align: middle; }
-
-		tr.mod-row td:first-child { width: 2px; }
-		tr.mod-row td:first-child input { display: none; }
-		tr.mod-list-row td:first-child { width: 2px; }
-		tr.mod-list-row td:first-child input { display: none; }
-
-		.issue_badges {
-			position: relative;
-			float: right;
-			top: -1.2em;
-		}
-		.issue_badges>span {
-			margin-left: 3px;
-		}
-
 		.operation_button {
 			height: 13.5%;
 			line-height: 1.1em
-		}
-		.btn-launch:focus-visible { box-shadow: none!important;}
-		.btn-win_ui {
-			color: #ffffff;
-			height: 25px;
-			padding-top: 0px;
-			padding-bottom: 0px;
-			font-size: 13px;
-		}
-		.btn-win_ui:hover {
-			background-color: #4b4d5a;
-			color: #ffffff;
 		}
 
 		#display_mod_container { margin-top: 135px; }
@@ -125,9 +76,8 @@
 	</style>
 	
 </head>
-<body class="d-flex flex-column h-100 overflow-custom2" id="drag_target">
+<body class="d-flex flex-column h-100 overflow-custom2" id="drag_target" data-bs-theme="dark">
 	<div id="scroll-bar-fake" class="position-fixed d-flex flex-column">
-
 	</div>
 	<div id="lang-style-div">
 	<main class="flex-shrink-0">
@@ -140,12 +90,12 @@
 					</h2>
 				</div>
 				<div class="col-3 pt-2 pe-4">
-					<button onclick="clientOpenFarmSim()" class="btn btn-info w-100 btn-launch"  id="launch_fs22">
+					<button onclick="clientOpenFarmSim()" class="btn btn-info w-100 btn-launch bg-gradient text-white fw-semibold"  id="launch_fs22">
 						<img src="img/fsicon.png" style="height: 24px" class="float-start img-fluid"/>
 						<l10n name="launch_fs22"></l10n>
 					</button>
 				</div>
-				<div class="m-0 p-0 rounded-bottom" style="background-color: #1f2021; height: 25px; width: 290px!important;">
+				<div class="m-0 p-0 rounded-bottom btn-group-win_ui">
 					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openGameLog()"><l10n name="button_gamelog"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openPreferences()" id="open_prefs"><l10n name="preferences_button"></l10n></button>
@@ -185,41 +135,41 @@
 					<div class="dropdown">
 						<button type="button" class="btn btn-sm btn-primary pe-3 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
 							<l10n name="filter_out_badges"></l10n>
-							<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-white text-black" id="tag_filter_out_count">0</span>
+							<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-body-secondary shadow text-body" id="tag_filter_out_count">0</span>
 						</button>
 						<div class="dropdown-menu px-0 py-0 mt-1">
 							<div id="filter_out__tags" class="btn-group-vertical btn-group-sm w-100">
 								<button class="btn btn-outline-warning text-center" onclick="select_lib.out_tag_reset()"><l10n name="filter_tag_reset"></l10n></button>
 
 								<input type="checkbox" id="tag_filter_out__broken" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__broken"><l10n name="mod_badge_broken"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__broken"><l10n name="mod_badge_broken"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__folder" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__folder"><l10n name="mod_badge_folder"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__folder"><l10n name="mod_badge_folder"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__new" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__new"><l10n name="mod_badge_new"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__new"><l10n name="mod_badge_new"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__nomp" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__nomp"><l10n name="mod_badge_nomp"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__nomp"><l10n name="mod_badge_nomp"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__notmod" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__notmod"><l10n name="mod_badge_notmod"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__notmod"><l10n name="mod_badge_notmod"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__pconly" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__pconly"><l10n name="mod_badge_pconly"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__pconly"><l10n name="mod_badge_pconly"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__problem" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__problem"><l10n name="mod_badge_problem"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__problem"><l10n name="mod_badge_problem"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__recent" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__recent"><l10n name="mod_badge_recent"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__recent"><l10n name="mod_badge_recent"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__update" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__update"><l10n name="mod_badge_update"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__update"><l10n name="mod_badge_update"></l10n></label>
 
 								<input type="checkbox" id="tag_filter_out__nonmh" onchange="select_lib.filter()" class="btn-check filter_out_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter_out__nonmh"><l10n name="mod_badge_nonmh"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter_out__nonmh"><l10n name="mod_badge_nonmh"></l10n></label>
 							</div>
 						</div>
 					</div>
@@ -230,52 +180,52 @@
 					<div class="dropdown">
 						<button type="button" class="btn btn-sm btn-primary pe-3 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
 							<l10n name="filter_badges"></l10n>
-							<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-white text-black" id="tag_filter_count">0</span>
+							<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-body-secondary shadow text-body" id="tag_filter_count">0</span>
 						</button>
 						<div class="dropdown-menu px-0 py-0 mt-1">
 							<div id="filter__tags" class="btn-group-vertical btn-group-sm w-100">
 								<button class="btn btn-outline-warning text-center" onclick="select_lib.tag_reset()"><l10n name="filter_tag_reset"></l10n></button>
 
 								<input type="checkbox" id="tag_filter__broken" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__broken"><l10n name="mod_badge_broken"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__broken"><l10n name="mod_badge_broken"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__folder" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__folder"><l10n name="mod_badge_folder"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__folder"><l10n name="mod_badge_folder"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__new" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__new"><l10n name="mod_badge_new"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__new"><l10n name="mod_badge_new"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__nomp" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__nomp"><l10n name="mod_badge_nomp"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__nomp"><l10n name="mod_badge_nomp"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__notmod" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__notmod"><l10n name="mod_badge_notmod"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__notmod"><l10n name="mod_badge_notmod"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__pconly" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__pconly"><l10n name="mod_badge_pconly"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__pconly"><l10n name="mod_badge_pconly"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__problem" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__problem"><l10n name="mod_badge_problem"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__problem"><l10n name="mod_badge_problem"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__recent" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__recent"><l10n name="mod_badge_recent"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__recent"><l10n name="mod_badge_recent"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__update" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__update"><l10n name="mod_badge_update"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__update"><l10n name="mod_badge_update"></l10n></label>
 
 								<input type="checkbox" id="tag_filter__nonmh" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
-								<label class="btn btn-outline-light" for="tag_filter__nonmh"><l10n name="mod_badge_nonmh"></l10n></label>
+								<label class="btn btn-outline-success" for="tag_filter__nonmh"><l10n name="mod_badge_nonmh"></l10n></label>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col col-auto">
 					<div class="btn-group btn-group-sm input-group input-group-sm">
-						<span class="input-group-text border-light border-opacity-25"><l10n name="select_pick"></l10n></span>
-						<button class="btn btn-btn btn-outline-light border-light border-opacity-25" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
-						<button class="btn btn-btn btn-outline-light border-light border-opacity-25" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
-						<button class="btn btn-btn btn-outline-light border-light border-opacity-25" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
-						<span class="input-group-text text-white border-light border-opacity-25" id="select_quantity">0</span>
+						<span class="input-group-text bg-secondary text-light border-secondary border-opacity-25"><l10n name="select_pick"></l10n></span>
+						<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
+						<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
+						<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
+						<span class="input-group-text bg-secondary text-light border-secondary border-opacity-25" id="select_quantity">0</span>
 					</div>
 				</div>
 			</div>
@@ -341,11 +291,11 @@
 					</a>
 				</div>
 				<div class="col-auto align-self-center">
-					<l10n class="text-white-50" name="latest_version_link_blurb"></l10n> <a target="_blank" class="text-white-50 btn btn-sm btn-primary small" href="https://github.com/FSGModding/FSG_Mod_Assistant/releases">github.com</a>
+					<l10n class="text-white-50" name="latest_version_link_blurb"></l10n> <a target="_blank" class="text-white-50 btn btn-vsm btn-primary" href="https://github.com/FSGModding/FSG_Mod_Assistant/releases">github.com</a>
 					&nbsp;&nbsp;
-					<l10n class="text-white-50" name="translate_blurb_tagline"></l10n> <a target="_blank" class="text-white-50 btn btn-sm btn-primary small" href="https://crowdin.com/project/fsg-mod-assistant/">crowdin.com</a>
+					<l10n class="text-white-50" name="translate_blurb_tagline"></l10n> <a target="_blank" class="text-white-50 btn btn-vsm btn-primary" href="https://crowdin.com/project/fsg-mod-assistant/">crowdin.com</a>
 					&nbsp;&nbsp;
-					<a class="text-white-50 btn btn-sm btn-primary small position-relative" id="debugLogButton" style="cursor: pointer" onclick="mods.debugLog()">
+					<a class="text-white-50 btn btn-vsm btn-primary position-relative" id="debugLogButton" style="cursor: pointer" onclick="mods.debugLog()">
 						<l10n name="open_debug_log"></l10n>
 						<span id="debug_danger_bubble" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
 					</a>

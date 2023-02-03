@@ -310,5 +310,10 @@
 	"drop_add_files"                         : "Copy files to collection folder",
 	"confirm_import_title"                   : "Import Files",
 	"confirm_import_blurb"                   : "To import files, select the destination collection(s) below - existing files WILL be overwritten",
-	"min_tray_button__title"                 : "Minimize to tray"
+	"min_tray_button__title"                 : "Minimize to tray",
+	"theme_name_system"                      : "Follow System Setting",
+	"theme_name_light"                       : "Light",
+	"theme_name_dark"                        : "Dark",
+	"user_pref_title_theme_color"            : "Color Theme",
+	"user_pref_blurb_theme_color"            : "Set the color theme you would prefer Mod Assistant to use, or follow the system preference"
 }

@@ -21,13 +21,16 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'l10n', {
-		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
-		langList_change : ( lang )  => { ipcRenderer.send('toMain_langList_change', lang) },
-		langList_send   : ()        => { ipcRenderer.send('toMain_langList_send') },
-		receive         : ( channel, func ) => {
+		getText_send     : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
+		langList_change  : ( lang )  => { ipcRenderer.send('toMain_langList_change', lang) },
+		langList_send    : ()        => { ipcRenderer.send('toMain_langList_send') },
+		themeList_send   : ()        => { ipcRenderer.send('toMain_themeList_send') },
+		themeList_change : ( theme ) => { ipcRenderer.send('toMain_themeList_change', theme) },
+		receive          : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getText_return',
 				'fromMain_langList_return',
+				'fromMain_themeList_return',
 				'fromMain_l10n_refresh'
 			]
 		

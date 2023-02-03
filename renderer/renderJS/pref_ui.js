@@ -10,6 +10,8 @@
 
 window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
 	updatePrefs(allSettings, devControls)
+	window.l10n.langList_send()
+	window.l10n.themeList_send()
 	processL10N()
 })
 
@@ -39,3 +41,7 @@ function clientSetPref(id) {
 		window.mods.setPref(id, formControl.value)
 	}
 }
+
+
+function clientChangeTheme()    { window.l10n.themeList_change(fsgUtil.byId('theme_select').value) }
+function clientChangeL10N()     { window.l10n.langList_change(fsgUtil.byId('language_select').value) }

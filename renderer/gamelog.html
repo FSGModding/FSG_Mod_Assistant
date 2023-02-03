@@ -23,8 +23,7 @@
 		}
 	</style>
 </head>
-<body>
-	
+<body data-bs-theme="dark">
 	<div class="container-fluid px-1 user-select-none">
 		<div class="sticky-top border-bottom bg-body ">
 			<div class="row w-100 pt-2 bg-body border-bottom">
@@ -34,9 +33,9 @@
 				</div>
 				<div class="col-4 text-end">
 				<div class="btn-group w-100 ms-auto me-1">
-					<button data-bs-toggle="tooltip" title="Open new log" type="button" onclick="window.gamelog.changeGameLogFile()" class="btn btn-dark btn-sm"><i class="bi bi-folder2-open"></i></button>
-					<button data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="window.gamelog.openGameLogFolder()" class="btn btn-dark btn-sm"><i class="bi bi-save"></i></button>
-					<button data-bs-toggle="tooltip" title="Refresh Log" type="button" onclick="window.gamelog.getGameLogContents()" class="btn btn-dark btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
+					<button data-bs-toggle="tooltip" title="Open new log" type="button" onclick="window.gamelog.changeGameLogFile()" class="btn btn-secondary btn-sm"><i class="bi bi-folder2-open"></i></button>
+					<button data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="window.gamelog.openGameLogFolder()" class="btn btn-secondary btn-sm"><i class="bi bi-save"></i></button>
+					<button data-bs-toggle="tooltip" title="Refresh Log" type="button" onclick="window.gamelog.getGameLogContents()" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
 					<input type="checkbox" class="btn-check" id="auto_scroll" autocomplete="off">
 					<label data-bs-toggle="tooltip" title="Auto-Scroll to Bottom on change" class="btn btn-outline-success btn-sm border" for="auto_scroll"><i class="bi bi-align-bottom"></i></label>
 				</div>

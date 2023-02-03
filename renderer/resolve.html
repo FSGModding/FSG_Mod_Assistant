@@ -15,7 +15,7 @@
 	<script src="renderJS/resolve_ui.js"></script>
 	<style> ::-webkit-scrollbar { display: none; } </style>
 </head>
-<body>
+<body data-bs-theme="dark">
 	<div class="container-fluid px-1 user-select-none">
 		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
 			<div class="row w-100">
@@ -30,7 +30,7 @@
 			<span class="text-center mt-1 w-100 px-5 d-block"><l10n name="confirm_version_blurb_2"></l10n></span>
 		</div>
 		<div id="modName" class="badge bg-warning mx-auto w-100 d-block shadow rounded-pill py-2">MOD NAME</div>
-		<div class="alert alert-primary mt-2 w-75 mx-auto text-center" role="alert">
+		<div class="alert alert-info mt-2 w-75 mx-auto text-center" role="alert">
 			<l10n name="resolve_version_newest"></l10n> <strong><span id="newVersion"></span></strong>
 		  </div>
 		<div class="list-group mx-2 my-3" id="modSet"></div>

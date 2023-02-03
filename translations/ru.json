@@ -310,5 +310,10 @@
 	"drop_add_files": "Копировать файлы в папку коллекции",
 	"confirm_import_title": "Импорт файлов",
 	"confirm_import_blurb": "Чтобы импортировать файлы, выберите целевую коллекцию (коллекции) ниже — существующие файлы БУДУТ перезаписаны",
-	"min_tray_button__title": "Свернуть в трей"
+	"min_tray_button__title": "Свернуть в трей",
+	"theme_name_system": "Следить за настройками системы",
+	"theme_name_light": "Свет",
+	"theme_name_dark": "Темнота",
+	"user_pref_title_theme_color": "Цветовая тема",
+	"user_pref_blurb_theme_color": "Установите цветовую тему, которую вы предпочитаете использовать в Mod Assistant, или следуйте предпочтениям системы"
 }

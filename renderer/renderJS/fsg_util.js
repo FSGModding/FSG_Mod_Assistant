@@ -151,6 +151,10 @@ const fsgUtil = {
 	clearTooltips : () => {
 		fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
 	},
+	setTheme : (theme) => {
+		document.body.setAttribute('data-bs-theme', theme)
+	},
+
 }
 
 /*  __ ____   ______        
@@ -196,6 +200,20 @@ window.l10n.receive('fromMain_l10n_refresh', (newLang) => {
 	processL10N()
 })
 
+window.l10n.receive('fromMain_langList_return', (listData, selected) => {
+	fsgUtil.byId('language_select').innerHTML = listData.map((x) => {
+		return fsgUtil.buildSelectOpt(x[0], x[1], selected)
+	}).join('')
+})
+
+window.l10n.receive('fromMain_themeList_return', (listData, selected) => {
+	console.log(`theme ${listData}`)
+	fsgUtil.byId('theme_select').innerHTML = listData.map((x) => {
+		return fsgUtil.buildSelectOpt(x[0], x[1], selected)
+	}).join('')
+})
+
+
 document.addEventListener('keydown', (event) => {
 	const evt = event || window.event
 	if (evt.code === 'Escape' && ! document.location.href.includes('main.html') ) {
@@ -207,5 +225,6 @@ window.addEventListener('error', (ErrorEvent) => {
 	window.log.warning(ErrorEvent.message, ErrorEvent.filename)
 })
 
+window?.win_ops?.receive('fromMain_themeSetting', (theme) => fsgUtil.setTheme(theme))
 window?.win_ops?.receive('fromMain_clearTooltips', fsgUtil.clearTooltips)
 window.addEventListener('click', fsgUtil.clearTooltips)
