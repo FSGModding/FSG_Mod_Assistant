@@ -271,6 +271,11 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 		theseBadges.push('nonmh')
 	}
 
+	if ( theseBadges.includes('keys_bad') && theseBadges.includes('keys_ok') ) {
+		const brokenIdx = theseBadges.indexOf('keys_ok')
+		theseBadges.splice(brokenIdx, brokenIdx !== -1 ? 1 : 0)
+	}
+
 	if ( theseBadges.includes('broken') && theseBadges.includes('notmod') ) {
 		const brokenIdx = theseBadges.indexOf('broken')
 		theseBadges.splice(brokenIdx, brokenIdx !== -1 ? 1 : 0)
