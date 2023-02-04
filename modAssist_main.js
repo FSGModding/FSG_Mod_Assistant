@@ -443,10 +443,6 @@ function createMainWindow () {
 	windows.load.loadFile(path.join(pathRender, 'loading.html'))
 	windows.load.on('close', (event) => { event.preventDefault() })
 
-	windows.load.webContents.on('did-finish-load', () => {
-		if ( devDebug ) { windows.load.webContents.openDevTools() }
-	})
-
 	windows.main = createSubWindow('main', { noSelect : false, show : devDebug, preload : 'mainWindow' })
 	
 	windows.main.on('closed',   () => {
@@ -1852,7 +1848,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		}
 
 		if ( disable === true ) {
-			gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = true
+			gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = false
 			gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ''
 		}
 
