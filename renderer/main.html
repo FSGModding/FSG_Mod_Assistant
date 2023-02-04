@@ -17,9 +17,11 @@
 	<script src="renderJS/select_lib_ui.js"></script>
 	<script src="renderJS/assist_ui.js"></script>
 	<script type="text/javascript">
-		document.onkeydown = function(evt) {
-			evt = evt || window.event
-			if (evt.keyCode == 116) { window.mods.refreshFolders() }
+		document.onkeydown = function(event) {
+			const evt = event || window.event
+			if (evt.code === 'F5' ) { window.mods.refreshFolders() }
+			if (evt.code === 'F1' ) { window.mods.openHelp() }
+
 		}
 	</script>
 	<style>
@@ -90,7 +92,7 @@
 			<div class="row px-3 py-1"><!-- source mods -->
 				<div class="col">
 					<div class="btn-group d-flex h-100" role="group">
-						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-success" onclick="mods.addFolder()"><i class="bi bi-folder-plus"></i> <l10n class="small" name="folder_add"></l10n></button>
+						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-success text-white" onclick="mods.addFolder()"><i class="bi bi-folder-plus"></i> <l10n class="small" name="folder_add"></l10n></button>
 						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><i class="bi bi-folder"></i> <l10n class="small" name="folder_edit"></l10n></button>
 						<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-secondary position-relative" onclick="mods.refreshFolders()"><i class="bi bi-arrow-repeat"></i> <l10n class="small" name="folder_refresh"></l10n><span id="dirty_folders" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span></button>
 					</div>
@@ -98,18 +100,18 @@
 				<div class="col">
 					<div class="input-group w-100 h-100">
 						<select class="form-select form-select-sm" id="collectionSelect"></select>
-						<button class="btn btn-sm btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
-						<button class="btn btn-danger btn-sm" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
+						<button class="text-white btn btn-sm btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
+						<button class="text-white btn btn-danger btn-sm" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
 					</div>
 				</div>
 				<div class="col-2">
-					<button class="btn btn-success btn-sm w-100 h-100" style="line-height: 1.1em"  type="button" onclick="mods.versionCheck()"><l10n name="version_check"></l10n></button>
+					<button class="btn btn-success btn-sm w-100 text-white h-100" style="line-height: 1.1em"  type="button" onclick="mods.versionCheck()"><l10n name="version_check"></l10n></button>
 				</div>
 			</div><!-- end: source mods-->
 			<div class="row py-2 px-3 border-top border-bottom">
 				<div class="col">
 					<div class="input-group input-group-sm mb-0">
-						<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
+						<span class="input-group-text"><l10n name="filter_only"></l10n></span>
 						<input type="text" id="filter_input" onkeyup="select_lib.filter()" class="form-control mod-row-filter rounded-end">
 						<span id="filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px;"></span>
 					</div>
@@ -222,12 +224,12 @@
 			<div class="col-2 p-0"><!-- buttons -->
 				<div id="moveButtons" class="px-2" style="width:16.5%">
 					<div id="moveButtonsInt" style="height: calc(100% - 0px);">
-						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-arrow-down"></i><br /><l10n class="small" name="move_to_list"></l10n></button>
-						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success rounded-4 disabled"><i class="bi bi-file-earmark-plus"></i><br /><l10n class="small" name="copy_to_list"></l10n></button>
-						<button onclick="clientBatchOperation('delete')" type="button" class="operation_button w-100 mb-1 btn btn-danger rounded-4 disabled"><i class="bi bi-file-earmark-x"></i><br /><l10n class="small" name="remove_from_list"></l10n></button>
+						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success text-white rounded-4 disabled"><i class="bi bi-file-earmark-arrow-down"></i><br /><l10n class="small" name="move_to_list"></l10n></button>
+						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success text-white rounded-4 disabled"><i class="bi bi-file-earmark-plus"></i><br /><l10n class="small" name="copy_to_list"></l10n></button>
+						<button onclick="clientBatchOperation('delete')" type="button" class="operation_button w-100 mb-1 btn btn-danger text-white rounded-4 disabled"><i class="bi bi-file-earmark-x"></i><br /><l10n class="small" name="remove_from_list"></l10n></button>
 						<button onclick="clientBatchOperation('open')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-folder-symlink"></i><br /><l10n class="small" name="open_from_list"></l10n></button>
 						<button onclick="clientBatchOperation('hub')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-search-heart"></i><br /><l10n class="small" name="open_hub"></l10n></button>
-						<button onclick="mods.copyFavorites()" type="button" class="operation_button w-100 mb-1 btn btn-warning rounded-4"><i class="bi bi-building-add"></i><br /><l10n class="small" name="copy_fav_to"></l10n></button>
+						<button onclick="mods.copyFavorites()" type="button" class="operation_button w-100 mb-1 btn btn-warning text-white rounded-4"><i class="bi bi-building-add"></i><br /><l10n class="small" name="copy_fav_to"></l10n></button>
 						<button onclick="clientBatchOperation('zip')" type="button" class="operation_button w-100 btn btn-primary rounded-4 disabled"><i class="bi bi-file-earmark-zip"></i><br /><l10n class="small" name="make_zip"></l10n></button>
 					</div>
 				</div>

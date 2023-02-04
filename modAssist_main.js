@@ -773,7 +773,7 @@ ipcMain.on('toMain_openMods',     (event, mods) => {
 		shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
 	}
 })
-
+ipcMain.on('toMain_openHelpSite', () => { shell.openExternal('https://fsgmodding.github.io/FSG_Mod_Assistant/') })
 ipcMain.on('toMain_openHub',     (event, mods) => {
 	const thisMod   = modCollect.modColUUIDToRecord(mods[0])
 	const thisModId = thisMod.modHub.id

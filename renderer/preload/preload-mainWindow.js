@@ -41,6 +41,7 @@ contextBridge.exposeInMainWorld(
 	'mods', {
 		sendToTray      : () => { ipcRenderer.send('toMain_sendMainToTray') },
 		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
+		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
 		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },
 		openGameLog     : () => { ipcRenderer.send('toMain_openGameLog') },
