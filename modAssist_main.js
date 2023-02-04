@@ -443,6 +443,10 @@ function createMainWindow () {
 	windows.load.loadFile(path.join(pathRender, 'loading.html'))
 	windows.load.on('close', (event) => { event.preventDefault() })
 
+	windows.load.webContents.on('did-finish-load', () => {
+		if ( devDebug ) { windows.load.webContents.openDevTools() }
+	})
+
 	windows.main = createSubWindow('main', { noSelect : false, show : devDebug, preload : 'mainWindow' })
 	
 	windows.main.on('closed',   () => {
@@ -673,10 +677,11 @@ const subWindows   = {
 }
 
 
-function loadingWindow_open(l10n) {
+function loadingWindow_open(l10n, isDownload = false) {
 	const newCenter   = getRealCenter('load')
 	const winTitle    = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_title` : 'app_name')
 	const winSubTitle = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_subtitle` : 'launch_fs22')
+	const dlCancel    = myTranslator.syncStringLookup('cancel_download')
 	if ( windows.load ) {
 		try {
 			windows.load.setBounds({x : newCenter.x, y : newCenter.y})
@@ -686,10 +691,13 @@ function loadingWindow_open(l10n) {
 		}
 		windows.load.show()
 		windows.load.focus()
-		windows.load.webContents.send('formMain_loadingTitles', winTitle, winSubTitle)
+		windows.load.webContents.send('formMain_loadingTitles', winTitle, winSubTitle, dlCancel)
 		setTimeout(() => {
 			windows.load.show()
 			windows.load.focus()
+			if ( isDownload ) {
+				windows.load.webContents.send('fromMain_loadingDownload')
+			}
 		}, 250)
 		return
 	}
@@ -1421,7 +1429,12 @@ ipcMain.on('toMain_setNote', (event, id, value, collectKey) => {
 })
 /** END: Notes Operation */
 
+let dlReq = null
+
 /** Download operation */
+ipcMain.on('toMain_cancelDownload', () => {
+	if ( dlReq !== null ) { dlReq.abort() }
+})
 ipcMain.on('toMain_downloadList', (event, collection) => {
 	const thisSite = modNote.get(`${collection}.notes_website`, null)
 	const thisDoDL = modNote.get(`${collection}.notes_websiteDL`, false)
@@ -1434,7 +1447,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 	log.log.info(`Downloading Collection : ${collection}`, 'mod-download')
 	log.log.info(`Download Link : ${thisLink}`, 'mod-download')
 
-	const dlReq = net.request(thisLink)
+	dlReq = net.request(thisLink)
 
 	dlReq.on('response', (response) => {
 		log.log.info(`Got download: ${response.statusCode}`, 'mod-download')
@@ -1442,7 +1455,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 		if ( response.statusCode < 200 || response.statusCode >= 400 ) {
 			doDialogBox('main', { type : 'error', titleL10n : 'download_title', message : `${myTranslator.syncStringLookup('download_failed')} :: ${modCollect.mapCollectionToName(collection)}` })
 		} else {
-			loadingWindow_open('download')
+			loadingWindow_open('download', true)
 
 			loadingWindow_total(response.headers['content-length'] || 0, true, true)
 			loadingWindow_current(0, true, true)
@@ -1491,6 +1504,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 			})
 		}
 	})
+	dlReq.on('abort', () => { log.log.notice('Download canceled', 'mod-download'); loadingWindow_hide() })
 	dlReq.on('error', (error) => { log.log.warning(`Network error : ${error}`, 'mod-download'); loadingWindow_hide() })
 	dlReq.end()
 })
@@ -1883,7 +1897,7 @@ let fileWait = null
 function fileOperation(type, fileMap, srcWindow = 'confirm') {
 	windows[srcWindow].close()
 
-	loadingWindow_open('files', 'main')
+	loadingWindow_open('files')
 	loadingWindow_total(fileMap.length, true)
 	loadingWindow_current(0, true)
 
@@ -1955,7 +1969,7 @@ let loadingWait = null
 async function processModFolders() {
 	if ( !foldersDirty ) { loadingWindow_hide(); return }
 
-	loadingWindow_open('mods', 'main')
+	loadingWindow_open('mods')
 	loadingWindow_total(0, true)
 	loadingWindow_current(0, true)
 

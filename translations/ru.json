@@ -331,5 +331,6 @@
 	"mod_badge_fs11": "FS11",
 	"mod_badge_fs11__title": "Мод предназначен для FS11",
 	"launch_game": "Запустить игру",
-	"launch_game__title": "Запустить игру"
+	"launch_game__title": "Запустить игру",
+	"cancel_download": "Отменить загрузку"
 }

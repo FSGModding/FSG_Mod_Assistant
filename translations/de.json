@@ -331,5 +331,6 @@
 	"mod_badge_fs11": "LS11",
 	"mod_badge_fs11__title": "Der Mod ist für LS11",
 	"launch_game": "Spiel starten",
-	"launch_game__title": "Das Spiel beginnen"
+	"launch_game__title": "Das Spiel beginnen",
+	"cancel_download": "Download abbrechen"
 }

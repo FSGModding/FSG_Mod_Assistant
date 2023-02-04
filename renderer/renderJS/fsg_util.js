@@ -181,7 +181,7 @@ function clientGetL10NEntries() {
 	l10n.getText_send(l10nSendItems)
 }
 
-window.l10n.receive('fromMain_getText_return', (data) => {
+window?.l10n?.receive('fromMain_getText_return', (data) => {
 	if ( data[0] === '__currentLocale__'  ) {
 		document.body.setAttribute('data-i18n', data[1])
 	} else {
@@ -189,7 +189,7 @@ window.l10n.receive('fromMain_getText_return', (data) => {
 	}
 })
 
-window.l10n.receive('fromMain_getText_return_title', (data) => {
+window?.l10n?.receive('fromMain_getText_return_title', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
 
 		let thisTitle = item.closest('button')
@@ -202,18 +202,18 @@ window.l10n.receive('fromMain_getText_return_title', (data) => {
 	})
 })
 
-window.l10n.receive('fromMain_l10n_refresh', (newLang) => {
+window?.l10n?.receive('fromMain_l10n_refresh', (newLang) => {
 	document.body.setAttribute('data-i18n', newLang)
 	processL10N()
 })
 
-window.l10n.receive('fromMain_langList_return', (listData, selected) => {
+window?.l10n?.receive('fromMain_langList_return', (listData, selected) => {
 	fsgUtil.byId('language_select').innerHTML = listData.map((x) => {
 		return fsgUtil.buildSelectOpt(x[0], x[1], selected)
 	}).join('')
 })
 
-window.l10n.receive('fromMain_themeList_return', (listData, selected) => {
+window?.l10n?.receive('fromMain_themeList_return', (listData, selected) => {
 	fsgUtil.byId('theme_select').innerHTML = listData.map((x) => {
 		return fsgUtil.buildSelectOpt(x[0], x[1], selected)
 	}).join('')

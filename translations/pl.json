@@ -331,5 +331,6 @@
 	"mod_badge_fs11": "FS11",
 	"mod_badge_fs11__title": "Mod jest przeznaczony dla FS11",
 	"launch_game": "Launch Game",
-	"launch_game__title": "Start the Game"
+	"launch_game__title": "Start the Game",
+	"cancel_download": "Anuluj Pobierz"
 }

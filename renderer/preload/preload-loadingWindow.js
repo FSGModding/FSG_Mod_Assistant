@@ -6,17 +6,23 @@
 
 // Loading window preLoad
 
-const {ipcRenderer} = require('electron')
+const {ipcRenderer, contextBridge} = require('electron')
 
 let lastTotal = 1
 
-ipcRenderer.on('formMain_loadingTitles', (event, mainTitle, subTitle) => {
+ipcRenderer.on('formMain_loadingTitles', (event, mainTitle, subTitle, dlCancel) => {
 	document.getElementById('statusMessage').innerHTML = mainTitle
 	document.getElementById('statusDetail').innerHTML  = subTitle
 	document.getElementById('statusCount').classList.remove('d-none')
 	document.getElementById('statusProgBar').classList.remove('d-none')
 	document.getElementById('statusTotal').innerHTML   = '0'
 	document.getElementById('statusCurrent').innerHTML = '0'
+	document.getElementById('downloadCancel').classList.add('d-none')
+	document.getElementById('downloadCancelButton').innerHTML = dlCancel
+})
+
+ipcRenderer.on('fromMain_loadingDownload', () => {
+	document.getElementById('downloadCancel').classList.remove('d-none')
 })
 
 ipcRenderer.on('fromMain_loadingNoCount', () => {
@@ -42,6 +48,13 @@ ipcRenderer.on('fromMain_loading_current', (event, count, inMB = false) => {
 
 	if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
 })
+
+
+contextBridge.exposeInMainWorld(
+	'mods', {
+		cancelDownload  : ( ) => { ipcRenderer.send('toMain_cancelDownload') },
+	}
+)
 
 function toMB(count, suffix = true) {
 	return `${Math.round((count / ( 1024 * 1024)*100))/100}${suffix?' MB':''}`
