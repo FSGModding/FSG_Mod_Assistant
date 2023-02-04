@@ -21,6 +21,7 @@ const path            = require('path')
 const fs              = require('fs')
 
 const devDebug      = !(app.isPackaged)
+const devTools      = false && !(app.isPackaged)
 const skipCache     = false && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 let updaterInterval = null
@@ -489,7 +490,7 @@ function createMainWindow () {
 					foldersDirty = true
 					setTimeout(() => { processModFolders() }, 1500)
 				}
-				if ( devDebug ) { windows.main.webContents.openDevTools() }
+				if ( devDebug && devTools) { windows.main.webContents.openDevTools() }
 			}
 		}, 250)
 	})
@@ -535,7 +536,7 @@ function createNamedWindow(winName, windowArgs) {
 		windows[thisWindow].webContents.send('fromMain_themeSetting', currentColorTheme)
 		subWinDef.callback(windowArgs)
 
-		if ( devDebug && subWindowDev.has(subWinDef.winName) ) {
+		if ( devDebug && devTools && subWindowDev.has(subWinDef.winName) ) {
 			windows[thisWindow].webContents.openDevTools()
 		}
 	})
