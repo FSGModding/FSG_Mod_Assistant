@@ -315,5 +315,7 @@
 	"theme_name_light": "Свет",
 	"theme_name_dark": "Темнота",
 	"user_pref_title_theme_color": "Цветовая тема",
-	"user_pref_blurb_theme_color": "Установите цветовую тему, которую вы предпочитаете использовать в Mod Assistant, или следуйте предпочтениям системы"
+	"user_pref_blurb_theme_color": "Установите цветовую тему, которую вы предпочитаете использовать в Mod Assistant, или следуйте предпочтениям системы",
+	"help_button__title": "Открытая документация",
+	"launch_fs22__title": "Начать игру"
 }

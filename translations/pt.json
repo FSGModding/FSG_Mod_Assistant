@@ -315,5 +315,7 @@
 	"theme_name_light": "Luz",
 	"theme_name_dark": "Escuro",
 	"user_pref_title_theme_color": "Tema da Cor",
-	"user_pref_blurb_theme_color": "Defina o tema de cor que prefere que o Mod Assistant utilize, ou siga a preferência do sistema"
+	"user_pref_blurb_theme_color": "Defina o tema de cor que prefere que o Mod Assistant utilize, ou siga a preferência do sistema",
+	"help_button__title": "Documentação Aberta",
+	"launch_fs22__title": "Iniciar o jogo"
 }

@@ -72,6 +72,7 @@ myTranslator.iconOverrides = {
 	folder_bot_button  : 'align-bottom',
 	button_gamelog     : 'file-earmark-text',
 	min_tray_button    : 'chevron-bar-down',
+	help_button        : 'question-circle',
 }
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {

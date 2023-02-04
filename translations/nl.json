@@ -315,5 +315,7 @@
 	"theme_name_light": "Licht",
 	"theme_name_dark": "Dark",
 	"user_pref_title_theme_color": "Kleurenthema",
-	"user_pref_blurb_theme_color": "Stel het kleurenthema in dat Mod Assistant volgens jou moet gebruiken, of volg de systeemvoorkeur."
+	"user_pref_blurb_theme_color": "Stel het kleurenthema in dat Mod Assistant volgens jou moet gebruiken, of volg de systeemvoorkeur.",
+	"help_button__title": "Open Documentatie",
+	"launch_fs22__title": "Start het spel"
 }

@@ -25,14 +25,14 @@
 		}
 	</script>
 	<style>
-		::-webkit-scrollbar-track-piece:start { margin-top: 142px; }
+		::-webkit-scrollbar-track-piece:start { margin-top: 122px; }
 		::-webkit-scrollbar-track-piece:end { margin-bottom: 35px; }
 
 		#scroll-bar-fake {
 			z-index: -1;
 			width: 6px;
-			height: calc(100vh - 176px);
-			top:141px; right:2px;
+			height: calc(100vh - 160px);
+			top:125px; right:2px;
 			background-color:rgba(66, 66, 66, 0.273);
 		}
 		.scroll_col, .scroll_mod { width: 6px; }
@@ -59,6 +59,7 @@
 			body[data-i18n="ru"] #display_mod_container { margin-top: 145px; }
 			body[data-i18n="ru"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
 		}
+		.btn-group-win_ui { width: 442px!important;}
 	</style>
 	
 </head>
@@ -75,16 +76,13 @@
 						<l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n>
 					</h2>
 				</div>
-				<div class="col-3 pt-2 pe-4">
-					<button onclick="clientOpenFarmSim()" class="btn btn-info w-100 btn-launch bg-gradient text-white fw-semibold"  id="launch_fs22">
-						<img src="img/fsicon.png" style="height: 24px" class="float-start img-fluid"/>
-						<l10n name="launch_fs22"></l10n>
-					</button>
-				</div>
-				<div class="m-0 p-0 rounded-bottom btn-group-win_ui">
+
+				<div class="m-0 p-0 rounded-bottom btn-group-win_ui d-flex">
+					<button class="btn-info btn btn-win_ui rounded-0 text-white border-0" style="border-bottom-left-radius: var(--bs-border-radius-sm)!important;"><img src="img/fsicon.png" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/><l10n name="launch_fs22" class="align-middle fw-semibold"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openGameLog()"><l10n name="button_gamelog"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openPreferences()" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+					<button class="btn-win_ui btn rounded-0" onclick="window.mods.openHelp()" ><l10n name="help_button"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" onclick="window.mods.sendToTray()"><l10n name="min_tray_button"></l10n></button>
 				</div>
 			</div>
@@ -219,7 +217,7 @@
 		
 		<div class="row overflow-hidden px-2" id="display_mod_container">
 			<div class="col-10">
-				<table id="mod-collections" class="w-100 table accordion border-top mt-3"></table><br />
+				<table id="mod-collections" class="w-100 table accordion border-top mt-0"></table><br />
 			</div>
 			<div class="col-2 p-0"><!-- buttons -->
 				<div id="moveButtons" class="px-2" style="width:16.5%">
@@ -268,12 +266,12 @@
 
 	</main>
 
-	<footer class="footer fixed-bottom mt-auto bg-dark small" id="main-footer">
+	<footer class="footer fixed-bottom mt-auto bg-dark small border-top" id="main-footer">
 		<div class="container-fluid text-center">
 			<div class="row" style="height:35px">
 				<div class="col align-self-center">
 					<a target="_blank" href="https://www.farmsimgame.com/">
-						<img src="img/fsg_banner.png" style="max-height: 35px" class="img-fluid">
+						<img src="img/fsg_banner.png" style="max-height: 30px" class="img-fluid">
 					</a>
 				</div>
 				<div class="col-auto align-self-center">
@@ -288,7 +286,7 @@
 				</div>
 				<div class="col align-self-center">
 					<a target="_blank" href="https://discord.gg/NxrDJYNC7Q">
-						<img src="img/discord.png" class="img-fluid" style="max-height: 35px">
+						<img src="img/discord.png" class="img-fluid" style="max-height: 30px">
 					</a>
 				</div>
 			</div>
