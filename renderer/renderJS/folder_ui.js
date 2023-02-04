@@ -12,7 +12,6 @@ let lastScroll = null
 
 
 window.mods.receive('fromMain_getFolders', (modCollect) => {
-	console.log(modCollect)
 	let   folderNum       = 0
 	const localFolderList = []
 	const lastFolder      = modCollect.set_Collections.size - 1

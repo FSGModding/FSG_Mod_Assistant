@@ -1,5 +1,5 @@
 {
-	"app_name": "Farm Sim 2022 Mod Asystent",
+	"app_name": "FSG Mod Asystent",
 	"check_save__title": "Załaduj savegame, aby porównać go z tym folderem",
 	"check_save": "Porównaj z zapisem",
 	"clean_cache_size": "Aktualny rozmiar pamięci podręcznej:",
@@ -182,7 +182,6 @@
 	"user_pref_title_game_path": "Ścieżka gry",
 	"user_pref_blurb_game_path": "Ustaw tutaj ścieżkę do gry, aby włączyć ją za pomocą przycisku 'Uruchom FSa'",
 	"user_pref_button_game_path": "Ustaw ścieżkę do gry",
-	"launch_fs22": "Uruchom FSa",
 	"minimize_message_title": "Minimalizacja do zasobnika systemowego",
 	"minimize_message": "Aplikacja została zminimalizowana do zasobnika systemowego",
 	"savegame_unused": "Nieużywane",
@@ -317,5 +316,20 @@
 	"user_pref_title_theme_color": "Kolor Temat",
 	"user_pref_blurb_theme_color": "Ustaw motyw kolorystyczny, którego wolisz, aby Mod Assistant używał, lub podążaj za preferencjami systemu",
 	"help_button__title": "Dokumentacja otwarta",
-	"launch_fs22__title": "Start the Game"
+	"mod_badge_fs0": "FS??",
+	"mod_badge_fs0__title": "Mod nie posiada poprawnej wersji gry",
+	"mod_badge_fs22": "FS22",
+	"mod_badge_fs22__title": "Mod jest przeznaczony dla FS22",
+	"mod_badge_fs19": "FS19",
+	"mod_badge_fs19__title": "Mod jest przeznaczony dla FS19",
+	"mod_badge_fs17": "FS17",
+	"mod_badge_fs17__title": "Mod jest przeznaczony dla FS17",
+	"mod_badge_fs15": "FS15",
+	"mod_badge_fs15__title": "Mod jest przeznaczony dla FS15",
+	"mod_badge_fs13": "FS13",
+	"mod_badge_fs13__title": "Mod jest przeznaczony dla FS13",
+	"mod_badge_fs11": "FS11",
+	"mod_badge_fs11__title": "Mod jest przeznaczony dla FS11",
+	"launch_game": "Launch Game",
+	"launch_game__title": "Start the Game"
 }

@@ -113,7 +113,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 }
 
 const fxml          = require('fast-xml-parser')
-const userHome      = require('os').homedir()
+const userHome      = app.getPath('home')
 const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
 const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
@@ -198,6 +198,8 @@ const settingsSchema = {
 	game_args         : { type : 'string', default : '' },
 	led_active        : { type : 'boolean', default : true },
 	color_theme       : { type : 'string', default : 'dark', enum : ['dark', 'light', 'system']},
+	game_version      : { type : 'number', default : 22, enum : [22, 19, 17, 15, 13]},
+	multi_version     : { type : 'boolean', default : false },
 	wins              : { type : 'object', default : {}, properties : {
 		load          : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
 		splash        : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
@@ -237,6 +239,7 @@ const modCollect = new modFileCollection(
 		hide  : loadingWindow_hide,
 		count : loadingWindow_current,
 	},
+	mcStore,
 	myTranslator.deferCurrentLocale,
 	skipCache
 )

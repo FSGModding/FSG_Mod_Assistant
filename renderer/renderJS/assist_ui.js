@@ -124,7 +124,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					thisMod,
 					thisCollection,
 					modCollect.newMods,
-					modCollect.bindConflict?.[collectKey]
+					modCollect.bindConflict?.[collectKey],
+					modCollect.appSettings.game_version
 				)
 
 				searchStringMap[thisMod.colUUID] = [
@@ -211,7 +212,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 })
 
 
-function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts) {
+function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts, currentGameVersion) {
 	const theseBadges = [...originalBadges] || []
 
 	if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
@@ -254,6 +255,14 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 			}
 		})
 		if ( !hasAllDeps ) { theseBadges.unshift('depend')}
+	}
+
+	if ( currentGameVersion !== thisMod.gameVersion ) {
+		if ( typeof thisMod.gameVersion === 'number' ) {
+			theseBadges.unshift(`fs${thisMod.gameVersion}`)
+		} else {
+			theseBadges.unshift('fs0')
+		}
 	}
 
 	return Array.from(new Set(theseBadges))

@@ -125,8 +125,15 @@ const fsgUtil = {
 		recent   : 'success',
 		nonmh    : 'dark border-light-subtle',
 		depend   : 'warning',
+		fs0      : 'danger',
+		fs22     : 'info border-danger',
+		fs19     : 'info border-danger',
+		fs17     : 'info border-danger',
+		fs15     : 'info border-danger',
+		fs13     : 'info border-danger',
+		fs11     : 'info border-danger',
 	},
-	badge : (color, name, fullName = false) => `<span class="border badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name.toLowerCase()]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
+	badge : (color, name, fullName = false) => `<span class="border border-2 badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name.toLowerCase()]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
 	makeCollectionCheckBox : ( { margin = 'ms-2', id = null, name = null, folder = null  } = {}) => {
 		return `<div class="form-check form-switch mb-2">
 			<input class="form-check-input" type="checkbox" id="${id}">

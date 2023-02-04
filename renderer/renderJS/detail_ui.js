@@ -101,7 +101,15 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	}
 
 	if ( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 ) {
-		displayBadges.push('depend_flag')
+		displayBadges.unshift('depend_flag')
+	}
+
+	if ( modCollect.appSettings.game_version !== modRecord.gameVersion ) {
+		if ( typeof modRecord.gameVersion === 'number' ) {
+			theseBadges.unshift(`fs${modRecord.gameVersion}`)
+		} else {
+			theseBadges.unshift('fs0')
+		}
 	}
 
 	if ( displayBadges.includes('broken') && displayBadges.includes('notmod') ) {
