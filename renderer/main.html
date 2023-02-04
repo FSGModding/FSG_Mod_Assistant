@@ -38,7 +38,7 @@
 		.scroll_col, .scroll_mod { width: 6px; }
 
 		.operation_button {
-			height: 13.5%;
+			height: 11.8%;
 			line-height: 1.1em
 		}
 
@@ -73,7 +73,7 @@
 			<div class="row w-100 mb-1">
 				<div class="col border-bottom mt-2" style="-webkit-app-region: drag;">
 					<h2 class="ps-2 mastHead">
-						<l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n>
+						<l10n name="game_version" class="badge bg-info me-1 p-1 bg-gradient"></l10n><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n>
 					</h2>
 				</div>
 
@@ -101,9 +101,6 @@
 						<button class="text-white btn btn-sm btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
 						<button class="text-white btn btn-danger btn-sm" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
 					</div>
-				</div>
-				<div class="col-2">
-					<button class="btn btn-success btn-sm w-100 text-white h-100" style="line-height: 1.1em"  type="button" onclick="mods.versionCheck()"><l10n name="version_check"></l10n></button>
 				</div>
 			</div><!-- end: source mods-->
 			<div class="row py-2 px-3 border-top border-bottom">
@@ -225,10 +222,13 @@
 						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success text-white rounded-4 disabled"><i class="bi bi-file-earmark-arrow-down"></i><br /><l10n class="small" name="move_to_list"></l10n></button>
 						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success text-white rounded-4 disabled"><i class="bi bi-file-earmark-plus"></i><br /><l10n class="small" name="copy_to_list"></l10n></button>
 						<button onclick="clientBatchOperation('delete')" type="button" class="operation_button w-100 mb-1 btn btn-danger text-white rounded-4 disabled"><i class="bi bi-file-earmark-x"></i><br /><l10n class="small" name="remove_from_list"></l10n></button>
+						<button onclick="clientBatchOperation('zip')" type="button" class="operation_button w-100 mb-1 btn btn-primary rounded-4 disabled"><i class="bi bi-file-earmark-zip"></i><br /><l10n class="small" name="make_zip"></l10n></button>
+
 						<button onclick="clientBatchOperation('open')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-folder-symlink"></i><br /><l10n class="small" name="open_from_list"></l10n></button>
 						<button onclick="clientBatchOperation('hub')" type="button" class="operation_button w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-search-heart"></i><br /><l10n class="small" name="open_hub"></l10n></button>
+						
 						<button onclick="mods.copyFavorites()" type="button" class="operation_button w-100 mb-1 btn btn-warning text-white rounded-4"><i class="bi bi-building-add"></i><br /><l10n class="small" name="copy_fav_to"></l10n></button>
-						<button onclick="clientBatchOperation('zip')" type="button" class="operation_button w-100 btn btn-primary rounded-4 disabled"><i class="bi bi-file-earmark-zip"></i><br /><l10n class="small" name="make_zip"></l10n></button>
+						<button onclick="mods.versionCheck()" type="button" class="operation_button w-100 btn btn-success text-white rounded-4 "><i class="bi bi-git"></i><br /><l10n class="small" name="version_check"></l10n></button>
 					</div>
 				</div>
 			</div><!-- end: buttons-->

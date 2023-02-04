@@ -1038,6 +1038,17 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	l10nSet.forEach((l10nEntry) => {
 		if ( l10nEntry === 'app_version' ) {
 			event.sender.send('fromMain_getText_return', [l10nEntry, app.getVersion()])
+		} else if ( l10nEntry === 'game_version') {
+			if ( mcStore.get('multi_version') ) {
+				myTranslator.stringLookup(`mod_badge_fs${mcStore.get('game_version')}`).then((text) => {
+					if ( text === null || text === '' ) {
+						log.log.debug(`Null or empty translator string: ${l10nEntry} :: locale: ${myTranslator.currentLocale}`)
+					}
+					event.sender.send('fromMain_getText_return', [l10nEntry, text])
+				})
+			} else {
+				event.sender.send('fromMain_getText_return', [l10nEntry, ''])
+			}
 		} else if ( l10nEntry === 'clean_cache_size' ) {
 			const cleanString = myTranslator.syncStringLookup(l10nEntry)
 			let cacheSize = 0

@@ -65,10 +65,10 @@ const select_lib = {
 
 		if ( fsgUtil.byId(modID).classList.contains('has-hash') ) {
 			select_lib.last_alt_hash = true
-			moveButtons[4].classList.remove('disabled')
+			moveButtons[5].classList.remove('disabled')
 
 		}
-		moveButtons[3].classList.remove('disabled')
+		moveButtons[4].classList.remove('disabled')
 	},
 	click_row         : (modID) => {
 		if ( window.event.altKey ) {
@@ -192,7 +192,7 @@ const select_lib = {
 			select_lib.debounceC = setTimeout(() => {
 				select_lib.debounceC = null
 				select_lib.update_color_post()
-			}, 350)
+			}, 100)
 		}
 	},
 	update_color_post    : () => {
@@ -237,13 +237,17 @@ const select_lib = {
 
 		const moveButtons = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
 
-		moveButtons[0].classList[(countSelected > 0)?'remove':'add']('disabled')
-		moveButtons[1].classList[(countSelected > 0)?'remove':'add']('disabled')
-		moveButtons[2].classList[(countSelected > 0)?'remove':'add']('disabled')
-		moveButtons[3].classList[(countSelected === 1)?'remove':'add']('disabled')
-		moveButtons[4].classList[(hasHash)?'remove':'add']('disabled')
-		moveButtons[5].classList[(countSelected === 0)?'remove':'add']('disabled')
-		moveButtons[6].classList[(countSelected > 0)?'remove':'add']('disabled')
+		moveButtons[0].classList[(countSelected > 0)?'remove':'add']('disabled') // move
+		moveButtons[1].classList[(countSelected > 0)?'remove':'add']('disabled') // copy
+		moveButtons[2].classList[(countSelected > 0)?'remove':'add']('disabled') // delete
+		moveButtons[3].classList[(countSelected > 0)?'remove':'add']('disabled') //zip
+
+		moveButtons[4].classList[(countSelected === 1)?'remove':'add']('disabled') // open
+		moveButtons[5].classList[(hasHash)?'remove':'add']('disabled') // modhub
+
+		moveButtons[6].classList.remove('disabled') //favs
+		moveButtons[7].classList.remove('disabled') //versions
+		
 
 		select_lib.change_count(countSelected)
 	},
