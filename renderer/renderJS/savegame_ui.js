@@ -196,7 +196,7 @@ function makeLine(name, mod, singleFarm) {
 	thisHTML.push(`<div class="fw-bold">${name}</div>`)
 	thisHTML.push(`<div class="small">${mod.title}</div>`)
 	if ( mod.usedBy !== null && !singleFarm ) {
-		thisHTML.push(`<div class="text-black small ps-3">${getText('savegame_farms')}: ${Array.from(mod.usedBy).join(', ')}</div>`)
+		thisHTML.push(`<div class="text-body-emphasis small ps-3">${getText('savegame_farms')}: ${Array.from(mod.usedBy).join(', ')}</div>`)
 	}
 	thisHTML.push('</div>')
 

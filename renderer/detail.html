@@ -15,18 +15,17 @@
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/detail_ui.js"></script>
 	<style>
-		::-webkit-scrollbar { display: none; }
 		#badges>span { margin-left: 3px; }
 	</style>
 </head>
-<body data-bs-theme="dark">
+<body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid px-1 user-select-none">
 		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
 			<div class="row w-100">
-				<div class="col-7">
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+				<div class="col-7" style="-webkit-app-region: drag;">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
 				</div>
-				<div class="col-5 text-center mx-auto pt-1" id="badges"></div>
+				<div class="col-5 text-center mx-auto pt-4" id="badges"></div>
 			</div>
 			<h3 class="text-center mb-1 w-100 mx-auto display-6" id="title"></h3>
 			<i class="text-center mt-1 w-100 mx-auto d-block small" id="mod_location"></i>

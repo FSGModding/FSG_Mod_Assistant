@@ -32,7 +32,6 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	})
 
 	modCollect.opts.sourceFiles.forEach((source) => {
-		console.log(source)
 		confRows.push(fsgUtil.arrayToTableRow([source.shortName, source.title]))
 	})
 

@@ -12,6 +12,7 @@ let lastScroll = null
 
 
 window.mods.receive('fromMain_getFolders', (modCollect) => {
+	console.log(modCollect)
 	let   folderNum       = 0
 	const localFolderList = []
 	const lastFolder      = modCollect.set_Collections.size - 1
@@ -20,6 +21,7 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 		localFolderList.push(makeFolderLine(
 			modCollect.collectionToFolder[collectKey],
 			modCollect.collectionToFolderRelative[collectKey],
+			modCollect.collectionToName[collectKey],
 			modCollect.collectionToFullName[collectKey],
 			folderNum,
 			lastFolder
@@ -50,7 +52,11 @@ function dnBtn(num, last, disable) {
 	return `${moveBtn('<l10n name="folder_down_button"></l10n>', num, num+1, disable)}${moveBtn('<l10n name="folder_bot_button"></l10n>', num, last, disable)}`
 }
 
-function makeFolderLine(path, relPath, name, num, last) {
+function makeFolderLine(path, relPath, shortName, name, num, last) {
+	let thisName = name
+	if ( shortName !== name ) {
+		thisName = `${shortName} <small class="text-body-emphasis" style="font-size:0.675em;">${name.replace(`${shortName} [`, ' [')}</small>`
+	}
 	return `<div class="folderLine my-2 py-2 pb-3 border-bottom">
 		<div class="row">
 			<div class="col-2">
@@ -61,7 +67,7 @@ function makeFolderLine(path, relPath, name, num, last) {
 			</div>
 			<div class="col-10 pt-4">
 				<div class="row">
-					<div class="col-6"><h4>${name}</h4></div>
+					<div class="col-6"><h4>${thisName}</h4></div>
 					<div class="col-6">
 						<div class="btn-group w-100">
 							<button class="btn btn-sm btn-success open_folder" style="line-height: 1.1em">${getText('open_folder')}</button>

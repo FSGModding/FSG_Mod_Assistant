@@ -23,22 +23,6 @@
 		}
 	</script>
 	<style>
-		.overflow-custom2 {
-			overflow-y: scroll !important;
-			overflow-x: hidden !important;
-		}
-		::-webkit-scrollbar {
-			width: 10px;
-		}
-		::-webkit-scrollbar-track {
-			background: transparent;
-		}
-		::-webkit-scrollbar-thumb {
-			background: #3b3b3b65;
-		}
-		::-webkit-scrollbar-thumb:hover {
-			background: #4a4a4a65; 
-		}
 		::-webkit-scrollbar-track-piece:start { margin-top: 142px; }
 		::-webkit-scrollbar-track-piece:end { margin-bottom: 35px; }
 
@@ -127,7 +111,7 @@
 					<div class="input-group input-group-sm mb-0">
 						<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
 						<input type="text" id="filter_input" onkeyup="select_lib.filter()" class="form-control mod-row-filter rounded-end">
-						<span id="filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; color:black;"></span>
+						<span id="filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px;"></span>
 					</div>
 				</div>
 

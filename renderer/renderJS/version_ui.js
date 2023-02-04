@@ -83,7 +83,7 @@ function makeLine(type, realName, shortName, collections, icon) {
 				<div class="small">${realName}</div>
 				<div class="${coll} small ps-3">${getText('version_collections')}: ${fsgUtil.escapeSpecial(collections.join(', '))}</div>
 			</div>
-			<div class="col-2">
+			<div class="col-2 text-center">
 				${fsgUtil.badge('dark', l10n, true)}
 			</div>
 		</div>

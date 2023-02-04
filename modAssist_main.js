@@ -353,7 +353,7 @@ function getRealCenter(winName) {
 	return realCenter
 }
 
-function createSubWindow(winName, { skipTaskbar = false, noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null, fixedOnTop = true} = {}) {
+function createSubWindow(winName, { useCustomTitle = true, skipTaskbar = false, noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null, fixedOnTop = true} = {}) {
 	const realCenter  = getRealCenter(winName)
 	const winSettings = mcStore.get(`wins.${winName}`)
 
@@ -381,7 +381,7 @@ function createSubWindow(winName, { skipTaskbar = false, noSelect = true, show =
 		show            : show,
 		skipTaskbar     : skipTaskbar,
 		autoHideMenuBar : true,
-		titleBarStyle   : winName === 'main' ? 'hidden' : 'default',
+		titleBarStyle   : useCustomTitle ? 'hidden' : 'default',
 		titleBarOverlay : {
 			color       : themeColors[currentColorTheme].background,
 			symbolColor : themeColors[currentColorTheme].font,
@@ -423,11 +423,11 @@ function createSubWindow(winName, { skipTaskbar = false, noSelect = true, show =
 		})
 		thisWindow.on('maximize', () => { mcStore.set(`wins.${winName}.m`, true) })
 		thisWindow.on('unmaximize', () => { mcStore.set(`wins.${winName}.m`, false) })
-	}
 
-	thisWindow.on('focus', () => {
-		thisWindow.webContents.send('fromMain_clearTooltips')
-	})
+		thisWindow.on('focus', () => {
+			thisWindow.webContents.send('fromMain_clearTooltips')
+		})
+	}
 
 	if ( !devDebug ) { thisWindow.removeMenu()}
 	if ( winSettings.m )  { thisWindow.maximize() }
@@ -435,7 +435,7 @@ function createSubWindow(winName, { skipTaskbar = false, noSelect = true, show =
 }
 
 function createMainWindow () {
-	windows.load = createSubWindow('load', { skipTaskbar : true, fixedOnTop : false, show : false, preload : 'loadingWindow', fixed : true, move : false, frame : false })
+	windows.load = createSubWindow('load', { useCustomTitle : false, skipTaskbar : true, fixedOnTop : false, show : false, preload : 'loadingWindow', fixed : true, move : false, frame : false })
 	windows.load.loadFile(path.join(pathRender, 'loading.html'))
 	windows.load.on('close', (event) => { event.preventDefault() })
 
@@ -450,7 +450,7 @@ function createMainWindow () {
 	})
 
 	if ( !devDebug ) {
-		windows.splash = createSubWindow('splash', { center : true, fixed : true, move : false, frame : false })
+		windows.splash = createSubWindow('splash', { useCustomTitle : false, center : true, fixed : true, move : false, frame : false })
 		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${app.getVersion()}`)
 
 		windows.splash.on('closed', () => { windows.splash = null })
@@ -993,7 +993,6 @@ ipcMain.on('toMain_themeList_change', (event, theme) => {
 })
 nativeTheme.on('updated', () => {
 	const savedTheme = mcStore.get('color_theme')
-	console.log(savedTheme)
 
 	if ( savedTheme === 'system' ) {
 		currentColorTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'

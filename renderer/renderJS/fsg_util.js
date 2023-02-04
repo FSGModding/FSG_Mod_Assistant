@@ -115,18 +115,18 @@ const fsgUtil = {
 		broken   : 'danger',
 		problem  : 'warning',
 		nomp     : 'secondary',
-		pconly   : 'info',
+		pconly   : 'info text-black',
 		folder   : 'primary',
 		notmod   : 'danger',
-		update   : 'light',
+		update   : 'light border-dark-subtle text-black',
 		keys_bad : 'danger',
 		keys_ok  : 'success',
 		new      : 'success',
 		recent   : 'success',
-		nonmh    : 'dark',
+		nonmh    : 'dark border-light-subtle',
 		depend   : 'warning',
 	},
-	badge : (color, name, fullName = false) => `<span class="badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name.toLowerCase()]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
+	badge : (color, name, fullName = false) => `<span class="border badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name.toLowerCase()]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
 	makeCollectionCheckBox : ( { margin = 'ms-2', id = null, name = null, folder = null  } = {}) => {
 		return `<div class="form-check form-switch mb-2">
 			<input class="form-check-input" type="checkbox" id="${id}">
@@ -207,7 +207,6 @@ window.l10n.receive('fromMain_langList_return', (listData, selected) => {
 })
 
 window.l10n.receive('fromMain_themeList_return', (listData, selected) => {
-	console.log(`theme ${listData}`)
 	fsgUtil.byId('theme_select').innerHTML = listData.map((x) => {
 		return fsgUtil.buildSelectOpt(x[0], x[1], selected)
 	}).join('')

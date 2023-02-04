@@ -8,24 +8,26 @@
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/find_ui.js"></script>
 </head>
-<body data-bs-theme="dark">
+<body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid px-1 user-select-none">
 		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
-			<div class="row w-100">
-				<div class="col-7">
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+			<div class="row g-0 w-100">
+				<div class="col-7" style="-webkit-app-region: drag;">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
 				</div>
-				<div class="col-5">
-					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill"><l10n name="search_all_window" class="h4"></l10n></div>
+				<div class="col-5 pt-4">
+					<div class="badge bg-primary mx-auto w-100 d-block rounded-pill"><l10n name="search_all_window" class="h4"></l10n></div>
 				</div>
+			</div>
+
+			<div class="input-group input-group-sm my-2">
+				<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
+				<input type="text" id="mods__filter" onkeyup="clientFilter()" class="form-control mod-row-filter rounded-end">
+				<span id="mods__filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; "></span>
 			</div>
 		</div>
 
-		<div class="input-group input-group-sm mb-4">
-			<span class="input-group-text bg-gradient"><l10n name="filter_only"></l10n></span>
-			<input type="text" id="mods__filter" onkeyup="clientFilter()" class="form-control mod-row-filter rounded-end">
-			<span id="mods__filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; color:black;"></span>
-		</div>
+		
 
 		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped" id="full_table"></table>
 	</div>

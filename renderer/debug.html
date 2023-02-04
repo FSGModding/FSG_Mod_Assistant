@@ -14,13 +14,13 @@
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/debug_ui.js"></script>
 </head>
-<body data-bs-theme="dark">
+<body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid px-1 user-select-none">
 		<div class="row w-100 pt-2 sticky-top bg-body border-bottom">
-			<div class="col-8">
-				<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+			<div class="col-7" style="-webkit-app-region: drag;">
+				<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
 			</div>
-			<div class="col-4 text-end">
+			<div class="col-4 text-end pe-5">
 				<div class="btn-group w-100 ms-auto me-1">
 					<button data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="debug.openDebugLogFolder()" class="btn btn-success btn-sm"><i class="bi bi-save"></i></button>
 					<button data-bs-toggle="tooltip" title="Refresh" type="button" onclick="debug.getDebugLogContents()" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
@@ -42,7 +42,7 @@
 			<label data-bs-toggle="tooltip" title="Failures" class="btn btn-outline-success btn-sm border" for="debug_danger">DANGER</label>
 		</div>
 		
-		<div style="white-space: pre-wrap" class="ps-3 font-monospace small user-select-all no-wrap" id="debug_log"></div>
+		<div style="white-space: pre-wrap; user-select: text;" class="ps-3 font-monospace small no-wrap" id="debug_log"></div>
 	</div>
 
 </body>

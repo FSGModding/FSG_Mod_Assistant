@@ -12,22 +12,21 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/confirm_copy_move_ui.js"></script>
-	<style> ::-webkit-scrollbar { display: none; } </style>
 </head>
-<body data-bs-theme="dark">
+<body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid user-select-none">
-		<div class="position-fixed start-0" style="top: 118px; width: 100%; text-align: center; z-index: -1;"><i class="bi bi-file-earmark-plus" style="font-size: calc(100vh - 200px); opacity: 5%;"></i></div>
 		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
-			<div class="row gx-1 w-100">
-				<div class="col-7">
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> <l10n class="ver" name="app_version"></l10n></h2>
+			<div class="row w-100 g-0">
+				<div class="col-7" style="-webkit-app-region: drag;">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
 				</div>
-				<div class="col-5">
-					<div class="badge bg-primary mx-auto w-100 d-block shadow rounded-pill"><l10n class="h4" name="confirm_copy_title"></l10n></div>
+				<div class="col-5 pt-4">
+					<div class="badge bg-primary mx-auto w-100 d-block rounded-pill"><l10n class="h4" name="confirm_copy_title"></l10n></div>
 				</div>
 			</div>
+			
 			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="confirm_copy_blurb"></l10n></span>
-			<span class="text-center small w-100 px-5 d-block blockquote"><l10n name="confirm_key_shortcuts"></span>
+			<span class="text-center small w-100 px-5 d-block"><l10n name="confirm_key_shortcuts"></span>
 		</div>
 
 		<div class="row mx-2">

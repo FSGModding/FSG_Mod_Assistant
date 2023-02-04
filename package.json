@@ -53,7 +53,8 @@
       "!**/.vscode/*",
       "!.github/*",
       "!/dist/*",
-      "!/docs/*"
+      "!/docs/*",
+      "!/renderer/inc/src/*"
     ],
     "win": {
       "target": [
