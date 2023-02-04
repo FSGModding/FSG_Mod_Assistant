@@ -31,6 +31,7 @@ const modCollect = new modFileCollection(
 		hide  : () => { return },
 		count : () => { return },
 	},
+	{ store : {} },
 	() => { return 'en'},
 	true
 )
