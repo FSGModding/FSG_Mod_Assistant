@@ -14,6 +14,8 @@ const select_lib = {
 	last_alt_hash     : false,
 	last_select_mod   : null,
 	last_select_table : null,
+	debounceF         : null,
+	debounceC         : null,
 	clear_scroll_display      : () => {
 		fsgUtil.query('.scroll_mod').forEach((element) => {
 			element.classList.add('d-none')
@@ -185,7 +187,15 @@ const select_lib = {
 		select_lib.clear_range()
 		select_lib.update_color()
 	},
-	update_color      : () => {
+	update_color : () => {
+		if ( select_lib.debounceC === null ) {
+			select_lib.debounceC = setTimeout(() => {
+				select_lib.debounceC = null
+				select_lib.update_color_post()
+			}, 350)
+		}
+	},
+	update_color_post    : () => {
 		select_lib.clear_scroll_color()
 		const allModRows    = fsgUtil.query('.mod-row')
 		let   countSelected = 0
@@ -238,6 +248,14 @@ const select_lib = {
 		select_lib.change_count(countSelected)
 	},
 	filter : (table, forceValue = false) => {
+		if ( select_lib.debounceF === null ) {
+			select_lib.debounceF = setTimeout(() => {
+				select_lib.debounceF = null
+				select_lib.filter_post(table, forceValue)
+			}, 350)
+		}
+	},
+	filter_post : (table, forceValue = false) => {
 		select_lib.update_scroll()
 		if ( forceValue !== false ) {
 			fsgUtil.byId('filter_input').value = forceValue
