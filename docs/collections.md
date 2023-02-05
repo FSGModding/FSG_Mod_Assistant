@@ -8,7 +8,7 @@ Mod Assistant works on the principal of mod collections.  A mod collection is si
 
 For my collections, I choose to create multiple folders in the default mods folder.
 
-![Folder setup](img/colmanage-000.png)
+![Folder setup](img/colmanage-001.png)
 
 ## Collection Management Functions
 
@@ -16,11 +16,10 @@ Mod Assistant provides a number of tools to manage your collections in the appli
 
 Adding and Editing folders is done using the buttons in the upper right of the interface.
 
-![Buttons](img/colmanage-001.png)
-
 Managing the active collection is done with the button and drop down set at the top center of the interface.
 
-![Collects](img/colmanage-003.png)
+![Buttons](img/interfacemap_collect.png)
+
 
 ## Adding Collections
 
@@ -32,7 +31,7 @@ To add a collection to Mod Assistant, you can use the `Add Folder` button, or dr
 
 To manage the order of collections or remove them, use the `Edit Folders` button.
 
-![Alt text](img/colmanage-005.png)
+![Alt text](img/colmanage-003.png)
 
 Use `Forget Collection` to remove the folder from Mod Assistant. This will not remove the files or folder from your hard disk.
 
