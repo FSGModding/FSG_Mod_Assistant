@@ -16,6 +16,8 @@ For collections that have an associated dedicated server website, and download e
 
 ![direct](img/import-001.png)
 
+---
+
 ### Drag-and-Drop Import
 
 You can drop files and folders to the main interface window.  If you are dragging in a single folder that is a mod, be sure to choose the `Copy files to collection folder` option.
@@ -36,11 +38,17 @@ Additionally, you can export a CSV list that describes your collection
 
 To export files to a ZIP, select one or more mods in the collection area and press the `Export ZIP File` button to be prompted where to save the new ZIP file.
 
-![Alt text](img/export-001.png)
+![Alt text](img/ifacemap_side.png)
+
+---
 
 ### CSV List
 
 Next to each collection is a small `CSV` button. You will be prompted where to save the CSV file.
+
+![Alt text](img/export-001.png)
+
+---
 
 ### Drag-and-Drop Export
 

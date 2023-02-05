@@ -6,7 +6,7 @@
 
 There are several file management operations available.  You can Copy, Move, Delete and Copy Favorites.  All file operations in Mod Assistant can be canceled with the `ESC` key.
 
-![overview](img/mcd-000.png)
+![overview](img/ifacemap_side.png)
 
 ## Move or Copy
 
