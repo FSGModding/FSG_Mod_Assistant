@@ -332,5 +332,7 @@
 	"mod_badge_fs11__title": "O mod é para FS11",
 	"launch_game": "Jogo de Lançamento",
 	"launch_game__title": "Iniciar o jogo",
-	"cancel_download": "Cancelar Descarregar"
+	"cancel_download": "Cancelar Descarregar",
+	"notes_title_version": "Versão do jogo",
+	"notes_blurb_version": "Para que versão do Simulador Agrícola se destina esta colecção"
 }

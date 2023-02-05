@@ -8,6 +8,8 @@
 
 Yes. Think about adding your `Downloads` folder to the program to easily move or copy new mods into your collections.  Mod Assist is pretty smart about what is and isn't a mod, and will happily ignore anything else that might be in your `Downloads` folder.
 
+---
+
 ### What should I do if something doesn't work?
 
 Please, report it to us!
@@ -18,9 +20,13 @@ If the app hard crashes (you'll get a popup message), the crash log can be found
 
 `C:\Users\YOU\AppData\Roaming\fsg-mod-assistant` - please include `crash.log` and `assist.log` in your issue report.  Thanks!
 
+---
+
 ### Does this support Linux or Mac?
 
 No, not at this time.  We lack the resources and hardware to properly test it.
+
+---
 
 ### Does this support symLinks?
 
@@ -35,6 +41,8 @@ When doing file operations
 Note that invalid links in your folders will be ignored, however a warning message will be added to the debug log.
 
 Due to how windows handles the permission for creating symlinks, it is not currently possible for Mod Assistant to make them
+
+---
 
 ### How does the mod cache work?
 

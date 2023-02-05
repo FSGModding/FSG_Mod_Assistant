@@ -15,13 +15,13 @@ To load a savegame, you have 2 options
 - Load a folder directly
 - Load a ZIP file, like you would download from a server
 
-![Alt text](img/savegame-002.png)
+![Alt text](img/savegame-008.png)
 
 ## Filtering Results
 
 You can filter the results of opening a file by the badges they are given
 
-![Alt text](img/savegame-003.png)
+![Alt text](img/savegame-007.png)
 
 The badge meanings are as follows:
 
@@ -38,7 +38,7 @@ The badge meanings are as follows:
 
 Often, it is useful to select a subset of this collection's mods in the main window based on the results of the savegame scan
 
-![Alt text](img/savegame-004.png)
+![Alt text](img/savegame-006.png)
 
 You can select:
 
@@ -57,6 +57,8 @@ There are multiple context colors used in the resulting display.
 - **Grey** - Unused, Inactive mod
   - Maybe just taking up space
 - **Red** - Used, active mods that are ***missing*** from the collection
-  
+
+![Alt text](img/savegame-003.png)  
+![Alt text](img/savegame-002.png)
+![Alt text](img/savegame-004.png)
 ![Alt text](img/savegame-005.png)
-![Alt text](img/savegame-006.png)

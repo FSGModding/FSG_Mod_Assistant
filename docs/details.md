@@ -26,7 +26,9 @@ Clicking on the blue edit details button will bring up the details for that coll
 
 Favorite collections are those collections that the `Copy Favorites To` button works with.  It is visually indicated with a star on top of the folder icon
 
-![Alt text](img/detail-004.png)
+![Alt text](img/detail-fav.png)
+
+---
 
 ### Description
 
@@ -34,11 +36,15 @@ Favorite collections are those collections that the `Copy Favorites To` button w
 
 The description displays as a sub-title to the collection in the main interface, and a number of other places.
 
+---
+
 ### Player Name
 
 ![Alt text](img/detail-006.png)
 
 This is what your display name in game will be set to when joining a server with this collection
+
+---
 
 ### Server Name
 
@@ -46,11 +52,15 @@ This is what your display name in game will be set to when joining a server with
 
 This is the name of the multiplayer server for this collection. It will be pre-populated in the search field in the server browser
 
+---
+
 ### Server Password
 
 ![Alt text](img/detail-008.png)
 
 This is the server (game) password for the multiplayer server for this collection.  It will be pre-filled in the password popup when joining
+
+---
 
 ### Server Web Site
 
@@ -58,14 +68,26 @@ This is the server (game) password for the multiplayer server for this collectio
 
 This is the address of the multiplayer server administration website, and a checkbox the indicates if the server has downloading of mods enabled.  Note that the server address *must* follow the indicated format for the download function to work.  This is the website that is opened in your default browser when clicking the `globe` button
 
+---
+
 ### Server Web Site Admin Password
 
 ![Alt text](img/detail-010.png)
 
 This is the server *website* admin password. It is the password that is copied via the `key` button in the main interface.
 
+---
+
 ### Notes
 
 ![Alt text](img/detail-011.png)
 
 This allows you to set freeform notes on a collection.
+
+---
+
+### Game Version
+
+![Alt text](img/detail-004.png)
+
+This sets the intended game version for this collection.  This setting will only appear if you have opted into the Multiple Version mode on the preferences screen.

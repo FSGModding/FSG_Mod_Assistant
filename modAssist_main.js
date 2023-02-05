@@ -21,6 +21,7 @@ const path            = require('path')
 const fs              = require('fs')
 
 const devDebug      = !(app.isPackaged)
+const devTools      = true && !(app.isPackaged)
 const skipCache     = false && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 let updaterInterval = null
@@ -489,7 +490,7 @@ function createMainWindow () {
 					foldersDirty = true
 					setTimeout(() => { processModFolders() }, 1500)
 				}
-				if ( devDebug ) { windows.main.webContents.openDevTools() }
+				if ( devDebug && devTools) { windows.main.webContents.openDevTools() }
 			}
 		}, 250)
 	})
@@ -535,7 +536,7 @@ function createNamedWindow(winName, windowArgs) {
 		windows[thisWindow].webContents.send('fromMain_themeSetting', currentColorTheme)
 		subWinDef.callback(windowArgs)
 
-		if ( devDebug && subWindowDev.has(subWinDef.winName) ) {
+		if ( devDebug && devTools && subWindowDev.has(subWinDef.winName) ) {
 			windows[thisWindow].webContents.openDevTools()
 		}
 	})
@@ -676,7 +677,7 @@ const subWindows   = {
 function loadingWindow_open(l10n, isDownload = false) {
 	const newCenter   = getRealCenter('load')
 	const winTitle    = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_title` : 'app_name')
-	const winSubTitle = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_subtitle` : 'launch_fs22')
+	const winSubTitle = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_subtitle` : 'launch_game')
 	const dlCancel    = myTranslator.syncStringLookup('cancel_download')
 	if ( windows.load ) {
 		try {
@@ -2108,7 +2109,7 @@ app.whenReady().then(() => {
 			{ label : 'FSG Mod Assist', /*icon : pathIcon, */enabled : false },
 			{ type  : 'separator' },
 			{ label : myTranslator.syncStringLookup('tray_show'), click : () => { windows.main.show() } },
-			{ label : myTranslator.syncStringLookup('launch_fs22'), click : () => { gameLauncher() } },
+			{ label : myTranslator.syncStringLookup('launch_game'), click : () => { gameLauncher() } },
 			{ label : myTranslator.syncStringLookup('tray_quit'), click : () => { windows.main.close() } },
 		]
 		const contextMenu = Menu.buildFromTemplate(template)
@@ -2134,7 +2135,7 @@ app.whenReady().then(() => {
 				arguments : '--start-game',
 				iconPath  : trayIcon,
 				iconIndex : 0,
-				title     : myTranslator.syncStringLookup('launch_fs22'),
+				title     : myTranslator.syncStringLookup('launch_game'),
 				description : '',
 			}
 		])

@@ -332,5 +332,7 @@
 	"mod_badge_fs11__title": "El mod es para FS11",
 	"launch_game": "Juego de lanzamiento",
 	"launch_game__title": "Comienza el juego",
-	"cancel_download": "Cancelar descarga"
+	"cancel_download": "Cancelar descarga",
+	"notes_title_version": "Versión del juego",
+	"notes_blurb_version": "Para qué versión de Farming Simulator es esta colección"
 }

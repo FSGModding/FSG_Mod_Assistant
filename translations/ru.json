@@ -332,5 +332,7 @@
 	"mod_badge_fs11__title": "Мод предназначен для FS11",
 	"launch_game": "Запустить игру",
 	"launch_game__title": "Запустить игру",
-	"cancel_download": "Отменить загрузку"
+	"cancel_download": "Отменить загрузку",
+	"notes_title_version": "Версия игры",
+	"notes_blurb_version": "Для какой версии Farming Simulator предназначен этот сборник"
 }

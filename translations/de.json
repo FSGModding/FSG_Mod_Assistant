@@ -332,5 +332,7 @@
 	"mod_badge_fs11__title": "Der Mod ist für LS11",
 	"launch_game": "Spiel starten",
 	"launch_game__title": "Das Spiel beginnen",
-	"cancel_download": "Download abbrechen"
+	"cancel_download": "Download abbrechen",
+	"notes_title_version": "Game Version",
+	"notes_blurb_version": "Für welche Version des Landwirtschafts-Simulators ist diese Sammlung?"
 }
