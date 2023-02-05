@@ -36,6 +36,22 @@
 				</div>
 			</div>
 		</div>
+		<div class="row mx-4 mb-3 pb-2 border-bottom" id="multi_version">
+			<div class="col-6">
+				<h5><l10n name="notes_title_version"></l10n></h5>
+				<p class="ps-2"><l10n name="notes_blurb_version"></l10n></p>
+			</div>
+			<div class="col-6">
+				<select class="form-select" id="notes_version" onchange="clientSetNote('notes_version')">
+					<option value="22">2022</option>
+					<option value="19">2019</option>
+					<option value="17">2017</option>
+					<option value="15">2015</option>
+					<option value="13">2013</option>
+					<option value="11">2011</option>
+				</select>
+			</div>
+		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
 			<div class="col-6">
 				<h5><l10n name="notes_title_tagline"></l10n></h5>

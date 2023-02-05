@@ -12,6 +12,10 @@ let thisCollection = null
 
 window.mods.receive('fromMain_collectionName', (modCollect) => {
 	thisCollection = modCollect.opts.collectKey
+
+	if ( !modCollect.appSettings.multi_version ) {
+		fsgUtil.byId('multi_version').classList.add('d-none')
+	}
 	
 	fsgUtil.byId('collection_name').innerHTML = modCollect.collectionToName[thisCollection]
 
@@ -19,9 +23,10 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 		let thisValue = ''
 		
 		let thisPlaceholder = modCollect.opts.lastGameSettings[element.id.replace('notes_', '')]
-		if ( typeof modCollect.collectionNotes[thisCollection] !== 'undefined' ) {
+		
+		if ( element.getAttribute('type') === 'text' ) {
 			thisValue       = modCollect.collectionNotes[thisCollection][element.id]
-			thisPlaceholder = ( typeof thisValue !== 'undefined' ) ? '' : thisPlaceholder
+			thisPlaceholder = ( thisValue !== null ) ? '' : thisPlaceholder
 		}
 		if ( element.getAttribute('type') === 'checkbox' ) {
 			element.checked = (thisValue !== '') ? thisValue : false
@@ -33,6 +38,8 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 		clientCheckValid(element.id)
 	})
 	
+	fsgUtil.byId('notes_version').value =  modCollect.collectionNotes[thisCollection].notes_version
+
 	if ( typeof modCollect.collectionNotes[thisCollection] !== 'undefined' ) {
 		fsgUtil.byId('notes_notes').innerHTML = modCollect.collectionNotes[thisCollection].notes_notes || ''
 	}

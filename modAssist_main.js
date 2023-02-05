@@ -21,7 +21,7 @@ const path            = require('path')
 const fs              = require('fs')
 
 const devDebug      = !(app.isPackaged)
-const devTools      = false && !(app.isPackaged)
+const devTools      = true && !(app.isPackaged)
 const skipCache     = false && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 let updaterInterval = null
