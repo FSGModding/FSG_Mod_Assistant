@@ -145,7 +145,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					thisMod.colUUID,
 					thisMod,
 					displayBadges,
-					thisMod.modHub.id
+					thisMod.modHub.id,
+					modCollect.appSettings.game_version
 				))
 
 			} catch (e) {
@@ -309,10 +310,12 @@ function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, admi
 </tr>`
 }
 
-function makeModRow(id, thisMod, badges, modId) {
-	const badgeHTML = Array.from(badges, (badge) => fsgUtil.badge(false, badge))
+function makeModRow(id, thisMod, badges, modId, currentGameVersion) {
+	const badgeHTML        = Array.from(badges, (badge) => fsgUtil.badge(false, badge))
+	const modDisabledClass = ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':''
+	const modColorClass    = thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' )
 
-	return `<tr draggable="true" ondragstart="clientDragOut(event)" onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.modCText('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${(thisMod.canNotUse===true)?' mod-disabled bg-opacity-25 bg-danger':''}" id="${id}">
+	return `<tr draggable="true" ondragstart="clientDragOut(event)" onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.modCText('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${modDisabledClass}${modColorClass}" id="${id}">
 	<td>
 		<input type="checkbox" class="form-check-input mod-row-checkbox" id="${id}__checkbox">
 	</td>
