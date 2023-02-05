@@ -2,6 +2,12 @@
 
 [← Back to main](index.html)
 
+## Opening Preferences
+
+To edit your user preferences, click on the gear icon located in the top bar of the main interface.
+
+![overview](img/interfacemap_topbar.png)
+
 ## Game Path
 
 This sets the path to the game program in order to use the launch button.  In most cases, this will set itself correctly.  The game program is named `FarmingSimulator2022.exe`

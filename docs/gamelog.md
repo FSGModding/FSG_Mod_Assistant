@@ -4,7 +4,12 @@
 
 ## Overview
 
+To open the game log, click on the text document icon located in the top bar of the main interface.
+
 This window allows you to view and filter your game log file.
+
+![overview](img/interfacemap_topbar.png)
+
 
 ![Alt text](img/gamelog-001.png)
 

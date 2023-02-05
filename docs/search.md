@@ -4,9 +4,9 @@
 
 ## Overview
 
-Often times you may know you have a specific mod but are unsure where it might be.  The find all feature can help.  It is activated with the spy glass button in the title bar at the upper left.
+Often times you may know you have a specific mod but are unsure where it might be.  The find all feature can help.  It is activated with the spy glass button in the title bar at the upper left, directly next to the launch button
 
-![overview](img/findall-001.png)
+![overview](img/interfacemap_topbar.png)
 
 ## Find All Display
 
