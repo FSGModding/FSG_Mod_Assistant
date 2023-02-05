@@ -4,9 +4,9 @@
 
 ## Opening the tool
 
-The tool for checking versions across collections is located in the upper left corner of the interface.
+The tool for checking versions across collections is located as the last item in the side bar
 
-![Main Window](img/version-001.png)
+![overview](img/ifacemap_side.png)
 
 ## Matching Version
 
@@ -14,7 +14,7 @@ When a mod exists in multiple collections, but all of those collections have the
 
 In this example, this mod appears in 5 collections.
 
-![Match](img/version-003.png)
+![Mismatch](img/version-002.png)
 
 ## Non-Matching Version
 
@@ -22,7 +22,7 @@ If a mod exists in multiple collections, but it is not the same in each, a misma
 
 In this example, the version of the mod in my `fsg_8660` collection is an older version
 
-![Mismatch](img/version-002.png)
+![Main Window](img/version-001.png)
 
 ## Synchronizing Versions
 
@@ -30,7 +30,7 @@ In some cases, different versions of mods in different collections is intended. 
 
 However, if you want to synchronize some or all of the files, double click on the mismatch to bring up the resolve differences window.
 
-![Resolve](img/version-004.png)
+![Match](img/version-003.png)
 
 In this window, fill the checkmark next to the collection or collections you would like to update, and hit the `Yes, Copy Mod(s)` button to proceed. Keep in mind, this will overwrite the old file.
 
