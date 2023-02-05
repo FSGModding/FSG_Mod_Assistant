@@ -12,7 +12,11 @@ ___This is a mod folder switcher with extra tools___
 
 At it's core functionality, this is a file manager, and it has the ability to edit FS22's `gameSettings.xml` file to set one of your mod collections as the mod location the game reads.
 
+![main](img/mainarea-999.png)
+
 ## Detailed Documentation
+
+Please note that this documentation is auto-generated, and may refer to a newer version than you currently have.  If things look a little different, rest assured that you will soon have the features mentioned
 
 - [Main Interface Overview](main.html)
 - [Filter Tools](filter.html)
@@ -27,6 +31,7 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 - [Detail Window](moddetail.html)
 - [User Preferences](preferences.html)
 - [Game Log Viewer](gamelog.html)
+- [Multiple Game Version Mode](multi-version.html)
 - [Frequently Asked Questions](faq.html)
 
 ## What is a Broken Mod?

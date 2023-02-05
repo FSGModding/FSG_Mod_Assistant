@@ -16,15 +16,21 @@ This is a valid, working mod entry
 
 ### An Invalid Mod
 
-This is a broken mod (in fact, it's an audio file).  Note the title, author, version, and size are all omitted.
+This is a broken mod (in fact, the file name is invalid).  Note the title, author, version, and size are all omitted.
 
 ![invalid](img/collect-003.png)
+
+### An Valid Mod for a Different Version
+
+This mod is valid, however it is for FS19.  Please see the [Multiple Game Versions](multi-version.html) documentation on how to do this correctly.
+
+![invalid](img/collect-005.png)
 
 ## Information Displayed
 
 In this section you will see several data items:
 
-- Context color - red is broken, green is selected.
+- Context color - red is broken, yellow is invalid version, and green is selected.
 - the "Short Name" of the mod, which is derived from the file name without the `.ZIP` extension
 - The mod title
 - The mod author
@@ -51,9 +57,9 @@ __Special Note:__ - The Issue badge is based on all the possible issues we know 
 
 ## Selecting Items and Mouse Actions
 
-There are quick selection buttons on the right side of the interface.  The number in white is the number of mods currently selected.
+There are quick selection buttons on the right side of the interface.  The number in white is the number of mods currently selected. Not that None/All/Invert work on the mods currently in view - they will respect searches and filters.
 
-![Alt text](img/collect-005.png)
+![Alt text](img/collect_sel.png)
 
 ### Keyboard Shortcuts
 

@@ -10,9 +10,8 @@ This is what Mod Assistant looks like.  Below, the 4 main areas are broken down 
 
 This area contains functions that tend to apply everywhere, grouped to take up as little space as possible.
 
-![main](img/mainarea-000.png)
+![main](img/interfacemap_topbar.png)
 
-![main](img/maindetail-001.png)
 On the top line, you'll see the application title (drag to move the window), a game launch button, and the title bar buttons.
 
 From left to right, those buttons are:
@@ -20,16 +19,15 @@ From left to right, those buttons are:
 - __Spyglass :__ [Search All Collections](search.html)
 - __Text File :__ [Game Log Viewer](gamelog.html)
 - __Gear :__ [User Preferences](preferences.html)
+- __Question Mark :__ Quick Link to this Help Document
 - __Down Chevron:__ Minimize app to taskbar
 - Standard Minimize, Maximize, and Close
 
-![main](img/maindetail-002.png)
+![main](img/interfacemap_collect.png)
 
 Next line down, you will find the 3 folder buttons and the 3 collection controls which form the [Collection Management](collections.html) section.
 
-On that same line is the button to launch the [Version Check](versions.html) tool.
-
-![main](img/maindetail-003.png)
+![main](img/interfacemap_filter.png)
 
 The last line in this section contains some selection buttons and the [Filter Tools](filter.html)
 
@@ -37,7 +35,7 @@ The last line in this section contains some selection buttons and the [Filter To
 
 The collection area is the main interface of Mod Assistant.
 
-![main](img/mainarea-002.png)
+![main](img/ifacemap_collect.png)
 
 From here, you can easily launch or perform the functions detailed in:
 
@@ -50,7 +48,7 @@ From here, you can easily launch or perform the functions detailed in:
 
 This area contains functions for working directly with mods.
 
-![main](img/mainarea-001.png)
+![main](img/ifacemap_side.png)
 
 Among those functions are:
 
@@ -58,12 +56,13 @@ Among those functions are:
 - [Move and Copy and Delete and Copy Favorites](fileoper.html)
 - Find on ModHub button (opens in default browser)
 - Open in Explorer button
+- The [Version Check](versions.html) tool.
 
 ## Footer Area
 
 Most of the footer area is just some convenience functions
 
-![main](img/mainarea-004.png)
+![main](img/ifacemap_footer.png)
 
 - Link to [FSG Modding](https://www.farmsimgame.com/)
 - Link to [FSG's Discord](https://discord.com/invite/NxrDJYNC7Q)

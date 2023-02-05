@@ -6,7 +6,7 @@
 
 The filter bar allows you to filter your mod collections
 
-![Alt text](img/filter-001.png)
+![Alt text](img/interfacemap_filter.png)
 
 ![Alt text](img/filter-002.png)
 
