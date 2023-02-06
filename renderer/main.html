@@ -28,13 +28,19 @@
 		::-webkit-scrollbar-track-piece:start { margin-top: 122px; }
 		::-webkit-scrollbar-track-piece:end { margin-bottom: 35px; }
 
+
 		#scroll-bar-fake {
 			z-index: -1;
 			width: 6px;
 			height: calc(100vh - 160px);
 			top:125px; right:2px;
+			background-color:rgba(185, 185, 185, 0.273);
+		}
+
+		[data-bs-theme=dark] #scroll-bar-fake {
 			background-color:rgba(66, 66, 66, 0.273);
 		}
+
 		.scroll_col, .scroll_mod { width: 6px; }
 
 		.operation_button {

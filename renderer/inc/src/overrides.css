@@ -105,12 +105,15 @@ tr.mod-list-row td:first-child input { display: none; }
 ::-webkit-scrollbar-track {
 	background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-	background: #3b3b3b65;
+	background: #81818165;
 }
 ::-webkit-scrollbar-thumb:hover {
-	background: #4a4a4a65; 
+	background: #c0c0c065; 
 }
+
+
 ::-webkit-scrollbar-track-piece:start { margin-top: 26px; }
 
 .overflow-custom2 {
