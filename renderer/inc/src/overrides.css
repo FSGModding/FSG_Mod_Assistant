@@ -55,8 +55,14 @@ tr.mod-list-row td:first-child input { display: none; }
 
 .btn-group-win_ui {
 	background-color: var(--bs-tertiary-bg);
-	height: 25px;
-	width: 290px!important;
+	height: 24px;
+	width: auto;
+	right: 127px;
+	position: relative;
+	top: 0px;
+	text-align: right;
+	margin-top: 1px;
+	/* width: 442px!important; */
 }
 
 .btn-win_ui {
