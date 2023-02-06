@@ -334,5 +334,11 @@
 	"launch_game__title": "Start het spel",
 	"cancel_download": "Annuleren Download",
 	"notes_title_version": "Spelversie",
-	"notes_blurb_version": "Voor welke versie van Farming Simulator deze collectie is"
+	"notes_blurb_version": "Voor welke versie van Farming Simulator deze collectie is",
+	"user_pref_title_game_config": "Spelinstellingen",
+	"user_pref_title_game_enabled": "Versie ingeschakeld",
+	"user_pref_blurb_game_enabled": "Activeer deze versie van Farming Simulator in Mod Assistant",
+	"user_pref_title_multi_version": "Multiple Versions Mode",
+	"user_pref_blurb_multi_version": "Indien actief, laat Mod Assistant toe om verschillende versies van Farming Simulator te gebruiken",
+	"game_title_farming_simulator": "Farming Simulator"
 }

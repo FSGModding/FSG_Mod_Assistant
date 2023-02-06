@@ -334,5 +334,11 @@
 	"launch_game__title": "Iniciar o jogo",
 	"cancel_download": "Cancelar Descarregar",
 	"notes_title_version": "Versão do jogo",
-	"notes_blurb_version": "Para que versão do Simulador Agrícola se destina esta colecção"
+	"notes_blurb_version": "Para que versão do Simulador Agrícola se destina esta colecção",
+	"user_pref_title_game_config": "Definições do jogo",
+	"user_pref_title_game_enabled": "Versão Activada",
+	"user_pref_blurb_game_enabled": "Activar esta versão do Simulador de Agricultura em Mod Assistant",
+	"user_pref_title_multi_version": "Modo Versões Múltiplas",
+	"user_pref_blurb_multi_version": "Quando activo, permitir que o Mod Assistant utilize várias versões diferentes do Simulador Agrícola",
+	"game_title_farming_simulator": "Farming Simulator"
 }

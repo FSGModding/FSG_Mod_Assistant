@@ -142,6 +142,13 @@ let gameLogFileWatch  = null
 let gameLogFileBounce = false
 
 const gameExeName = 'FarmingSimulator2022.exe'
+const gameExePick = {
+	22 : 'FarmingSimulator2022.exe',
+	19 : 'FarmingSimulator2019.exe',
+	17 : 'FarmingSimulator2017.exe',
+	15 : 'FarmingSimulator2015.exe',
+	13 : 'FarmingSimulator2013.exe',
+}
 const gameGuesses = [
 	'C:\\Program Files (x86)\\Farming Simulator 2022\\',
 	'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Farming Simulator 22'
@@ -197,6 +204,27 @@ const settingsSchema = {
 	cache_version     : { type : 'string', default : '0.0.0' },
 	rel_notes         : { type : 'string', default : '0.0.0' },
 	game_args         : { type : 'string', default : '' },
+
+	game_enabled_19   : { type : 'boolean', default : false},
+	game_settings_19  : { type : 'string', default : '' },
+	game_path_19      : { type : 'string', default : '' },
+	game_args_19      : { type : 'string', default : '' },
+
+	game_enabled_17   : { type : 'boolean', default : false},
+	game_settings_17  : { type : 'string', default : '' },
+	game_path_17      : { type : 'string', default : '' },
+	game_args_17      : { type : 'string', default : '' },
+
+	game_enabled_15   : { type : 'boolean', default : false},
+	game_settings_15  : { type : 'string', default : '' },
+	game_path_15      : { type : 'string', default : '' },
+	game_args_15      : { type : 'string', default : '' },
+
+	game_enabled_13   : { type : 'boolean', default : false},
+	game_settings_13  : { type : 'string', default : '' },
+	game_path_13      : { type : 'string', default : '' },
+	game_args_13      : { type : 'string', default : '' },
+
 	led_active        : { type : 'boolean', default : true },
 	color_theme       : { type : 'string', default : 'dark', enum : ['dark', 'light', 'system']},
 	game_version      : { type : 'number', default : 22, enum : [22, 19, 17, 15, 13]},
@@ -291,7 +319,13 @@ let gameXML         = null
 let overrideFolder  = null
 let overrideIndex   = '999'
 let overrideActive  = null
-let devControls     = false
+const devControls     = {
+	22 : false,
+	19 : false,
+	17 : false,
+	15 : false,
+	13 : false,
+}
 
 /** Upgrade Cache Version Here */
 
@@ -1292,11 +1326,27 @@ ipcMain.on('toMain_openPrefs', () => { createNamedWindow('prefs') })
 ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setPref', (event, name, value) => {
 	if ( name === 'dev_mode' ) {
-		parseGameXML(value)
+		parseGameXML(22, value)
+	} else if ( name === 'dev_mode_19' ) {
+		parseGameXML(19, value)
+	} else if ( name === 'dev_mode_17' ) {
+		parseGameXML(17, value)
+	} else if ( name === 'dev_mode_15' ) {
+		parseGameXML(15, value)
+	} else if ( name === 'dev_mode_13' ) {
+		parseGameXML(13, value)
 	} else {
 		mcStore.set(name, value)
 		if ( name === 'lock_lang' ) { mcStore.set('force_lang', myTranslator.currentLocale) }
 	}
+
+	if ( name.startsWith('game_enabled') ) {
+		parseGameXML(19, null)
+		parseGameXML(17, null)
+		parseGameXML(15, null)
+		parseGameXML(13, null)
+	}
+
 	event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
 })
 ipcMain.on('toMain_resetWindows', () => {
@@ -1351,18 +1401,35 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 		event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 	}, 1500)
 })
-ipcMain.on('toMain_setPrefFile', (event) => {
+ipcMain.on('toMain_setPrefFile', (event, version) => {
+	const pathBestGuessNew = pathBestGuess.replace(/FarmingSimulator20\d\d/, `FarmingSimulator20${version}`)
 	dialog.showOpenDialog(windows.prefs, {
 		properties  : ['openFile'],
-		defaultPath : path.join(pathBestGuess, 'gameSettings.xml'),
+		defaultPath : path.join(pathBestGuessNew, 'gameSettings.xml'),
 		filters     : [
 			{ name : 'gameSettings.xml', extensions : ['xml'] },
 			{ name : 'All', extensions : ['*'] },
 		],
 	}).then((result) => {
 		if ( ! result.canceled ) {
-			mcStore.set('game_settings', result.filePaths[0])
-			gameSettings = result.filePaths[0]
+			switch ( version ) {
+				case 22 :
+					mcStore.set('game_settings', result.filePaths[0])
+					break
+				case 19 :
+				case 17 :
+				case 15 :
+				case 13 :
+					mcStore.set(`game_settings_${version}`, result.filePaths[0])
+					break
+				default :
+					log.log.danger('Unknown version for game settings', 'game-settings')
+					break
+			}
+			if ( version === mcStore.get('game_version') ) {
+				gameSettings = result.filePaths[0]
+			}
+
 			parseSettings()
 			refreshClientModList()
 			event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
@@ -1371,17 +1438,30 @@ ipcMain.on('toMain_setPrefFile', (event) => {
 		log.log.danger(`Could not read specified gamesettings : ${unknownError}`, 'game-settings')
 	})
 })
-ipcMain.on('toMain_setGamePath', (event) => {
+ipcMain.on('toMain_setGamePath', (event, version) => {
 	dialog.showOpenDialog(windows.prefs, {
 		properties  : ['openFile'],
-		defaultPath : path.join(userHome, gameExeName),
+		defaultPath : path.join(userHome, gameExePick[version]),
 		filters     : [
-			{ name : gameExeName, extensions : ['exe'] },
+			{ name : gameExePick[version], extensions : ['exe'] },
 			{ name : 'All', extensions : ['*'] },
 		],
 	}).then((result) => {
 		if ( ! result.canceled ) {
-			mcStore.set('game_path', result.filePaths[0])
+			switch ( version ) {
+				case 22:
+					mcStore.set('game_path', result.filePaths[0])
+					break
+				case 19 :
+				case 17 :
+				case 15 :
+				case 13 :
+					mcStore.set(`game_path_${version}`, result.filePaths[0])
+					break
+				default:
+					log.log.danger('Unknown game path setting!', 'game-path')
+					break
+			}
 			parseSettings()
 			refreshClientModList()
 			event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
@@ -1624,6 +1704,9 @@ ipcMain.on('toMain_selectInMain',   (event, selectList) => {
 })
 ipcMain.on('toMain_openSaveFolder', () => { openSaveGame(false) })
 ipcMain.on('toMain_openSaveZIP',    () => { openSaveGame(true) })
+ipcMain.on('toMain_openHubByID',    (event, hubID) => {
+	shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${hubID}`)
+})
 
 function openSaveGame(zipMode = false) {
 	const options = {
@@ -1747,8 +1830,13 @@ function loadGameLog(newPath = false) {
 		}
 	}
 }
-function parseGameXML(devMode = null) {
-	const gameXMLFile = gameSettings.replace('gameSettings.xml', 'game.xml')
+function parseGameXML(version = 22, devMode = null) {
+	const gameSettingsKey     = version === 22 ? 'game_settings' : `game_settings_${version}`
+	const gameEnabledValue    = version === 22 ? true : mcStore.get(`game_enabled_${version}`)
+	const thisGameSettingsXML = mcStore.get(gameSettingsKey)
+	const gameXMLFile         = thisGameSettingsXML.replace('gameSettings.xml', 'game.xml')
+
+	if ( !gameEnabledValue ) { return }
 
 	let   XMLString = ''
 	const XMLParser = new fxml.XMLParser({
@@ -1760,15 +1848,15 @@ function parseGameXML(devMode = null) {
 	try {
 		XMLString = fs.readFileSync(gameXMLFile, 'utf8')
 	} catch (e) {
-		log.log.danger(`Could not read game xml ${e}`, 'game-xml')
+		log.log.danger(`Could not read game xml (version:${version}) ${e}`, 'game-xml')
 		return
 	}
 
 	try {
 		gameXML = XMLParser.parse(XMLString)
-		devControls = gameXML.game.development.controls
+		devControls[version] = gameXML.game.development.controls
 	} catch (e) {
-		log.log.danger(`Could not read game xml ${e}`, 'game-xml')
+		log.log.danger(`Could not read game xml (version:${version}) ${e}`, 'game-xml')
 	}
 	
 	if ( devMode !== null ) {
@@ -1789,10 +1877,13 @@ function parseGameXML(devMode = null) {
 			log.log.danger(`Could not write game xml ${e}`, 'game-xml')
 		}
 
-		parseGameXML(null)
+		parseGameXML(version, null)
 	}
 }
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
+
+	// TODO: make version dependant!
+
 	if ( ! gameSettings.endsWith('.xml') ) {
 		log.log.danger(`Game settings is not an xml file ${gameSettings}, fixing`, 'game-settings')
 		gameSettings = path.join(pathBestGuess, 'gameSettings.xml')
@@ -2007,7 +2098,11 @@ function processModFoldersOnDisk() {
 	modCollect.processPromise.then(() => {
 		foldersDirty = false
 		parseSettings()
-		parseGameXML()
+		parseGameXML(22, null)
+		parseGameXML(19, null)
+		parseGameXML(17, null)
+		parseGameXML(15, null)
+		parseGameXML(13, null)
 		refreshClientModList()
 
 		if ( mcStore.get('rel_notes') !== app.getVersion() ) {

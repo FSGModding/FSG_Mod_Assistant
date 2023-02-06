@@ -46,8 +46,8 @@ contextBridge.exposeInMainWorld(
 		cleanCache    : () => { ipcRenderer.send('toMain_cleanCacheFile') },
 		clearCache    : () => { ipcRenderer.send('toMain_clearCacheFile') },
 		resetWindows  : () => { ipcRenderer.send('toMain_resetWindows') },
-		setGamePath   : () => { ipcRenderer.send('toMain_setGamePath') },
-		setPrefFile   : () => { ipcRenderer.send('toMain_setPrefFile') },
+		setGamePath   : (ver = 22) => { ipcRenderer.send('toMain_setGamePath', ver) },
+		setPrefFile   : (ver = 22) => { ipcRenderer.send('toMain_setPrefFile', ver) },
 		showChangelog : () => { ipcRenderer.send('toMain_showChangelog') },
 		setPref : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
 		receive   : ( channel, func ) => {

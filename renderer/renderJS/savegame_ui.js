@@ -38,6 +38,8 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 })
 
 window.mods.receive('fromMain_saveInfo', (modCollect) => {
+	console.log(modCollect)
+
 	const savegame   = modCollect.opts.thisSaveGame
 	const fullModSet = new Set()
 	const haveModSet = {}
@@ -153,7 +155,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 			}
 		}
 
-		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm))
+		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm, modCollect.modHub.list.mods[thisMod]))
 	})
 
 	fsgUtil.byId('modList').innerHTML = modSetHTML.join('')
@@ -174,7 +176,7 @@ function updateCounts() {
 	})
 }
 
-function makeLine(name, mod, singleFarm) {
+function makeLine(name, mod, singleFarm, hubID) {
 	const badges   = ['versionMismatch', 'scriptOnly', 'isUsed', 'isLoaded']
 	const thisHTML = []
 	let colorClass = ''
@@ -192,6 +194,13 @@ function makeLine(name, mod, singleFarm) {
 	}
 	
 	thisHTML.push(`<li class="mod-item list-group-item d-flex justify-content-between align-items-start ${colorClass}">`)
+	thisHTML.push('<div class="h-100 mt-1" style="width: 30px;">')
+
+	if ( typeof hubID !== 'undefined' ) {
+		thisHTML.push(`<button onclick="window.mods.openHUB(${hubID})" class="btn btn-sm btn-secondary"><i class="bi bi-search-heart"></i><l10n class="d-none" name="open_hub"></l10n></button>`)
+	}
+
+	thisHTML.push('</div>')
 	thisHTML.push('<div class="ms-2 me-auto">')
 	thisHTML.push(`<div class="fw-bold">${name}</div>`)
 	thisHTML.push(`<div class="small">${mod.title}</div>`)

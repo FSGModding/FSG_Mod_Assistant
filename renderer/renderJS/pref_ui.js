@@ -9,6 +9,8 @@
 /* global processL10N, fsgUtil */
 
 window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
+	console.log(allSettings)
+	console.log(devControls)
 	updatePrefs(allSettings, devControls)
 	window.l10n.langList_send()
 	window.l10n.themeList_send()
@@ -16,20 +18,29 @@ window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
 })
 
 function updatePrefs(allSettings, devControls) {
-	fsgUtil.byId('dev_mode').checked = devControls
+	fsgUtil.byId('dev_mode').checked    = devControls[22]
+	fsgUtil.byId('dev_mode_19').checked = devControls[19]
+	fsgUtil.byId('dev_mode_17').checked = devControls[17]
+	fsgUtil.byId('dev_mode_15').checked = devControls[15]
+	fsgUtil.byId('dev_mode_13').checked = devControls[13]
 
 	Object.keys(allSettings).forEach((name) => {
 		const formControl = fsgUtil.byId(name)
 		if ( formControl !== null ) {
-			if ( formControl.tagName === 'EM' ) {
-				formControl.innerHTML = allSettings[name]
-			} else if ( formControl.getAttribute('type') === 'checkbox' ) {
+			if ( formControl.getAttribute('type') === 'checkbox' ) {
 				formControl.checked = allSettings[name]
 			} else {
 				formControl.value = allSettings[name]
 			}
 		}
 	})
+
+	fsgUtil.query('.multi-version-pref').forEach((element) => { element.classList[allSettings.multi_version?'remove':'add']('d-none') })
+
+	fsgUtil.query('.game_enabled_19').forEach((element) => { element.classList[allSettings.game_enabled_19?'remove':'add']('d-none') })
+	fsgUtil.query('.game_enabled_17').forEach((element) => { element.classList[allSettings.game_enabled_17?'remove':'add']('d-none') })
+	fsgUtil.query('.game_enabled_15').forEach((element) => { element.classList[allSettings.game_enabled_15?'remove':'add']('d-none') })
+	fsgUtil.query('.game_enabled_13').forEach((element) => { element.classList[allSettings.game_enabled_13?'remove':'add']('d-none') })
 }
 
 function clientSetPref(id) {

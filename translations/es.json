@@ -334,5 +334,11 @@
 	"launch_game__title": "Comienza el juego",
 	"cancel_download": "Cancelar descarga",
 	"notes_title_version": "Versión del juego",
-	"notes_blurb_version": "Para qué versión de Farming Simulator es esta colección"
+	"notes_blurb_version": "Para qué versión de Farming Simulator es esta colección",
+	"user_pref_title_game_config": "Ajustes del juego",
+	"user_pref_title_game_enabled": "Versión activada",
+	"user_pref_blurb_game_enabled": "Activa esta versión de Farming Simulator en Mod Assistant",
+	"user_pref_title_multi_version": "Modo de versiones múltiples",
+	"user_pref_blurb_multi_version": "Cuando está activo, permite que Mod Assistant utilice varias versiones diferentes de Farming Simulator",
+	"game_title_farming_simulator": "Farming Simulator"
 }
