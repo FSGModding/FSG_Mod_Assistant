@@ -1077,6 +1077,11 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	l10nSet.forEach((l10nEntry) => {
 		if ( l10nEntry === 'app_version' ) {
 			event.sender.send('fromMain_getText_return', [l10nEntry, app.getVersion()])
+		} else if ( l10nEntry === 'game_icon' ) {
+			event.sender.send('fromMain_getText_return', [
+				l10nEntry,
+				`<img src="img/fs${mcStore.get('game_version')}.png" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
+			])
 		} else if ( l10nEntry === 'game_version') {
 			if ( mcStore.get('multi_version') || mcStore.get('game_version') !== 22 ) {
 				myTranslator.stringLookup(`mod_badge_fs${mcStore.get('game_version')}`).then((text) => {
