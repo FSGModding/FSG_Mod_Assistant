@@ -8,6 +8,8 @@
 
 /* global processL10N, fsgUtil */
 
+//TODO : make version aware
+
 let lastSourceMods = null
 
 window.mods.receive('fromMain_subWindowSelectAll', () => {

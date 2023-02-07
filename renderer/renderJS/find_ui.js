@@ -8,6 +8,8 @@
 
 /* global processL10N, fsgUtil*/
 
+//TODO : make version aware
+
 let fullList     = {}
 let fullListSort = []
 

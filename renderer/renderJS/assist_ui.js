@@ -61,6 +61,8 @@ let lastList        = null
 let fullList        = {}
 
 window.mods.receive('fromMain_modList', (modCollect) => {
+	const multiVersion = modCollect.appSettings.multi_version
+	const curVersion   = modCollect.appSettings.game_version
 	searchStringMap = {}
 	searchTagMap    = {
 		broken  : [],
@@ -80,6 +82,11 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	fsgUtil.byId('dirty_folders').classList[(modCollect.opts.foldersDirty)?'remove':'add']('d-none')
 
+	const versionsHTML = [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings))
+	fsgUtil.byId('farm_sim_versions').innerHTML = versionsHTML.join('')
+	fsgUtil.byId('multi_version_button').classList[(modCollect.appSettings.multi_version)?'remove':'add']('d-none')
+
+
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 	const lastOpenQ   = (lastOpenAcc !== null) ? fsgUtil.byId('filter_input').value : ''
@@ -98,8 +105,12 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	modCollect.set_Collections.forEach((collectKey) => {
 		fullList[`collection--${collectKey}`] = modCollect.modList[collectKey].fullName
-		optList.push(fsgUtil.buildSelectOpt(`collection--${collectKey}`, modCollect.modList[collectKey].fullName, lastList, false, modCollect.collectionToFolder[collectKey]))
-		
+		if ( !multiVersion || modCollect.collectionNotes[collectKey].notes_version === curVersion ) {
+			optList.push(fsgUtil.buildSelectOpt(`collection--${collectKey}`, modCollect.modList[collectKey].fullName, lastList, false, modCollect.collectionToFolder[collectKey]))
+		}
+		if ( multiVersion && `collection--${collectKey}` === lastList && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) {
+			lastList = '999'
+		}
 	})
 
 	fullList[999] = `--${modCollect.opts.l10n.unknown}--`
@@ -110,6 +121,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 
 	modCollect.set_Collections.forEach((collectKey) => {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
 		const thisCollection = modCollect.modList[collectKey]
 		const collectNotes   = modCollect.collectionNotes?.[collectKey]
 		const modRows        = []
@@ -331,6 +343,26 @@ function makeModRow(id, thisMod, badges, modId, currentGameVersion) {
 </tr>`
 }
 
+function makeVersionRow(version, options) {
+	const thisVersionEnabled = version === 22 ? true : options[`game_enabled_${version}`]
+	const backGroundClass    = version === options.game_version ? 'bg-success' : 'bg-primary'
+
+	if ( !thisVersionEnabled && version !== options.game_version ) { return '' }
+
+	return `<div data-bs-dismiss="offcanvas" class="row ${backGroundClass} mb-3 mx-2 py-2 rounded-2 d-flex align-items-baseline" style="cursor: pointer;" onclick="clientSetGameVersion(${version})">
+		<div class="col-3">
+			<img src="img/fs${version}_256.png" class="img-fluid">
+		</div>
+		<div class="col-9 text-white" style="font-size: 150%">
+			<l10n name="game_title_farming_simulator"></l10n> 20${version}
+		</div>
+	</div>`
+}
+
+function clientSetGameVersion(version) {
+	window.mods.changeVersion(version)
+	console.log(`Set version to ${version}`)
+}
 function clientClearInput() { select_lib.filter(null, '') }
 
 function clientBatchOperation(mode) {

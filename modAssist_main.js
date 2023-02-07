@@ -303,14 +303,6 @@ const windows = {
 let foldersDirty = true
 let firstMin     = true
 
-let gameSettings    = mcStore.get('game_settings')
-
-if ( ! gameSettings.endsWith('.xml') ) {
-	gameSettings = path.join(pathBestGuess, 'gameSettings.xml')
-	mcStore.set('game_settings', gameSettings)
-}
-
-
 let currentColorTheme = mcStore.get('color_theme')
 if ( currentColorTheme === 'system' ) { currentColorTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light' }
 
@@ -655,6 +647,7 @@ const subWindows   = {
 		callback        : () => { windows.prefs.webContents.send( 'fromMain_allSettings', mcStore.store, devControls ) },
 		refocusCallback : true,
 		handleURLinWin  : true,
+		extraCloseFunc  : () => { refreshClientModList() },
 	},
 	detail : {
 		winName         : 'detail',
@@ -677,6 +670,7 @@ const subWindows   = {
 		subWindowArgs   : { parent : 'main', preload : 'notesWindow' },
 		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_collectionName', 'notes', false ) },
 		refocusCallback : true,
+		extraCloseFunc  : () => { refreshClientModList() },
 	},
 	version : {
 		winName         : 'version',
@@ -997,6 +991,8 @@ ipcMain.on('toMain_dropFolder', (event, newFolder) => {
 		modFolders.add(newFolder)
 		foldersDirty = true
 		mcStore.set('modFolders', Array.from(modFolders))
+		const thisFolderCollectKey = modCollect.getFolderHash(newFolder)
+		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
 		processModFolders()
 	} else {
 		log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
@@ -1082,6 +1078,14 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 				l10nEntry,
 				`<img src="img/fs${mcStore.get('game_version')}.png" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
 			])
+		} else if ( l10nEntry === 'game_icon_lg' ) {
+			event.sender.send('fromMain_getText_return', [
+				l10nEntry,
+				`<img src="img/fs${mcStore.get('game_version')}_256.png" class="img-fluid" style="height: 69px;"/>`
+			])
+			myTranslator.stringTitleLookup(l10nEntry).then((text) => {
+				if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
+			})
 		} else if ( l10nEntry === 'game_version') {
 			if ( mcStore.get('multi_version') || mcStore.get('game_version') !== 22 ) {
 				myTranslator.stringLookup(`mod_badge_fs${mcStore.get('game_version')}`).then((text) => {
@@ -1238,7 +1242,7 @@ ipcMain.on('toMain_notesContextMenu', async (event) => {
 
 /** Game log window operation */
 ipcMain.on('toMain_openGameLog',       () => { createNamedWindow('gamelog') })
-ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(path.join(path.dirname(gameSettings), 'log.txt')) })
+ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(mcStore.get('game_log_file')) })
 ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
 ipcMain.on('toMain_changeGameLog',     () => {
 	dialog.showOpenDialog(windows.prefs, {
@@ -1283,13 +1287,16 @@ ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_de
 
 /** Game launcher */
 function gameLauncher() {
-	const progPath = mcStore.get('game_path')
+	const currentVersion = mcStore.get('game_version')
+	const gamePathKey    = ( currentVersion === 22 ) ? 'game_path' : `game_path_${currentVersion}`
+	const gameArgsKey    = ( currentVersion === 22 ) ? 'game_args' : `game_args_${currentVersion}`
+	const progPath       = mcStore.get(gamePathKey)
 	if ( progPath !== '' && fs.existsSync(progPath) ) {
 		loadingWindow_open('launch')
 		loadingWindow_noCount()
 		loadingWindow_hide(3500)
 		const cp       = require('child_process')
-		const child    = cp.spawn(progPath, mcStore.get('game_args').split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
+		const child    = cp.spawn(progPath, mcStore.get(gameArgsKey).split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
 		child.unref()
 	} else {
 		const dialogOpts = {
@@ -1431,9 +1438,6 @@ ipcMain.on('toMain_setPrefFile', (event, version) => {
 					log.log.danger('Unknown version for game settings', 'game-settings')
 					break
 			}
-			if ( version === mcStore.get('game_version') ) {
-				gameSettings = result.filePaths[0]
-			}
 
 			parseSettings()
 			refreshClientModList()
@@ -1475,6 +1479,11 @@ ipcMain.on('toMain_setGamePath', (event, version) => {
 		log.log.danger(`Could not read specified game EXE : ${unknownError}`, 'game-path')
 	})
 })
+ipcMain.on('toMain_setGameVersion', (event, newVersion) => {
+	mcStore.set('game_version', newVersion)
+	parseSettings()
+	refreshClientModList()
+})
 /** END: Preferences window operation */
 
 
@@ -1486,22 +1495,12 @@ ipcMain.on('toMain_openNotes', (event, collectKey) => {
 	})
 })
 ipcMain.on('toMain_setNote', (event, id, value, collectKey) => {
-	const dirtyActions = [
-		'notes_website',
-		'notes_websiteDL',
-		'notes_favorite',
-		'notes_tagline',
-		'notes_admin',
-	]
-	if ( dirtyActions.includes(id) ) {
-		foldersDirty = true
-		sendFoldersDirtyUpdate()
-	}
+	const cleanValue = ( id === 'notes_version' ) ? parseInt(value, 10) : value
 
-	if ( value === '' ) {
+	if ( cleanValue === '' ) {
 		modNote.delete(`${collectKey}.${id}`)
 	} else {
-		modNote.set(`${collectKey}.${id}`, value)
+		modNote.set(`${collectKey}.${id}`, cleanValue)
 	}
 
 	createNamedWindow('notes', {
@@ -1886,17 +1885,25 @@ function parseGameXML(version = 22, devMode = null) {
 	}
 }
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
+	// Version must be the one of the newFolder *or* the current
+	let currentVersion = mcStore.get('game_version', 22)
 
-	// TODO: make version dependant!
+	if ( newFolder !== null ) {
+		const thisFolderCollectKey = modCollect.mapFolderToCollection(newFolder)
+		currentVersion = modNote.get(`${thisFolderCollectKey}.notes_version`, 22)
+	}
 
-	if ( ! gameSettings.endsWith('.xml') ) {
-		log.log.danger(`Game settings is not an xml file ${gameSettings}, fixing`, 'game-settings')
-		gameSettings = path.join(pathBestGuess, 'gameSettings.xml')
-		mcStore.set('game_settings', gameSettings)
+	console.log(`DEBUG: ${currentVersion}`)
+
+	const gameSettingsKey = ( currentVersion === 22 ) ? 'game_settings' : `game_settings_${currentVersion}`
+	const gameSettingsFileName = mcStore.get(gameSettingsKey, '')
+
+	if ( ! gameSettingsFileName.endsWith('.xml') ) {
+		log.log.danger(`Game settings is not an xml file ${gameSettingsFileName} - cannot continue!`, 'game-settings')
 	}
 
 	if ( mcStore.get('game_log_file') === null ) {
-		mcStore.set('game_log_file', path.join(path.dirname(gameSettings), 'log.txt'))
+		mcStore.set('game_log_file', path.join(path.dirname(gameSettingsFileName), 'log.txt'))
 	}
 
 	if ( gameLogFileWatch === null ) { loadGameLog() }
@@ -1909,7 +1916,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 	})
 	
 	try {
-		XMLString = fs.readFileSync(gameSettings, 'utf8')
+		XMLString = fs.readFileSync(gameSettingsFileName, 'utf8')
 	} catch (e) {
 		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
 		return
@@ -1920,7 +1927,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		overrideActive  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']
 		overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory']
 		lastGameSettings = {
-			username : gameSettingsXML.gameSettings?.onlinePresenceName || '',
+			username : gameSettingsXML.gameSettings?.onlinePresenceName || gameSettingsXML.gameSettings?.player?.name || '',
 			password : gameSettingsXML.gameSettings?.joinGame?.['@_password'] || '',
 			server   : gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] || '',
 		}
@@ -1950,15 +1957,21 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		}
 
 		if ( userName !== null ) {
-			gameSettingsXML.gameSettings.onlinePresenceName = userName
+			if ( currentVersion === 22 ) {
+				gameSettingsXML.gameSettings.onlinePresenceName = userName // 22
+			} else if ( currentVersion === 19 ) {
+				gameSettingsXML.gameSettings.player.name = userName // 19
+			}
 		}
 
-		if ( password !== null && typeof gameSettingsXML.gameSettings?.joinGame?.['@_password'] !== 'undefined' ) {
-			gameSettingsXML.gameSettings.joinGame['@_password'] = password
-		}
+		if ( currentVersion === 22 || currentVersion === 19 ) {
+			if ( password !== null && typeof gameSettingsXML.gameSettings?.joinGame?.['@_password'] !== 'undefined' ) {
+				gameSettingsXML.gameSettings.joinGame['@_password'] = password
+			}
 
-		if ( serverName !== null && typeof gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] !== 'undefined') {
-			gameSettingsXML.gameSettings.joinGame['@_serverName'] = serverName
+			if ( serverName !== null && typeof gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] !== 'undefined') {
+				gameSettingsXML.gameSettings.joinGame['@_serverName'] = serverName
+			}
 		}
 
 		
@@ -1976,7 +1989,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 
 			outputXML = outputXML.replace('<ingameMapFruitFilter/>', '<ingameMapFruitFilter></ingameMapFruitFilter>')
 
-			fs.writeFileSync(gameSettings, outputXML)
+			fs.writeFileSync(gameSettingsFileName, outputXML)
 		} catch (e) {
 			log.log.danger(`Could not write game settings ${e}`, 'game-settings')
 		}

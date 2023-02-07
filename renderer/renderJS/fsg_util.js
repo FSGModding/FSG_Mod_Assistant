@@ -191,10 +191,12 @@ window?.l10n?.receive('fromMain_getText_return', (data) => {
 
 window?.l10n?.receive('fromMain_getText_return_title', (data) => {
 	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
-
 		let thisTitle = item.closest('button')
 		thisTitle ??= item.closest('span')
 		thisTitle ??= item.closest('label')
+
+		if ( data[0] === 'game_icon_lg' ) { thisTitle = item.closest('#multi_version_button') }
+
 		if ( thisTitle !== null ) {
 			thisTitle.title = data[1]
 			new bootstrap.Tooltip(thisTitle)

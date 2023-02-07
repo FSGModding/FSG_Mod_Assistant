@@ -8,6 +8,7 @@
 
 /* global fsgUtil, getText, processL10N */
 
+//TODO : make version aware
 
 let lastModCollect     = null
 let lastFolderRelative = null

@@ -8,6 +8,7 @@
 
 /* global processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple */
 
+//TODO : make version aware
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
 	const modRecord = modCollect.opts.selected

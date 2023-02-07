@@ -340,5 +340,7 @@
 	"user_pref_blurb_game_enabled": "Activeer deze versie van Farming Simulator in Mod Assistant",
 	"user_pref_title_multi_version": "Multiple Versions Mode",
 	"user_pref_blurb_multi_version": "Indien actief, laat Mod Assistant toe om verschillende versies van Farming Simulator te gebruiken",
-	"game_title_farming_simulator": "Farming Simulator"
+	"game_title_farming_simulator": "Farming Simulator",
+	"offcanvas_blurb": "Selecteer welke versie van Farming Simulator u actief wilt hebben.",
+	"game_icon_lg__title": "Verander de versie van Farming Simulator"
 }

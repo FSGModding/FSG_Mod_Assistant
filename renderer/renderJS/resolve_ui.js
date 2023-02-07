@@ -8,6 +8,8 @@
 
 /* global processL10N, fsgUtil, getText */
 
+
+// TODO: make version aware
 let cacheShortName   = null
 let cacheCollection  = null
 

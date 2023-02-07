@@ -334,11 +334,13 @@
 	"launch_game__title": "Das Spiel beginnen",
 	"cancel_download": "Download abbrechen",
 	"notes_title_version": "Game Version",
-	"notes_blurb_version": "Für welche Version des Landwirtschafts-Simulators ist diese Sammlung?",
+	"notes_blurb_version": "Für welche Version des Landwirtschafts-Simulator ist diese Sammlung?",
 	"user_pref_title_game_config": "Spiel-Einstellungen",
 	"user_pref_title_game_enabled": "Version aktiviert",
 	"user_pref_blurb_game_enabled": "Aktivieren Sie diese Version von Landwirtschafts-Simulator im Mod-Assistenten",
 	"user_pref_title_multi_version": "Modus Mehrere Versionen",
-	"user_pref_blurb_multi_version": "Wenn aktiv, kann der Mod-Assistent mehrere verschiedene Versionen des Landwirtschafts-Simulators verwenden",
-	"game_title_farming_simulator": "Landwirtschafts-Simulator"
+	"user_pref_blurb_multi_version": "Wenn aktiv, kann der Mod-Assistent mehrere verschiedene Versionen des Landwirtschafts-Simulator verwenden",
+	"game_title_farming_simulator": "Landwirtschafts-Simulator",
+	"offcanvas_blurb": "Wählen Sie die Version des Landwirtschafts-Simulator aus, die Sie aktivieren möchten",
+	"game_icon_lg__title": "Ändern Sie die Version des Landwirtschafts-Simulator"
 }

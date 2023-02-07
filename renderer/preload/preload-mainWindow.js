@@ -52,6 +52,7 @@ contextBridge.exposeInMainWorld(
 		versionCheck    : () => { ipcRenderer.send('toMain_versionCheck' ) },
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
 		makeInactive    : () => { ipcRenderer.send('toMain_makeInactive' ) },
+		changeVersion   : (ver) => { ipcRenderer.send('toMain_setGameVersion', ver) },
 		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
 		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
 

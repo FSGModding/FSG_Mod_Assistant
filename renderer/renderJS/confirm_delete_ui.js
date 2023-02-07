@@ -8,6 +8,8 @@
 
 /* global fsgUtil, processL10N */
 
+//TODO : make version aware
+
 let lastRec            = null
 let lastFolderRelative = null
 

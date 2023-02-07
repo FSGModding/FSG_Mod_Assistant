@@ -9,6 +9,8 @@
 /* global fsgUtil, processL10N, getText */
 
 
+// TODO: make version aware
+
 window.mods.receive('fromMain_modList', (modCollect) => {
 	const nameIconMap        = {}
 	const collectionMap      = {}
