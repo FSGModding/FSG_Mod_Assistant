@@ -6,12 +6,12 @@
 
 // Version window UI
 
-/* global fsgUtil, processL10N, getText */
+/* global fsgUtil, processL10N */
 
-
-// TODO: make version aware
 
 window.mods.receive('fromMain_modList', (modCollect) => {
+	const doMultiVersion     = modCollect.appSettings.multi_version
+	const thisVersion        = modCollect.appSettings.game_version
 	const nameIconMap        = {}
 	const collectionMap      = {}
 	const nameTitleMap       = {}
@@ -19,6 +19,11 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const versionListNoMatch = {}
 
 	modCollect.set_Collections.forEach((collectKey) => {
+		if ( doMultiVersion ) {
+			if ( modCollect.collectionNotes[collectKey].notes_version !== thisVersion ) {
+				return
+			}
+		}
 		collectionMap[collectKey] = modCollect.collectionToName[collectKey]
 		modCollect.modList[collectKey].modSet.forEach((modKey) => {
 			const mod     = modCollect.modList[collectKey].mods[modKey]
@@ -70,25 +75,15 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 
 function makeLine(type, realName, shortName, collections, icon) {
-	const color = ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger'
-	const l10n  = ( type === 'same' ) ? 'version_same' : 'version_diff'
-	const coll  = ( type === 'same' ) ? '' : 'text-body-emphasis'
-	const click = ( type === 'diff' ) ? `oncontextmenu="window.mods.openVersionResolve('${shortName}')" onDblClick="window.mods.openVersionResolve('${shortName}')"` : ''
-
-	return `<li ${click} class="list-group-item d-flex justify-content-between align-items-start ${color}">
-		<div class="row w-100">
-			<div class="col-2 p-0 mx-3" style="width:64px; height:64px;">
-				<img class="img-fluid" src="${fsgUtil.iconMaker(icon)}" />
-			</div>
-			<div class="col-8">
-				<div class="fw-bold">${shortName}</div>
-				<div class="small">${realName}</div>
-				<div class="${coll} small ps-3">${getText('version_collections')}: ${fsgUtil.escapeSpecial(collections.join(', '))}</div>
-			</div>
-			<div class="col-2 text-center">
-				${fsgUtil.badge('dark', l10n, true)}
-			</div>
-		</div>
-	</li>`
+	return fsgUtil.useTemplate('version_line', {
+		color             : ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger',
+		clickCallback     : ( type === 'diff' ) ? `window.mods.openVersionResolve('${shortName}')` : '',
+		collectClass      : ( type === 'same' ) ? '' : 'text-body-emphasis',
+		badge             : fsgUtil.badge('dark', ( type === 'same' ) ? 'version_same' : 'version_diff', true),
+		shortName         : shortName,
+		realName          : realName,
+		icon              : fsgUtil.iconMaker(icon),
+		joinedCollections : fsgUtil.escapeSpecial(collections.join(', ')),
+	})
 }
 

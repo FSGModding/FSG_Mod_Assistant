@@ -29,8 +29,23 @@
 		</div>
 
 		<div class="list-group mx-2 my-3" id="modList"></div>
-
 	</div>
-
 </body>
+
+<template id="version_line">
+	<li oncontextmenu="{{clickCallback}}" ondblclick="{{clickCallback}}" class="list-group-item d-flex justify-content-between align-items-start {{color}}">
+		<div class="row w-100">
+			<div class="col-2 p-0 mx-3" style="width:64px; height:64px;">
+				<img class="img-fluid" src="{{icon}}" />
+			</div>
+			<div class="col-8">
+				<div class="fw-bold">{{shortName}}</div>
+				<div class="small">{{realName}}</div>
+				<div class="{{collectClass}} small ps-3"><l10n name="version_collections"></l10n>: {{joinedCollections}}</div>
+			</div>
+			<div class="col-2 text-center">{{badge}}</div>
+		</div>
+	</li>
+</template>
+
 </html>

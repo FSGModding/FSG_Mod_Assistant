@@ -161,7 +161,15 @@ const fsgUtil = {
 	setTheme : (theme) => {
 		document.body.setAttribute('data-bs-theme', theme)
 	},
+	useTemplate : ( templateName, replacements ) => {
+		let thisTemplate = fsgUtil.byId(templateName).content
 
+		Object.keys(replacements).forEach((key) => {
+			thisTemplate = thisTemplate.replaceAll(new RegExp(`{{${key}}}`, 'g'), replacements[key])
+		})
+
+		return thisTemplate
+	},
 }
 
 /*  __ ____   ______        
