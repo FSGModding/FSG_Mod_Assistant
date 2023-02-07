@@ -27,10 +27,26 @@
 			</div>
 		</div>
 
-		
-
 		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped" id="full_table"></table>
-	</div>
 
+	</div>
 </body>
+
+<template id="version_entry">
+	<dt class="col-9 mb-1 overflow-hidden">{{name}}</dt><dd class="col-3 mb-1 ps-1">{{version}}</dd>
+</template>
+
+<template id="mod_entry">
+	<tr id="{{id}}">
+		<td style="width: 64px; height: 64px">
+			<img class="img-fluid" src="{{icon}}" />
+		</td>
+		<td>
+			<div class="search-string">{{name}}<br /><small>{{title}} - <em>{{author}}</em></small></div>
+		</td>
+		<td class="text-end pe-4">
+			<small><dl class="row g-0">{{versions}}</dl></small>
+		</td>
+	</tr>
+</template>
 </html>

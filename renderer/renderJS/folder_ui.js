@@ -10,7 +10,6 @@
 
 let lastScroll = null
 
-//TODO: make aware of versions
 window.mods.receive('fromMain_getFolders', (modCollect) => {
 	let   folderNum       = 0
 	const localFolderList = []

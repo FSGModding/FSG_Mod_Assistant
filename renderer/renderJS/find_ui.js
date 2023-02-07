@@ -8,14 +8,17 @@
 
 /* global processL10N, fsgUtil*/
 
-//TODO : make version aware
-
 let fullList     = {}
 let fullListSort = []
 
 window.mods.receive('fromMain_modRecords', (modCollect) => {
 	fullList = {}
+
+	const multiVersion = modCollect.appSettings.multi_version
+	const curVersion   = modCollect.appSettings.game_version
+
 	modCollect.set_Collections.forEach((collectKey) => {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
 		modCollect.modList[collectKey].modSet.forEach((modKey) => {
 			const mod = modCollect.modList[collectKey].mods[modKey]
 			if ( ! mod.canNotUse ) {
@@ -41,36 +44,20 @@ window.mods.receive('fromMain_modRecords', (modCollect) => {
 		return 0
 	})
 
-	const modTable = []
-
-	fullListSort.forEach((key) => {
-		modTable.push(makeModRow(fullList[key]))
-	})
-
-	fsgUtil.byId('full_table').innerHTML = modTable.join('')
+	fsgUtil.byId('full_table').innerHTML = fullListSort.map((key) => makeModRow(fullList[key])).join('')
 })
 
-
-function makeModRow(thisMod) {
-	const id       = `${thisMod.name}__mod`
-	const versions = []
-
-	thisMod.collect.forEach((collection) => {
-		versions.push(`<dt class="col-9 mb-1 overflow-hidden">${collection.name}</dt><dd class="col-3 mb-1 ps-1">${collection.version}</dd>`)
-	})
-
-	return `<tr id="${id}">
-	<td style="width: 64px; height: 64px">
-		<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.icon)}" />
-	</td>
-	<td>
-		<div class="search-string">${thisMod.name}<br /><small>${thisMod.title} - <em>${thisMod.author}</em></small></div>
-	</td>
-	<td class="text-end pe-4">
-		<small><dl class="row g-0">${versions.join('')}</dl></small>
-	</td>
-</tr>`
-}
+const makeModRow = (thisMod) => fsgUtil.useTemplate('mod_entry', {
+	id       : `${thisMod.name}__mod`,
+	icon     : fsgUtil.iconMaker(thisMod.icon),
+	name     : thisMod.name,
+	title    : thisMod.title,
+	author   : thisMod.author,
+	versions : thisMod.collect.map((collection) => fsgUtil.useTemplate('version_entry', {
+		name    : collection.name,
+		version : collection.version,
+	})).join(''),
+})
 
 function clientClearInput() {
 	fsgUtil.byId('mods__filter').value = ''
@@ -103,6 +90,7 @@ function clientRightClick(id) {
 		})
 	}
 }
+
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 	document.getElementById('full_table').addEventListener('contextmenu', (e) => {
