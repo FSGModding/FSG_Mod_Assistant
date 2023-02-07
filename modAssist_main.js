@@ -793,15 +793,7 @@ ipcMain.on('toMain_populateClipboard', (event, text) => { clipboard.writeText(te
 
 /** File operation buttons */
 ipcMain.on('toMain_makeInactive', () => { parseSettings({ disable : true }) })
-ipcMain.on('toMain_makeActive',   (event, newList) => {
-	parseSettings({
-		newFolder  : modCollect.mapCollectionToFolder(newList),
-		userName   : modNote.get(`${newList}.notes_username`, null),
-		password   : modNote.get(`${newList}.notes_password`, null),
-		serverName : modNote.get(`${newList}.notes_server`, null),
-	})
-})
-
+ipcMain.on('toMain_makeActive',   (event, newList) => { newSettingsFile(newList) })
 ipcMain.on('toMain_openMods',     (event, mods) => {
 	const thisCollectionFolder = modCollect.mapCollectionToFolder(mods[0].split('--')[0])
 	const thisMod              = modCollect.modColUUIDToRecord(mods[0])
@@ -902,6 +894,8 @@ ipcMain.on('toMain_addFolder', () => {
 			if ( ! alreadyExists ) {
 				modFolders.add(result.filePaths[0]); foldersDirty = true
 				mcStore.set('modFolders', Array.from(modFolders))
+				const thisFolderCollectKey = modCollect.getFolderHash(result.filePaths[0])
+				modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
 				processModFolders(result.filePaths[0])
 			} else {
 				log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
@@ -1191,18 +1185,9 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const template  = [
 		{ label : myTranslator.syncStringLookup('context_main_title').padEnd(subLabel.length, ' '), sublabel : subLabel },
 		{ type  : 'separator' },
-		{ label : myTranslator.syncStringLookup('list-active'), enabled : (colFolder !== overrideFolder), click : () => {
-			parseSettings({
-				newFolder  : modCollect.mapCollectionToFolder(collection),
-				userName   : modNote.get(`${collection}.notes_username`, null),
-				password   : modNote.get(`${collection}.notes_password`, null),
-				serverName : modNote.get(`${collection}.notes_server`, null),
-			})
-		} },
+		{ label : myTranslator.syncStringLookup('list-active'), enabled : (colFolder !== overrideFolder), click : () => { newSettingsFile(collection) } },
 		{ type  : 'separator' },
-		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {
-			shell.openPath(modCollect.mapCollectionToFolder(collection))
-		}}
+		{ label : myTranslator.syncStringLookup('open_folder'), click : () => { shell.openPath(modCollect.mapCollectionToFolder(collection)) }}
 	]
 
 	const noteItems = ['username', 'password', 'website', 'admin', 'server']
@@ -1883,6 +1868,15 @@ function parseGameXML(version = 22, devMode = null) {
 
 		parseGameXML(version, null)
 	}
+}
+
+function newSettingsFile(newList) {
+	parseSettings({
+		newFolder  : modCollect.mapCollectionToFolder(newList),
+		userName   : modNote.get(`${newList}.notes_username`, null),
+		password   : modNote.get(`${newList}.notes_password`, null),
+		serverName : modNote.get(`${newList}.notes_server`, null),
+	})
 }
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
 	// Version must be the one of the newFolder *or* the current
