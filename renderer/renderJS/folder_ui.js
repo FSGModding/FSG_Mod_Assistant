@@ -6,7 +6,7 @@
 
 // Folder window UI
 
-/* global processL10N, fsgUtil, getText */
+/* global processL10N, fsgUtil */
 
 let lastScroll = null
 
@@ -18,10 +18,14 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 
 	modCollect.set_Collections.forEach((collectKey) => {
 		localFolderList.push(makeFolderLine(
-			modCollect.collectionToFolder[collectKey],
-			modCollect.collectionToFolderRelative[collectKey],
-			modCollect.collectionToName[collectKey],
-			modCollect.collectionToFullName[collectKey],
+			{
+				multiVer   : modCollect.appSettings.multi_version,
+				collectKey : collectKey,
+				pathRel    : modCollect.collectionToFolderRelative[collectKey],
+				name       : modCollect.collectionToName[collectKey],
+				tag        : modCollect.collectionNotes[collectKey].notes_tagline,
+				version    : modCollect.collectionNotes[collectKey].notes_version,
+			},
 			folderNum,
 			lastFolder
 		))
@@ -41,77 +45,46 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 })
 
 function moveBtn(icon, num, dest, disable) {
-	return `<button onclick="clientMoveItem(${num}, ${dest})" class="btn btn-sm btn-outline-secondary ${disable?'disabled':''}">${icon}</button>`
+	return `<button onclick="clientMoveItem(${num}, ${dest})" class="btn btn-sm btn-outline-secondary ${disable?'disabled':''}"><l10n name="${icon}"></l10n></button>`
 }
 
-function upBtn(num, disable) {
-	return `${moveBtn('<l10n name="folder_top_button"></l10n>', num, 0, disable)}${moveBtn('<l10n name="folder_up_button"></l10n>', num, num-1, disable)}`
-}
-function dnBtn(num, last, disable) {
-	return `${moveBtn('<l10n name="folder_down_button"></l10n>', num, num+1, disable)}${moveBtn('<l10n name="folder_bot_button"></l10n>', num, last, disable)}`
-}
+const upBtn = (num, disable) => `${moveBtn('folder_top_button', num, 0, disable)}${moveBtn('folder_up_button', num, num-1, disable)}`
+const dnBtn = (num, last, disable) => `${moveBtn('folder_down_button', num, num+1, disable)}${moveBtn('folder_bot_button', num, last, disable)}`
 
-function makeFolderLine(path, relPath, shortName, name, num, last) {
-	let thisName = name
-	if ( shortName !== name ) {
-		thisName = `${shortName} <small class="text-body-emphasis" style="font-size:0.675em;">${name.replace(`${shortName} [`, ' [')}</small>`
-	}
-	return `<div class="folderLine my-2 py-2 pb-3 border-bottom">
-		<div class="row">
-			<div class="col-2">
-				<div class="btn-group-vertical w-100">
-					${upBtn(num, num < 1)}
-					${dnBtn(num, last, num === last)}
-				</div>
-			</div>
-			<div class="col-10 pt-4">
-				<div class="row">
-					<div class="col-6"><h4>${thisName}</h4></div>
-					<div class="col-6">
-						<div class="btn-group w-100">
-							<button class="btn btn-sm btn-success open_folder" style="line-height: 1.1em">${getText('open_folder')}</button>
-							<button class="btn btn-sm btn-danger remove_folder" style="line-height: 1.1em">${getText('remove_folder')}</button>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-12 pt-2">
-						<em class="ps-2 folder-path" data-folder="${path}">${relPath}</em>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>`
-}
+
+const makeFolderLine = (details, num, last) => fsgUtil.useTemplate('folder_line', {
+	upButtons   : upBtn(num, num < 1),
+	downButtons : dnBtn(num, last, num === last),
+	name        : details.name,
+	pathRel     : details.pathRel,
+	tagLine     : details.tag === null ? '' : details.tag,
+	version     : details.multiVer ? `<l10n class="small" name="mod_badge_fs${details.version}"></l10n>` : '',
+	collectKey  : details.collectKey,
+})
+
 
 function clientMoveItem(from, to) {
 	lastScroll = window.scrollY
 	window.mods.reorderFolder(from, to)
 }
 
-function processButtonClick(event) {
+function clientCollectFunc(type, collectKey) {
 	lastScroll = window.scrollY
-	let thisButton = null
-	if ( event.target.tagName === 'L10N' ) {
-		thisButton = event.target.parentElement
-	} else {
-		thisButton = event.target
-	}
 
-	if ( thisButton.classList.contains('open_folder') ) {
-		const thisFolder = thisButton.closest('.folderLine').querySelectorAll('em')[0].getAttribute('data-folder')
-		window.mods.openFolder(thisFolder)
-	}
-	if ( thisButton.classList.contains('remove_folder') ) {
-		const thisLine   = thisButton.closest('.folderLine')
-		const thisFolder = thisLine.querySelectorAll('em')[0].getAttribute('data-folder')
+	console.log(type)
+	console.log(collectKey)
 
-		thisLine.classList.add('bg-black', 'bg-opacity-50', 'text-decoration-line-through')
-		thisLine.querySelectorAll('button').forEach((button) => { button.classList.add('disabled')})
-		window.mods.removeFolder(thisFolder)
+	switch (type) {
+		case 'open' :
+			window.mods.openFolder(collectKey)
+			break
+		case 'remove' :
+			window.mods.removeFolder(collectKey)
+			break
+		case 'detail' :
+			window.mods.openNotes(collectKey)
+			break
+		default :
+			break
 	}
 }
-
-window.addEventListener('click', (event) => {
-	processButtonClick(event)
-})

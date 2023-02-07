@@ -38,9 +38,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		removeFolder  : ( folder ) => { ipcRenderer.send('toMain_removeFolder', folder) },
-		openFolder    : ( folder ) => { ipcRenderer.send('toMain_openFolder', folder) },
-		reorderFolder : ( from, to ) => { ipcRenderer.send('toMain_reorderFolder', from, to) },
+		removeFolder  : ( collectKey ) => { ipcRenderer.send('toMain_removeFolder', collectKey) },
+		openFolder    : ( collectKey ) => { ipcRenderer.send('toMain_openFolder', collectKey) },
+		openNotes     : ( collectKey ) => { ipcRenderer.send('toMain_openNotes', collectKey) },
+		reorderFolder : ( from, to )   => { ipcRenderer.send('toMain_reorderFolder', from, to) },
 		reorderAlpha  : () => { ipcRenderer.send('toMain_reorderFolderAlpha') },
 		receive       : ( channel, func ) => {
 			const validChannels = [

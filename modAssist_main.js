@@ -908,9 +908,10 @@ ipcMain.on('toMain_addFolder', () => {
 	})
 })
 ipcMain.on('toMain_editFolders',    () => { createNamedWindow('folder') })
-ipcMain.on('toMain_openFolder',     (event, folder) => { shell.openPath(folder) })
+ipcMain.on('toMain_openFolder',     (event, collectKey) => { shell.openPath(modCollect.mapCollectionToFolder(collectKey)) })
 ipcMain.on('toMain_refreshFolders', () => { foldersDirty = true; processModFolders() })
-ipcMain.on('toMain_removeFolder',   (event, folder) => {
+ipcMain.on('toMain_removeFolder',   (event, collectKey) => {
+	const folder = modCollect.mapCollectionToFolder(collectKey)
 	if ( modFolders.delete(folder) ) {
 		log.log.notice(`Folder removed from list ${folder}`, 'folder-opts')
 		mcStore.set('modFolders', Array.from(modFolders))

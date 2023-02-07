@@ -30,8 +30,33 @@
 		</div>
 
 
-		<div id="folderList" class="mx-4 my-3"></div>
+		<ul id="folderList" class="list-group list-group-flush mx-4 my-3"></ul>
 	</div>
-
 </body>
+
+<template id="folder_line">
+	<li class="list-group-item folderLine px-0 py-2">
+		<div class="row align-items-center p-1">
+			<div class="col-2">
+				<div class="btn-group-vertical w-100">
+					{{upButtons}}
+					{{downButtons}}
+				</div>
+			</div>
+			<div class="col-7">
+				<h4><span class="badge bg-info">{{version}}</span> {{name}}</h4>
+				<h6 class="ps-3 text-body-emphasis">{{tagLine}}</h6>
+				<span class="ps-3 fst-italic small">{{pathRel}}</span>
+			</div>
+			<div class="col-3">
+				<div class="btn-group-vertical w-100">
+					<button class="btn btn-danger text-white" onclick="clientCollectFunc('remove', '{{collectKey}}')"><l10n name="remove_folder"></l10n></button>
+					<button class="btn btn-secondary text-white" onclick="clientCollectFunc('open', '{{collectKey}}')"><l10n name="open_folder"></l10n></button>
+					<button class="btn btn-primary" onclick="clientCollectFunc('detail', '{{collectKey}}')"><l10n name="notes_button__title"></l10n></button>
+				</div>
+			</div>
+		</div>
+	</li>
+</template>
+
 </html>
