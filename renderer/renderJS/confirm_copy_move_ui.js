@@ -6,9 +6,7 @@
 
 // copy/move confirm UI
 
-/* global fsgUtil, getText, processL10N */
-
-//TODO : make version aware
+/* global fsgUtil, processL10N */
 
 let lastModCollect     = null
 let lastFolderRelative = null
@@ -21,6 +19,9 @@ window.mods.receive('fromMain_subWindowSelectNone', () => {
 })
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
+	const multiVersion = modCollect.appSettings.multi_version
+	const curVersion   = modCollect.appSettings.game_version
+
 	lastModCollect     = modCollect
 	lastFolderRelative = modCollect.collectionToFolderRelative[modCollect.opts.originCollectKey]
 	
@@ -29,6 +30,7 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	selectHTML.push('<option value="0">...</option>')
 
 	modCollect.set_Collections.forEach((collectKey) => {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
 		if ( collectKey !== modCollect.opts.originCollectKey ) {
 			selectHTML.push(`<option value="${collectKey}">${modCollect.collectionToFullName[collectKey]}</option>`)
 		}
@@ -44,37 +46,27 @@ function updateConfirmList() {
 	const selectedDest = fsgUtil.byId('select_destination').value
 
 	lastModCollect.opts.records.forEach((thisMod) => {
-		const printPath = `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`
-		confirmHTML.push(`<div class="row border-bottom">
-			<div class="col col-auto">
-				<div class="p-2" style="width: 110px; height:110px;">
-					<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
-				</div>
-			</div>
-			<div class="col">
-				<h4 class="mb-0 mt-2">${thisMod.fileDetail.shortName} <span class="ps-3 small text-muted">${fsgUtil.escapeSpecial(thisMod.l10n.title)}</span></h4>
-				<p class="font-monospace small mb-1">${printPath}</p>`)
+		let destHTML = ''
 
-		if ( selectedDest === '0' ) {
-			confirmHTML.push(`<div class="row mt-0"><div class="col col-form-label">${getText('no_destination_selected')}</div></div>`)
-		} else if ( findConflict(selectedDest, thisMod.fileDetail.shortName, thisMod.fileDetail.isFolder) ) {
-			confirmHTML.push(`<div class="row mt-0">
-				<div class="col-8 col-form-label">${getText('destination_full')}</div>
-				<div class="col-4 col-form-label">
-					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="" id="${thisMod.uuid}">
-						<label class="form-check-label" for="${thisMod.uuid}">${getText('overwrite')}</label>
-					</div>
-				</div>
-			</div>`)
-		} else {
-			confirmHTML.push(`<div class="row mt-0">
-				<div class="col col-form-label">${getText('destination_clear')}</div>
-			</div>
-			<input type="hidden" value="1" id="${thisMod.uuid}" />`)
+		switch ( true ) {
+			case selectedDest === '0':
+				destHTML = fsgUtil.useTemplate('no_dest', {})
+				break
+			case findConflict(selectedDest, thisMod.fileDetail.shortName, thisMod.fileDetail.isFolder) :
+				destHTML = fsgUtil.useTemplate('conflict_dest', { uuid : thisMod.uuid })
+				break
+			default :
+				destHTML = fsgUtil.useTemplate('clear_dest', { uuid : thisMod.uuid })
+				break
 		}
 
-		confirmHTML.push('</div></div>')
+		confirmHTML.push(fsgUtil.useTemplate('mod_row', {
+			printPath : `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`,
+			icon      : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
+			shortname : thisMod.fileDetail.shortName,
+			title     : fsgUtil.escapeSpecial(thisMod.l10n.title),
+			destHTML  : destHTML,
+		}))
 	})
 
 	fsgUtil.byId('confirm_list').innerHTML = confirmHTML.join('')
