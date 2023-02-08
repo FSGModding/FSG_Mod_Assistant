@@ -342,5 +342,7 @@
 	"user_pref_blurb_multi_version": "Gdy jest aktywny, zezwalaj Mod Assistant na używanie wielu różnych wersji Farming Simulator",
 	"game_title_farming_simulator": "Farming Simulator",
 	"offcanvas_blurb": "Wybierz, która wersja Farming Simulator ma być aktywna",
-	"game_icon_lg__title": "Zmień wersję Farming Simulator"
+	"game_icon_lg__title": "Zmień wersję Farming Simulator",
+	"total_collections": "Kolekcje",
+	"total_mods": "Mods"
 }

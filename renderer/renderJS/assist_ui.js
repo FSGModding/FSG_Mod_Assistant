@@ -6,9 +6,7 @@
 
 // Main Window UI
 
-/* global processL10N, fsgUtil, bootstrap, select_lib, getText */
-
-// TODO: de HTML-ify
+/* global processL10N, fsgUtil, bootstrap, select_lib */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -84,7 +82,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	fsgUtil.byId('dirty_folders').classList[(modCollect.opts.foldersDirty)?'remove':'add']('d-none')
 
-	const versionsHTML = [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings))
+	const versionsHTML = [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings, modCollect))
 	fsgUtil.byId('farm_sim_versions').innerHTML = versionsHTML.join('')
 	fsgUtil.byId('multi_version_button').classList[(modCollect.appSettings.multi_version)?'remove':'add']('d-none')
 
@@ -297,71 +295,58 @@ function clientMakeListActive() {
 	}
 }
 
-function makeModCollection(id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount) {
-	const totCount = modCount > 999 ? '999+' : modCount
-	return `<tr class="mod-table-folder" oncontextmenu="window.mods.openCText('${id}')">
-	<td class="folder-icon collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
-		<div class="badge rounded-pill bg-primary bg-gradient float-start" style="width: 30px; height: 13px; margin-bottom: -15px; font-size: 0.5em; transform: translateY(-20%)!important">${totCount}</div>
-		${fsgUtil.getIconSVG('folder')}
-	</td>
-	<td class="folder-name collapsed" ${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}>
-		<div class="d-inline-block">${name}${tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : ''}</div>
-	</td>
-	<td class="align-middle text-end">
-	${ dlEnabled ? `<button class="btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('${id}')">${getText('download_button')}</button>`: ''}
-		${ adminPass !== null ? `<button class="btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('${adminPass}')">${getText('admin_pass_button')}</button>`: ''}
-		${ website !== null ? `<a target="_blank" class="btn btn-outline-info btn-sm me-2" href="${website}">${getText('admin_button')}</a>`: ''}
-		<button class="btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('${id}')">${getText('export_button')}</button>
-		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('${id}')">${getText('notes_button')}</button>
-		<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('${id}')">${getText('check_save')}</button>
-	</td>
-</tr>
-<tr class="mod-table-folder-detail collapse accordion-collapse" data-bs-parent="#mod-collections" id="${id}_mods">
-	<td class="mod-table-folder-details px-0 ps-4" colspan="3">
-		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>
-		<span class="no-mods-found d-block fst-italic small text-center d-none">${getText('empty_or_filtered')}</span>
-	</td>
-</tr>`
-}
+const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount) => fsgUtil.useTemplate('collect_row', {
+	id                 : id,
+	name               : name,
+	tagLine            : tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : '',
+	totalCount         :  modCount > 999 ? '999+' : modCount,
+	bootstrap_data     : `${fsgUtil.buildBS('toggle', 'collapse')} ${fsgUtil.buildBS('target', `#${id}_mods`)}`,
+	folderSVG          : fsgUtil.getIconSVG('folder'),
+	class_hideDownload : dlEnabled ? '' : 'd-none',
+	class_hidePassword : adminPass !== null ? '' : 'd-none',
+	class_hideWebsite  : website !== null ? '' : 'd-none',
+	password           : adminPass,
+	website            : website,
+	mod_rows           : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`,
+})
 
-function makeModRow(id, thisMod, badges, modId, currentGameVersion) {
-	const badgeHTML        = Array.from(badges, (badge) => fsgUtil.badge(false, badge))
-	const modDisabledClass = ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':''
-	const modColorClass    = thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' )
 
-	return `<tr draggable="true" ondragstart="clientDragOut(event)" onclick="select_lib.click_row('${id}')" ondblclick="window.mods.openMod('${id}')" oncontextmenu="window.mods.modCText('${id}')" class="mod-row${(modId!==null ? ' has-hash' : '')}${modDisabledClass}${modColorClass}" id="${id}">
-	<td>
-		<input type="checkbox" class="form-check-input mod-row-checkbox" id="${id}__checkbox">
-	</td>
-	<td style="width: 64px; height: 64px">
-		<img class="img-fluid" src="${fsgUtil.iconMaker(thisMod.modDesc.iconImageCache)}" />
-	</td>
-	<td>
-		<div class="bg-light"></div><span class="mod-short-name">${thisMod.fileDetail.shortName}</span><br /><small>${fsgUtil.escapeSpecial(thisMod.l10n.title)} - <em>${fsgUtil.escapeSpecial(thisMod.modDesc.author)}</em></small><div class="issue_badges">${badgeHTML.join(' ')}</div>
-	</td>
-	<td class="text-end pe-4" style="width: 120px;">
-		${fsgUtil.escapeSpecial(thisMod.modDesc.version)}<br /><em class="small">${( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : ''}</em>
-	</td>
-</tr>`
-}
+const makeModRow = (id, thisMod, badges, modId, currentGameVersion) => fsgUtil.useTemplate('mod_row', {
+	id                : id,
+	shortname         : thisMod.fileDetail.shortName,
+	title             : fsgUtil.escapeSpecial(thisMod.l10n.title),
+	author            : fsgUtil.escapeSpecial(thisMod.modDesc.author),
+	version           : fsgUtil.escapeSpecial(thisMod.modDesc.version),
+	fileSize          : ( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : '',
+	icon              : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
+	class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
+	class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':'',
+	class_hasHash     : modId!==null ? ' has-hash' : '',
+	badges            : Array.from(badges, (badge) => fsgUtil.badge(false, badge)).join(' '),
+})
 
-function makeVersionRow(version, options) {
+
+function makeVersionRow(version, options, modCollect) {
 	const thisVersionEnabled = version === 22 ? true : options[`game_enabled_${version}`]
-	const backGroundClass    = version === options.game_version ? 'bg-success' : 'bg-primary'
+	const counts = { collect : 0, mods : 0 }
 
 	if ( !thisVersionEnabled && version !== options.game_version ) { return '' }
 
-	return `<div data-bs-dismiss="offcanvas" class="row ${backGroundClass} mb-3 mx-2 py-2 rounded-2 d-flex align-items-baseline" style="cursor: pointer;" onclick="clientSetGameVersion(${version})">
-		<div class="col-3">
-			<img src="img/fs${version}_256.png" class="img-fluid">
-		</div>
-		<div class="col-9 text-white" style="font-size: 150%">
-			<l10n name="game_title_farming_simulator"></l10n> 20${version}
-		</div>
-	</div>`
+	modCollect.set_Collections.forEach((collectKey) => {
+		if ( modCollect.collectionNotes[collectKey].notes_version === version ) {
+			counts.collect++
+			counts.mods += modCollect.modList[collectKey].alphaSort.length
+		}
+	})
+	return fsgUtil.useTemplate('version_row', {
+		version         : version,
+		backgroundClass : version === options.game_version ? 'bg-success' : 'bg-primary',
+		collections     : counts.collect,
+		mods            : counts.mods,
+	})
 }
 
-function clientSetGameVersion(version) { window.mods.changeVersion(version) }
+function clientSetGameVersion(version) { window.mods.changeVersion(parseInt(version, 10)) }
 
 function clientClearInput() { select_lib.filter(null, '') }
 

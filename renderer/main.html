@@ -330,4 +330,60 @@
 		</div>
 	</div>
 </body>
+
+<template id="version_row">
+	<div data-bs-dismiss="offcanvas" class="row {{backgroundClass}} mb-3 mx-2 py-2 rounded-2 d-flex align-items-center" style="cursor: pointer;" onclick="clientSetGameVersion('{{version}}')">
+		<div class="col-3">
+			<img src="img/fs{{version}}_256.png" class="img-fluid">
+		</div>
+		<div class="col-9 text-white" style="font-size: 150%">
+			<l10n name="game_title_farming_simulator"></l10n> 20{{version}}<br />
+			<span style="font-size: 60%"><l10n name="total_collections"></l10n> : {{collections}}, <l10n name="total_mods"></l10n> : {{mods}}</small>
+		</div>
+	</div>
+</template>
+
+<template id="mod_row">
+	<tr draggable="true" ondragstart="clientDragOut(event)" onclick="select_lib.click_row('{{id}}')" ondblclick="window.mods.openMod('{{id}}')" oncontextmenu="window.mods.modCText('{{id}}')" class="mod-row {{class_hasHash}} {{class_modDisabled}} ${class_modColor}" id="{{id}}">
+		<td>
+			<input type="checkbox" class="form-check-input mod-row-checkbox" id="{{id}}__checkbox">
+		</td>
+		<td style="width: 64px; height: 64px">
+			<img class="img-fluid" src="{{icon}}" />
+		</td>
+		<td>
+			<div class="bg-light"></div><span class="mod-short-name">{{shortname}}</span><br /><small>{{title}} - <em>{{author}}</em></small><div class="issue_badges">{{badges}}</div>
+		</td>
+		<td class="text-end pe-4" style="width: 120px;">
+			{{version}}<br /><em class="small">{{fileSize}}</em>
+		</td>
+	</tr>
+</template>
+
+<template id="collect_row">
+	<tr class="mod-table-folder" oncontextmenu="window.mods.openCText('{{id}}')">
+		<td class="folder-icon collapsed" {{bootstrap_data}}>
+			<div class="badge rounded-pill bg-primary bg-gradient float-start" style="width: 30px; height: 13px; margin-bottom: -15px; font-size: 0.5em; transform: translateY(-20%)!important">{{totalCount}}</div>
+			{{folderSVG}}
+		</td>
+		<td class="folder-name collapsed" {{bootstrap_data}}>
+			<div class="d-inline-block">{{name}}{{tagLine}}</div>
+		</td>
+		<td class="align-middle text-end">
+			<button class="{{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button"></l10n></button>
+			<button class="{{class_hidePassword}} btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('{{password}}')"><l10n name="admin_pass_button"></l10n></button>
+			<a target="_blank" class="{{class_hideWebsite}} btn btn-outline-info btn-sm me-2" href="{{website}}"><l10n name="admin_button"></l10n></a>
+			<button class="btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('{{id}}')"><l10n name="export_button"></l10n></button>
+			<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('{{id}}')"><l10n name="notes_button"></l10n></button>
+			<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save"></l10n></button>
+		</td>
+	</tr>
+	<tr class="mod-table-folder-detail collapse accordion-collapse" data-bs-parent="#mod-collections" id="{{id}}_mods">
+		<td class="mod-table-folder-details px-0 ps-4" colspan="3">
+			{{mod_rows}}
+			<span class="no-mods-found d-block fst-italic small text-center d-none"><l10n name="empty_or_filtered"></l10n></span>
+		</td>
+	</tr>
+</template>
+
 </html>
