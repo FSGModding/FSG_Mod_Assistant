@@ -817,7 +817,12 @@ ipcMain.on('toMain_copyFavorites',  () => {
 	const destinationCollections = []
 	const sourceFiles            = []
 
+	const multi_version = mcStore.get('multi_version')
+	const current_version = mcStore.get('game_version')
+
 	modCollect.collections.forEach((collectKey) => {
+		if ( multi_version && current_version !== modNote.get(`${collectKey}.notes_version`, 22)) { return }
+
 		const isFavorite = modNote.get(`${collectKey}.notes_favorite`, false)
 
 		if ( isFavorite ) {
@@ -1887,8 +1892,6 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		const thisFolderCollectKey = modCollect.mapFolderToCollection(newFolder)
 		currentVersion = modNote.get(`${thisFolderCollectKey}.notes_version`, 22)
 	}
-
-	console.log(`DEBUG: ${currentVersion}`)
 
 	const gameSettingsKey = ( currentVersion === 22 ) ? 'game_settings' : `game_settings_${currentVersion}`
 	const gameSettingsFileName = mcStore.get(gameSettingsKey, '')

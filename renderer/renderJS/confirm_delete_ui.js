@@ -8,8 +8,6 @@
 
 /* global fsgUtil, processL10N */
 
-//TODO : make version aware
-
 let lastRec            = null
 let lastFolderRelative = null
 
@@ -20,12 +18,10 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	const confirmHTML = []
 
 	modCollect.opts.records.forEach((thisMod) => {
-		const printPath = `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`
-
-		confirmHTML.push('<div class="row border-bottom">')
-		confirmHTML.push(`<h3 class="mb-0 mt-2">${thisMod.fileDetail.shortName}</h3>`)
-		confirmHTML.push(`<p class="font-monospace small">${printPath}</h3>`)
-		confirmHTML.push('</div>')
+		confirmHTML.push(fsgUtil.useTemplate('mod_row', {
+			printPath : `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`,
+			shortname : thisMod.fileDetail.shortName,
+		}))
 	})
 
 	fsgUtil.byId('confirm_list').innerHTML = confirmHTML.join('')

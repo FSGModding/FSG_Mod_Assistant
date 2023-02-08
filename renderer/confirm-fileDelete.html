@@ -29,8 +29,14 @@
 
 		<div class="mx-4 my-3 border-top" id="confirm_list"></div>
 
-		<div class="btn btn-danger w-75 mx-auto d-block mb-4" onclick="clientDeleteButton()"><i class="bi bi-check2-circle"></i> <l10n name="delete"></l10n></div>
+		<div class="btn btn-danger w-75 mx-auto text-white d-block mb-4" onclick="clientDeleteButton()"><i class="bi bi-check2-circle"></i> <l10n name="delete"></l10n></div>
 	</div>
-
 </body>
+
+<template id="mod_row">
+	<div class="row border-bottom">
+		<h3 class="mb-0 mt-2">{{shortname}}</h3>
+		<p class="font-monospace small">{{printPath}}</h3>
+	</div>
+</template>
 </html>

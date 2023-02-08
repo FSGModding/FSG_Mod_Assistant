@@ -37,8 +37,6 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 })
 
 window.mods.receive('fromMain_saveInfo', (modCollect) => {
-	console.log(modCollect)
-
 	const savegame   = modCollect.opts.thisSaveGame
 	const fullModSet = new Set()
 	const haveModSet = {}

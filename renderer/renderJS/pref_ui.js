@@ -9,8 +9,6 @@
 /* global processL10N, fsgUtil */
 
 window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
-	console.log(allSettings)
-	console.log(devControls)
 	updatePrefs(allSettings, devControls)
 	window.l10n.langList_send()
 	window.l10n.themeList_send()

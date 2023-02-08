@@ -70,9 +70,6 @@ function clientMoveItem(from, to) {
 function clientCollectFunc(type, collectKey) {
 	lastScroll = window.scrollY
 
-	console.log(type)
-	console.log(collectKey)
-
 	switch (type) {
 		case 'open' :
 			window.mods.openFolder(collectKey)

@@ -8,6 +8,8 @@
 
 /* global processL10N, fsgUtil, bootstrap, select_lib, getText */
 
+// TODO: de HTML-ify
+
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
@@ -359,10 +361,8 @@ function makeVersionRow(version, options) {
 	</div>`
 }
 
-function clientSetGameVersion(version) {
-	window.mods.changeVersion(version)
-	console.log(`Set version to ${version}`)
-}
+function clientSetGameVersion(version) { window.mods.changeVersion(version) }
+
 function clientClearInput() { select_lib.filter(null, '') }
 
 function clientBatchOperation(mode) {

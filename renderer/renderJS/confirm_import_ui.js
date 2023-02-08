@@ -8,8 +8,6 @@
 
 /* global processL10N, fsgUtil */
 
-//TODO : make version aware
-
 let lastSourceMods = null
 
 window.mods.receive('fromMain_subWindowSelectAll', () => {
@@ -20,12 +18,16 @@ window.mods.receive('fromMain_subWindowSelectNone', () => {
 })
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
+	const multiVersion = modCollect.appSettings.multi_version
+	const curVersion   = modCollect.appSettings.game_version
+
 	lastSourceMods = modCollect.opts.files
 
 	const destChecks = []
 	const confRows   = []
 
 	modCollect.set_Collections.forEach((collectKey) => {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
 		destChecks.push(fsgUtil.makeCollectionCheckBox({
 			id     : collectKey,
 			name   : modCollect.collectionToName[collectKey],

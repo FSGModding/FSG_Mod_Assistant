@@ -20,12 +20,15 @@ window.mods.receive('fromMain_subWindowSelectNone', () => {
 })
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
-	lastSourceMods = modCollect.opts.sourceFiles
+	const multiVersion = modCollect.appSettings.multi_version
+	const curVersion   = modCollect.appSettings.game_version
+	lastSourceMods     = modCollect.opts.sourceFiles
 
 	const destChecks = []
 	const confRows   = []
 
 	modCollect.opts.destinations.forEach((collectKey) => {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
 		destChecks.push(fsgUtil.makeCollectionCheckBox({
 			id     : collectKey,
 			name   : modCollect.collectionToName[collectKey],
