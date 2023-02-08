@@ -31,8 +31,7 @@ window.mods.receive('fromMain_selectAllOpen', () => {
 
 window.mods.receive('fromMain_selectOnly', (selectList) => {
 	const tableID   = `${selectList[0].split('--')[0]}_mods`
-	const checkList = []
-	selectList.forEach((id) => { checkList.push(`${id}__checkbox`) })
+	const checkList = selectList.map((id) => `${id}__checkbox`)
 
 	select_lib.close_all(tableID)
 	select_lib.click_only(tableID, checkList)
@@ -103,7 +102,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	fullList[0] = `--${modCollect.opts.l10n.disable}--`
 	optList.push(fsgUtil.buildSelectOpt('0', `--${modCollect.opts.l10n.disable}--`, lastList, true))
 
-	modCollect.set_Collections.forEach((collectKey) => {
+	for ( const collectKey of modCollect.set_Collections ) {
 		fullList[`collection--${collectKey}`] = modCollect.modList[collectKey].fullName
 		if ( !multiVersion || modCollect.collectionNotes[collectKey].notes_version === curVersion ) {
 			optList.push(fsgUtil.buildSelectOpt(`collection--${collectKey}`, modCollect.modList[collectKey].fullName, lastList, false, modCollect.collectionToFolder[collectKey]))
@@ -111,7 +110,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		if ( multiVersion && `collection--${collectKey}` === lastList && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) {
 			lastList = '999'
 		}
-	})
+	}
 
 	fullList[999] = `--${modCollect.opts.l10n.unknown}--`
 	optList.push(fsgUtil.buildSelectOpt('999', `--${modCollect.opts.l10n.unknown}--`, lastList, true))
@@ -120,15 +119,15 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	/* END : List selection */
 
 
-	modCollect.set_Collections.forEach((collectKey) => {
-		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
+	for ( const collectKey of modCollect.set_Collections ) {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
 		const thisCollection = modCollect.modList[collectKey]
 		const collectNotes   = modCollect.collectionNotes?.[collectKey]
 		const modRows        = []
 		const scrollRows     = []
 		const sizeOfFolder   = thisCollection.folderSize
 
-		thisCollection.alphaSort.forEach((modKey) => {
+		for ( const modKey of thisCollection.alphaSort ) {
 			try {
 				const thisMod       = thisCollection.mods[modKey.split('::')[1]]
 				const displayBadges = doBadgeSet(
@@ -146,11 +145,11 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					thisMod.modDesc.author
 				].join(' ').toLowerCase()
 
-				displayBadges.forEach((badge) => {
+				for ( const badge of displayBadges ) {
 					if ( typeof searchTagMap?.[badge]?.push === 'function' ) {
 						searchTagMap[badge].push(thisMod.colUUID)
 					}
-				})
+				}
 
 				scrollRows.push(fsgUtil.buildScrollMod(collectKey, thisMod.colUUID))
 				modRows.push(makeModRow(
@@ -164,7 +163,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			} catch (e) {
 				window.log.notice(`Error building mod row: ${e}`, 'main')
 			}
-		})
+		}
 		
 		modTable.push(makeModCollection(
 			collectKey,
@@ -177,12 +176,12 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			thisCollection.dependSet.size
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
-	})
+	}
 	
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
 	fsgUtil.byId('scroll-bar-fake').innerHTML  = scrollTable.join('')
 
-	modCollect.set_Collections.forEach((collectKey) => {
+	for ( const collectKey of modCollect.set_Collections ) {
 		const thisFav = fsgUtil.notesDefault(modCollect.collectionNotes?.[collectKey], 'notes_favorite', false)
 
 		if ( thisFav ) {
@@ -192,7 +191,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 				favFolder.innerHTML += '<path d="m171,126.25l22.06,62.76l65.93,0l-54.22,35.49l21.94,61.46l-55.74,-38.21l-55.74,38.21l22.06,-61.46l-54.32,-35.49l66.06,0l21.94,-62.76l0.03,0z" fill="#7f7f00" id="svg_5"/>'
 			}
 		}
-	})
+	}
 
 	const activeFolder = document.querySelector(`[data-bs-target="#${modCollect.opts.activeCollection}_mods"] svg`)
 
@@ -261,12 +260,12 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 	if ( typeof thisMod.modDesc.depend !== 'undefined' && thisMod.modDesc.depend.length > 0 ) {
 		let hasAllDeps = true
 
-		thisMod.modDesc.depend.forEach((thisDep) => {
+		for ( const thisDep of thisMod.modDesc.depend ) {
 			if ( ! thisCollection.dependSet.has(thisDep) ) {
 				hasAllDeps = false
-				return
+				break
 			}
-		})
+		}
 		if ( !hasAllDeps ) { theseBadges.unshift('depend')}
 	}
 
@@ -332,12 +331,12 @@ function makeVersionRow(version, options, modCollect) {
 
 	if ( !thisVersionEnabled && version !== options.game_version ) { return '' }
 
-	modCollect.set_Collections.forEach((collectKey) => {
+	for ( const collectKey of modCollect.set_Collections ) {
 		if ( modCollect.collectionNotes[collectKey].notes_version === version ) {
 			counts.collect++
 			counts.mods += modCollect.modList[collectKey].alphaSort.length
 		}
-	})
+	}
 	return fsgUtil.useTemplate('version_row', {
 		version         : version,
 		backgroundClass : version === options.game_version ? 'bg-success' : 'bg-primary',
@@ -351,14 +350,8 @@ function clientSetGameVersion(version) { window.mods.changeVersion(parseInt(vers
 function clientClearInput() { select_lib.filter(null, '') }
 
 function clientBatchOperation(mode) {
-	const selectedMods   = []
-	const allModRows     = fsgUtil.query('.mod-row')
-
-	allModRows.forEach((thisRow) => {
-		if ( thisRow.querySelector('.mod-row-checkbox').checked ) {
-			selectedMods.push(thisRow.id)
-		}
-	})
+	const allModRows     = fsgUtil.query('.mod-row .mod-row-checkbox:checked')
+	const selectedMods   = Array.from(allModRows).map((thisRow) => thisRow.id.replace('__checkbox', ''))
 
 	switch (mode) {
 		case 'copy':
@@ -420,12 +413,12 @@ function clientOpenGame_FIX() {
 }
 
 window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })
-window.addEventListener('shown.bs.collapse', () => { select_lib.click_none() })
+window.addEventListener('shown.bs.collapse',  () => { select_lib.click_none() })
 
 const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
 
-async function spinLED()  { operateLED('spin') }
-async function blinkLED() { operateLED('blink') }
+async function spinLED()      { operateLED('spin') }
+async function blinkLED()     { operateLED('blink') }
 async function fastBlinkLED() { operateLED('blink', 1000) }
 async function operateLED(type = 'spin', time = 2500) {
 	if ( ! window.mods.isLEDActive() ) { return }
@@ -502,10 +495,10 @@ function clientDragDrop(e) {
 
 	dragDropInFolder    = false
 }
+
 function clientDragLeave(e) {
 	e.preventDefault()
 	e.stopPropagation()
-
 
 	if ( e.x <= 0 && e.y <= 0 ) {
 		dragDropOperation   = false
@@ -516,10 +509,10 @@ function clientDragLeave(e) {
 		fsgUtil.byId('drag_add_folder').classList.remove('d-none', 'bg-primary')
 	}
 }
+
 function clientDragEnter(e) {
 	e.preventDefault()
 	e.stopPropagation()
-
 
 	if ( !dragDropOperation ) {
 		fsgUtil.byId('drag_back').classList.remove('d-none')
@@ -552,6 +545,7 @@ function clientDragEnter(e) {
 
 	dragDropOperation = true
 }
+
 function clientDragOver(e) {
 	e.preventDefault()
 	e.stopPropagation()
