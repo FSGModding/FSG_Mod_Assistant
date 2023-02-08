@@ -37,8 +37,28 @@
 
 		<div class="list-group mx-2 my-3" id="modSet"></div>
 
-		<div id="copyButton" class="btn btn-danger w-75 mx-auto d-block" onclick="clientDoCopy()"><i class="bi bi-check2-circle"></i> <l10n name="copy"></l10n></div>
+		<div id="copyButton" class="btn btn-danger text-white w-75 mx-auto d-block" onclick="clientDoCopy()"><i class="bi bi-check2-circle"></i> <l10n name="copy"></l10n></div>
 	</div>
-
 </body>
+
+<template id="version_same">
+	<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-success">
+		<div class="ms-2 me-auto">
+			<div class="fw-bold">{{shortname}}</div>
+			<div class="small text-body-tertiary">{{title}}</div>
+			<div class="small text-body-tertiary ps-3"><l10n name="destination"></l10n> {{collectName}} :: <l10n name="version_same"></l10n></div>
+		</div>
+	</li>
+</template>
+
+<template id="version_diff">
+	<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-danger">
+		<div class="ms-2 me-auto">
+			<div class="fw-bold">{{shortname}} <span class="small">{{version}}</span></div>
+			<div class="small text-body-tertiary">{{title}}}</div>
+			<div class="small text-body-emphasis ps-3"><l10n name="destination"></l10n> {{collectName}}</div>
+		</div>
+		<input class="form-check-input form-check me-1" type="checkbox" name="modToCopy[]" value="{{collectKey}}">
+	</li>
+</template>
 </html>

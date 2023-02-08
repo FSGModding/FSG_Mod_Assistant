@@ -64,4 +64,27 @@
 	</div>
 
 </body>
+
+<template id="savegame_error">
+	<li class="mod-item list-group-item text-center justify-content-between list-group-item-danger">
+		<div class="ms-2 me-auto">
+			<div class="fw-bold"><l10n name="savegame_error"></div>
+			<div class="small">{{errors}}</div>
+		</div>
+	</li>
+</template>
+
+<template id="savegame_mod">
+	<li class="mod-item list-group-item d-flex justify-content-between align-items-start {{colorClass}}">
+		<div class="h-100 mt-1" style="width: 30px;">
+			<button onclick="window.mods.openHUB('{{hubID}}')" class="{{hubIDHide}} btn btn-sm btn-secondary"><i class="bi bi-search-heart"></i><l10n class="d-none" name="open_hub"></l10n></button>
+		</div>
+		<div class="ms-2 me-auto">
+			<div class="fw-bold">{{name}}</div>
+			<div class="small">{{title}}</div>
+			<div class="{{hideShowFarms}} text-body-emphasis small ps-3"><l10n name="savegame_farms"></l10n>: {{farms}}</div>
+		</div>
+		{{badges}}
+	</li>
+</template>
 </html>

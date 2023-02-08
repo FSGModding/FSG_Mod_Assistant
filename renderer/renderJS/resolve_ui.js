@@ -4,12 +4,11 @@
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
 
-// Version window UI
+// Resolve version window UI
 
-/* global processL10N, fsgUtil, getText */
+/* global processL10N, fsgUtil */
 
 
-// TODO: make version aware
 let cacheShortName   = null
 let cacheCollection  = null
 
@@ -84,23 +83,20 @@ function compareVersion(latestVersion, thisVersion, collectKey) {
 
 function makeLine(mod, version) {
 	if ( mod.version === version.vString ) { //same
-		return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-success">
-			<div class="ms-2 me-auto">
-				<div class="fw-bold">${mod.modRecord.fileDetail.shortName}</div>
-				<div class="small text-body-tertiary">${fsgUtil.escapeSpecial(mod.modRecord.l10n.title)}</div>
-				<div class="small text-body-tertiary ps-3">${getText('destination')} ${mod.collectName} :: ${getText('version_same')}</div>
-			</div>
-		</li>`
+		return fsgUtil.useTemplate('version_same', {
+			shortname   : mod.modRecord.fileDetail.shortName,
+			title       : fsgUtil.escapeSpecial(mod.modRecord.l10n.title),
+			collectName : mod.collectName,
+		})
 	}
 
-	return `<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-danger">
-		<div class="ms-2 me-auto">
-			<div class="fw-bold">${mod.modRecord.fileDetail.shortName} <span class="small">${mod.version}</span></div>
-			<div class="small text-body-tertiary">${fsgUtil.escapeSpecial(mod.modRecord.l10n.title)}</div>
-			<div class="small text-body-emphasis ps-3">${getText('destination')} ${mod.collectName}</div>
-		</div>
-		<input class="form-check-input form-check me-1" type="checkbox" name="modToCopy[]" value="${mod.collectKey}">
-	</li>`
+	return fsgUtil.useTemplate('version_diff', {
+		shortname   : mod.modRecord.fileDetail.shortName,
+		title       : fsgUtil.escapeSpecial(mod.modRecord.l10n.title),
+		collectName : mod.collectName,
+		version     : mod.version,
+		collectKey  : mod.collectKey,
+	})
 }
 
 function clientDoCopy() {

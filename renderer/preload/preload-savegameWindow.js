@@ -41,7 +41,7 @@ contextBridge.exposeInMainWorld(
 		selectInMain : (selectList) => { ipcRenderer.send('toMain_selectInMain', selectList)},
 		openFolder   : ()      => { ipcRenderer.send('toMain_openSaveFolder')},
 		openZIP      : ()      => { ipcRenderer.send('toMain_openSaveZIP')},
-		openHUB      : (hubID) => { ipcRenderer.send('toMain_openHubByID', hubID) },
+		openHUB      : (hubID) => { ipcRenderer.send('toMain_openHubByID', parseInt(hubID, 10) ) },
 		receive      : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_collectionName',

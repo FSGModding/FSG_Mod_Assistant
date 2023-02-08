@@ -6,8 +6,7 @@
 
 // Detail window UI
 
-/* global fsgUtil, processL10N, getText */
-
+/* global fsgUtil, processL10N */
 
 let thisCollection = null
 const selectList = {
@@ -65,12 +64,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 
 		savegame.errorList.forEach((error) => { errors.push(`<l10n name="${error[0]}"></l10n> ${error[1]}`) })
 
-		modSetHTML.push(`<li class="mod-item list-group-item text-center justify-content-between list-group-item-danger">
-			<div class="ms-2 me-auto">
-				<div class="fw-bold"><l10n name="savegame_error"></div>
-				<div class="small">${errors.join(', ')}</div>
-			</div>
-		</li>`)
+		modSetHTML.push(fsgUtil.useTemplate('savegame_error', { errors : errors.join(', ')}))
 	}
 
 	
@@ -177,9 +171,9 @@ function updateCounts() {
 }
 
 function makeLine(name, mod, singleFarm, hubID) {
-	const badges   = ['versionMismatch', 'scriptOnly', 'isUsed', 'isLoaded']
-	const thisHTML = []
-	let colorClass = ''
+	const badges       = ['versionMismatch', 'scriptOnly', 'isUsed', 'isLoaded']
+	const displayBadge = []
+	let colorClass     = ''
 
 	if ( !mod.isPresent ) {
 		colorClass = 'list-group-item-danger'
@@ -192,52 +186,33 @@ function makeLine(name, mod, singleFarm, hubID) {
 	} else {
 		colorClass = 'list-group-item-secondary'
 	}
-	
-	thisHTML.push(`<li class="mod-item list-group-item d-flex justify-content-between align-items-start ${colorClass}">`)
-	thisHTML.push('<div class="h-100 mt-1" style="width: 30px;">')
 
-	if ( typeof hubID !== 'undefined' ) {
-		thisHTML.push(`<button onclick="window.mods.openHUB(${hubID})" class="btn btn-sm btn-secondary"><i class="bi bi-search-heart"></i><l10n class="d-none" name="open_hub"></l10n></button>`)
-	}
+	if ( !mod.isModHub && !mod.isDLC ) { displayBadge.push(['nohub', 'info']) }
+	if ( mod.isDLC )                   { displayBadge.push(['dlc', 'info']); selectCount.dlc++ }
+	if ( !mod.isPresent )              { displayBadge.push(['missing', 'danger']); selectCount.missing++ }
+	if ( !mod.isUsed )                 { displayBadge.push(['unused', 'warning']) }
+	if ( !mod.isLoaded )               { displayBadge.push(['inactive', 'warning']) }
 
-	thisHTML.push('</div>')
-	thisHTML.push('<div class="ms-2 me-auto">')
-	thisHTML.push(`<div class="fw-bold">${name}</div>`)
-	thisHTML.push(`<div class="small">${mod.title}</div>`)
-	if ( mod.usedBy !== null && !singleFarm ) {
-		thisHTML.push(`<div class="text-body-emphasis small ps-3">${getText('savegame_farms')}: ${Array.from(mod.usedBy).join(', ')}</div>`)
-	}
-	thisHTML.push('</div>')
-
-	if ( !mod.isModHub && !mod.isDLC ) {
-		thisHTML.push(fsgUtil.badge('info bg-gradient rounded-1 ms-1', 'savegame_nohub', true))
-	}
-	if ( mod.isDLC ) {
-		thisHTML.push(fsgUtil.badge('info bg-gradient rounded-1 ms-1', 'savegame_dlc', true))
-		selectCount.dlc++
-	}
-	if ( !mod.isPresent ) {
-		thisHTML.push(fsgUtil.badge('danger bg-gradient rounded-1 ms-1', 'savegame_missing', true))
-		selectCount.missing++
-	}
-	if ( !mod.isUsed ) {
-		thisHTML.push(fsgUtil.badge('warning bg-gradient rounded-1 ms-1', 'savegame_unused', true))
-	}
-	if ( !mod.isLoaded ) {
-		thisHTML.push(fsgUtil.badge('warning bg-gradient rounded-1 ms-1', 'savegame_inactive', true))
-	}
 	badges.forEach((badge) => {
 		if ( mod[badge] === true ) {
 			if ( badge === 'scriptOnly' ) { selectCount.scriptonly++ }
 			if ( badge === 'isUsed' )     { selectCount.isused++ }
 			if ( badge === 'isLoaded' )   { selectCount.isloaded++ }
-			thisHTML.push(fsgUtil.badge('dark bg-gradient rounded-1 ms-1', `savegame_${badge.toLowerCase()}`, true))
+			displayBadge.push([badge.toLowerCase(), 'dark'])
+			
 		}
 	})
 
-	thisHTML.push('</li>')
-
-	return thisHTML.join('')
+	return fsgUtil.useTemplate('savegame_mod', {
+		colorClass    : colorClass,
+		hubID         : hubID,
+		hubIDHide     : typeof hubID !== 'undefined' ? '' : 'd-none',
+		name          : name,
+		title         : mod.title,
+		hideShowFarms : ( mod.usedBy !== null && !singleFarm ) ? '' : 'd-none',
+		farms         : mod.usedBy !== null ? Array.from(mod.usedBy).join(', ') : '',
+		badges        : displayBadge.map((part) => fsgUtil.badge(`${part[1]} bg-gradient rounded-1 ms-1`, `savegame_${part[0]}`, true)).join(''),
+	})
 }
 
 
