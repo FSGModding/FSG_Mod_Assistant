@@ -17,23 +17,24 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 
 	const confirmHTML = []
 
-	modCollect.opts.records.forEach((thisMod) => {
+	for ( const thisMod of modCollect.opts.records ) {
 		confirmHTML.push(fsgUtil.useTemplate('mod_row', {
 			printPath : `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`,
 			shortname : thisMod.fileDetail.shortName,
 		}))
-	})
+	}
 
 	fsgUtil.byId('confirm_list').innerHTML = confirmHTML.join('')
+
 	processL10N()
 })
 
 function clientDeleteButton() {
 	const fileMap = []
 
-	lastRec.records.forEach((thisMod) => {
+	for ( const thisMod of lastRec.records ) {
 		fileMap.push([lastRec.originCollectKey, lastRec.originCollectKey, thisMod.fileDetail.fullPath])
-	})
+	}
 
 	window.mods.realDeleteFile(fileMap)
 }

@@ -118,7 +118,6 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
 	/* END : List selection */
 
-
 	for ( const collectKey of modCollect.set_Collections ) {
 		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
 		const thisCollection = modCollect.modList[collectKey]
@@ -228,7 +227,7 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 	const theseBadges = [...originalBadges] || []
 
 	if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
-		theseBadges.push(typeof bindConflicts[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok')
+		theseBadges.push(typeof bindConflicts?.[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok')
 	}
 
 	if ( thisMod.modHub.version !== null && thisMod.modDesc.version !== thisMod.modHub.version) {
