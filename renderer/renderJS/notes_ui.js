@@ -29,6 +29,7 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 			thisPlaceholder = ( thisValue !== null ) ? '' : thisPlaceholder
 		}
 		if ( element.getAttribute('type') === 'checkbox' ) {
+			thisValue       = modCollect.collectionNotes[thisCollection][element.id]
 			element.checked = (thisValue !== '') ? thisValue : false
 		} else {
 			element.placeholder = ( typeof thisPlaceholder !== 'undefined' ) ? thisPlaceholder : ''
@@ -80,10 +81,13 @@ function clientCheckValid(id, inProgress = false) {
 	}
 
 	if ( validCheck && !inProgress ) {
+		formControl.classList.remove('is-inprogress', 'is-invalid')
 		formControl.classList.add('is-valid')
-		formControl.classList.remove('is-invalid')
+	} else if ( inProgress ) {
+		formControl.classList.remove('is-valid', 'is-invalid')
+		formControl.classList.add('is-inprogress')
 	} else {
-		formControl.classList.remove('is-valid')
+		formControl.classList.remove('is-valid', 'is-inprogress')
 		formControl.classList.add('is-invalid')
 	}
 }

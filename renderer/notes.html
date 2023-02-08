@@ -7,6 +7,20 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/notes_ui.js"></script>
+	<style>
+		.form-control.is-inprogress {
+			border-color: var(--bs-warning);
+			padding-right: calc(1.5em + 0.75rem);
+			background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23f39c12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23f39c12' stroke='none'/%3e%3c/svg%3e");
+			background-repeat: no-repeat;
+			background-position: right calc(0.375em + 0.1875rem) center;
+			background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+		}
+		.form-control.is-inprogress:focus {
+			border-color: var(--bs-warning);
+			box-shadow: 0 0 0 0.25rem rgba(var(--bs-warning-rgb), 0.25);
+		}
+	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid px-1 user-select-none">
