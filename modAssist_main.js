@@ -1068,58 +1068,59 @@ ipcMain.on('toMain_getText_sync', (event, text) => {
 	event.returnValue = myTranslator.syncStringLookup(text)
 })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
+	let cacheSize = 0
+
 	event.sender.send('fromMain_getText_return', ['__currentLocale__', myTranslator.currentLocale])
 
-	l10nSet.forEach((l10nEntry) => {
-		if ( l10nEntry === 'app_version' ) {
-			event.sender.send('fromMain_getText_return', [l10nEntry, app.getVersion()])
-		} else if ( l10nEntry === 'game_icon' ) {
-			event.sender.send('fromMain_getText_return', [
-				l10nEntry,
-				`<img src="img/fs${mcStore.get('game_version')}.png" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
-			])
-		} else if ( l10nEntry === 'game_icon_lg' ) {
-			event.sender.send('fromMain_getText_return', [
-				l10nEntry,
-				`<img src="img/fs${mcStore.get('game_version')}_256.png" class="img-fluid" style="height: 69px;"/>`
-			])
-			myTranslator.stringTitleLookup(l10nEntry).then((text) => {
-				if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
-			})
-		} else if ( l10nEntry === 'game_version') {
-			if ( mcStore.get('multi_version') || mcStore.get('game_version') !== 22 ) {
-				myTranslator.stringLookup(`mod_badge_fs${mcStore.get('game_version')}`).then((text) => {
+	for ( const l10nEntry of l10nSet ) {
+		switch ( l10nEntry ) {
+			case 'app_version' :
+				event.sender.send('fromMain_getText_return', [l10nEntry, app.getVersion()])
+				break
+			case 'game_icon' :
+				event.sender.send('fromMain_getText_return', [l10nEntry,
+					`<img src="img/fs${mcStore.get('game_version')}.png" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
+				])
+				break
+			case 'game_icon_lg' :
+				event.sender.send('fromMain_getText_return', [l10nEntry,
+					`<img src="img/fs${mcStore.get('game_version')}_256.png" class="img-fluid" style="height: 69px;"/>`
+				])
+				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
+					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
+				})
+				break
+			case 'game_version' :
+				if ( mcStore.get('multi_version') || mcStore.get('game_version') !== 22 ) {
+					myTranslator.stringLookup(`mod_badge_fs${mcStore.get('game_version')}`).then((text) => {
+						event.sender.send('fromMain_getText_return', [l10nEntry, text])
+					})
+				} else {
+					event.sender.send('fromMain_getText_return', [l10nEntry, ''])
+				}
+				break
+			case 'clean_cache_size' :
+				cacheSize = 0
+				try {
+					const cacheStats = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json'))
+					cacheSize = cacheStats.size/(1024*1024)
+				} catch { /* ignore */ }
+
+				event.sender.send('fromMain_getText_return', [l10nEntry, `${myTranslator.syncStringLookup(l10nEntry)} ${cacheSize.toFixed(2)}MB`])
+				break
+			default :
+				myTranslator.stringLookup(l10nEntry).then((text) => {
 					if ( text === null || text === '' ) {
 						log.log.debug(`Null or empty translator string: ${l10nEntry} :: locale: ${myTranslator.currentLocale}`)
 					}
 					event.sender.send('fromMain_getText_return', [l10nEntry, text])
 				})
-			} else {
-				event.sender.send('fromMain_getText_return', [l10nEntry, ''])
-			}
-		} else if ( l10nEntry === 'clean_cache_size' ) {
-			const cleanString = myTranslator.syncStringLookup(l10nEntry)
-			let cacheSize = 0
-			try {
-				const cacheStats = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json'))
-				cacheSize = cacheStats.size/(1024*1024)
-			} catch { /* ignore */ }
-
-			event.sender.send('fromMain_getText_return', [l10nEntry, `${cleanString} ${cacheSize.toFixed(2)}MB`])
-		} else {
-			myTranslator.stringLookup(l10nEntry).then((text) => {
-				if ( text === null || text === '' ) {
-					log.log.debug(`Null or empty translator string: ${l10nEntry} :: locale: ${myTranslator.currentLocale}`)
-				}
-				event.sender.send('fromMain_getText_return', [l10nEntry, text])
-			})
-			myTranslator.stringTitleLookup(l10nEntry).then((text) => {
-				if ( text !== null ) {
-					event.sender.send('fromMain_getText_return_title', [l10nEntry, text])
-				}
-			})
+				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
+					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
+				})
+				break
 		}
-	})
+	}
 })
 /** END: l10n Operation */
 
@@ -1328,19 +1329,23 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 ipcMain.on('toMain_openPrefs', () => { createNamedWindow('prefs') })
 ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setPref', (event, name, value) => {
-	if ( name === 'dev_mode' ) {
-		parseGameXML(22, value)
-	} else if ( name === 'dev_mode_19' ) {
-		parseGameXML(19, value)
-	} else if ( name === 'dev_mode_17' ) {
-		parseGameXML(17, value)
-	} else if ( name === 'dev_mode_15' ) {
-		parseGameXML(15, value)
-	} else if ( name === 'dev_mode_13' ) {
-		parseGameXML(13, value)
-	} else {
-		mcStore.set(name, value)
-		if ( name === 'lock_lang' ) { mcStore.set('force_lang', myTranslator.currentLocale) }
+
+	switch ( name ) {
+		case 'dev_mode' :
+			parseGameXML(22, value)
+			break
+		case 'dev_mode_19':
+		case 'dev_mode_17':
+		case 'dev_mode_15':
+		case 'dev_mode_13':
+			parseGameXML(parseInt(name.slice(-2), 10), value)
+			break
+		case 'lock_lang':
+			mcStore.set('force_lang', myTranslator.currentLocale)
+			// falls through
+		default :
+			mcStore.set(name, value)
+			break
 	}
 
 	if ( name.startsWith('game_enabled') ) {
@@ -1957,7 +1962,8 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		if ( userName !== null ) {
 			if ( currentVersion === 22 ) {
 				gameSettingsXML.gameSettings.onlinePresenceName = userName // 22
-			} else if ( currentVersion === 19 ) {
+			}
+			if ( currentVersion === 19 ) {
 				gameSettingsXML.gameSettings.player.name = userName // 19
 			}
 		}

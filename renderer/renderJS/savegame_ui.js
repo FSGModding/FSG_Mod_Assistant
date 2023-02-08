@@ -173,16 +173,22 @@ function makeLine(name, mod, singleFarm, hubID) {
 	const displayBadge = []
 	let colorClass     = ''
 
-	if ( !mod.isPresent ) {
-		colorClass = 'list-group-item-danger'
-	} else if ( mod.versionMismatch ) {
-		colorClass = 'list-group-item-info'
-	} else if ( mod.isUsed ) {
-		colorClass = 'list-group-item-success'
-	} else if ( mod.isLoaded ) {
-		colorClass = 'list-group-item-warning'
-	} else {
-		colorClass = 'list-group-item-secondary'
+	switch ( true ) {
+		case ( !mod.isPresent ) :
+			colorClass = 'list-group-item-danger'
+			break
+		case ( mod.versionMismatch ) :
+			colorClass = 'list-group-item-info'
+			break
+		case ( mod.isUsed ) :
+			colorClass = 'list-group-item-success'
+			break
+		case ( mod.isLoaded ) :
+			colorClass = 'list-group-item-warning'
+			break
+		default :
+			colorClass = 'list-group-item-secondary'
+			break
 	}
 
 	if ( !mod.isModHub && !mod.isDLC ) { displayBadge.push(['nohub', 'info']) }
