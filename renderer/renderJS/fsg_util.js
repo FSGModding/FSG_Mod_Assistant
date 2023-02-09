@@ -157,7 +157,7 @@ const fsgUtil = {
 		}
 	},
 	clearTooltips : () => {
-		fsgUtil.query('.tooltip').forEach((tooltip) => { tooltip.remove() })
+		for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip.remove() }
 	},
 	setTheme : (theme) => {
 		document.body.setAttribute('data-bs-theme', theme)
@@ -176,6 +176,11 @@ const fsgUtil = {
 			element.classList[test ? 'remove' : 'add'](class_add_when_false)
 		}
 	},
+	windowCheckOper : ( newChecked = true ) => {
+		for ( const element of fsgUtil.query('[type="checkbox"]') ) { element.checked = newChecked }
+	},
+	windowCheckAll  : () => { fsgUtil.windowCheckOper(true) },
+	windowCheckNone : () => { fsgUtil.windowCheckOper(false) },
 }
 
 /*  __ ____   ______        

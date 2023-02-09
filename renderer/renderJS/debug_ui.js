@@ -21,9 +21,9 @@ window.debug.receive('fromMain_debugLog', (data) => {
 })
 
 function clientResetButtons() {
-	fsgUtil.query('.filter_only').forEach((element) => {
+	for ( const element of fsgUtil.query('.filter_only') ) {
 		element.checked = ! ( element.id === 'debug_debug' )
-	})
+	}
 	window.debug.getDebugLogContents()
 }
 

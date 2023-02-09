@@ -1383,6 +1383,7 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 
 	loadingWindow_open('cache')
 
+	// TODO: again, seems inefficient.  Note that md5 is not uuid. I think.
 	Object.keys(localStore).forEach((md5) => { md5Set.add(md5) })
 	
 	modCollect.collections.forEach((collectKey) => {
@@ -1398,10 +1399,7 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 		loadingWindow_total(md5Set.size, true)
 		loadingWindow_current(0, true)
 
-		md5Set.forEach((md5) => {
-			delete localStore[md5]
-			loadingWindow_current()
-		})
+		for ( const md5 of md5Set ) { delete localStore[md5]; loadingWindow_current() }
 
 		maCache.store = localStore
 
@@ -1595,7 +1593,7 @@ ipcMain.on('toMain_exportList', (event, collection) => {
 
 	csvTable.push(csvRow(['Mod', 'Title', 'Version', 'Author', 'ModHub', 'Link']))
 
-	modCollect.getModListFromCollection(collection).forEach((mod) => {
+	for ( const mod of modCollect.getModListFromCollection(collection) ) {
 		const modHubID    = mod.modHub.id
 		const modHubLink  = ( modHubID !== null ) ? `https://www.farming-simulator.com/mod.php?mod_id=${modHubID}` : ''
 		const modHubYesNo = ( modHubID !== null ) ? 'yes' : 'no'
@@ -1607,7 +1605,7 @@ ipcMain.on('toMain_exportList', (event, collection) => {
 			modHubYesNo,
 			modHubLink
 		]))
-	})
+	}
 
 	dialog.showSaveDialog(windows.main, {
 		defaultPath : path.join(app.getPath('desktop'), `${modCollect.mapCollectionToName(collection)}.csv`),
@@ -1632,9 +1630,9 @@ ipcMain.on('toMain_exportList', (event, collection) => {
 ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 	const filePaths = []
 
-	modCollect.modColUUIDsToRecords(selectedMods).forEach((mod) => {
+	for ( const mod of modCollect.modColUUIDsToRecords(selectedMods) ) {
 		filePaths.push([mod.fileDetail.shortName, mod.fileDetail.fullPath])
-	})
+	}
 
 	dialog.showSaveDialog(windows.main, {
 		defaultPath : app.getPath('desktop'),
@@ -1677,9 +1675,11 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 				})
 
 				zipArchive.pipe(zipOutput)
-				filePaths.forEach((thisFile) => {
+
+				for ( const thisFile of filePaths ) {
 					zipArchive.file(thisFile[1], { name : `${thisFile[0]}.zip` })
-				})
+				}
+
 				zipArchive.finalize().then(() => { loadingWindow_hide() })
 
 			} catch (err) {
@@ -1740,6 +1740,7 @@ ipcMain.on('toMain_refreshVersions', () => { sendModList({}, 'fromMain_modList',
 ipcMain.on('toMain_versionResolve',  (event, shortName) => {
 	const modSet = []
 
+	//TODO: this is super in-efficient.  Like, really bad.
 	modCollect.collections.forEach((collectKey) => {
 		modCollect.getModCollection(collectKey).modSet.forEach((modKey) => {
 			const mod = modCollect.modColAndUUID(collectKey, modKey)
@@ -2021,7 +2022,7 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 function fileOperation_post(type, fileMap) {
 	const fullPathMap = []
 
-	fileMap.forEach((file) => {
+	for ( const file of fileMap ) {
 		// fileMap is [destCollectKey, sourceCollectKey, fullPath (guess)]
 		// fullPathMap is [source, destination]
 		const thisFileName = path.basename(file[2])
@@ -2036,41 +2037,49 @@ function fileOperation_post(type, fileMap) {
 				path.join(modCollect.mapCollectionToFolder(file[0]), thisFileName), // dest
 			])
 		}
-	})
+	}
 
 	foldersDirty = true
+	let sourceFileStat = null
 
-	fullPathMap.forEach((file) => {
+	for ( const file of fullPathMap ) {
 		try {
-			if ( type === 'copy' || type === 'import' ) {
-				log.log.info(`Copy File : ${file[0]} -> ${file[1]}`, 'file-ops')
-				const sourceFileStat = fs.statSync(file[0])
-				if ( ! sourceFileStat.isDirectory() ) {
-					fs.copyFileSync(file[0], file[1])
-				} else {
-					fs.cpSync(file[0], file[1], { recursive : true })
-				}
-			}
-			if ( type === 'move' ) {
-				if ( path.parse(file[0]).root !== path.parse(file[1]).root ) {
-					log.log.info(`Move (cp+rm) File : ${file[0]} -> ${file[1]}`, 'file-ops')
-					fs.copyFileSync(file[0], file[1])
-					fs.rmSync(file[0])
-				} else {
-					log.log.info(`Move (rename) File : ${file[0]} -> ${file[1]}`, 'file-ops')
-					fs.renameSync(file[0], file[1])
-				}
-			}
-			if ( type === 'delete' ) {
-				log.log.info(`Delete File : ${file[0]}`, 'file-ops')
-				fs.rmSync(file[0], { recursive : true } )
+			switch (type) {
+				case 'copy' :
+				case 'import' :
+					log.log.info(`Copy File : ${file[0]} -> ${file[1]}`, 'file-ops')
+
+					sourceFileStat = fs.statSync(file[0])
+					
+					if ( ! sourceFileStat.isDirectory() ) {
+						fs.copyFileSync(file[0], file[1])
+					} else {
+						fs.cpSync(file[0], file[1], { recursive : true })
+					}
+					break
+				case 'move':
+					if ( path.parse(file[0]).root !== path.parse(file[1]).root ) {
+						log.log.info(`Move (cp+rm) File : ${file[0]} -> ${file[1]}`, 'file-ops')
+						fs.copyFileSync(file[0], file[1])
+						fs.rmSync(file[0])
+					} else {
+						log.log.info(`Move (rename) File : ${file[0]} -> ${file[1]}`, 'file-ops')
+						fs.renameSync(file[0], file[1])
+					}
+					break
+				case 'delete' :
+					log.log.info(`Delete File : ${file[0]}`, 'file-ops')
+					fs.rmSync(file[0], { recursive : true } )
+					break
+				default :
+					log.log.warning(`Unknown file operation called: ${type}`, 'file-ops')
 			}
 		} catch (e) {
 			log.log.danger(`Could not ${type} file : ${e}`, `${type}-file`)
 		}
 
 		loadingWindow_current()
-	})
+	}
 
 	processModFolders()
 }
@@ -2097,7 +2106,7 @@ function processModFoldersOnDisk() {
 	modFoldersWatch.forEach((oldWatcher) => { oldWatcher.close() })
 	modFoldersWatch = []
 	// Cleaner for no-longer existing folders, set watcher for others
-	modFolders.forEach((folder) => {
+	for ( const folder of modFolders ) {
 		if ( ! fs.existsSync(folder) ) {
 			modFolders.delete(folder)
 		} else {
@@ -2105,15 +2114,15 @@ function processModFoldersOnDisk() {
 			thisWatch.on('error', () => { log.log.warning(`Folder Watch Error: ${folder}`, 'folder-watcher') })
 			modFoldersWatch.push(thisWatch)
 		}
-	})
+	}
 
 	mcStore.set('modFolders', Array.from(modFolders))
 
-	modFolders.forEach((folder) => {
+	for ( const folder of modFolders ) {
 		const thisCollectionStats = modCollect.addCollection(folder)
 
 		loadingWindow_total(thisCollectionStats.fileCount)
-	})
+	}
 
 	modCollect.processMods()
 

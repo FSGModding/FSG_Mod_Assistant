@@ -58,22 +58,19 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	selectCount.active     = 0
 
 	if ( savegame.errorList.length > 0 ) {
-		const errors = []
-
-		savegame.errorList.forEach((error) => { errors.push(`<l10n name="${error[0]}"></l10n> ${error[1]}`) })
+		const errors = savegame.errorList.map((error) => `<l10n name="${error[0]}"></l10n> ${error[1]}`)
 
 		modSetHTML.push(fsgUtil.useTemplate('savegame_error', { errors : errors.join(', ')}))
 	}
 
-	
-	Object.values(modCollect.modList[thisCollection].mods).forEach((thisMod) => {
+	for ( const thisMod of Object.values(modCollect.modList[thisCollection].mods) ) {
 		haveModSet[thisMod.fileDetail.shortName] = thisMod
 		fullModSet.add(thisMod.fileDetail.shortName)
-	})
+	}
 
-	Object.keys(savegame.mods).forEach((thisMod) => { fullModSet.add(thisMod) })
+	for ( const thisMod in savegame.mods ) { fullModSet.add(thisMod) }
 
-	Array.from(fullModSet).sort().forEach((thisMod) => {
+	for ( const thisMod of Array.from(fullModSet).sort() ) {
 		if ( thisMod.endsWith('.csv') ) { return }
 		const thisModDetail = {
 			title           : null,
@@ -148,7 +145,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 		}
 
 		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm, modCollect.modHub.list.mods[thisMod]))
-	})
+	}
 
 	fsgUtil.byId('modList').innerHTML = modSetHTML.join('')
 
@@ -162,10 +159,11 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 })
 
 function updateCounts() {
-	fsgUtil.query('.quantity').forEach((qty) => {
-		const labelName = qty.parentElement.parentElement.getAttribute('for').replace('check_savegame_', '')
-		qty.innerHTML = selectCount[labelName]
-	})
+	for ( const element of fsgUtil.query('[for^="check_savegame"]') ) {
+		const labelName = element.getAttribute('for').replace('check_savegame_', '')
+		const quantity  = element.querySelector('.quantity')
+		quantity.innerHTML = selectCount[labelName]
+	}
 }
 
 function makeLine(name, mod, singleFarm, hubID) {
@@ -197,7 +195,7 @@ function makeLine(name, mod, singleFarm, hubID) {
 	if ( !mod.isUsed )                 { displayBadge.push(['unused', 'warning']) }
 	if ( !mod.isLoaded )               { displayBadge.push(['inactive', 'warning']) }
 
-	badges.forEach((badge) => {
+	for ( const badge of badges ) {
 		if ( mod[badge] === true ) {
 			if ( badge === 'scriptOnly' ) { selectCount.scriptonly++ }
 			if ( badge === 'isUsed' )     { selectCount.isused++ }
@@ -205,7 +203,7 @@ function makeLine(name, mod, singleFarm, hubID) {
 			displayBadge.push([badge.toLowerCase(), 'dark'])
 			
 		}
-	})
+	}
 
 	return fsgUtil.useTemplate('savegame_mod', {
 		colorClass    : colorClass,
@@ -229,32 +227,22 @@ function clientSelectMain(type) {
 function clientChangeFilter() {
 	const filtersActive = fsgUtil.query('.filter_only:checked').length
 	const modItems      = fsgUtil.query('.mod-item')
-	const filters = {
-		dlc        : false,
-		missing    : false,
-		scriptonly : false,
-		isloaded   : false,
-		isused     : false,
-		inactive   : false,
-		unused     : false,
-		nohub      : false,
-	}
+	const filters = ['dlc', 'missing', 'scriptonly', 'isloaded', 'isused', 'inactive', 'unused', 'nohub']
 
 	if ( filtersActive === 0 ) {
-		modItems.forEach((modItem) => { modItem.classList.remove('d-none') })
+		for ( const modItem of modItems ) { modItem.classList.remove('d-none') }
 	} else {
-		const activeFilters = []
-		Object.keys(filters).forEach((key) => {
-			if ( fsgUtil.byId(`check_savegame_${key}`).checked ) { activeFilters.push(key)}
-		})
-		modItems.forEach((modItem) => {
-			let badgesFound = 0
-			activeFilters.forEach((thisFilter) => {
-				if ( modItem.querySelector(`[name="savegame_${thisFilter}"]`) !== null ) {
-					badgesFound++
+		const activeFilters = filters.filter((key) => fsgUtil.byId(`check_savegame_${key}`).checked )
+		
+		for ( const modItem of modItems ) {
+			let allBadgesFound = true
+			for ( const thisFilter of activeFilters ) {
+				if ( modItem.querySelector(`[name="savegame_${thisFilter}"]`) === null ) {
+					allBadgesFound = false
+					break
 				}
-			})
-			modItem.classList[( badgesFound === activeFilters.length ) ? 'remove' : 'add']('d-none')
-		})
+			}
+			modItem.classList[( allBadgesFound ) ? 'remove' : 'add']('d-none')
+		}
 	}
 }

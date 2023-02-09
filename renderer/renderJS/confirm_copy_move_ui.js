@@ -11,12 +11,8 @@
 let lastModCollect     = null
 let lastFolderRelative = null
 
-window.mods.receive('fromMain_subWindowSelectAll', () => {
-	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = true })
-})
-window.mods.receive('fromMain_subWindowSelectNone', () => {
-	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = false })
-})
+window.mods.receive('fromMain_subWindowSelectAll', fsgUtil.windowCheckAll)
+window.mods.receive('fromMain_subWindowSelectNone', fsgUtil.windowCheckNone)
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version

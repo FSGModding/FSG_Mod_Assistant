@@ -18,14 +18,14 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const versionList        = {}
 	const versionListNoMatch = {}
 
-	modCollect.set_Collections.forEach((collectKey) => {
+	for ( const collectKey of modCollect.set_Collections ) {
 		if ( doMultiVersion ) {
 			if ( modCollect.collectionNotes[collectKey].notes_version !== thisVersion ) {
-				return
+				continue
 			}
 		}
 		collectionMap[collectKey] = modCollect.collectionToName[collectKey]
-		modCollect.modList[collectKey].modSet.forEach((modKey) => {
+		for ( const modKey of modCollect.modList[collectKey].modSet ) {
 			const mod     = modCollect.modList[collectKey].mods[modKey]
 			const modName = mod.fileDetail.shortName
 			const modVer  = mod.modDesc.version
@@ -36,13 +36,15 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 				versionList[modName]  ??= []
 				versionList[modName].push([collectKey, modVer])
 			}
-		})
-	})
-	Object.keys(versionList).forEach((key) => {
-		if ( versionList[key].length < 2 ) { delete versionList[key] }
-	})
+		}
+	}
 
-	Object.keys(versionList).forEach((key) => {
+	for ( const key in versionList ) {
+		if ( versionList[key].length < 2 ) {
+			delete versionList[key]
+			continue
+		}
+
 		const firstVer = versionList[key][0][1]
 		let   deleteMe = false
 		for ( let i = 1; i < versionList[key].length; i++ ) {
@@ -52,22 +54,21 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			}
 		}
 		if ( deleteMe ) { delete versionList[key] }
-	})
+	}
 
 	const listHTML = []
-	Object.keys(versionListNoMatch).forEach((key) => {
-		const theseCollections = []
-		versionListNoMatch[key].forEach((versionArray) => {
-			theseCollections.push(`${collectionMap[versionArray[0]]}: ${versionArray[1]}`)
-		})
-		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
-	})
 
-	Object.keys(versionList).forEach((key) => {
-		const theseCollections = []
-		versionList[key].forEach((versionArray) => { theseCollections.push(collectionMap[versionArray[0]]) })
+	for ( const key in versionListNoMatch ) {
+		const theseCollections = versionListNoMatch[key].map((vArray) => `${collectionMap[vArray[0]]}: ${vArray[1]}`)
+
+		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
+	}
+
+	for ( const key in versionList ) {
+		const theseCollections = versionList[key].map((vArray) => collectionMap[vArray[0]])
+
 		listHTML.push(makeLine('same', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
-	})
+	}
 
 	fsgUtil.byId('modList').innerHTML = listHTML.join('')
 	processL10N()

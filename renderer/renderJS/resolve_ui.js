@@ -13,33 +13,24 @@ let cacheShortName   = null
 let cacheCollection  = null
 
 
-window.mods.receive('fromMain_subWindowSelectAll', () => {
-	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = true })
-})
-window.mods.receive('fromMain_subWindowSelectNone', () => {
-	fsgUtil.query('[type="checkbox"]').forEach((element) => { element.checked = false })
-})
+window.mods.receive('fromMain_subWindowSelectAll', fsgUtil.windowCheckAll)
+window.mods.receive('fromMain_subWindowSelectNone', fsgUtil.windowCheckNone)
 
 window.mods.receive('fromMain_modSet', (modSet, shortName) => {
 	let latestVersion = { vString : null, vParts : [], collectKey : null }
-	const modHTML = []
 
 	fsgUtil.byId('modName').innerHTML = shortName
 	cacheShortName = shortName
 
-	modSet.forEach((mod) => {
+	for ( const mod of modSet ) {
 		latestVersion = compareVersion(latestVersion, mod.version, mod.collectKey)
-	})
+	}
 
 	fsgUtil.byId('newVersion').innerHTML = latestVersion.vString
 	fsgUtil.byId('copyButton').classList.remove('disabled')
 	cacheCollection = latestVersion.collectKey
 
-	modSet.forEach((mod) => {
-		modHTML.push(makeLine(mod, latestVersion))
-	})
-
-	fsgUtil.byId('modSet').innerHTML = modHTML.join('')
+	fsgUtil.byId('modSet').innerHTML = modSet.map((mod) => makeLine(mod, latestVersion)).join('')
 	processL10N()
 })
 
@@ -100,13 +91,11 @@ function makeLine(mod, version) {
 }
 
 function clientDoCopy() {
-	const checked = fsgUtil.query(':checked')
 	const fileMap = []
 
-	checked.forEach((thisCheck) => {
+	for ( const thisCheck of fsgUtil.query(':checked') ) {
 		fileMap.push([thisCheck.value, cacheCollection, `${cacheShortName}.zip`])
-	})
+	}
 
-	
 	window.mods.realCopyFile(fileMap)
 }
