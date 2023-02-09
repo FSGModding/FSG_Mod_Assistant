@@ -12,7 +12,7 @@
 window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 	fsgUtil.byId('gameLogPath').innerHTML = fileName
 	const autoScroll = fsgUtil.byId('auto_scroll').checked || false
-	const showThese  = new Set()
+	const showThese  = new Set(fsgUtil.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
 	const showData   = []
 	const logRegExp  = {
 		time : {
@@ -91,32 +91,25 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			filter : 'cpad',
 		},
 	}
-	
-
-	document.querySelectorAll('.filter_only:checked').forEach((element) => {
-		showThese.add(element.id.replace('debug_', '').toLowerCase())
-	})
 
 
-	let lineNum    = 0
-	let dupeCount  = 1
-	let lastLine   = null
-	let classList  = null
-	let thisLine   = null
-	let filterList = null
-	let showMe     = true
+	let   lineNum    = 0
+	let   dupeCount  = 1
+	let   lastLine   = null
+	let   classList  = null
+	let   thisLine   = null
+	let   filterList = null
+	let   showMe     = true
 	const showDupes  = showThese.has('dupes')
 
-	data.split('\n').forEach((line) => {
-
+	for ( const line of data.split('\n') ) {
 		if ( lastLine === line && !showDupes ) {
+			
 			dupeCount++
 		} else {
 			if ( lastLine !== null ) {
 				showMe = true
-				filterList.forEach((filter) => {
-					if ( !showThese.has(filter) ) { showMe = false }
-				})
+				for ( const filter of filterList ) { if ( !showThese.has(filter) ) { showMe = false } }
 				const dupePart = `<td class="py-0 my-0 text-center">${dupeCount > 1? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` :''}</td>`
 				const thisLineHTML = `<tr class="ps-3 ${showMe ? '' : 'd-none'}">
 					${!showDupes ? dupePart : ''}
@@ -132,31 +125,29 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			filterList = new Set()
 			thisLine   = line
 		
-			Object.keys(logRegExp).forEach((regType) => {
+			for ( const regType in logRegExp ) {
 				if ( typeof logRegExp[regType].wrap !== 'undefined' ) {
-					logRegExp[regType].regex.forEach((thisRegExp) => {
+					for ( const thisRegExp of logRegExp[regType].regex ) {
 						thisLine = line.replace(thisRegExp, `${logRegExp[regType].wrap[0]}$1${logRegExp[regType].wrap[1]}`)
-					})
+					}
 				} else {
-					logRegExp[regType].regex.forEach((thisRegExp) => {
+					for ( const thisRegExp of logRegExp[regType].regex ) {
 						if ( line.match(thisRegExp) ) {
 							filterList.add(logRegExp[regType].filter)
 							classList.add(logRegExp[regType].className)
 						}
-					})
+					}
 				}
-			})
+			}
 
 			if ( filterList.size < 1 ) { filterList.add('other') }
 		}
 		lineNum++
-	})
+	}
 
 	if ( thisLine !== '' ) {
 		showMe = true
-		filterList.forEach((filter) => {
-			if ( !showThese.has(filter) ) { showMe = false }
-		})
+		for ( const filter of filterList ) { if ( !showThese.has(filter) ) { showMe = false } }
 		const dupePart = `<td class="py-0 my-0 text-center">${dupeCount > 1? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` :''}</td>`
 		showData.push( `<tr class="ps-3">
 				${!showDupes ? dupePart : ''}
@@ -173,19 +164,14 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 })
 
 function clientResetButtons() {
-	fsgUtil.query('.filter_only').forEach((element) => {
-		if ( element.id === 'debug_dupes' ) {
-			element.checked = false
-		} else {
-			element.checked = true
-		}
-	})
+	for ( const element of fsgUtil.query('.filter_only') ) {
+		element.checked = ! ( element.id === 'debug_dupes' )
+	}
 	window.gamelog.getGameLogContents()
 }
 
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 
-	const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-	tooltipTriggerList.map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl) )
+	fsgUtil.queryA('[data-bs-toggle="tooltip"]').map((element) => new bootstrap.Tooltip(element))
 })

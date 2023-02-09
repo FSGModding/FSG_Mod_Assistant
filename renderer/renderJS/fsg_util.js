@@ -20,6 +20,7 @@ const fsgUtil = {
 	},
 	byId       : ( id )    => { return document.getElementById( id ) },
 	query      : ( query ) => { return document.querySelectorAll( query ) },
+	queryA     : ( query ) => { return Array.from(document.querySelectorAll( query )) },
 	getIconSVG : ( type )  => {
 		switch (type) {
 			case 'check':
@@ -164,11 +165,16 @@ const fsgUtil = {
 	useTemplate : ( templateName, replacements ) => {
 		let thisTemplate = fsgUtil.byId(templateName).innerHTML
 
-		Object.keys(replacements).forEach((key) => {
+		for ( const key in replacements ) {
 			thisTemplate = thisTemplate.replaceAll(new RegExp(`{{${key}}}`, 'g'), replacements[key])
-		})
+		}
 
 		return thisTemplate
+	},
+	classPerTest : ( query, test, class_add_when_false = 'd-none' ) => {
+		for ( const element of fsgUtil.query(query) ) {
+			element.classList[test ? 'remove' : 'add'](class_add_when_false)
+		}
 	},
 }
 
@@ -180,28 +186,24 @@ const fsgUtil = {
 function processL10N()          { clientGetL10NEntries() }
 
 function clientGetL10NEntries() {
-	const l10nSendItems = new Set()
+	const l10nSendArray = fsgUtil.queryA('l10n').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
 
-	fsgUtil.query('l10n').forEach((thisL10nItem) => {
-		l10nSendItems.add(fsgUtil.getAttribNullEmpty(thisL10nItem, 'name'))
-	})
-
-	l10n.getText_send(l10nSendItems)
+	l10n.getText_send(new Set(l10nSendArray))
 }
 
 window?.l10n?.receive('fromMain_getText_return', (data) => {
 	if ( data[0] === '__currentLocale__'  ) {
 		document.body.setAttribute('data-i18n', data[1])
 	} else {
-		fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => { item.innerHTML = data[1] })
+		for ( const item of fsgUtil.query(`l10n[name="${data[0]}"]`) ) { item.innerHTML = data[1] }
 	}
 })
 
 window?.l10n?.receive('fromMain_getText_return_title', (data) => {
-	fsgUtil.query(`l10n[name="${data[0]}"]`).forEach((item) => {
-		let thisTitle = item.closest('button')
-		thisTitle ??= item.closest('span')
-		thisTitle ??= item.closest('label')
+	for ( const item of fsgUtil.query(`l10n[name="${data[0]}"]`) ) {
+		let thisTitle   = item.closest('button')
+		thisTitle     ??= item.closest('span')
+		thisTitle     ??= item.closest('label')
 
 		if ( data[0] === 'game_icon_lg' ) { thisTitle = item.closest('#multi_version_button') }
 
@@ -209,7 +211,7 @@ window?.l10n?.receive('fromMain_getText_return_title', (data) => {
 			thisTitle.title = data[1]
 			new bootstrap.Tooltip(thisTitle)
 		}
-	})
+	}
 })
 
 window?.l10n?.receive('fromMain_l10n_refresh', (newLang) => {

@@ -33,18 +33,16 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 )  ? modRecord.fileDetail.pngTexture.join('\n')  : getText('detail_extra_clean')),
 		depends        : (( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 )  ? modRecord.modDesc.depend.join('\n')  : getText('detail_depend_clean')),
 	}
-	Object.keys(idMap).forEach((key) => {
-		fsgUtil.byId(key).innerHTML = idMap[key]
-	})
 
-	fsgUtil.byId('description').querySelectorAll('a').forEach((link) => { link.target = '_BLANK' })
+	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
+
+	fsgUtil.query('#description a').forEach((link) => { link.target = '_BLANK' })
 
 	const keyBinds = []
-	Object.keys(modRecord.modDesc.binds).forEach((action) => {
-		const thisBinds = []
-		modRecord.modDesc.binds[action].forEach((keyCombo) => { thisBinds.push(clientGetKeyMapSimple(keyCombo, modCollect.currentLocale))})
+	for ( const action in modRecord.modDesc.binds ) {
+		const thisBinds = modRecord.modDesc.binds[action].map((keyCombo) => clientGetKeyMapSimple(keyCombo, modCollect.currentLocale))
 		keyBinds.push(`${action} :: ${thisBinds.join(' / ')}`)
-	})
+	}
 	
 	fsgUtil.byId('keyBinds').innerHTML = ( keyBinds.length > 0 ) ? keyBinds.join('\n') : getText('detail_key_none')
 
@@ -55,22 +53,22 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 		fsgUtil.byId('problem_div').classList.add('d-none')
 	} else {
 		const problems = []
-		modRecord.issues.forEach((issue) => {
+		for ( const issue of modRecord.issues ) {
 			let issueText = getText(issue)
 		
 			if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
 				issueText += ` ${getText('file_error_copy_name')} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
 			}
 			problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
-		})
+		}
 
 		if ( bindingIssueTest ) {
-			Object.keys(bindingIssue).forEach((keyCombo) => {
+			for ( const keyCombo in bindingIssue ) {
 				const actualKey = clientGetKeyMap(keyCombo, modCollect.currentLocale)
 				const confList  = bindingIssue[keyCombo].join(', ')
 				const issueText = `${getText('bind_conflict')} : ${actualKey} :: ${confList}`
 				problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
-			})
+			}
 		}
 
 		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`

@@ -15,7 +15,7 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 	const localFolderList = []
 	const lastFolder      = modCollect.set_Collections.size - 1
 
-	modCollect.set_Collections.forEach((collectKey) => {
+	for ( const collectKey of modCollect.set_Collections ) {
 		localFolderList.push(makeFolderLine(
 			{
 				multiVer   : modCollect.appSettings.multi_version,
@@ -29,7 +29,7 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 			lastFolder
 		))
 		folderNum++
-	})
+	}
 
 	fsgUtil.byId('folderList').innerHTML = localFolderList.join('')
 

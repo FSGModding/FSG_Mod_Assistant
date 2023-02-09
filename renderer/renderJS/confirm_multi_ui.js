@@ -23,20 +23,17 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	lastSourceMods     = modCollect.opts.sourceFiles
 
 	const destChecks = []
-	const confRows   = []
 
-	modCollect.opts.destinations.forEach((collectKey) => {
-		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
+	for ( const collectKey of modCollect.opts.destinations ) {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
 		destChecks.push(fsgUtil.makeCollectionCheckBox({
 			id     : collectKey,
 			name   : modCollect.collectionToName[collectKey],
 			folder : modCollect.collectionToFolderRelative[collectKey],
 		}))
-	})
+	}
 
-	modCollect.opts.sourceFiles.forEach((source) => {
-		confRows.push(fsgUtil.arrayToTableRow([source.shortName, source.title]))
-	})
+	const confRows   = modCollect.opts.sourceFiles.map((source) => fsgUtil.arrayToTableRow([source.shortName, source.title]))
 
 	fsgUtil.byId('dest_list').innerHTML    = destChecks.join('')
 	fsgUtil.byId('confirm_list').innerHTML = confRows.join('')
@@ -48,11 +45,11 @@ function clientDoCopy() {
 	const realDestinations = fsgUtil.query(':checked')
 	const fileMap          = []
 
-	lastSourceMods.forEach((source) => {
-		realDestinations.forEach((realDest) => {
+	for ( const source of lastSourceMods ) {
+		for ( const realDest of realDestinations ) {
 			fileMap.push([realDest.id, source.collectKey, source.fullPath])
-		})
-	})
+		}
+	}
 
 	window.mods.realCopyFile(fileMap)
 }

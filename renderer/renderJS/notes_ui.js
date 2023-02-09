@@ -19,7 +19,7 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 	
 	fsgUtil.byId('collection_name').innerHTML = modCollect.collectionToName[thisCollection]
 
-	fsgUtil.query('input').forEach((element) => {
+	for ( const element of fsgUtil.query('input') ) {
 		let thisValue = ''
 		
 		let thisPlaceholder = modCollect.opts.lastGameSettings[element.id.replace('notes_', '')]
@@ -27,17 +27,18 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 		if ( element.getAttribute('type') === 'text' ) {
 			thisValue       = modCollect.collectionNotes[thisCollection][element.id]
 			thisPlaceholder = ( thisValue !== null ) ? '' : thisPlaceholder
-		}
-		if ( element.getAttribute('type') === 'checkbox' ) {
-			thisValue       = modCollect.collectionNotes[thisCollection][element.id]
-			element.checked = (thisValue !== '') ? thisValue : false
-		} else {
+
 			element.placeholder = ( typeof thisPlaceholder !== 'undefined' ) ? thisPlaceholder : ''
 			element.value =  ( typeof thisValue !== 'undefined' ) ? thisValue : ''
 		}
 
+		if ( element.getAttribute('type') === 'checkbox' ) {
+			thisValue       = modCollect.collectionNotes[thisCollection][element.id]
+			element.checked = (thisValue !== '') ? thisValue : false
+		}
+
 		clientCheckValid(element.id)
-	})
+	}
 	
 	fsgUtil.byId('notes_version').value =  modCollect.collectionNotes[thisCollection].notes_version
 

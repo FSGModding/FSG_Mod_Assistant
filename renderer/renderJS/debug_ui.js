@@ -9,35 +9,26 @@
 /* global processL10N, fsgUtil, bootstrap */
 
 window.debug.receive('fromMain_debugLog', (data) => {
-	const showThese = []
 	const showData  = []
 	const levelInfo = new RegExp(/<span class="log_level .+?">(.+?)<\/span>/)
+	const showThese = fsgUtil.queryA(':checked').map((element) => element.id.replace('debug_', '').toUpperCase() )
 
-	document.querySelectorAll(':checked').forEach((element) => {
-		showThese.push(element.id.replace('debug_', '').toUpperCase())
-	})
-
-	data.split('\n').forEach((line) => {
+	for ( const line of data.split('\n') ) {
 		if ( showThese.includes(line.match(levelInfo)[1].trim()) ) { showData.push(line) }
-	})
+	}
 
-	document.getElementById('debug_log').innerHTML = showData.join('\n')
+	fsgUtil.byId('debug_log').innerHTML = showData.join('\n')
 })
 
 function clientResetButtons() {
 	fsgUtil.query('.filter_only').forEach((element) => {
-		if ( element.id === 'debug_debug' ) {
-			element.checked = false
-		} else {
-			element.checked = true
-		}
+		element.checked = ! ( element.id === 'debug_debug' )
 	})
-	window.gamelog.getDebugLogContents()
+	window.debug.getDebugLogContents()
 }
 
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 
-	const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-	tooltipTriggerList.map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl) )
+	fsgUtil.queryA('[data-bs-toggle="tooltip"]').map((element) => new bootstrap.Tooltip(element))
 })

@@ -17,9 +17,9 @@ window.mods.receive('fromMain_modRecords', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 
-	modCollect.set_Collections.forEach((collectKey) => {
-		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
-		modCollect.modList[collectKey].modSet.forEach((modKey) => {
+	for ( const collectKey of modCollect.set_Collections ) {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
+		for ( const modKey of modCollect.modList[collectKey].modSet ) {
 			const mod = modCollect.modList[collectKey].mods[modKey]
 			if ( ! mod.canNotUse ) {
 				fullList[mod.fileDetail.shortName] ??= {
@@ -35,8 +35,8 @@ window.mods.receive('fromMain_modRecords', (modCollect) => {
 					fullId  : `${collectKey}--${mod.uuid}`,
 				})
 			}
-		})
-	})
+		}
+	}
 	
 	fullListSort = Object.keys(fullList).sort( (a, b) => {
 		if (a.toLowerCase() < b.toLowerCase()) return -1
@@ -69,31 +69,20 @@ function clientFilter() {
 
 	fsgUtil.byId('mods__filter_clear').classList[( filterText !== '' ) ? 'remove':'add']('d-none')
 
-	fsgUtil.byId('full_table').querySelectorAll('tr').forEach((element) => {
-		element.classList.remove('d-none')
+	for ( const element of fsgUtil.queryA('#full_table tr') ){
+		let foundText = true
 		if ( filterText.length > 1 ) {
 			const searchText = element.querySelector('.search-string').innerText.toLowerCase()
-			if ( !searchText.includes(filterText) ) {
-				element.classList.add('d-none')
-			}
+			foundText = searchText.includes(filterText)
 		}
-	})
-}
-
-function clientRightClick(id) {
-	const thisMod = fullList[id.replace('__mod', '')]
-
-	if ( typeof thisMod !== 'undefined' ) {
-		window.mods.rightClick({
-			name    : thisMod.name,
-			collect : thisMod.collect,
-		})
+		element.classList[foundText?'remove':'add']('d-none')
 	}
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-	processL10N()
-	document.getElementById('full_table').addEventListener('contextmenu', (e) => {
-		clientRightClick(e.target.closest('tr').id)
-	})
-})
+function clientRightClick(id) {
+	const thisMod = fullList[id]
+
+	if ( typeof thisMod !== 'undefined' ) { window.mods.rightClick(thisMod) }
+}
+
+window.addEventListener('DOMContentLoaded', () => { processL10N() })

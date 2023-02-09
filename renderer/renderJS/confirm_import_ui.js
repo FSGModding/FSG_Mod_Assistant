@@ -24,20 +24,17 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	lastSourceMods = modCollect.opts.files
 
 	const destChecks = []
-	const confRows   = []
 
-	modCollect.set_Collections.forEach((collectKey) => {
-		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { return }
+	for ( const collectKey of modCollect.set_Collections ) {
+		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
 		destChecks.push(fsgUtil.makeCollectionCheckBox({
 			id     : collectKey,
 			name   : modCollect.collectionToName[collectKey],
 			folder : modCollect.collectionToFolderRelative[collectKey],
 		}))
-	})
+	}
 
-	modCollect.opts.files.forEach((source) => {
-		confRows.push(fsgUtil.arrayToTableRow(source))
-	})
+	const confRows   = modCollect.opts.files.map((source) => fsgUtil.arrayToTableRow(source))
 
 	fsgUtil.byId('dest_list').innerHTML    = destChecks.join('')
 	fsgUtil.byId('confirm_list').innerHTML = confRows.join('')
@@ -50,11 +47,11 @@ function clientDoImport() {
 	const realDestinations = fsgUtil.query(':checked')
 	const fileMap          = []
 
-	lastSourceMods.forEach((source) => {
-		realDestinations.forEach((realDest) => {
+	for ( const source of lastSourceMods ) {
+		for ( const realDest of realDestinations ) {
 			fileMap.push([realDest.id, '', source])
-		})
-	})
+		}
+	}
 
 	window.mods.realImportFile(fileMap)
 }
