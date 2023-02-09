@@ -15,11 +15,22 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 	const showThese  = new Set(fsgUtil.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
 	const showData   = []
 	const logRegExp  = {
-		time : {
-			regex : [
-				new RegExp(/(^\d\d\d\d-\d\d-\d\d \d\d:\d\d )/)
+		cp_ad : {
+			regex     : [
+				new RegExp(/:\d\d \[/),
+				new RegExp(/\[AD\]/),
+				new RegExp(/\[AutoDrive\]/),
+				new RegExp(/\[AutoDriveSync\]/),
 			],
-			wrap  : ['<em class="text-info-emphasis">', '</em>'],
+			className : 'text-light-emphasis',
+			filter : 'cpad',
+		},
+		cpp_stack : {
+			regex     : [
+				new RegExp(/\.cpp/),
+			],
+			className : 'text-danger',
+			filter : 'lua_error',
 		},
 		error : {
 			regex     : [
@@ -30,14 +41,6 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			className : 'text-danger',
 			filter : 'error',
 		},
-		warning : {
-			regex     : [
-				new RegExp(/Warning:/),
-				new RegExp(/Warning \(.+?\):/),
-			],
-			className : 'text-warning',
-			filter : 'warning',
-		},
 		info : {
 			regex     : [
 				new RegExp(/Info:/),
@@ -45,18 +48,6 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			],
 			className : 'text-info',
 			filter : 'info',
-		},
-		mod_load : {
-			regex     : [
-				new RegExp(/Available dlc:/),
-				new RegExp(/Available mod:/),
-				new RegExp(/Load mod:/),
-				new RegExp(/Load dlc:/),
-				new RegExp(/ExtraContent:/),
-				new RegExp(/ {6}adding mod/),
-			],
-			className : 'text-success',
-			filter : 'mod_loading',
 		},
 		lua_intro : {
 			regex     : [
@@ -73,25 +64,33 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			className : 'text-danger-emphasis fst-italic',
 			filter : 'lua_error',
 		},
-		cpp_stack : {
+		mod_load : {
 			regex     : [
-				new RegExp(/\.cpp/),
+				new RegExp(/Available dlc:/),
+				new RegExp(/Available mod:/),
+				new RegExp(/Load mod:/),
+				new RegExp(/Load dlc:/),
+				new RegExp(/ExtraContent:/),
+				new RegExp(/ {6}adding mod/),
 			],
-			className : 'text-danger',
-			filter : 'lua_error',
+			className : 'text-success',
+			filter : 'mod_loading',
 		},
-		cp_ad : {
-			regex     : [
-				new RegExp(/:\d\d \[/),
-				new RegExp(/\[AD\]/),
-				new RegExp(/\[AutoDrive\]/),
-				new RegExp(/\[AutoDriveSync\]/),
+		time : {
+			regex : [
+				new RegExp(/(^\d\d\d\d-\d\d-\d\d \d\d:\d\d )/)
 			],
-			className : 'text-light-emphasis',
-			filter : 'cpad',
+			wrap  : ['<em class="text-info-emphasis">', '</em>'],
+		},
+		warning : {
+			regex     : [
+				new RegExp(/Warning:/),
+				new RegExp(/Warning \(.+?\):/),
+			],
+			className : 'text-warning',
+			filter : 'warning',
 		},
 	}
-
 
 	let   lineNum    = 0
 	let   dupeCount  = 1
@@ -99,7 +98,6 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 	let   classList  = null
 	let   thisLine   = null
 	let   filterList = null
-	let   showMe     = true
 	const showDupes  = showThese.has('dupes')
 
 	for ( const line of data.split('\n') ) {
@@ -108,17 +106,9 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			dupeCount++
 		} else {
 			if ( lastLine !== null ) {
-				showMe = true
-				for ( const filter of filterList ) { if ( !showThese.has(filter) ) { showMe = false } }
-				const dupePart = `<td class="py-0 my-0 text-center">${dupeCount > 1? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` :''}</td>`
-				const thisLineHTML = `<tr class="ps-3 ${showMe ? '' : 'd-none'}">
-					${!showDupes ? dupePart : ''}
-					<td class="logLineName py-0 my-0 border-end text-white-50 fst-italic">${lineNum}</td>
-					<td class="${[...classList].join(' ')}">${thisLine}</td>
-				</tr>`
-
-				showData.push(thisLineHTML)
+				showData.push(doLine(filterList, showThese, dupeCount, showDupes, classList, lineNum, thisLine))
 			}
+
 			dupeCount  = 1
 			lastLine   = line
 			classList  = new Set(['logLine', 'py-0', 'my-0'])
@@ -146,14 +136,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 	}
 
 	if ( thisLine !== '' ) {
-		showMe = true
-		for ( const filter of filterList ) { if ( !showThese.has(filter) ) { showMe = false } }
-		const dupePart = `<td class="py-0 my-0 text-center">${dupeCount > 1? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` :''}</td>`
-		showData.push( `<tr class="ps-3">
-				${!showDupes ? dupePart : ''}
-				<td class="logLineName py-0 my-0 border-end text-white-50 fst-italic">${lineNum}</td>
-				<td class="${[...classList].join(' ')}">${thisLine}</td>
-			</tr>`)
+		showData.push(doLine(filterList, showThese, dupeCount, showDupes, classList, lineNum, thisLine))
 	}
 
 	document.getElementById('game_log').innerHTML = showData.join('')
@@ -162,6 +145,17 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 		window.scrollTo(0, document.body.scrollHeight)
 	}
 })
+
+function doLine(filterList, showThese, dupeCount, showDupes, classList, lineNum, thisLine) {
+	let showMe = true
+	for ( const filter of filterList ) { if ( !showThese.has(filter) ) { showMe = false } }
+	const dupePart = `<td class="py-0 my-0 text-center">${dupeCount > 1? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` :''}</td>`
+	return `<tr class="ps-3 ${showMe ? '' : 'd-none'}">
+		${!showDupes ? dupePart : ''}
+		<td class="logLineName py-0 my-0 border-end text-white-50 fst-italic">${lineNum}</td>
+		<td class="${[...classList].join(' ')}">${thisLine}</td>
+	</tr>`
+}
 
 function clientResetButtons() {
 	for ( const element of fsgUtil.query('.filter_only') ) {

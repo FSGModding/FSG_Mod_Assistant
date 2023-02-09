@@ -52,13 +52,13 @@ const dnBtn = (num, last, disable) => `${moveBtn('folder_down_button', num, num+
 
 
 const makeFolderLine = (details, num, last) => fsgUtil.useTemplate('folder_line', {
-	upButtons   : upBtn(num, num < 1),
+	collectKey  : details.collectKey,
 	downButtons : dnBtn(num, last, num === last),
 	name        : details.name,
 	pathRel     : details.pathRel,
 	tagLine     : details.tag === null ? '' : details.tag,
+	upButtons   : upBtn(num, num < 1),
 	version     : details.multiVer ? `<l10n class="small" name="mod_badge_fs${details.version}"></l10n>` : '',
-	collectKey  : details.collectKey,
 })
 
 

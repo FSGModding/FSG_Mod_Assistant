@@ -57,11 +57,11 @@ function updateConfirmList() {
 		}
 
 		confirmHTML.push(fsgUtil.useTemplate('mod_row', {
-			printPath : `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`,
+			destHTML  : destHTML,
 			icon      : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
+			printPath : `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`,
 			shortname : thisMod.fileDetail.shortName,
 			title     : fsgUtil.escapeSpecial(thisMod.l10n.title),
-			destHTML  : destHTML,
 		}))
 	}
 

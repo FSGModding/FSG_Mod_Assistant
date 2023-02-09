@@ -75,18 +75,18 @@ function compareVersion(latestVersion, thisVersion, collectKey) {
 function makeLine(mod, version) {
 	if ( mod.version === version.vString ) { //same
 		return fsgUtil.useTemplate('version_same', {
+			collectName : mod.collectName,
 			shortname   : mod.modRecord.fileDetail.shortName,
 			title       : fsgUtil.escapeSpecial(mod.modRecord.l10n.title),
-			collectName : mod.collectName,
 		})
 	}
 
 	return fsgUtil.useTemplate('version_diff', {
+		collectKey  : mod.collectKey,
+		collectName : mod.collectName,
 		shortname   : mod.modRecord.fileDetail.shortName,
 		title       : fsgUtil.escapeSpecial(mod.modRecord.l10n.title),
-		collectName : mod.collectName,
 		version     : mod.version,
-		collectKey  : mod.collectKey,
 	})
 }
 

@@ -19,23 +19,21 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const versionListNoMatch = {}
 
 	for ( const collectKey of modCollect.set_Collections ) {
-		if ( doMultiVersion ) {
-			if ( modCollect.collectionNotes[collectKey].notes_version !== thisVersion ) {
-				continue
-			}
+		if ( doMultiVersion && modCollect.collectionNotes[collectKey].notes_version !== thisVersion ) {
+			continue
 		}
+
 		collectionMap[collectKey] = modCollect.collectionToName[collectKey]
 		for ( const modKey of modCollect.modList[collectKey].modSet ) {
 			const mod     = modCollect.modList[collectKey].mods[modKey]
 			const modName = mod.fileDetail.shortName
-			const modVer  = mod.modDesc.version
 
-			if ( ! mod.fileDetail.isFolder ) {
-				nameTitleMap[modName] ??= fsgUtil.escapeSpecial(mod.l10n.title)
-				nameIconMap[modName]  ??= mod.modDesc.iconImageCache
-				versionList[modName]  ??= []
-				versionList[modName].push([collectKey, modVer])
-			}
+			if ( mod.fileDetail.isFolder ) { continue }
+
+			nameTitleMap[modName] ??= fsgUtil.escapeSpecial(mod.l10n.title)
+			nameIconMap[modName]  ??= mod.modDesc.iconImageCache
+			versionList[modName]  ??= []
+			versionList[modName].push([collectKey, mod.modDesc.version])
 		}
 	}
 
@@ -46,14 +44,13 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		}
 
 		const firstVer = versionList[key][0][1]
-		let   deleteMe = false
 		for ( let i = 1; i < versionList[key].length; i++ ) {
 			if ( firstVer !== versionList[key][i][1] ) {
-				deleteMe = true
 				versionListNoMatch[key] = versionList[key]
+				delete versionList[key]
+				break
 			}
 		}
-		if ( deleteMe ) { delete versionList[key] }
 	}
 
 	const listHTML = []
@@ -77,14 +74,14 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 function makeLine(type, realName, shortName, collections, icon) {
 	return fsgUtil.useTemplate('version_line', {
-		color             : ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger',
-		clickCallback     : ( type === 'diff' ) ? `window.mods.openVersionResolve('${shortName}')` : '',
-		collectClass      : ( type === 'same' ) ? '' : 'text-body-emphasis',
 		badge             : fsgUtil.badge('dark', ( type === 'same' ) ? 'version_same' : 'version_diff', true),
-		shortName         : shortName,
-		realName          : realName,
+		clickCallback     : ( type === 'same' ) ? '' : `window.mods.openVersionResolve('${shortName}')`,
+		collectClass      : ( type === 'same' ) ? '' : 'text-body-emphasis',
+		color             : ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger',
 		icon              : fsgUtil.iconMaker(icon),
 		joinedCollections : fsgUtil.escapeSpecial(collections.join(', ')),
+		realName          : realName,
+		shortName         : shortName,
 	})
 }
 

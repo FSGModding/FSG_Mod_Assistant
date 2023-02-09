@@ -43,8 +43,8 @@ function handleUnhandled(type, err, origin) {
 	)
 	if ( !isNetworkError(err) ) {
 		dialog.showMessageBoxSync(null, {
-			title   : `Uncaught ${type} - Quitting`,
 			message : `Caught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
+			title   : `Uncaught ${type} - Quitting`,
 			type    : 'error',
 		})
 		if ( gameLogFileWatch ) { gameLogFileWatch.close() }
@@ -60,20 +60,20 @@ const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale(), log)
 myTranslator.mcVersion = app.getVersion()
 myTranslator.iconOverrides = {
-	preferences_button : 'gear',
-	export_button      : 'filetype-csv',
-	notes_button       : 'journal-text',
 	admin_button       : 'globe2',
-	download_button    : 'cloud-download',
-	search_all         : 'search',
 	admin_pass_button  : 'key',
+	button_gamelog     : 'file-earmark-text',
+	download_button    : 'cloud-download',
+	export_button      : 'filetype-csv',
+	folder_bot_button  : 'align-bottom',
+	folder_down_button : 'chevron-down',
 	folder_top_button  : 'align-top',
 	folder_up_button   : 'chevron-up',
-	folder_down_button : 'chevron-down',
-	folder_bot_button  : 'align-bottom',
-	button_gamelog     : 'file-earmark-text',
-	min_tray_button    : 'chevron-bar-down',
 	help_button        : 'question-circle',
+	min_tray_button    : 'chevron-bar-down',
+	notes_button       : 'journal-text',
+	preferences_button : 'gear',
+	search_all         : 'search',
 }
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
@@ -86,11 +86,11 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 	autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
 		clearInterval(updaterInterval)
 		const dialogOpts = {
-			type    : 'info',
 			buttons : [myTranslator.syncStringLookup('update_restart'), myTranslator.syncStringLookup('update_later')],
-			title   : myTranslator.syncStringLookup('update_title'),
-			message : process.platform === 'win32' ? releaseNotes : releaseName,
 			detail  : myTranslator.syncStringLookup('update_detail'),
+			message : process.platform === 'win32' ? releaseNotes : releaseName,
+			title   : myTranslator.syncStringLookup('update_title'),
+			type    : 'info',
 		}
 		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) {
@@ -143,11 +143,11 @@ let gameLogFileBounce = false
 
 const gameExeName = 'FarmingSimulator2022.exe'
 const gameExePick = {
-	22 : 'FarmingSimulator2022.exe',
-	19 : 'FarmingSimulator2019.exe',
-	17 : 'FarmingSimulator2017.exe',
-	15 : 'FarmingSimulator2015.exe',
 	13 : 'FarmingSimulator2013.exe',
+	15 : 'FarmingSimulator2015.exe',
+	17 : 'FarmingSimulator2017.exe',
+	19 : 'FarmingSimulator2019.exe',
+	22 : 'FarmingSimulator2022.exe',
 }
 const gameGuesses = [
 	'C:\\Program Files (x86)\\Farming Simulator 2022\\',
@@ -175,11 +175,18 @@ pathGuesses.forEach((testPath) => {
 const { modFileCollection } = require('./lib/modCheckLib.js')
 
 const winDef = (w, h) => { return {
-	x : { type : 'number', default : -1 },
-	y : { type : 'number', default : -1 },
-	w : { type : 'number', default : w },
-	h : { type : 'number', default : h },
-	m : { type : 'boolean', default : false },
+	additionalProperties : false,
+	default              : {},
+	properties           : {
+		h : { type : 'number',  default : h },
+		w : { type : 'number',  default : w },
+
+		m : { type : 'boolean', default : false },
+
+		x : { type : 'number',  default : -1 },
+		y : { type : 'number',  default : -1 },
+	},
+	type                 : 'object',
 }}
 
 const settingsMig = {
@@ -194,58 +201,59 @@ const settingsMig = {
 }
 
 const settingsSchema = {
-	modFolders        : { type : 'array', default : [] },
-	lock_lang         : { type : 'boolean', default : false },
-	use_one_drive     : { type : 'boolean', default : false },
-	force_lang        : { type : 'string', default : '' },
-	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
-	game_path         : { type : 'string', default : foundGame },
-	game_log_file     : { type : ['string', 'null'], default : null },
 	cache_version     : { type : 'string', default : '0.0.0' },
-	rel_notes         : { type : 'string', default : '0.0.0' },
-	game_args         : { type : 'string', default : '' },
-
-	game_enabled_19   : { type : 'boolean', default : false},
-	game_settings_19  : { type : 'string', default : '' },
-	game_path_19      : { type : 'string', default : '' },
-	game_args_19      : { type : 'string', default : '' },
-
-	game_enabled_17   : { type : 'boolean', default : false},
-	game_settings_17  : { type : 'string', default : '' },
-	game_path_17      : { type : 'string', default : '' },
-	game_args_17      : { type : 'string', default : '' },
-
-	game_enabled_15   : { type : 'boolean', default : false},
-	game_settings_15  : { type : 'string', default : '' },
-	game_path_15      : { type : 'string', default : '' },
-	game_args_15      : { type : 'string', default : '' },
-
-	game_enabled_13   : { type : 'boolean', default : false},
-	game_settings_13  : { type : 'string', default : '' },
-	game_path_13      : { type : 'string', default : '' },
-	game_args_13      : { type : 'string', default : '' },
-
-	led_active        : { type : 'boolean', default : true },
 	color_theme       : { type : 'string', default : 'dark', enum : ['dark', 'light', 'system']},
-	game_version      : { type : 'number', default : 22, enum : [22, 19, 17, 15, 13]},
+	force_lang        : { type : 'string', default : '' },
+	game_log_file     : { type : ['string', 'null'], default : null },
+	game_version      : { type : 'number',  default : 22, enum : [22, 19, 17, 15, 13]},
+	led_active        : { type : 'boolean', default : true },
+	lock_lang         : { type : 'boolean', default : false },
+	modFolders        : { type : 'array',   default : [] },
 	multi_version     : { type : 'boolean', default : false },
+	rel_notes         : { type : 'string',  default : '0.0.0' },
+	use_one_drive     : { type : 'boolean', default : false },
+
+	game_args         : { type : 'string', default : '' },
+	game_path         : { type : 'string', default : foundGame },
+	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
+
+	game_args_19      : { type : 'string',  default : '' },
+	game_enabled_19   : { type : 'boolean', default : false},
+	game_path_19      : { type : 'string',  default : '' },
+	game_settings_19  : { type : 'string',  default : '' },
+
+	game_args_17      : { type : 'string',  default : '' },
+	game_enabled_17   : { type : 'boolean', default : false},
+	game_path_17      : { type : 'string',  default : '' },
+	game_settings_17  : { type : 'string',  default : '' },
+
+	game_args_15      : { type : 'string',  default : '' },
+	game_enabled_15   : { type : 'boolean', default : false},
+	game_path_15      : { type : 'string',  default : '' },
+	game_settings_15  : { type : 'string',  default : '' },
+
+	game_args_13      : { type : 'string',  default : '' },
+	game_enabled_13   : { type : 'boolean', default : false},
+	game_path_13      : { type : 'string',  default : '' },
+	game_settings_13  : { type : 'string',  default : '' },
+
 	wins              : { type : 'object', default : {}, properties : {
-		load          : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
-		splash        : { type : 'object', default : {}, properties : winDef(600, 300), additionalProperties : false },
-		change        : { type : 'object', default : {}, properties : winDef(650, 350), additionalProperties : false },
-		confirm       : { type : 'object', default : {}, properties : winDef(750, 500), additionalProperties : false },
-		debug         : { type : 'object', default : {}, properties : winDef(1000, 500), additionalProperties : false },
-		detail        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
-		find          : { type : 'object', default : {}, properties : winDef(800, 600), additionalProperties : false },
-		folder        : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
-		gamelog       : { type : 'object', default : {}, properties : winDef(1000, 500), additionalProperties : false },
-		import        : { type : 'object', default : {}, properties : winDef(750, 500), additionalProperties : false },
-		main          : { type : 'object', default : {}, properties : winDef(1000, 700), additionalProperties : false },
-		notes         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
-		prefs         : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
-		resolve       : { type : 'object', default : {}, properties : winDef(750, 600), additionalProperties : false },
-		save          : { type : 'object', default : {}, properties : winDef(900, 500), additionalProperties : false },
-		version       : { type : 'object', default : {}, properties : winDef(800, 500), additionalProperties : false },
+		change        : winDef(650, 350),
+		confirm       : winDef(750, 500),
+		debug         : winDef(1000, 500),
+		detail        : winDef(800, 500),
+		find          : winDef(800, 600),
+		folder        : winDef(800, 500),
+		gamelog       : winDef(1000, 500),
+		import        : winDef(750, 500),
+		load          : winDef(600, 300),
+		main          : winDef(1000, 700),
+		notes         : winDef(800, 500),
+		prefs         : winDef(800, 500),
+		resolve       : winDef(750, 600),
+		save          : winDef(900, 500),
+		splash        : winDef(600, 300),
+		version       : winDef(800, 500),
 	}},
 }
 
@@ -312,11 +320,11 @@ let overrideFolder  = null
 let overrideIndex   = '999'
 let overrideActive  = null
 const devControls     = {
-	22 : false,
-	19 : false,
-	17 : false,
-	15 : false,
 	13 : false,
+	15 : false,
+	17 : false,
+	19 : false,
+	22 : false,
 }
 
 /** Upgrade Cache Version Here */
@@ -389,42 +397,45 @@ function createSubWindow(winName, { useCustomTitle = true, skipTaskbar = false, 
 	const winSettings = mcStore.get(`wins.${winName}`)
 
 	const winOptions = {
-		minimizable     : !fixed,
 		alwaysOnTop     : fixedOnTop && fixed,
-		maximizable     : !fixed,
 		fullscreenable  : !fixed,
+		maximizable     : !fixed,
+		minimizable     : !fixed,
 	}
 	const winTitle = ( title === null ) ? myTranslator.syncStringLookup('app_name') : title
 	const thisWindow = new BrowserWindow({
-		icon            : pathIcon,
-		parent          : ( parent === null ) ? null : windows[parent],
-		x               : winSettings.x > -1 ? Math.floor(winSettings.x) : realCenter.x,
-		y               : winSettings.y > -1 ? Math.floor(winSettings.y) : realCenter.y,
-		width           : winSettings.w,
-		height          : winSettings.h,
-		title           : winTitle,
-		minimizable     : winOptions.minimizable,
 		alwaysOnTop     : winOptions.alwaysOnTop,
-		maximizable     : winOptions.maximizable,
-		fullscreenable  : winOptions.fullscreenable,
-		movable         : move,
+		autoHideMenuBar : true,
 		frame           : frame,
+		fullscreenable  : winOptions.fullscreenable,
+		height          : winSettings.h,
+		icon            : pathIcon,
+		maximizable     : winOptions.maximizable,
+		minimizable     : winOptions.minimizable,
+		movable         : move,
+		parent          : ( parent === null ) ? null : windows[parent],
 		show            : show,
 		skipTaskbar     : skipTaskbar,
-		autoHideMenuBar : true,
-		titleBarStyle   : useCustomTitle ? 'hidden' : 'default',
+		title           : winTitle,
+		width           : winSettings.w,
+		x               : winSettings.x > -1 ? Math.floor(winSettings.x) : realCenter.x,
+		y               : winSettings.y > -1 ? Math.floor(winSettings.y) : realCenter.y,
+
 		titleBarOverlay : {
 			color       : themeColors[currentColorTheme].background,
 			symbolColor : themeColors[currentColorTheme].font,
 			height      : 25,
 		},
+		titleBarStyle   : useCustomTitle ? 'hidden' : 'default',
+
 		webPreferences  : {
-			spellcheck       : false,
-			nodeIntegration  : false,
 			contextIsolation : true,
+			nodeIntegration  : false,
 			preload          : (preload === null ) ? null : path.join(pathPreload, `preload-${preload}.js`),
+			spellcheck       : false,
 		},
 	})
+
 	if ( noSelect ) {
 		thisWindow.webContents.on('before-input-event', (event, input) => {
 			if (input.control && input.code === 'KeyA') {
@@ -466,7 +477,16 @@ function createSubWindow(winName, { useCustomTitle = true, skipTaskbar = false, 
 }
 
 function createMainWindow () {
-	windows.load = createSubWindow('load', { useCustomTitle : false, skipTaskbar : true, fixedOnTop : false, show : false, preload : 'loadingWindow', fixed : true, move : false, frame : false })
+	windows.load = createSubWindow('load', {
+		fixed          : true,
+		fixedOnTop     : false,
+		frame          : false,
+		move           : false,
+		preload        : 'loadingWindow',
+		show           : false,
+		skipTaskbar    : true,
+		useCustomTitle : false,
+	})
 	windows.load.loadFile(path.join(pathRender, 'loading.html'))
 	windows.load.on('close', (event) => { event.preventDefault() })
 
@@ -481,7 +501,7 @@ function createMainWindow () {
 	})
 
 	if ( !devDebug ) {
-		windows.splash = createSubWindow('splash', { useCustomTitle : false, center : true, fixed : true, move : false, frame : false })
+		windows.splash = createSubWindow('splash', { center : true, fixed : true, frame : false, move : false, useCustomTitle : false })
 		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${app.getVersion()}`)
 
 		windows.splash.on('closed', () => { windows.splash = null })
@@ -585,6 +605,7 @@ function createNamedWindow(winName, windowArgs) {
 	}
 }
 
+/* eslint-disable sort-keys */
 const subWindowDev = new Set(['import', 'save', 'find', 'detail', 'notes', 'version', 'resolve', 'gamelog'])
 const subWindows   = {
 	confirmFav : {
@@ -700,6 +721,7 @@ const subWindows   = {
 		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'import', false) },
 	},
 }
+/* eslint-enable sort-keys */
 
 
 function loadingWindow_open(l10n, isDownload = false) {
@@ -837,8 +859,8 @@ ipcMain.on('toMain_copyFavorites',  () => {
 		thisCollection.modSet.forEach((modKey) => {
 			const thisMod = thisCollection.mods[modKey]
 			sourceFiles.push({
-				fullPath   : thisMod.fileDetail.fullPath,
 				collectKey : collectKey,
+				fullPath   : thisMod.fileDetail.fullPath,
 				shortName  : thisMod.fileDetail.shortName,
 				title      : thisMod.l10n.title,
 			})
@@ -849,8 +871,8 @@ ipcMain.on('toMain_copyFavorites',  () => {
 		createNamedWindow(
 			'confirmFav',
 			{
-				sourceFiles  : sourceFiles,
 				destinations : destinationCollections,
+				sourceFiles  : sourceFiles,
 				sources      : sourceCollections,
 			}
 		)
@@ -1233,7 +1255,19 @@ ipcMain.on('toMain_notesContextMenu', async (event) => {
 
 
 /** Game log window operation */
-ipcMain.on('toMain_openGameLog',       () => { createNamedWindow('gamelog') })
+ipcMain.on('toMain_openGameLog',       () => {
+	if ( gameLogFileWatch === null ) {
+		if ( mcStore.get('game_log_file') === null ) {
+			const currentVersion       =  mcStore.get('game_version')
+			const gameSettingsKey      = ( currentVersion === 22 ) ? 'game_settings' : `game_settings_${currentVersion}`
+			const gameSettingsFileName = mcStore.get(gameSettingsKey, '')
+			mcStore.set('game_log_file', path.join(path.dirname(gameSettingsFileName), 'log.txt'))
+		}
+		loadGameLog()
+	}
+
+	createNamedWindow('gamelog')
+})
 ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(mcStore.get('game_log_file')) })
 ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
 ipcMain.on('toMain_changeGameLog',     () => {
@@ -1748,9 +1782,9 @@ ipcMain.on('toMain_versionResolve',  (event, shortName) => {
 			if ( mod.fileDetail.shortName === shortName && !mod.fileDetail.isFolder ) {
 				modSet.push({
 					collectKey  : collectKey,
-					version     : mod.modDesc.version,
-					modRecord   : mod,
 					collectName : modCollect.mapCollectionToName(collectKey),
+					modRecord   : mod,
+					version     : mod.modDesc.version,
 				})
 			}
 		})
@@ -1781,13 +1815,13 @@ function sendModList(extraArgs = {}, eventName = 'fromMain_modList', toWindow = 
 function refreshClientModList(closeLoader = true) {
 	sendModList(
 		{
+			activeCollection       : overrideIndex,
 			currentLocale          : myTranslator.deferCurrentLocale(),
+			foldersDirty           : foldersDirty,
 			l10n                   : {
 				disable : myTranslator.syncStringLookup('override_disabled'),
 				unknown : myTranslator.syncStringLookup('override_unknown'),
 			},
-			activeCollection       : overrideIndex,
-			foldersDirty           : foldersDirty,
 		},
 		'fromMain_modList',
 		'main',
@@ -1865,10 +1899,10 @@ function parseGameXML(version = 22, devMode = null) {
 
 		const builder    = new fxml.XMLBuilder({
 			commentPropName           : '#comment',
-			ignoreAttributes          : false,
-			suppressBooleanAttributes : false,
 			format                    : true,
+			ignoreAttributes          : false,
 			indentBy                  : '    ',
+			suppressBooleanAttributes : false,
 			suppressEmptyNode         : true,
 		})
 
@@ -1885,32 +1919,20 @@ function parseGameXML(version = 22, devMode = null) {
 function newSettingsFile(newList) {
 	parseSettings({
 		newFolder  : modCollect.mapCollectionToFolder(newList),
-		userName   : modNote.get(`${newList}.notes_username`, null),
 		password   : modNote.get(`${newList}.notes_password`, null),
 		serverName : modNote.get(`${newList}.notes_server`, null),
+		userName   : modNote.get(`${newList}.notes_username`, null),
 	})
 }
+
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
 	// Version must be the one of the newFolder *or* the current
-	let currentVersion = mcStore.get('game_version', 22)
-
-	if ( newFolder !== null ) {
-		const thisFolderCollectKey = modCollect.mapFolderToCollection(newFolder)
-		currentVersion = modNote.get(`${thisFolderCollectKey}.notes_version`, 22)
-	}
+	const currentVersion = ( newFolder === null ) ?
+		mcStore.get('game_version', 22) :
+		modNote.get(`${modCollect.mapFolderToCollection(newFolder)}.notes_version`, 22)
 
 	const gameSettingsKey = ( currentVersion === 22 ) ? 'game_settings' : `game_settings_${currentVersion}`
 	const gameSettingsFileName = mcStore.get(gameSettingsKey, '')
-
-	if ( ! gameSettingsFileName.endsWith('.xml') ) {
-		log.log.danger(`Game settings is not an xml file ${gameSettingsFileName} - cannot continue!`, 'game-settings')
-	}
-
-	if ( mcStore.get('game_log_file') === null ) {
-		mcStore.set('game_log_file', path.join(path.dirname(gameSettingsFileName), 'log.txt'))
-	}
-
-	if ( gameLogFileWatch === null ) { loadGameLog() }
 
 	let   XMLString = ''
 	const XMLParser = new fxml.XMLParser({
@@ -1920,88 +1942,69 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 	})
 	
 	try {
-		XMLString = fs.readFileSync(gameSettingsFileName, 'utf8')
-	} catch (e) {
-		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
-		return
-	}
-
-	try {
+		XMLString       = fs.readFileSync(gameSettingsFileName, 'utf8')
 		gameSettingsXML = XMLParser.parse(XMLString)
-		overrideActive  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']
+		overrideActive  = (gameSettingsXML.gameSettings.modsDirectoryOverride['@_active'] === 'true')
 		overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory']
 		lastGameSettings = {
 			username : gameSettingsXML.gameSettings?.onlinePresenceName || gameSettingsXML.gameSettings?.player?.name || '',
 			password : gameSettingsXML.gameSettings?.joinGame?.['@_password'] || '',
 			server   : gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] || '',
 		}
-
 	} catch (e) {
 		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
 	}
 
-	if ( overrideActive === 'false' || overrideActive === false ) {
-		overrideIndex = '0'
-	} else {
-		overrideIndex = modCollect.mapFolderToCollection(overrideFolder) || '999'
-	}
+	overrideIndex = ( !overrideActive ) ? '0' : modCollect.mapFolderToCollection(overrideFolder) || '999'
 
 	if ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) {
-		loadingWindow_open('set')
-		loadingWindow_noCount()
-
-		if ( newFolder !== null ) {
-			gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = true
-			gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = newFolder
-		}
-
-		if ( disable === true ) {
-			gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = false
-			gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ''
-		}
-
-		if ( userName !== null ) {
-			if ( currentVersion === 22 ) {
-				gameSettingsXML.gameSettings.onlinePresenceName = userName // 22
-			}
-			if ( currentVersion === 19 ) {
-				gameSettingsXML.gameSettings.player.name = userName // 19
-			}
-		}
-
-		if ( currentVersion === 22 || currentVersion === 19 ) {
-			if ( password !== null && typeof gameSettingsXML.gameSettings?.joinGame?.['@_password'] !== 'undefined' ) {
-				gameSettingsXML.gameSettings.joinGame['@_password'] = password
-			}
-
-			if ( serverName !== null && typeof gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] !== 'undefined') {
-				gameSettingsXML.gameSettings.joinGame['@_serverName'] = serverName
-			}
-		}
-
-		
-		const builder    = new fxml.XMLBuilder({
-			commentPropName           : '#comment',
-			ignoreAttributes          : false,
-			suppressBooleanAttributes : false,
-			format                    : true,
-			indentBy                  : '    ',
-			suppressEmptyNode         : true,
+		writeGameSettings(gameSettingsFileName, gameSettingsXML, {
+			disable    : disable,
+			newFolder  : newFolder,
+			password   : password,
+			serverName : serverName,
+			userName   : userName,
+			version    : currentVersion,
 		})
-
-		try {
-			let outputXML = builder.build(gameSettingsXML)
-
-			outputXML = outputXML.replace('<ingameMapFruitFilter/>', '<ingameMapFruitFilter></ingameMapFruitFilter>')
-
-			fs.writeFileSync(gameSettingsFileName, outputXML)
-		} catch (e) {
-			log.log.danger(`Could not write game settings ${e}`, 'game-settings')
-		}
-
-		parseSettings()
-		refreshClientModList()
 	}
+}
+
+function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
+	loadingWindow_open('set')
+	loadingWindow_noCount()
+
+	gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( opts.disable === true )
+	gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( opts.newFolder !== null ) ? opts.newFolder : ''
+
+	if ( opts.version === 22 || opts.version === 19 ) {
+		if ( typeof gameSettingsXML.gameSettings.joinGame === 'undefined' ) { gameSettingsXML.gameSettings.joinGame = {} }
+		if ( opts.userName !== null && opts.version === 22 ) { gameSettingsXML.gameSettings.onlinePresenceName = opts.userName }
+		if ( opts.userName !== null && opts.version === 19 ) { gameSettingsXML.gameSettings.player.name = opts.userName }
+		if ( opts.password !== null ) { gameSettingsXML.gameSettings.joinGame['@_password'] = opts.password }
+		if ( opts.serverName !== null ) { gameSettingsXML.gameSettings.joinGame['@_serverName'] = opts.serverName }
+	}
+
+	const builder    = new fxml.XMLBuilder({
+		commentPropName           : '#comment',
+		format                    : true,
+		ignoreAttributes          : false,
+		indentBy                  : '    ',
+		suppressBooleanAttributes : false,
+		suppressEmptyNode         : true,
+	})
+
+	try {
+		let outputXML = builder.build(gameSettingsXML)
+
+		outputXML = outputXML.replace('<ingameMapFruitFilter/>', '<ingameMapFruitFilter></ingameMapFruitFilter>')
+
+		fs.writeFileSync(gameSettingsFileName, outputXML)
+	} catch (e) {
+		log.log.danger(`Could not write game settings ${e}`, 'game-settings')
+	}
+
+	parseSettings()
+	refreshClientModList()
 }
 
 let fileWait = null
@@ -2257,12 +2260,12 @@ app.whenReady().then(() => {
 
 		app.setUserTasks([
 			{
-				program   : process.execPath,
 				arguments : '--start-game',
-				iconPath  : trayIcon,
-				iconIndex : 0,
-				title     : myTranslator.syncStringLookup('launch_game'),
 				description : '',
+				iconIndex : 0,
+				iconPath  : trayIcon,
+				program   : process.execPath,
+				title     : myTranslator.syncStringLookup('launch_game'),
 			}
 		])
 
@@ -2277,8 +2280,8 @@ app.setAboutPanelOptions({
 	applicationVersion : app.getVersion(),
 	copyright          : '(c) 2022-present FSG Modding',
 	credits            : 'J.T.Sage <jtsage+datebox@gmail.com>',
-	website            : 'https://github.com/FSGModding/FSG_Mod_Assistant',
 	iconPath           : pathIcon,
+	website            : 'https://github.com/FSGModding/FSG_Mod_Assistant',
 })
 
 app.on('window-all-closed', () => {	if (process.platform !== 'darwin') { app.quit() } })

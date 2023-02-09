@@ -22,7 +22,7 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 
 	for ( const collectKey of modCollect.opts.destinations ) {
 		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
-		destChecks.push(fsgUtil.makeCollectionCheckBox({
+		destChecks.push(fsgUtil.useTemplate('collect_box', {
 			id     : collectKey,
 			name   : modCollect.collectionToName[collectKey],
 			folder : modCollect.collectionToFolderRelative[collectKey],
