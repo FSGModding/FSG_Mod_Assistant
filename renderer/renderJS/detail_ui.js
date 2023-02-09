@@ -6,32 +6,32 @@
 
 // Detail window UI
 
+/*eslint complexity: off*/
 /* global processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple */
 
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
 	const modRecord = modCollect.opts.selected
-	const mhVer     = ( modRecord.modHub.id !== null ) ? modRecord.modHub.version : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`
 	const modDate   = new Date(Date.parse(modRecord.fileDetail.fileDate))
 
 	const idMap = {
-		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
-		file_date      : modDate.toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'}),
-		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
-		mod_location   : modRecord.fileDetail.fullPath,
-		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
-		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
-		mh_version     : mhVer,
-		has_scripts    : checkX(modRecord.modDesc.scriptFiles),
-		store_items    : checkX(modRecord.modDesc.storeItems),
-		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
-		description    : fsgUtil.escapeDesc(modRecord.l10n.description),
-		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
-		extraFiles     : (( modRecord.fileDetail.extraFiles.length > 0 )  ? modRecord.fileDetail.extraFiles.join('\n')  : getText('detail_extra_clean')),
 		bigFiles       : (( modRecord.fileDetail.tooBigFiles.length > 0 ) ? modRecord.fileDetail.tooBigFiles.join('\n') : getText('detail_extra_clean')),
-		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 )  ? modRecord.fileDetail.spaceFiles.join('\n')  : getText('detail_extra_clean')),
-		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 )  ? modRecord.fileDetail.pngTexture.join('\n')  : getText('detail_extra_clean')),
 		depends        : (( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 )  ? modRecord.modDesc.depend.join('\n')  : getText('detail_depend_clean')),
+		description    : fsgUtil.escapeDesc(modRecord.l10n.description),
+		extraFiles     : (( modRecord.fileDetail.extraFiles.length > 0 )  ? modRecord.fileDetail.extraFiles.join('\n')  : getText('detail_extra_clean')),
+		file_date      : modDate.toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'}),
+		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
+		has_scripts    : checkX(modRecord.modDesc.scriptFiles),
+		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
+		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
+		mh_version     : ( modRecord.modHub.id !== null ) ? modRecord.modHub.version : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
+		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
+		mod_location   : modRecord.fileDetail.fullPath,
+		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 )  ? modRecord.fileDetail.pngTexture.join('\n')  : getText('detail_extra_clean')),
+		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 )  ? modRecord.fileDetail.spaceFiles.join('\n')  : getText('detail_extra_clean')),
+		store_items    : checkX(modRecord.modDesc.storeItems),
+		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
+		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
 	}
 
 	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
@@ -76,38 +76,31 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 
 	const displayBadges = modRecord.badgeArray || []
 
-	if ( Object.keys(modRecord.modDesc.binds).length > 0 ) {
-		if ( typeof modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) {
-			displayBadges.push('keys_bad')
-		} else {
-			displayBadges.push('keys_ok')
-		}
-	}
-
-	if ( modRecord.modHub.id !== null && modRecord.modHub.version !== null && modRecord.modDesc.version !== modRecord.modHub.version ) {
-		displayBadges.push('update')
-	}
-	if ( modRecord.modHub.recent ) {
-		displayBadges.push('recent')
-	}
-	if ( modRecord.modHub.id === null ) {
-		displayBadges.push('nonmh')
-		fsgUtil.byId('modhub_link').classList.add('d-none')
-	} else {
-		const modhubLink = `https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}`
-		fsgUtil.byId('modhub_link').innerHTML = `<a target="_BLANK" href="${modhubLink}">${modhubLink}</a>`
-	}
-
-	if ( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 ) {
-		displayBadges.unshift('depend_flag')
-	}
-
-	if ( modCollect.appSettings.game_version !== modRecord.gameVersion ) {
-		if ( typeof modRecord.gameVersion === 'number' ) {
-			theseBadges.unshift(`fs${modRecord.gameVersion}`)
-		} else {
-			theseBadges.unshift('fs0')
-		}
+	switch (true) {
+		case ( Object.keys(modRecord.modDesc.binds).length > 0 ) :
+			if ( typeof modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) {
+				displayBadges.push('keys_bad')
+			} else {
+				displayBadges.push('keys_ok')
+			}
+			break
+		case ( modRecord.modHub.id !== null && modRecord.modHub.version !== null && modRecord.modDesc.version !== modRecord.modHub.version ) :
+			displayBadges.push('update'); break
+		case ( modRecord.modHub.recent ) :
+			displayBadges.push('recent'); break
+		case ( modRecord.modHub.id === null ):
+			displayBadges.push('nonmh')
+			fsgUtil.byId('modhub_link').classList.add('d-none')
+			break
+		case ( modRecord.modHub.id !== null ):
+			fsgUtil.byId('modhub_link').innerHTML = `<a target="_BLANK" href="https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}">www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}</a>`
+			break
+		case ( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 ) :
+			displayBadges.unshift('depend_flag'); break
+		case (modCollect.appSettings.game_version !== modRecord.gameVersion) :
+			displayBadges.unshift(`fs${modRecord.gameVersion}`); break
+		default :
+			break
 	}
 
 	if ( displayBadges.includes('broken') && displayBadges.includes('notmod') ) {
@@ -122,6 +115,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 		theseBadges,
 		theseBadges
 	)
+
 	fsgUtil.setTextOrHide(
 		'icon_div',
 		`<img class="img-fluid" src="${modRecord.modDesc.iconImageCache}" />`,

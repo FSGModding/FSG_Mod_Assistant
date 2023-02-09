@@ -23,16 +23,16 @@ window.mods.receive('fromMain_modRecords', (modCollect) => {
 			const mod = modCollect.modList[collectKey].mods[modKey]
 			if ( ! mod.canNotUse ) {
 				fullList[mod.fileDetail.shortName] ??= {
+					author    : fsgUtil.escapeSpecial(mod.modDesc.author),
+					collect   : [],
+					icon      : mod.modDesc.iconImageCache,
 					name      : mod.fileDetail.shortName,
 					title     : fsgUtil.escapeSpecial(mod.l10n.title),
-					author    : fsgUtil.escapeSpecial(mod.modDesc.author),
-					icon      : mod.modDesc.iconImageCache,
-					collect   : [],
 				}
 				fullList[mod.fileDetail.shortName].collect.push({
-					version : fsgUtil.escapeSpecial(mod.modDesc.version),
-					name    : modCollect.collectionToName[collectKey],
 					fullId  : `${collectKey}--${mod.uuid}`,
+					name    : modCollect.collectionToName[collectKey],
+					version : fsgUtil.escapeSpecial(mod.modDesc.version),
 				})
 			}
 		}
@@ -48,11 +48,11 @@ window.mods.receive('fromMain_modRecords', (modCollect) => {
 })
 
 const makeModRow = (thisMod) => fsgUtil.useTemplate('mod_entry', {
-	id       : `${thisMod.name}__mod`,
+	author   : thisMod.author,
 	icon     : fsgUtil.iconMaker(thisMod.icon),
+	id       : `${thisMod.name}__mod`,
 	name     : thisMod.name,
 	title    : thisMod.title,
-	author   : thisMod.author,
 	versions : thisMod.collect.map((collection) => fsgUtil.useTemplate('version_entry', {
 		name    : collection.name,
 		version : collection.version,

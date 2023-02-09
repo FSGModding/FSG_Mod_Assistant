@@ -6,25 +6,26 @@
 
 // Detail window UI
 
+/* eslint complexity: ["warn", 20] */
 /* global fsgUtil, processL10N */
 
 let thisCollection = null
 const selectList = {
-	inactive : [],
-	unused   : [],
-	nohub    : [],
 	active   : [],
+	inactive : [],
+	nohub    : [],
+	unused   : [],
 }
 const selectCount = {
+	active     : 0,
 	dlc        : 0,
-	missing    : 0,
-	scriptonly : 0,
+	inactive   : 0,
 	isloaded   : 0,
 	isused     : 0,
-	inactive   : 0,
-	unused     : 0,
+	missing    : 0,
 	nohub      : 0,
-	active     : 0,
+	scriptonly : 0,
+	unused     : 0,
 }
 
 window.mods.receive('fromMain_collectionName', (modCollect) => {
@@ -38,7 +39,7 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 
 window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	const savegame   = modCollect.opts.thisSaveGame
-	const fullModSet = new Set()
+	const fullModArr = []
 	const haveModSet = {}
 	const modSetHTML = []
 
@@ -65,82 +66,75 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 
 	for ( const thisMod of Object.values(modCollect.modList[thisCollection].mods) ) {
 		haveModSet[thisMod.fileDetail.shortName] = thisMod
-		fullModSet.add(thisMod.fileDetail.shortName)
+		fullModArr.push(thisMod.fileDetail.shortName)
 	}
 
-	for ( const thisMod in savegame.mods ) { fullModSet.add(thisMod) }
+	const fullModSet = new Set(fullModArr.concat(Object.keys(savegame.mods)).sort())
 
-	for ( const thisMod of Array.from(fullModSet).sort() ) {
+	for ( const thisMod of fullModSet ) {
 		if ( thisMod.endsWith('.csv') ) { return }
 		const thisModDetail = {
-			title           : null,
-			version         : null,
-			scriptOnly      : false,
-			isLoaded        : false,
-			isUsed          : false,
-			isPresent       : false,
 			isDLC           : false,
-			usedBy          : null,
-			versionMismatch : false,
+			isLoaded        : false,
 			isModHub        : typeof modCollect.modHub.list.mods[thisMod] !== 'undefined',
+			isPresent       : false,
+			isUsed          : false,
+			scriptOnly      : false,
+			title           : null,
+			usedBy          : null,
+			version         : null,
+			versionMismatch : false,
 		}
 
-		if ( thisMod.startsWith('pdlc_')) {
-			thisModDetail.isDLC     = true
-			thisModDetail.isPresent = true
-		}
+		switch ( true ) {
+			case ( thisMod.startsWith('pdlc_')) :
+				thisModDetail.isDLC     = true
+				thisModDetail.isPresent = true
+				break
+			case ( typeof savegame.mods[thisMod] !== 'undefined' ) :
+				thisModDetail.version  = savegame.mods[thisMod].version
+				thisModDetail.title    = savegame.mods[thisMod].title
+				thisModDetail.isLoaded = true
 
-		if ( thisMod === savegame.mapMod ) {
-			thisModDetail.isUsed   = true
-			thisModDetail.isLoaded = true
-		}
+				if ( savegame.mods[thisMod].farms.size > 0 ) {
+					thisModDetail.isUsed = true
+					thisModDetail.usedBy = savegame.mods[thisMod].farms
+				}
+				break
+			case ( typeof haveModSet[thisMod] !== 'undefined' ) :
+				if ( haveModSet[thisMod].modDesc.storeItems < 1 && haveModSet[thisMod].modDesc.scriptFiles > 0 ) {
+					thisModDetail.scriptOnly = true
+					thisModDetail.isUsed     = thisModDetail.isLoaded
+				}
 
-		if ( typeof savegame.mods[thisMod] !== 'undefined' ) {
-			thisModDetail.version  = savegame.mods[thisMod].version
-			thisModDetail.title    = savegame.mods[thisMod].title
-			thisModDetail.isLoaded = true
-
-			if ( savegame.mods[thisMod].farms.size > 0 ) {
-				thisModDetail.isUsed = true
-				thisModDetail.usedBy = savegame.mods[thisMod].farms
-			}
-		}
-		if ( typeof haveModSet[thisMod] !== 'undefined' ) {
-			thisModDetail.isPresent = true
-
-			if ( haveModSet[thisMod].modDesc.storeItems < 1 && haveModSet[thisMod].modDesc.scriptFiles > 0 ) {
-				thisModDetail.scriptOnly = true
-				if ( thisModDetail.isLoaded ) { thisModDetail.isUsed = true }
-			}
-
-			if ( thisModDetail.version === null ) {
-				thisModDetail.version = haveModSet[thisMod].modDesc.version
-			} else if ( thisModDetail.version !== haveModSet[thisMod].modDesc.version ) {
-				thisModDetail.versionMismatch = true
-			}
-			thisModDetail.title = fsgUtil.escapeSpecial(haveModSet[thisMod].l10n.title)
-		}
-
-		if ( thisMod === savegame.mapMod ) {
-			thisModDetail.isUsed   = true
-			thisModDetail.isLoaded = true
-			thisModDetail.usedBy   = null
+				thisModDetail.isPresent         = true
+				thisModDetail.version         ??= haveModSet[thisMod].modDesc.version
+				thisModDetail.versionMismatch   = ( thisModDetail.version !== haveModSet[thisMod].modDesc.version )
+				thisModDetail.title             = fsgUtil.escapeSpecial(haveModSet[thisMod].l10n.title)
+				break
+			case ( thisMod === savegame.mapMod ) :
+				thisModDetail.isUsed   = true
+				thisModDetail.isLoaded = true
+				thisModDetail.usedBy   = null
+				break
+			default :
+				break
 		}
 
 		const thisUUID = haveModSet?.[thisMod]?.uuid
 
 		if ( typeof thisUUID !== 'undefined' && thisUUID !== null ) {
-			if ( thisModDetail.isUsed === false ) {
-				selectList.unused.push(`${thisCollection}--${thisUUID}`)
-			}
-			if ( thisModDetail.isLoaded === false ) {
-				selectList.inactive.push(`${thisCollection}--${thisUUID}`)
-			}
-			if ( thisModDetail.isModHub === false ) {
-				selectList.nohub.push(`${thisCollection}--${thisUUID}`)
-			}
-			if ( thisModDetail.isLoaded === true ) {
-				selectList.active.push(`${thisCollection}--${thisUUID}`)
+			switch ( true ) {
+				case ( thisModDetail.isUsed === false ) :
+					selectList.unused.push(`${thisCollection}--${thisUUID}`); break
+				case ( thisModDetail.isLoaded === false ) :
+					selectList.inactive.push(`${thisCollection}--${thisUUID}`); break
+				case ( thisModDetail.isModHub === false ) :
+					selectList.nohub.push(`${thisCollection}--${thisUUID}`); break
+				case ( thisModDetail.isLoaded === true ) :
+					selectList.active.push(`${thisCollection}--${thisUUID}`); break
+				default :
+					break
 			}
 		}
 
@@ -189,11 +183,20 @@ function makeLine(name, mod, singleFarm, hubID) {
 			break
 	}
 
-	if ( !mod.isModHub && !mod.isDLC ) { displayBadge.push(['nohub', 'info']) }
-	if ( mod.isDLC )                   { displayBadge.push(['dlc', 'info']); selectCount.dlc++ }
-	if ( !mod.isPresent )              { displayBadge.push(['missing', 'danger']); selectCount.missing++ }
-	if ( !mod.isUsed )                 { displayBadge.push(['unused', 'warning']) }
-	if ( !mod.isLoaded )               { displayBadge.push(['inactive', 'warning']) }
+	switch ( true ) {
+		case ( !mod.isModHub && !mod.isDLC ) :
+			displayBadge.push(['nohub', 'info']); break
+		case ( mod.isDLC ) :
+			displayBadge.push(['dlc', 'info']); selectCount.dlc++; break
+		case ( !mod.isPresent ) :
+			displayBadge.push(['missing', 'danger']); selectCount.missing++; break
+		case ( !mod.isUsed ) :
+			displayBadge.push(['unused', 'warning']); break
+		case ( !mod.isLoaded ) :
+			displayBadge.push(['inactive', 'warning']); break
+		default :
+			break
+	}
 
 	for ( const badge of badges ) {
 		if ( mod[badge] === true ) {
@@ -201,19 +204,18 @@ function makeLine(name, mod, singleFarm, hubID) {
 			if ( badge === 'isUsed' )     { selectCount.isused++ }
 			if ( badge === 'isLoaded' )   { selectCount.isloaded++ }
 			displayBadge.push([badge.toLowerCase(), 'dark'])
-			
 		}
 	}
 
 	return fsgUtil.useTemplate('savegame_mod', {
+		badges        : displayBadge.map((part) => fsgUtil.badge(`${part[1]} bg-gradient rounded-1 ms-1`, `savegame_${part[0]}`, true)).join(''),
 		colorClass    : colorClass,
+		farms         : mod.usedBy !== null ? Array.from(mod.usedBy).join(', ') : '',
+		hideShowFarms : ( mod.usedBy !== null && !singleFarm ) ? '' : 'd-none',
 		hubID         : hubID,
 		hubIDHide     : typeof hubID !== 'undefined' ? '' : 'd-none',
 		name          : name,
 		title         : mod.title,
-		hideShowFarms : ( mod.usedBy !== null && !singleFarm ) ? '' : 'd-none',
-		farms         : mod.usedBy !== null ? Array.from(mod.usedBy).join(', ') : '',
-		badges        : displayBadge.map((part) => fsgUtil.badge(`${part[1]} bg-gradient rounded-1 ms-1`, `savegame_${part[0]}`, true)).join(''),
 	})
 }
 

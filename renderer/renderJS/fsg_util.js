@@ -63,18 +63,23 @@ const fsgUtil = {
 	queryA     : ( query ) => Array.from(document.querySelectorAll( query )),
 
 	getIcon : ( type, cls ) => `<span class="text-${cls}">${fsgUtil.getIconSVG(type)}</span>`,
-	getIconSVG : ( type )  => {
+	getIconSVG : ( type, isFav = false, isAct = false )  => {
+		const color1 = !isAct ? '#FFC843' : '#225511'
+		const color2 = !isAct ? '#E0B03B' : '#44bb22'
+		const color3 = !isAct ? '#7f7f00' : '#b3a50b'
 		switch (type) {
 			case 'check':
 				return '<i class="bi bi-check2-circle"></i>'
 			case 'x':
 				return '<i class="bi bi-x-circle"></i>'
 			case 'folder':
-				return '<svg enable-background="new 0 0 347.479 347.479" version="1.1" viewBox="0 0 347.48 347.48" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="margin-left: 15px;">' +
-				'<path d="m292.25 79.766h-188.61v-8.544c0-5.974-4.888-10.862-10.862-10.862h-62.368c-5.975 0-10.862 4.888-10.862 10.862v8.544h-3.258c-8.962 0-16.294 7.332-16.294 16.293v174.77c0 8.961 7.332 16.293 16.293 16.293h275.96c8.961 0 16.293-7.332 16.293-16.293v-174.77c1e-3 -8.961-7.331-16.293-16.293-16.293z" fill="#E0B03B"/>'+
-				'<rect x="23.243" y="95.385" width="262.06" height="176.11" fill="#fff"/>' +
-				'<path d="m312.43 271.29c-2.135 8.704-11.213 15.825-20.175 15.825h-275.96c-8.961 0-14.547-7.121-12.412-15.825l34.598-141.05c2.135-8.704 11.213-15.825 20.175-15.825h275.96c8.961 0 14.547 7.121 12.412 15.825l-34.598 141.05z" fill="#FFC843"/>' +
-				'</svg>'
+				return `<svg enable-background="new 0 0 347.479 347.479" version="1.1" viewBox="0 0 347.48 347.48" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" width="25" height="25" style="margin-left: 15px;">
+				<path d="m292.25 79.766h-188.61v-8.544c0-5.974-4.888-10.862-10.862-10.862h-62.368c-5.975 0-10.862 4.888-10.862 10.862v8.544h-3.258c-8.962 0-16.294 7.332-16.294 16.293v174.77c0 8.961 7.332 16.293 16.293 16.293h275.96c8.961 0 16.293-7.332 16.293-16.293v-174.77c1e-3 -8.961-7.331-16.293-16.293-16.293z" fill="${color2}"/>
+				<rect x="23.243" y="95.385" width="262.06" height="176.11" fill="#fff"/>
+				<path d="m312.43 271.29c-2.135 8.704-11.213 15.825-20.175 15.825h-275.96c-8.961 0-14.547-7.121-12.412-15.825l34.598-141.05c2.135-8.704 11.213-15.825 20.175-15.825h275.96c8.961 0 14.547 7.121 12.412 15.825l-34.598 141.05z" fill="${color1}"/>
+				${(isFav) ? `<path d="m171,126.25l22.06,62.76l65.93,0l-54.22,35.49l21.94,61.46l-55.74,-38.21l-55.74,38.21l22.06,-61.46l-54.32,-35.49l66.06,0l21.94,-62.76l0.03,0z" fill="${color3}" id="svg_5"/>` : ''}
+				${(isAct) ? '<polygon fill="#eeeeee" points="290.088 61.432 117.084 251.493 46.709 174.18 26.183 197.535 117.084 296.592 310.614 83.982"></polygon>' : ''}
+				</svg>`
 			default:
 				return '&nbsp;'
 		}

@@ -6,6 +6,7 @@
 
 // Main Window UI
 
+/* eslint complexity: ["warn", 22] */
 /* global processL10N, fsgUtil, bootstrap, select_lib */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
@@ -172,38 +173,15 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			collectNotes.notes_websiteDL,
 			collectNotes.notes_tagline,
 			collectNotes.notes_admin,
-			thisCollection.dependSet.size
+			thisCollection.dependSet.size,
+			collectNotes.notes_favorite,
+			modCollect.opts.activeCollection === collectKey
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	}
 	
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
 	fsgUtil.byId('scroll-bar-fake').innerHTML  = scrollTable.join('')
-
-	for ( const collectKey of modCollect.set_Collections ) {
-		const thisFav = modCollect.collectionNotes[collectKey].notes_favorite
-
-		if ( thisFav ) {
-			const favFolder = document.querySelector(`[data-bs-target="#${collectKey}_mods"] svg`)
-
-			if ( favFolder !== null ) {
-				favFolder.innerHTML += '<path d="m171,126.25l22.06,62.76l65.93,0l-54.22,35.49l21.94,61.46l-55.74,-38.21l-55.74,38.21l22.06,-61.46l-54.32,-35.49l66.06,0l21.94,-62.76l0.03,0z" fill="#7f7f00" id="svg_5"/>'
-			}
-		}
-	}
-
-	const activeFolder = document.querySelector(`[data-bs-target="#${modCollect.opts.activeCollection}_mods"] svg`)
-
-	if ( activeFolder !== null ) {
-		let currentInner = activeFolder.innerHTML
-		
-		currentInner = currentInner.replace('#FFC843', '#225511')
-		currentInner = currentInner.replace('#E0B03B', '#44bb22')
-		currentInner = currentInner.replace('#7f7f00', '#b3a50b')
-		currentInner += '<polygon fill="#eeeeee" points="290.088 61.432 117.084 251.493 46.709 174.18 26.183 197.535 117.084 296.592 310.614 83.982"></polygon>'
-
-		activeFolder.innerHTML = currentInner
-	}
 
 	select_lib.clear_range()
 
@@ -257,11 +235,11 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 	const theseBadgesSet = new Set(theseBadges)
 
 	if ( theseBadgesSet.has('keys_bad') && theseBadgesSet.has('keys_ok') ) {
-		theseBadgesSet.remove('keys_ok')
+		theseBadgesSet.delete('keys_ok')
 	}
 
 	if ( theseBadgesSet.has('broken') && theseBadgesSet.has('notmod') ) {
-		theseBadgesSet.remove('broken')
+		theseBadgesSet.delete('broken')
 	}
 
 	return Array.from(theseBadgesSet)
@@ -281,12 +259,12 @@ function clientMakeListActive() {
 	}
 }
 
-const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount) => fsgUtil.useTemplate('collect_row', {
+const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive) => fsgUtil.useTemplate('collect_row', {
 	bootstrap_data     : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
 	class_hideDownload : dlEnabled ? '' : 'd-none',
 	class_hidePassword : adminPass !== null ? '' : 'd-none',
 	class_hideWebsite  : website !== null ? '' : 'd-none',
-	folderSVG          : fsgUtil.getIconSVG('folder'),
+	folderSVG          : fsgUtil.getIconSVG('folder', favorite, isActive),
 	id                 : id,
 	mod_rows           : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`,
 	name               : name,

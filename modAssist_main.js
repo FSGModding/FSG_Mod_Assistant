@@ -96,11 +96,11 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 			if (returnValue.response === 0) {
 				if ( tray ) { tray.destroy() }
 				if ( gameLogFileWatch ) { gameLogFileWatch.close() }
-				Object.keys(windows).forEach((thisWin) => {
+				for ( const thisWin in windows ) {
 					if ( thisWin !== 'main' && windows[thisWin] !== null ) {
 						windows[thisWin].destroy()
 					}
-				})
+				}
 				autoUpdater.quitAndInstall()
 			}
 		})
@@ -1973,7 +1973,7 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 	loadingWindow_open('set')
 	loadingWindow_noCount()
 
-	gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( opts.disable === true )
+	gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( opts.disable === false || opts.disable === null )
 	gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( opts.newFolder !== null ) ? opts.newFolder : ''
 
 	if ( opts.version === 22 || opts.version === 19 ) {
