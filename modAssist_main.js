@@ -1412,15 +1412,12 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 	const md5Set     = new Set(Object.keys(localStore))
 
 	loadingWindow_open('cache')
-
-	// TODO: again, seems inefficient.  Note that md5 is not uuid. I think.
-
 	
-	modCollect.collections.forEach((collectKey) => {
-		Object.values(modCollect.getModCollection(collectKey).mods).forEach((mod) => {
-			md5Set.delete(mod.md5Sum)
-		})
-	})
+	for ( const collectKey of modCollect.collections ) {
+		for ( const thisSum of Array.from(Object.values(modCollect.getModListFromCollection(collectKey)), (mod) => mod.md5Sum).filter((x) => x !== null) ) {
+			md5Set.delete(thisSum)
+		}
+	}
 
 	loadingWindow_total(md5Set.size, true)
 	loadingWindow_current(0, true)
@@ -1769,24 +1766,22 @@ ipcMain.on('toMain_versionCheck',    () => { createNamedWindow('version') })
 ipcMain.on('toMain_refreshVersions', () => { sendModList({}, 'fromMain_modList', 'version', false ) } )
 ipcMain.on('toMain_versionResolve',  (event, shortName) => {
 	const modSet = []
+	const foundMods = modCollect.shortNames[shortName]
 
-	//TODO: this is super in-efficient.  Like, really bad.
-	modCollect.collections.forEach((collectKey) => {
-		modCollect.getModCollection(collectKey).modSet.forEach((modKey) => {
-			const mod = modCollect.modColAndUUID(collectKey, modKey)
+	for ( const modPointer of foundMods ) {
+		const mod = modCollect.modColAndUUID(modPointer[0], modPointer[1])
 		
-			if ( mod.fileDetail.shortName === shortName && !mod.fileDetail.isFolder ) {
-				modSet.push({
-					collectKey  : collectKey,
-					collectName : modCollect.mapCollectionToName(collectKey),
-					modRecord   : mod,
-					version     : mod.modDesc.version,
-				})
-			}
-		})
-	})
+		if ( !mod.fileDetail.isFolder ) {
+			modSet.push({
+				collectKey  : modPointer[0],
+				collectName : modCollect.mapCollectionToName(modPointer[0]),
+				modRecord   : mod,
+				version     : mod.modDesc.version,
+			})
+		}
+	}
 	createNamedWindow('resolve', {
-		modSet : modSet,
+		modSet    : modSet,
 		shortName : shortName,
 	})
 })

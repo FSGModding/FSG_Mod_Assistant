@@ -59,13 +59,15 @@ modCollect.processPromise.then(() => {
 	console.log('\n-=-=-=-=-=-=-=-=-=-=-=-=-')
 	console.log('TEST COLLECTION :: FINISHED')
 	console.log('-=-=-=-=-=-=-=-=-=-=-=-=-\n')
-	modCollect.collections.forEach((collectKey) => {
-		modCollect.getModListFromCollection(collectKey).forEach((thisMod) => {
+	for ( const collectKey of modCollect.collections ) {
+		const md5List = Array.from(Object.values(modCollect.getModListFromCollection(collectKey)), (mod) => mod.md5Sum).filter((x) => x !== null)
+		console.log(md5List)
+		for ( const thisMod of modCollect.getModListFromCollection(collectKey) ) {
 			console.log(`Short Name : ${thisMod.fileDetail.shortName}`)
 			console.log(`  Issues      : ${thisMod.issues.join(', ')}`)
 			console.log(`  Badges      : ${thisMod.badgeArray.join(', ')}`)
 			console.log(`  Extra       : ${thisMod.fileDetail.extraFiles.join(', ')}`)
-		})
-	})
+		}
+	}
 	console.log(`\n\nExiting with code ${exitCode}\n`)
 })

@@ -28,8 +28,8 @@ try {
 	process.exit(exitCode)
 }
 
-folderContents.forEach((thisFile) => {
-	if ( thisFile.name === 'en.json' ) { return }
+for ( const thisFile of folderContents ) {
+	if ( thisFile.name === 'en.json' ) { continue }
 
 	let noneFound = true
 	const entryMissing = {}
@@ -41,18 +41,18 @@ folderContents.forEach((thisFile) => {
 		const rawFileContents = fs.readFileSync(path.join(testPath, thisFile.name))
 		const fileContents = JSON.parse(rawFileContents)
 
-		Object.keys(trans_data).forEach((expectedKey) => {
+		for ( const expectedKey in trans_data ) {
 			if ( ! ( expectedKey in fileContents ) ) {
 				noneFound = false
 				entryMissing[expectedKey] = trans_data[expectedKey]
 			}
-		})
-		Object.keys(fileContents).forEach((expectedKey) => {
+		}
+		for ( const expectedKey in fileContents ) {
 			if ( ! ( expectedKey in trans_data ) ) {
 				noneFound = false
 				entryExtra[expectedKey] = fileContents[expectedKey]
 			}
-		})
+		}
 
 		if ( Object.keys(entryExtra).length > 0 ) {
 			console.log('  --Extra Keys Found:')
@@ -74,7 +74,7 @@ folderContents.forEach((thisFile) => {
 		console.log(`Issue with file ${thisFile.name} :: ${e}`)
 		exitCode += 1
 	}
-})
+}
 
 
 console.log(`\n\nExiting with code ${exitCode}\n`)
