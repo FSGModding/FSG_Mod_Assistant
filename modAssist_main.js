@@ -125,7 +125,6 @@ const trayIcon      = !app.isPackaged
 	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
 
 let pathBestGuess = userHome
-let foundPath     = false
 let foundGame     = ''
 
 const themeColors = {
@@ -159,18 +158,18 @@ const pathGuesses = [
 	path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
 ]
 
-gameGuesses.forEach((testPath) => {
+for ( const testPath of gameGuesses ) {
 	if ( fs.existsSync(path.join(testPath, gameExeName)) ) {
 		foundGame = path.join(testPath, gameExeName)
 	}
-})
+}
 
-pathGuesses.forEach((testPath) => {
-	if ( !foundPath && fs.existsSync(testPath) ) {
-		foundPath     = true
+for ( const testPath of pathGuesses ) {
+	if ( fs.existsSync(testPath) ) {
 		pathBestGuess = testPath
+		break
 	}
-})
+}
 
 const { modFileCollection } = require('./lib/modCheckLib.js')
 
@@ -338,18 +337,19 @@ if ( semverGt('1.0.2', mcStore.get('cache_version'))) {
 	const oldCache = maCache.store
 	const tagRegEx = /"mod_badge_(.+?)"/g
 
-	Object.keys(oldCache).forEach((key) => {
+	for ( const key in oldCache ) {
 		if ( typeof oldCache[key].badgeArray === 'undefined' ) {
 			oldCache[key].badgeArray = []
 
 			if ( typeof oldCache[key].badges !== 'undefined' ) {
-				const tagMatch = [...oldCache[key].badges.matchAll(tagRegEx)]
+				for ( const match of [...oldCache[key].badges.matchAll(tagRegEx)] ) {
+					oldCache[key].badgeArray.push(match[1].toLowerCase())
+				}
 
-				tagMatch.forEach((match) => { oldCache[key].badgeArray.push(match[1].toLowerCase()) })
 				delete oldCache[key].badges
 			}
 		}
-	})
+	}
 	maCache.store = oldCache
 
 } else {
@@ -842,21 +842,19 @@ ipcMain.on('toMain_copyFavorites',  () => {
 	const multi_version = mcStore.get('multi_version')
 	const current_version = mcStore.get('game_version')
 
-	modCollect.collections.forEach((collectKey) => {
+	for ( const collectKey of modCollect.collections ) {
 		if ( multi_version && current_version !== modNote.get(`${collectKey}.notes_version`, 22)) { return }
 
-		const isFavorite = modNote.get(`${collectKey}.notes_favorite`, false)
-
-		if ( isFavorite ) {
+		if ( modNote.get(`${collectKey}.notes_favorite`, false) ) {
 			sourceCollections.push(collectKey)
 		} else {
 			destinationCollections.push(collectKey)
 		}
-	})
+	}
 
-	sourceCollections.forEach((collectKey) => {
+	for ( const collectKey of sourceCollections ) {
 		const thisCollection = modCollect.getModCollection(collectKey)
-		thisCollection.modSet.forEach((modKey) => {
+		for ( const modKey of thisCollection.modSet ) {
 			const thisMod = thisCollection.mods[modKey]
 			sourceFiles.push({
 				collectKey : collectKey,
@@ -864,8 +862,8 @@ ipcMain.on('toMain_copyFavorites',  () => {
 				shortName  : thisMod.fileDetail.shortName,
 				title      : thisMod.l10n.title,
 			})
-		})
-	})
+		}
+	}
 
 	if ( sourceFiles.length > 0 ) {
 		createNamedWindow(
@@ -912,9 +910,9 @@ ipcMain.on('toMain_addFolder', () => {
 		if ( !result.canceled ) {
 			let alreadyExists = false
 
-			modFolders.forEach((thisPath) => {
+			for ( const thisPath of modFolders ) {
 				if ( path.relative(thisPath, result.filePaths[0]) === '' ) { alreadyExists = true }
-			})
+			}
 
 			lastFolderLoc = path.resolve(path.join(result.filePaths[0], '..'))
 
@@ -957,16 +955,14 @@ ipcMain.on('toMain_removeFolder',   (event, collectKey) => {
 })
 ipcMain.on('toMain_reorderFolder', (event, from, to) => {
 	const newOrder    = Array.from(modFolders)
-	const newSetOrder = new Set()
 	const item        = newOrder.splice(from, 1)[0]
 
 	newOrder.splice(to, 0, item)
-	newOrder.forEach((path) => {
-		newSetOrder.add(modCollect.mapFolderToCollection(path))
-	})
+
+	const newSetOrder = newOrder.map((path) => modCollect.mapFolderToCollection(path))
 
 	modFolders                    = new Set(newOrder)
-	modCollect.newCollectionOrder = newSetOrder
+	modCollect.newCollectionOrder = new Set(newSetOrder)
 
 	mcStore.set('modFolders', Array.from(modFolders))
 
@@ -978,13 +974,13 @@ ipcMain.on('toMain_reorderFolderAlpha', () => {
 	const newOrder = []
 	const collator = new Intl.Collator()
 
-	modCollect.collections.forEach((collectKey) => {
+	for ( const collectKey of modCollect.collections ) {
 		newOrder.push({
-			path       : modCollect.mapCollectionToFolder(collectKey),
-			name       : modCollect.mapCollectionToName(collectKey),
 			collectKey : collectKey,
+			name       : modCollect.mapCollectionToName(collectKey),
+			path       : modCollect.mapCollectionToFolder(collectKey),
 		})
-	})
+	}
 
 	newOrder.sort((a, b) =>
 		collator.compare(a.name, b.name) ||
@@ -994,10 +990,10 @@ ipcMain.on('toMain_reorderFolderAlpha', () => {
 	const newModFolders    = new Set()
 	const newModSetOrder   = new Set()
 
-	newOrder.forEach((orderPart) => {
+	for ( const orderPart of newOrder ) {
 		newModFolders.add(orderPart.path)
 		newModSetOrder.add(orderPart.collectKey)
-	})
+	}
 
 	modFolders                    = newModFolders
 	modCollect.newCollectionOrder = newModSetOrder
@@ -1039,11 +1035,11 @@ ipcMain.on('toMain_langList_change', (event, lang) => {
 
 	mcStore.set('force_lang', myTranslator.currentLocale)
 
-	Object.keys(windows).forEach((thisWindow) => {
+	for ( const thisWindow in windows ) {
 		if ( windows[thisWindow] !== null ) {
 			windows[thisWindow].webContents.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 		}
-	})
+	}
 })
 ipcMain.on('toMain_themeList_change', (event, theme) => {
 	mcStore.set('color_theme', theme)
@@ -1061,7 +1057,7 @@ nativeTheme.on('updated', () => {
 	}
 })
 function themeUpdater() {
-	Object.keys(windows).forEach((thisWinKey) => {
+	for ( const thisWinKey in windows ) {
 		if ( windows[thisWinKey] !== null && windows[thisWinKey].isVisible() ) {
 			windows[thisWinKey].webContents.send('fromMain_themeSetting', currentColorTheme)
 			windows[thisWinKey].setTitleBarOverlay({
@@ -1069,7 +1065,7 @@ function themeUpdater() {
 				symbolColor : themeColors[currentColorTheme].font,
 			})
 		}
-	})
+	}
 }
 
 ipcMain.on('toMain_langList_send',   (event) => {
@@ -1222,7 +1218,7 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const noteItems = ['username', 'password', 'website', 'admin', 'server']
 	let foundOne = false
 	
-	noteItems.forEach((noteItem) => {
+	for ( const noteItem of noteItems ) {
 		const thisNoteItem = modNote.get(`${collection}.notes_${noteItem}`, null)
 		if ( thisNoteItem !== null ) {
 			if ( !foundOne ) {
@@ -1236,7 +1232,7 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 					clipboard.writeText(thisNoteItem, 'selection') },
 			})
 		}
-	})
+	}
 	
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
@@ -1344,7 +1340,7 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 		{ label : myTranslator.syncStringLookup('select_in_main'), sublabel : thisMod.name },
 		{ type : 'separator' },
 	]
-	thisMod.collect.forEach((instance) => {
+	for ( const instance of thisMod.collect ) {
 		template.push({
 			label : `${instance.name} :: ${instance.version}`,
 			click : () => {
@@ -1352,7 +1348,7 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 				windows.main.webContents.send('fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
 			},
 		})
-	})
+	}
 	
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
@@ -1413,12 +1409,12 @@ ipcMain.on('toMain_clearCacheFile', () => {
 })
 ipcMain.on('toMain_cleanCacheFile', (event) => {
 	const localStore = maCache.store
-	const md5Set     = new Set()
+	const md5Set     = new Set(Object.keys(localStore))
 
 	loadingWindow_open('cache')
 
 	// TODO: again, seems inefficient.  Note that md5 is not uuid. I think.
-	Object.keys(localStore).forEach((md5) => { md5Set.add(md5) })
+
 	
 	modCollect.collections.forEach((collectKey) => {
 		Object.values(modCollect.getModCollection(collectKey).mods).forEach((mod) => {
