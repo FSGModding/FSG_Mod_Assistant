@@ -90,7 +90,12 @@ module.exports = {
 		'prefer-arrow-callback'      : 'error',
 		'prefer-template'            : 'error',
 		'no-useless-concat'          : 'error',
-		
-		
+
+		'no-console'                 : 'warn',
+		'no-template-curly-in-string'     : 'error',
+		'no-unused-private-class-members' : 'error',
+		'no-duplicate-imports'            : 'error',
+		//'sort-keys' : ['error', 'asc'],
+		// 'complexity' : ['warn', 5],
 	},
 }

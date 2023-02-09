@@ -5,6 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Test Program
+/* eslint no-console: off */
 
 const path       = require('path')
 const fs         = require('fs')

@@ -4,6 +4,7 @@
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
 
+/* eslint no-console: off */
 // Test Program
 
 const path       = require('path')

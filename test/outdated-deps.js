@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 const { exec } = require('node:child_process')
 
 exec('npm outdated --save false', (error, stdout) => {
