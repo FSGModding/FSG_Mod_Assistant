@@ -10,12 +10,12 @@ const {contextBridge, ipcRenderer} = require('electron')
 
 contextBridge.exposeInMainWorld(
 	'log', {
-		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
+		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 		debug   : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		info    : (text, process) => { ipcRenderer.send('toMain_log', 'info', `render-${process}`, text) },
+		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		notice  : (text, process) => { ipcRenderer.send('toMain_log', 'notice', `render-${process}`, text) },
 		warning : (text, process) => { ipcRenderer.send('toMain_log', 'warning', `render-${process}`, text) },
-		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 	}
 )
 
@@ -38,11 +38,12 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		removeFolder  : ( collectKey ) => { ipcRenderer.send('toMain_removeFolder', collectKey) },
 		openFolder    : ( collectKey ) => { ipcRenderer.send('toMain_openFolder', collectKey) },
 		openNotes     : ( collectKey ) => { ipcRenderer.send('toMain_openNotes', collectKey) },
-		reorderFolder : ( from, to )   => { ipcRenderer.send('toMain_reorderFolder', from, to) },
+		removeFolder  : ( collectKey ) => { ipcRenderer.send('toMain_removeFolder', collectKey) },
 		reorderAlpha  : () => { ipcRenderer.send('toMain_reorderFolderAlpha') },
+		reorderFolder : ( from, to )   => { ipcRenderer.send('toMain_reorderFolder', from, to) },
+
 		receive       : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getFolders',

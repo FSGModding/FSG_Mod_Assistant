@@ -10,12 +10,12 @@ const {contextBridge, ipcRenderer} = require('electron')
 
 contextBridge.exposeInMainWorld(
 	'log', {
-		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
+		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 		debug   : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		info    : (text, process) => { ipcRenderer.send('toMain_log', 'info', `render-${process}`, text) },
+		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		notice  : (text, process) => { ipcRenderer.send('toMain_log', 'notice', `render-${process}`, text) },
 		warning : (text, process) => { ipcRenderer.send('toMain_log', 'warning', `render-${process}`, text) },
-		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 	}
 )
 
@@ -39,42 +39,42 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		sendToTray      : () => { ipcRenderer.send('toMain_sendMainToTray') },
-		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
-		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },
-		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
+		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
+		debugLog        : () => { ipcRenderer.send('toMain_openDebugLog') },
+		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
 		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },
 		openGameLog     : () => { ipcRenderer.send('toMain_openGameLog') },
-		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
-		editFolders     : () => { ipcRenderer.send('toMain_editFolders') },
-		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },
-		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
+		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },
+		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
+		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
+		sendToTray      : () => { ipcRenderer.send('toMain_sendMainToTray') },
+		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
 		versionCheck    : () => { ipcRenderer.send('toMain_versionCheck' ) },
+
+		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
+		changeVersion   : (ver) => { ipcRenderer.send('toMain_setGameVersion', ver) },
+		editFolders     : () => { ipcRenderer.send('toMain_editFolders') },
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
 		makeInactive    : () => { ipcRenderer.send('toMain_makeInactive' ) },
-		changeVersion   : (ver) => { ipcRenderer.send('toMain_setGameVersion', ver) },
-		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
-		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
+		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },
 
-		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
-		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
-		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
-		openNotes  : (collection)   => { ipcRenderer.send('toMain_openNotes', collection ) },
-		openCText  : (collection)   => { ipcRenderer.send('toMain_mainContextMenu', collection ) },
-		modCText   : (selectedMod)  => { ipcRenderer.send('toMain_modContextMenu', selectedMod ) },
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
-		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
-		zipMods    : (selectedMods) => { ipcRenderer.send('toMain_exportZip', selectedMods) },
-		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
+		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
+		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
+		modCText   : (selectedMod)  => { ipcRenderer.send('toMain_modContextMenu', selectedMod ) },
+		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
+		openCText  : (collection)   => { ipcRenderer.send('toMain_mainContextMenu', collection ) },
 		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },
+		openMod    : (modID)        => { ipcRenderer.send('toMain_openModDetail', modID) },
+		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
+		openNotes  : (collection)   => { ipcRenderer.send('toMain_openNotes', collection ) },
+		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
+		zipMods    : (selectedMods) => { ipcRenderer.send('toMain_exportZip', selectedMods) },
 
-		dropFolder : (folder) => { ipcRenderer.send('toMain_dropFolder', folder) },
-		dropFiles  : (files)  => { ipcRenderer.send('toMain_dropFiles', files) },
 		dragOut    : (modID)  => { ipcRenderer.send('toMain_dragOut', modID ) },
-
-		debugLog  : () => { ipcRenderer.send('toMain_openDebugLog') },
-		openMod   : (modID) => { ipcRenderer.send('toMain_openModDetail', modID) },
+		dropFiles  : (files)  => { ipcRenderer.send('toMain_dropFiles', files) },
+		dropFolder : (folder) => { ipcRenderer.send('toMain_dropFolder', folder) },
 
 		receive   : ( channel, func ) => {
 			const validChannels = [

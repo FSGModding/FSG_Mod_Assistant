@@ -10,12 +10,12 @@ const {contextBridge, ipcRenderer} = require('electron')
 
 contextBridge.exposeInMainWorld(
 	'log', {
-		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
+		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 		debug   : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		info    : (text, process) => { ipcRenderer.send('toMain_log', 'info', `render-${process}`, text) },
+		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		notice  : (text, process) => { ipcRenderer.send('toMain_log', 'notice', `render-${process}`, text) },
 		warning : (text, process) => { ipcRenderer.send('toMain_log', 'warning', `render-${process}`, text) },
-		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 	}
 )
 
@@ -24,8 +24,9 @@ contextBridge.exposeInMainWorld(
 		getText_send     : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
 		langList_change  : ( lang )  => { ipcRenderer.send('toMain_langList_change', lang) },
 		langList_send    : ()        => { ipcRenderer.send('toMain_langList_send') },
-		themeList_send   : ()        => { ipcRenderer.send('toMain_themeList_send') },
 		themeList_change : ( theme ) => { ipcRenderer.send('toMain_themeList_change', theme) },
+		themeList_send   : ()        => { ipcRenderer.send('toMain_themeList_send') },
+
 		receive          : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getText_return',
@@ -47,9 +48,10 @@ contextBridge.exposeInMainWorld(
 		clearCache    : () => { ipcRenderer.send('toMain_clearCacheFile') },
 		resetWindows  : () => { ipcRenderer.send('toMain_resetWindows') },
 		setGamePath   : (ver = 22) => { ipcRenderer.send('toMain_setGamePath', ver) },
+		setPref       : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
 		setPrefFile   : (ver = 22) => { ipcRenderer.send('toMain_setPrefFile', ver) },
 		showChangelog : () => { ipcRenderer.send('toMain_showChangelog') },
-		setPref : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
+
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_allSettings',

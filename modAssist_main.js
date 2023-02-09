@@ -1247,6 +1247,14 @@ ipcMain.on('toMain_notesContextMenu', async (event) => {
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
+ipcMain.on('toMain_logContextMenu', async (event) => {
+	const template  = [
+		{ role : 'copy' },
+	]
+
+	const menu = Menu.buildFromTemplate(template)
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
 /** END: Main window context menus */
 
 

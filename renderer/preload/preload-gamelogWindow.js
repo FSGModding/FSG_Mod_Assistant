@@ -11,12 +11,12 @@ const autoUpdateTimeSeconds        = 30
 
 contextBridge.exposeInMainWorld(
 	'log', {
-		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
+		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 		debug   : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		info    : (text, process) => { ipcRenderer.send('toMain_log', 'info', `render-${process}`, text) },
+		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		notice  : (text, process) => { ipcRenderer.send('toMain_log', 'notice', `render-${process}`, text) },
 		warning : (text, process) => { ipcRenderer.send('toMain_log', 'warning', `render-${process}`, text) },
-		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 	}
 )
 
@@ -41,7 +41,9 @@ contextBridge.exposeInMainWorld(
 	{
 		changeGameLogFile   : () => { ipcRenderer.send('toMain_changeGameLog') },
 		getGameLogContents  : () => { ipcRenderer.send('toMain_getGameLog') },
+		openCText           : () => { ipcRenderer.send('toMain_logContextMenu') },
 		openGameLogFolder   : () => { ipcRenderer.send('toMain_openGameLogFolder') },
+
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_gameLog',

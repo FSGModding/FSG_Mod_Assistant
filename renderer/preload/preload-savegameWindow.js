@@ -10,12 +10,12 @@ const {contextBridge, ipcRenderer} = require('electron')
 
 contextBridge.exposeInMainWorld(
 	'log', {
-		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
+		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 		debug   : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		info    : (text, process) => { ipcRenderer.send('toMain_log', 'info', `render-${process}`, text) },
+		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		notice  : (text, process) => { ipcRenderer.send('toMain_log', 'notice', `render-${process}`, text) },
 		warning : (text, process) => { ipcRenderer.send('toMain_log', 'warning', `render-${process}`, text) },
-		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 	}
 )
 
@@ -38,10 +38,11 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		selectInMain : (selectList) => { ipcRenderer.send('toMain_selectInMain', selectList)},
 		openFolder   : ()      => { ipcRenderer.send('toMain_openSaveFolder')},
-		openZIP      : ()      => { ipcRenderer.send('toMain_openSaveZIP')},
 		openHUB      : (hubID) => { ipcRenderer.send('toMain_openHubByID', parseInt(hubID, 10) ) },
+		openZIP      : ()      => { ipcRenderer.send('toMain_openSaveZIP')},
+		selectInMain : (list)  => { ipcRenderer.send('toMain_selectInMain', list)},
+
 		receive      : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_collectionName',

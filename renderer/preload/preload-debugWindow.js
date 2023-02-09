@@ -11,17 +11,18 @@ const autoUpdateTimeSeconds        = 30
 
 contextBridge.exposeInMainWorld(
 	'log', {
-		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
+		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 		debug   : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		info    : (text, process) => { ipcRenderer.send('toMain_log', 'info', `render-${process}`, text) },
+		log     : (text, process) => { ipcRenderer.send('toMain_log', 'debug', `render-${process}`, text) },
 		notice  : (text, process) => { ipcRenderer.send('toMain_log', 'notice', `render-${process}`, text) },
 		warning : (text, process) => { ipcRenderer.send('toMain_log', 'warning', `render-${process}`, text) },
-		danger  : (text, process) => { ipcRenderer.send('toMain_log', 'danger', `render-${process}`, text) },
 	}
 )
 
 contextBridge.exposeInMainWorld(
 	'l10n', {
+		openCText       : ()   => { ipcRenderer.send('toMain_logContextMenu') },
 		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
 		receive         : ( channel, func ) => {
 			const validChannels = [
@@ -39,8 +40,10 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'debug',
 	{
-		getDebugLogContents  : () => { ipcRenderer.send('toMain_getDebugLog') },
-		openDebugLogFolder   : () => { ipcRenderer.send('toMain_openDebugFolder') },
+		getDebugLogContents : () => { ipcRenderer.send('toMain_getDebugLog') },
+		openCText           : () => { ipcRenderer.send('toMain_logContextMenu') },
+		openDebugLogFolder  : () => { ipcRenderer.send('toMain_openDebugFolder') },
+
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_debugLog',
