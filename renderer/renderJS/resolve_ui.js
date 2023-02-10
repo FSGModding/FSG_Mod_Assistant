@@ -60,6 +60,9 @@ function compareVersion(latestVersion, thisVersion, collectKey) {
 	}
 
 	for ( let i = 0; i < latestVersion.vParts.length; i++ ) {
+		if ( thisVersionParts[i] < latestVersion.vParts[i] ) {
+			break
+		}
 		if ( latestVersion.vParts[i] < thisVersionParts[i] ) {
 			latestVersionRet.collectKey = collectKey
 			latestVersionRet.vString    = thisVersion
