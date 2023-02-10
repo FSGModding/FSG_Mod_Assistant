@@ -8,7 +8,23 @@ To edit your user preferences, click on the gear icon located in the top bar of 
 
 ![overview](img/interfacemap_topbar.png)
 
-## Game Path
+## Multi-Version Mode
+
+![Version](img/prefs-multi.png)
+
+Mod Assistant is capable of working with more than one version of Farming Simulator at the same time.  We currently support `FS22`, `FS19`, `FS17`, `FS15`, and `FS13`.  At this time, there are no plans to support earlier versions, nor will any attempt be made at supporting any mobile version.  You can learn more about this feature in the [Multiple Game Version Mode](multi-version.html) documentation.
+
+## Game Path Settings
+
+All of the game settings are grouped by version now for easier reading.
+
+![Game Path](img/prefs-fs22.png)
+
+### gameSettings.xml
+
+This is the path to your gameSettings.xml file, located one folder up from where the default mod folder is. Mod Assistant needs this to set the current collection and any collection details you define.
+
+### Game Path and arguments
 
 This sets the path to the game program in order to use the launch button.  In most cases, this will set itself correctly.  The game program is named `FarmingSimulator2022.exe`
 
@@ -16,19 +32,10 @@ You can also set additional arguments to the game here - note that if you have t
 
 Popular arguments are `-cheats` and `-skipStartVideos`.  Note that the autoStart argument may disable log file overwriting and cause your log file to grow to extreme sizes.
 
-![Game Path](img/prefs-001.png)
-
-## gameSettings.xml
-
-This is the path to your gameSettings.xml file, located one folder up from where the default mod folder is. Mod Assistant needs this to set the current collection and any collection details you define.
-
-![Game Settings XML](img/prefs-002.png)
-
-## Development Controls
+### Development Controls
 
 This enables the in-game development controls, also known as console commands.
 
-![Dev Control](img/prefs-003.png)
 
 ## Giants LED
 
