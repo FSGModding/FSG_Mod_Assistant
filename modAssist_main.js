@@ -114,6 +114,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 }
 
 const fxml          = require('fast-xml-parser')
+const oldModHub     = require('./lib/oldModHub.json')
 const userHome      = app.getPath('home')
 const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
@@ -2192,13 +2193,17 @@ function loadSaveFile(filename) {
 	try {
 		const rawData  = fs.readFileSync(path.join(app.getPath('userData'), filename))
 		const jsonData = JSON.parse(rawData)
+		let merger = null
 
 		switch (filename) {
 			case 'modHubData.json' :
+				merger = { ...oldModHub.mods, ...jsonData.mods}
+				jsonData.mods = merger
 				modCollect.modHubList = jsonData
 				break
 			case 'modHubVersion.json' :
-				modCollect.modHubVersion = jsonData
+				merger = { ...oldModHub.versions, ...jsonData}
+				modCollect.modHubVersion = merger
 				break
 			default :
 				break
