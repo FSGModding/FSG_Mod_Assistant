@@ -43,6 +43,23 @@ const fsgUtil = {
 	},
 
 	byId       : ( id )    => document.getElementById( id ),
+	checkChangeAll : ( elements, newValue ) => {
+		for ( const element of elements ) { element.checked = newValue}
+	},
+	clsAddToAll : ( queryOrNodes, classList ) => {
+		const classArray = ( typeof classList === 'string' ) ? [classList] : classList
+		const iterArray  = ( typeof queryOrNodes === 'string' ) ? fsgUtil.query(queryOrNodes) : queryOrNodes
+		for ( const element of iterArray ) {
+			element.classList.add([...classArray])
+		}
+	},
+	clsRemoveFromAll : ( queryOrNodes, classList ) => {
+		const classArray = ( typeof classList === 'string' ) ? [classList] : classList
+		const iterArray  = ( typeof queryOrNodes === 'string' ) ? fsgUtil.query(queryOrNodes) : queryOrNodes
+		for ( const element of iterArray ) {
+			element.classList.remove([...classArray])
+		}
+	},
 	getAttribNullEmpty : (element, attrib) => {
 		const attribValue = element.getAttribute(attrib)
 	
@@ -62,7 +79,7 @@ const fsgUtil = {
 	query      : ( query ) => document.querySelectorAll( query ),
 	queryA     : ( query ) => Array.from(document.querySelectorAll( query )),
 
-	getIcon : ( type, cls ) => `<span class="text-${cls}">${fsgUtil.getIconSVG(type)}</span>`,
+	getIcon    : ( type, cls ) => `<span class="text-${cls}">${fsgUtil.getIconSVG(type)}</span>`,
 	getIconSVG : ( type, isFav = false, isAct = false )  => {
 		const color1 = !isAct ? '#FFC843' : '#225511'
 		const color2 = !isAct ? '#E0B03B' : '#44bb22'
@@ -98,11 +115,11 @@ const fsgUtil = {
 		const itemsHTML = items.map((item) => `<td>${item}</td>`)
 		return `<tr>${itemsHTML.join('')}</tr>`
 	},
-	badge : (color, name, fullName = false) => `<span class="border border-2 badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name.toLowerCase()]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
+	badge              : (color, name, fullName = false) => `<span class="border border-2 badge bg-${(color !== false)?color:fsgUtil.badgeDefault[name.toLowerCase()]}">${getText(`${(fullName)?'':'mod_badge_'}${name}`)}</span>`,
 	buildScrollCollect : (collectKey, scrollRows) => `<div class="${collectKey} scroll_col flex-grow-1"></div>${scrollRows.join('')}`,
-	buildScrollMod : (collectKey, modUUID) => `<div class="${collectKey}_mods ${modUUID} scroll_mod d-none flex-grow-1 bg-opacity-25"></div>`,
-	buildSelectOpt : (value, text, selected, disabled = false, title = null) => `<option ${( title !== null ) ? `title="${title}"` : '' } value="${value}" ${( value === selected ) ? 'selected' : ''} ${( disabled ) ? 'disabled' : ''}>${text}</option>`,
-	useTemplate : ( templateName, replacements ) => {
+	buildScrollMod     : (collectKey, modUUID) => `<div class="${collectKey}_mods ${modUUID} scroll_mod d-none flex-grow-1 bg-opacity-25"></div>`,
+	buildSelectOpt     : (value, text, selected, disabled = false, title = null) => `<option ${( title !== null ) ? `title="${title}"` : '' } value="${value}" ${( value === selected ) ? 'selected' : ''} ${( disabled ) ? 'disabled' : ''}>${text}</option>`,
+	useTemplate        : ( templateName, replacements ) => {
 		let thisTemplate = fsgUtil.byId(templateName).innerHTML
 
 		for ( const key in replacements ) {
@@ -112,7 +129,7 @@ const fsgUtil = {
 		return thisTemplate
 	},
 	
-	basename : (name, sep = '\\') => name.substr(name.lastIndexOf(sep) + 1),
+	basename  : (name, sep = '\\') => name.substr(name.lastIndexOf(sep) + 1),
 	bytesToHR : ( inBytes, locale ) => {
 		const thisLocale = ( locale !== null ) ? locale : 'en'
 		let bytes = inBytes
@@ -133,7 +150,7 @@ const fsgUtil = {
 			units[u]
 		].join(' ')
 	},
-	escapeDesc : ( text ) => text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;'),
+	escapeDesc    : ( text ) => text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;'),
 	escapeSpecial : ( text ) => text.replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;'),
 	
 	classPerTest : ( query, test, class_add_when_false = 'd-none' ) => {
@@ -151,11 +168,11 @@ const fsgUtil = {
 	
 	
 
-	clearTooltips : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip.remove() } },
-	setTheme : (theme) => { document.body.setAttribute('data-bs-theme', theme) },
-	windowCheckAll  : () => { fsgUtil.windowCheckOper(true) },
-	windowCheckNone : () => { fsgUtil.windowCheckOper(false) },
-	windowCheckOper : ( newChecked = true ) => {
+	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip.remove() } },
+	setTheme        : (theme) => { document.body.setAttribute('data-bs-theme', theme) },
+	windowCheckAll  : () => { fsgUtil.windowCheckOp(true) },
+	windowCheckNone : () => { fsgUtil.windowCheckOp(false) },
+	windowCheckOp   : ( newChecked = true ) => {
 		for ( const element of fsgUtil.query('[type="checkbox"]') ) { element.checked = newChecked }
 	},
 }

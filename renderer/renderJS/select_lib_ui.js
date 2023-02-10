@@ -6,58 +6,92 @@
 
 // Selection library, split for readability of main ui script
 
+/*eslint complexity: ["warn", 20]*/
 /* exported select_lib */
 /* global fsgUtil searchStringMap searchTagMap */
 
 const select_lib = {
-	last_alt_select   : null,
 	last_alt_hash     : false,
+	last_alt_select   : null,
+
 	last_select_mod   : null,
 	last_select_table : null,
-	debounceF         : null,
+
 	debounceC         : null,
-	clear_scroll_display      : () => {
-		fsgUtil.query('.scroll_mod').forEach((element) => {
-			element.classList.add('d-none')
-		})
-	},
+	debounceF         : null,
+
 	clear_scroll_color      : () => {
-		fsgUtil.query('.scroll_mod').forEach((element) => {
-			element.classList.remove('bg-success')
-			element.classList.remove('rounded-top')
-			element.classList.remove('rounded-bottom')
-		})
+		fsgUtil.clsRemoveFromAll('.scroll_mod', ['bg-success', 'rounded-top', 'rounded-bottom'])
+	},
+	clear_scroll_display      : () => {
+		fsgUtil.clsAddToAll('.scroll_mod', 'd-none')
+	},
+	scroll_hide : (modID) => {
+		fsgUtil.clsAddToAll(`.${modID}`, 'd-none')
 	},
 	update_scroll     : () => {
-		const openTables = select_lib.get_open_tables()
-
 		select_lib.clear_scroll_display()
 
-		openTables.forEach((tableID) => {
+		for ( const tableID of select_lib.get_open_tables() ) {
 			const modsClass = tableID.id
-			const scrollMods = fsgUtil.query(`.${modsClass}`)
-			scrollMods.forEach((element) => { element.classList.remove('d-none') })
-		})
+
+			for ( const element of fsgUtil.query(`.${modsClass}`) ) {
+				element.classList.remove('d-none')
+			}
+		}
+	},
+
+	close_all         : (openTable = false) => {
+		fsgUtil.clsRemoveFromAll('.collapse.show', 'show')
+		fsgUtil.clsAddToAll('.folder-name:not(.collapsed),.folder-icon:not(.collapsed)', 'collapsed')
+
+		if ( openTable !== false ) { select_lib.open_table(openTable) }
 	},
 	open_table        : (tableID) => {
 		fsgUtil.byId(tableID).classList.add('show')
-		document.querySelectorAll(`[data-bs-target="#${tableID}"]`).forEach((element) => {
-			element.classList.remove('collapsed')
-		})
+		fsgUtil.clsRemoveFromAll(`[data-bs-target="#${tableID}"]`, 'collapsed')
 	},
-	close_all         : (openTable = false) => {
-		document.querySelectorAll('.collapse.show').forEach((element) => {
-			element.classList.remove('show')
-		})
-		document.querySelectorAll('.folder-name:not(.collapsed),.folder-icon:not(.collapsed)').forEach((element) => {
-			element.classList.add('collapsed')
-		})
-		if ( openTable !== false ) { select_lib.open_table(openTable) }
+	
+	clear_all         : () => {
+		const allMods       = fsgUtil.query('.mod-row')
+		const moveButtons   = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
+		const allModChecks  = fsgUtil.query('.mod-row-checkbox:checked')
+		const filterInput   = fsgUtil.byId('filter_input')
+		const filterTags    = fsgUtil.query('.filter_tag_buttons:checked')
+		const filterOutTags = fsgUtil.query('.filter_out_tag_buttons:checked')
+		const filterChecks  = fsgUtil.query('.mod-row-filter_check:not(:checked)')
+
+		filterInput.value = ''
+		fsgUtil.checkChangeAll(filterTags, false)
+		fsgUtil.checkChangeAll(filterOutTags, false)
+		fsgUtil.checkChangeAll(allModChecks, false)
+		fsgUtil.checkChangeAll(filterChecks, true)
+		fsgUtil.clsAddToAll(moveButtons, 'disabled')
+		fsgUtil.clsRemoveFromAll(allMods, 'd-none')
+
+		select_lib.clear_range()
 	},
 	clear_range       : () => {
 		select_lib.last_select_mod = null
 		select_lib.last_select_table = null
 		select_lib.update_color()
+	},
+	clear_range_then_filter        : () => {
+		select_lib.last_select_mod = null
+		select_lib.last_select_table = null
+		select_lib.update_color()
+		select_lib.filter()
+	},
+
+	click_all         : () => {
+		for ( const tableID of select_lib.get_open_tables() ) {
+			for ( const element of select_lib.get_checks(tableID.id) ) {
+				if ( ! element.parentElement.parentElement.classList.contains('d-none') ) {
+					element.checked = true
+				}
+			}
+		}
+		select_lib.clear_range_then_filter()
 	},
 	click_alt         : (modID) => {
 		select_lib.last_alt_select = modID
@@ -70,6 +104,33 @@ const select_lib = {
 		}
 		moveButtons[4].classList.remove('disabled')
 	},
+	click_invert      : () => {
+		for ( const tableID of select_lib.get_open_tables() ) {
+			for ( const element of select_lib.get_checks(tableID.id) ) {
+				if ( ! element.parentElement.parentElement.classList.contains('d-none') ) {
+					element.checked = !element.checked
+				}
+			}
+		}
+		select_lib.clear_range_then_filter()
+	},
+	click_none        : () => {
+		fsgUtil.checkChangeAll(fsgUtil.byId('mod-collections').querySelectorAll('.mod-row-checkbox:checked'), false)
+
+		select_lib.clear_range_then_filter()
+	},
+	click_only        : (tableID, checkList) => {
+		fsgUtil.byId('filter_input').value = ''
+		for ( const element of select_lib.get_checks(tableID.id) ) {
+			const modRow = element.parentElement.parentElement
+			element.checked = checkList.includes(element.id)
+			if ( modRow.classList.contains('mod-disabled') && modRow.querySelector('.mod-short-name').innerText.endsWith('.csv') ) {
+				element.checked = false
+			}
+		}
+		select_lib.clear_range_then_filter()
+	},
+	
 	click_row         : (modID) => {
 		if ( window.event.altKey ) {
 			select_lib.click_alt(modID)
@@ -112,98 +173,27 @@ const select_lib = {
 					tableRows[i].querySelector('.mod-row-checkbox').checked = checkValue
 				}
 			}
-			select_lib.last_select_mod   = modID
+			select_lib.last_select_mod = modID
 		}
 		select_lib.update_color()
 		select_lib.filter(select_lib.last_select_table)
 	},
-	get_checks        : (tableID) => {
-		return document.getElementById(tableID).querySelectorAll('.mod-row-checkbox')
-	},
-	bulk_table        : () => {
-		select_lib.clear_range()
-		select_lib.filter()
-	},
-	change_count      : ( newCount ) => {
-		fsgUtil.byId('select_quantity').innerHTML = newCount
-	},
-	click_only        : (tableID, checkList) => {
-		fsgUtil.byId('filter_input').value = ''
-		select_lib.get_checks(tableID).forEach((check) => {
-			const modRow = check.parentElement.parentElement
-			check.checked = checkList.includes(check.id)
-			if ( modRow.classList.contains('mod-disabled') && modRow.querySelector('.mod-short-name').innerText.endsWith('.csv') ) {
-				check.checked = false
-			}
-		})
-		select_lib.bulk_table()
-	},
-	click_none        : () => {
-		fsgUtil.byId('mod-collections').querySelectorAll('.mod-row-checkbox:checked').forEach((check) => {
-			check.checked = false
-		})
-		select_lib.bulk_table()
-	},
-	click_all         : () => {
-		select_lib.get_open_tables().forEach((tableID) => {
-			select_lib.get_checks(tableID.id).forEach((check) => {
-				if ( ! check.parentElement.parentElement.classList.contains('d-none') ) {
-					check.checked = true
-				}
-			})
-		})
-		select_lib.bulk_table()
-	},
-	click_invert      : () => {
-		select_lib.get_open_tables().forEach((tableID) => {
-			select_lib.get_checks(tableID.id).forEach((check) => {
-				if ( ! check.parentElement.parentElement.classList.contains('d-none') ) {
-					check.checked = !check.checked
-				}
-			})
-		})
-		select_lib.bulk_table()
-	},
-	get_open_tables   : () => {
-		return fsgUtil.byId('mod-collections').querySelectorAll('.collapse.show')
-	},
-	clear_all         : () => {
-		const allMods       = fsgUtil.query('.mod-row')
-		const moveButtons   = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
-		const allModChecks  = fsgUtil.query('.mod-row-checkbox')
-		const filterInput   = fsgUtil.byId('filter_input')
-		const filterTags    = fsgUtil.query('.filter_tag_buttons')
-		const filterOutTags = fsgUtil.query('.filter_out_tag_buttons')
-		const filterChecks  = fsgUtil.query('.mod-row-filter_check')
-
-		filterInput.value = ''
-		filterTags.forEach(   (thisCheck) => { thisCheck.checked = false })
-		filterOutTags.forEach((thisCheck) => { thisCheck.checked = false })
-		allModChecks.forEach( (thisCheck) => { thisCheck.checked = false })
-		filterChecks.forEach( (thisCheck) => { thisCheck.checked = true })
-		moveButtons.forEach(  (button)    => { button.classList.add('disabled') })
-		allMods.forEach(      (thisMod)   => { thisMod.classList.remove('d-none') })
-
-		select_lib.clear_range()
-		select_lib.update_color()
-	},
+	
 	update_color : () => {
-		if ( select_lib.debounceC === null ) {
-			select_lib.debounceC = setTimeout(() => {
-				select_lib.debounceC = null
-				select_lib.update_color_post()
-			}, 100)
-		}
+		select_lib.debounceC = setTimeout(() => {
+			select_lib.debounceC = null
+			select_lib.update_color_post()
+		}, 50)
 	},
 	update_color_post    : () => {
 		select_lib.clear_scroll_color()
-		const allModRows    = fsgUtil.query('.mod-row')
+		const allModRows    = select_lib.get_visible_mods()
 		let   countSelected = 0
 		let   hasHash       = false
 		let   isFirst       = true
 		let   wasLast       = null
 
-		allModRows.forEach((thisRow) => {
+		for ( const thisRow of allModRows ) {
 			const isChecked = thisRow.querySelector(`#${thisRow.id}__checkbox`).checked
 
 			if ( isChecked ) {
@@ -225,10 +215,12 @@ const select_lib = {
 				}
 			}
 
-			thisRow.querySelectorAll('td').forEach((thisTD) => {
-				thisTD.classList[( isChecked ? 'add' : 'remove' )]('table-success')
-			})
-		})
+			if ( isChecked ) {
+				fsgUtil.clsAddToAll(thisRow.querySelectorAll('td'), 'table-success')
+			} else {
+				fsgUtil.clsRemoveFromAll(thisRow.querySelectorAll('td'), 'table-success')
+			}
+		}
 		
 		if ( wasLast !== null ) {
 			wasLast.classList.add('rounded-bottom')
@@ -248,79 +240,77 @@ const select_lib = {
 		moveButtons[6].classList.remove('disabled') //favs
 		moveButtons[7].classList.remove('disabled') //versions
 		
-
 		select_lib.change_count(countSelected)
 	},
+
 	filter : (table, forceValue = false) => {
-		if ( select_lib.debounceF === null ) {
-			select_lib.debounceF = setTimeout(() => {
-				select_lib.debounceF = null
-				select_lib.filter_post(table, forceValue)
-			}, 350)
-		}
+		select_lib.debounceF = setTimeout(() => {
+			select_lib.debounceF = null
+			select_lib.filter_post(table, forceValue)
+		}, 350)
 	},
 	filter_post : (table, forceValue = false) => {
 		select_lib.update_scroll()
+
 		if ( forceValue !== false ) {
 			fsgUtil.byId('filter_input').value = forceValue
 		}
 
 		const tagLimit      = fsgUtil.byId('filter__tags').querySelectorAll(':checked')
 		const tagHiders     = fsgUtil.byId('filter_out__tags').querySelectorAll(':checked')
-		const theseMods     = fsgUtil.byId('mod-collections').querySelectorAll('.mod-row')
+		const theseMods     = select_lib.get_visible_mods()
 		const rawSearchTerm = fsgUtil.byId('filter_input').value.toLowerCase()
 		const inverseSearch = rawSearchTerm.startsWith('!')
 		const searchTerm    = ( inverseSearch ) ? rawSearchTerm.substring(1) : rawSearchTerm
 
-		fsgUtil.byId('tag_filter_count').innerHTML = tagLimit.length
+		fsgUtil.byId('tag_filter_count').innerHTML     = tagLimit.length
 		fsgUtil.byId('tag_filter_out_count').innerHTML = tagHiders.length
 		fsgUtil.byId('filter_clear').classList[(rawSearchTerm === '') ? 'add' : 'remove']('d-none')
 
-		const shownByTags_sets = []
-		const hideByTags_array = []
 
-		let showOnlyTags = false
+		const hideByTags_arr = []
 
-		if ( tagHiders.length > 0 ) {
-			tagHiders.forEach((element) => {
-				const thisTag = element.id.split('__')[1]
-				hideByTags_array.push(...searchTagMap[thisTag])
-			})
+		for ( const element of tagHiders ) {
+			const thisTag = element.id.split('__')[1]
+			hideByTags_arr.push(...searchTagMap[thisTag])
 		}
 
-		const hideByTags_set = new Set(hideByTags_array)
+		const hideUUIDByTags = hideByTags_arr.length > 0 ? new Set(hideByTags_arr) : false
 
-		if ( tagLimit.length > 0 ) {
-			tagLimit.forEach((element) => {
-				const thisTag = element.id.split('__')[1]
-				shownByTags_sets.push(searchTagMap[thisTag])
-			})
 
-			showOnlyTags = select_lib.setIntersection(shownByTags_sets)
+		const showByTags_sets = []
+
+		for ( const element of tagLimit ) {
+			const thisTag = element.id.split('__')[1]
+			showByTags_sets.push(searchTagMap[thisTag])
 		}
-	
-		theseMods.forEach((modRow) => {
+
+		const showUUIDByTags = showByTags_sets.length > 0 ? select_lib.setIntersection(showByTags_sets) : false
+
+		for ( const modRow of theseMods ) {
 			const modRowUUID = modRow.id
 
 			modRow.classList.remove('d-none')
 
-			if ( modRow.querySelector('.mod-row-checkbox').checked ) { return }
+			if ( modRow.querySelector('.mod-row-checkbox').checked ) { continue }
 		
-			if ( hideByTags_set.has(modRowUUID) ) {
-				select_lib.scroll_hide(modRowUUID)
-				modRow.classList.add('d-none')
-				return
-			}
-
-			if ( showOnlyTags !== false ) {
-				if ( ! showOnlyTags.has(modRowUUID) ) {
+			if ( hideUUIDByTags !== false ) {
+				if ( hideUUIDByTags.has(modRowUUID) ) {
 					select_lib.scroll_hide(modRowUUID)
 					modRow.classList.add('d-none')
-					return
+					continue
 				}
 			}
 
-			if ( searchTerm.length < 2 ) { return }
+			if ( showUUIDByTags !== false ) {
+				if ( ! showUUIDByTags.has(modRowUUID) ) {
+					select_lib.scroll_hide(modRowUUID)
+					modRow.classList.add('d-none')
+					continue
+				}
+			}
+
+			if ( searchTerm.length < 2 ) { continue }
 		
 			const modText = searchStringMap[modRowUUID]
 			const showMe  = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
@@ -329,32 +319,41 @@ const select_lib = {
 				select_lib.scroll_hide(modRowUUID)
 				modRow.classList.add('d-none')
 			}
-		})
+		}
 
-		fsgUtil.query('.mod-table-folder-detail').forEach((table) => {
+		for ( const table of fsgUtil.query('.mod-table-folder-detail') ) {
 			const shownRows = table.querySelectorAll('.mod-row:not(.d-none)')
 			if ( shownRows.length === 0 ) {
 				table.querySelector('span.no-mods-found').classList.remove('d-none')
 			} else {
 				table.querySelector('span.no-mods-found').classList.add('d-none')
 			}
-
-		})
+		}
 	},
-	scroll_hide : (modID) => {
-		fsgUtil.query(`.${modID}`).forEach((element) => {element.classList.add('d-none')})
+	
+	out_tag_reset : () => {
+		fsgUtil.checkChangeAll(fsgUtil.query('.filter_out_tag_buttons:checked', false))
+		
+		select_lib.filter()
 	},
 	tag_reset : () => {
-		const filterTags   = fsgUtil.query('.filter_tag_buttons')
+		fsgUtil.checkChangeAll(fsgUtil.query('.filter_tag_buttons:checked', false))
 
-		filterTags.forEach(  (thisCheck) => { thisCheck.checked = false })
 		select_lib.filter()
 	},
-	out_tag_reset : () => {
-		const filterTags   = fsgUtil.query('.filter_out_tag_buttons')
+	
 
-		filterTags.forEach(  (thisCheck) => { thisCheck.checked = false })
-		select_lib.filter()
+	change_count      : ( newCount ) => {
+		fsgUtil.byId('select_quantity').innerHTML = newCount
+	},
+	get_checks        : (tableID) => {
+		return document.getElementById(tableID).querySelectorAll('.mod-row-checkbox')
+	},
+	get_open_tables   : () => {
+		return fsgUtil.byId('mod-collections').querySelectorAll('.collapse.show')
+	},
+	get_visible_mods  : () => {
+		return fsgUtil.byId('mod-collections').querySelectorAll('.collapse.show .mod-row')
 	},
 	setIntersection : (sets) => {
 		sets.sort((a, b) => b.length - a.length)
@@ -364,11 +363,14 @@ const select_lib = {
 
 		if ( sets.length === 1 ) { return returnSet }
 
-		smallestSet.forEach((thisMod) => {
+		for ( const thisMod of smallestSet ) {
 			for (let i = 0; i < sets.length-1; i++ ) {
-				if ( ! sets[i].includes(thisMod) ) { returnSet.delete(thisMod) }
+				if ( ! sets[i].includes(thisMod) ) {
+					returnSet.delete(thisMod)
+					break
+				}
 			}
-		})
+		}
 		return returnSet
 	},
 }

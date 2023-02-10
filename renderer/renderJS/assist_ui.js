@@ -146,8 +146,9 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 				].join(' ').toLowerCase()
 
 				for ( const badge of displayBadges ) {
-					if ( typeof searchTagMap?.[badge]?.push === 'function' ) {
-						searchTagMap[badge].push(thisMod.colUUID)
+					const badge_lower = badge.toLowerCase()
+					if ( typeof searchTagMap?.[badge_lower]?.push === 'function' ) {
+						searchTagMap[badge_lower].push(thisMod.colUUID)
 					}
 				}
 
