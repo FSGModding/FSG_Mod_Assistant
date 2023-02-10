@@ -38,6 +38,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		cutCopyPaste : ()          => { ipcRenderer.send('toMain_notesContextMenu') },
 		rightClick   : ( thisMod ) => { ipcRenderer.send('toMain_findContextMenu', thisMod )},
 		receive   : ( channel, func ) => {
 			const validChannels = [

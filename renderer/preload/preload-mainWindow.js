@@ -40,6 +40,7 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'mods', {
 		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
+		cutCopyPaste    : () => { ipcRenderer.send('toMain_notesContextMenu') },
 		debugLog        : () => { ipcRenderer.send('toMain_openDebugLog') },
 		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
 		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },

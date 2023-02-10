@@ -51,6 +51,12 @@
 		#display_mod_container { margin-top: 135px; }
 		#moveButtons { height: calc(100vh - 188px); position: fixed; top: 150px; }
 
+		.issue_badges .badge {
+			font-weight: 400;
+			font-size: 70%!important;
+			letter-spacing: .05em;
+		}
+
 		@media screen and (max-width: 1019px) {
 
 			body[data-i18n="es"] [name="version_check"] { font-size: 0.9em; }
@@ -118,7 +124,7 @@
 						<div class="col">
 							<div class="input-group input-group-sm mb-0">
 								<span class="input-group-text"><l10n name="filter_only"></l10n></span>
-								<input type="text" id="filter_input" onkeyup="select_lib.filter()" class="form-control mod-row-filter rounded-end">
+								<input oncontextmenu="window.mods.cutCopyPaste()" type="text" id="filter_input" oninput="select_lib.filter()" class="form-control mod-row-filter rounded-end">
 								<span id="filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px;"></span>
 							</div>
 						</div>
