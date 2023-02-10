@@ -2,8 +2,6 @@
 
 [← Back to main](index.html)
 
-___COMING SOON:__ This page includes information about a feature currently being built - many of the items mentioned on this page do not yet exist in the app_
-
 Mod Assistant can be used with other versions of Farming Simulator - but this behavior is opt-in for a better first user experience
 
 ## Turning it On
@@ -14,17 +12,29 @@ To turn on multiple version mode, head to the preferences editor, located on the
 
 Then, set `Multiple Game Version Mode` to on
 
-![prefs](img/prefs-001.png)
+![prefs](img/prefs-multi.png)
 
 ## Setting Game Launch and gameSettings.xml Paths
 
-For this to work, you will need to turn on the versions of the game you wish to use, and set the game launch path and gameSettings.xml path for each.
+For this to work, you will need to turn on the versions of the game you wish to use
 
-![prefs](img/prefs-001.png)
+![prefs](img/prefs-fs19-off.png)
 
-## Changing Game Version
+Then set the game launch path, gameSettings.xml path and any command line arguments for for each.
 
-To change the game version, use the dropdown beside the collection bar in the main interface.
+![prefs](img/prefs-fs19-on.png)
+
+## Interface Changes
+
+You will notice some additions to the main interface.  The current game mode is reflected in the title bar are with a `FS##` badge, the game icon is added to the collections / filter bar area, and the game icon on the launch button changes
+
+![prefs](img/multi-001.png)
+
+![prefs](img/multi-002.png)
+
+To change the game version, click on the large game icon to bring up this menu
+
+![prefs](img/multi-003.png)
 
 ## Setting Collection Versions
 
