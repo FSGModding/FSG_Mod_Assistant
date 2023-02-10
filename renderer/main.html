@@ -106,16 +106,16 @@
 					<div class="row px-3 py-1"><!-- collection management -->
 						<div class="col">
 							<div class="btn-group d-flex h-100" role="group">
-								<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-success text-white" onclick="mods.addFolder()"><i class="bi bi-folder-plus"></i> <l10n class="small" name="folder_add"></l10n></button>
-								<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><i class="bi bi-folder"></i> <l10n class="small" name="folder_edit"></l10n></button>
-								<button type="button" style="line-height: 1.1em" class="btn btn-sm btn-secondary position-relative" onclick="mods.refreshFolders()"><i class="bi bi-arrow-repeat"></i> <l10n class="small" name="folder_refresh"></l10n><span id="dirty_folders" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span></button>
+								<button type="button" style="line-height: 1.1em" data-bs-placement="bottom" class="btn btn-sm btn-success text-white" onclick="mods.addFolder()"><i class="bi bi-folder-plus"></i> <l10n class="small" name="folder_add"></l10n></button>
+								<button type="button" style="line-height: 1.1em" data-bs-placement="bottom" class="btn btn-sm btn-primary" onclick="mods.editFolders()"><i class="bi bi-folder"></i> <l10n class="small" name="folder_edit"></l10n></button>
+								<button type="button" style="line-height: 1.1em" data-bs-placement="bottom" class="btn btn-sm btn-secondary position-relative" onclick="mods.refreshFolders()"><i class="bi bi-arrow-repeat"></i> <l10n class="small" name="folder_refresh"></l10n><span id="dirty_folders" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span></button>
 							</div>
 						</div>
 						<div class="col">
 							<div class="input-group w-100 h-100">
 								<select class="form-select form-select-sm" id="collectionSelect"></select>
-								<button class="text-white btn btn-sm btn-warning" type="button" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
-								<button class="text-white btn btn-danger btn-sm" type="button" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
+								<button class="text-white btn btn-sm btn-warning" type="button" data-bs-placement="bottom" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
+								<button class="text-white btn btn-danger btn-sm" type="button" data-bs-placement="bottom" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
 							</div>
 						</div>
 					</div><!-- end: collection management-->
