@@ -225,7 +225,7 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 			theseBadges.push('new'); break
 		case ( thisMod.modHub.recent ) :
 			theseBadges.push('recent'); break
-		case ( thisMod.modHub.id === null ) :
+		case ( thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) :
 			theseBadges.push('nonmh'); break
 		case ( currentGameVersion !== thisMod.gameVersion ) :
 			theseBadges.unshift(`fs${thisMod.gameVersion}`); break
@@ -234,6 +234,8 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 	}
 
 	const theseBadgesSet = new Set(theseBadges)
+
+	if ( thisMod.gameVersion < 22 ) { theseBadgesSet.delete('pconly') }
 
 	if ( theseBadgesSet.has('keys_bad') && theseBadgesSet.has('keys_ok') ) {
 		theseBadgesSet.delete('keys_ok')
