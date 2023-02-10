@@ -43,6 +43,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 		},
 		info : {
 			regex     : [
+				new RegExp(/Application: /),
 				new RegExp(/Info:/),
 				new RegExp(/Info \(.+?\):/),
 			],

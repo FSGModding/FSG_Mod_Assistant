@@ -203,6 +203,7 @@ const settingsSchema = {
 	cache_version     : { type : 'string', default : '0.0.0' },
 	color_theme       : { type : 'string', default : 'dark', enum : ['dark', 'light', 'system']},
 	force_lang        : { type : 'string', default : '' },
+	game_log_auto     : { type : 'boolean', default : true },
 	game_log_file     : { type : ['string', 'null'], default : null },
 	game_version      : { type : 'number',  default : 22, enum : [22, 19, 17, 15, 13]},
 	led_active        : { type : 'boolean', default : true },
@@ -1274,6 +1275,11 @@ ipcMain.on('toMain_openGameLog',       () => {
 })
 ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(mcStore.get('game_log_file')) })
 ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
+ipcMain.on('toMain_guessGameLog', () => {
+	mcStore.set('game_log_auto', true)
+	loadGameLog()
+	readGameLog()
+})
 ipcMain.on('toMain_changeGameLog',     () => {
 	dialog.showOpenDialog(windows.prefs, {
 		properties  : ['openFile'],
@@ -1295,7 +1301,16 @@ ipcMain.on('toMain_changeGameLog',     () => {
 function readGameLog() {
 	if ( windows.gamelog === null ) { return }
 
-	const thisGameLog = mcStore.get('game_log_file', null)
+	let thisGameLog = null
+
+	if ( mcStore.get('game_log_auto') ) {
+		const currentVersion = mcStore.get('game_version')
+		const gameSettings   = mcStore.get( currentVersion === 22 ? 'game_settings' : `game_settings_${currentVersion}`)
+		thisGameLog = path.join(path.dirname(gameSettings), 'log.txt')
+		// guess from gamesettings
+	} else {
+		thisGameLog = mcStore.get('game_log_file', null)
+	}
 
 	if ( thisGameLog === null ) { return }
 
@@ -1511,6 +1526,8 @@ ipcMain.on('toMain_setGamePath', (event, version) => {
 ipcMain.on('toMain_setGameVersion', (event, newVersion) => {
 	mcStore.set('game_version', newVersion)
 	parseSettings()
+	loadGameLog()
+	readGameLog()
 	refreshClientModList()
 })
 /** END: Preferences window operation */
@@ -1830,16 +1847,28 @@ function refreshClientModList(closeLoader = true) {
 
 /** END: Utility & Convenience Functions */
 
+
 /** Business Functions */
 function loadGameLog(newPath = false) {
-	if ( newPath ) { mcStore.set('game_log_file', newPath) }
+	if ( newPath ) {
+		mcStore.set('game_log_file', newPath)
+		mcStore.set('game_log_auto', false)
+	}
 
-	if ( newPath || gameLogFileWatch !== null ) {
+	if ( gameLogFileWatch !== null ) {
 		gameLogFileWatch.close()
 		gameLogFileWatch = null
 	}
 
-	const thisGameLog = mcStore.get('game_log_file', null)
+	let thisGameLog = null
+
+	if ( mcStore.get('game_log_auto') ) {
+		const currentVersion = mcStore.get('game_version')
+		const gameSettings   = mcStore.get( currentVersion === 22 ? 'game_settings' : `game_settings_${currentVersion}`)
+		thisGameLog = path.join(path.dirname(gameSettings), 'log.txt')
+	} else {
+		thisGameLog = mcStore.get('game_log_file', null)
+	}
 
 	if ( thisGameLog !== null && gameLogFileWatch === null ) {
 		log.log.debug(`Trying to open game log: ${thisGameLog}`, 'game-log')

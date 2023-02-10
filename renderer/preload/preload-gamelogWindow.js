@@ -41,6 +41,7 @@ contextBridge.exposeInMainWorld(
 	{
 		changeGameLogFile   : () => { ipcRenderer.send('toMain_changeGameLog') },
 		getGameLogContents  : () => { ipcRenderer.send('toMain_getGameLog') },
+		guessGameLogFile    : () => { ipcRenderer.send('toMain_guessGameLog') },
 		openCText           : () => { ipcRenderer.send('toMain_logContextMenu') },
 		openGameLogFolder   : () => { ipcRenderer.send('toMain_openGameLogFolder') },
 
