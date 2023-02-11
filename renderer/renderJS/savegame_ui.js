@@ -243,3 +243,90 @@ function clientChangeFilter() {
 		}
 	}
 }
+
+
+window.addEventListener('DOMContentLoaded', () => {
+	const dragTarget = fsgUtil.byId('drag_target')
+
+	dragTarget.addEventListener('dragenter', clientDragEnter )
+	dragTarget.addEventListener('dragleave', clientDragLeave )
+	dragTarget.addEventListener('dragover',  clientDragOver )
+	dragTarget.addEventListener('drop',      clientDragDrop )
+})
+
+let dragDropOperation = false
+let dragDropIsFolder = false
+let dragDropIsBad    = false
+
+function clientDragDrop(e) {
+	e.preventDefault()
+	e.stopPropagation()
+
+	dragDropOperation = false
+	if ( !dragDropIsBad ) {
+		const dt    = e.dataTransfer
+		const files = dt.files
+
+		const thisPath = files[0].path
+
+		if ( dragDropIsFolder ) {
+			window.mods.openDropFolder(thisPath)
+		} else {
+			window.mods.openDropZIP(thisPath)
+		}
+	}
+
+	fsgUtil.byId('drag_back').classList.add('d-none')
+
+	fsgUtil.byId('drop_file').classList.add('d-none')
+	fsgUtil.byId('drop_folder').classList.add('d-none')
+	fsgUtil.byId('drop_bad').classList.add('d-none')
+
+	dragDropIsFolder    = false
+	dragDropIsBad       = false
+}
+
+function clientDragLeave(e) {
+	e.preventDefault()
+	e.stopPropagation()
+
+	if ( e.x <= 0 && e.y <= 0 ) {
+		dragDropOperation   = false
+		dragDropIsFolder    = false
+		dragDropIsBad       = false
+		fsgUtil.byId('drag_back').classList.add('d-none')
+
+		fsgUtil.byId('drop_file').classList.add('d-none')
+		fsgUtil.byId('drop_folder').classList.add('d-none')
+		fsgUtil.byId('drop_bad').classList.add('d-none')
+	}
+}
+
+function clientDragEnter(e) {
+	e.preventDefault()
+	e.stopPropagation()
+
+	
+	if ( !dragDropOperation ) {
+		fsgUtil.byId('drag_back').classList.remove('d-none')
+	
+		if ( e.dataTransfer.items.length === 1 && e.dataTransfer.items[0].type === '' ) {
+			fsgUtil.byId('drop_folder').classList.remove('d-none')
+			dragDropIsFolder = true
+		} else if ( e.dataTransfer.items.length === 1 && e.dataTransfer.items[0].type === 'application/x-zip-compressed' ) {
+			fsgUtil.byId('drop_file').classList.remove('d-none')
+		} else {
+			fsgUtil.byId('drop_bad').classList.remove('d-none')
+			dragDropIsBad = true
+		}
+	}
+
+	dragDropOperation = true
+}
+
+function clientDragOver(e) {
+	e.preventDefault()
+	e.stopPropagation()
+
+	e.dataTransfer.dropEffect = 'copy'
+}

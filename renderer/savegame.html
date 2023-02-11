@@ -14,7 +14,7 @@
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/savegame_ui.js"></script>
 </head>
-<body data-bs-theme="dark" class="overflow-custom2">
+<body data-bs-theme="dark" class="overflow-custom2" id="drag_target" style="min-height: 100vh;">
 	<div class="container-fluid px-1 user-select-none">
 		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
 			<div class="row w-100 g-0">
@@ -61,6 +61,21 @@
 
 		<div class="list-group mx-2 my-3" id="modList"></div>
 
+	</div>
+	<div id="drag_back" class="position-absolute w-100 h-100 text-center top-0 d-none" style="z-index: 10000; background-color: #00000066">
+		<div class="row h-100">
+			<div id="drop_file" class="d-none bg-opacity-50 bg-primary col" style="padding-top: 15vh">
+				<i class="bi bi-file-earmark-plus" style="font-size: 30vh"></i><br />
+				<l10n name="open_save_zip" class="display-6"></l10n>
+			</div>
+			<div id="drop_folder" class="d-none bg-opacity-50 bg-primary col" style="padding-top: 15vh">
+				<i class="bi bi-folder-plus" style="font-size: 30vh"></i><br />
+				<l10n name="open_save_folder" class="display-6"></l10n>
+			</div>
+			<div id="drop_bad" class="d-none bg-opacity-50 bg-danger col" style="padding-top: 15vh">
+				<i class="bi bi-x-circle" style="font-size: 30vh"></i><br />
+			</div>
+		</div>
 	</div>
 
 </body>

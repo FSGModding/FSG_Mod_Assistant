@@ -38,10 +38,12 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		openFolder   : ()      => { ipcRenderer.send('toMain_openSaveFolder')},
-		openHUB      : (hubID) => { ipcRenderer.send('toMain_openHubByID', parseInt(hubID, 10) ) },
-		openZIP      : ()      => { ipcRenderer.send('toMain_openSaveZIP')},
-		selectInMain : (list)  => { ipcRenderer.send('toMain_selectInMain', list)},
+		openDropFolder : (path)  => { ipcRenderer.send('toMain_openSaveDrop', 'folder', path)},
+		openDropZIP    : (path)  => { ipcRenderer.send('toMain_openSaveDrop', 'zip', path)},
+		openFolder     : ()      => { ipcRenderer.send('toMain_openSaveFolder')},
+		openHUB        : (hubID) => { ipcRenderer.send('toMain_openHubByID', parseInt(hubID, 10) ) },
+		openZIP        : ()      => { ipcRenderer.send('toMain_openSaveZIP')},
+		selectInMain   : (list)  => { ipcRenderer.send('toMain_selectInMain', list)},
 
 		receive      : ( channel, func ) => {
 			const validChannels = [

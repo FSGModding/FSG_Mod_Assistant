@@ -1757,6 +1757,16 @@ ipcMain.on('toMain_selectInMain',   (event, selectList) => {
 })
 ipcMain.on('toMain_openSaveFolder', () => { openSaveGame(false) })
 ipcMain.on('toMain_openSaveZIP',    () => { openSaveGame(true) })
+ipcMain.on('toMain_openSaveDrop',   (event, type, path) => {
+	const isFolder      = ( type !== 'zip')
+	if ( isFolder ) {
+		const folderStats = fs.statSync(path)
+		if ( !folderStats.isDirectory ) { return }
+	}
+	const thisSavegame = new saveFileChecker(path, isFolder, log)
+
+	sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
+})
 ipcMain.on('toMain_openHubByID',    (event, hubID) => {
 	shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${hubID}`)
 })
