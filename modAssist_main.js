@@ -2152,7 +2152,7 @@ function processModFoldersOnDisk() {
 		if ( ! fs.existsSync(folder) ) {
 			modFolders.delete(folder)
 		} else {
-			const thisWatch = fs.watch(folder, updateFolderDirtyWatch)
+			const thisWatch = fs.watch(folder, (eventType, fileName) => { updateFolderDirtyWatch(eventType, fileName, folder) })
 			thisWatch.on('error', () => { log.log.warning(`Folder Watch Error: ${folder}`, 'folder-watcher') })
 			modFoldersWatch.push(thisWatch)
 		}
@@ -2185,10 +2185,10 @@ function processModFoldersOnDisk() {
 		}
 	})
 }
-function updateFolderDirtyWatch(eventType, fileName) {
+function updateFolderDirtyWatch(eventType, fileName, folder) {
 	if ( eventType === 'rename' ) {
 		if ( ! fileName.endsWith('.tmp') && ! fileName.endsWith('.crdownload')) {
-			log.log.debug(`Folders now dirty due to ${fileName}`, 'folder-watcher')
+			log.log.debug(`Folders now dirty due to ${path.basename(folder)} :: ${fileName}`, 'folder-watcher')
 
 			foldersDirty = true
 			sendFoldersDirtyUpdate()
