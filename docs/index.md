@@ -50,6 +50,7 @@ Please note that this documentation is auto-generated, and may refer to a newer 
   - Warn that you can't use it with this version
 
 - If a file exists that is not a mod at all
+  - _NOTE:_ `prefab`s will also show as non-mods, as for the purposes of Mod Assistant, they are not valid
   - Suggest you remove the file
 
 ## Usage
