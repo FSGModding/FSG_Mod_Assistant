@@ -14,6 +14,7 @@ This window allows you to view and filter your game log file.
 
 The buttons on the right side, from left to right are:
 
+- Set log file to `AUTO` - this will follow the game version in multi-version mode.
 - Change log file location (you can load any log file you wish)
 - Open log on disk (with explorer)
 - Reload log file
