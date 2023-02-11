@@ -55,6 +55,7 @@
       "!.github/*",
       "!/dist/*",
       "!/docs/*",
+      "!/img_src/*",
       "!/renderer/inc/src/*"
     ],
     "win": {
