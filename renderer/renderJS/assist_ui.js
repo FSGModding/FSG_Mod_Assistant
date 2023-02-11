@@ -214,24 +214,29 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 		}
 	}
 
-	switch ( true ) {
-		case ( !hasAllDeps ) :
-			theseBadges.unshift('depend'); break
-		case ( Object.keys(thisMod.modDesc.binds).length > 0 ) :
-			theseBadges.push(typeof bindConflicts?.[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok'); break
-		case ( thisMod.modHub.version !== null && thisMod.modDesc.version !== thisMod.modHub.version) :
-			theseBadges.push('update'); break
-		case ( newMods.has(thisMod.md5Sum) && !thisMod.canNotUse ) :
-			theseBadges.push('new'); break
-		case ( thisMod.modHub.recent ) :
-			theseBadges.push('recent'); break
-		case ( thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) :
-			theseBadges.push('nonmh'); break
-		case ( currentGameVersion !== thisMod.gameVersion ) :
-			theseBadges.unshift(`fs${thisMod.gameVersion}`); break
-		default :
-			break
+
+	if ( !hasAllDeps ) {
+		theseBadges.unshift('depend')
 	}
+	if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
+		theseBadges.push(typeof bindConflicts?.[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok')
+	}
+	if ( thisMod.modHub.version !== null && thisMod.modDesc.version !== thisMod.modHub.version) {
+		theseBadges.push('update')
+	}
+	if ( newMods.has(thisMod.md5Sum) && !thisMod.canNotUse ) {
+		theseBadges.push('new')
+	}
+	if ( thisMod.modHub.recent ) {
+		theseBadges.push('recent')
+	}
+	if ( thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) {
+		theseBadges.push('nonmh')
+	}
+	if ( currentGameVersion !== thisMod.gameVersion ) {
+		theseBadges.unshift(`fs${thisMod.gameVersion}`)
+	}
+
 
 	const theseBadgesSet = new Set(theseBadges)
 

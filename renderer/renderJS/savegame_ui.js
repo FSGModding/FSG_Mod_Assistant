@@ -72,7 +72,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	const fullModSet = new Set(fullModArr.concat(Object.keys(savegame.mods)).sort())
 
 	for ( const thisMod of fullModSet ) {
-		if ( thisMod.endsWith('.csv') ) { return }
+		if ( thisMod.endsWith('.csv') ) { continue }
 		const thisModDetail = {
 			isDLC           : false,
 			isLoaded        : false,
@@ -86,56 +86,49 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 			versionMismatch : false,
 		}
 
-		switch ( true ) {
-			case ( thisMod.startsWith('pdlc_')) :
-				thisModDetail.isDLC     = true
-				thisModDetail.isPresent = true
-				break
-			case ( typeof savegame.mods[thisMod] !== 'undefined' ) :
-				thisModDetail.version  = savegame.mods[thisMod].version
-				thisModDetail.title    = savegame.mods[thisMod].title
-				thisModDetail.isLoaded = true
+		
+		if ( thisMod.startsWith('pdlc_')) {
+			thisModDetail.isDLC     = true
+			thisModDetail.isPresent = true
+		}
 
-				if ( savegame.mods[thisMod].farms.size > 0 ) {
-					thisModDetail.isUsed = true
-					thisModDetail.usedBy = savegame.mods[thisMod].farms
-				}
-				break
-			case ( typeof haveModSet[thisMod] !== 'undefined' ) :
-				if ( haveModSet[thisMod].modDesc.storeItems < 1 && haveModSet[thisMod].modDesc.scriptFiles > 0 ) {
-					thisModDetail.scriptOnly = true
-					thisModDetail.isUsed     = thisModDetail.isLoaded
-				}
+		if ( typeof savegame.mods[thisMod] !== 'undefined' ) {
+			thisModDetail.version  = savegame.mods[thisMod].version
+			thisModDetail.title    = savegame.mods[thisMod].title
+			thisModDetail.isLoaded = true
 
-				thisModDetail.isPresent         = true
-				thisModDetail.version         ??= haveModSet[thisMod].modDesc.version
-				thisModDetail.versionMismatch   = ( thisModDetail.version !== haveModSet[thisMod].modDesc.version )
-				thisModDetail.title             = fsgUtil.escapeSpecial(haveModSet[thisMod].l10n.title)
-				break
-			case ( thisMod === savegame.mapMod ) :
-				thisModDetail.isUsed   = true
-				thisModDetail.isLoaded = true
-				thisModDetail.usedBy   = null
-				break
-			default :
-				break
+			if ( savegame.mods[thisMod].farms.size > 0 ) {
+				thisModDetail.isUsed = true
+				thisModDetail.usedBy = savegame.mods[thisMod].farms
+			}
+		}
+
+		if ( typeof haveModSet[thisMod] !== 'undefined' ) {
+			if ( haveModSet[thisMod].modDesc.storeItems < 1 && haveModSet[thisMod].modDesc.scriptFiles > 0 ) {
+				thisModDetail.scriptOnly = true
+				thisModDetail.isUsed     = thisModDetail.isLoaded
+			}
+
+			thisModDetail.isPresent         = true
+			thisModDetail.version         ??= haveModSet[thisMod].modDesc.version
+			thisModDetail.versionMismatch   = ( thisModDetail.version !== haveModSet[thisMod].modDesc.version )
+			thisModDetail.title             = fsgUtil.escapeSpecial(haveModSet[thisMod].l10n.title)
+		}
+
+		if ( thisMod === savegame.mapMod ) {
+			thisModDetail.isUsed   = true
+			thisModDetail.isLoaded = true
+			thisModDetail.usedBy   = null
 		}
 
 		const thisUUID = haveModSet?.[thisMod]?.uuid
+		
 
 		if ( typeof thisUUID !== 'undefined' && thisUUID !== null ) {
-			switch ( true ) {
-				case ( thisModDetail.isUsed === false ) :
-					selectList.unused.push(`${thisCollection}--${thisUUID}`); break
-				case ( thisModDetail.isLoaded === false ) :
-					selectList.inactive.push(`${thisCollection}--${thisUUID}`); break
-				case ( thisModDetail.isModHub === false ) :
-					selectList.nohub.push(`${thisCollection}--${thisUUID}`); break
-				case ( thisModDetail.isLoaded === true ) :
-					selectList.active.push(`${thisCollection}--${thisUUID}`); break
-				default :
-					break
-			}
+			if ( thisModDetail.isUsed === false ) { selectList.unused.push(`${thisCollection}--${thisUUID}`) }
+			if ( thisModDetail.isLoaded === false ) { selectList.inactive.push(`${thisCollection}--${thisUUID}`) }
+			if ( thisModDetail.isModHub === false ) { selectList.nohub.push(`${thisCollection}--${thisUUID}`) }
+			if ( thisModDetail.isLoaded === true ) { selectList.active.push(`${thisCollection}--${thisUUID}`) }
 		}
 
 		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm, modCollect.modHub.list.mods[thisMod]))
@@ -183,19 +176,21 @@ function makeLine(name, mod, singleFarm, hubID) {
 			break
 	}
 
-	switch ( true ) {
-		case ( !mod.isModHub && !mod.isDLC ) :
-			displayBadge.push(['nohub', 'info']); break
-		case ( mod.isDLC ) :
-			displayBadge.push(['dlc', 'info']); selectCount.dlc++; break
-		case ( !mod.isPresent ) :
-			displayBadge.push(['missing', 'danger']); selectCount.missing++; break
-		case ( !mod.isUsed ) :
-			displayBadge.push(['unused', 'warning']); break
-		case ( !mod.isLoaded ) :
-			displayBadge.push(['inactive', 'warning']); break
-		default :
-			break
+
+	if ( !mod.isModHub && !mod.isDLC ) {
+		displayBadge.push(['nohub', 'info'])
+	}
+	if ( mod.isDLC ) {
+		displayBadge.push(['dlc', 'info']); selectCount.dlc++
+	}
+	if ( !mod.isPresent ) {
+		displayBadge.push(['missing', 'danger']); selectCount.missing++
+	}
+	if ( !mod.isUsed ) {
+		displayBadge.push(['unused', 'warning'])
+	}
+	if ( !mod.isLoaded ) {
+		displayBadge.push(['inactive', 'warning'])
 	}
 
 	for ( const badge of badges ) {

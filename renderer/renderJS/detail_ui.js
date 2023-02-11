@@ -76,32 +76,33 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 
 	const displayBadges = modRecord.badgeArray || []
 
-	switch (true) {
-		case ( Object.keys(modRecord.modDesc.binds).length > 0 ) :
-			if ( typeof modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) {
-				displayBadges.push('keys_bad')
-			} else {
-				displayBadges.push('keys_ok')
-			}
-			break
-		case ( modRecord.modHub.id !== null && modRecord.modHub.version !== null && modRecord.modDesc.version !== modRecord.modHub.version ) :
-			displayBadges.push('update'); break
-		case ( modRecord.modHub.recent ) :
-			displayBadges.push('recent'); break
-		case ( modRecord.modHub.id === null ):
-			displayBadges.push('nonmh')
-			fsgUtil.byId('modhub_link').classList.add('d-none')
-			break
-		case ( modRecord.modHub.id !== null ):
-			fsgUtil.byId('modhub_link').innerHTML = `<a target="_BLANK" href="https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}">www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}</a>`
-			break
-		case ( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 ) :
-			displayBadges.unshift('depend_flag'); break
-		case (modCollect.appSettings.game_version !== modRecord.gameVersion) :
-			displayBadges.unshift(`fs${modRecord.gameVersion}`); break
-		default :
-			break
+	
+	if ( Object.keys(modRecord.modDesc.binds).length > 0 ) {
+		displayBadges.push(( typeof modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) ?
+			'keys_bad' :
+			'keys_ok'
+		)
 	}
+	if ( modRecord.modHub.id !== null && modRecord.modHub.version !== null && modRecord.modDesc.version !== modRecord.modHub.version ) {
+		displayBadges.push('update')
+	}
+	if ( modRecord.modHub.recent ) {
+		displayBadges.push('recent')
+	}
+	if ( modRecord.modHub.id === null ){
+		displayBadges.push('nonmh')
+		fsgUtil.byId('modhub_link').classList.add('d-none')
+	}
+	if ( modRecord.modHub.id !== null ){
+		fsgUtil.byId('modhub_link').innerHTML = `<a target="_BLANK" href="https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}">www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}</a>`
+	}
+	if ( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 ) {
+		displayBadges.unshift('depend_flag')
+	}
+	if (modCollect.appSettings.game_version !== modRecord.gameVersion) {
+		displayBadges.unshift(`fs${modRecord.gameVersion}`)
+	}
+	
 
 	if ( displayBadges.includes('broken') && displayBadges.includes('notmod') ) {
 		const brokenIdx = displayBadges.indexOf('broken')
