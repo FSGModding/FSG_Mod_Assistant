@@ -344,5 +344,12 @@
 	"offcanvas_blurb": "Wählen Sie die Version des Landwirtschafts-Simulator aus, die Sie aktivieren möchten",
 	"game_icon_lg__title": "Ändern Sie die Version des Landwirtschafts-Simulator",
 	"total_collections": "Sammlungen",
-	"total_mods": "Mods"
+	"total_mods": "Mods",
+	"context_copy": "Kopieren",
+	"context_cut": "Schnitt",
+	"context_paste": "Einfügen",
+	"context_set_website": "Quellen-Website festlegen",
+	"context_open_website": "Open-Source-Website",
+	"mod_badge_web": "WWW",
+	"mod_badge_web__title": "Diese Mod hat eine benutzerdefinierte Quelltext-Website eingestellt"
 }

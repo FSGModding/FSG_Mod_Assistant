@@ -344,5 +344,12 @@
 	"offcanvas_blurb": "Wybierz, która odsłona Farming Simulator ma być aktywna",
 	"game_icon_lg__title": "Zmień osłonę Farming Simulator",
 	"total_collections": "Foldery",
-	"total_mods": "Mody"
+	"total_mods": "Mody",
+	"context_copy": "Kopia",
+	"context_cut": "Cięcie",
+	"context_paste": "Wklej",
+	"context_set_website": "Strona internetowa Set Source",
+	"context_open_website": "Strona internetowa Open Source",
+	"mod_badge_web": "WWW",
+	"mod_badge_web__title": "Ten mod ma ustawioną niestandardową stronę źródłową"
 }

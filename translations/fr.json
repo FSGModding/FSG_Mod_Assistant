@@ -344,5 +344,12 @@
 	"offcanvas_blurb": "Sélectionnez la version de Farming Simulator que vous souhaitez activer",
 	"game_icon_lg__title": "Changer la version de Farming Simulator",
 	"total_collections": "Collections",
-	"total_mods": "Mods"
+	"total_mods": "Mods",
+	"context_copy": "Copie",
+	"context_cut": "Couper",
+	"context_paste": "Coller",
+	"context_set_website": "Set Source Website",
+	"context_open_website": "Site web à source ouverte",
+	"mod_badge_web": "WWW",
+	"mod_badge_web__title": "Ce mod a un site web source personnalisé"
 }

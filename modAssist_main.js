@@ -1241,9 +1241,9 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 })
 ipcMain.on('toMain_notesContextMenu', async (event) => {
 	const template  = [
-		{ role : 'cut' },
-		{ role : 'copy' },
-		{ role : 'paste' },
+		{ role : 'cut', label : myTranslator.syncStringLookup('context_cut') },
+		{ role : 'copy', label : myTranslator.syncStringLookup('context_copy') },
+		{ role : 'paste', label : myTranslator.syncStringLookup('context_paste') },
 	]
 
 	const menu = Menu.buildFromTemplate(template)
@@ -1251,7 +1251,7 @@ ipcMain.on('toMain_notesContextMenu', async (event) => {
 })
 ipcMain.on('toMain_logContextMenu', async (event) => {
 	const template  = [
-		{ role : 'copy' },
+		{ role : 'copy', label : myTranslator.syncStringLookup('context_copy') },
 	]
 
 	const menu = Menu.buildFromTemplate(template)

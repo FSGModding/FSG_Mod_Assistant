@@ -344,5 +344,12 @@
 	"offcanvas_blurb": "Выберите, какую версию Farming Simulator вы хотите активировать",
 	"game_icon_lg__title": "Изменить версию Farming Simulator",
 	"total_collections": "Коллекций",
-	"total_mods": "Модов"
+	"total_mods": "Модов",
+	"context_copy": "Копия",
+	"context_cut": "Снято",
+	"context_paste": "Паста",
+	"context_set_website": "Установить исходный веб-сайт",
+	"context_open_website": "Сайт с открытым исходным кодом",
+	"mod_badge_web": "WWW",
+	"mod_badge_web__title": "В этом моде установлен пользовательский сайт источника"
 }

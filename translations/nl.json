@@ -344,5 +344,12 @@
 	"offcanvas_blurb": "Selecteer welke versie van Farming Simulator u actief wilt hebben.",
 	"game_icon_lg__title": "Verander de versie van Farming Simulator",
 	"total_collections": "Collecties",
-	"total_mods": "Mods"
+	"total_mods": "Mods",
+	"context_copy": "Kopie",
+	"context_cut": "Cut",
+	"context_paste": "Plakken",
+	"context_set_website": "Set Source Website",
+	"context_open_website": "Open Source website",
+	"mod_badge_web": "WWW",
+	"mod_badge_web__title": "Deze mod heeft een aangepaste bron website ingesteld"
 }
