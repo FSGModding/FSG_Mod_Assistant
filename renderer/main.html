@@ -282,6 +282,28 @@
 		</div>
 	</div>
 
+	<div class="modal" id="open_mod_info_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><l10n name="context_set_website"></l10n></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="h5 text-center" id="mod_info_mod_name">MOD NAME</div>
+					<div class="row">
+						<div class="col-9">
+							<input oncontextmenu="window.mods.cutCopyPaste()" placeholder="http://example.net" type="text" id="mod_info_input" class="form-control">
+						</div>
+						<div class="col-3">
+							<button type="button" onclick="clientSetModInfo()" class="btn btn-success w-100"><l10n name="button_save"></l10n></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	</main>
 
 	<footer class="footer fixed-bottom mt-auto bg-dark small border-top" id="main-footer">

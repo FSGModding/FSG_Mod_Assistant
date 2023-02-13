@@ -258,6 +258,16 @@ const settingsSchema = {
 	}},
 }
 
+const siteMigrate = {
+	'<=2.1.1' : (store) => {
+		store.set('FS22_UniversalAutoload', 'https://github.com/loki79uk/FS22_UniversalAutoload/')
+		store.set('FS22_Courseplay', 'https://github.com/Courseplay/Courseplay_FS22/')
+		store.set('FS22_AutoDrive', 'https://github.com/Stephan-S/FS22_AutoDrive')
+		store.set('FS22_SimpleInspector', 'https://github.com/jtsage/FS22_simpleInspector/')
+		store.set('FS22_ProductionInspector', 'https://github.com/jtsage/FS22_ProductionInspector/')
+	},
+}
+
 const Store   = require('electron-store')
 const unzip   = require('unzip-stream')
 const makeZip = require('archiver')
@@ -267,6 +277,7 @@ const { saveFileChecker } = require('./lib/savegame-parser.js')
 const mcStore = new Store({schema : settingsSchema, migrations : settingsMig, clearInvalidConfig : true })
 const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
+const modSite = new Store({name : 'mod_source_site', migrations : siteMigrate, clearInvalidConfig : true})
 
 const modCollect = new modFileCollection(
 	log,
@@ -1169,6 +1180,7 @@ ipcMain.on('toMain_dragOut', (event, modID) => {
 })
 ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	const thisMod   = modCollect.modColUUIDToRecord(modID)
+	const thisSite  = modSite.get(thisMod.fileDetail.shortName, '')
 
 	const template = [
 		{ label : thisMod.fileDetail.shortName},
@@ -1189,6 +1201,16 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	if ( thisMod.modHub.id !== null ) {
 		template.push({ label : myTranslator.syncStringLookup('open_hub'), click : () => {
 			shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisMod.modHub.id}`)
+		}})
+	}
+
+	template.push({ type : 'separator' })
+	template.push({ label : myTranslator.syncStringLookup('context_set_website'), click : () => {
+		windows.main.webContents.send('fromMain_modInfoPop', thisMod, thisSite)
+	}})
+	if ( thisSite !== '' ) {
+		template.push({ label : myTranslator.syncStringLookup('context_open_website'), click : () => {
+			shell.openExternal(thisSite)
 		}})
 	}
 
@@ -1382,6 +1404,10 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 /** Preferences window operation */
 ipcMain.on('toMain_openPrefs', () => { createNamedWindow('prefs') })
 ipcMain.on('toMain_getPref', (event, name) => { event.returnValue = mcStore.get(name) })
+ipcMain.on('toMain_setModInfo', (event, mod, site) => {
+	modSite.set(mod, site)
+	refreshClientModList()
+})
 ipcMain.on('toMain_setPref', (event, name, value) => {
 
 	switch ( name ) {
@@ -1849,6 +1875,7 @@ function refreshClientModList(closeLoader = true) {
 				disable : myTranslator.syncStringLookup('override_disabled'),
 				unknown : myTranslator.syncStringLookup('override_unknown'),
 			},
+			modSites               : modSite.store,
 		},
 		'fromMain_modList',
 		'main',

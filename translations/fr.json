@@ -351,5 +351,6 @@
 	"context_set_website": "Set Source Website",
 	"context_open_website": "Site web à source ouverte",
 	"mod_badge_web": "WWW",
-	"mod_badge_web__title": "Ce mod a un site web source personnalisé"
+	"mod_badge_web__title": "Ce mod a un site web source personnalisé",
+	"button_save": "Sauvez"
 }

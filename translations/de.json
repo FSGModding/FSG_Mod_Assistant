@@ -351,5 +351,6 @@
 	"context_set_website": "Quellen-Website festlegen",
 	"context_open_website": "Open-Source-Website",
 	"mod_badge_web": "WWW",
-	"mod_badge_web__title": "Diese Mod hat eine benutzerdefinierte Quelltext-Website eingestellt"
+	"mod_badge_web__title": "Diese Mod hat eine benutzerdefinierte Quelltext-Website eingestellt",
+	"button_save": "Speichern Sie"
 }

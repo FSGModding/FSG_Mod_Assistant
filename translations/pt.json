@@ -351,5 +351,6 @@
 	"context_set_website": "Sítio Web do Set Source",
 	"context_open_website": "Website de código aberto",
 	"mod_badge_web": "WWW",
-	"mod_badge_web__title": "Este mod tem um conjunto de fontes personalizadas"
+	"mod_badge_web__title": "Este mod tem um conjunto de fontes personalizadas",
+	"button_save": "Guardar"
 }

@@ -71,6 +71,7 @@ contextBridge.exposeInMainWorld(
 		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
 		openNotes  : (collection)   => { ipcRenderer.send('toMain_openNotes', collection ) },
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
+		setModInfo : (mod, site)    => { ipcRenderer.send('toMain_setModInfo', mod, site) },
 		zipMods    : (selectedMods) => { ipcRenderer.send('toMain_exportZip', selectedMods) },
 
 		dragOut    : (modID)  => { ipcRenderer.send('toMain_dragOut', modID ) },
@@ -79,14 +80,15 @@ contextBridge.exposeInMainWorld(
 
 		receive   : ( channel, func ) => {
 			const validChannels = [
-				'fromMain_modList',
-				'fromMain_selectAllOpen',
-				'fromMain_selectNoneOpen',
-				'fromMain_selectInvertOpen',
-				'fromMain_selectOnly',
-				'fromMain_selectOnlyFilter',
 				'fromMain_debugLogDanger',
 				'fromMain_dirtyUpdate',
+				'fromMain_modInfoPop',
+				'fromMain_modList',
+				'fromMain_selectAllOpen',
+				'fromMain_selectInvertOpen',
+				'fromMain_selectNoneOpen',
+				'fromMain_selectOnly',
+				'fromMain_selectOnlyFilter',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

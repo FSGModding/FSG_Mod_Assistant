@@ -351,5 +351,6 @@
 	"context_set_website": "Establecer sitio web de origen",
 	"context_open_website": "Sitio web de código abierto",
 	"mod_badge_web": "WWW",
-	"mod_badge_web__title": "Este mod tiene un conjunto de sitios web de origen personalizado"
+	"mod_badge_web__title": "Este mod tiene un conjunto de sitios web de origen personalizado",
+	"button_save": "Guardar"
 }

@@ -351,5 +351,6 @@
 	"context_set_website": "Set Source Website",
 	"context_open_website": "Open Source website",
 	"mod_badge_web": "WWW",
-	"mod_badge_web__title": "Deze mod heeft een aangepaste bron website ingesteld"
+	"mod_badge_web__title": "Deze mod heeft een aangepaste bron website ingesteld",
+	"button_save": "Sla"
 }

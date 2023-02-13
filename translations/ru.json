@@ -345,11 +345,12 @@
 	"game_icon_lg__title": "Изменить версию Farming Simulator",
 	"total_collections": "Коллекций",
 	"total_mods": "Модов",
-	"context_copy": "Копия",
-	"context_cut": "Снято",
-	"context_paste": "Паста",
-	"context_set_website": "Установить исходный веб-сайт",
-	"context_open_website": "Сайт с открытым исходным кодом",
+	"context_copy": "Копировать",
+	"context_cut": "Вырезать",
+	"context_paste": "Вставить",
+	"context_set_website": "Задать исходный веб-сайт",
+	"context_open_website": "Открыть исходный веб-сайт",
 	"mod_badge_web": "WWW",
-	"mod_badge_web__title": "В этом моде установлен пользовательский сайт источника"
+	"mod_badge_web__title": "Для этого мода есть собственный исходный веб-сайт",
+	"button_save": "Сохранить"
 }

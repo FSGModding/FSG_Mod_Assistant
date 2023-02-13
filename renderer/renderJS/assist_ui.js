@@ -6,7 +6,7 @@
 
 // Main Window UI
 
-/* eslint complexity: ["warn", 22] */
+/* eslint complexity: ["warn", 25] */
 /* global processL10N, fsgUtil, bootstrap, select_lib */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
@@ -52,6 +52,12 @@ window.mods.receive('fromMain_dirtyUpdate', (dirtyFlag) => {
 })
 window.mods.receive('fromMain_debugLogDanger', () => {
 	fsgUtil.byId('debug_danger_bubble').classList.remove('d-none')
+})
+
+window.mods.receive('fromMain_modInfoPop', (thisMod, thisSite) => {
+	fsgUtil.byId('mod_info_mod_name').innerHTML = thisMod.fileDetail.shortName
+	fsgUtil.byId('mod_info_input').value = thisSite
+	modInfoDialog.show()
 })
 
 let lastLocale      = 'en'
@@ -136,7 +142,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					thisCollection,
 					modCollect.newMods,
 					modCollect.bindConflict?.[collectKey],
-					modCollect.appSettings.game_version
+					modCollect.appSettings.game_version,
+					modCollect.opts.modSites
 				)
 
 				searchStringMap[thisMod.colUUID] = [
@@ -202,7 +209,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 })
 
 
-function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts, currentGameVersion) {
+function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts, currentGameVersion, modSites) {
 	const theseBadges = [...originalBadges] || []
 	let hasAllDeps    = true
 
@@ -223,6 +230,9 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 	}
 	if ( thisMod.modHub.version !== null && thisMod.modDesc.version !== thisMod.modHub.version) {
 		theseBadges.push('update')
+	}
+	if ( typeof modSites?.[thisMod.fileDetail.shortName] !== 'undefined' && modSites?.[thisMod.fileDetail.shortName] !== '' ) {
+		theseBadges.push('web')
 	}
 	if ( newMods.has(thisMod.md5Sum) && !thisMod.canNotUse ) {
 		theseBadges.push('new')
@@ -318,6 +328,12 @@ function makeVersionRow(version, options, modCollect) {
 	})
 }
 
+function clientSetModInfo() {
+	const modName = fsgUtil.byId('mod_info_mod_name').innerHTML
+	const newSite = fsgUtil.byId('mod_info_input').value
+	window.mods.setModInfo(modName, newSite)
+	modInfoDialog.hide()
+}
 function clientSetGameVersion(version) { window.mods.changeVersion(parseInt(version, 10)) }
 
 function clientClearInput() { select_lib.filter(null, '') }
@@ -417,6 +433,7 @@ async function operateLED(type = 'spin', time = 2500) {
 }
 
 let mismatchDialog      = null
+let modInfoDialog       = null
 let dragDropOperation   = false
 let dragDropInFolder    = false
 
@@ -425,6 +442,8 @@ window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 	mismatchDialog = new bootstrap.Modal(document.getElementById('open_game_modal'), {backdrop : 'static'})
 	mismatchDialog.hide()
+	modInfoDialog = new bootstrap.Modal(document.getElementById('open_mod_info_modal'), {backdrop : 'static'})
+	modInfoDialog.hide()
 	const dragTarget = fsgUtil.byId('drag_target')
 
 	dragTarget.addEventListener('dragenter', clientDragEnter )

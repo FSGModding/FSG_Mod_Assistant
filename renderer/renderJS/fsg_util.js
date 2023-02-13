@@ -32,6 +32,7 @@ const fsgUtil = {
 		problem  : 'warning',
 		recent   : 'success',
 		update   : 'light border-dark-subtle text-black',
+		web      : 'light border-dark-subtle text-black',
 	},
 	led        : {
 		product    : 0x1710,
