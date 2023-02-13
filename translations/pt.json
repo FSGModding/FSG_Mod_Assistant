@@ -345,12 +345,12 @@
 	"game_icon_lg__title": "Alterar a Versão do Farming Simulator",
 	"total_collections": "Coleções",
 	"total_mods": "Mods",
-	"context_copy": "Cópia",
+	"context_copy": "Copiar",
 	"context_cut": "Cortar",
 	"context_paste": "Colar",
-	"context_set_website": "Sítio Web do Set Source",
-	"context_open_website": "Website de código aberto",
+	"context_set_website": "Definir Website de Origem",
+	"context_open_website": "Abrir Website de Origem",
 	"mod_badge_web": "WWW",
-	"mod_badge_web__title": "Este mod tem um conjunto de fontes personalizadas",
-	"button_save": "Guardar"
+	"mod_badge_web__title": "Este mod tem um website de origem personalizado definido",
+	"button_save": "Salvar"
 }
