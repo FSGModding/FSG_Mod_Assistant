@@ -51,14 +51,14 @@ const fsgUtil = {
 		const classArray = ( typeof classList === 'string' ) ? [classList] : classList
 		const iterArray  = ( typeof queryOrNodes === 'string' ) ? fsgUtil.query(queryOrNodes) : queryOrNodes
 		for ( const element of iterArray ) {
-			element.classList.add([...classArray])
+			element.classList.add(...classArray)
 		}
 	},
 	clsRemoveFromAll : ( queryOrNodes, classList ) => {
 		const classArray = ( typeof classList === 'string' ) ? [classList] : classList
 		const iterArray  = ( typeof queryOrNodes === 'string' ) ? fsgUtil.query(queryOrNodes) : queryOrNodes
 		for ( const element of iterArray ) {
-			element.classList.remove([...classArray])
+			element.classList.remove(...classArray)
 		}
 	},
 	getAttribNullEmpty : (element, attrib) => {
