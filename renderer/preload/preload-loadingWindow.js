@@ -9,6 +9,7 @@
 const {ipcRenderer, contextBridge} = require('electron')
 
 let lastTotal = 1
+let startTime = Date.now()
 
 ipcRenderer.on('formMain_loadingTitles', (event, mainTitle, subTitle, dlCancel) => {
 	document.getElementById('statusMessage').innerHTML = mainTitle
@@ -18,11 +19,13 @@ ipcRenderer.on('formMain_loadingTitles', (event, mainTitle, subTitle, dlCancel) 
 	document.getElementById('statusTotal').innerHTML   = '0'
 	document.getElementById('statusCurrent').innerHTML = '0'
 	document.getElementById('downloadCancel').classList.add('d-none')
+	document.getElementById('speed').classList.add('d-none')
 	document.getElementById('downloadCancelButton').innerHTML = dlCancel
 })
 
 ipcRenderer.on('fromMain_loadingDownload', () => {
 	document.getElementById('downloadCancel').classList.remove('d-none')
+	document.getElementById('speed').classList.remove('d-none')
 })
 
 ipcRenderer.on('fromMain_loadingNoCount', () => {
@@ -31,6 +34,7 @@ ipcRenderer.on('fromMain_loadingNoCount', () => {
 })
 
 ipcRenderer.on('fromMain_loading_total', (event, count, inMB = false) => {
+	if ( inMB ) { startTime = Date.now() }
 	const thisCount   = inMB ? toMB(count) : count
 	const thisElement = document.getElementById('statusTotal')
 	lastTotal = ( count < 1 ) ? 1 : count
@@ -47,6 +51,22 @@ ipcRenderer.on('fromMain_loading_current', (event, count, inMB = false) => {
 	if ( thisProg !== null ) { thisProg.style.width = thisPercent }
 
 	if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
+
+	if ( inMB ) {
+		const perDone    = Math.ceil((count / lastTotal) * 100)
+		const perRem     = 100 - perDone
+		const endTime    = Date.now()
+		const elapsedMS  = endTime - startTime
+		const elapsedSec = elapsedMS / 1000
+		const estSpeed   = toMB(count, false) / elapsedSec // MB/sec
+		const secRemain  = elapsedSec / perDone * perRem
+
+		const prettyMinRemain = Math.floor(secRemain / 60)
+		const prettySecRemain = secRemain % 60
+
+		document.getElementById('speed_speed').innerHTML = `${estSpeed.toFixed(1)} MB/s`
+		document.getElementById('speed_time').innerHTML = `~ ${prettyMinRemain.toFixed(0).padStart(2, '0')}:${prettySecRemain.toFixed(0).padStart(2, '0')}`
+	}
 })
 
 
