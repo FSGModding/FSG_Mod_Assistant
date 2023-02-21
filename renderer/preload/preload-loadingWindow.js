@@ -53,7 +53,7 @@ ipcRenderer.on('fromMain_loading_current', (event, count, inMB = false) => {
 	if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
 
 	if ( inMB ) {
-		const perDone    = Math.ceil((count / lastTotal) * 100)
+		const perDone    = Math.max(1, Math.ceil((count / lastTotal) * 100))
 		const perRem     = 100 - perDone
 		const endTime    = Date.now()
 		const elapsedMS  = endTime - startTime
