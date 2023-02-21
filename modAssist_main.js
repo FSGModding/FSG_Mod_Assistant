@@ -1583,13 +1583,15 @@ ipcMain.on('toMain_setNote', (event, id, value, collectKey) => {
 })
 /** END: Notes Operation */
 
-let dlReq = null
+let dlReq      = null
+let dlProgress = false
 
 /** Download operation */
 ipcMain.on('toMain_cancelDownload', () => {
 	if ( dlReq !== null ) { dlReq.abort() }
 })
 ipcMain.on('toMain_downloadList', (event, collection) => {
+	if ( dlProgress ) { windows.load.focus(); return }
 	const thisSite = modNote.get(`${collection}.notes_website`, null)
 	const thisDoDL = modNote.get(`${collection}.notes_websiteDL`, false)
 	const thisLink = `${thisSite}all_mods_download?onlyActive=true`
@@ -1598,6 +1600,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 
 	doDialogBox('main', { titleL10n : 'download_title', message : `${myTranslator.syncStringLookup('download_started')} :: ${modCollect.mapCollectionToName(collection)}\n${myTranslator.syncStringLookup('download_finished')}` })
 
+	dlProgress = true
 	log.log.info(`Downloading Collection : ${collection}`, 'mod-download')
 	log.log.info(`Download Link : ${thisLink}`, 'mod-download')
 
@@ -1608,6 +1611,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 
 		if ( response.statusCode < 200 || response.statusCode >= 400 ) {
 			doDialogBox('main', { type : 'error', titleL10n : 'download_title', message : `${myTranslator.syncStringLookup('download_failed')} :: ${modCollect.mapCollectionToName(collection)}` })
+			dlProgress = false
 		} else {
 			loadingWindow_open('download', true)
 
@@ -1639,6 +1643,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 
 					zipReadStream.on('error', (err) => {
 						loadingWindow_hide()
+						dlProgress = false
 						log.log.warning(`Download unzip failed : ${err}`, 'mod-download')
 					})
 
@@ -1647,6 +1652,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 						zipReadStream.close()
 						foldersDirty = true
 						fs.unlinkSync(dlPath)
+						dlProgress = false
 						processModFolders()
 					})
 
@@ -1658,8 +1664,8 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 			})
 		}
 	})
-	dlReq.on('abort', () => { log.log.notice('Download canceled', 'mod-download'); loadingWindow_hide() })
-	dlReq.on('error', (error) => { log.log.warning(`Network error : ${error}`, 'mod-download'); loadingWindow_hide() })
+	dlReq.on('abort', () => { log.log.notice('Download canceled', 'mod-download'); dlProgress = false; loadingWindow_hide() })
+	dlReq.on('error', (error) => { log.log.warning(`Network error : ${error}`, 'mod-download'); dlProgress = false; loadingWindow_hide() })
 	dlReq.end()
 })
 /** END: download operation */
