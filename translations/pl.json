@@ -264,7 +264,7 @@
 	"user_pref_blurb_lang": "Pozwala to tymczasowo zastąpić wykryty język dla Asystenta modów",
 	"user_pref_blurb2_lang": "Aby ustawić swój język bez funkcji automatycznego wykrywania, wyłącz opcję pomijania, wybierz z listy swój język, włącz ponownie funkcję wykrywania i uruchom ponownie program",
 	"user_pref_setting_lock_lang": "Pomiń wykrywanie języka przy starcie",
-	"select_quantity": "Wybrane:",
+	"select_quantity": "Wybrane",
 	"confirm_key_shortcuts": "Aby szybko włączyć nadpisywanie plików :: <em>CTRL+A</em>: Włącz wszystko | <em>CTRL+SHIFT+A</em>: Wyłącz wszystko",
 	"pref_feedback_bad_url": "Nieprawidłowy URL - Musi być adresem głównego serwera i kończyć się ukośnikiem",
 	"pref_feedback_limit_16": "Limit 16 znaków",

@@ -266,7 +266,7 @@
 	"detail_depend": "Dependências do mod",
 	"detail_depend_clean": "Este mod não tem outras dependências",
 	"savegame_filter_only": "Limitar a",
-	"select_quantity": "Selecionado:",
+	"select_quantity": "Selecionado",
 	"confirm_key_shortcuts": "Para ativar rapidamente a substituição de arquivo :: <em>CTRL+A</em> : ativar tudo | <em>CTRL+SHIFT+A</em>: desabilita tudo",
 	"pref_feedback_bad_url": "URL inválido - deve ser a raiz do servidor e terminar com uma barra.",
 	"pref_feedback_limit_16": "Limite de 16 caracteres",

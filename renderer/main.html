@@ -183,6 +183,9 @@
 									<div id="filter__tags" class="btn-group-vertical btn-group-sm w-100">
 										<button class="btn btn-outline-warning text-center" onclick="select_lib.tag_reset()"><l10n name="filter_tag_reset"></l10n></button>
 
+										<input type="checkbox" id="tag_filter__selected" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+										<label class="btn btn-outline-success" for="tag_filter__selected"><l10n name="select_quantity"></l10n></label>
+
 										<input type="checkbox" id="tag_filter__broken" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
 										<label class="btn btn-outline-success" for="tag_filter__broken"><l10n name="mod_badge_broken"></l10n></label>
 

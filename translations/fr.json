@@ -266,7 +266,7 @@
 	"detail_depend": "Dépendances des mods",
 	"detail_depend_clean": "Ce mod n'a aucune autre dépendance de mod",
 	"savegame_filter_only": "Limiter à",
-	"select_quantity": "Sélectionné :",
+	"select_quantity": "Sélectionné",
 	"confirm_key_shortcuts": "Pour basculer rapidement l'écrasement de fichier :: <em>CTRL+A</em> : activer/désactiver tout | <em>CTRL+SHIFT+A</em> : désactiver tout",
 	"pref_feedback_bad_url": "URL invalide - Doit être la racine du serveur, et se terminer par un slash",
 	"pref_feedback_limit_16": "Limite de caractères",
