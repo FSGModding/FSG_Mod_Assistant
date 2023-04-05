@@ -72,6 +72,15 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 })
 
 
+function makeColList(collections) {
+	const colList = ['<ul class="list-unstyled px-2">']
+	for ( const thisColText of collections ) {
+		colList.push(`<li>${thisColText}</li>`)
+	}
+	colList.push('</ul>')
+	return colList.join('')
+}
+
 function makeLine(type, realName, shortName, collections, icon) {
 	return fsgUtil.useTemplate('version_line', {
 		badge             : fsgUtil.badge('dark', ( type === 'same' ) ? 'version_same' : 'version_diff', true),
@@ -79,7 +88,7 @@ function makeLine(type, realName, shortName, collections, icon) {
 		collectClass      : ( type === 'same' ) ? '' : 'text-body-emphasis',
 		color             : ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger',
 		icon              : fsgUtil.iconMaker(icon),
-		joinedCollections : fsgUtil.escapeSpecial(collections.join(', ')),
+		joinedCollections : type !== 'same' ? makeColList(collections) : `<l10n name="version_collections"></l10n>: ${fsgUtil.escapeSpecial(collections.join(', '))}`,
 		realName          : realName,
 		shortName         : shortName,
 	})
