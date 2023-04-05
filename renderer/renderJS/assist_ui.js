@@ -165,7 +165,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					thisMod,
 					displayBadges,
 					thisMod.modHub.id,
-					modCollect.appSettings.game_version
+					modCollect.appSettings.game_version,
+					typeof modCollect.opts.modSites[thisMod.fileDetail.shortName] !== 'undefined'
 				))
 
 			} catch (e) {
@@ -293,10 +294,11 @@ const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, admi
 })
 
 
-const makeModRow = (id, thisMod, badges, modId, currentGameVersion) => fsgUtil.useTemplate('mod_row', {
+const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) => fsgUtil.useTemplate('mod_row', {
 	author            : fsgUtil.escapeSpecial(thisMod.modDesc.author),
 	badges            : Array.from(badges, (badge) => fsgUtil.badge(false, badge)).join(' '),
 	class_hasHash     : modId!==null ? ' has-hash' : '',
+	class_hasSite     : hasExtSite ? ' has-ext-site' : '',
 	class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
 	class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':'',
 	fileSize          : ( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : '',
@@ -367,6 +369,13 @@ function clientBatchOperation(mode) {
 				selectedMods.push(select_lib.last_alt_select)
 			}
 			if ( selectedMods.length === 1 ) { window.mods.openHub(selectedMods) }
+			break
+		case 'site':
+			if ( select_lib.last_alt_hash && select_lib.last_alt_select !== null ) {
+				selectedMods.length = 0
+				selectedMods.push(select_lib.last_alt_select)
+			}
+			if ( selectedMods.length === 1 ) { window.mods.openExt(selectedMods) }
 			break
 		case 'zip':
 			window.mods.zipMods(selectedMods)

@@ -846,6 +846,12 @@ ipcMain.on('toMain_openHub',     (event, mods) => {
 		shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisModId}`)
 	}
 })
+ipcMain.on('toMain_openExt',     (event, mods) => {
+	const thisMod     = modCollect.modColUUIDToRecord(mods[0])
+	const thisModSite = modSite.get(thisMod.fileDetail.shortName, null)
+
+	if ( thisModSite !== null ) { shell.openExternal(thisModSite) }
+})
 
 ipcMain.on('toMain_copyFavorites',  () => {
 	const sourceCollections      = []

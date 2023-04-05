@@ -66,6 +66,7 @@ contextBridge.exposeInMainWorld(
 		modCText   : (selectedMod)  => { ipcRenderer.send('toMain_modContextMenu', selectedMod ) },
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		openCText  : (collection)   => { ipcRenderer.send('toMain_mainContextMenu', collection ) },
+		openExt    : (selectedMods) => { ipcRenderer.send('toMain_openExt', selectedMods) },
 		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },
 		openMod    : (modID)        => { ipcRenderer.send('toMain_openModDetail', modID) },
 		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },

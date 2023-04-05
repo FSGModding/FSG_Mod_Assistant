@@ -100,8 +100,12 @@ const select_lib = {
 		if ( fsgUtil.byId(modID).classList.contains('has-hash') ) {
 			select_lib.last_alt_hash = true
 			moveButtons[5].classList.remove('disabled')
-
 		}
+		if ( fsgUtil.byId(modID).classList.contains('has-ext-site') ) {
+			select_lib.last_alt_hash = true
+			moveButtons[6].classList.remove('disabled')
+		}
+		
 		moveButtons[4].classList.remove('disabled')
 	},
 	click_invert      : () => {
@@ -190,6 +194,7 @@ const select_lib = {
 		const allModRows    = select_lib.get_visible_mods()
 		let   countSelected = 0
 		let   hasHash       = false
+		let   hasExtSite    = false
 		let   isFirst       = true
 		let   wasLast       = null
 
@@ -198,7 +203,8 @@ const select_lib = {
 
 			if ( isChecked ) {
 				countSelected += 1
-				hasHash = ( countSelected === 1 ) && thisRow.classList.contains('has-hash')
+				hasHash    = ( countSelected === 1 ) && thisRow.classList.contains('has-hash')
+				hasExtSite = ( countSelected === 1 ) && thisRow.classList.contains('has-ext-site')
 
 				const thisScroller = document.querySelector(`.${thisRow.id}`)
 				wasLast = thisScroller
@@ -236,9 +242,10 @@ const select_lib = {
 
 		moveButtons[4].classList[(countSelected === 1)?'remove':'add']('disabled') // open
 		moveButtons[5].classList[(hasHash)?'remove':'add']('disabled') // modhub
+		moveButtons[6].classList[(hasExtSite)?'remove':'add']('disabled') // ext site
 
-		moveButtons[6].classList.remove('disabled') //favs
-		moveButtons[7].classList.remove('disabled') //versions
+		moveButtons[7].classList.remove('disabled') //favorites
+		moveButtons[8].classList.remove('disabled') //versions
 		
 		select_lib.change_count(countSelected)
 	},
