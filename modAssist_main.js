@@ -1331,6 +1331,7 @@ function readGameLog() {
 	if ( windows.gamelog === null ) { return }
 
 	let thisGameLog = null
+	console.log('blip.')
 
 	if ( mcStore.get('game_log_auto') ) {
 		const currentVersion = mcStore.get('game_version')
@@ -1930,7 +1931,7 @@ function loadGameLog(newPath = false) {
 					gameLogFileBounce = setTimeout(() => {
 						gameLogFileBounce = false
 						readGameLog()
-					}, 1000)
+					}, 5000)
 				}
 			})
 			gameLogFileWatch.on('error', (err) => {
