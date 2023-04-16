@@ -2268,6 +2268,8 @@ function dlSaveFile(url, filename) {
 	if ( net.isOnline() ) {
 		const request = net.request(url)
 
+		request.setHeader('pragma', 'no-cache')
+
 		request.on('response', (response) => {
 			log.log.info(`Got ${filename}: ${response.statusCode}`, 'local-cache')
 			let responseData = ''
