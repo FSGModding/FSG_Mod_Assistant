@@ -101,6 +101,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const modTable     = []
 	const optList      = []
 	const scrollTable  = []
+	const verList      = {}
+	let   verFlag      = false
 
 	/* List selection */
 	lastList = ( modCollect.opts.activeCollection !== '999' && modCollect.opts.activeCollection !== '0') ? `collection--${modCollect.opts.activeCollection}` : modCollect.opts.activeCollection
@@ -145,6 +147,15 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					modCollect.appSettings.game_version,
 					modCollect.opts.modSites
 				)
+
+				if ( !verFlag ) {
+					if ( typeof verList[thisMod.fileDetail.shortName] !== 'undefined' ) {
+						if ( verList[thisMod.fileDetail.shortName] !== thisMod.modDesc.version ) {
+							verFlag = true
+						}
+					}
+					verList[thisMod.fileDetail.shortName] = thisMod.modDesc.version
+				}
 
 				searchStringMap[thisMod.colUUID] = [
 					thisMod.fileDetail.shortName,
@@ -191,6 +202,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	
 	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
 	fsgUtil.byId('scroll-bar-fake').innerHTML  = scrollTable.join('')
+
+	fsgUtil.clsOrGate('verButton', verFlag, 'btn-danger', 'btn-success')
 
 	select_lib.clear_range()
 

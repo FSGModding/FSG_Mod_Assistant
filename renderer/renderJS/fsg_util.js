@@ -54,6 +54,16 @@ const fsgUtil = {
 			element.classList.add(...classArray)
 		}
 	},
+	clsOrGate   : ( id, test, ifTrue, ifFalse ) => {
+		const element = fsgUtil.byId(id)
+		if ( test ) {
+			element.classList.add(ifTrue)
+			element.classList.remove(ifFalse)
+		} else {
+			element.classList.add(ifFalse)
+			element.classList.remove(ifTrue)
+		}
+	},
 	clsRemoveFromAll : ( queryOrNodes, classList ) => {
 		const classArray = ( typeof classList === 'string' ) ? [classList] : classList
 		const iterArray  = ( typeof queryOrNodes === 'string' ) ? fsgUtil.query(queryOrNodes) : queryOrNodes
