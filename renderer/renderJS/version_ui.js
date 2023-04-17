@@ -10,6 +10,7 @@
 
 
 window.mods.receive('fromMain_modList', (modCollect) => {
+	// console.log(modCollect)
 	const doMultiVersion     = modCollect.appSettings.multi_version
 	const thisVersion        = modCollect.appSettings.game_version
 	const nameIconMap        = {}
@@ -55,13 +56,16 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	const listHTML = []
 
-	for ( const key in versionListNoMatch ) {
+	const sortedNoMatch = Object.keys(versionListNoMatch).sort(Intl.Collator().compare)
+	const sortedMatch   = Object.keys(versionList).sort(Intl.Collator().compare)
+
+	for ( const key of sortedNoMatch ) {
 		const theseCollections = versionListNoMatch[key].map((vArray) => `${collectionMap[vArray[0]]}: ${vArray[1]}`)
 
 		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
 	}
 
-	for ( const key in versionList ) {
+	for ( const key of sortedMatch ) {
 		const theseCollections = versionList[key].map((vArray) => collectionMap[vArray[0]])
 
 		listHTML.push(makeLine('same', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
