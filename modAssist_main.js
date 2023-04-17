@@ -854,6 +854,7 @@ ipcMain.on('toMain_openExt',     (event, mods) => {
 })
 
 ipcMain.on('toMain_copyFavorites',  () => {
+
 	const sourceCollections      = []
 	const destinationCollections = []
 	const sourceFiles            = []
@@ -862,7 +863,7 @@ ipcMain.on('toMain_copyFavorites',  () => {
 	const current_version = mcStore.get('game_version')
 
 	for ( const collectKey of modCollect.collections ) {
-		if ( multi_version && current_version !== modNote.get(`${collectKey}.notes_version`, 22)) { return }
+		if ( multi_version && current_version !== modNote.get(`${collectKey}.notes_version`, 22)) { continue }
 
 		if ( modNote.get(`${collectKey}.notes_favorite`, false) ) {
 			sourceCollections.push(collectKey)
