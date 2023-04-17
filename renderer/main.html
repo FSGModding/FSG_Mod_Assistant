@@ -63,19 +63,31 @@
 			padding-bottom: 0.35em;
 		}
 
+		.ex-small { font-size: .75em }
+
 		@media screen and (max-width: 1019px) {
 
 			body[data-i18n="es"] [name="version_check"] { font-size: 0.9em; }
+			body[data-i18n="es"] .ex-small_es { font-size: .75em; }
+
+			body[data-i18n="fr"] .ex-small_fr { font-size: .75em; }
 
 			body[data-i18n="nl"] [name="app_name"] { font-size: calc(1.325rem + .55vw); }
 			body[data-i18n="nl"] #display_mod_container { margin-top: 145px; }
 			body[data-i18n="nl"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			body[data-i18n="nl"] .ex-small_nl { font-size: .75em; }
+
+			body[data-i18n="pl"] .ex-small_pl { font-size: .75em; }
+			body[data-i18n="pl"] .ex-small_pl2 { font-size: .55em; }
 
 			body[data-i18n="pt"] #display_mod_container { margin-top: 145px; }
 			body[data-i18n="pt"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			body[data-i18n="pt"] .ex-small_pt { font-size: .75em; }
 
 			body[data-i18n="ru"] #display_mod_container { margin-top: 145px; }
 			body[data-i18n="ru"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			body[data-i18n="ru"] .ex-small_ru { font-size: .75em; }
+			body[data-i18n="ru"] .ex-small_ru2 { font-size: .7em; }
 		}
 	</style>
 	
@@ -249,11 +261,11 @@
 						<button onclick="clientBatchOperation('delete')" type="button" class="operation_button w-100 mb-1 btn btn-danger text-white rounded-4 disabled"><i class="bi bi-file-earmark-x"></i><br /><l10n class="small" name="remove_from_list"></l10n></button>
 						<button onclick="clientBatchOperation('zip')" type="button" class="operation_button w-100 mb-1 btn btn-primary rounded-4 disabled"><i class="bi bi-file-earmark-zip"></i><br /><l10n class="small" name="make_zip"></l10n></button>
 
-						<button onclick="clientBatchOperation('open')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-folder-symlink"></i><br /><l10n class="small" name="open_from_list"></l10n></button>
-						<button onclick="clientBatchOperation('hub')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-search-heart"></i><br /><l10n class="small" name="open_hub"></l10n></button>
-						<button onclick="clientBatchOperation('site')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-search"></i><br /><l10n class="small" name="context_open_website"></l10n></button>
+						<button onclick="clientBatchOperation('open')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-folder-symlink"></i><br /><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_from_list"></l10n></button>
+						<button onclick="clientBatchOperation('hub')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-search-heart"></i><br /><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_hub"></l10n></button>
+						<button onclick="clientBatchOperation('site')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-4 disabled"><i class="bi bi-search"></i><br /><l10n class="small ex-small_es ex-small_fr ex-small_pl2 ex-small_pt ex-small_ru2" name="context_open_website"></l10n></button>
 						
-						<button onclick="mods.copyFavorites()" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-warning text-white rounded-4"><i class="bi bi-building-add"></i><br /><l10n class="small" name="copy_fav_to"></l10n></button>
+						<button onclick="mods.copyFavorites()" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-warning text-white rounded-4"><i class="bi bi-building-add"></i><br /><l10n class="ex-small" name="copy_fav_to"></l10n></button>
 						<button onclick="mods.versionCheck()" type="button" class="operation_button w-100 btn btn-success text-white rounded-4 "><i class="bi bi-git"></i><br /><l10n class="small" name="version_check"></l10n></button>
 					</div>
 				</div>
