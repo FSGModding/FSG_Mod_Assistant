@@ -102,10 +102,16 @@ function getSelectedMods() {
 }
 
 function clientDoCopy() {
-	window.mods.realCopyFile(getSelectedMods())
+	const fileList = getSelectedMods()
+	if ( fileList !== false ) {
+		window.mods.realCopyFile(fileList)
+	}
 }
 
 
 function clientDoMove() {
-	window.mods.realMoveFile(getSelectedMods())
+	const fileList = getSelectedMods()
+	if ( fileList !== false ) {
+		window.mods.realMoveFile(fileList)
+	}
 }

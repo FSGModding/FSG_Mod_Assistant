@@ -2088,6 +2088,7 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 
 let fileWait = null
 function fileOperation(type, fileMap, srcWindow = 'confirm') {
+	if ( typeof fileMap !== 'object' ) { return }
 	windows[srcWindow].close()
 
 	loadingWindow_open('files')
