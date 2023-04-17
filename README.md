@@ -8,6 +8,8 @@ ___This is a mod folder switcher with extra tools___
 - Check a collection against a save game to see what is used and what is not
 - Resolve version differences of mods between collections
 
+__NOTE:__ This will only run under Windows 10 or 11 - If you are still using Windows 7/8/8.1, you really should fix that, but in the meantime, you can run the last version that was supported, [v2.1.4](https://github.com/FSGModding/FSG_Mod_Assistant/releases/tag/v2.1.4)
+
 [Full Documentation Site](https://fsgmodding.github.io/FSG_Mod_Assistant/)
 
 ## What this does
