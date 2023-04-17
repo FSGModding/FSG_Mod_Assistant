@@ -28,6 +28,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		for ( const modKey of modCollect.modList[collectKey].modSet ) {
 			const mod     = modCollect.modList[collectKey].mods[modKey]
 			const modName = mod.fileDetail.shortName
+			
 
 			if ( mod.fileDetail.isFolder ) { continue }
 
@@ -61,14 +62,16 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	for ( const key of sortedNoMatch ) {
 		const theseCollections = versionListNoMatch[key].map((vArray) => `${collectionMap[vArray[0]]}: ${vArray[1]}`)
+		const modVer  = modCollect.modHub.version?.[modCollect.modHub.list.mods?.[key]]
 
-		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
+		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections, nameIconMap[key], modVer))
 	}
 
 	for ( const key of sortedMatch ) {
 		const theseCollections = versionList[key].map((vArray) => collectionMap[vArray[0]])
+		const modVer  = modCollect.modHub.version?.[modCollect.modHub.list.mods?.[key]]
 
-		listHTML.push(makeLine('same', nameTitleMap[key], key, theseCollections, nameIconMap[key]))
+		listHTML.push(makeLine('same', nameTitleMap[key], key, theseCollections, nameIconMap[key], modVer))
 	}
 
 	fsgUtil.byId('modList').innerHTML = listHTML.join('')
@@ -85,7 +88,7 @@ function makeColList(collections) {
 	return colList.join('')
 }
 
-function makeLine(type, realName, shortName, collections, icon) {
+function makeLine(type, realName, shortName, collections, icon, mhVer) {
 	return fsgUtil.useTemplate('version_line', {
 		badge             : fsgUtil.badge('dark', ( type === 'same' ) ? 'version_same' : 'version_diff', true),
 		clickCallback     : ( type === 'same' ) ? '' : `window.mods.openVersionResolve('${shortName}')`,
@@ -93,8 +96,10 @@ function makeLine(type, realName, shortName, collections, icon) {
 		color             : ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger',
 		icon              : fsgUtil.iconMaker(icon),
 		joinedCollections : type !== 'same' ? makeColList(collections) : `<l10n name="version_collections"></l10n>: ${fsgUtil.escapeSpecial(collections.join(', '))}`,
+		modHubVersion     : ( type === 'same' || typeof mhVer === 'undefined') ? '' : `<span class="border border-2 badge bg-info">${mhVer}</span>`,
 		realName          : realName,
 		shortName         : shortName,
+		showButton        : ( type === 'same' ) ? 'd-none' : '',
 	})
 }
 

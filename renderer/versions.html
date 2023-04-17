@@ -38,12 +38,14 @@
 			<div class="col-2 p-0 mx-3" style="width:64px; height:64px;">
 				<img class="img-fluid" src="{{icon}}" />
 			</div>
-			<div class="col-8">
+			<div class="col-7">
 				<div class="fw-bold">{{shortName}}</div>
 				<div class="small">{{realName}}</div>
 				<div class="{{collectClass}} small ps-3">{{joinedCollections}}</div>
 			</div>
-			<div class="col-2 text-center">{{badge}}</div>
+			<div class="col-3 text-end">{{modHubVersion}} {{badge}}
+				<button class="btn btn-primary w-100 btn-sm mt-4 {{showButton}}" onclick="{{clickCallback}}"><l10n name="resolve_version_window"></l10n></button>
+			</div>
 		</div>
 	</li>
 </template>
