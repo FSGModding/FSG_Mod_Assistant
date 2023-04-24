@@ -96,7 +96,7 @@ function makeLine(type, realName, shortName, collections, icon, mhVer) {
 		color             : ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger',
 		icon              : fsgUtil.iconMaker(icon),
 		joinedCollections : type !== 'same' ? makeColList(collections) : `<l10n name="version_collections"></l10n>: ${fsgUtil.escapeSpecial(collections.join(', '))}`,
-		modHubVersion     : ( type === 'same' || typeof mhVer === 'undefined') ? '' : `<span class="border border-2 badge bg-info">${mhVer}</span>`,
+		modHubVersion     : ( type === 'same' || typeof mhVer === 'undefined') ? '' : `<span class="border border-2 badge bg-info">MH:${mhVer}</span>`,
 		realName          : realName,
 		shortName         : shortName,
 		showButton        : ( type === 'same' ) ? 'd-none' : '',
