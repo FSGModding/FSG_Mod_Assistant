@@ -60,20 +60,21 @@ const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale(), log)
 myTranslator.mcVersion = app.getVersion()
 myTranslator.iconOverrides = {
-	admin_button       : 'globe2',
-	admin_pass_button  : 'key',
-	button_gamelog     : 'file-earmark-text',
-	download_button    : 'cloud-download',
-	export_button      : 'filetype-csv',
-	folder_bot_button  : 'align-bottom',
-	folder_down_button : 'chevron-down',
-	folder_top_button  : 'align-top',
-	folder_up_button   : 'chevron-up',
-	help_button        : 'question-circle',
-	min_tray_button    : 'chevron-bar-down',
-	notes_button       : 'journal-text',
-	preferences_button : 'gear',
-	search_all         : 'search',
+	admin_button           : 'globe2',
+	admin_pass_button      : 'key',
+	button_gamelog         : 'file-earmark-text',
+	download_button        : 'cloud-download',
+	export_button          : 'filetype-csv',
+	folder_bot_button      : 'align-bottom',
+	folder_down_button     : 'chevron-down',
+	folder_top_button      : 'align-top',
+	folder_up_button       : 'chevron-up',
+	game_admin_pass_button : 'person-lock',
+	help_button            : 'question-circle',
+	min_tray_button        : 'chevron-bar-down',
+	notes_button           : 'journal-text',
+	preferences_button     : 'gear',
+	search_all             : 'search',
 }
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {

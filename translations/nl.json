@@ -352,5 +352,8 @@
 	"context_open_website": "Open Source website",
 	"mod_badge_web": "WWW",
 	"mod_badge_web__title": "Deze mod heeft een aangepaste bron website ingesteld",
-	"button_save": "Sla"
+	"button_save": "Sla",
+	"game_admin_pass_button__title": "Kopieer GAME administratie wachtwoord naar klembord",
+	"notes_title_game_admin": "Server IN-GAME Admin Wachtwoord",
+	"notes_blurb_game_admin": "Server IN-GAME administratie wachtwoord, informatief en beschikbaar via snelle kopieer knop op hoofdscherm"
 }

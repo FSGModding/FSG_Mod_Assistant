@@ -352,5 +352,8 @@
 	"context_open_website": "Sitio web de código abierto",
 	"mod_badge_web": "WWW",
 	"mod_badge_web__title": "Este mod tiene un conjunto de sitios web de origen personalizado",
-	"button_save": "Guardar"
+	"button_save": "Guardar",
+	"game_admin_pass_button__title": "Copiar contraseña de administración de GAME al portapapeles",
+	"notes_title_game_admin": "Contraseña de administrador del servidor en el juego",
+	"notes_blurb_game_admin": "Contraseña de administración IN-GAME del servidor, informativa y disponible a través del botón de copia rápida en la pantalla principal"
 }

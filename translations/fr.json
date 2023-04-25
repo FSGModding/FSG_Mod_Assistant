@@ -352,5 +352,8 @@
 	"context_open_website": "Site web à source ouverte",
 	"mod_badge_web": "WWW",
 	"mod_badge_web__title": "Ce mod a un site web source personnalisé",
-	"button_save": "Sauvez"
+	"button_save": "Sauvez",
+	"game_admin_pass_button__title": "Copier le mot de passe de l'administration GAME dans le presse-papiers",
+	"notes_title_game_admin": "Mot de passe administrateur du serveur IN-GAME",
+	"notes_blurb_game_admin": "Mot de passe d'administration IN-GAME du serveur, informatif et disponible via le bouton de copie rapide sur l'écran principal"
 }

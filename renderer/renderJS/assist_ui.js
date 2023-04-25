@@ -195,7 +195,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			collectNotes.notes_admin,
 			thisCollection.dependSet.size,
 			collectNotes.notes_favorite,
-			modCollect.opts.activeCollection === collectKey
+			modCollect.opts.activeCollection === collectKey,
+			collectNotes.notes_game_admin
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	}
@@ -291,19 +292,21 @@ function clientMakeListActive() {
 	}
 }
 
-const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive) => fsgUtil.useTemplate('collect_row', {
-	bootstrap_data     : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
-	class_hideDownload : dlEnabled ? '' : 'd-none',
-	class_hidePassword : adminPass !== null ? '' : 'd-none',
-	class_hideWebsite  : website !== null ? '' : 'd-none',
-	folderSVG          : fsgUtil.getIconSVG('folder', favorite, isActive),
-	id                 : id,
-	mod_rows           : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`,
-	name               : name,
-	password           : adminPass,
-	tagLine            : tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : '',
-	totalCount         :  modCount > 999 ? '999+' : modCount,
-	website            : website,
+const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass) => fsgUtil.useTemplate('collect_row', {
+	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
+	class_hideDownload          : dlEnabled ? ''                                                                                         : 'd-none',
+	class_hideGameAdminPassword : gameAdminPass !== null ? ''                                                                            : 'd-none',
+	class_hidePassword          : adminPass !== null ? ''                                                                                : 'd-none',
+	class_hideWebsite           : website !== null ? ''                                                                                  : 'd-none',
+	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive),
+	game_admin_password         : gameAdminPass,
+	id                          : id,
+	mod_rows                    : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`,
+	name                        : name,
+	password                    : adminPass,
+	tagLine                     : tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>`                         : '',
+	totalCount                  : modCount > 999 ? '999+'                                                                                : modCount,
+	website                     : website,
 })
 
 

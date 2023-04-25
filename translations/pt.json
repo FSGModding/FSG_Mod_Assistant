@@ -352,5 +352,8 @@
 	"context_open_website": "Abrir Website de Origem",
 	"mod_badge_web": "WWW",
 	"mod_badge_web__title": "Este mod tem um website de origem personalizado definido",
-	"button_save": "Salvar"
+	"button_save": "Salvar",
+	"game_admin_pass_button__title": "Copiar a palavra-passe de administração do GAME para a área de transferência",
+	"notes_title_game_admin": "Palavra-passe de administrador do servidor no jogo",
+	"notes_blurb_game_admin": "Palavra-passe de administração do servidor IN-GAME, informativa e disponível através do botão de cópia rápida no ecrã principal"
 }

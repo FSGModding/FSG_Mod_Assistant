@@ -352,5 +352,8 @@
 	"context_open_website": "Open-Source-Website",
 	"mod_badge_web": "WWW",
 	"mod_badge_web__title": "Diese Mod hat eine benutzerdefinierte Quelltext-Website eingestellt",
-	"button_save": "Speichern Sie"
+	"button_save": "Speichern Sie",
+	"game_admin_pass_button__title": "GAME-Verwaltungspasswort in die Zwischenablage kopieren",
+	"notes_title_game_admin": "Server IN-GAME Admin Passwort",
+	"notes_blurb_game_admin": "Server-IN-GAME-Administrationspasswort, informativ und über die Schnellkopie-Schaltfläche auf dem Hauptbildschirm verfügbar"
 }

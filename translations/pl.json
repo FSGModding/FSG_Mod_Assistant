@@ -352,5 +352,8 @@
 	"context_open_website": "Strona internetowa otwartoźródłowa",
 	"mod_badge_web": "WWW",
 	"mod_badge_web__title": "Ten mod ma ustawioną niestandardową stronę źródłową",
-	"button_save": "Zapisz"
+	"button_save": "Zapisz",
+	"game_admin_pass_button__title": "Kopiowanie hasła administracyjnego GAME do schowka",
+	"notes_title_game_admin": "Hasło administratora serwera IN-GAME",
+	"notes_blurb_game_admin": "Hasło administracyjne IN-GAME serwera, informacyjne i dostępne poprzez przycisk szybkiego kopiowania na ekranie głównym"
 }
