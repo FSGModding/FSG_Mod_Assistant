@@ -41,6 +41,7 @@ body:
         - **Mod Assistant Version** : v2.0.1
         - **OS**: Windows 7, 8, 10, 11 or Other
         - **Virtualized**: No, Yes
+        - **Game Version**: Steam, Giants E-Shop, Other?
     value: |
         - Mod Assistant Version:
         - OS:
