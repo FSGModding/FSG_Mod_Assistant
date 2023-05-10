@@ -1371,9 +1371,13 @@ function gameLauncher() {
 		loadingWindow_open('launch')
 		loadingWindow_noCount()
 		loadingWindow_hide(3500)
-		const cp       = require('child_process')
-		const child    = cp.spawn(progPath, mcStore.get(gameArgsKey).split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
-		child.unref()
+		const cp = require('child_process')
+		try {
+			const child = cp.spawn(progPath, mcStore.get(gameArgsKey).split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
+			child.unref()
+		} catch (e) {
+			log.log.danger(`Game launch failed: ${e}`, 'game-launcher')
+		}
 	} else {
 		const dialogOpts = {
 			type    : 'info',
