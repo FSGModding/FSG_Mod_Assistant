@@ -36,7 +36,7 @@ window.mods.receive('fromMain_modSet', (modSet, shortName) => {
 
 function compareVersion(latestVersion, thisVersion, collectKey) {
 	const latestVersionRet = latestVersion
-	const thisVersionParts = thisVersion.split('.')
+	const thisVersionParts = thisVersion.split('.').map( (d) => { return parseInt(d) })
 
 	if ( latestVersion.vString === null ) {
 		latestVersionRet.collectKey = collectKey
