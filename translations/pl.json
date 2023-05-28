@@ -352,5 +352,8 @@
 	"context_open_website": "Otwórz stronę źródłową",
 	"mod_badge_web": "WWW",
 	"mod_badge_web__title": "Ta modyfikacja ma ustawioną niestandardową stronę źródłową",
-	"button_save": "Zapisz"
+	"button_save": "Zapisz",
+	"game_admin_pass_button__title": "Kopiuj hasło administracyjne GAME do schowka",
+	"notes_title_game_admin": "Hasło administratora serwera w grze",
+	"notes_blurb_game_admin": "Hasło administracyjne serwera w grze, informacyjne i dostępne za pomocą przycisku szybkiego kopiowania na ekranie głównym"
 }

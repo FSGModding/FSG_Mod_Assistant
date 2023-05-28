@@ -352,5 +352,8 @@
 	"context_open_website": "Nastavit zdrojový web",
 	"mod_badge_web": "WWW",
 	"mod_badge_web__title": "Tento mod má nastavený vlastní zdrojový web",
-	"button_save": "Uložit"
+	"button_save": "Uložit",
+	"game_admin_pass_button__title": "Zkopírovat heslo pro správu hry do schránky",
+	"notes_title_game_admin": "Heslo správce serveru ve hře",
+	"notes_blurb_game_admin": "Heslo pro správu serveru ve hře, informační a dostupné pomocí tlačítka rychlého kopírování na hlavní obrazovce"
 }
