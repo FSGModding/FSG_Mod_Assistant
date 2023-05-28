@@ -665,7 +665,10 @@ const subWindows   = {
 		winName         : 'debug',
 		HTMLFile        : 'debug.html',
 		subWindowArgs   : { preload : 'debugWindow' },
-		callback        : () => { windows.debug.webContents.send('fromMain_debugLog', log.htmlLog) },
+		callback        : () => {
+			windows.debug.webContents.send('fromMain_debugLog', log.htmlLog)
+			windows.main.webContents.send('fromMain_debugLogNoDanger')
+		},
 		refocusCallback : true,
 	},
 	gamelog : {

@@ -81,6 +81,7 @@ contextBridge.exposeInMainWorld(
 
 		receive   : ( channel, func ) => {
 			const validChannels = [
+				'fromMain_debugLogNoDanger',
 				'fromMain_debugLogDanger',
 				'fromMain_dirtyUpdate',
 				'fromMain_modInfoPop',

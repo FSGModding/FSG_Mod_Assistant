@@ -53,6 +53,9 @@ window.mods.receive('fromMain_dirtyUpdate', (dirtyFlag) => {
 window.mods.receive('fromMain_debugLogDanger', () => {
 	fsgUtil.byId('debug_danger_bubble').classList.remove('d-none')
 })
+window.mods.receive('fromMain_debugLogNoDanger', () => {
+	fsgUtil.byId('debug_danger_bubble').classList.add('d-none')
+})
 
 window.mods.receive('fromMain_modInfoPop', (thisMod, thisSite) => {
 	fsgUtil.byId('mod_info_mod_name').innerHTML = thisMod.fileDetail.shortName
