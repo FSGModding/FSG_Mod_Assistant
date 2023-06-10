@@ -74,16 +74,18 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const curVersion   = modCollect.appSettings.game_version
 	searchStringMap = {}
 	searchTagMap    = {
-		broken  : [],
-		folder  : [],
-		new     : [],
-		nomp    : [],
-		nonmh   : [],
-		notmod  : [],
-		pconly  : [],
-		problem : [],
-		recent  : [],
-		update  : [],
+		broken   : [],
+		folder   : [],
+		keys_bad : [],
+		keys_ok  : [],
+		new      : [],
+		nomp     : [],
+		nonmh    : [],
+		notmod   : [],
+		pconly   : [],
+		problem  : [],
+		recent   : [],
+		update   : [],
 	}
 	lastLocale = modCollect.opts.currentLocale
 
