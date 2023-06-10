@@ -346,7 +346,7 @@ if ( semverGt('1.0.2', mcStore.get('cache_version'))) {
 	log.log.warning('Invalid Mod Cache (very old), resetting.')
 	maCache.clear()
 	log.log.info('Mod Cache Cleared')
-} else if ( semverGt('2.3.0', mcStore.get('cache_version'))) {
+} else if ( semverGt('2.4.0', mcStore.get('cache_version'))) {
 	log.log.warning('Invalid Mod Cache (old), resetting.')
 	maCache.clear()
 	log.log.info('Mod Cache Cleared')
