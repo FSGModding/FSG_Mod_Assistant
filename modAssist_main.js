@@ -3,7 +3,7 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-
+/*eslint complexity: ["warn", 17]*/
 // Main Program
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, screen, clipboard, nativeImage, nativeTheme } = require('electron')
@@ -1377,6 +1377,9 @@ function gameLauncher() {
 		const cp = require('child_process')
 		try {
 			const child = cp.spawn(progPath, mcStore.get(gameArgsKey).split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
+			child.on('error', (err) => {
+				log.log.danger(`Game launch failed ${err}!`, 'game-launcher')
+			})
 			child.unref()
 		} catch (e) {
 			log.log.danger(`Game launch failed: ${e}`, 'game-launcher')
@@ -1968,6 +1971,9 @@ function parseGameXML(version = 22, devMode = null) {
 	})
 	
 	try {
+		if ( ! fs.existsSync(gameXMLFile) ) {
+			throw `File Not Found ${gameXMLFile}`
+		}
 		XMLString = fs.readFileSync(gameXMLFile, 'utf8')
 	} catch (e) {
 		log.log.danger(`Could not read game xml (version:${version}) ${e}`, 'game-xml')
@@ -2014,6 +2020,7 @@ function newSettingsFile(newList) {
 
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
 	// Version must be the one of the newFolder *or* the current
+	let operationFailed = false
 	const currentVersion = ( newFolder === null ) ?
 		mcStore.get('game_version', 22) :
 		modNote.get(`${modCollect.mapFolderToCollection(newFolder)}.notes_version`, 22)
@@ -2029,6 +2036,11 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 	})
 	
 	try {
+		if ( ! fs.existsSync(gameSettingsFileName) ) {
+			operationFailed = true
+			throw `File Not Found: ${gameSettingsFileName}`
+		}
+
 		XMLString       = fs.readFileSync(gameSettingsFileName, 'utf8')
 		gameSettingsXML = XMLParser.parse(XMLString)
 		overrideActive  = (gameSettingsXML.gameSettings.modsDirectoryOverride['@_active'] === 'true')
@@ -2039,20 +2051,23 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 			server   : gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] || '',
 		}
 	} catch (e) {
+		operationFailed = true
 		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
 	}
 
 	overrideIndex = ( !overrideActive ) ? '0' : modCollect.mapFolderToCollection(overrideFolder) || '999'
 
-	if ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) {
-		writeGameSettings(gameSettingsFileName, gameSettingsXML, {
-			disable    : disable,
-			newFolder  : newFolder,
-			password   : password,
-			serverName : serverName,
-			userName   : userName,
-			version    : currentVersion,
-		})
+	if ( ! operationFailed ) {
+		if ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) {
+			writeGameSettings(gameSettingsFileName, gameSettingsXML, {
+				disable    : disable,
+				newFolder  : newFolder,
+				password   : password,
+				serverName : serverName,
+				userName   : userName,
+				version    : currentVersion,
+			})
+		}
 	}
 }
 

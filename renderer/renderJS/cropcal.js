@@ -1,4 +1,10 @@
-/*eslint complexity: ["warn", 25]*/
+/*  _______           __ _______               __         __   
+   |   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+   |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+   |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+   (c) 2022-present FSG Modding.  MIT License. */
+/*eslint complexity: ["warn", 15]*/
+// Crop Calendar Rendering
 
 /* eslint-disable sort-keys */
 const knownCrops = {
