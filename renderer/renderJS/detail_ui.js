@@ -7,7 +7,7 @@
 // Detail window UI
 
 /*eslint complexity: off*/
-/* global processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple */
+/* global processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
@@ -122,6 +122,12 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 		`<img class="img-fluid" src="${modRecord.modDesc.iconImageCache}" />`,
 		modRecord.modDesc.iconImageCache
 	)
+
+	if ( typeof modRecord.modDesc.cropInfo !== 'undefined' && modRecord.modDesc.cropInfo !== false ) {
+		fsgUtil.byId('cropcal_div').classList.remove('d-none')
+		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo)
+		fsgUtil.byId('cropjson').innerHTML = JSON.stringify(modRecord.modDesc.cropInfo)
+	}
 
 	processL10N()
 })

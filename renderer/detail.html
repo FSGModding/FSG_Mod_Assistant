@@ -13,13 +13,28 @@
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/key_lookup_table.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/cropcal.js"></script>
 	<script src="renderJS/detail_ui.js"></script>
 	<style>
 		#badges>span { margin-left: 3px; }
+		.crop-row-odd { background-color: #243a43 !important; height: 1.3em;}
+		.crop-row-even { background-color: #35545e !important; height: 1.3em;}
+		.crop-row-odd.crop-col-odd { background-color: #4b656c !important; }
+		.crop-row-even.crop-col-odd { background-color: #54747e !important; }
+		.crop_plant { background-color: rgba(98, 166, 88, 0.75) !important;}
+		.crop_harvest { background-color: rgba(226, 149, 44, 0.75) !important;}
+		.crop-row-odd.crop_plant { background-color: rgba(98, 166, 88, 0.75) !important;}
+		.crop-row-odd.crop_harvest { background-color: rgba(226, 149, 44, 0.75) !important;}
+		.crop-row-even.crop_plant { background-color: rgba(98, 166, 88, 0.75) !important;}
+		.crop-row-even.crop_harvest { background-color: rgba(226, 149, 44, 0.75) !important;}
+
+		.crop-box { width: 6.5% }
+		.crophead td { background-color: #2e3537 !important;}
+		.crophead th { background-color: #2e3537 !important;}
 	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
-	<div class="container-fluid px-1 user-select-none">
+	<div class="container-fluid px-1">
 		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
 			<div class="row w-100">
 				<div class="col-7" style="-webkit-app-region: drag;">
@@ -47,6 +62,7 @@
 				</table>				
 			</div>
 		</div>
+
 		<div class="px-3 border-bottom mb-2" id="problem_div">
 			<h4><l10n name="detail_problems"></l10n></h4>
 			<div id="problems" class="w-100 mx-auto ps-5"></div>
@@ -54,6 +70,12 @@
 		<div class="px-3 border-bottom mb-2" id="desc_div">
 			<h4><l10n name="detail_description"></l10n></h4>
 			<div style="white-space: pre-wrap" class="ps-5 font-monospace mb-3" id="description"></div>
+		</div>
+		<div class="px-3 border-bottom mb-2 d-none" id="cropcal_div">
+			<h4><l10n name="cropcal_title"></l10n></h4>
+			<div class="table-responsive" id="crop-cal">
+				<table id="crop-table" class="table table-sm table-borderless"></table>
+			</div>
 		</div>
 		<div class="px-3 border-bottom mb-2" id="depend_div">
 			<h4><l10n name="detail_depend"></l10n></h4>
@@ -73,6 +95,8 @@
 			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="pngTexture"></div>
 			<h6 class="i18n mt-4 ms-4"><l10n name="detail_i3d_files"></l10n></h6>
 			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="i3dFiles"></div>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_crop_json"></l10n></h6>
+			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="cropjson"></div>
 		</div>
 	</div>
 
