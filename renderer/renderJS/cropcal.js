@@ -43,10 +43,16 @@ function makeTD(classes, text = '', isHeader = false, span = 1, rows = 1) {
 	return `<${isHeader?'th':'td'} ${rows > 1 ? `rowspan="${rows}"` :'' } ${span > 1 ? `colspan="${span}"` :'' } class="${classes.join(' ')}">${text}</${isHeader?'th':'td'}>`
 }
 
-function clientMakeCropCalendar(elementID, theData) {
+function orderLine(lineArray, isSouth) {
+	if ( isSouth ) {
+		return `${lineArray.slice(6).join('')}${lineArray.slice(0, 6).join('')}`
+	}
+	return lineArray.join('')
+}
+
+function clientMakeCropCalendar(elementID, theData, isSouth = false) {
 	const theTable      = document.getElementById(elementID)
 	const tableLines    = []
-	const theseLines    = ['', '']
 	let   evenRow       = false
 
 	tableLines.push([
@@ -58,16 +64,16 @@ function clientMakeCropCalendar(elementID, theData) {
 		'</tr>'].join('')
 	)
 
-	theseLines[0] = `${makeTD(['p-0'], '', true)}`
-	theseLines[1] = '<td></td>'
+	const monthLabels = []
 	
 	for ( const month in nameMonth ) {
-		theseLines[0] += makeTD(['p-0 text-center text-white'], `<l10n name="cropmonth_${nameMonth[month]}"></l10n>`, true)
+		monthLabels.push(makeTD(['p-0 text-center text-white'], `<l10n name="cropmonth_${nameMonth[month]}"></l10n>`, true))
 	}
-	tableLines.push(`<tr class="crophead">${theseLines[0]}</tr>`)
+
+	tableLines.push(`<tr class="crophead">${makeTD(['p-0'], '', true)}${orderLine(monthLabels, isSouth)}</tr>`)
 
 	for ( const crop of theData ) {
-		theseLines[0] = makeTD(
+		const cropNameCell = makeTD(
 			[
 				'border-info',
 				`crop-row-${ evenRow ? 'even' : 'odd' }`,
@@ -81,30 +87,32 @@ function clientMakeCropCalendar(elementID, theData) {
 			1,
 			2
 		)
-		theseLines[1] = ''
+
+		const plantLines   = []
+		const harvestLines = []
 
 		for ( let idx = 1; idx < 13; idx++ ) {
-			theseLines[0] += makeTD(
+			plantLines.push(makeTD(
 				[
 					'crop-box',
 					`crop-row-${ evenRow ? 'even' : 'odd' }`,
 					`crop-col-${idx % 2 === 0 ? 'even' : 'odd'}`,
 					crop.plantPeriods.includes(idx) ? 'crop_plant' : ''
 				]
-			)
+			))
 
-			theseLines[1] += makeTD(
+			harvestLines.push(makeTD(
 				[
 					'crop-box',
 					`crop-row-${ evenRow ? 'even' : 'odd' }`,
 					`crop-col-${idx % 2 === 0 ? 'even' : 'odd'}`,
 					crop.harvestPeriods.includes(idx) ? 'crop_harvest' : ''
 				]
-			)
+			))
 		}
 
-		tableLines.push(`<tr>${theseLines[0]}</tr>`)
-		tableLines.push(`<tr>${theseLines[1]}</tr>`)
+		tableLines.push(`<tr>${cropNameCell}${orderLine(plantLines, isSouth)}</tr>`)
+		tableLines.push(`<tr>${orderLine(harvestLines, isSouth)}</tr>`)
 		evenRow = !evenRow
 	}
 

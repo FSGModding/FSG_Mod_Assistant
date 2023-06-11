@@ -125,7 +125,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 
 	if ( typeof modRecord.modDesc.cropInfo !== 'undefined' && modRecord.modDesc.cropInfo !== false ) {
 		fsgUtil.byId('cropcal_div').classList.remove('d-none')
-		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo)
+		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false)
 		fsgUtil.byId('cropjson').innerHTML = JSON.stringify(modRecord.modDesc.cropInfo)
 	}
 
