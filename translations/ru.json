@@ -388,5 +388,7 @@
 	"croptype_sugarcane": "Сахарный тростник",
 	"croptype_sunflower": "Подсолнухи",
 	"croptype_wheat": "Пшеница",
-	"detail_crop_json": "Календарь урожая JSON (FSG Bot)"
+	"detail_crop_json": "Календарь урожая JSON (FSG Bot)",
+	"folder_added": "Добавлено",
+	"folder_used": "Последний активный"
 }

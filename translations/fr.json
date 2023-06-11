@@ -388,5 +388,7 @@
 	"croptype_sugarcane": "Canne à sucre",
 	"croptype_sunflower": "Tournesols",
 	"croptype_wheat": "Blé",
-	"detail_crop_json": "Crop Calendar JSON (FSG Bot)"
+	"detail_crop_json": "Crop Calendar JSON (FSG Bot)",
+	"folder_added": "Ajouté",
+	"folder_used": "Dernier actif"
 }

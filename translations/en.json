@@ -388,5 +388,7 @@
 	"croptype_sugarcane"                     : "Sugar Cane",
 	"croptype_sunflower"                     : "Sunflower",
 	"croptype_wheat"                         : "Wheat",
-	"detail_crop_json"                       : "Crop Calendar JSON (FSG Bot)"
+	"detail_crop_json"                       : "Crop Calendar JSON (FSG Bot)",
+	"folder_added"                           : "Added",
+	"folder_used"                            : "Last Active"
 }

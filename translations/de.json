@@ -388,5 +388,7 @@
 	"croptype_sugarcane": "Zuckerrohr",
 	"croptype_sunflower": "Sonnenblumen",
 	"croptype_wheat": "Weizen",
-	"detail_crop_json": "Erntekalender JSON (FSG Bot)"
+	"detail_crop_json": "Erntekalender JSON (FSG Bot)",
+	"folder_added": "Hinzugefügt",
+	"folder_used": "Zuletzt aktiv"
 }

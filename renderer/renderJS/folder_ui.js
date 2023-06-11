@@ -10,6 +10,7 @@
 
 let lastScroll = null
 
+
 window.mods.receive('fromMain_getFolders', (modCollect) => {
 	let   folderNum       = 0
 	const localFolderList = []
@@ -18,10 +19,12 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 	for ( const collectKey of modCollect.set_Collections ) {
 		localFolderList.push(makeFolderLine(
 			{
-				multiVer   : modCollect.appSettings.multi_version,
 				collectKey : collectKey,
-				pathRel    : modCollect.collectionToFolderRelative[collectKey],
+				dateAdd    : getPrintDate(modCollect.collectionNotes[collectKey].notes_add_date),
+				dateUsed   : getPrintDate(modCollect.collectionNotes[collectKey].notes_last),
+				multiVer   : modCollect.appSettings.multi_version,
 				name       : modCollect.collectionToName[collectKey],
+				pathRel    : modCollect.collectionToFolderRelative[collectKey],
 				tag        : modCollect.collectionNotes[collectKey].notes_tagline,
 				version    : modCollect.collectionNotes[collectKey].notes_version,
 			},
@@ -43,6 +46,14 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 	} catch { /* ignore */ }
 })
 
+function getPrintDate(textDate) {
+	const year2000 = 949381200000
+	const date = typeof textDate === 'string' ? new Date(Date.parse(textDate)) : textDate
+
+	if ( date < year2000 ) { return '<l10n name="mh_unknown"></l10n>'}
+
+	return `<span class="text-body-emphasis">${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}</span>`
+}
 function moveBtn(icon, num, dest, disable) {
 	return `<button onclick="clientMoveItem(${num}, ${dest})" class="btn btn-sm btn-outline-secondary ${disable?'disabled':''}"><l10n name="${icon}"></l10n></button>`
 }
@@ -53,6 +64,8 @@ const dnBtn = (num, last, disable) => `${moveBtn('folder_down_button', num, num+
 
 const makeFolderLine = (details, num, last) => fsgUtil.useTemplate('folder_line', {
 	collectKey  : details.collectKey,
+	dateAdd     : details.dateAdd,
+	dateUsed    : details.dateUsed,
 	downButtons : dnBtn(num, last, num === last),
 	name        : details.name,
 	pathRel     : details.pathRel,

@@ -624,7 +624,7 @@ function createNamedWindow(winName, windowArgs) {
 }
 
 /* eslint-disable sort-keys */
-const subWindowDev = new Set(['import', 'save', 'find', 'detail', 'notes', 'version', 'resolve', 'gamelog'])
+const subWindowDev = new Set(['import', 'save', 'find', 'detail', 'notes', 'version', 'resolve', 'gamelog', 'folder'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -949,6 +949,7 @@ ipcMain.on('toMain_addFolder', () => {
 				mcStore.set('modFolders', Array.from(modFolders))
 				const thisFolderCollectKey = modCollect.getFolderHash(result.filePaths[0])
 				modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
+				modNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
 				processModFolders(result.filePaths[0])
 			} else {
 				log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
@@ -2063,6 +2064,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 
 	if ( ! operationFailed ) {
 		if ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) {
+			modNote.set(`${modCollect.mapFolderToCollection(newFolder)}.notes_last`, new Date())
 			writeGameSettings(gameSettingsFileName, gameSettingsXML, {
 				disable    : disable,
 				newFolder  : newFolder,

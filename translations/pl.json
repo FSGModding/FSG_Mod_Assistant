@@ -388,5 +388,7 @@
 	"croptype_sugarcane": "Trzcina cukrowa",
 	"croptype_sunflower": "Słoneczniki",
 	"croptype_wheat": "Pszenica",
-	"detail_crop_json": "Kalendarz upraw JSON (FSG Bot)"
+	"detail_crop_json": "Kalendarz upraw JSON (FSG Bot)",
+	"folder_added": "Dodano",
+	"folder_used": "Ostatni aktywny"
 }

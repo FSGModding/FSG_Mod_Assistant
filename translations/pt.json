@@ -388,5 +388,7 @@
 	"croptype_sugarcane": "Cana-de-açucar",
 	"croptype_sunflower": "Girassóis",
 	"croptype_wheat": "Trigo",
-	"detail_crop_json": "Calendário das culturas JSON (FSG Bot)"
+	"detail_crop_json": "Calendário das culturas JSON (FSG Bot)",
+	"folder_added": "Adicionado",
+	"folder_used": "Último activo"
 }

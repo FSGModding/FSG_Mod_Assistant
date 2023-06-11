@@ -388,5 +388,7 @@
 	"croptype_sugarcane": "Suiker riet",
 	"croptype_sunflower": "Zonnebloem",
 	"croptype_wheat": "Tarwe",
-	"detail_crop_json": "Gewas kalender JSON (FSG Bot)"
+	"detail_crop_json": "Gewas kalender JSON (FSG Bot)",
+	"folder_added": "Toegevoegd",
+	"folder_used": "Laatst actief"
 }

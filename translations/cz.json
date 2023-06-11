@@ -388,5 +388,7 @@
 	"croptype_sugarcane": "Cukrová třtina",
 	"croptype_sunflower": "Slunečnice",
 	"croptype_wheat": "Pšenice",
-	"detail_crop_json": "Kalendář plodin JSON (FSG Bot)"
+	"detail_crop_json": "Kalendář plodin JSON (FSG Bot)",
+	"folder_added": "Přidáno",
+	"folder_used": "Poslední aktivní"
 }
