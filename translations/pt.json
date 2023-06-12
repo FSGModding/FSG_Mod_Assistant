@@ -390,5 +390,13 @@
 	"croptype_wheat": "Trigo",
 	"detail_crop_json": "Calendário das culturas JSON (FSG Bot)",
 	"folder_added": "Adicionado",
-	"folder_used": "Último activo"
+	"folder_used": "Último activo",
+	"look_detail_button": "Ver detalhes da loja",
+	"look_diesel": "O artigo é movido a gasóleo",
+	"look_electric": "O artigo é eléctrico",
+	"look_methane": "Item é movido a metano",
+	"look_has_lights": "O artigo tem luzes",
+	"look_has_beacons": "O item tem balizas",
+	"look_has_paint": "O item tem opções de pintura",
+	"look_has_wheels": "O artigo tem opções de rodas"
 }

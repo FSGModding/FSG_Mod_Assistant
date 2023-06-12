@@ -29,7 +29,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 		mod_location   : modRecord.fileDetail.fullPath,
 		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 )  ? modRecord.fileDetail.pngTexture.join('\n')  : getText('detail_extra_clean')),
 		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 )  ? modRecord.fileDetail.spaceFiles.join('\n')  : getText('detail_extra_clean')),
-		store_items    : checkX(modRecord.modDesc.storeItems),
+		store_items    : `${modRecord.modDesc.storeItems > 0 ? makeStoreButton(modRecord) : ''} ${checkX(modRecord.modDesc.storeItems)}`,
 		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
 		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
 	}
@@ -131,6 +131,10 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 
 	processL10N()
 })
+
+function makeStoreButton(modRecord) {
+	return `<button onclick="window.mods.lookInMod('${modRecord.colUUID}')" class="btn btn-vsm btn-primary"><l10n name="look_detail_button"></l10n></button>`
+}
 
 function checkX(amount, showCount = true) {
 	let returner = ''

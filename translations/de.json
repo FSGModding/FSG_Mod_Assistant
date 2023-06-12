@@ -390,5 +390,13 @@
 	"croptype_wheat": "Weizen",
 	"detail_crop_json": "Erntekalender JSON (FSG Bot)",
 	"folder_added": "Hinzugefügt",
-	"folder_used": "Zuletzt aktiv"
+	"folder_used": "Zuletzt aktiv",
+	"look_detail_button": "Siehe Shop-Details",
+	"look_diesel": "Artikel ist dieselbetrieben",
+	"look_electric": "Artikel ist elektrisch betrieben",
+	"look_methane": "Artikel wird mit Methan betrieben",
+	"look_has_lights": "Artikel hat Lichter",
+	"look_has_beacons": "Gegenstand hat Baken",
+	"look_has_paint": "Artikel hat eine Auswahl an Farben",
+	"look_has_wheels": "Artikel hat Radwahlmöglichkeiten"
 }

@@ -174,6 +174,7 @@ for ( const testPath of pathGuesses ) {
 }
 
 const { modFileCollection } = require('./lib/modCheckLib.js')
+const { modLooker }         = require('./lib/modLookerLib.js')
 
 const winDef = (w, h) => { return {
 	additionalProperties : false,
@@ -249,6 +250,7 @@ const settingsSchema = {
 		gamelog       : winDef(1000, 500),
 		import        : winDef(750, 500),
 		load          : winDef(600, 300),
+		looker        : winDef(800, 500),
 		main          : winDef(1000, 700),
 		notes         : winDef(800, 500),
 		prefs         : winDef(800, 500),
@@ -312,6 +314,7 @@ const windows = {
 	gamelog : null,
 	import  : null,
 	load    : null,
+	looker  : null,
 	main    : null,
 	notes   : null,
 	prefs   : null,
@@ -624,7 +627,7 @@ function createNamedWindow(winName, windowArgs) {
 }
 
 /* eslint-disable sort-keys */
-const subWindowDev = new Set(['import', 'save', 'find', 'detail', 'notes', 'version', 'resolve', 'gamelog', 'folder'])
+const subWindowDev = new Set(['import', 'save', 'find', 'looker', 'notes', 'version', 'resolve', 'gamelog', 'folder'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -696,6 +699,14 @@ const subWindows   = {
 		HTMLFile        : 'detail.html',
 		subWindowArgs   : { parent : 'main', preload : 'detailWindow' },
 		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_modRecord', 'detail', false) },
+		refocusCallback : true,
+		handleURLinWin  : true,
+	},
+	looker : {
+		winName         : 'looker',
+		HTMLFile        : 'looker.html',
+		subWindowArgs   : { parent : 'main', preload : 'lookerWindow' },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_modRecord', 'looker', false) },
 		refocusCallback : true,
 		handleURLinWin  : true,
 	},
@@ -1174,6 +1185,26 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 /** Detail window operation */
 ipcMain.on('toMain_openModDetail', (event, thisMod) => { createNamedWindow('detail', {selected : modCollect.modColUUIDToRecord(thisMod) }) })
+ipcMain.on('toMain_lookInMod', (event, thisMod) => {
+	const thisModRecord = modCollect.modColUUIDToRecord(thisMod)
+	
+	const thisModLook = new modLooker(
+		thisModRecord,
+		modCollect.modColUUIDToFolder(thisMod),
+		log,
+		myTranslator.currentLocale
+	)
+
+	thisModLook.getInfo().then((results) => {
+		createNamedWindow(
+			'looker', {
+				selected : modCollect.modColUUIDToRecord(thisMod),
+				look     : results,
+			})
+	})
+	
+})
+
 /** END: Detail window operation */
 
 /** Changelog window operation */

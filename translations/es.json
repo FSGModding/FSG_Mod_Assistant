@@ -390,5 +390,13 @@
 	"croptype_wheat": "Trigo",
 	"detail_crop_json": "Crop Calendar JSON (FSG Bot)",
 	"folder_added": "Añadido",
-	"folder_used": "Último activo"
+	"folder_used": "Último activo",
+	"look_detail_button": "Ver detalles de la tienda",
+	"look_diesel": "El artículo es diesel",
+	"look_electric": "El artículo es eléctrico",
+	"look_methane": "El artículo funciona con metano",
+	"look_has_lights": "El artículo tiene luces",
+	"look_has_beacons": "El artículo tiene balizas",
+	"look_has_paint": "El artículo tiene opciones de pintura",
+	"look_has_wheels": "El artículo tiene opciones de rueda"
 }

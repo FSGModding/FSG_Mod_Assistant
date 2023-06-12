@@ -390,5 +390,13 @@
 	"croptype_wheat": "Pszenica",
 	"detail_crop_json": "Kalendarz upraw JSON (FSG Bot)",
 	"folder_added": "Dodano",
-	"folder_used": "Ostatni aktywny"
+	"folder_used": "Ostatni aktywny",
+	"look_detail_button": "Zobacz szczegóły sklepu",
+	"look_diesel": "Przedmiot jest napędzany silnikiem wysokoprężnym",
+	"look_electric": "Przedmiot jest zasilany elektrycznie",
+	"look_methane": "Przedmiot jest zasilany metanem",
+	"look_has_lights": "Przedmiot ma światła",
+	"look_has_beacons": "Przedmiot ma sygnały nawigacyjne",
+	"look_has_paint": "Przedmiot ma opcje malowania",
+	"look_has_wheels": "Przedmiot ma wybór kół"
 }

@@ -7,10 +7,15 @@
 // Test Program
 /* eslint no-console: off */
 
+const isFolder = false
 const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\~test_mods\\'
-// const modName  = 'FS22_RedBarnPack'
+// const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
+const modName  = 'FS22_RedBarnPack'
 // const modName  = 'FSG_eTractors_Pack'
-const modName  = 'FS22_AnhydrousAmmoniaPack'
+// const modName  = 'FSG_Color_Pack'
+// const modName  = 'FS22_precisionFarming'
+// const modName  = 'FS22_AnhydrousAmmoniaPack'
+// const modName = 'FS22_AirFlex_Series'
 
 const { ma_logger }         = require('../lib/ma-logger.js')
 const { modLooker }         = require('../lib/modLookerLib.js')
@@ -19,9 +24,9 @@ const path = require('path')
 const looker = new modLooker(
 	{
 		fileDetail : {
-			fullPath  : path.join(fullPath, `${modName}`),
+			fullPath  : path.join(fullPath, `${modName}${isFolder===true?'':'.zip'}`),
 			imageDDS  : [],
-			isFolder  : true,
+			isFolder  : isFolder,
 			shortName : modName,
 		},
 	},

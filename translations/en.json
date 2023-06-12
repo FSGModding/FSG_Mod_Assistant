@@ -390,5 +390,14 @@
 	"croptype_wheat"                         : "Wheat",
 	"detail_crop_json"                       : "Crop Calendar JSON (FSG Bot)",
 	"folder_added"                           : "Added",
-	"folder_used"                            : "Last Active"
+	"folder_used"                            : "Last Active",
+
+	"look_detail_button" : "See Store Details",
+	"look_diesel"        : "Item is Diesel Powered",
+	"look_electric"      : "Item is Electric Powered",
+	"look_methane"       : "Item is Methane Powered",
+	"look_has_lights"    : "Item has lights",
+	"look_has_beacons"   : "Item has beacons",
+	"look_has_paint"     : "Item has paint choices",
+	"look_has_wheels"    : "Item has wheel choices"
 }

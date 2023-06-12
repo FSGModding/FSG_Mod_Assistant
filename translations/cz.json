@@ -390,5 +390,13 @@
 	"croptype_wheat": "Pšenice",
 	"detail_crop_json": "Kalendář plodin JSON (FSG Bot)",
 	"folder_added": "Přidáno",
-	"folder_used": "Poslední aktivní"
+	"folder_used": "Poslední aktivní",
+	"look_detail_button": "Viz podrobnosti o obchodě",
+	"look_diesel": "Položka je poháněna naftou",
+	"look_electric": "Položka je poháněna elektřinou",
+	"look_methane": "Položka je poháněna metanem",
+	"look_has_lights": "Položka má světla",
+	"look_has_beacons": "Položka má majáky",
+	"look_has_paint": "Položka má možnost výběru barvy",
+	"look_has_wheels": "Položka má volbu kola"
 }

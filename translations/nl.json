@@ -390,5 +390,13 @@
 	"croptype_wheat": "Tarwe",
 	"detail_crop_json": "Gewas kalender JSON (FSG Bot)",
 	"folder_added": "Toegevoegd",
-	"folder_used": "Laatst actief"
+	"folder_used": "Laatst actief",
+	"look_detail_button": "Winkelgegevens bekijken",
+	"look_diesel": "Item is Diesel Powered",
+	"look_electric": "Item wordt elektrisch aangedreven",
+	"look_methane": "Item wordt aangedreven door methaan",
+	"look_has_lights": "Item heeft lampjes",
+	"look_has_beacons": "Item heeft bakens",
+	"look_has_paint": "Item heeft verfkeuzes",
+	"look_has_wheels": "Item heeft wielkeuzes"
 }

@@ -390,5 +390,13 @@
 	"croptype_wheat": "Пшеница",
 	"detail_crop_json": "Календарь урожая JSON (FSG Bot)",
 	"folder_added": "Добавлено",
-	"folder_used": "Последняя активность"
+	"folder_used": "Последняя активность",
+	"look_detail_button": "Смотрите подробности о магазине",
+	"look_diesel": "Товар работает на дизельном топливе",
+	"look_electric": "Товар работает от электричества",
+	"look_methane": "Предмет работает на метане",
+	"look_has_lights": "У товара есть освещение",
+	"look_has_beacons": "У предмета есть маячки",
+	"look_has_paint": "У элемента есть выбор краски",
+	"look_has_wheels": "У изделия есть выбор колес"
 }

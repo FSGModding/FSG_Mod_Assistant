@@ -2285,6 +2285,7 @@ __metadata:
     fast-xml-parser: ^4.2.4
     glob: ^10.2.7
     jpeg-js: ^0.4.4
+    pngjs: ^7.0.0
     semver: ^7.5.1
     unzip-stream: ^0.3.1
     xml2js: ^0.6.0
@@ -3563,6 +3564,13 @@ __metadata:
     base64-js: ^1.5.1
     xmlbuilder: ^15.1.1
   checksum: e21390fab8a3c388f8f51b76c0aa187242a40537119ce865d8637630e7d7df79b21f841ec6a4668e7c68d409a6f584d696619099a6125d28011561639c0823b8
+  languageName: node
+  linkType: hard
+
+"pngjs@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "pngjs@npm:7.0.0"
+  checksum: b19a018930d27de26229c1b3ff250b3a25d09caa22cbb0b0459987d91eb0a560a18ab5d67da45a38ed7514140f26d1db58de83c31159ec101f2bb270a3c707f1
   languageName: node
   linkType: hard
 

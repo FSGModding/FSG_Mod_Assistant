@@ -390,5 +390,13 @@
 	"croptype_wheat": "Blé",
 	"detail_crop_json": "Crop Calendar JSON (FSG Bot)",
 	"folder_added": "Ajouté",
-	"folder_used": "Dernier actif"
+	"folder_used": "Dernier actif",
+	"look_detail_button": "Voir les détails du magasin",
+	"look_diesel": "L'article est alimenté par un moteur diesel",
+	"look_electric": "L'article est alimenté par l'électricité",
+	"look_methane": "L'objet est alimenté au méthane",
+	"look_has_lights": "L'article a des lumières",
+	"look_has_beacons": "L'objet a des balises",
+	"look_has_paint": "L'élément a des choix de peinture",
+	"look_has_wheels": "L'article a des choix de roues"
 }
