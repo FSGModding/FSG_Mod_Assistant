@@ -30,7 +30,7 @@ for ( const thisFile of fileList ) {
 	XMLParser.parseString(langContent, (err, result) => {
 		if ( err === null ) {
 			for ( const thisEntry of result.l10n.elements[0].e ) {
-				if ( thisEntry.$.K.startsWith('typeDesc_') || thisEntry.$.K.startsWith('function_')) {
+				if ( thisEntry.$.K.startsWith('typeDesc_') || thisEntry.$.K.startsWith('function_') || thisEntry.$.K.startsWith('info_transmission_') ) {
 					outputStruct[langCode][thisEntry.$.K] = thisEntry.$.V
 				}
 			}
