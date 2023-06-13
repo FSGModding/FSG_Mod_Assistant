@@ -391,12 +391,12 @@
 	"detail_crop_json": "Gewas kalender JSON (FSG Bot)",
 	"folder_added": "Toegevoegd",
 	"folder_used": "Laatst actief",
-	"look_detail_button": "Winkelgegevens bekijken",
-	"look_diesel": "Item is Diesel Powered",
-	"look_electric": "Item wordt elektrisch aangedreven",
-	"look_methane": "Item wordt aangedreven door methaan",
-	"look_has_lights": "Item heeft lampjes",
-	"look_has_beacons": "Item heeft bakens",
-	"look_has_paint": "Item heeft verfkeuzes",
-	"look_has_wheels": "Item heeft wielkeuzes"
+	"look_detail_button": "Bekijk winkel details",
+	"look_diesel": "Item is aangedreven door een diesel",
+	"look_electric": "Item is aangedreven door elektriciteit",
+	"look_methane": "Item is aangedreven door Methaan",
+	"look_has_lights": "Item heeft lampen",
+	"look_has_beacons": "Item bevat bakens",
+	"look_has_paint": "Item heeft lak keuzes",
+	"look_has_wheels": "Item heeft wiel keuzes"
 }
