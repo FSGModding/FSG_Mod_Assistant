@@ -33,8 +33,9 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 					brandImage = `img/brand/brand_${thisItem.brand.toLowerCase()}.png`
 				}
 			}
-			
+
 			const maxSpeed = typeof parseInt(thisItem.specs.maxspeed) !== 'undefined' ? parseInt(thisItem.specs.maxspeed) : 0
+
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
 				brandIMG          : fsgUtil.iconMaker(brandImage),
@@ -47,7 +48,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 				maxSpeed          : `${maxSpeed} kph / ${Math.trunc(maxSpeed * 0.621371)} mph`,
 				price             : Intl.NumberFormat(modCollect.currentLocale).format(thisItem.price),
 				show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
-				show_electric     : shouldHide(thisItem.fuelType, 'electricCharge'),
+				show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
 				show_enginePower  : shouldHide(thisItem.specs.power),
 				show_fillUnit     : thisItem.fillLevel > 0 ? ''                                                                                                                                 : 'd-none',
 				show_hasBeacons   : shouldHide(thisItem.hasBeacons),
@@ -61,7 +62,8 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 				show_weight       : shouldHide(thisItem.weight),
 				show_workWidth    : shouldHide(thisItem.specs.workingwidth),
 				transmission      : thisItem.transType,
-				weight            : `${Intl.NumberFormat(modCollect.currentLocale).format(thisItem.weight)} kg / ${Intl.NumberFormat(modCollect.currentLocale).format(thisItem.weight/1000)} t`,
+				typeDesc          : thisItem.typeDesc,
+				weight            : `${Intl.NumberFormat(modCollect.currentLocale).format(thisItem.weight)} kg / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thisItem.weight/100)/10)} t`,
 				workWidth         : thisItem.specs.workingwidth,
 			}))
 		}
@@ -89,7 +91,7 @@ function shouldHide(item, wanted = null) {
 	if ( typeof item === 'undefined' || item === null || item === false || item === '' ) {
 		return 'd-none'
 	}
-	if ( wanted !== null && item !== wanted ) {
+	if ( wanted !== null && item.toLowerCase() !== wanted.toLowerCase() ) {
 		return 'd-none'
 	}
 	return ''

@@ -39,7 +39,13 @@
 
 <template id="vehicle_div">
 	<div class="card mb-3">
-		<h5 class="card-header">{{itemName}} <small class="fst-italic fw-normal">{{itemTitle}}</small></h5>
+		<h5 class="card-header">
+			{{itemName}}
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic">{{typeDesc}}</small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic fw-normal">{{itemTitle}}</small>
+		</h5>
 		<div class="card-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">

@@ -8,11 +8,11 @@
 /* eslint no-console: off */
 
 const isFolder = false
-const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\~test_mods\\'
-// const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
+// const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\~test_mods\\'
+const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
 // const modName  = 'FS22_RedBarnPack'
 // const modName  = 'FS22_Large_Pole_Barn'
-const modName  = 'FS22_CaseTitanPack'
+const modName  = 'FS22_LimeAndSugarbeetCutProduction'
 // const modName  = 'FSG_eTractors_Pack'
 // const modName  = 'FSG_Color_Pack'
 // const modName  = 'FS22_precisionFarming'
