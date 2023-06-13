@@ -59,6 +59,7 @@
       "!/img_src/*",
       "!/renderer/inc/src/*"
     ],
+    "extraFiles": ["texconv.exe"],
     "win": {
       "target": [
         "nsis",

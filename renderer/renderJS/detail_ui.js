@@ -133,7 +133,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 })
 
 function makeStoreButton(modRecord) {
-	return `<button onclick="window.mods.lookInMod('${modRecord.colUUID}')" class="btn btn-vsm btn-primary"><l10n name="look_detail_button"></l10n></button>`
+	return ( modRecord.gameVersion < 22 || (typeof modRecord.modDesc.cropInfo !== 'undefined' && modRecord.modDesc.cropInfo !== false) ) ? '' : `<button onclick="window.mods.lookInMod('${modRecord.colUUID}')" class="btn btn-vsm btn-primary"><l10n name="look_detail_button"></l10n></button>`
 }
 
 function checkX(amount, showCount = true) {

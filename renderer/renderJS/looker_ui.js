@@ -73,6 +73,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 				itemName          : thisItem.name,
 				itemTitle         : thisItem.type,
 				price             : Intl.NumberFormat(modCollect.currentLocale).format(thisItem.price),
+				show_hasPaint     : shouldHide(thisItem.hasColor),
 			}))
 		}
 

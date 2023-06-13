@@ -10,7 +10,8 @@
 const isFolder = false
 const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\~test_mods\\'
 // const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
-const modName  = 'FS22_RedBarnPack'
+// const modName  = 'FS22_RedBarnPack'
+const modName  = 'FS22_Large_Pole_Barn'
 // const modName  = 'FSG_eTractors_Pack'
 // const modName  = 'FSG_Color_Pack'
 // const modName  = 'FS22_precisionFarming'
@@ -22,6 +23,8 @@ const { modLooker }         = require('../lib/modLookerLib.js')
 const path = require('path')
 
 const looker = new modLooker(
+	path.join(process.cwd(), '..', 'texconv.exe'),
+	process.cwd(),
 	{
 		fileDetail : {
 			fullPath  : path.join(fullPath, `${modName}${isFolder===true?'':'.zip'}`),
@@ -33,7 +36,7 @@ const looker = new modLooker(
 	fullPath,
 	new ma_logger('multi-test'),
 	'ru',
-	true
+	false
 )
 
 looker.getInfo().then((result) => {

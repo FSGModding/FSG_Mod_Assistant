@@ -125,6 +125,9 @@ const hubVerURL     = 'https://jtsage.dev/modHubVersion.json'
 const trayIcon      = !app.isPackaged
 	? path.join(app.getAppPath(), 'renderer', 'img', 'icon.ico')
 	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
+const convertPath   = !app.isPackaged
+	? path.join(app.getAppPath(), 'texconv.exe')
+	: path.join(process.resourcesPath, 'texconv.exe')
 
 let pathBestGuess = userHome
 let foundGame     = ''
@@ -1189,6 +1192,8 @@ ipcMain.on('toMain_lookInMod', (event, thisMod) => {
 	const thisModRecord = modCollect.modColUUIDToRecord(thisMod)
 	
 	const thisModLook = new modLooker(
+		convertPath,
+		app.getPath('temp'),
 		thisModRecord,
 		modCollect.modColUUIDToFolder(thisMod),
 		log,
