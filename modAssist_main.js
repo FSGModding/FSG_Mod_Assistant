@@ -630,7 +630,7 @@ function createNamedWindow(winName, windowArgs) {
 }
 
 /* eslint-disable sort-keys */
-const subWindowDev = new Set(['import', 'save', 'find', 'looker', 'notes', 'version', 'resolve', 'gamelog', 'folder'])
+const subWindowDev = new Set(['import', 'save', 'find', 'notes', 'version', 'resolve', 'gamelog', 'folder'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
