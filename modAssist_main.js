@@ -1240,15 +1240,36 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		{ label : myTranslator.syncStringLookup('context_mod_detail'), click : () => {
 			createNamedWindow('detail', {selected : thisMod})
 		}},
-		{ type : 'separator' },
-		{ label : myTranslator.syncStringLookup('open_folder'), click : () => {
-			const thisCollectionFolder = modCollect.mapCollectionToFolder(modID.split('--')[0])
-
-			if ( thisMod !== null ) {
-				shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
-			}
-		}}
 	]
+
+	if ( thisMod.gameVersion > 19 && thisMod.modDesc.storeItems > 0 && (typeof thisMod.modDesc.cropInfo === 'undefined' || thisMod.modDesc.cropInfo === false)) {
+		template.push({ label : myTranslator.syncStringLookup('look_detail_button'), click : () => {
+			const thisModLook = new modLooker(
+				convertPath,
+				app.getPath('temp'),
+				thisMod,
+				modCollect.modColUUIDToFolder(modID),
+				log,
+				myTranslator.currentLocale
+			)
+
+			thisModLook.getInfo().then((results) => {
+				createNamedWindow( 'looker', {
+					selected : thisMod,
+					look     : results,
+				})
+			})
+		}})
+	}
+
+	template.push({ type : 'separator' })
+	template.push({ label : myTranslator.syncStringLookup('open_folder'), click : () => {
+		const thisCollectionFolder = modCollect.mapCollectionToFolder(modID.split('--')[0])
+
+		if ( thisMod !== null ) {
+			shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
+		}
+	}})
 	
 	if ( thisMod.modHub.id !== null ) {
 		template.push({ label : myTranslator.syncStringLookup('open_hub'), click : () => {
