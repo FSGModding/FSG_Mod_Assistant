@@ -486,7 +486,9 @@ function clientDragOut(e) {
 	e.preventDefault()
 	e.stopPropagation()
 
-	for ( const thisPath of e.path ) {
+	const thePath = e.composedPath()
+
+	for ( const thisPath of thePath ) {
 		if ( thisPath.nodeName === 'TR' ) {
 			window.mods.dragOut(thisPath.id)
 			break
@@ -550,10 +552,11 @@ function clientDragEnter(e) {
 		const addFolder = fsgUtil.byId('drag_add_folder')
 		const addFile   = fsgUtil.byId('drag_add_file')
 		let   thisID    = e.target.id
+		const thePath   = e.composedPath()
 
 		if ( thisID !== 'drag_add_folder' && thisID !== 'drag_add_file' ) {
-			if ( e.path.includes(addFolder) ) { thisID = 'drag_add_folder' }
-			if ( e.path.includes(addFile) )   { thisID = 'drag_add_file' }
+			if ( thePath.includes(addFolder) ) { thisID = 'drag_add_folder' }
+			if ( thePath.includes(addFile) )   { thisID = 'drag_add_file' }
 		}
 		if ( thisID === 'drag_add_folder' ) {
 			addFolder.classList.add('bg-primary')
