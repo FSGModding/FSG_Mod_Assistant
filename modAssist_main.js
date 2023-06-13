@@ -127,7 +127,7 @@ const trayIcon      = !app.isPackaged
 	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
 const convertPath   = !app.isPackaged
 	? path.join(app.getAppPath(), 'texconv.exe')
-	: path.join(process.resourcesPath, 'texconv.exe')
+	: path.join(process.resourcesPath, '..', 'texconv.exe')
 
 let pathBestGuess = userHome
 let foundGame     = ''
