@@ -19,6 +19,7 @@ const patternToInclude = [
 	'function_',
 	'info_transmission_',
 	'fillType_',
+	'shopItem_',
 ]
 
 for ( const thisFile of fileList ) {

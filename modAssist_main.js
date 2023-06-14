@@ -253,7 +253,7 @@ const settingsSchema = {
 		gamelog       : winDef(1000, 500),
 		import        : winDef(750, 500),
 		load          : winDef(600, 300),
-		looker        : winDef(800, 500),
+		looker        : winDef(800, 650),
 		main          : winDef(1000, 700),
 		notes         : winDef(800, 500),
 		prefs         : winDef(800, 500),

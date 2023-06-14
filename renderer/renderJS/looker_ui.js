@@ -21,6 +21,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
 
 	const storeItemsHTML = []
+
 	for ( const storeitem in modCollect.opts.look.items ) {
 		const thisItem = modCollect.opts.look.items[storeitem]
 
