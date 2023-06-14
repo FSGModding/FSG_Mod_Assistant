@@ -11,7 +11,7 @@ const path       = require('path')
 const fs         = require('fs')
 
 const { ma_logger }             = require('../lib/ma-logger.js')
-const { saveFileChecker }       = require('../lib/savegame-parser.js')
+const { saveFileChecker }       = require('../lib/modCheckLib.js')
 
 const logger = new ma_logger('saveTest')
 

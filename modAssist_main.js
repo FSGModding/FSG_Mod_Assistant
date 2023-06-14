@@ -176,7 +176,7 @@ for ( const testPath of pathGuesses ) {
 	}
 }
 
-const { modFileCollection, modLooker } = require('./lib/modCheckLib.js')
+const { modFileCollection, modLooker, saveFileChecker } = require('./lib/modCheckLib.js')
 
 const { ddsDecoder }        = require('./lib/ddsLibrary.js')
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
@@ -279,8 +279,6 @@ const siteMigrate = {
 const Store   = require('electron-store')
 const unzip   = require('unzip-stream')
 const makeZip = require('archiver')
-
-const { saveFileChecker } = require('./lib/savegame-parser.js')
 
 const mcStore = new Store({schema : settingsSchema, migrations : settingsMig, clearInvalidConfig : true })
 const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
