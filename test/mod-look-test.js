@@ -20,7 +20,7 @@ const modName  = 'FS22_LimeAndSugarbeetCutProduction'
 // const modName = 'FS22_AirFlex_Series'
 
 const { ma_logger }         = require('../lib/ma-logger.js')
-const { modLooker }         = require('../lib/modLookerLib.js')
+const { modLooker }         = require('../lib/modCheckLib.js')
 const path = require('path')
 
 const looker = new modLooker(

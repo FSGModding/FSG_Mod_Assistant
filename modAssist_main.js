@@ -22,7 +22,7 @@ const fs              = require('fs')
 
 const devDebug      = !(app.isPackaged)
 const devTools      = true && !(app.isPackaged)
-const skipCache     = false && !(app.isPackaged)
+const skipCache     = true && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 let updaterInterval = null
 
@@ -176,8 +176,10 @@ for ( const testPath of pathGuesses ) {
 	}
 }
 
-const { modFileCollection } = require('./lib/modCheckLib.js')
-const { modLooker }         = require('./lib/modLookerLib.js')
+const { modFileCollection, modLooker } = require('./lib/modCheckLib.js')
+
+const { ddsDecoder }        = require('./lib/ddsLibrary.js')
+const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
 
 const winDef = (w, h) => { return {
 	additionalProperties : false,
@@ -286,6 +288,7 @@ const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 const modSite = new Store({name : 'mod_source_site', migrations : siteMigrate, clearInvalidConfig : true})
 
 const modCollect = new modFileCollection(
+	iconParser,
 	log,
 	modNote,
 	maCache,
@@ -1198,8 +1201,7 @@ ipcMain.on('toMain_lookInMod', (event, thisMod) => {
 	}
 	
 	const thisModLook = new modLooker(
-		convertPath,
-		app.getPath('temp'),
+		iconParser,
 		thisModRecord,
 		modCollect.modColUUIDToFolder(thisMod),
 		log,
@@ -1257,8 +1259,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 				loadingWindow_noCount()
 			}
 			const thisModLook = new modLooker(
-				convertPath,
-				app.getPath('temp'),
+				iconParser,
 				thisMod,
 				modCollect.modColUUIDToFolder(modID),
 				log,
@@ -2457,6 +2458,9 @@ app.whenReady().then(() => {
 		createMainWindow()
 
 		app.on('activate', () => {if (BrowserWindow.getAllWindows().length === 0) { createMainWindow() } })
+		app.on('quit', () => {
+			iconParser.clearTemp()
+		})
 	}
 })
 

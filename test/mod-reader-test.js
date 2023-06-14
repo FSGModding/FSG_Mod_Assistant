@@ -15,6 +15,9 @@ const testPath   = path.join(__dirname, 'testMods')
 const { ma_logger }         = require('../lib/ma-logger.js')
 const { modFileCollection } = require('../lib/modCheckLib.js')
 
+const { ddsDecoder }        = require('../lib/ddsLibrary.js')
+
+
 
 
 console.log('FSG Mod Assistant : Test Mod Reader')
@@ -23,7 +26,9 @@ console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n')
 let exitCode = 0
 
 const logger     = new ma_logger('multi-test')
+const iconParser = new ddsDecoder(path.join(__dirname, 'texconv.exe'), os.tmpdir(), logger)
 const modCollect = new modFileCollection(
+	iconParser,
 	logger,
 	{ get : () => { return '' }, store : {} },
 	{ store : {} },
@@ -71,3 +76,5 @@ modCollect.processPromise.then(() => {
 	}
 	console.log(`\n\nExiting with code ${exitCode}\n`)
 })
+
+iconParser.clearTemp()
