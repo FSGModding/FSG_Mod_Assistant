@@ -10,6 +10,8 @@ In the top section, you will find the mod Title, Author, current version, curren
 
 ![overview](img/moddetail-001.png)
 
+Click `See Store Details` to bring up the [Store Detail](storeitem.html) page
+
 ## Description
 
 The next section contains the text of the modDesc.xml file, the information shown on the modhub

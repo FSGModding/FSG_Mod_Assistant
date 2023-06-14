@@ -29,6 +29,7 @@ Please note that this documentation is auto-generated, and may refer to a newer 
 - [Version Check](versions.html)
 - [Search All Collections](search.html)
 - [Detail Window](moddetail.html)
+- [Store Detail](storeitem.html)
 - [User Preferences](preferences.html)
 - [Game Log Viewer](gamelog.html)
 - [Multiple Game Version Mode](multi-version.html)
