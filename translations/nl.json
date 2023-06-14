@@ -410,6 +410,6 @@
 	"unit_l": "l",
 	"unit_m3"            : "m³",
 	"unit_ft3"           : "ft³",
-	"loading_look_subtitle": "Please wait, this could take a few seconds",
-	"loading_look_title": "Processing Store Items"
+	"loading_look_subtitle": "Even geduld, dit kan enkele seconden duren",
+	"loading_look_title": "Winkelitems verwerken"
 }

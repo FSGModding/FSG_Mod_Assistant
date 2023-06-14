@@ -410,6 +410,6 @@
 	"unit_l": "л",
 	"unit_m3" : "m³",
 	"unit_ft3" : "ft³",
-	"loading_look_subtitle": "Please wait, this could take a few seconds",
-	"loading_look_title": "Processing Store Items"
+	"loading_look_subtitle": "Пожалуйста, подождите, это может занять несколько секунд",
+	"loading_look_title": "Обработка товаров магазина"
 }
