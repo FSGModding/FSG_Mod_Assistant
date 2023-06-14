@@ -398,5 +398,18 @@
 	"look_has_lights": "Artikel hat Lichter",
 	"look_has_beacons": "Gegenstand hat Baken",
 	"look_has_paint": "Artikel hat eine Auswahl an Farben",
-	"look_has_wheels": "Artikel hat Radwahlmöglichkeiten"
+	"look_has_wheels": "Artikel hat Radwahlmöglichkeiten",
+	"unit_hp": "hp",
+	"unit_kw": "kWh",
+	"unit_kph": "km/h",
+	"unit_mph": "mph",
+	"unit_m": "m",
+	"unit_ft": "ft",
+	"unit_kg": "kg",
+	"unit_t": "t",
+	"unit_l": "l",
+	"unit_m3" : "m³",
+	"unit_ft3" : "ft³",
+	"loading_look_subtitle": "Please wait, this could take a few seconds",
+	"loading_look_title": "Processing Store Items"
 }

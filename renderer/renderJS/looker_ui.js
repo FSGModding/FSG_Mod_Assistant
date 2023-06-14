@@ -6,9 +6,8 @@
 
 // Looker window UI
 
-/*eslint complexity: off*/
-/* global processL10N, fsgUtil */
-
+/* global processL10N, fsgUtil, getText */
+/*eslint complexity: ["warn", 17]*/
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
 	const modRecord = modCollect.opts.selected
@@ -35,22 +34,25 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 				}
 			}
 
-			const maxSpeed = typeof parseInt(thisItem.specs.maxspeed) !== 'undefined' ? parseInt(thisItem.specs.maxspeed) : 0
+			const maxSpeed = parseInt(typeof thisItem?.specs?.maxspeed !== 'undefined' ? thisItem.specs.maxspeed : 0)
+			const thePower = parseInt(typeof thisItem?.specs?.power !== 'undefined'? thisItem.specs.power : 0 )
+			const theWidth = parseInt(typeof thisItem?.specs?.workingwidth !== 'undefined'? thisItem.specs.workingwidth : 0 )
+			const theFill  = parseInt(typeof thisItem.fillLevel !== 'undefined'? thisItem.fillLevel : 0 )
 
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
 				brandIMG          : fsgUtil.iconMaker(brandImage),
-				enginePower       : thisItem.specs.power,
-				fillUnit          : Intl.NumberFormat(modCollect.currentLocale).format(thisItem.fillLevel),
+				enginePower       : `${thePower} ${getText('unit_hp')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thePower * 7.457)/10)} ${getText('unit_kw')}`,
+				fillUnit          : `${theFill} ${getText('unit_l')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theFill * 0.01)/10)} ${getText('unit_m3')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theFill * 0.353147)/10)} ${getText('unit_ft3')}`,
 				functions         : thisItem.functions.join('<br>'),
 				iconIMG           : fsgUtil.iconMaker(modCollect.opts.look?.icons?.[storeitem] || null),
 				itemName          : thisItem.name,
 				itemTitle         : thisItem.type,
-				maxSpeed          : `${maxSpeed} kph / ${Math.trunc(maxSpeed * 0.621371)} mph`,
+				maxSpeed          : `${maxSpeed} ${getText('unit_kph')} / ${Math.trunc(maxSpeed * 0.621371)} ${getText('unit_mph')}`,
 				price             : Intl.NumberFormat(modCollect.currentLocale).format(thisItem.price),
 				show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
 				show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
-				show_enginePower  : shouldHide(thisItem.specs.power),
+				show_enginePower  : shouldHide(thisItem?.specs?.power),
 				show_fillUnit     : thisItem.fillLevel > 0 ? ''                                                                                                                                 : 'd-none',
 				show_hasBeacons   : shouldHide(thisItem.hasBeacons),
 				show_hasLights    : shouldHide(thisItem.hasLights),
@@ -64,8 +66,8 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 				show_workWidth    : shouldHide(thisItem.specs.workingwidth),
 				transmission      : thisItem.transType,
 				typeDesc          : thisItem.typeDesc,
-				weight            : `${Intl.NumberFormat(modCollect.currentLocale).format(thisItem.weight)} kg / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thisItem.weight/100)/10)} t`,
-				workWidth         : thisItem.specs.workingwidth,
+				weight            : `${Intl.NumberFormat(modCollect.currentLocale).format(thisItem.weight)} ${getText('unit_kg')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thisItem.weight/100)/10)} ${getText('unit_t')}`,
+				workWidth         : `${theWidth} ${getText('unit_m')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theWidth *32.8084)/10)} ${getText('unit_ft')}`,
 			}))
 		}
 

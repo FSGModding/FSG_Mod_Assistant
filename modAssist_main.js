@@ -1191,6 +1191,12 @@ ipcMain.on('toMain_openModDetail', (event, thisMod) => { createNamedWindow('deta
 ipcMain.on('toMain_lookInMod', (event, thisMod) => {
 	const thisModRecord = modCollect.modColUUIDToRecord(thisMod)
 	
+	const countItems = thisModRecord.modDesc.storeItems
+	if ( countItems > 5 ) {
+		loadingWindow_open('look')
+		loadingWindow_noCount()
+	}
+	
 	const thisModLook = new modLooker(
 		convertPath,
 		app.getPath('temp'),
@@ -1201,6 +1207,7 @@ ipcMain.on('toMain_lookInMod', (event, thisMod) => {
 	)
 
 	thisModLook.getInfo().then((results) => {
+		if ( countItems > 5 ) { loadingWindow_hide(500) }
 		createNamedWindow(
 			'looker', {
 				selected : modCollect.modColUUIDToRecord(thisMod),
@@ -1244,6 +1251,11 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 
 	if ( thisMod.gameVersion > 19 && thisMod.modDesc.storeItems > 0 && (typeof thisMod.modDesc.cropInfo === 'undefined' || thisMod.modDesc.cropInfo === false)) {
 		template.push({ label : myTranslator.syncStringLookup('look_detail_button'), click : () => {
+			const countItems = thisMod.modDesc.storeItems
+			if ( countItems > 5 ) {
+				loadingWindow_open('look')
+				loadingWindow_noCount()
+			}
 			const thisModLook = new modLooker(
 				convertPath,
 				app.getPath('temp'),
@@ -1254,6 +1266,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 			)
 
 			thisModLook.getInfo().then((results) => {
+				if ( countItems > 5 ) { loadingWindow_hide(500) }
 				createNamedWindow( 'looker', {
 					selected : thisMod,
 					look     : results,

@@ -398,5 +398,18 @@
 	"look_has_lights": "L'article a des lumières",
 	"look_has_beacons": "L'objet a des balises",
 	"look_has_paint": "L'élément a des choix de peinture",
-	"look_has_wheels": "L'article a des choix de roues"
+	"look_has_wheels": "L'article a des choix de roues",
+	"unit_hp": "hp",
+	"unit_kw": "kWh",
+	"unit_kph": "km/h",
+	"unit_mph": "mph",
+	"unit_m": "m",
+	"unit_ft": "ft",
+	"unit_kg": "kg",
+	"unit_t": "t",
+	"unit_l": "l",
+	"unit_m3" : "m³",
+	"unit_ft3" : "ft³",
+	"loading_look_subtitle": "Please wait, this could take a few seconds",
+	"loading_look_title": "Processing Store Items"
 }

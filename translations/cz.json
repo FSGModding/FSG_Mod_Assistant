@@ -398,5 +398,18 @@
 	"look_has_lights": "Položka má světla",
 	"look_has_beacons": "Položka má majáky",
 	"look_has_paint": "Položka má možnost výběru barvy",
-	"look_has_wheels": "Položka má volbu kola"
+	"look_has_wheels": "Položka má volbu kola",
+	"unit_hp": "hp",
+	"unit_kw": "kWh",
+	"unit_kph": "km/h",
+	"unit_mph": "mph",
+	"unit_m": "m",
+	"unit_ft": "ft",
+	"unit_kg": "kg",
+	"unit_t": "t",
+	"unit_l": "l",
+	"unit_m3" : "m³",
+	"unit_ft3" : "ft³",
+	"loading_look_subtitle": "Please wait, this could take a few seconds",
+	"loading_look_title": "Processing Store Items"
 }
