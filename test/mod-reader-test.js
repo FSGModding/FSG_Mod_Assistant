@@ -66,10 +66,10 @@ modCollect.processPromise.then(() => {
 		console.log(md5List)
 		for ( const thisMod of modCollect.getModListFromCollection(collectKey) ) {
 			console.log(`Short Name : ${thisMod.fileDetail.shortName}`)
-			console.dir(thisMod.modDesc.cropInfo, { depth : null })
-			// console.log(`  Issues      : ${thisMod.issues.join(', ')}`)
-			// console.log(`  Badges      : ${thisMod.badgeArray.join(', ')}`)
-			// console.log(`  Extra       : ${thisMod.fileDetail.extraFiles.join(', ')}`)
+			//console.dir(thisMod.modDesc.cropInfo, { depth : null })
+			console.log(`  Issues      : ${thisMod.issues.join(', ')}`)
+			console.log(`  Badges      : ${thisMod.badgeArray.join(', ')}`)
+			console.log(`  Extra       : ${thisMod.fileDetail.extraFiles.join(', ')}`)
 		}
 	}
 	console.log(`\n\nExiting with code ${exitCode}\n`)
