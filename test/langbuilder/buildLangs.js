@@ -7,9 +7,9 @@
 // Language Builder
 /*eslint complexity: ["warn", 10]*/
 
-const fs        = require('fs')
-const xml2js    = require('xml2js')
-const { globSync }             = require('glob')
+const fs            = require('fs')
+const { XMLParser } = require('fast-xml-parser')
+const { globSync }  = require('glob')
 
 const fileList    = globSync('gamefiles/*.xml')
 const outputStruct = {}
@@ -22,31 +22,36 @@ const patternToInclude = [
 	'shopItem_',
 ]
 
+const langParser = new XMLParser({
+	attributeNamePrefix    : '',
+	attributesGroupName    : '$',
+	ignoreAttributes       : false,
+	ignoreDeclaration      : true,
+	ignorePiTags           : true,
+	parseAttributeValue    : true,
+	parseTagValue          : true,
+	transformAttributeName : (name) => name.toUpperCase(),
+	transformTagName       : (name) => name.toLowerCase(),
+	trimValues             : true,
+})
+
 for ( const thisFile of fileList ) {
 	const langCode    = thisFile.slice(-6).slice(0, 2)
 	const langContent = fs.readFileSync(thisFile, 'utf-8')
 
 	outputStruct[langCode] = {}
 
-	const XMLParser = new xml2js.Parser({
-		async              : false,
-		attrNameProcessors : [function(name) { return name.toUpperCase() }],
-		normalizeTags      : true,
-		strict             : false,
-	})
-
-	XMLParser.parseString(langContent, (err, result) => {
-		if ( err === null ) {
-			for ( const thisEntry of result.l10n.elements[0].e ) {
-				for ( const pattern of patternToInclude ) {
-					if ( thisEntry.$.K.startsWith(pattern) ) {
-						outputStruct[langCode][thisEntry.$.K] = thisEntry.$.V
-					}
+	try {
+		const result = langParser.parse(langContent)
+	
+		for ( const thisEntry of result.l10n.elements.e ) {
+			for ( const pattern of patternToInclude ) {
+				if ( thisEntry.$.K.startsWith(pattern) ) {
+					outputStruct[langCode][thisEntry.$.K] = thisEntry.$.V
 				}
 			}
-			
 		}
-	})
+	} catch { /* do not care */}
 }
 
 fs.writeFileSync('../../lib/modLookerLang.json', JSON.stringify(outputStruct, null, '  '))
