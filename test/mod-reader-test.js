@@ -12,7 +12,7 @@ const fs         = require('fs')
 const os         = require('os')
 const testPath   = path.join(__dirname, 'testMods')
 
-const { modFileCollection } = require('../lib/modCheckLib2.js')
+const { modFileCollection } = require('../lib/modCheckLib.js')
 
 const { ma_logger, ddsDecoder }        = require('../lib/modUtilLib.js')
 
