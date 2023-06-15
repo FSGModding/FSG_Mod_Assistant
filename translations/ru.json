@@ -400,16 +400,16 @@
 	"look_has_paint": "Есть выбор цвета окраски",
 	"look_has_wheels": "Есть выбор колёс",
 	"unit_hp": "л. с.",
-	"unit_kw": "кВт",
+	"unit_kw": "кВт*ч",
 	"unit_kph": "км/ч",
 	"unit_mph": "миля/ч",
 	"unit_m": "м",
-	"unit_ft": "ft",
+	"unit_ft": "фут(ов)",
 	"unit_kg": "кг",
 	"unit_t": "т",
 	"unit_l": "л",
-	"unit_m3" : "m³",
-	"unit_ft3" : "ft³",
+	"unit_m3": "м³",
+	"unit_ft3": "фут³",
 	"loading_look_subtitle": "Пожалуйста, подождите, это может занять несколько секунд",
-	"loading_look_title": "Обработка товаров магазина"
+	"loading_look_title": "Обработка объектов Магазина"
 }
