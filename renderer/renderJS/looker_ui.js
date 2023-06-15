@@ -36,38 +36,41 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 
 			const maxSpeed = parseInt(typeof thisItem?.specs?.maxspeed !== 'undefined' ? thisItem.specs.maxspeed : 0)
 			const thePower = parseInt(typeof thisItem?.specs?.power !== 'undefined'? thisItem.specs.power : 0 )
-			const theWidth = parseInt(typeof thisItem?.specs?.workingwidth !== 'undefined'? thisItem.specs.workingwidth : 0 )
+			const getPower = parseInt(typeof thisItem?.specs?.neededpower !== 'undefined'? thisItem.specs.neededpower : 0 )
+			const theWidth = parseFloat(typeof thisItem?.specs?.workingwidth !== 'undefined'? thisItem.specs.workingwidth : 0 )
 			const theFill  = parseInt(typeof thisItem.fillLevel !== 'undefined'? thisItem.fillLevel : 0 )
 
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
 				brandIMG          : fsgUtil.iconMaker(brandImage),
-				enginePower       : `${thePower} ${getText('unit_hp')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thePower * 7.457)/10)} ${getText('unit_kw')}`,
-				fillUnit          : `${theFill} ${getText('unit_l')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theFill * 0.01)/10)} ${getText('unit_m3')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theFill * 0.353147)/10)} ${getText('unit_ft3')}`,
+				enginePower       : `${Intl.NumberFormat(modCollect.currentLocale).format(thePower)} ${getText('unit_hp')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thePower * 7.457)/10)} ${getText('unit_kw')}`,
+				fillUnit          : `${Intl.NumberFormat(modCollect.currentLocale).format(theFill)} ${getText('unit_l')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theFill * 0.01)/10)} ${getText('unit_m3')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theFill * 0.353147)/10)} ${getText('unit_ft3')}`,
 				functions         : thisItem.functions.join('<br>'),
 				iconIMG           : fsgUtil.iconMaker(modCollect.opts.look?.icons?.[storeitem] || null),
 				itemName          : thisItem.name,
 				itemTitle         : thisItem.type,
 				maxSpeed          : `${maxSpeed} ${getText('unit_kph')} / ${Math.trunc(maxSpeed * 0.621371)} ${getText('unit_mph')}`,
+				needPower         : `${Intl.NumberFormat(modCollect.currentLocale).format(getPower)} ${getText('unit_hp')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(getPower * 7.457)/10)} ${getText('unit_kw')}`,
 				price             : Intl.NumberFormat(modCollect.currentLocale).format(thisItem.price),
 				show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
 				show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
 				show_enginePower  : shouldHide(thisItem?.specs?.power),
-				show_fillUnit     : thisItem.fillLevel > 0 ? ''                                                                                                                                 : 'd-none',
+				show_fillUnit     : thisItem.fillLevel > 0 ? '' : 'd-none',
 				show_hasBeacons   : shouldHide(thisItem.hasBeacons),
 				show_hasLights    : shouldHide(thisItem.hasLights),
 				show_hasPaint     : shouldHide(thisItem.hasColor),
 				show_hasWheels    : shouldHide(thisItem.hasWheelChoice),
-				show_maxSpeed     : shouldHide(thisItem.specs.maxspeed),
+				show_maxSpeed     : shouldHide(thisItem?.specs?.maxspeed),
 				show_methane      : shouldHide(thisItem.fuelType, 'methane'),
+				show_needPower    : shouldHide(thisItem?.specs?.neededpower),
 				show_price        : shouldHide(thisItem.price),
 				show_transmission : shouldHide(thisItem.transType),
 				show_weight       : shouldHide(thisItem.weight),
-				show_workWidth    : shouldHide(thisItem.specs.workingwidth),
+				show_workWidth    : shouldHide(thisItem?.specs?.workingwidth),
 				transmission      : thisItem.transType,
 				typeDesc          : thisItem.typeDesc,
 				weight            : `${Intl.NumberFormat(modCollect.currentLocale).format(thisItem.weight)} ${getText('unit_kg')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thisItem.weight/100)/10)} ${getText('unit_t')}`,
-				workWidth         : `${theWidth} ${getText('unit_m')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theWidth *32.8084)/10)} ${getText('unit_ft')}`,
+				workWidth         : `${Intl.NumberFormat(modCollect.currentLocale).format(Math.floor(theWidth*10)/10)} ${getText('unit_m')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theWidth *32.8084)/10)} ${getText('unit_ft')}`,
 			}))
 		}
 
