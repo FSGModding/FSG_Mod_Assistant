@@ -12,12 +12,9 @@ const fs         = require('fs')
 const os         = require('os')
 const testPath   = path.join(__dirname, 'testMods')
 
-const { ma_logger }         = require('../lib/ma-logger.js')
 const { modFileCollection } = require('../lib/modCheckLib.js')
 
-const { ddsDecoder }        = require('../lib/ddsLibrary.js')
-
-
+const { ma_logger, ddsDecoder }        = require('../lib/modUtilLib.js')
 
 
 console.log('FSG Mod Assistant : Test Mod Reader')

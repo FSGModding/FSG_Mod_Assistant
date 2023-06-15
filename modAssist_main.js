@@ -14,7 +14,7 @@ const gotTheLock = app.requestSingleInstanceLock()
 if ( !gotTheLock ) { app.quit() }
 
 const { autoUpdater } = require('electron-updater')
-const { ma_logger }   = require('./lib/ma-logger.js')
+const { ma_logger, translator, ddsDecoder }   = require('./lib/modUtilLib.js')
 const semverGt        = require('semver/functions/gt')
 const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock, debugDangerCallback)
 const path            = require('path')
@@ -56,7 +56,6 @@ function handleUnhandled(type, err, origin) {
 process.on('uncaughtException', (err, origin) => { handleUnhandled('exception', err, origin) })
 process.on('unhandledRejection', (err, origin) => { handleUnhandled('rejection', err, origin) })
 
-const translator       = require('./lib/translate.js')
 const myTranslator     = new translator.translator(translator.getSystemLocale(), log)
 myTranslator.mcVersion = app.getVersion()
 myTranslator.iconOverrides = {
@@ -177,8 +176,6 @@ for ( const testPath of pathGuesses ) {
 }
 
 const { modFileCollection, modLooker, saveFileChecker } = require('./lib/modCheckLib.js')
-
-const { ddsDecoder }        = require('./lib/ddsLibrary.js')
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
 
 const winDef = (w, h) => { return {
