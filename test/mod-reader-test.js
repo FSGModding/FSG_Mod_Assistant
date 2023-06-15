@@ -12,7 +12,7 @@ const fs         = require('fs')
 const os         = require('os')
 const testPath   = path.join(__dirname, 'testMods')
 
-const { modFileCollection } = require('../lib/modCheckLib.js')
+const { modFileCollection } = require('../lib/modCheckLib2.js')
 
 const { ma_logger, ddsDecoder }        = require('../lib/modUtilLib.js')
 
@@ -63,13 +63,13 @@ modCollect.processPromise.then(() => {
 	console.log('-=-=-=-=-=-=-=-=-=-=-=-=-\n')
 	for ( const collectKey of modCollect.collections ) {
 		const md5List = Array.from(Object.values(modCollect.getModListFromCollection(collectKey)), (mod) => mod.md5Sum).filter((x) => x !== null)
-		console.log(md5List)
-		for ( const thisMod of modCollect.getModListFromCollection(collectKey) ) {
-			console.log(`Short Name : ${thisMod.fileDetail.shortName}`)
-			console.log(`  Issues      : ${thisMod.issues.join(', ')}`)
-			console.log(`  Badges      : ${thisMod.badgeArray.join(', ')}`)
-			console.log(`  Extra       : ${thisMod.fileDetail.extraFiles.join(', ')}`)
-		}
+		// console.log(md5List)
+		// for ( const thisMod of modCollect.getModListFromCollection(collectKey) ) {
+		// 	console.log(`Short Name : ${thisMod.fileDetail.shortName}`)
+		// 	console.log(`  Issues      : ${thisMod.issues.join(', ')}`)
+		// 	console.log(`  Badges      : ${thisMod.badgeArray.join(', ')}`)
+		// 	console.log(`  Extra       : ${thisMod.fileDetail.extraFiles.join(', ')}`)
+		// }
 	}
 	console.log(`\n\nExiting with code ${exitCode}\n`)
 })

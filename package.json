@@ -42,8 +42,7 @@
     "pngjs": "^7.0.0",
     "semver": "^7.5.1",
     "unzip-stream": "^0.3.1",
-    "xml2js": "^0.6.0",
-    "yargs": "^17.7.2"
+    "xml2js": "^0.6.0"
   },
   "build": {
     "appId": "jtsage.fsmodassist",
@@ -59,7 +58,9 @@
       "!/img_src/*",
       "!/renderer/inc/src/*"
     ],
-    "extraFiles": ["texconv.exe"],
+    "extraFiles": [
+      "texconv.exe"
+    ],
     "win": {
       "target": [
         "nsis",

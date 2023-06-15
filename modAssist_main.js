@@ -22,7 +22,7 @@ const fs              = require('fs')
 
 const devDebug      = !(app.isPackaged)
 const devTools      = true && !(app.isPackaged)
-const skipCache     = false && !(app.isPackaged)
+const skipCache     = true && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 let updaterInterval = null
 
@@ -175,7 +175,7 @@ for ( const testPath of pathGuesses ) {
 	}
 }
 
-const { modFileCollection, modLooker, saveFileChecker } = require('./lib/modCheckLib.js')
+const { modFileCollection, modLooker, saveFileChecker } = require('./lib/modCheckLib2.js')
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
 
 const winDef = (w, h) => { return {

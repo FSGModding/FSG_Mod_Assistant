@@ -2289,7 +2289,6 @@ __metadata:
     semver: ^7.5.1
     unzip-stream: ^0.3.1
     xml2js: ^0.6.0
-    yargs: ^17.7.2
   languageName: unknown
   linkType: soft
 
@@ -4434,7 +4433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.5.1, yargs@npm:^17.7.2":
+"yargs@npm:^17.5.1":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:
