@@ -9,23 +9,26 @@
 
 const isFolder = false
 // const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\~test_mods\\'
-const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
-// const modName  = 'FS22_RedBarnPack'
+const fullPath = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism\\'
+const modName  = 'FS22_RedBarnPack'
 // const modName  = 'FS22_Large_Pole_Barn'
-const modName  = 'FS22_LimeAndSugarbeetCutProduction'
+// const modName  = 'FS22_LimeAndSugarbeetCutProduction'
 // const modName  = 'FSG_eTractors_Pack'
 // const modName  = 'FSG_Color_Pack'
 // const modName  = 'FS22_precisionFarming'
 // const modName  = 'FS22_AnhydrousAmmoniaPack'
-// const modName = 'FS22_AirFlex_Series'
+// const modName  = 'FS22_AugerMaster'
+// const modName  = 'FS22_AirFlex_Series'
 
-const { ma_logger }         = require('../lib/ma-logger.js')
-const { modLooker }         = require('../lib/modCheckLib.js')
+const { ma_logger, ddsDecoder } = require('../lib/modUtilLib.js')
+const { modLooker }             = require('../lib/modCheckLib.js')
 const path = require('path')
 
+const log        = new ma_logger('look-test')
+const iconParser = new ddsDecoder(path.join(process.cwd(), '..', 'texconv.exe'), path.join(__dirname, 'temp'), log)
+
 const looker = new modLooker(
-	path.join(process.cwd(), '..', 'texconv.exe'),
-	process.cwd(),
+	iconParser,
 	{
 		fileDetail : {
 			fullPath  : path.join(fullPath, `${modName}${isFolder===true?'':'.zip'}`),
@@ -35,9 +38,9 @@ const looker = new modLooker(
 		},
 	},
 	fullPath,
-	new ma_logger('multi-test'),
-	'ru',
-	false
+	log,
+	'de',
+	true
 )
 
 looker.getInfo().then((result) => {

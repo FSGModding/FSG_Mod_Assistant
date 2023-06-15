@@ -23,7 +23,7 @@ console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n')
 let exitCode = 0
 
 const logger     = new ma_logger('multi-test')
-const iconParser = new ddsDecoder(path.join(__dirname, 'texconv.exe'), os.tmpdir(), logger)
+const iconParser = new ddsDecoder(path.join(__dirname, '..', 'texconv.exe'), os.tmpdir(), logger)
 const modCollect = new modFileCollection(
 	iconParser,
 	logger,
@@ -66,6 +66,7 @@ modCollect.processPromise.then(() => {
 		console.log(md5List)
 		for ( const thisMod of modCollect.getModListFromCollection(collectKey) ) {
 			console.log(`Short Name : ${thisMod.fileDetail.shortName}`)
+			//console.dir(thisMod.modDesc.cropInfo, { depth : null })
 			console.log(`  Issues      : ${thisMod.issues.join(', ')}`)
 			console.log(`  Badges      : ${thisMod.badgeArray.join(', ')}`)
 			console.log(`  Extra       : ${thisMod.fileDetail.extraFiles.join(', ')}`)

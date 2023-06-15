@@ -10,7 +10,7 @@
 const path       = require('path')
 const fs         = require('fs')
 
-const { ma_logger }             = require('../lib/ma-logger.js')
+const { ma_logger }             = require('../lib/modUtilLib.js')
 const { saveFileChecker }       = require('../lib/modCheckLib.js')
 
 const logger = new ma_logger('saveTest')
@@ -30,7 +30,7 @@ if ( !fs.existsSync(folderSave) || !fs.existsSync(zipSave) ) {
 
 try {
 	const zipSaveCheck = new saveFileChecker(zipSave, false, logger)
-	console.dir(zipSaveCheck, {depth : 0})
+	console.dir(zipSaveCheck, {depth : 1})
 } catch (e) {
 	exitCode = 1
 	console.log(`Something went wrong with the zip: ${e}`)
@@ -38,7 +38,7 @@ try {
 
 try {
 	const folderSaveCheck = new saveFileChecker(folderSave, true, logger)
-	console.dir(folderSaveCheck, {depth : 0})
+	console.dir(folderSaveCheck, {depth : 1})
 } catch (e) {
 	exitCode = 1
 	console.log(`Something went wrong with the folder: ${e}`)
