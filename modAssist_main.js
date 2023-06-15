@@ -175,7 +175,7 @@ for ( const testPath of pathGuesses ) {
 	}
 }
 
-const { modFileCollection, modLooker, saveFileChecker } = require('./lib/modCheckLib2.js')
+const { modFileCollection, modLooker, saveFileChecker } = require('./lib/modCheckLib.js')
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
 
 const winDef = (w, h) => { return {
