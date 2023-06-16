@@ -34,23 +34,36 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 				}
 			}
 
-			const maxSpeed = parseInt(typeof thisItem?.specs?.maxspeed !== 'undefined' ? thisItem.specs.maxspeed : 0)
-			const thePower = parseInt(typeof thisItem?.specs?.power !== 'undefined'? thisItem.specs.power : 0 )
-			const getPower = parseInt(typeof thisItem?.specs?.neededpower !== 'undefined'? thisItem.specs.neededpower : 0 )
-			const theWidth = parseFloat(typeof thisItem?.specs?.workingwidth !== 'undefined'? thisItem.specs.workingwidth : 0 )
-			const theFill  = parseInt(typeof thisItem.fillLevel !== 'undefined'? thisItem.fillLevel : 0 )
+			const maxSpeed = getDefault(thisItem?.specs?.maxspeed)
+			const thePower = getDefault(thisItem?.specs?.power)
+			const getPower = getDefault(thisItem?.specs?.neededpower)
+			const theWidth = getDefault(thisItem?.specs?.workingwidth, true)
+			const theFill  = getDefault(thisItem.fillLevel)
 
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
 				brandIMG          : fsgUtil.iconMaker(brandImage),
-				enginePower       : `${Intl.NumberFormat(modCollect.currentLocale).format(thePower)} ${getText('unit_hp')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thePower * 7.457)/10)} ${getText('unit_kw')}`,
-				fillUnit          : `${Intl.NumberFormat(modCollect.currentLocale).format(theFill)} ${getText('unit_l')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theFill * 0.01)/10)} ${getText('unit_m3')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theFill * 0.353147)/10)} ${getText('unit_ft3')}`,
+				enginePower       : formatManyNumber(thePower, modCollect.currentLocale, [
+					{ factor : 1,      precision : 0, unit : 'unit_hp' },
+					{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
+				]),
+				fillUnit          : formatManyNumber(theFill, modCollect.currentLocale, [
+					{ factor : 1,         precision : 0, unit : 'unit_l' },
+					{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
+					{ factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
+				]),
 				functions         : thisItem.functions.join('<br>'),
 				iconIMG           : fsgUtil.iconMaker(modCollect.opts.look?.icons?.[storeitem] || null),
 				itemName          : thisItem.name,
 				itemTitle         : thisItem.type,
-				maxSpeed          : `${maxSpeed} ${getText('unit_kph')} / ${Math.trunc(maxSpeed * 0.621371)} ${getText('unit_mph')}`,
-				needPower         : `${Intl.NumberFormat(modCollect.currentLocale).format(getPower)} ${getText('unit_hp')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(getPower * 7.457)/10)} ${getText('unit_kw')}`,
+				maxSpeed          : formatManyNumber(maxSpeed, modCollect.currentLocale, [
+					{ factor : 1,        precision : 0, unit : 'unit_kph' },
+					{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
+				]),
+				needPower         : formatManyNumber(getPower, modCollect.currentLocale, [
+					{ factor : 1,      precision : 0, unit : 'unit_hp' },
+					{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
+				]),
 				price             : Intl.NumberFormat(modCollect.currentLocale).format(thisItem.price),
 				show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
 				show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
@@ -69,8 +82,14 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 				show_workWidth    : shouldHide(thisItem?.specs?.workingwidth),
 				transmission      : thisItem.transType,
 				typeDesc          : thisItem.typeDesc,
-				weight            : `${Intl.NumberFormat(modCollect.currentLocale).format(thisItem.weight)} ${getText('unit_kg')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(thisItem.weight/100)/10)} ${getText('unit_t')}`,
-				workWidth         : `${Intl.NumberFormat(modCollect.currentLocale).format(Math.floor(theWidth*10)/10)} ${getText('unit_m')} / ${Intl.NumberFormat(modCollect.currentLocale).format(Math.trunc(theWidth *32.8084)/10)} ${getText('unit_ft')}`,
+				weight            : formatManyNumber(thisItem.weight, modCollect.currentLocale, [
+					{ factor : 1,    precision : 0, unit : 'unit_kg' },
+					{ factor : 0.01, precision : 1, unit : 'unit_t' },
+				]),
+				workWidth         : formatManyNumber(theWidth, modCollect.currentLocale, [
+					{ factor : 1,       precision : 1, unit : 'unit_m' },
+					{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
+				]),
 			}))
 		}
 
@@ -92,6 +111,21 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	processL10N()
 })
 
+function getDefault(value, float = false, safe = 0) {
+	const newValue = typeof value !== 'undefined' ? value : safe
+	return !float ? parseInt(newValue) : parseFloat(newValue)
+}
+
+function formatManyNumber(value, locale, transArray) {
+	const returnText = []
+
+	for ( const thisTrans of transArray ) {
+		const thisNumber = value * thisTrans.factor
+		returnText.push(`${Intl.NumberFormat(locale, { maximumFractionDigits : thisTrans.precision }).format(thisNumber)} ${getText(thisTrans.unit)}`)
+	}
+
+	return returnText.join(' / ')
+}
 
 function shouldHide(item, wanted = null) {
 	if ( typeof item === 'undefined' || item === null || item === false || item === '' ) {
