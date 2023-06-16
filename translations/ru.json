@@ -412,6 +412,6 @@
 	"unit_ft3": "фут³",
 	"loading_look_subtitle": "Пожалуйста, подождите, это может занять несколько секунд",
 	"loading_look_title": "Обработка объектов Магазина",
-	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "Этот файл является архивом сохраненной игры"
+	"mod_badge_savegame": "сохранение",
+	"mod_badge_savegame__title": "Этот файл – архив сохранения игры"
 }
