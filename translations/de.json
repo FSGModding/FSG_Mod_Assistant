@@ -408,8 +408,10 @@
 	"unit_kg": "kg",
 	"unit_t": "t",
 	"unit_l": "l",
-	"unit_m3" : "m³",
-	"unit_ft3" : "ft³",
+	"unit_m3": "m³",
+	"unit_ft3": "ft³",
 	"loading_look_subtitle": "Bitte warten Sie, dies kann einige Sekunden dauern",
-	"loading_look_title": "Verarbeitung von Lagerartikeln"
+	"loading_look_title": "Verarbeitung von Lagerartikeln",
+	"mod_badge_savegame": "savegame",
+	"mod_badge_savegame__title": "Diese Datei ist ein Savegame-Archiv"
 }

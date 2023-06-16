@@ -6,7 +6,7 @@
 
 // Main Window UI
 
-/* eslint complexity: ["warn", 25] */
+/* eslint complexity: ["warn", 26] */
 /* global processL10N, fsgUtil, bootstrap, select_lib */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
@@ -231,7 +231,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts, currentGameVersion, modSites) {
 	const theseBadges = [...originalBadges] || []
-	let hasAllDeps    = true
+	let   hasAllDeps  = true
+	const isASave     = theseBadges.includes('savegame')
 
 	if ( typeof thisMod.modDesc.depend !== 'undefined' && thisMod.modDesc.depend.length > 0 ) {
 		for ( const thisDep of thisMod.modDesc.depend ) {
@@ -240,7 +241,6 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 			}
 		}
 	}
-
 
 	if ( !hasAllDeps ) {
 		theseBadges.unshift('depend')
@@ -260,10 +260,10 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConfli
 	if ( thisMod.modHub.recent ) {
 		theseBadges.push('recent')
 	}
-	if ( thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) {
+	if ( !isASave && thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) {
 		theseBadges.push('nonmh')
 	}
-	if ( currentGameVersion !== thisMod.gameVersion ) {
+	if ( !isASave && currentGameVersion !== thisMod.gameVersion ) {
 		theseBadges.unshift(`fs${thisMod.gameVersion}`)
 	}
 
@@ -322,6 +322,7 @@ const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) 
 	class_hasSite     : hasExtSite ? ' has-ext-site' : '',
 	class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
 	class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':'',
+	click_modEnabled  : ! ( thisMod.badgeArray.includes('savegame') || thisMod.badgeArray.includes('notmod') ),
 	fileSize          : ( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : '',
 	icon              : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
 	id                : id,
@@ -351,6 +352,11 @@ function makeVersionRow(version, options, modCollect) {
 	})
 }
 
+function clientOpenMod(enabled, modID) {
+	if ( enabled === 'true' ) {
+		window.mods.openMod(modID)
+	}
+}
 function clientSetModInfo() {
 	const modName = fsgUtil.byId('mod_info_mod_name').innerHTML
 	const newSite = fsgUtil.byId('mod_info_input').value

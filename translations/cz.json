@@ -408,8 +408,10 @@
 	"unit_kg": "kg",
 	"unit_t": "t",
 	"unit_l": "l",
-	"unit_m3" : "m³",
-	"unit_ft3" : "ft³",
+	"unit_m3": "m³",
+	"unit_ft3": "ft³",
 	"loading_look_subtitle": "Počkejte prosím, může to trvat několik sekund",
-	"loading_look_title": "Zpracování položek obchodu"
+	"loading_look_title": "Zpracování položek obchodu",
+	"mod_badge_savegame": "savegame",
+	"mod_badge_savegame__title": "Tento soubor je archiv uložené hry"
 }

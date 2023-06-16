@@ -1237,14 +1237,18 @@ ipcMain.on('toMain_dragOut', (event, modID) => {
 ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	const thisMod   = modCollect.modColUUIDToRecord(modID)
 	const thisSite  = modSite.get(thisMod.fileDetail.shortName, '')
+	const isSave    = thisMod.badgeArray.includes('savegame') || thisMod.badgeArray.includes('notmod')
 
 	const template = [
 		{ label : thisMod.fileDetail.shortName},
 		{ type : 'separator' },
-		{ label : myTranslator.syncStringLookup('context_mod_detail'), click : () => {
-			createNamedWindow('detail', {selected : thisMod})
-		}},
 	]
+
+	if ( !isSave ) {
+		template.push({ label : myTranslator.syncStringLookup('context_mod_detail'), click : () => {
+			createNamedWindow('detail', {selected : thisMod})
+		}})
+	}
 
 	if ( thisMod.gameVersion > 19 && thisMod.modDesc.storeItems > 0 && (typeof thisMod.modDesc.cropInfo === 'undefined' || thisMod.modDesc.cropInfo === false)) {
 		template.push({ label : myTranslator.syncStringLookup('look_detail_button'), click : () => {
@@ -1269,6 +1273,43 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 				})
 			})
 		}})
+	}
+
+	if ( isSave ) {
+		const thisFolder  = modCollect.mapCollectionToFolder(modID.split('--')[0])
+		const savePath    = path.join(thisFolder, path.basename(thisMod.fileDetail.fullPath))
+		const subMenu     = []
+
+		for ( const collectKey of modCollect.collections ) {
+			const collectName = modCollect.mapCollectionToName(collectKey)
+			const collectVer  = modNote.get(`${collectKey}.notes_version`, 22)
+			
+			if ( collectVer === 22 ) {
+				subMenu.push({
+					label : collectName,
+					click : () => {
+						createNamedWindow('save', { collectKey : collectKey })
+						const thisSavegame = new saveFileChecker(savePath, false, log)
+						setTimeout(() => {
+							sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
+						}, 250)
+						
+					},
+				})
+			}
+		}
+		template.push({
+			label   : myTranslator.syncStringLookup('check_save'),
+			submenu : subMenu,
+		})
+		/*
+		{
+              label: 'Speech',
+              submenu: [
+                { role: 'startSpeaking' },
+                { role: 'stopSpeaking' }
+              ]
+            }*/
 	}
 
 	template.push({ type : 'separator' })

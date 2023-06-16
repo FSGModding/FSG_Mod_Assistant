@@ -411,5 +411,7 @@
 	"unit_m3": "м³",
 	"unit_ft3": "фут³",
 	"loading_look_subtitle": "Пожалуйста, подождите, это может занять несколько секунд",
-	"loading_look_title": "Обработка объектов Магазина"
+	"loading_look_title": "Обработка объектов Магазина",
+	"mod_badge_savegame": "savegame",
+	"mod_badge_savegame__title": "Этот файл является архивом сохраненной игры"
 }

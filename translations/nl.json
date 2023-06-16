@@ -411,5 +411,7 @@
 	"unit_m3": "m³",
 	"unit_ft3": "ft³",
 	"loading_look_subtitle": "Een ogenblik geduld, dit kan enkele seconden duren",
-	"loading_look_title": "Verwerken winkelitems"
+	"loading_look_title": "Verwerken winkelitems",
+	"mod_badge_savegame": "savegame",
+	"mod_badge_savegame__title": "Dit bestand is een savegame-archief"
 }
