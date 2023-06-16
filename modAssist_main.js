@@ -2144,6 +2144,13 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 }
 
 function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
+	if ( gameSettingsXML === null || typeof gameSettingsXML.gameSettings === 'undefined' ) {
+		log.log.danger('Could not write game settings (read failed)', 'game-settings')
+		parseSettings()
+		refreshClientModList()
+		return
+	}
+
 	loadingWindow_open('set')
 	loadingWindow_noCount()
 
