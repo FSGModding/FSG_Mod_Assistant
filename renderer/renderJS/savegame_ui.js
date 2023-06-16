@@ -69,7 +69,11 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 		fullModArr.push(thisMod.fileDetail.shortName)
 	}
 
-	const fullModSet = new Set(fullModArr.concat(Object.keys(savegame.mods)).sort())
+	const fullModSet = new Set(fullModArr.concat(Object.keys(savegame.mods)).sort((a, b) => {
+		if (a.toLowerCase() < b.toLowerCase()) return -1
+		if (a.toLowerCase() > b.toLowerCase()) return 1
+		return 0
+	}))
 
 	for ( const thisMod of fullModSet ) {
 		if ( thisMod.endsWith('.csv') ) { continue }
