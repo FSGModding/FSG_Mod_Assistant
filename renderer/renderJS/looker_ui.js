@@ -39,6 +39,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 			const getPower = getDefault(thisItem?.specs?.neededpower)
 			const theWidth = getDefault(thisItem?.specs?.workingwidth, true)
 			const theFill  = getDefault(thisItem.fillLevel)
+			const fillImages = thisItem.fillTypes.map((thisFill) => `<img style="height: 25px" src="img/fills/${thisFill}.png">`)
 
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
@@ -47,6 +48,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 					{ factor : 1,      precision : 0, unit : 'unit_hp' },
 					{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
 				]),
+				fillImages        : fillImages.join(' '),
 				fillUnit          : formatManyNumber(theFill, modCollect.currentLocale, [
 					{ factor : 1,         precision : 0, unit : 'unit_l' },
 					{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
