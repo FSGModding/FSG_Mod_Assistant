@@ -1250,7 +1250,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		}})
 	}
 
-	if ( thisMod.gameVersion > 19 && thisMod.modDesc.storeItems > 0 && (typeof thisMod.modDesc.cropInfo === 'undefined' || thisMod.modDesc.cropInfo === false)) {
+	if ( thisMod.gameVersion > 19 && thisMod.modDesc.storeItems > 0 ) {
 		template.push({ label : myTranslator.syncStringLookup('look_detail_button'), click : () => {
 			const countItems = thisMod.modDesc.storeItems
 			if ( countItems > 5 ) {
