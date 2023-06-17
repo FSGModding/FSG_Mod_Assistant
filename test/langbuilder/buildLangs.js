@@ -20,6 +20,8 @@ const patternToInclude = [
 	'info_transmission_',
 	'fillType_',
 	'shopItem_',
+	'storeItem_',
+	'object_',
 ]
 
 const langParser = new XMLParser({

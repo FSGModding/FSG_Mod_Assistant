@@ -34,12 +34,13 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 				}
 			}
 
-			const maxSpeed = getDefault(thisItem?.specs?.maxspeed)
-			const thePower = getDefault(thisItem?.specs?.power)
-			const getPower = getDefault(thisItem?.specs?.neededpower)
-			const theWidth = getDefault(thisItem?.specs?.workingwidth, true)
-			const theFill  = getDefault(thisItem.fillLevel)
+			const maxSpeed   = getDefault(thisItem?.specs?.maxspeed)
+			const thePower   = getDefault(thisItem?.specs?.power)
+			const getPower   = getDefault(thisItem?.specs?.neededpower)
+			const theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
+			const theFill    = getDefault(thisItem.fillLevel)
 			const fillImages = thisItem.fillTypes.map((thisFill) => `<img style="height: 25px" src="img/fills/${thisFill}.png">`)
+			
 
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
@@ -96,16 +97,36 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 		}
 
 		if ( thisItem.masterType === 'placeable' ) {
+			const fillImages = thisItem.silo.types.map((thisFill) => `<img style="height: 25px" src="img/fills/${thisFill}.png">`)
+
 			storeItemsHTML.push(fsgUtil.useTemplate('place_div', {
-				functions         : thisItem.functions.join('<br>'),
-				iconIMG           : fsgUtil.iconMaker(modCollect.opts.look?.icons?.[storeitem] || null),
-				itemName          : thisItem.name,
-				itemTitle         : thisItem.type,
-				price             : Intl.NumberFormat(modCollect.currentLocale).format(thisItem.price),
-				show_hasPaint     : shouldHide(thisItem.hasColor),
+				animalCount      : thisItem.husbandry.capacity,
+				fillImages       : fillImages.join(' '),
+				fillUnit         : formatManyNumber(thisItem.silo.capacity, modCollect.currentLocale, [
+					{ factor : 1,         precision : 0, unit : 'unit_l' },
+					{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
+					{ factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
+				]),
+				functions        : thisItem.functions.join('<br>'),
+				hasBee           : `${formatManyNumber(thisItem.beehive.radius, modCollect.currentLocale, [{factor : 1, precision : 0, unit : 'unit_m'}])} / ${formatManyNumber(thisItem.beehive.liters, modCollect.currentLocale, [{factor : 1, precision : 0, unit : 'unit_l'}])}`,
+				iconIMG          : fsgUtil.iconMaker(modCollect.opts.look?.icons?.[storeitem] || null),
+				income           : thisItem.incomePerHour ?? 0,
+				itemName         : thisItem.name,
+				itemTitle        : thisItem.type,
+				objectCount      : thisItem.objectStorage ?? 0,
+				price            : Intl.NumberFormat(modCollect.currentLocale).format(thisItem.price),
+				show_fillUnit    : shouldHide(thisItem.silo.exists),
+				show_hasBee      : shouldHide(thisItem.beehive.exists),
+				show_hasChicken  : shouldHide(thisItem.husbandry.type, 'CHICKEN'),
+				show_hasCow      : shouldHide(thisItem.husbandry.type, 'COW'),
+				show_hasHorse    : shouldHide(thisItem.husbandry.type, 'HORSE'),
+				show_hasPaint    : shouldHide(thisItem.hasColor),
+				show_hasPig      : shouldHide(thisItem.husbandry.type, 'PIG'),
+				show_hasSheep    : shouldHide(thisItem.husbandry.type, 'SHEEP'),
+				show_income      : shouldHide(thisItem.incomePerHour),
+				show_objectStore : shouldHide(thisItem.objectStorage),
 			}))
 		}
-
 	}
 
 	fsgUtil.byId('storeitems').innerHTML = storeItemsHTML.join('')
