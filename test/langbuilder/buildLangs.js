@@ -32,6 +32,7 @@ const langParser = new XMLParser({
 	ignorePiTags           : true,
 	parseAttributeValue    : true,
 	parseTagValue          : true,
+	processEntities        : false,
 	transformAttributeName : (name) => name.toUpperCase(),
 	transformTagName       : (name) => name.toLowerCase(),
 	trimValues             : true,
