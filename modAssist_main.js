@@ -1801,7 +1801,7 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 /** END: download operation */
 
 /** Export operation */
-const csvRow = (entries) => entries.map((entry) => `"${entry.replaceAll('"', '""')}"`).join(',')
+const csvRow = (entries) => entries.map((entry) => `"${typeof entry === 'string' ? entry.replaceAll('"', '""') : entry }"`).join(',')
 
 ipcMain.on('toMain_exportList', (event, collection) => {
 	const csvTable = []
