@@ -392,7 +392,11 @@ mcStore.set('cache_version', app.getVersion())
 
 function destroyAndFocus(winName) {
 	windows[winName] = null
-	if ( windows.main !== null ) { windows.main.focus() }
+	if ( windows.main !== null ) {
+		if ( windows.load !== null && !windows.load.isDestroyed() && !windows.load.isVisible() ) {
+			windows.main.focus()
+		}
+	}
 }
 
 function getRealCenter(winName) {
@@ -2231,7 +2235,9 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 
 let fileWait = null
 function fileOperation(type, fileMap, srcWindow = 'confirm') {
+
 	if ( typeof fileMap !== 'object' ) { return }
+
 	windows[srcWindow].close()
 
 	loadingWindow_open('files')
