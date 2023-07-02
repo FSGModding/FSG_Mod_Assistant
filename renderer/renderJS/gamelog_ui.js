@@ -37,6 +37,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 				new RegExp(/Error:/),
 				new RegExp(/ERROR/),
 				new RegExp(/Error \(.+?\):/),
+				new RegExp(/CollisionFlag-Check/),
 			],
 			className : 'text-danger',
 			filter : 'error',
@@ -44,7 +45,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 		info : {
 			regex     : [
 				new RegExp(/Application: /),
-				new RegExp(/Info:/),
+				new RegExp(/(?<!Dev)Info:/),
 				new RegExp(/Info \(.+?\):/),
 			],
 			className : 'text-info',
@@ -85,11 +86,28 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 		},
 		warning : {
 			regex     : [
-				new RegExp(/Warning:/),
+				new RegExp(/(?<!Dev)Warning:/),
 				new RegExp(/Warning \(.+?\):/),
 			],
 			className : 'text-warning',
 			filter : 'warning',
+		},
+
+		dev_info : {
+			regex     : [
+				new RegExp(/DevInfo:/),
+			],
+			className : 'text-info fst-italic',
+			filter : 'dev_info',
+			
+		},
+		dev_warning : {
+			regex     : [
+				new RegExp(/DevWarning:/),
+			],
+			className : 'text-warning fst-italic',
+			filter : 'dev_warning',
+			
 		},
 	}
 
