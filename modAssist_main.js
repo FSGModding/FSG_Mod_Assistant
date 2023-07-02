@@ -119,8 +119,7 @@ const userHome      = app.getPath('home')
 const pathRender    = path.join(app.getAppPath(), 'renderer')
 const pathPreload   = path.join(pathRender, 'preload')
 const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
-const hubURL        = 'https://jtsage.dev/modHubData.json'
-const hubVerURL     = 'https://jtsage.dev/modHubVersion.json'
+const hubURLCombo   = 'https://jtsage.dev/modHubData22_combo.json'
 const trayIcon      = !app.isPackaged
 	? path.join(app.getAppPath(), 'renderer', 'img', 'icon.ico')
 	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
@@ -2404,21 +2403,13 @@ function loadSaveFile(filename) {
 	try {
 		const rawData  = fs.readFileSync(path.join(app.getPath('userData'), filename))
 		const jsonData = JSON.parse(rawData)
-		let merger = null
 
-		switch (filename) {
-			case 'modHubData.json' :
-				merger = { ...oldModHub.mods, ...jsonData.mods}
-				jsonData.mods = merger
-				modCollect.modHubList = jsonData
-				break
-			case 'modHubVersion.json' :
-				merger = { ...oldModHub.versions, ...jsonData}
-				modCollect.modHubVersion = merger
-				break
-			default :
-				break
+
+		modCollect.modHubList = {
+			mods : { ...oldModHub.mods, ...jsonData.mods},
+			last : jsonData.recent,
 		}
+		modCollect.modHubVersion = { ...oldModHub.versions, ...jsonData}
 
 		log.log.debug(`Loaded ${filename}`, 'local-cache')
 	} catch (e) {
@@ -2492,8 +2483,7 @@ app.whenReady().then(() => {
 		tray.setToolTip('FSG Mod Assist')
 		tray.on('click', () => { windows.main.show() })
 
-		dlSaveFile(hubURL, 'modHubData.json')
-		dlSaveFile(hubVerURL, 'modHubVersion.json')
+		dlSaveFile(hubURLCombo, 'modHubDataCombo.json')
 
 		app.on('second-instance', (event, argv) => {
 			// Someone tried to run a second instance, we should focus our window.
