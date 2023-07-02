@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Počkejte prosím, může to trvat několik sekund",
 	"loading_look_title": "Zpracování položek obchodu",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "Tento soubor je archiv uložené hry"
+	"mod_badge_savegame__title": "Tento soubor je archiv uložené hry",
+	"notes_title_removable": "Vyměnitelné úložiště",
+	"notes_blurb_removable": "U sbírek, které jsou uloženy na vyměnitelném úložišti, zaškrtněte tuto možnost.  Tím zabráníte automatickému zapomenutí sbírky, pokud vyměnitelný disk není připojen při spuštění nebo opětovném načtení Mod Assistant."
 }

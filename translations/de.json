@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Bitte warten Sie, dies kann einige Sekunden dauern",
 	"loading_look_title": "Verarbeitung von Lagerartikeln",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "Diese Datei ist ein Savegame-Archiv"
+	"mod_badge_savegame__title": "Diese Datei ist ein Savegame-Archiv",
+	"notes_title_removable": "Wechselspeicher",
+	"notes_blurb_removable": "Für Sammlungen, die sich auf einem Wechseldatenträger befinden, aktivieren Sie diese Option.  Dadurch wird verhindert, dass die Sammlung automatisch vergessen wird, wenn der Wechseldatenträger beim Starten oder Neuladen von Mod Assistant nicht angeschlossen ist."
 }

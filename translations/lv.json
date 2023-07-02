@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Lūdzu, uzgaidiet, tas var aizņemt dažas sekundes",
 	"loading_look_title": "Veikala preču apstrāde",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "Šis fails ir saglabājamās spēles arhīvs"
+	"mod_badge_savegame__title": "Šis fails ir saglabājamās spēles arhīvs",
+	"notes_title_removable": "Noņemama krātuve",
+	"notes_blurb_removable": "Kolekcijām, kas atrodas noņemamā atmiņā, atzīmējiet šo opciju.  Tas novērsīs kolekcijas automātisku aizmiršanu, ja noņemamais diskdziņš nav pievienots, kad tiek palaists vai pārlādēts Mod asistents."
 }

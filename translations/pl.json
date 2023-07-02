@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Proszę czekać, to może potrwać kilka sekund",
 	"loading_look_title": "Przetwarzanie pozycji sklepowych",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "Ten plik jest archiwum gry"
+	"mod_badge_savegame__title": "Ten plik jest archiwum gry",
+	"notes_title_removable": "Pamięć wymienna",
+	"notes_blurb_removable": "W przypadku kolekcji, które znajdują się na nośniku wymiennym, zaznacz tę opcję.  Zapobiegnie to automatycznemu zapominaniu kolekcji, jeśli dysk wymienny nie jest podłączony podczas uruchamiania lub ponownego ładowania Mod Assistant"
 }

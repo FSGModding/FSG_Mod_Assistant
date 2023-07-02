@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Please wait, this could take a few seconds",
 	"loading_look_title": "Processing Store Items",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "This file is a savegame archive"
+	"mod_badge_savegame__title": "This file is a savegame archive",
+	"notes_title_removable": "Removable Storage",
+	"notes_blurb_removable": "For collections that live on removable storage, check this option.  This will prevent the collection from being auto-forgotten if the removable drive is not attached when starting or reloading Mod Assistant"
 }

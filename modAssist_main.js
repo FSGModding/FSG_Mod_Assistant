@@ -2335,12 +2335,21 @@ function processModFoldersOnDisk() {
 	modCollect.syncSafe     = mcStore.get('use_one_drive', false)
 	modCollect.clearAll()
 
+	const offlineFolders = []
+
 	modFoldersWatch.forEach((oldWatcher) => { oldWatcher.close() })
 	modFoldersWatch = []
 	// Cleaner for no-longer existing folders, set watcher for others
 	for ( const folder of modFolders ) {
 		if ( ! fs.existsSync(folder) ) {
-			modFolders.delete(folder)
+			const colHash     = modCollect.getMD5FromFolder(folder)
+			const isRemovable = modNote.get(`${colHash}.notes_removable`, false)
+
+			if ( !isRemovable ) {
+				modFolders.delete(folder)
+			} else {
+				offlineFolders.push(folder)
+			}
 		} else {
 			const thisWatch = fs.watch(folder, (eventType, fileName) => { updateFolderDirtyWatch(eventType, fileName, folder) })
 			thisWatch.on('error', () => { log.log.warning(`Folder Watch Error: ${folder}`, 'folder-watcher') })
@@ -2351,9 +2360,11 @@ function processModFoldersOnDisk() {
 	mcStore.set('modFolders', Array.from(modFolders))
 
 	for ( const folder of modFolders ) {
-		const thisCollectionStats = modCollect.addCollection(folder)
+		if ( ! offlineFolders.includes(folder) ) {
+			const thisCollectionStats = modCollect.addCollection(folder)
 
-		loadingWindow_total(thisCollectionStats.fileCount)
+			loadingWindow_total(thisCollectionStats.fileCount)
+		}
 	}
 
 	modCollect.processMods()

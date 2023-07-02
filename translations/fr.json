@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Veuillez patienter, cela peut prendre quelques secondes",
 	"loading_look_title": "Traitement des articles de magasin",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "Ce fichier est une archive de sauvegarde"
+	"mod_badge_savegame__title": "Ce fichier est une archive de sauvegarde",
+	"notes_title_removable": "Stockage amovible",
+	"notes_blurb_removable": "Pour les collections qui se trouvent sur un support amovible, cochez cette option.  Cela empêchera l'oubli automatique de la collection si le disque amovible n'est pas connecté lors du démarrage ou du rechargement de Mod Assistant"
 }

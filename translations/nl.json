@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Een ogenblik geduld, dit kan enkele seconden duren",
 	"loading_look_title": "Verwerken winkelitems",
 	"mod_badge_savegame": "opgeslagen spel",
-	"mod_badge_savegame__title": "Dit bestand is een opgeslagen spel archief"
+	"mod_badge_savegame__title": "Dit bestand is een opgeslagen spel archief",
+	"notes_title_removable": "Verwijderbare opslag",
+	"notes_blurb_removable": "Vink deze optie aan voor collecties die op verwisselbare opslag staan.  Dit voorkomt dat de collectie automatisch wordt vergeten als de verwisselbare schijf niet is aangesloten bij het starten of opnieuw laden van Mod Assistant."
 }

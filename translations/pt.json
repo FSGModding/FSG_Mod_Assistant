@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Por favor, aguarde, isto pode demorar alguns segundos",
 	"loading_look_title": "Processar artigos de loja",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "Este ficheiro é um arquivo de savegame"
+	"mod_badge_savegame__title": "Este ficheiro é um arquivo de savegame",
+	"notes_title_removable": "Armazenamento amovível",
+	"notes_blurb_removable": "Para colecções que se encontram em armazenamento amovível, seleccione esta opção.  Isto evitará que a coleção seja esquecida automaticamente se a unidade amovível não estiver ligada ao iniciar ou recarregar o Mod Assistant"
 }

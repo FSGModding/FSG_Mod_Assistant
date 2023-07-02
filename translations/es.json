@@ -413,5 +413,7 @@
 	"loading_look_subtitle": "Por favor, espere, esto puede tardar unos segundos",
 	"loading_look_title": "Procesar artículos de la tienda",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "Este archivo es un archivo savegame"
+	"mod_badge_savegame__title": "Este archivo es un archivo savegame",
+	"notes_title_removable": "Almacenamiento extraíble",
+	"notes_blurb_removable": "Para colecciones que viven en almacenamiento extraíble, marca esta opción.  Esto evitará que la colección se olvide automáticamente si la unidad extraíble no está conectada al iniciar o recargar Mod Assistant."
 }
