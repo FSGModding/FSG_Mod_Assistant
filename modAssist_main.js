@@ -631,7 +631,7 @@ function createNamedWindow(winName, windowArgs) {
 }
 
 /* eslint-disable sort-keys */
-const subWindowDev = new Set(['import', 'save', 'find', 'notes', 'version', 'resolve', 'gamelog', 'folder'])
+const subWindowDev = new Set(['import', 'save', 'find', 'notes', 'version', 'resolve', 'gamelog', 'folder', 'confirm'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -649,6 +649,18 @@ const subWindows   = {
 		winName         : 'confirm',
 		HTMLFile        : 'confirm-fileMove.html',
 		subWindowArgs   : { parent : 'main', preload : 'confirmMove', fixed : true },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false) },
+	},
+	confirmMultiCopy : {
+		winName         : 'confirm',
+		HTMLFile        : 'confirm-fileMultiCopy.html',
+		subWindowArgs   : { parent : 'main', preload : 'confirmMultiCopy', fixed : true },
+		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false) },
+	},
+	confirmMultiMove : {
+		winName         : 'confirm',
+		HTMLFile        : 'confirm-fileMultiMove.html',
+		subWindowArgs   : { parent : 'main', preload : 'confirmMultiMove', fixed : true },
 		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_confirmList', 'confirm', false) },
 	},
 	confirmDelete : {
@@ -932,9 +944,13 @@ function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
 ipcMain.on('toMain_deleteMods',     (event, mods) => { handleCopyMoveDelete('confirmDelete', mods) })
 ipcMain.on('toMain_moveMods',       (event, mods) => { handleCopyMoveDelete('confirmMove', mods) })
 ipcMain.on('toMain_copyMods',       (event, mods) => { handleCopyMoveDelete('confirmCopy', mods) })
+ipcMain.on('toMain_moveMultiMods',  (event, mods) => { handleCopyMoveDelete('confirmMultiMove', mods) })
+ipcMain.on('toMain_copyMultiMods',  (event, mods) => { handleCopyMoveDelete('confirmMultiCopy', mods) })
 ipcMain.on('toMain_realFileDelete', (event, fileMap) => { fileOperation('delete', fileMap) })
 ipcMain.on('toMain_realFileMove',   (event, fileMap) => { fileOperation('move', fileMap) })
 ipcMain.on('toMain_realFileCopy',   (event, fileMap) => { fileOperation('copy', fileMap) })
+ipcMain.on('toMain_realMultiFileMove', (event, fileMap) => { fileOperation('move_multi', fileMap) })
+ipcMain.on('toMain_realMultiFileCopy', (event, fileMap) => { fileOperation('copy_multi', fileMap) })
 ipcMain.on('toMain_realFileImport', (event, fileMap) => { fileOperation('import', fileMap, 'import') })
 ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => {
 	fileOperation('copy', fileMap, 'resolve')
@@ -2252,6 +2268,7 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 }
 function fileOperation_post(type, fileMap) {
 	const fullPathMap = []
+	const cleanupSet  = new Set()
 
 	for ( const file of fileMap ) {
 		// fileMap is [destCollectKey, sourceCollectKey, fullPath (guess)]
@@ -2262,6 +2279,9 @@ function fileOperation_post(type, fileMap) {
 				path.join(modCollect.mapCollectionToFolder(file[1]), thisFileName), // source
 				path.join(modCollect.mapCollectionToFolder(file[0]), thisFileName), // dest
 			])
+			if ( type === 'move_multi' ) {
+				cleanupSet.add(path.join(modCollect.mapCollectionToFolder(file[1]), thisFileName))
+			}
 		} else {
 			fullPathMap.push([
 				file[2],
@@ -2276,6 +2296,8 @@ function fileOperation_post(type, fileMap) {
 	for ( const file of fullPathMap ) {
 		try {
 			switch (type) {
+				case 'move_multi' :
+				case 'copy_multi' :
 				case 'copy' :
 				case 'import' :
 					log.log.info(`Copy File : ${file[0]} -> ${file[1]}`, 'file-ops')
@@ -2310,6 +2332,17 @@ function fileOperation_post(type, fileMap) {
 		}
 
 		loadingWindow_current()
+	}
+
+	if ( type === 'move_multi' ) {
+		for ( const thisFile of cleanupSet ) {
+			try {
+				log.log.info(`Delete File : ${thisFile}`, 'file-ops')
+				fs.rmSync(thisFile, { recursive : true } )
+			} catch (e) {
+				log.log.danger(`Could not delete file : ${e}`, 'move_multi-file')
+			}
+		}
 	}
 
 	processModFolders()

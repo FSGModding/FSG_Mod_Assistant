@@ -415,5 +415,9 @@
 	"mod_badge_savegame": "savegame",
 	"mod_badge_savegame__title": "Šis fails ir saglabājamās spēles arhīvs",
 	"notes_title_removable": "Noņemama krātuve",
-	"notes_blurb_removable": "Kolekcijām, kas atrodas noņemamā atmiņā, atzīmējiet šo opciju.  Tas novērsīs kolekcijas automātisku aizmiršanu, ja noņemamais diskdziņš nav pievienots, kad tiek palaists vai pārlādēts Mod asistents."
+	"notes_blurb_removable": "Kolekcijām, kas atrodas noņemamā atmiņā, atzīmējiet šo opciju.  Tas novērsīs kolekcijas automātisku aizmiršanu, ja noņemamais diskdziņš nav pievienots, kad tiek palaists vai pārlādēts Mod asistents.",
+	"notes_title_holding": "Pildspalvu kolekcija",
+	"notes_blurb_holding": "Šo iestatījumu izmantojiet kolekcijām, kas ir modu uzglabāšanas vietas vai pagaidu krātuves.  Ieslēdzot šo opciju, tiek aktivizēts vairāku galamērķu kopēšanas/pārvietošanas dialoglodziņš failu operācijām, kuru izcelsme ir šajā kolekcijā.",
+	"confirm_copy_multi_blurb": "Kopēt failus uz vairākiem galamērķiem - esošie faili tiks pārrakstīti",
+	"confirm_move_multi_blurb": "Kopēt failus uz vairākiem galamērķiem - esošie faili tiks pārrakstīti, oriģinālie avota faili tiks noņemti."
 }

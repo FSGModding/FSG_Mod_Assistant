@@ -410,10 +410,14 @@
 	"unit_l": "l",
 	"unit_m3": "m³",
 	"unit_ft3": "ft³",
-	"loading_look_subtitle": "Please wait, this could take a few seconds",
-	"loading_look_title": "Processing Store Items",
+	"loading_look_subtitle": "Počkejte prosím, může to trvat několik sekund",
+	"loading_look_title": "Zpracování položek obchodu",
 	"mod_badge_savegame": "savegame",
-	"mod_badge_savegame__title": "This file is a savegame archive",
-	"notes_title_removable": "Removable Storage",
-	"notes_blurb_removable": "For collections that live on removable storage, check this option.  This will prevent the collection from being auto-forgotten if the removable drive is not attached when starting or reloading Mod Assistant"
+	"mod_badge_savegame__title": "Tento soubor je archiv uložených her",
+	"notes_title_removable": "Vyměnitelné úložiště",
+	"notes_blurb_removable": "U sbírek, které jsou uloženy na vyměnitelném úložišti, zaškrtněte tuto možnost.  Tím zabráníte automatickému zapomenutí sbírky, pokud není vyměnitelný disk připojen při spuštění nebo opětovném načtení aplikace Mod Assistant.",
+	"notes_title_holding": "Holding Pen Collection",
+	"notes_blurb_holding": "Toto nastavení použijte pro sbírky, které slouží k uchovávání ohrádek nebo dočasnému uložení modifikací.  Zapnutím této volby se aktivuje dialogové okno kopírování / přesunutí více cílů pro operace se soubory pocházejícími z této kolekce.",
+	"confirm_copy_multi_blurb": "Kopírování souborů do více míst určení - stávající soubory budou přepsány",
+	"confirm_move_multi_blurb": "Kopírování souborů do více míst určení - stávající soubory budou přepsány, původní zdrojové soubory budou odstraněny."
 }

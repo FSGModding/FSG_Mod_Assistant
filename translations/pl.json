@@ -415,5 +415,9 @@
 	"mod_badge_savegame": "savegame",
 	"mod_badge_savegame__title": "Ten plik jest archiwum gry",
 	"notes_title_removable": "Pamięć wymienna",
-	"notes_blurb_removable": "W przypadku kolekcji, które znajdują się na nośniku wymiennym, zaznacz tę opcję.  Zapobiegnie to automatycznemu zapominaniu kolekcji, jeśli dysk wymienny nie jest podłączony podczas uruchamiania lub ponownego ładowania Mod Assistant"
+	"notes_blurb_removable": "W przypadku kolekcji, które znajdują się na nośniku wymiennym, zaznacz tę opcję.  Zapobiegnie to automatycznemu zapominaniu kolekcji, jeśli dysk wymienny nie jest podłączony podczas uruchamiania lub ponownego ładowania Mod Assistant",
+	"notes_title_holding": "Holding Pen Collection",
+	"notes_blurb_holding": "Użyj tego ustawienia dla kolekcji, które przechowują pióra lub tymczasową pamięć dla modów.  Włączenie tej opcji włącza okno dialogowe kopiowania/przenoszenia wielu miejsc docelowych dla operacji na plikach pochodzących z tej kolekcji",
+	"confirm_copy_multi_blurb": "Kopiuj pliki do wielu miejsc docelowych - istniejące pliki zostaną nadpisane",
+	"confirm_move_multi_blurb": "Kopiuj pliki do wielu miejsc docelowych - istniejące pliki zostaną nadpisane, oryginalne pliki źródłowe zostaną usunięte"
 }

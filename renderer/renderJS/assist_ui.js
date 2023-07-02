@@ -201,7 +201,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			thisCollection.dependSet.size,
 			collectNotes.notes_favorite,
 			modCollect.opts.activeCollection === collectKey,
-			collectNotes.notes_game_admin
+			collectNotes.notes_game_admin,
+			collectNotes.notes_holding
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	}
@@ -297,20 +298,21 @@ function clientMakeListActive() {
 	}
 }
 
-const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass) => fsgUtil.useTemplate('collect_row', {
+const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding) => fsgUtil.useTemplate('collect_row', {
 	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
-	class_hideDownload          : dlEnabled ? ''                                                                                         : 'd-none',
-	class_hideGameAdminPassword : gameAdminPass !== null ? ''                                                                            : 'd-none',
-	class_hidePassword          : adminPass !== null ? ''                                                                                : 'd-none',
-	class_hideWebsite           : website !== null ? ''                                                                                  : 'd-none',
+	class_hideDownload          : dlEnabled ? '' : 'd-none',
+	class_hideGameAdminPassword : gameAdminPass !== null ? '' : 'd-none',
+	class_hidePassword          : adminPass !== null ? '' : 'd-none',
+	class_hideWebsite           : website !== null ? '' : 'd-none',
+	class_isHolding             : isHolding ? 'is-holding-pen' : '',
 	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive),
 	game_admin_password         : gameAdminPass,
 	id                          : id,
 	mod_rows                    : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`,
 	name                        : name,
 	password                    : adminPass,
-	tagLine                     : tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>`                         : '',
-	totalCount                  : modCount > 999 ? '999+'                                                                                : modCount,
+	tagLine                     : tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : '',
+	totalCount                  : modCount > 999 ? '999+' : modCount,
 	website                     : website,
 })
 
@@ -371,14 +373,24 @@ function clientBatchOperation(mode) {
 	const allModRows     = fsgUtil.query('.mod-row .mod-row-checkbox:checked')
 	const selectedMods   = Array.from(allModRows).map((thisRow) => thisRow.id.replace('__checkbox', ''))
 
+	const isHoldingPen   = fsgUtil.byId(`${selectedMods[0].split('--')[0]}_mods`).classList.contains('is-holding-pen')
+	
 	if ( selectedMods.length < 1 ) { return }
 
 	switch (mode) {
 		case 'copy':
-			window.mods.copyMods(selectedMods)
+			if ( isHoldingPen ) {
+				window.mods.copyMulti(selectedMods)
+			} else {
+				window.mods.copyMods(selectedMods)
+			}
 			break
 		case 'move':
-			window.mods.moveMods(selectedMods)
+			if ( isHoldingPen ) {
+				window.mods.moveMulti(selectedMods)
+			} else {
+				window.mods.moveMods(selectedMods)
+			}
 			break
 		case 'delete':
 			window.mods.deleteMods(selectedMods)

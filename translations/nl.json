@@ -415,5 +415,9 @@
 	"mod_badge_savegame": "opgeslagen spel",
 	"mod_badge_savegame__title": "Dit bestand is een opgeslagen spel archief",
 	"notes_title_removable": "Verwijderbare opslag",
-	"notes_blurb_removable": "Vink deze optie aan voor collecties die op verwisselbare opslag staan.  Dit voorkomt dat de collectie automatisch wordt vergeten als de verwisselbare schijf niet is aangesloten bij het starten of opnieuw laden van Mod Assistant."
+	"notes_blurb_removable": "Vink deze optie aan voor collecties die op verwisselbare opslag staan.  Dit voorkomt dat de collectie automatisch wordt vergeten als de verwisselbare schijf niet is aangesloten bij het starten of opnieuw laden van Mod Assistant.",
+	"notes_title_holding": "Collectie Pennen",
+	"notes_blurb_holding": "Gebruik deze instelling voor verzamelingen die pennen of tijdelijke opslag bewaren voor mods.  Als je deze optie inschakelt, wordt het dialoogvenster voor kopiëren/verplaatsen met meerdere bestemmingen ingeschakeld voor bestandsbewerkingen vanuit deze verzameling",
+	"confirm_copy_multi_blurb": "Kopieer bestanden naar meerdere bestemmingen - bestaande bestanden worden overschreven",
+	"confirm_move_multi_blurb": "Kopieer bestanden naar meerdere bestemmingen - bestaande bestanden worden overschreven, originele bronbestanden worden verwijderd."
 }

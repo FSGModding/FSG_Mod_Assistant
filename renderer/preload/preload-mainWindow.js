@@ -60,11 +60,13 @@ contextBridge.exposeInMainWorld(
 		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },
 
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
+		copyMulti  : (selectedMods) => { ipcRenderer.send('toMain_copyMultiMods', selectedMods) },
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
 		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
 		modCText   : (selectedMod)  => { ipcRenderer.send('toMain_modContextMenu', selectedMod ) },
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
+		moveMulti  : (selectedMods) => { ipcRenderer.send('toMain_moveMultiMods', selectedMods) },
 		openCText  : (collection)   => { ipcRenderer.send('toMain_mainContextMenu', collection ) },
 		openExt    : (selectedMods) => { ipcRenderer.send('toMain_openExt', selectedMods) },
 		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },

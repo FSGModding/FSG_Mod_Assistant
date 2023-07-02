@@ -10,7 +10,6 @@
 
 
 window.mods.receive('fromMain_modList', (modCollect) => {
-	// console.log(modCollect)
 	const doMultiVersion     = modCollect.appSettings.multi_version
 	const thisVersion        = modCollect.appSettings.game_version
 	const nameIconMap        = {}

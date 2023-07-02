@@ -415,5 +415,9 @@
 	"mod_badge_savegame": "savegame",
 	"mod_badge_savegame__title": "This file is a savegame archive",
 	"notes_title_removable": "Removable Storage",
-	"notes_blurb_removable": "For collections that live on removable storage, check this option.  This will prevent the collection from being auto-forgotten if the removable drive is not attached when starting or reloading Mod Assistant"
+	"notes_blurb_removable": "For collections that live on removable storage, check this option.  This will prevent the collection from being auto-forgotten if the removable drive is not attached when starting or reloading Mod Assistant",
+	"notes_title_holding": "Holding Pen Collection",
+	"notes_blurb_holding": "Use this setting for collections that are holding pens or temporary storage for mods.  Turning this on enables the multiple destination copy / move dialog for file operations originating from this collection",
+	"confirm_copy_multi_blurb": "Copy files to multiple destinations - existing files will be overwritten",
+	"confirm_move_multi_blurb": "Copy files to multiple destinations - existing files will be overwritten, original source files will be removed."
 }

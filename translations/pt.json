@@ -415,5 +415,9 @@
 	"mod_badge_savegame": "savegame",
 	"mod_badge_savegame__title": "Este ficheiro é um arquivo de savegame",
 	"notes_title_removable": "Armazenamento amovível",
-	"notes_blurb_removable": "Para colecções que se encontram em armazenamento amovível, seleccione esta opção.  Isto evitará que a coleção seja esquecida automaticamente se a unidade amovível não estiver ligada ao iniciar ou recarregar o Mod Assistant"
+	"notes_blurb_removable": "Para colecções que se encontram em armazenamento amovível, seleccione esta opção.  Isto evitará que a coleção seja esquecida automaticamente se a unidade amovível não estiver ligada ao iniciar ou recarregar o Mod Assistant",
+	"notes_title_holding": "Coleção de canetas de retenção",
+	"notes_blurb_holding": "Utilize esta definição para as colecções que guardam canetas ou armazenamento temporário para mods.  Ao ativar esta opção, ativa a caixa de diálogo de cópia/movimentação de múltiplos destinos para operações de ficheiros com origem nesta coleção",
+	"confirm_copy_multi_blurb": "Copiar ficheiros para vários destinos - os ficheiros existentes serão substituídos",
+	"confirm_move_multi_blurb": "Copiar ficheiros para vários destinos - os ficheiros existentes serão substituídos, os ficheiros de origem originais serão removidos."
 }

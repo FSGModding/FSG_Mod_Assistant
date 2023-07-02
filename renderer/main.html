@@ -441,7 +441,7 @@
 			<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save"></l10n></button>
 		</td>
 	</tr>
-	<tr class="mod-table-folder-detail collapse accordion-collapse" data-bs-parent="#mod-collections" id="{{id}}_mods">
+	<tr class="mod-table-folder-detail collapse accordion-collapse {{class_isHolding}}" data-bs-parent="#mod-collections" id="{{id}}_mods">
 		<td class="mod-table-folder-details px-0 ps-4" colspan="3">
 			{{mod_rows}}
 			<span class="no-mods-found d-block fst-italic small text-center d-none"><l10n name="empty_or_filtered"></l10n></span>

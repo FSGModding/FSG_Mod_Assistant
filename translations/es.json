@@ -415,5 +415,9 @@
 	"mod_badge_savegame": "savegame",
 	"mod_badge_savegame__title": "Este archivo es un archivo savegame",
 	"notes_title_removable": "Almacenamiento extraíble",
-	"notes_blurb_removable": "Para colecciones que viven en almacenamiento extraíble, marca esta opción.  Esto evitará que la colección se olvide automáticamente si la unidad extraíble no está conectada al iniciar o recargar Mod Assistant."
+	"notes_blurb_removable": "Para colecciones que viven en almacenamiento extraíble, marca esta opción.  Esto evitará que la colección se olvide automáticamente si la unidad extraíble no está conectada al iniciar o recargar Mod Assistant.",
+	"notes_title_holding": "Colección Holding Pen",
+	"notes_blurb_holding": "Utilice esta configuración para las colecciones que guardan bolígrafos o almacenamiento temporal para mods.  Al activar esta opción, se activa el cuadro de diálogo de copia/movimiento de varios destinos para las operaciones de archivo que se originen en esta colección",
+	"confirm_copy_multi_blurb": "Copiar archivos en varios destinos: los archivos existentes se sobrescribirán",
+	"confirm_move_multi_blurb": "Copiar archivos a varios destinos: los archivos existentes se sobrescribirán y los archivos de origen se eliminarán"
 }

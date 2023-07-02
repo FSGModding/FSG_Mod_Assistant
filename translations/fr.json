@@ -415,5 +415,9 @@
 	"mod_badge_savegame": "savegame",
 	"mod_badge_savegame__title": "Ce fichier est une archive de sauvegarde",
 	"notes_title_removable": "Stockage amovible",
-	"notes_blurb_removable": "Pour les collections qui se trouvent sur un support amovible, cochez cette option.  Cela empêchera l'oubli automatique de la collection si le disque amovible n'est pas connecté lors du démarrage ou du rechargement de Mod Assistant"
+	"notes_blurb_removable": "Pour les collections qui se trouvent sur un support amovible, cochez cette option.  Cela empêchera l'oubli automatique de la collection si le disque amovible n'est pas connecté lors du démarrage ou du rechargement de Mod Assistant",
+	"notes_title_holding": "Collection de stylos à main",
+	"notes_blurb_holding": "Utilisez ce paramètre pour les collections qui contiennent des stylos ou un stockage temporaire pour les mods.  L'activation de ce paramètre permet d'activer la boîte de dialogue de copie/déplacement à destinations multiples pour les opérations de fichiers provenant de cette collection",
+	"confirm_copy_multi_blurb": "Copier des fichiers vers plusieurs destinations - les fichiers existants seront écrasés",
+	"confirm_move_multi_blurb": "Copier des fichiers vers plusieurs destinations - les fichiers existants seront écrasés, les fichiers source d'origine seront supprimés"
 }
