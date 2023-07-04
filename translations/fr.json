@@ -419,5 +419,14 @@
 	"notes_title_holding": "Collection de stylos à main",
 	"notes_blurb_holding": "Utilisez ce paramètre pour les collections qui contiennent des stylos ou un stockage temporaire pour les mods.  L'activation de ce paramètre permet d'activer la boîte de dialogue de copie/déplacement à destinations multiples pour les opérations de fichiers provenant de cette collection",
 	"confirm_copy_multi_blurb": "Copier des fichiers vers plusieurs destinations - les fichiers existants seront écrasés",
-	"confirm_move_multi_blurb": "Copier des fichiers vers plusieurs destinations - les fichiers existants seront écrasés, les fichiers source d'origine seront supprimés"
+	"confirm_move_multi_blurb": "Copier des fichiers vers plusieurs destinations - les fichiers existants seront écrasés, les fichiers source d'origine seront supprimés",
+	"savegame_track__title": "Ouvrir Save Game Mod Tracker",
+	"save_track_title": "Traceur de mods de sauvegarde de jeu",
+	"save_track_blurb": "Cette fenêtre vous permet de charger un dossier de sauvegarde qui sera comparé à ses fichiers de sauvegarde (s'ils existent) et vous indiquera approximativement quand les mods ont été ajoutés ou retirés de la sauvegarde",
+	"save_track_backup": "Date de sauvegarde",
+	"save_track_only_backup": "Uniquement actif dans cette sauvegarde",
+	"save_track_only_current": "Uniquement actif dans la sauvegarde en cours",
+	"save_track_current": "Sauvegarde actuelle",
+	"save_track_none": "Aucun jeu de sauvegarde n'a été chargé, ou le jeu de sauvegarde spécifié n'a pas de fichiers de sauvegarde",
+	"save_track_duplicate": "Même liste de mods que la sauvegarde actuelle"
 }

@@ -419,5 +419,14 @@
 	"notes_title_holding": "Holding Pen Collection",
 	"notes_blurb_holding": "Użyj tego ustawienia dla kolekcji, które przechowują pióra lub tymczasową pamięć dla modów.  Włączenie tej opcji włącza okno dialogowe kopiowania/przenoszenia wielu miejsc docelowych dla operacji na plikach pochodzących z tej kolekcji",
 	"confirm_copy_multi_blurb": "Kopiuj pliki do wielu miejsc docelowych - istniejące pliki zostaną nadpisane",
-	"confirm_move_multi_blurb": "Kopiuj pliki do wielu miejsc docelowych - istniejące pliki zostaną nadpisane, oryginalne pliki źródłowe zostaną usunięte"
+	"confirm_move_multi_blurb": "Kopiuj pliki do wielu miejsc docelowych - istniejące pliki zostaną nadpisane, oryginalne pliki źródłowe zostaną usunięte",
+	"savegame_track__title": "Otwórz Save Game Mod Tracker",
+	"save_track_title": "Save Game Mod Tracker",
+	"save_track_blurb": "To okno umożliwia załadowanie folderu zapisu gry, który zostanie porównany z plikami kopii zapasowej zapisu gry (jeśli istnieją) i powie ci, kiedy mody zostały dodane lub usunięte z zapisu gry",
+	"save_track_backup": "Backup Dated",
+	"save_track_only_backup": "Aktywny tylko w tej kopii zapasowej",
+	"save_track_only_current": "Aktywny tylko w bieżącym zapisie",
+	"save_track_current": "Bieżąca zapisana gra",
+	"save_track_none": "Nie załadowano zapisanej gry lub określona zapisana gra nie miała plików kopii zapasowej",
+	"save_track_duplicate": "Ta sama lista modów, co w bieżącej zapisanej grze"
 }

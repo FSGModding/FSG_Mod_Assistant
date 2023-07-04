@@ -419,5 +419,14 @@
 	"notes_title_holding": "Pildspalvu kolekcija",
 	"notes_blurb_holding": "Šo iestatījumu izmantojiet kolekcijām, kas ir modu uzglabāšanas vietas vai pagaidu krātuves.  Ieslēdzot šo opciju, tiek aktivizēts vairāku galamērķu kopēšanas/pārvietošanas dialoglodziņš failu operācijām, kuru izcelsme ir šajā kolekcijā.",
 	"confirm_copy_multi_blurb": "Kopēt failus uz vairākiem galamērķiem - esošie faili tiks pārrakstīti",
-	"confirm_move_multi_blurb": "Kopēt failus uz vairākiem galamērķiem - esošie faili tiks pārrakstīti, oriģinālie avota faili tiks noņemti."
+	"confirm_move_multi_blurb": "Kopēt failus uz vairākiem galamērķiem - esošie faili tiks pārrakstīti, oriģinālie avota faili tiks noņemti.",
+	"savegame_track__title": "Atvērt Save Game Mod Tracker",
+	"save_track_title": "Save Game Mod Tracker",
+	"save_track_blurb": "Šis logs ļauj ielādēt saglabājamās spēles mapi, kas tiks salīdzināta ar tās saglabājamās spēles dublējuma failiem (ja tādi ir) un parādīs, kad aptuveni tika pievienoti vai noņemti spēles modi.",
+	"save_track_backup": "Rezerves kopijas datums",
+	"save_track_only_backup": "Aktīvs tikai šajā dublējumkopijā",
+	"save_track_only_current": "Aktīvs tikai pašreizējā saglabāšanas reizē",
+	"save_track_current": "Pašreizējā saglabāšanas spēle",
+	"save_track_none": "Nav ielādēta neviena saglabāšanas spēle vai norādītajai saglabāšanas spēlei nav dublējuma failu",
+	"save_track_duplicate": "Tas pats Mod saraksts kā pašreizējā saglabātā spēle"
 }

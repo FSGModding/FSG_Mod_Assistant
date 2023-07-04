@@ -74,6 +74,7 @@ contextBridge.exposeInMainWorld(
 		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
 		openNotes  : (collection)   => { ipcRenderer.send('toMain_openNotes', collection ) },
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
+		openTrack  : ()             => { ipcRenderer.send('toMain_openSaveTrack') },
 		setModInfo : (mod, site)    => { ipcRenderer.send('toMain_setModInfo', mod, site) },
 		zipMods    : (selectedMods) => { ipcRenderer.send('toMain_exportZip', selectedMods) },
 

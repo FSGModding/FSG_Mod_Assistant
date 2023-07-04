@@ -419,5 +419,14 @@
 	"notes_title_holding": "Holding Pen Collection",
 	"notes_blurb_holding": "Toto nastavení použijte pro sbírky, které slouží k uchovávání ohrádek nebo dočasnému uložení modifikací.  Zapnutím této volby se aktivuje dialogové okno kopírování / přesunutí více cílů pro operace se soubory pocházejícími z této kolekce.",
 	"confirm_copy_multi_blurb": "Kopírování souborů do více míst určení - stávající soubory budou přepsány",
-	"confirm_move_multi_blurb": "Kopírování souborů do více míst určení - stávající soubory budou přepsány, původní zdrojové soubory budou odstraněny."
+	"confirm_move_multi_blurb": "Kopírování souborů do více míst určení - stávající soubory budou přepsány, původní zdrojové soubory budou odstraněny.",
+	"savegame_track__title": "Open Save Game Mod Tracker",
+	"save_track_title": "Save Game Mod Tracker",
+	"save_track_blurb": "Toto okno umožňuje načíst složku uložené hry, která bude porovnána se záložními soubory uložené hry (pokud existují) a řekne vám, kdy byly mody do uložené hry přidány nebo z ní odstraněny.",
+	"save_track_backup": "Datum zálohy",
+	"save_track_only_backup": "Aktivní pouze v této záloze",
+	"save_track_only_current": "Aktivní pouze v aktuálním uložení",
+	"save_track_current": "Aktuální uložená hra",
+	"save_track_none": "Nebyla načtena žádná uložená hra nebo zadaná uložená hra neměla žádné záložní soubory",
+	"save_track_duplicate": "Stejný seznam modů jako v aktuální uložené hře"
 }

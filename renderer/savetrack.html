@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/savertrack_ui.js"></script>
+</head>
+<body data-bs-theme="dark" class="overflow-custom2" id="drag_target" style="min-height: 100vh;">
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100 g-0">
+				<div class="col-7" style="-webkit-app-region: drag;">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+				</div>
+				<div class="col-5 pt-4">
+					<div class="badge bg-primary mx-auto w-100 d-block rounded-pill"><l10n class="h4" name="save_track_title"></l10n></div>
+				</div>
+			</div>
+			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="save_track_blurb"></l10n></span>
+		</div>
+
+		<div class="btn-group mx-auto w-75 d-flex">
+			<button class="btn btn-primary btn-sm border" onclick="window.mods.openFolder()"><i class="bi bi-folder"></i> <l10n name="open_save_folder"></l10n></button>
+		</div>
+		
+		<div class="mx-2 my-3 text-center" id="no_list_yet"><l10n name="save_track_none"></l10n></div>
+		<div class="mx-2 my-3" id="modList"></div>
+
+	</div>
+
+</body>
+
+
+<template id="savetrack_current">
+	<div class="card">
+		<div class="card-header"><l10n name="save_track_current"></l10n> <em class="small">({{savegameID}})</em></div>
+		<div class="card-body">
+			<div class="row row-cols-3">{{modList}}</div>
+		</div>
+	</div>
+</template>
+
+<template id="savetrack_backup">
+	<div class="card mt-2">
+		<div class="card-header"><l10n name="save_track_backup"></l10n>: <em>{{backupDate}}</em></div>
+		<div class="card-body">
+			<em class="h6 {{class_isDupe}}"><l10n name="save_track_duplicate"></l10n></em>
+			<div class="{{class_notDupe}}">
+				<h6><l10n name="save_track_only_current"></l10n></h6>
+				<div class="row row-cols-3 mb-4">{{onlyCurrent}}</div>
+				<h6><l10n name="save_track_only_backup"></l10n></h6>
+				<div class="row row-cols-3">{{onlyBackup}}</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+</html>

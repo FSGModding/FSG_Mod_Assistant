@@ -419,5 +419,14 @@
 	"notes_title_holding": "Wachtkamer Collectie",
 	"notes_blurb_holding": "Gebruik deze instelling voor collecties die je gebruikt als Wachtkamer collectie, of tijdelijke opslag, voor Mods. Door dit aan te zetten activeer je het meerdere bestemmingen kopieer / verplaatsen dialoog voor bestand uitvoeringen die van deze collectie komen",
 	"confirm_copy_multi_blurb": "Bestanden kopiëren naar meerdere bestemmingen - bestaande bestanden worden overschreven",
-	"confirm_move_multi_blurb": "Kopieer bestanden naar meerdere bestemmingen - bestaande bestanden worden overschreven, originele bronbestanden worden verwijderd."
+	"confirm_move_multi_blurb": "Kopieer bestanden naar meerdere bestemmingen - bestaande bestanden worden overschreven, originele bronbestanden worden verwijderd.",
+	"savegame_track__title": "Open Save Game Mod Tracker",
+	"save_track_title": "Opslaan Spel Mod Tracker",
+	"save_track_blurb": "Met dit venster kun je een map van een opgeslagen spel laden die wordt vergeleken met de back-upbestanden van het opgeslagen spel (als die bestaan) en je ongeveer vertelt wanneer mods zijn toegevoegd aan of verwijderd uit het opgeslagen spel.",
+	"save_track_backup": "Back-up gedateerd",
+	"save_track_only_backup": "Alleen actief in deze back-up",
+	"save_track_only_current": "Alleen actief in huidige opslag",
+	"save_track_current": "Huidig opgeslagen spel",
+	"save_track_none": "Geen spel opgeslagen of spel opgeslagen zonder back-upbestanden",
+	"save_track_duplicate": "Zelfde mod lijst als huidige save game"
 }

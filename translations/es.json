@@ -419,5 +419,14 @@
 	"notes_title_holding": "Colección Holding Pen",
 	"notes_blurb_holding": "Utilice esta configuración para las colecciones que guardan bolígrafos o almacenamiento temporal para mods.  Al activar esta opción, se activa el cuadro de diálogo de copia/movimiento de varios destinos para las operaciones de archivo que se originen en esta colección",
 	"confirm_copy_multi_blurb": "Copiar archivos en varios destinos: los archivos existentes se sobrescribirán",
-	"confirm_move_multi_blurb": "Copiar archivos a varios destinos: los archivos existentes se sobrescribirán y los archivos de origen se eliminarán"
+	"confirm_move_multi_blurb": "Copiar archivos a varios destinos: los archivos existentes se sobrescribirán y los archivos de origen se eliminarán",
+	"savegame_track__title": "Abrir partida guardada Mod Tracker",
+	"save_track_title": "Rastreador de mods de partidas guardadas",
+	"save_track_blurb": "Esta ventana te permite cargar una carpeta de partida guardada que se comparará con los archivos de copia de seguridad de la partida guardada (si existen) y te dirá aproximadamente cuándo se añadieron o eliminaron mods de la partida guardada",
+	"save_track_backup": "Copia de seguridad fechada",
+	"save_track_only_backup": "Sólo activo en esta copia de seguridad",
+	"save_track_only_current": "Sólo activo en el guardado actual",
+	"save_track_current": "Partida guardada actual",
+	"save_track_none": "No se ha cargado ninguna partida guardada, o la partida guardada especificada no tenía archivos de copia de seguridad",
+	"save_track_duplicate": "Misma lista de mods que la partida guardada actual"
 }

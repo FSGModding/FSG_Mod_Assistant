@@ -73,6 +73,7 @@ myTranslator.iconOverrides = {
 	min_tray_button        : 'chevron-bar-down',
 	notes_button           : 'journal-text',
 	preferences_button     : 'gear',
+	savegame_track         : 'calendar2-check',
 	search_all             : 'search',
 }
 
@@ -174,7 +175,7 @@ for ( const testPath of pathGuesses ) {
 	}
 }
 
-const { modFileCollection, modLooker, saveFileChecker } = require('./lib/modCheckLib.js')
+const { modFileCollection, modLooker, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
 
 const winDef = (w, h) => { return {
@@ -257,6 +258,7 @@ const settingsSchema = {
 		prefs         : winDef(800, 500),
 		resolve       : winDef(750, 600),
 		save          : winDef(900, 500),
+		save_track    : winDef(900, 500),
 		splash        : winDef(600, 300),
 		version       : winDef(800, 500),
 	}},
@@ -305,23 +307,24 @@ let lastGameSettings = {}
 
 let tray    = null
 const windows = {
-	change  : null,
-	confirm : null,
-	debug   : null,
-	detail  : null,
-	find    : null,
-	folder  : null,
-	gamelog : null,
-	import  : null,
-	load    : null,
-	looker  : null,
-	main    : null,
-	notes   : null,
-	prefs   : null,
-	resolve : null,
-	save    : null,
-	splash  : null,
-	version : null,
+	change     : null,
+	confirm    : null,
+	debug      : null,
+	detail     : null,
+	find       : null,
+	folder     : null,
+	gamelog    : null,
+	import     : null,
+	load       : null,
+	looker     : null,
+	main       : null,
+	notes      : null,
+	prefs      : null,
+	resolve    : null,
+	save       : null,
+	save_track : null,
+	splash     : null,
+	version    : null,
 }
 
 let foldersDirty = true
@@ -631,7 +634,7 @@ function createNamedWindow(winName, windowArgs) {
 }
 
 /* eslint-disable sort-keys */
-const subWindowDev = new Set(['import', 'save', 'find', 'notes', 'version', 'resolve', 'gamelog', 'folder', 'confirm'])
+const subWindowDev = new Set(['save_track', 'import', 'save', 'find', 'notes', 'version', 'resolve', 'gamelog', 'folder', 'confirm'])
 const subWindows   = {
 	confirmFav : {
 		winName         : 'confirm',
@@ -760,6 +763,13 @@ const subWindows   = {
 		HTMLFile        : 'savegame.html',
 		subWindowArgs   : { preload : 'savegameWindow' },
 		callback        : (windowArgs) => { sendModList(windowArgs, 'fromMain_collectionName', 'save', false ) },
+		refocusCallback : true,
+	},
+	save_track : {
+		winName         : 'save_track',
+		HTMLFile        : 'savetrack.html',
+		subWindowArgs   : { preload : 'savetrackWindow' },
+		callback        : () => { return },
 		refocusCallback : true,
 	},
 	import : {
@@ -1929,6 +1939,29 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 	})
 })
 /** END: Export operation */
+
+/** Savetrack window operation */
+ipcMain.on('toMain_openSaveTrack', () => { createNamedWindow('save_track') })
+ipcMain.on('toMain_openTrackFolder', () => {
+	const options = {
+		properties  : ['openDirectory'],
+		defaultPath : pathBestGuess,
+	}
+
+	dialog.showOpenDialog(windows.save_track, options).then((result) => {
+		if ( !result.canceled ) {
+			try {
+				const thisSaveInfo = new savegameTrack(result.filePaths[0], log)
+
+				sendModList({ saveInfo : thisSaveInfo.modList }, 'fromMain_saveInfo', 'save_track', false )
+			} catch (e) {
+				log.log.danger(`Load failed: ${e}`, 'save-track')
+			}
+		}
+	}).catch((unknownError) => {
+		log.log.danger(`Could not read specified folder : ${unknownError}`, 'save-track')
+	})
+})
 
 /** Savegame window operation */
 ipcMain.on('toMain_openSave',       (event, collection) => { createNamedWindow('save', { collectKey : collection }) })

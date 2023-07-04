@@ -419,5 +419,14 @@
 	"notes_title_holding": "Coleção de canetas de retenção",
 	"notes_blurb_holding": "Utilize esta definição para as colecções que guardam canetas ou armazenamento temporário para mods.  Ao ativar esta opção, ativa a caixa de diálogo de cópia/movimentação de múltiplos destinos para operações de ficheiros com origem nesta coleção",
 	"confirm_copy_multi_blurb": "Copiar ficheiros para vários destinos - os ficheiros existentes serão substituídos",
-	"confirm_move_multi_blurb": "Copiar ficheiros para vários destinos - os ficheiros existentes serão substituídos, os ficheiros de origem originais serão removidos."
+	"confirm_move_multi_blurb": "Copiar ficheiros para vários destinos - os ficheiros existentes serão substituídos, os ficheiros de origem originais serão removidos.",
+	"savegame_track__title": "Abrir o rastreador de mods de jogos salvos",
+	"save_track_title": "Rastreador de Mods de Jogos Salvos",
+	"save_track_blurb": "Esta janela permite-lhe carregar uma pasta de um jogo guardado, que será comparada com os ficheiros de cópia de segurança do jogo guardado (se existirem) e informá-lo-á aproximadamente quando os mods foram adicionados ou removidos do jogo guardado",
+	"save_track_backup": "Backup Datado",
+	"save_track_only_backup": "Apenas ativo nesta cópia de segurança",
+	"save_track_only_current": "Apenas ativo na gravação atual",
+	"save_track_current": "Jogo guardado atual",
+	"save_track_none": "Nenhum jogo guardado foi carregado, ou o jogo guardado especificado não tinha ficheiros de cópia de segurança",
+	"save_track_duplicate": "Mesma lista de mods do jogo salvo atual"
 }

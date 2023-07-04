@@ -419,5 +419,14 @@
 	"notes_title_holding": "Sammlung Holding Pen",
 	"notes_blurb_holding": "Verwenden Sie diese Einstellung für Sammlungen, die Stifte oder temporären Speicher für Mods enthalten.  Wenn Sie diese Einstellung aktivieren, wird der Dialog zum Kopieren/Verschieben mehrerer Ziele für Dateioperationen aktiviert, die von dieser Sammlung ausgehen",
 	"confirm_copy_multi_blurb": "Kopieren von Dateien an mehrere Ziele - vorhandene Dateien werden überschrieben",
-	"confirm_move_multi_blurb": "Kopieren von Dateien an mehrere Ziele - vorhandene Dateien werden überschrieben, ursprüngliche Quelldateien werden entfernt."
+	"confirm_move_multi_blurb": "Kopieren von Dateien an mehrere Ziele - vorhandene Dateien werden überschrieben, ursprüngliche Quelldateien werden entfernt.",
+	"savegame_track__title": "Open Save Game Mod Tracker",
+	"save_track_title": "Save Game Mod Tracker",
+	"save_track_blurb": "In diesem Fenster können Sie einen Spielordner laden, der mit den Sicherungsdateien des Spiels (falls vorhanden) verglichen wird und Ihnen ungefähr mitteilt, wann Mods zum Spiel hinzugefügt oder aus dem Spiel entfernt wurden",
+	"save_track_backup": "Sicherung datiert",
+	"save_track_only_backup": "Nur in dieser Sicherung aktiv",
+	"save_track_only_current": "Nur im aktuellen Spielstand aktiv",
+	"save_track_current": "Aktuelles Spiel speichern",
+	"save_track_none": "Kein Spielstand geladen, oder der angegebene Spielstand hatte keine Sicherungsdateien",
+	"save_track_duplicate": "Dieselbe Mod-Liste wie beim aktuellen Spielstand"
 }
