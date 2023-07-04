@@ -16,7 +16,7 @@
 		},
 		{
 			"name": "Debug - CLI Tester",
-			"program": "${workspaceFolder}/test/mod-reader-test.js",
+			"program": "${workspaceFolder}/test/test.js",
 			"cwd": "${workspaceFolder}",
 			"request": "launch",
 			"skipFiles": [
