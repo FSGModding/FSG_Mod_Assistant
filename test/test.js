@@ -27,6 +27,7 @@ const testLog = class {
 	step(text) { this.#steps.push([false, `${text}.`]) }
 
 	error (text) {
+		process.exitCode = 1
 		this.#didFail = true
 		this.#steps.push([true, text])
 	}

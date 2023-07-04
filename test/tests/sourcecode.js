@@ -26,7 +26,7 @@ async function tester (test) {
 	for ( const file of jsFiles ) {
 		const thisFile = path.relative(rootPath, file)
 
-		if ( thisFile.startsWith('node_modules') || thisFile.startsWith('renderer\\inc') ) {
+		if ( thisFile.startsWith('node_modules') || thisFile.includes('inc') ) {
 			continue
 		}
 		
