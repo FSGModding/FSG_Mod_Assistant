@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<careerSavegame revision="2" valid="true">
+    <settings>
+        <savegameName>My game save</savegameName>
+        <creationDate>2023-01-10</creationDate>
+        <mapId>MapUS</mapId>
+        <mapTitle>Elmcreek</mapTitle>
+        <saveDateFormatted>2023-01-25</saveDateFormatted>
+        <saveDate>2023-01-25</saveDate>
+        <resetVehicles>false</resetVehicles>
+        <trafficEnabled>true</trafficEnabled>
+        <stopAndGoBraking>true</stopAndGoBraking>
+        <trailerFillLimit>false</trailerFillLimit>
+        <automaticMotorStartEnabled>true</automaticMotorStartEnabled>
+        <growthMode>1</growthMode>
+        <plannedDaysPerPeriod>1</plannedDaysPerPeriod>
+        <fruitDestruction>true</fruitDestruction>
+        <plowingRequiredEnabled>false</plowingRequiredEnabled>
+        <stonesEnabled>true</stonesEnabled>
+        <weedsEnabled>true</weedsEnabled>
+        <limeRequired>true</limeRequired>
+        <isSnowEnabled>true</isSnowEnabled>
+        <fuelUsage>1</fuelUsage>
+        <helperBuyFuel>true</helperBuyFuel>
+        <helperBuySeeds>true</helperBuySeeds>
+        <helperBuyFertilizer>true</helperBuyFertilizer>
+        <helperSlurrySource>2</helperSlurrySource>
+        <helperManureSource>2</helperManureSource>
+        <densityMapRevision>3</densityMapRevision>
+        <terrainTextureRevision>1</terrainTextureRevision>
+        <terrainLodTextureRevision>2</terrainLodTextureRevision>
+        <splitShapesRevision>2</splitShapesRevision>
+        <tipCollisionRevision>2</tipCollisionRevision>
+        <placementCollisionRevision>2</placementCollisionRevision>
+        <navigationCollisionRevision>2</navigationCollisionRevision>
+        <mapDensityMapRevision>1</mapDensityMapRevision>
+        <mapTerrainTextureRevision>1</mapTerrainTextureRevision>
+        <mapTerrainLodTextureRevision>1</mapTerrainLodTextureRevision>
+        <mapSplitShapesRevision>2</mapSplitShapesRevision>
+        <mapTipCollisionRevision>2</mapTipCollisionRevision>
+        <mapPlacementCollisionRevision>2</mapPlacementCollisionRevision>
+        <mapNavigationCollisionRevision>3</mapNavigationCollisionRevision>
+        <difficulty>1</difficulty>
+        <economicDifficulty>1</economicDifficulty>
+        <dirtInterval>3</dirtInterval>
+        <timeScale>5.000000</timeScale>
+        <autoSaveInterval>15.000000</autoSaveInterval>
+    </settings>
+    <guidedTour active="false" currentStepIndex="0" state=""/>
+    <map>
+        <foundHelpIcons>00000000000000000000</foundHelpIcons>
+    </map>
+    <statistics>
+        <money>8642298</money>
+        <playTime>82.188171</playTime>
+    </statistics>
+    <slotSystem slotUsage="1367"/>
+    <mapsSplitShapeFileIds count="1">
+        <id id="0"/>
+    </mapsSplitShapeFileIds>
+    <mod modName="AAA_InAll_Mod1" title="Easy Development Controls" version="1.3.0.2" required="false" fileHash="c69e7762899893a1dd19d4c0027e119d"/>
+    <mod modName="AAA_InAll_Mod2" title="Easy Development Controls" version="1.3.0.2" required="false" fileHash="c69e7762899893a1dd19d4c0027e119d"/>
+    <mod modName="AAA_InAll_Mod3" title="Easy Development Controls" version="1.3.0.2" required="false" fileHash="c69e7762899893a1dd19d4c0027e119d"/>
+</careerSavegame>

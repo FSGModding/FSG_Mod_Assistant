@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<careerSavegame revision="2" valid="true">
+    <settings>
+        <savegameName>BRC</savegameName>
+        <creationDate>2022-10-01</creationDate>
+        <mapId>FS22_BackRoadsCounty.BackRoadsCounty</mapId>
+        <mapTitle>Back Roads County</mapTitle>
+        <saveDateFormatted>2022-10-14</saveDateFormatted>
+        <saveDate>2022-10-14</saveDate>
+        <resetVehicles>false</resetVehicles>
+        <trafficEnabled>false</trafficEnabled>
+        <stopAndGoBraking>true</stopAndGoBraking>
+        <trailerFillLimit>false</trailerFillLimit>
+        <automaticMotorStartEnabled>false</automaticMotorStartEnabled>
+        <growthMode>2</growthMode>
+        <plannedDaysPerPeriod>1</plannedDaysPerPeriod>
+        <fruitDestruction>false</fruitDestruction>
+        <plowingRequiredEnabled>true</plowingRequiredEnabled>
+        <stonesEnabled>true</stonesEnabled>
+        <weedsEnabled>false</weedsEnabled>
+        <limeRequired>true</limeRequired>
+        <isSnowEnabled>true</isSnowEnabled>
+        <fuelUsage>3</fuelUsage>
+        <helperBuyFuel>false</helperBuyFuel>
+        <helperBuySeeds>false</helperBuySeeds>
+        <helperBuyFertilizer>false</helperBuyFertilizer>
+        <helperSlurrySource>1</helperSlurrySource>
+        <helperManureSource>1</helperManureSource>
+        <densityMapRevision>3</densityMapRevision>
+        <terrainTextureRevision>1</terrainTextureRevision>
+        <terrainLodTextureRevision>2</terrainLodTextureRevision>
+        <splitShapesRevision>2</splitShapesRevision>
+        <tipCollisionRevision>2</tipCollisionRevision>
+        <placementCollisionRevision>2</placementCollisionRevision>
+        <navigationCollisionRevision>2</navigationCollisionRevision>
+        <mapDensityMapRevision>1</mapDensityMapRevision>
+        <mapTerrainTextureRevision>1</mapTerrainTextureRevision>
+        <mapTerrainLodTextureRevision>1</mapTerrainLodTextureRevision>
+        <mapSplitShapesRevision>1</mapSplitShapesRevision>
+        <mapTipCollisionRevision>1</mapTipCollisionRevision>
+        <mapPlacementCollisionRevision>1</mapPlacementCollisionRevision>
+        <mapNavigationCollisionRevision>1</mapNavigationCollisionRevision>
+        <difficulty>1</difficulty>
+        <economicDifficulty>2</economicDifficulty>
+        <dirtInterval>4</dirtInterval>
+        <timeScale>1.000000</timeScale>
+        <autoSaveInterval>15.000000</autoSaveInterval>
+    </settings>
+    <guidedTour active="false" currentStepIndex="0" state=""/>
+    <map>
+        <foundHelpIcons>00000000000000000000</foundHelpIcons>
+    </map>
+    <statistics>
+        <money>1178732</money>
+        <playTime>18400.482422</playTime>
+    </statistics>
+    <slotSystem slotUsage="1939"/>
+    <mapsSplitShapeFileIds count="1">
+        <id id="0"/>
+    </mapsSplitShapeFileIds>
+    <mod modName="FS22_wifoBPseries" title="WIFO BP Series" version="1.0.0.0" required="false" fileHash="e74b8667e169381511ca4a6a1ce7ffad"/>
+    <mod modName="FS22_Case_W20E" title="Case W20E" version="1.0.0.0" required="false" fileHash="f46db01c67c2fc7aa2ac74bd6b6e5105"/>
+    <mod modName="FS22_36ftLowLoader" title="Lizard Class C 450/455/460 Low Loader" version="1.0.0.0" required="false" fileHash="49477cfe71220267b3fc6df3617fbd77"/>
+    <mod modName="FS22_JD_HX20" title="John Deere HX20" version="1.0.0.0" required="false" fileHash="165219d5414d40ffad0600e88b32b58f"/>
+    <mod modName="FS22_Large_Pole_Barn" title="Lage Pole Barn" version="1.0.0.0" required="false" fileHash="ba944127a18f9bc3f5f307b9665c1eae"/>
+    <mod modName="FS22_BackRoadsCounty" title="Back Roads County" version="1.0.0.2" required="true" fileHash="5cf63c52d8bcef456cee9c1137038b9b"/>
+    <mod modName="FS22_ExtraLargeSheepBarn" title="Extra Large Sheep Barn Pack" version="1.0.0.0" required="false" fileHash="f9b5f95ac37a94daed191e6fdbb74e92"/>
+    <mod modName="FS22_KroneBigPack120_80" title="Krone Big Pack 120-80" version="1.0.0.0" required="false" fileHash="4f1bdb60854ff1ca9647b60f3ee29819"/>
+    <mod modName="FS22_hydraulicBaleFork" title="Hydraulic Bale Fork" version="1.0.0.0" required="false" fileHash="2815ef42392f140731d10664223f65ae"/>
+    <mod modName="FS22_BigBagCattlePack" title="BigBags Cattle Pack" version="1.0.0.1" required="false" fileHash="a2384fe8604e0cf37fc942d551d5c602"/>
+    <mod modName="FS22_AirFlex_Series" title="HoneyBee AirFLEX Series" version="1.0.0.0" required="false" fileHash="113f0b96d4e89734b212903f1e9419bb"/>
+    <mod modName="FS22_AdvancedFarmManager" title="Advanced Farm Manager" version="1.0.0.1" required="false" fileHash="745deae790399919cecc52eeef5dd41d"/>
+    <mod modName="FS22_LizardBaleSpike" title="Lizard 3-Point Bale Spike" version="1.0.0.0" required="false" fileHash="2ce83d3e60743e0ca30eda2ff991ad00"/>
+    <mod modName="FS22_openCowPasture" title="Open Cow Pasture" version="1.0.0.0" required="false" fileHash="afb071fa519b5f509f44d6defb152cc4"/>
+    <mod modName="FS22_hydroGreenhouse" title="Hydroponics Greenhouse" version="1.0.0.0" required="false" fileHash="5e67b4393c0b2d0567b5c6f730d604d8"/>
+    <mod modName="FS22_guidanceSteering" title="Guidance Steering" version="2.1.6.0" required="false" fileHash="15adafce7038589ebfdd9d004d49b728"/>
+    <mod modName="FS22_TreeBGone" title="Tree-B-Gone" version="1.0.1.0" required="false" fileHash="7906892fe3238fe887dbc8bda96e22cc"/>
+    <mod modName="FS22_largeCowshed3_3" title="Cowshed 3+3" version="1.1.0.0" required="false" fileHash="4597f6f46e7b8c3315020128e6ce3b2e"/>
+    <mod modName="FS22_SimpleInspector" title="Simple Inspector" version="1.0.1.10" required="false" fileHash="c453377c3f24b50525366388e3846d20"/>
+    <mod modName="FS22_ObjectStorage" title="Object Storage" version="1.0.1.0" required="false" fileHash="b58eba868388f2e616b2592305499ebc"/>
+    <mod modName="FS22_Shed_10x12m" title="Shed 10x12m" version="1.0.0.0" required="false" fileHash="e4926af2a80927fb4c57ca5db55561ec"/>
+    <mod modName="FS22_Machinehall_grainstorage" title="Machinesheds" version="1.0.0.0" required="false" fileHash="d7ea7527d022d303d006f00fd6d87728"/>
+    <mod modName="FS22_RoadrunnerPlus" title="Roadrunner+" version="1.0.2.0" required="false" fileHash="872ea122c77af94adc40253b5b68d7e1"/>
+    <mod modName="FS22_SiloFillInfo" title="Silo Fill Information" version="1.0.0.0" required="false" fileHash="d34fc8a3806871de740a3ba628f2a1c5"/>
+    <mod modName="FS22_modernCowsBarn" title="Modern Cow Barn" version="1.0.0.0" required="false" fileHash="fa0efe3bc7fca5d306db31557be4787e"/>
+    <mod modName="FS22_SeedHawkPack" title="Seed Hawk Pack" version="1.0.0.1" required="false" fileHash="b1717c94c740f9a05b0f21206ad9b283"/>
+    <mod modName="FS22_HesstonBalers" title="Hesston Balers" version="1.0.0.0" required="false" fileHash="066ff33e481ecb7ffb5b97baaaf010bf"/>
+    <mod modName="FS22_CaseEcoloTil2500" title="Case Ecolo-Til 2500" version="1.0.0.0" required="false" fileHash="f3b25b3a385422e6465122dc4417ab8b"/>
+    <mod modName="FS22_JDBalers" title="John Deere Balers" version="1.0.0.0" required="false" fileHash="46984f42c47ce5e5a4fa16956725f85f"/>
+    <mod modName="FS22_Tanker_Trailer_IMT_525" title="Tanker Trailer IMT 525" version="1.0.0.0" required="false" fileHash="d56e1063ed442934012c26938e8d6d73"/>
+    <mod modName="FS22_25DU_Trailers" title="Lizard 25DU Trailer" version="1.0.0.0" required="false" fileHash="b576440545bc0fa7ec1b38ce58c44b1d"/>
+    <mod modName="FS22_DutchShedPack" title="Dutch Shed Pack" version="1.0.0.0" required="false" fileHash="0ca40e0fccde04b627ba2556522cf602"/>
+    <mod modName="FS22_Large_Metal_Pavilion" title="Large Metal Pavilion" version="1.0.0.1" required="false" fileHash="b1da292371143e1cc2bb1deacd7d167f"/>
+    <mod modName="FS22_EasyDevControls" title="Easy Development Controls" version="1.2.0.0" required="false" fileHash="ef9f4bdbd525a765e01c39e18e744862"/>
+    <mod modName="FS22_2150_Series" title="Case IH 2150 Early Riser Planters Series" version="1.0.0.0" required="false" fileHash="39148fb42578569e1a83b31d0f489bab"/>
+    <mod modName="FS22_MX_Pack" title="MX Pack" version="1.0.0.0" required="false" fileHash="d12cc1a573338240633404f6f143dbe2"/>
+    <mod modName="FS22_bigCowBarn" title="Big Cow Barn" version="1.0.0.0" required="false" fileHash="72b4b944100da0edcf3c69709eb9562f"/>
+    <mod modName="FS22_MPsignPack" title="Multiplayer Sign Pack" version="1.0.0.0" required="false" fileHash="fa1b2491ad666d8c96959d824794d381"/>
+</careerSavegame>
