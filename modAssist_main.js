@@ -41,7 +41,7 @@ function handleUnhandled(type, err, origin) {
 		crashLog,
 		`${type} Timestamp : ${rightNow.toISOString()}\n\nCaught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}`
 	)
-	if ( !isNetworkError(err) ) {
+	if ( !err.message.startsWith('net::ERR_') ) {
 		dialog.showMessageBoxSync(null, {
 			message : `Caught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
 			title   : `Uncaught ${type} - Quitting`,
@@ -127,13 +127,7 @@ let gameLogFileWatch  = null
 let gameLogFileBounce = false
 
 const gameExeName = 'FarmingSimulator2022.exe'
-const gameExePick = {
-	13 : 'FarmingSimulator2013.exe',
-	15 : 'FarmingSimulator2015.exe',
-	17 : 'FarmingSimulator2017.exe',
-	19 : 'FarmingSimulator2019.exe',
-	22 : 'FarmingSimulator2022.exe',
-}
+
 const gameGuesses = [
 	'C:\\Program Files (x86)\\Farming Simulator 2022\\',
 	'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Farming Simulator 22'
@@ -147,6 +141,7 @@ const pathGuesses = [
 for ( const testPath of gameGuesses ) {
 	if ( fs.existsSync(path.join(testPath, gameExeName)) ) {
 		foundGame = path.join(testPath, gameExeName)
+		break
 	}
 }
 
@@ -160,7 +155,8 @@ for ( const testPath of pathGuesses ) {
 const { modFileCollection, modLooker, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
 
-const {windows, destroyAndFocus, winDef} = require('./lib/modAssist_window_lib.js')
+let   tray      = null
+const {windows} = require('./lib/modAssist_window_lib.js')
 
 const settingsMig = {
 	'>=1.2.1' : (store) => {
@@ -173,65 +169,7 @@ const settingsMig = {
 	},
 }
 
-const settingsSchema = {
-	cache_version     : { type : 'string', default : '0.0.0' },
-	color_theme       : { type : 'string', default : 'dark', enum : ['dark', 'light', 'system']},
-	force_lang        : { type : 'string', default : '' },
-	game_log_auto     : { type : 'boolean', default : true },
-	game_log_file     : { type : ['string', 'null'], default : null },
-	game_version      : { type : 'number',  default : 22, enum : [22, 19, 17, 15, 13]},
-	led_active        : { type : 'boolean', default : true },
-	lock_lang         : { type : 'boolean', default : false },
-	modFolders        : { type : 'array',   default : [] },
-	multi_version     : { type : 'boolean', default : false },
-	rel_notes         : { type : 'string',  default : '0.0.0' },
-	use_one_drive     : { type : 'boolean', default : false },
-
-	game_args         : { type : 'string', default : '' },
-	game_path         : { type : 'string', default : foundGame },
-	game_settings     : { type : 'string', default : path.join(pathBestGuess, 'gameSettings.xml') },
-
-	game_args_19      : { type : 'string',  default : '' },
-	game_enabled_19   : { type : 'boolean', default : false},
-	game_path_19      : { type : 'string',  default : '' },
-	game_settings_19  : { type : 'string',  default : '' },
-
-	game_args_17      : { type : 'string',  default : '' },
-	game_enabled_17   : { type : 'boolean', default : false},
-	game_path_17      : { type : 'string',  default : '' },
-	game_settings_17  : { type : 'string',  default : '' },
-
-	game_args_15      : { type : 'string',  default : '' },
-	game_enabled_15   : { type : 'boolean', default : false},
-	game_path_15      : { type : 'string',  default : '' },
-	game_settings_15  : { type : 'string',  default : '' },
-
-	game_args_13      : { type : 'string',  default : '' },
-	game_enabled_13   : { type : 'boolean', default : false},
-	game_path_13      : { type : 'string',  default : '' },
-	game_settings_13  : { type : 'string',  default : '' },
-
-	wins              : { type : 'object', default : {}, properties : {
-		change        : winDef(650, 350),
-		confirm       : winDef(750, 500),
-		debug         : winDef(1000, 500),
-		detail        : winDef(800, 500),
-		find          : winDef(800, 600),
-		folder        : winDef(800, 500),
-		gamelog       : winDef(1000, 500),
-		import        : winDef(750, 500),
-		load          : winDef(600, 300),
-		looker        : winDef(800, 650),
-		main          : winDef(1000, 700),
-		notes         : winDef(800, 500),
-		prefs         : winDef(800, 500),
-		resolve       : winDef(750, 600),
-		save          : winDef(900, 500),
-		save_track    : winDef(900, 500),
-		splash        : winDef(600, 300),
-		version       : winDef(800, 500),
-	}},
-}
+const settingsSchema = require('./lib/modAssist_window_lib.js').settingsSchema(foundGame, pathBestGuess)
 
 const siteMigrate = {
 	'<=2.1.1' : (store) => {
@@ -252,35 +190,19 @@ const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 const modSite = new Store({name : 'mod_source_site', migrations : siteMigrate, clearInvalidConfig : true})
 
-const modCollect = new modFileCollection(
-	iconParser,
-	log,
-	modNote,
-	maCache,
-	app.getPath('home'),
-	{
-		hide  : loadingWindow_hide,
-		count : loadingWindow_current,
-	},
-	mcStore,
-	myTranslator.deferCurrentLocale,
-	skipCache
-)
-
-const loadWindowCount = { total : 0, current : 0}
-
 let modFolders       = new Set()
 let modFoldersWatch  = []
 let lastFolderLoc    = null
 let lastGameSettings = {}
 
-let tray        = null
-
 let foldersDirty = true
 let firstMin     = true
 
 let currentColorTheme = mcStore.get('color_theme')
-if ( currentColorTheme === 'system' ) { currentColorTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light' }
+
+currentColorTheme = ( currentColorTheme === 'system' ) ?
+	(nativeTheme.shouldUseDarkColors ? 'dark' : 'light') :
+	currentColorTheme
 
 let gameSettingsXML = null
 let gameXML         = null
@@ -297,43 +219,16 @@ const devControls   = {
 
 /** Upgrade Cache Version Here */
 
-if ( semverGt('1.0.2', mcStore.get('cache_version'))) {
-	log.log.warning('Invalid Mod Cache (very old), resetting.')
-	maCache.clear()
-	log.log.info('Mod Cache Cleared')
-} else if ( semverGt('2.4.0', mcStore.get('cache_version'))) {
+if ( semverGt('2.4.0', mcStore.get('cache_version'))) {
 	log.log.warning('Invalid Mod Cache (old), resetting.')
 	maCache.clear()
 	log.log.info('Mod Cache Cleared')
-} else if ( semverGt('1.9.3', mcStore.get('cache_version'))) {
-	log.log.debug('Mod Cache 1.9.3 Update Running')
-	const oldCache = maCache.store
-	const tagRegEx = /"mod_badge_(.+?)"/g
-
-	for ( const key in oldCache ) {
-		if ( typeof oldCache[key].badgeArray === 'undefined' ) {
-			oldCache[key].badgeArray = []
-
-			if ( typeof oldCache[key].badges !== 'undefined' ) {
-				for ( const match of [...oldCache[key].badges.matchAll(tagRegEx)] ) {
-					oldCache[key].badgeArray.push(match[1].toLowerCase())
-				}
-
-				delete oldCache[key].badges
-			}
-		}
-	}
-	maCache.store = oldCache
-
 } else {
 	log.log.debug('Mod Cache Version Good')
 }
 
 mcStore.set('cache_version', app.getVersion())
-
 /** END: Upgrade Cache Version Here */
-
-
 
 
 /*  _    _  ____  _  _  ____   _____  _    _  ___ 
@@ -342,7 +237,7 @@ mcStore.set('cache_version', app.getVersion())
    (__/\__)(____)(_)\_)(____/ (_____)(__/\__)(___/ */
 
 const getRealCenter = require('./lib/modAssist_window_lib.js').getRealCenter(mcStore)
-const { getWindowOpts } = require('./lib/modAssist_window_lib.js')
+const { getWindowOpts, destroyAndFocus } = require('./lib/modAssist_window_lib.js')
 
 function createSubWindow(winName, { useCustomTitle = true, skipTaskbar = false, noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null, fixedOnTop = true} = {}) {
 	const realCenter  = getRealCenter(winName)
@@ -457,7 +352,7 @@ function createMainWindow () {
 					foldersDirty = true
 					setTimeout(() => { processModFolders() }, 1500)
 				}
-				if ( devDebug && devTools) { windows.main.webContents.openDevTools() }
+				if ( devDebug && devTools ) { windows.main.webContents.openDevTools() }
 			}
 		}, 250)
 	})
@@ -527,7 +422,7 @@ function createNamedWindow(winName, windowArgs) {
 }
 
 /* eslint-disable sort-keys */
-const subWindowDev = new Set(['save_track', 'import', 'save', 'find', 'notes', 'version', 'resolve', 'gamelog', 'folder', 'confirm'])
+const subWindowDev = require('./lib/modAssist_window_lib.js').subWindowDev
 const subWindows   = require('./lib/modAssist_window_lib.js').subWindowDefinitions(
 	sendModList,
 	processModFolders,
@@ -538,65 +433,77 @@ const subWindows   = require('./lib/modAssist_window_lib.js').subWindowDefinitio
 	devControls
 )
 
-function loadingWindow_open(l10n, isDownload = false) {
-	const newCenter   = getRealCenter('load')
-	const winTitle    = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_title` : 'app_name')
-	const winSubTitle = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_subtitle` : 'launch_game')
-	const dlCancel    = myTranslator.syncStringLookup('cancel_download')
-	if ( windows.load ) {
-		try {
-			windows.load.setBounds({x : newCenter.x, y : newCenter.y})
-		} catch (e) {
-			windows.load.center()
-			log.log.debug(`Center window in display failed : ${e}`, 'load-window')
+const loadingWindow = {
+	counter : {
+		total   : 0,
+		current : 0,
+	},
+	current : (amount = 1, reset = false, inMB = false) => {
+		loadingWindow.doCount('current', amount, reset, inMB)
+	},
+	doCount : (whichCount, amount, reset, inMB) => {
+		loadingWindow.counter[whichCount] = ( reset ) ? amount : amount + loadingWindow.counter[whichCount]
+	
+		if ( whichCount === 'current' && windows.main !== null && ! windows.main.isDestroyed() ) {
+			windows.main.setProgressBar(Math.max(0, Math.min(1, loadingWindow.counter.current / loadingWindow.counter.total)))
 		}
-		windows.load.show()
-		windows.load.focus()
-		windows.load.webContents.send('formMain_loadingTitles', winTitle, winSubTitle, dlCancel)
+	
+		if ( ! windows.load.isDestroyed() ) {
+			windows.load.webContents.send(`fromMain_loading_${whichCount}`, loadingWindow.counter[whichCount], inMB)
+		}
+	},
+	hide : (time = 1250) => {
 		setTimeout(() => {
+			if ( windows.main !== null && ! windows.main.isDestroyed() ) { windows.main.setProgressBar(-1)}
+			if ( windows.load !== null && ! windows.load.isDestroyed() ) { windows.load.hide() }
+		}, time)
+	},
+	noCount : () => {
+		if ( ! windows.load.isDestroyed() ) { windows.load.webContents.send('fromMain_loadingNoCount') }
+	},
+	open : ( l10n, isDownload = false ) => {
+		const newCenter   = getRealCenter('load')
+		const winTitle    = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_title` : 'app_name')
+		const winSubTitle = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_subtitle` : 'launch_game')
+		const dlCancel    = myTranslator.syncStringLookup('cancel_download')
+		if ( windows.load ) {
+			try {
+				windows.load.setBounds({x : newCenter.x, y : newCenter.y})
+			} catch (e) {
+				windows.load.center()
+			}
+
 			windows.load.show()
 			windows.load.focus()
-			if ( isDownload ) {
-				windows.load.webContents.send('fromMain_loadingDownload')
-			}
-		}, 250)
-		return
-	}
-}
-function loadingWindow_doCount(whichCount, amount, reset, inMB) {
-	loadWindowCount[whichCount] = ( reset ) ? amount : amount + loadWindowCount[whichCount]
+			windows.load.webContents.send('formMain_loadingTitles', winTitle, winSubTitle, dlCancel)
 
-	if ( whichCount === 'current' && windows.main !== null && ! windows.main.isDestroyed() ) {
-		windows.main.setProgressBar(Math.max(0, Math.min(1, loadWindowCount.current / loadWindowCount.total)))
-	}
-
-	if ( ! windows.load.isDestroyed() ) {
-		windows.load.webContents.send(`fromMain_loading_${whichCount}`, loadWindowCount[whichCount], inMB)
-	}
-}
-function loadingWindow_total(amount, reset = false, inMB = false) {
-	loadingWindow_doCount('total', amount, reset, inMB)
-}
-function loadingWindow_current(amount = 1, reset = false, inMB = false) {
-	loadingWindow_doCount('current', amount, reset, inMB)
-}
-function loadingWindow_hide(time = 1250) {
-	setTimeout(() => {
-		if ( windows.main !== null && ! windows.main.isDestroyed() ) {
-			windows.main.setProgressBar(-1)
+			setTimeout(() => {
+				windows.load.show()
+				windows.load.focus()
+				if ( isDownload ) { windows.load.webContents.send('fromMain_loadingDownload') }
+			}, 250)
+			return
 		}
-		if ( windows.load !== null && ! windows.load.isDestroyed() ) {
-			windows.load.hide()
-		}
-	}, time)
-}
-function loadingWindow_noCount() {
-	if ( ! windows.load.isDestroyed() ) {
-		windows.load.webContents.send('fromMain_loadingNoCount')
-	}
+	},
+	total : (amount, reset = false, inMB = false) => {
+		loadingWindow.doCount('total', amount, reset, inMB)
+	},
 }
 
-function isNetworkError(errorObject) { return errorObject.message.startsWith('net::ERR_') }
+const modCollect = new modFileCollection(
+	iconParser,
+	log,
+	modNote,
+	maCache,
+	app.getPath('home'),
+	{
+		hide  : loadingWindow.hide,
+		count : loadingWindow.current,
+	},
+	mcStore,
+	myTranslator.deferCurrentLocale,
+	skipCache
+)
 
 /*  ____  ____   ___ 
    (_  _)(  _ \ / __)
@@ -615,9 +522,7 @@ ipcMain.on('toMain_sendMainToTray', () => {
 			tray.displayBalloon(bubbleOpts)
 
 			setTimeout(() => {
-				if ( tray && !tray.isDestroyed() ) {
-					tray.removeBalloon()
-				}
+				if ( tray && !tray.isDestroyed() ) { tray.removeBalloon() }
 			}, 5000)
 		}
 		
@@ -629,24 +534,23 @@ ipcMain.on('toMain_populateClipboard', (event, text) => { clipboard.writeText(te
 
 /** File operation buttons */
 ipcMain.on('toMain_makeInactive', () => { parseSettings({ disable : true }) })
-ipcMain.on('toMain_makeActive',   (event, newList) => { newSettingsFile(newList) })
-ipcMain.on('toMain_openMods',     (event, mods) => {
-	const thisCollectionFolder = modCollect.mapCollectionToFolder(mods[0].split('--')[0])
-	const thisMod              = modCollect.modColUUIDToRecord(mods[0])
+ipcMain.on('toMain_makeActive',   (_, newList) => { newSettingsFile(newList) })
+ipcMain.on('toMain_openMods',     (_, mods)    => {
+	const thisFolderAndMod     = modCollect.modColUUIDToFolderAndRecord(mods[0])
 
-	if ( thisMod !== null ) {
-		shell.showItemInFolder(path.join(thisCollectionFolder, path.basename(thisMod.fileDetail.fullPath)))
+	if ( thisFolderAndMod.mod !== null ) {
+		shell.showItemInFolder(path.join(thisFolderAndMod.folder, path.basename(thisFolderAndMod.mod.fileDetail.fullPath)))
 	}
 })
 ipcMain.on('toMain_openHelpSite', () => { shell.openExternal('https://fsgmodding.github.io/FSG_Mod_Assistant/') })
-ipcMain.on('toMain_openHub',      (event, mods) => {
+ipcMain.on('toMain_openHub',      (_, mods) => {
 	const thisMod   = modCollect.modColUUIDToRecord(mods[0])
 
 	if ( thisMod.modHub.id !== null ) {
 		shell.openExternal(`https://www.farming-simulator.com/mod.php?mod_id=${thisMod.modHub.id}`)
 	}
 })
-ipcMain.on('toMain_openExt',     (event, mods) => {
+ipcMain.on('toMain_openExt',     (_, mods) => {
 	const thisMod     = modCollect.modColUUIDToRecord(mods[0])
 	const thisModSite = modSite.get(thisMod.fileDetail.shortName, null)
 
@@ -654,12 +558,11 @@ ipcMain.on('toMain_openExt',     (event, mods) => {
 })
 
 ipcMain.on('toMain_copyFavorites',  () => {
-
 	const sourceCollections      = []
 	const destinationCollections = []
 	const sourceFiles            = []
 
-	const multi_version = mcStore.get('multi_version')
+	const multi_version   = mcStore.get('multi_version')
 	const current_version = mcStore.get('game_version')
 
 	for ( const collectKey of modCollect.collections ) {
@@ -706,22 +609,21 @@ function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
 	}
 }
 
-ipcMain.on('toMain_deleteMods',     (event, mods) => { handleCopyMoveDelete('confirmDelete', mods) })
-ipcMain.on('toMain_moveMods',       (event, mods) => { handleCopyMoveDelete('confirmMove', mods) })
-ipcMain.on('toMain_copyMods',       (event, mods) => { handleCopyMoveDelete('confirmCopy', mods) })
-ipcMain.on('toMain_moveMultiMods',  (event, mods) => { handleCopyMoveDelete('confirmMultiMove', mods) })
-ipcMain.on('toMain_copyMultiMods',  (event, mods) => { handleCopyMoveDelete('confirmMultiCopy', mods) })
-ipcMain.on('toMain_realFileDelete', (event, fileMap) => { fileOperation('delete', fileMap) })
-ipcMain.on('toMain_realFileMove',   (event, fileMap) => { fileOperation('move', fileMap) })
-ipcMain.on('toMain_realFileCopy',   (event, fileMap) => { fileOperation('copy', fileMap) })
-ipcMain.on('toMain_realMultiFileMove', (event, fileMap) => { fileOperation('move_multi', fileMap) })
-ipcMain.on('toMain_realMultiFileCopy', (event, fileMap) => { fileOperation('copy_multi', fileMap) })
-ipcMain.on('toMain_realFileImport', (event, fileMap) => { fileOperation('import', fileMap, 'import') })
-ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => {
+ipcMain.on('toMain_deleteMods',     (_, mods) => { handleCopyMoveDelete('confirmDelete', mods) })
+ipcMain.on('toMain_moveMods',       (_, mods) => { handleCopyMoveDelete('confirmMove', mods) })
+ipcMain.on('toMain_copyMods',       (_, mods) => { handleCopyMoveDelete('confirmCopy', mods) })
+ipcMain.on('toMain_moveMultiMods',  (_, mods) => { handleCopyMoveDelete('confirmMultiMove', mods) })
+ipcMain.on('toMain_copyMultiMods',  (_, mods) => { handleCopyMoveDelete('confirmMultiCopy', mods) })
+
+ipcMain.on('toMain_realFileDelete',    (_, fileMap) => { fileOperation('delete', fileMap) })
+ipcMain.on('toMain_realFileMove',      (_, fileMap) => { fileOperation('move', fileMap) })
+ipcMain.on('toMain_realFileCopy',      (_, fileMap) => { fileOperation('copy', fileMap) })
+ipcMain.on('toMain_realMultiFileMove', (_, fileMap) => { fileOperation('move_multi', fileMap) })
+ipcMain.on('toMain_realMultiFileCopy', (_, fileMap) => { fileOperation('copy_multi', fileMap) })
+ipcMain.on('toMain_realFileImport',    (_, fileMap) => { fileOperation('import', fileMap, 'import') })
+ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
 	fileOperation('copy', fileMap, 'resolve')
-	setTimeout(() => {
-		sendModList({}, 'fromMain_modList', 'version', false )
-	}, 1500)
+	setTimeout(() => { sendModList({}, 'fromMain_modList', 'version', false ) }, 1500)
 })
 /** END: File operation buttons */
 
@@ -729,44 +631,41 @@ ipcMain.on('toMain_realFileVerCP',  (event, fileMap) => {
 /** Folder Window Operation */
 ipcMain.on('toMain_addFolder', () => {
 	dialog.showOpenDialog(windows.main, {
-		properties : ['openDirectory'], defaultPath : (lastFolderLoc !== null) ? lastFolderLoc : userHome,
-	}).then((result) => {
-		if ( !result.canceled ) {
-			let alreadyExists = false
+		properties  : ['openDirectory'],
+		defaultPath : lastFolderLoc ?? userHome,
+	}).then((result) => { if ( !result.canceled ) {
+		const potentialFolder = result.filePaths[0]
 
-			for ( const thisPath of modFolders ) {
-				if ( path.relative(thisPath, result.filePaths[0]) === '' ) { alreadyExists = true }
-			}
+		lastFolderLoc = path.resolve(path.join(potentialFolder, '..'))
 
-			lastFolderLoc = path.resolve(path.join(result.filePaths[0], '..'))
-
-			if ( ! alreadyExists ) {
-				modFolders.add(result.filePaths[0]); foldersDirty = true
-				mcStore.set('modFolders', Array.from(modFolders))
-				const thisFolderCollectKey = modCollect.getFolderHash(result.filePaths[0])
-				modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
-				modNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
-				processModFolders(result.filePaths[0])
-			} else {
+		for ( const thisPath of modFolders ) {
+			if ( path.relative(thisPath, potentialFolder) === '' ) {
 				log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
+				return
 			}
-		} else {
-			log.log.debug('Add folder :: canceled by user', 'folder-opts')
 		}
-	}).catch((unknownError) => {
+
+		const thisFolderCollectKey = modCollect.getFolderHash(potentialFolder)
+
+		modFolders.add(potentialFolder)
+		foldersDirty = true
+
+		mcStore.set('modFolders', Array.from(modFolders))
+		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
+		modNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
+		processModFolders()
+	}}).catch((unknownError) => {
 		log.log.danger(`Could not read specified add folder : ${unknownError}`, 'folder-opts')
 	})
 })
 ipcMain.on('toMain_editFolders',    () => { createNamedWindow('folder') })
-ipcMain.on('toMain_openFolder',     (event, collectKey) => { shell.openPath(modCollect.mapCollectionToFolder(collectKey)) })
-ipcMain.on('toMain_refreshFolders', () => { foldersDirty = true; processModFolders() })
-ipcMain.on('toMain_removeFolder',   (event, collectKey) => {
+ipcMain.on('toMain_refreshFolders', () => { processModFolders(true) })
+ipcMain.on('toMain_openFolder',     (_, collectKey) => { shell.openPath(modCollect.mapCollectionToFolder(collectKey)) })
+ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	const folder = modCollect.mapCollectionToFolder(collectKey)
 	if ( modFolders.delete(folder) ) {
-		log.log.notice(`Folder removed from list ${folder}`, 'folder-opts')
+		log.log.notice(`Folder removed from tracking ${folder}`, 'folder-opts')
 		mcStore.set('modFolders', Array.from(modFolders))
-
-		const collectKey = modCollect.mapFolderToCollection(folder)
 
 		modCollect.removeCollection(collectKey)
 		
@@ -775,10 +674,10 @@ ipcMain.on('toMain_removeFolder',   (event, collectKey) => {
 		foldersDirty = true
 		sendFoldersDirtyUpdate()
 	} else {
-		log.log.warning(`Folder NOT removed from list ${folder}`, 'folder-opts')
+		log.log.warning(`Folder NOT removed from tracking ${folder}`, 'folder-opts')
 	}
 })
-ipcMain.on('toMain_reorderFolder', (event, from, to) => {
+ipcMain.on('toMain_reorderFolder', (_, from, to) => {
 	const newOrder    = Array.from(modFolders)
 	const item        = newOrder.splice(from, 1)[0]
 
@@ -829,29 +728,26 @@ ipcMain.on('toMain_reorderFolderAlpha', () => {
 	foldersDirty = true
 	sendFoldersDirtyUpdate()
 })
-ipcMain.on('toMain_dropFolder', (event, newFolder) => {
+ipcMain.on('toMain_dropFolder', (_, newFolder) => {
 	if ( ! modFolders.has(newFolder) ) {
-		modFolders.add(newFolder)
-		foldersDirty = true
-		mcStore.set('modFolders', Array.from(modFolders))
 		const thisFolderCollectKey = modCollect.getFolderHash(newFolder)
+
+		modFolders.add(newFolder)
+		mcStore.set('modFolders', Array.from(modFolders))
 		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
-		processModFolders()
+		processModFolders(true)
 	} else {
-		log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
 		doDialogBox('main', {
 			type        : 'error',
 			messageL10n : 'drop_folder_exists',
 		})
 	}
 })
-ipcMain.on('toMain_dropFiles', (event, files) => {
-	createNamedWindow('import', { files : files })
-})
+ipcMain.on('toMain_dropFiles', (_, files) => { createNamedWindow('import', { files : files }) })
 /** END: Folder Window Operation */
 
 /** Logging Operation */
-ipcMain.on('toMain_log', (event, level, process, text) => { log.log[level](text, process) })
+ipcMain.on('toMain_log', (_, level, process, text) => { log.log[level](text, process) })
 /** END: Logging Operation */
 
 /** l10n Operation */
@@ -866,7 +762,7 @@ ipcMain.on('toMain_langList_change', (event, lang) => {
 		}
 	}
 })
-ipcMain.on('toMain_themeList_change', (event, theme) => {
+ipcMain.on('toMain_themeList_change', (_, theme) => {
 	mcStore.set('color_theme', theme)
 
 	currentColorTheme = ( theme === 'system' ) ? (nativeTheme.shouldUseDarkColors ? 'dark' : 'light') : theme
@@ -901,8 +797,8 @@ ipcMain.on('toMain_langList_send',   (event) => {
 ipcMain.on('toMain_themeList_send',   (event) => {
 	const themeOpts = [
 		['system', myTranslator.syncStringLookup('theme_name_system')],
-		['light', myTranslator.syncStringLookup('theme_name_light')],
-		['dark', myTranslator.syncStringLookup('theme_name_dark')],
+		['light',  myTranslator.syncStringLookup('theme_name_light')],
+		['dark',   myTranslator.syncStringLookup('theme_name_dark')],
 	]
 	
 	event.sender.send('fromMain_themeList_return', themeOpts, currentColorTheme)
@@ -911,24 +807,26 @@ ipcMain.on('toMain_getText_sync', (event, text) => {
 	event.returnValue = myTranslator.syncStringLookup(text)
 })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
-	let cacheSize = 0
+	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return', [entry, text]) }
 
-	event.sender.send('fromMain_getText_return', ['__currentLocale__', myTranslator.currentLocale])
+	sendEntry('__currentLocale__', myTranslator.currentLocale)
 
 	for ( const l10nEntry of l10nSet ) {
 		switch ( l10nEntry ) {
 			case 'app_version' :
-				event.sender.send('fromMain_getText_return', [l10nEntry, app.getVersion()])
+				sendEntry(l10nEntry, app.getVersion())
 				break
 			case 'game_icon' :
-				event.sender.send('fromMain_getText_return', [l10nEntry,
+				sendEntry(
+					l10nEntry,
 					`<img src="img/fs${mcStore.get('game_version')}.png" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
-				])
+				)
 				break
 			case 'game_icon_lg' :
-				event.sender.send('fromMain_getText_return', [l10nEntry,
+				sendEntry(
+					l10nEntry,
 					`<img src="img/fs${mcStore.get('game_version')}_256.png" class="img-fluid" style="height: 69px;"/>`
-				])
+				)
 				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
 					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
 				})
@@ -936,27 +834,33 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			case 'game_version' :
 				if ( mcStore.get('multi_version') || mcStore.get('game_version') !== 22 ) {
 					myTranslator.stringLookup(`mod_badge_fs${mcStore.get('game_version')}`).then((text) => {
-						event.sender.send('fromMain_getText_return', [l10nEntry, text])
+						sendEntry(l10nEntry, text)
 					})
 				} else {
-					event.sender.send('fromMain_getText_return', [l10nEntry, ''])
+					sendEntry(l10nEntry, '')
 				}
 				break
-			case 'clean_cache_size' :
-				cacheSize = 0
+			case 'clean_cache_size' : {
 				try {
-					const cacheStats = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json'))
-					cacheSize = cacheStats.size/(1024*1024)
-				} catch { /* ignore */ }
-
-				event.sender.send('fromMain_getText_return', [l10nEntry, `${myTranslator.syncStringLookup(l10nEntry)} ${cacheSize.toFixed(2)}MB`])
+					const cacheSize = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json')).size/(1024*1024)
+					sendEntry(
+						l10nEntry,
+						`${myTranslator.syncStringLookup(l10nEntry)} ${cacheSize.toFixed(2)}MB`
+					)
+				} catch {
+					sendEntry(
+						l10nEntry,
+						`${myTranslator.syncStringLookup(l10nEntry)} 0.00MB`
+					)
+				}
 				break
+			}
 			default :
 				myTranslator.stringLookup(l10nEntry).then((text) => {
 					if ( text === null || text === '' ) {
 						log.log.debug(`Null or empty translator string: ${l10nEntry} :: locale: ${myTranslator.currentLocale}`)
 					}
-					event.sender.send('fromMain_getText_return', [l10nEntry, text])
+					sendEntry(l10nEntry, text)
 				})
 				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
 					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
@@ -975,8 +879,8 @@ ipcMain.on('toMain_lookInMod', (event, thisMod) => {
 	
 	const countItems = thisModRecord.modDesc.storeItems
 	if ( countItems > 5 ) {
-		loadingWindow_open('look')
-		loadingWindow_noCount()
+		loadingWindow.open('look')
+		loadingWindow.noCount()
 	}
 	
 	const thisModLook = new modLooker(
@@ -988,7 +892,7 @@ ipcMain.on('toMain_lookInMod', (event, thisMod) => {
 	)
 
 	thisModLook.getInfo().then((results) => {
-		if ( countItems > 5 ) { loadingWindow_hide(500) }
+		if ( countItems > 5 ) { loadingWindow.hide(500) }
 		createNamedWindow(
 			'looker', {
 				selected : modCollect.modColUUIDToRecord(thisMod),
@@ -1038,8 +942,8 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		template.push({ label : myTranslator.syncStringLookup('look_detail_button'), click : () => {
 			const countItems = thisMod.modDesc.storeItems
 			if ( countItems > 5 ) {
-				loadingWindow_open('look')
-				loadingWindow_noCount()
+				loadingWindow.open('look')
+				loadingWindow.noCount()
 			}
 			const thisModLook = new modLooker(
 				iconParser,
@@ -1050,7 +954,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 			)
 
 			thisModLook.getInfo().then((results) => {
-				if ( countItems > 5 ) { loadingWindow_hide(500) }
+				if ( countItems > 5 ) { loadingWindow.hide(500) }
 				createNamedWindow( 'looker', {
 					selected : thisMod,
 					look     : results,
@@ -1267,9 +1171,9 @@ function gameLauncher() {
 	const gameArgsKey    = ( currentVersion === 22 ) ? 'game_args' : `game_args_${currentVersion}`
 	const progPath       = mcStore.get(gamePathKey)
 	if ( progPath !== '' && fs.existsSync(progPath) ) {
-		loadingWindow_open('launch')
-		loadingWindow_noCount()
-		loadingWindow_hide(3500)
+		loadingWindow.open('launch')
+		loadingWindow.noCount()
+		loadingWindow.hide(3500)
 		const cp = require('child_process')
 		try {
 			const child = cp.spawn(progPath, mcStore.get(gameArgsKey).split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
@@ -1374,8 +1278,6 @@ ipcMain.on('toMain_clearCacheFile', () => {
 ipcMain.on('toMain_cleanCacheFile', (event) => {
 	const localStore = maCache.store
 	const md5Set     = new Set(Object.keys(localStore))
-
-	loadingWindow_open('cache')
 	
 	for ( const collectKey of modCollect.collections ) {
 		for ( const thisSum of Array.from(Object.values(modCollect.getModListFromCollection(collectKey)), (mod) => mod.md5Sum).filter((x) => x !== null) ) {
@@ -1383,20 +1285,11 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 		}
 	}
 
-	loadingWindow_total(md5Set.size, true)
-	loadingWindow_current(0, true)
+	for ( const md5 of md5Set ) { delete localStore[md5] }
 
-	setTimeout(() => {
-		loadingWindow_total(md5Set.size, true)
-		loadingWindow_current(0, true)
+	maCache.store = localStore
 
-		for ( const md5 of md5Set ) { delete localStore[md5]; loadingWindow_current() }
-
-		maCache.store = localStore
-
-		loadingWindow_hide(1500)
-		event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
-	}, 1500)
+	event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 })
 ipcMain.on('toMain_setPrefFile', (event, version) => {
 	const pathBestGuessNew = pathBestGuess.replace(/FarmingSimulator20\d\d/, `FarmingSimulator20${version}`)
@@ -1435,9 +1328,9 @@ ipcMain.on('toMain_setPrefFile', (event, version) => {
 ipcMain.on('toMain_setGamePath', (event, version) => {
 	dialog.showOpenDialog(windows.prefs, {
 		properties  : ['openFile'],
-		defaultPath : path.join(userHome, gameExePick[version]),
+		defaultPath : path.join(userHome, `FarmingSimulator20${version}.exe`),
 		filters     : [
-			{ name : gameExePick[version], extensions : ['exe'] },
+			{ name : `FarmingSimulator20${version}.exe`, extensions : ['exe'] },
 			{ name : 'All', extensions : ['*'] },
 		],
 	}).then((result) => {
@@ -1527,16 +1420,16 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 			doDialogBox('main', { type : 'error', titleL10n : 'download_title', message : `${myTranslator.syncStringLookup('download_failed')} :: ${modCollect.mapCollectionToName(collection)}` })
 			dlProgress = false
 		} else {
-			loadingWindow_open('download', true)
+			loadingWindow.open('download', true)
 
-			loadingWindow_total(response.headers['content-length'] || 0, true, true)
-			loadingWindow_current(0, true, true)
+			loadingWindow.total(response.headers['content-length'] || 0, true, true)
+			loadingWindow.current(0, true, true)
 
 			const dlPath      = path.join(app.getPath('temp'), `${collection}.zip`)
 			const writeStream = fs.createWriteStream(dlPath)
 
 			response.pipe(writeStream)
-			response.on('data', (chunk) => { loadingWindow_current(chunk.length, false, true) })
+			response.on('data', (chunk) => { loadingWindow.current(chunk.length, false, true) })
 
 			writeStream.on('finish', () => {
 				writeStream.close()
@@ -1545,18 +1438,18 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 					let zipBytesSoFar   = 0
 					const zipBytesTotal = fs.statSync(dlPath).size
 
-					loadingWindow_open('zip')
-					loadingWindow_total(100, true)
+					loadingWindow.open('zip')
+					loadingWindow.total(100, true)
 
 					const zipReadStream  = fs.createReadStream(dlPath)
 
 					zipReadStream.on('data', (chunk) => {
 						zipBytesSoFar += chunk.length
-						loadingWindow_current(((zipBytesSoFar/zipBytesTotal)*100).toFixed(2), true)
+						loadingWindow.current(((zipBytesSoFar/zipBytesTotal)*100).toFixed(2), true)
 					})
 
 					zipReadStream.on('error', (err) => {
-						loadingWindow_hide()
+						loadingWindow.hide()
 						dlProgress = false
 						log.log.warning(`Download unzip failed : ${err}`, 'mod-download')
 					})
@@ -1573,13 +1466,21 @@ ipcMain.on('toMain_downloadList', (event, collection) => {
 					zipReadStream.pipe(unzip.Extract({ path : modCollect.mapCollectionToFolder(collection) }))
 				} catch (e) {
 					log.log.warning(`Download failed : (${response.statusCode}) ${e}`, 'mod-download')
-					loadingWindow_hide()
+					loadingWindow.hide()
 				}
 			})
 		}
 	})
-	dlReq.on('abort', () => { log.log.notice('Download canceled', 'mod-download'); dlProgress = false; loadingWindow_hide() })
-	dlReq.on('error', (error) => { log.log.warning(`Network error : ${error}`, 'mod-download'); dlProgress = false; loadingWindow_hide() })
+	dlReq.on('abort', () => {
+		log.log.notice('Download canceled', 'mod-download')
+		dlProgress = false
+		loadingWindow.hide()
+	})
+	dlReq.on('error', (error) => {
+		log.log.warning(`Network error : ${error}`, 'mod-download')
+		dlProgress = false
+		loadingWindow.hide()
+	})
 	dlReq.end()
 })
 /** END: download operation */
@@ -1643,9 +1544,10 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 			log.log.debug('Export ZIP Cancelled', 'zip-export')
 		} else {
 			try {
-				loadingWindow_open('makezip')
-				loadingWindow_total(filePaths.length, true)
-				loadingWindow_current(0, true)
+				loadingWindow.open('makezip')
+				loadingWindow.total(filePaths.length, true)
+				loadingWindow.current(0, true)
+
 				const zipOutput  = fs.createWriteStream(result.filePath)
 				const zipArchive = makeZip('zip', {
 					zlib : { level : 6 },
@@ -1657,7 +1559,7 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 				})
 
 				zipArchive.on('error', (err) => {
-					loadingWindow_hide()
+					loadingWindow.hide()
 					log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
 					setTimeout(() => {
 						doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
@@ -1669,7 +1571,7 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 				})
 
 				zipArchive.on('entry', (entry) => {
-					loadingWindow_current()
+					loadingWindow.current()
 					log.log.info(`Added file to ZIP : ${entry.name}`, 'zip-export')
 				})
 
@@ -1679,11 +1581,11 @@ ipcMain.on('toMain_exportZip', (event, selectedMods) => {
 					zipArchive.file(thisFile[1], { name : `${thisFile[0]}.zip` })
 				}
 
-				zipArchive.finalize().then(() => { loadingWindow_hide() })
+				zipArchive.finalize().then(() => { loadingWindow.hide() })
 
 			} catch (err) {
 				log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
-				loadingWindow_hide()
+				loadingWindow.hide()
 				setTimeout(() => {
 					doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
 				}, 1500)
@@ -1804,7 +1706,7 @@ function sendModList(extraArgs = {}, eventName = 'fromMain_modList', toWindow = 
 		if ( toWindow === 'main' && windows.version && windows.version.isVisible() ) {
 			windows.version.webContents.send(eventName, modCollection)
 		}
-		if ( closeLoader ) { loadingWindow_hide(1500) }
+		if ( closeLoader ) { loadingWindow.hide(1500) }
 	})
 }
 
@@ -1999,8 +1901,8 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 		return
 	}
 
-	loadingWindow_open('set')
-	loadingWindow_noCount()
+	loadingWindow.open('set')
+	loadingWindow.noCount()
 
 	gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( opts.disable === false || opts.disable === null )
 	gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( opts.newFolder !== null ) ? opts.newFolder : ''
@@ -2043,9 +1945,9 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 
 	windows[srcWindow].close()
 
-	loadingWindow_open('files')
-	loadingWindow_total(fileMap.length, true)
-	loadingWindow_current(0, true)
+	loadingWindow.open('files')
+	loadingWindow.total(fileMap.length, true)
+	loadingWindow.current(0, true)
 
 	fileWait = setInterval(() => {
 		if ( windows.load.isVisible() ) {
@@ -2119,7 +2021,7 @@ function fileOperation_post(type, fileMap) {
 			log.log.danger(`Could not ${type} file : ${e}`, `${type}-file`)
 		}
 
-		loadingWindow_current()
+		loadingWindow.current()
 	}
 
 	if ( type === 'move_multi' ) {
@@ -2137,12 +2039,12 @@ function fileOperation_post(type, fileMap) {
 }
 
 let loadingWait = null
-async function processModFolders() {
-	if ( !foldersDirty ) { loadingWindow_hide(); return }
+async function processModFolders(force = false) {
+	if ( !force && !foldersDirty ) { loadingWindow.hide(); return }
 
-	loadingWindow_open('mods')
-	loadingWindow_total(0, true)
-	loadingWindow_current(0, true)
+	loadingWindow.open('mods')
+	loadingWindow.total(0, true)
+	loadingWindow.current(0, true)
 
 	loadingWait = setInterval(() => {
 		if ( windows.load.isVisible() ) {
@@ -2183,7 +2085,7 @@ function processModFoldersOnDisk() {
 		if ( ! offlineFolders.includes(folder) ) {
 			const thisCollectionStats = modCollect.addCollection(folder)
 
-			loadingWindow_total(thisCollectionStats.fileCount)
+			loadingWindow.total(thisCollectionStats.fileCount)
 		}
 	}
 
@@ -2216,9 +2118,8 @@ function updateFolderDirtyWatch(eventType, fileName, folder) {
 		}
 	}
 }
-function sendFoldersDirtyUpdate() {
-	windows.main.webContents.send('fromMain_dirtyUpdate', foldersDirty)
-}
+
+function sendFoldersDirtyUpdate() { windows.main.webContents.send('fromMain_dirtyUpdate', foldersDirty) }
 
 function loadSaveFile(filename) {
 	try {
