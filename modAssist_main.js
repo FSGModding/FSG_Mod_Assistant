@@ -205,7 +205,7 @@ currentColorTheme = ( currentColorTheme === 'system' ) ?
 	(nativeTheme.shouldUseDarkColors ? 'dark' : 'light') :
 	currentColorTheme
 
-let gameSettingsXML = null
+// let gameSettingsXML = null
 let gameXML         = null
 let overrideFolder  = null
 let overrideIndex   = '999'
@@ -684,7 +684,7 @@ ipcMain.on('toMain_reorderFolder', (_, from, to) => {
 
 	newOrder.splice(to, 0, item)
 
-	const newSetOrder = newOrder.map((path) => modCollect.mapFolderToCollection(path))
+	const newSetOrder = newOrder.map((thisPath) => modCollect.mapFolderToCollection(thisPath))
 
 	modFolders                    = new Set(newOrder)
 	modCollect.newCollectionOrder = new Set(newSetOrder)
@@ -1621,16 +1621,16 @@ ipcMain.on('toMain_selectInMain',   (_, selectList) => {
 })
 ipcMain.on('toMain_openSaveFolder', () => { openSaveGame(false) })
 ipcMain.on('toMain_openSaveZIP',    () => { openSaveGame(true) })
-ipcMain.on('toMain_openSaveDrop',   (_, type, path) => {
-	if ( type !== 'zip' && !fs.statSync(path).isDirectory() ) { return }
+ipcMain.on('toMain_openSaveDrop',   (_, type, thisPath) => {
+	if ( type !== 'zip' && !fs.statSync(thisPath).isDirectory() ) { return }
 
-	readSaveGame(path, type !== 'zip')
+	readSaveGame(thisPath, type !== 'zip')
 })
 ipcMain.on('toMain_openHubByID',    (_, hubID) => { shell.openExternal(`${modHubURL}${hubID}`) })
 
-function readSaveGame(path, isFolder) {
+function readSaveGame(thisPath, isFolder) {
 	try {
-		const thisSavegame = new saveFileChecker(path, isFolder, log)
+		const thisSavegame = new saveFileChecker(thisPath, isFolder, log)
 
 		sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
 	} catch (e) {
@@ -1837,6 +1837,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 	const gameSettingsFileName = mcStore.get(gameSettingsKey, '')
 
 	let   XMLString = ''
+	let   gameSettingsXML = null
 	const XMLParser = new fxml.XMLParser({
 		commentPropName    : '#comment',
 		ignoreAttributes   : false,
@@ -1865,18 +1866,16 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 
 	overrideIndex = ( !overrideActive ) ? '0' : modCollect.mapFolderToCollection(overrideFolder) || '999'
 
-	if ( ! operationFailed ) {
-		if ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) {
-			modNote.set(`${modCollect.mapFolderToCollection(newFolder)}.notes_last`, new Date())
-			writeGameSettings(gameSettingsFileName, gameSettingsXML, {
-				disable    : disable,
-				newFolder  : newFolder,
-				password   : password,
-				serverName : serverName,
-				userName   : userName,
-				version    : currentVersion,
-			})
-		}
+	if ( ! operationFailed && ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) ) {
+		modNote.set(`${modCollect.mapFolderToCollection(newFolder)}.notes_last`, new Date())
+		writeGameSettings(gameSettingsFileName, gameSettingsXML, {
+			disable    : disable,
+			newFolder  : newFolder,
+			password   : password,
+			serverName : serverName,
+			userName   : userName,
+			version    : currentVersion,
+		})
 	}
 }
 

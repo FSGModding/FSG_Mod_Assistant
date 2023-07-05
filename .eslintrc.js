@@ -73,8 +73,10 @@ module.exports = {
 		'no-promise-executor-return'      : 'error',
 		'no-return-await'                 : 'error',
 		'no-sequences'                    : 'error',
+		'no-shadow'                       : 'error',
 		'no-template-curly-in-string'     : 'error',
 		'no-unneeded-ternary'             : 'error',
+		'no-unreachable-loop'             : 'error',
 		'no-unused-expressions'           : 'error',
 		'no-unused-private-class-members' : 'error',
 		'no-useless-backreference'        : 'error',
@@ -89,6 +91,5 @@ module.exports = {
 
 		'complexity'                      : ['warn', 15],
 		'sort-keys'                       : ['warn', 'asc', {'allowLineSeparatedGroups' : true, 'caseSensitive' : false, 'minKeys' : 4, 'natural' : true}],
-		
 	},
 }

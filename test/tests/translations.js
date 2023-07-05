@@ -20,9 +20,9 @@ module.exports.test = (testLib) => {
 		} else {
 			const enFile = JSON.parse(enData)
 
-			fs.readdir(langPath, {withFileTypes : true}, (err, checkFiles) => {
-				if ( err ) {
-					test.error(err)
+			fs.readdir(langPath, {withFileTypes : true}, (err2, checkFiles) => {
+				if ( err2 ) {
+					test.error(err2)
 				} else {
 					for ( const thisFile of checkFiles ) {
 						try {
