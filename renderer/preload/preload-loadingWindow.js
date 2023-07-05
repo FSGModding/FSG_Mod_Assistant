@@ -11,7 +11,7 @@ const {ipcRenderer, contextBridge} = require('electron')
 let lastTotal = 1
 let startTime = Date.now()
 
-ipcRenderer.on('formMain_loadingTitles', (event, mainTitle, subTitle, dlCancel) => {
+ipcRenderer.on('formMain_loadingTitles', (_, mainTitle, subTitle, dlCancel) => {
 	document.getElementById('statusMessage').innerHTML = mainTitle
 	document.getElementById('statusDetail').innerHTML  = subTitle
 	document.getElementById('statusCount').classList.remove('d-none')
@@ -33,7 +33,7 @@ ipcRenderer.on('fromMain_loadingNoCount', () => {
 	document.getElementById('statusProgBar').classList.add('d-none')
 })
 
-ipcRenderer.on('fromMain_loading_total', (event, count, inMB = false) => {
+ipcRenderer.on('fromMain_loading_total', (_, count, inMB = false) => {
 	if ( inMB ) { startTime = Date.now() }
 	const thisCount   = inMB ? toMB(count) : count
 	const thisElement = document.getElementById('statusTotal')
@@ -42,7 +42,7 @@ ipcRenderer.on('fromMain_loading_total', (event, count, inMB = false) => {
 	if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
 })
 
-ipcRenderer.on('fromMain_loading_current', (event, count, inMB = false) => {
+ipcRenderer.on('fromMain_loading_current', (_, count, inMB = false) => {
 	const thisCount   = inMB ? toMB(count, false) : count
 	const thisElement = document.getElementById('statusCurrent')
 	const thisProg    = document.getElementById('statusProgBarInner')

@@ -250,13 +250,13 @@ const select_lib = {
 		select_lib.change_count(countSelected)
 	},
 
-	filter : (table, forceValue = false) => {
+	filter : (_, forceValue = false) => {
 		select_lib.debounceF = setTimeout(() => {
 			select_lib.debounceF = null
-			select_lib.filter_post(table, forceValue)
+			select_lib.filter_post(forceValue)
 		}, 350)
 	},
-	filter_post : (table, forceValue = false) => {
+	filter_post : (forceValue = false) => {
 		select_lib.update_scroll()
 
 		if ( forceValue !== false ) {

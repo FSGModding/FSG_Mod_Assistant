@@ -30,7 +30,7 @@ contextBridge.exposeInMainWorld(
 			]
 		
 			if ( validChannels.includes( channel ) ) {
-				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
 	}
@@ -50,7 +50,7 @@ contextBridge.exposeInMainWorld(
 			]
 		
 			if ( validChannels.includes( channel ) ) {
-				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
 	}
@@ -66,7 +66,7 @@ contextBridge.exposeInMainWorld(
 			]
 		
 			if ( validChannels.includes( channel ) ) {
-				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
 	}

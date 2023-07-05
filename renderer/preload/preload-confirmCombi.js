@@ -4,7 +4,7 @@
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
 
-// copy multi confirm window preLoad
+// copy confirm window preLoad
 
 const {contextBridge, ipcRenderer} = require('electron')
 
@@ -29,7 +29,7 @@ contextBridge.exposeInMainWorld(
 			]
 		
 			if ( validChannels.includes( channel ) ) {
-				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
 	}
@@ -37,8 +37,14 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		realMoveMultiFile : ( fileMap )       => { ipcRenderer.send('toMain_realMultiFileMove', fileMap) },
-		receive        : ( channel, func ) => {
+		realCopyFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileCopy', fileMap) },
+		realCopyMultiFile : ( fileMap )          => { ipcRenderer.send('toMain_realMultiFileCopy', fileMap) },
+		realDeleteFile    : ( collection, uuid ) => { ipcRenderer.send('toMain_realFileDelete', collection, uuid) },
+		realImportFile    : ( fileMap )          => { ipcRenderer.send('toMain_realFileImport', fileMap) },
+		realMoveFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileMove', fileMap) },
+		realMoveMultiFile : ( fileMap )          => { ipcRenderer.send('toMain_realMultiFileMove', fileMap) },
+
+		receive      : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_confirmList',
 				'fromMain_subWindowSelectAll',
@@ -46,7 +52,7 @@ contextBridge.exposeInMainWorld(
 			]
 		
 			if ( validChannels.includes( channel ) ) {
-				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
 	}
@@ -62,7 +68,7 @@ contextBridge.exposeInMainWorld(
 			]
 		
 			if ( validChannels.includes( channel ) ) {
-				ipcRenderer.on( channel, ( event, ...args ) => func( ...args ))
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
 	}
