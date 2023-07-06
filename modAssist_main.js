@@ -1973,13 +1973,13 @@ function fileOperation_post(type, fileMap) {
 				log.log.info(`Copy File : ${file.src} -> ${file.dest}`, 'file-ops')
 
 				if ( ! fs.statSync(file.src).isDirectory() ) {
+					fs.copyFileSync(file.src, file.dest)
+				} else {
 					if ( fs.existsSync(file.dest) ) {
 						// remove **folder** to be overwritten (otherwise will merge)
 						log.log.info(`Delete Existing Folder First : ${file.dest}`, 'file-ops')
 						fs.rmSync(file.dest, { recursive : true })
 					}
-					fs.copyFileSync(file.src, file.dest)
-				} else {
 					fs.cpSync(file.src, file.dest, { recursive : true })
 				}
 			}
