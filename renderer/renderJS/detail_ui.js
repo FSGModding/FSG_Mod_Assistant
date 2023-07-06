@@ -11,6 +11,15 @@
 
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
+	try {
+		buildPage(modCollect)
+	} catch (e) {
+		window.log.warning(`Page build failed :: ${e}`, 'detail-ui')
+	}
+	processL10N()
+})
+
+const buildPage = (modCollect) => {
 	const modRecord = modCollect.opts.selected
 	const modDate   = new Date(Date.parse(modRecord.fileDetail.fileDate))
 
@@ -128,9 +137,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false)
 		fsgUtil.byId('cropjson').innerHTML = JSON.stringify(modRecord.modDesc.cropInfo)
 	}
-
-	processL10N()
-})
+}
 
 function makeStoreButton(modRecord) {
 	return ( modRecord.gameVersion < 22 ) ? '' : `<button onclick="window.mods.lookInMod('${modRecord.colUUID}')" class="btn btn-vsm btn-primary"><l10n name="look_detail_button"></l10n></button>`

@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Version window UI
-
+/* eslint complexity: ["warn", 16] */
 /* global fsgUtil, processL10N */
 
 
@@ -19,7 +19,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const versionListNoMatch = {}
 
 	for ( const collectKey of modCollect.set_Collections ) {
-		if ( doMultiVersion && modCollect.collectionNotes[collectKey].notes_version !== thisVersion ) {
+		if ( doMultiVersion && modCollect?.collectionNotes?.[collectKey]?.notes_version !== thisVersion ) {
 			continue
 		}
 
@@ -27,7 +27,6 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		for ( const modKey of modCollect.modList[collectKey].modSet ) {
 			const mod     = modCollect.modList[collectKey].mods[modKey]
 			const modName = mod.fileDetail.shortName
-			
 
 			if ( mod.fileDetail.isFolder ) { continue }
 
@@ -38,21 +37,27 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		}
 	}
 
+	
 	for ( const key in versionList ) {
-		if ( versionList[key].length < 2 ) {
-			delete versionList[key]
-			continue
-		}
-
-		const firstVer = versionList[key][0][1]
-		for ( let i = 1; i < versionList[key].length; i++ ) {
-			if ( firstVer !== versionList[key][i][1] ) {
-				versionListNoMatch[key] = versionList[key]
+		try {
+			if ( versionList[key].length < 2 ) {
 				delete versionList[key]
-				break
+				continue
 			}
+
+			const firstVer = versionList[key][0][1]
+			for ( let i = 1; i < versionList[key].length; i++ ) {
+				if ( firstVer !== versionList[key][i][1] ) {
+					versionListNoMatch[key] = versionList[key]
+					delete versionList[key]
+					break
+				}
+			}
+		} catch (e) {
+			window.log.warning(`Issue with version sorting : ${key} :: ${e}`, 'version_ui')
 		}
 	}
+	
 
 	const listHTML = []
 
@@ -80,8 +85,10 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 function makeColList(collections) {
 	const colList = ['<ul class="list-unstyled px-2">']
-	for ( const thisColText of collections ) {
-		colList.push(`<li>${thisColText}</li>`)
+	if ( typeof collections === 'object' ) {
+		for ( const thisColText of collections ) {
+			colList.push(`<li>${thisColText}</li>`)
+		}
 	}
 	colList.push('</ul>')
 	return colList.join('')

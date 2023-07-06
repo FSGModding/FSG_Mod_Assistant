@@ -186,7 +186,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 				))
 
 			} catch (e) {
-				window.log.notice(`Error building mod row: ${e}`, 'main')
+				window.log.notice(`Error building mod row: ${modKey} :: ${e}`, 'main')
 			}
 		}
 		

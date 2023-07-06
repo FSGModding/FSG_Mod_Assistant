@@ -35,43 +35,47 @@ window.mods.receive('fromMain_modSet', (modSet, shortName) => {
 })
 
 function compareVersion(latestVersion, thisVersion, collectKey) {
-	const latestVersionRet = latestVersion
-	const thisVersionParts = thisVersion.split('.').map( (d) => { return parseInt(d) })
+	try {
+		const latestVersionRet = latestVersion
+		const thisVersionParts = thisVersion.split('.').map( (d) => { return parseInt(d) })
 
-	if ( latestVersion.vString === null ) {
-		latestVersionRet.collectKey = collectKey
-		latestVersionRet.vString    = thisVersion
-		latestVersionRet.vParts     = thisVersionParts
-		return latestVersionRet
-	}
-	
-	if ( latestVersion.vString === latestVersion ) {
-		return latestVersionRet
-	}
-
-	if ( latestVersion.vParts.length !== thisVersionParts.length ) {
-		// Different number of parts, string compare.
-		if ( thisVersion > latestVersion.vString ) {
-			latestVersionRet.collectKey = collectKey
-			latestVersionRet.vString    = thisVersion
-			latestVersionRet.vParts     = thisVersionParts
-		}
-		return latestVersionRet
-	}
-
-	for ( let i = 0; i < latestVersion.vParts.length; i++ ) {
-		if ( thisVersionParts[i] < latestVersion.vParts[i] ) {
-			break
-		}
-		if ( latestVersion.vParts[i] < thisVersionParts[i] ) {
+		if ( latestVersion.vString === null ) {
 			latestVersionRet.collectKey = collectKey
 			latestVersionRet.vString    = thisVersion
 			latestVersionRet.vParts     = thisVersionParts
 			return latestVersionRet
 		}
-	}
+		
+		if ( latestVersion.vString === latestVersion ) {
+			return latestVersionRet
+		}
 
-	return latestVersionRet
+		if ( latestVersion.vParts.length !== thisVersionParts.length ) {
+			// Different number of parts, string compare.
+			if ( thisVersion > latestVersion.vString ) {
+				latestVersionRet.collectKey = collectKey
+				latestVersionRet.vString    = thisVersion
+				latestVersionRet.vParts     = thisVersionParts
+			}
+			return latestVersionRet
+		}
+
+		for ( let i = 0; i < latestVersion.vParts.length; i++ ) {
+			if ( thisVersionParts[i] < latestVersion.vParts[i] ) {
+				break
+			}
+			if ( latestVersion.vParts[i] < thisVersionParts[i] ) {
+				latestVersionRet.collectKey = collectKey
+				latestVersionRet.vString    = thisVersion
+				latestVersionRet.vParts     = thisVersionParts
+				return latestVersionRet
+			}
+		}
+
+		return latestVersionRet
+	} catch (e) {
+		window.log.warning(`Version compare failed :: ${latestVersion} / ${thisVersion} :: ${e}`, 'resolve_ui')
+	}
 }
 
 

@@ -73,47 +73,51 @@ function clientMakeCropCalendar(elementID, theData, isSouth = false) {
 	tableLines.push(`<tr class="crophead">${makeTD(['p-0'], '', true)}${orderLine(monthLabels, isSouth)}</tr>`)
 
 	for ( const crop of theData ) {
-		const cropNameCell = makeTD(
-			[
-				'border-info',
-				`crop-row-${ evenRow ? 'even' : 'odd' }`,
-				'align-middle',
-				'fw-bold',
-				'text-white',
-				'pe-2'
-			],
-			getCropInfo(crop.name),
-			false,
-			1,
-			2
-		)
-
-		const plantLines   = []
-		const harvestLines = []
-
-		for ( let idx = 1; idx < 13; idx++ ) {
-			plantLines.push(makeTD(
+		try {
+			const cropNameCell = makeTD(
 				[
-					'crop-box',
+					'border-info',
 					`crop-row-${ evenRow ? 'even' : 'odd' }`,
-					`crop-col-${idx % 2 === 0 ? 'even' : 'odd'}`,
-					crop.plantPeriods.includes(idx) ? 'crop_plant' : ''
-				]
-			))
+					'align-middle',
+					'fw-bold',
+					'text-white',
+					'pe-2'
+				],
+				getCropInfo(crop.name),
+				false,
+				1,
+				2
+			)
 
-			harvestLines.push(makeTD(
-				[
-					'crop-box',
-					`crop-row-${ evenRow ? 'even' : 'odd' }`,
-					`crop-col-${idx % 2 === 0 ? 'even' : 'odd'}`,
-					crop.harvestPeriods.includes(idx) ? 'crop_harvest' : ''
-				]
-			))
+			const plantLines   = []
+			const harvestLines = []
+
+			for ( let idx = 1; idx < 13; idx++ ) {
+				plantLines.push(makeTD(
+					[
+						'crop-box',
+						`crop-row-${ evenRow ? 'even' : 'odd' }`,
+						`crop-col-${idx % 2 === 0 ? 'even' : 'odd'}`,
+						crop.plantPeriods.includes(idx) ? 'crop_plant' : ''
+					]
+				))
+
+				harvestLines.push(makeTD(
+					[
+						'crop-box',
+						`crop-row-${ evenRow ? 'even' : 'odd' }`,
+						`crop-col-${idx % 2 === 0 ? 'even' : 'odd'}`,
+						crop.harvestPeriods.includes(idx) ? 'crop_harvest' : ''
+					]
+				))
+			}
+
+			tableLines.push(`<tr>${cropNameCell}${orderLine(plantLines, isSouth)}</tr>`)
+			tableLines.push(`<tr>${orderLine(harvestLines, isSouth)}</tr>`)
+			evenRow = !evenRow
+		} catch (e) {
+			window.log.warning(`Unable to build calendar row :: ${e}`, 'cropcal')
 		}
-
-		tableLines.push(`<tr>${cropNameCell}${orderLine(plantLines, isSouth)}</tr>`)
-		tableLines.push(`<tr>${orderLine(harvestLines, isSouth)}</tr>`)
-		evenRow = !evenRow
 	}
 
 	theTable.innerHTML = tableLines.join('')

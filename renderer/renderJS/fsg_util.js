@@ -132,13 +132,17 @@ const fsgUtil = {
 	buildScrollMod     : (collectKey, modUUID) => `<div class="${collectKey}_mods ${modUUID} scroll_mod d-none flex-grow-1 bg-opacity-25"></div>`,
 	buildSelectOpt     : (value, text, selected, disabled = false, title = null) => `<option ${( title !== null ) ? `title="${title}"` : '' } value="${value}" ${( value === selected ) ? 'selected' : ''} ${( disabled ) ? 'disabled' : ''}>${text}</option>`,
 	useTemplate        : ( templateName, replacements ) => {
-		let thisTemplate = fsgUtil.byId(templateName).innerHTML
+		try {
+			let thisTemplate = fsgUtil.byId(templateName).innerHTML
 
-		for ( const key in replacements ) {
-			thisTemplate = thisTemplate.replaceAll(new RegExp(`{{${key}}}`, 'g'), replacements[key])
+			for ( const key in replacements ) {
+				thisTemplate = thisTemplate.replaceAll(new RegExp(`{{${key}}}`, 'g'), replacements[key])
+			}
+
+			return thisTemplate
+		} catch (e) {
+			window.log.warning(`Template usage failed :: ${e}`, templateName)
 		}
-
-		return thisTemplate
 	},
 	
 	basename  : (name, sep = '\\') => name.substr(name.lastIndexOf(sep) + 1),
@@ -250,8 +254,8 @@ document.addEventListener('keydown', (event) => {
 	}
 })
 
-window.addEventListener('error', (ErrorEvent) => {
-	window.log.warning(ErrorEvent.message, ErrorEvent.filename)
+window.addEventListener('error', (message, source) => {
+	window.log.warning(message, source)
 })
 
 window?.win_ops?.receive('fromMain_themeSetting', (theme) => fsgUtil.setTheme(theme))

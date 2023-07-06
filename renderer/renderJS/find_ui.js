@@ -17,25 +17,29 @@ window.mods.receive('fromMain_modRecords', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 
-	for ( const collectKey of modCollect.set_Collections ) {
-		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
-		for ( const modKey of modCollect.modList[collectKey].modSet ) {
-			const mod = modCollect.modList[collectKey].mods[modKey]
-			if ( ! mod.canNotUse ) {
-				fullList[mod.fileDetail.shortName] ??= {
-					author    : fsgUtil.escapeSpecial(mod.modDesc.author),
-					collect   : [],
-					icon      : mod.modDesc.iconImageCache,
-					name      : mod.fileDetail.shortName,
-					title     : fsgUtil.escapeSpecial(mod.l10n.title),
+	try {
+		for ( const collectKey of modCollect.set_Collections ) {
+			if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
+			for ( const modKey of modCollect.modList[collectKey].modSet ) {
+				const mod = modCollect.modList[collectKey].mods[modKey]
+				if ( ! mod.canNotUse ) {
+					fullList[mod.fileDetail.shortName] ??= {
+						author    : fsgUtil.escapeSpecial(mod.modDesc.author),
+						collect   : [],
+						icon      : mod.modDesc.iconImageCache,
+						name      : mod.fileDetail.shortName,
+						title     : fsgUtil.escapeSpecial(mod.l10n.title),
+					}
+					fullList[mod.fileDetail.shortName].collect.push({
+						fullId  : `${collectKey}--${mod.uuid}`,
+						name    : modCollect.collectionToName[collectKey],
+						version : fsgUtil.escapeSpecial(mod.modDesc.version),
+					})
 				}
-				fullList[mod.fileDetail.shortName].collect.push({
-					fullId  : `${collectKey}--${mod.uuid}`,
-					name    : modCollect.collectionToName[collectKey],
-					version : fsgUtil.escapeSpecial(mod.modDesc.version),
-				})
 			}
 		}
+	} catch (e) {
+		window.log.warning(`Failed to build search data :: ${e}`, 'find-ui')
 	}
 	
 	fullListSort = Object.keys(fullList).sort( (a, b) => {
