@@ -22,6 +22,7 @@ const patternToInclude = [
 	'shopItem_',
 	'storeItem_',
 	'object_',
+	'category_',
 ]
 
 const langParser = new XMLParser({

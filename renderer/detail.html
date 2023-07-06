@@ -77,6 +77,10 @@
 				<table id="crop-table" class="table table-sm table-borderless"></table>
 			</div>
 		</div>
+		<div class="px-3 border-bottom mb-2 d-none" id="store_div">
+			<h4><l10n name="detail_mod_store_items"></l10n></h4>
+			<div id="storeitems" class="px-2"></div>
+		</div>
 		<div class="px-3 border-bottom mb-2" id="depend_div">
 			<h4><l10n name="detail_depend"></l10n></h4>
 			<div id="depends" class="w-100 mx-auto ps-5 mb-3"></div>
@@ -101,4 +105,82 @@
 	</div>
 
 </body>
+
+<template id="vehicle_div">
+	<div class="card mb-3">
+		<h5 class="card-header">
+			{{itemName}}
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic">{{typeDesc}}</small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic fw-normal">{{itemTitle}}</small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fw-bold">{{category}}</small>
+		</h5>
+		<div class="card-body">
+			<div class="row mx-2">
+				<div class="col-5 my-auto mx-auto" id="icon_div">
+					<img class="img-fluid mx-auto d-block mb-2 rounded-4 {{brandHIDE}}" style="height: 70px;" src="{{brandIMG}}">
+					<img class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
+				</div>
+				<div class="col-7 mx-auto">
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item {{show_price}}"><img style="width:30px" src='img/look/price.png'> {{price}}</li>
+						<li class="list-group-item {{show_enginePower}}"><img style="width:30px" src='img/look/engine.png'> {{enginePower}}</li>
+						<li class="list-group-item {{show_needPower}}"><img style="width:30px" src='img/look/engine.png'> {{needPower}}</li>
+						<li class="list-group-item {{show_transmission}}"><img style="width:30px" src='img/look/transmission.png'> {{transmission}}</li>
+						<li class="list-group-item {{show_diesel}}"><img style="width:30px" src='img/look/diesel.png'> <l10n name="look_diesel"></l10n></li>
+						<li class="list-group-item {{show_electric}}"><img style="width:30px" src='img/look/electric.png'> <l10n name="look_electric"></l10n></li>
+						<li class="list-group-item {{show_methane}}"><img style="width:30px" src='img/look/methane.png'> <l10n name="look_methane"></l10n></li>
+						<li class="list-group-item {{show_maxSpeed}}"><img style="width:30px" src='img/look/maxspeed.png'> {{maxSpeed}}</li>
+						<li class="list-group-item {{show_hasLights}}"><img style="width:30px" src='img/look/haslights.png'> <l10n name="look_has_lights"></l10n></li>
+						<li class="list-group-item {{show_hasBeacons}}"><img style="width:30px" src='img/look/hasbeacons.png'> <l10n name="look_has_beacons"></l10n></li>
+						<li class="list-group-item {{show_hasPaint}}"><img style="width:30px" src='img/look/paintable.png'> <l10n name="look_has_paint"></l10n></li>
+						<li class="list-group-item {{show_hasWheels}}"><img style="width:30px" src='img/look/haswheels.png'> <l10n name="look_has_wheels"></l10n></li>
+						<li class="list-group-item {{show_workWidth}}"><img style="width:30px" src='img/look/width.png'> {{workWidth}}</l10n></li>
+						<li class="list-group-item {{show_fillUnit}}"><img style="width:30px" src='img/look/fillunit.png'> {{fillUnit}}<br />{{fillImages}}</li>
+						<li class="list-group-item {{show_weight}}"><img style="width:30px" src='img/look/weight.png'> {{weight}}</li>
+					</ul>
+				</div>
+				<div class="col-12 pt-2"><p class="text-center">{{functions}}</p></div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="place_div">
+	<div class="card mb-3">
+		<h5 class="card-header">
+			{{itemName}}
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic fw-normal">{{itemTitle}}</small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fw-bold">{{category}}</small>
+		</h5>
+		<div class="card-body">
+			<div class="row mx-2">
+				<div class="col-5 my-auto mx-auto" id="icon_div">
+					<img class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
+				</div>
+				<div class="col-7 mx-auto">
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item"><img style="width:30px" src='img/look/price.png'> {{price}}</li>
+						<li class="list-group-item {{show_income}}"><img style="width:30px" src='img/look/income.png'> {{income}}</li>
+						<li class="list-group-item {{show_hasPaint}}"><img style="width:30px" src='img/look/paintable.png'> <l10n name="look_has_paint"></l10n></li>
+						<li class="list-group-item {{show_hasCow}}"><img style="width:30px" src='img/fills/cow.png'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasPig}}"><img style="width:30px" src='img/fills/pig.png'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasSheep}}"><img style="width:30px" src='img/fills/sheep.png'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasChicken}}"><img style="width:30px" src='img/fills/chicken.png'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasHorse}}"><img style="width:30px" src='img/fills/horse.png'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasBee}}"><img style="width:30px" src='img/fills/honey.png'> {{hasBee}}</li>
+						<li class="list-group-item {{show_objectStore}}"><img style="width:30px" src='img/look/objects.png'> {{objectCount}}</li>
+						<li class="list-group-item {{show_fillUnit}}"><img style="width:30px" src='img/look/fillunit.png'> {{fillUnit}}<br />{{fillImages}}</li>
+					</ul>
+				</div>
+				<div class="col-12 pt-2"><p class="text-center">{{functions}}</p></div>
+			</div>
+		</div>
+	</div>
+</template>
+
 </html>

@@ -38,10 +38,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		lookInMod : ( modID )         => { ipcRenderer.send('toMain_lookInMod', modID) },
 		receive   : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_modRecord',
+				'fromMain_lookRecord',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

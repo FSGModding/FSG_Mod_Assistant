@@ -9,6 +9,14 @@
 /*eslint complexity: off*/
 /* global processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
+window.mods.receive('fromMain_lookRecord', (modRecord, lookRecord, currentLocale) => {
+	try {
+		buildStore(modRecord, lookRecord, currentLocale)
+	} catch (e) {
+		window.log.warning(`Page build failed :: ${e}`, 'detail-ui')
+	}
+	processL10N()
+})
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
 	try {
@@ -18,6 +26,129 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	}
 	processL10N()
 })
+
+const buildStore = (modRecord, lookRecord, currentLocale) => {
+	const idMap = {
+		mod_location   : modRecord.fileDetail.fullPath,
+		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
+	}
+
+	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
+
+	const storeItemsHTML = []
+
+	for ( const storeitem in lookRecord.items ) {
+		const thisItem = lookRecord.items[storeitem]
+
+		if ( thisItem.masterType === 'vehicle' ) {
+			let brandImage = null
+			if ( typeof thisItem.brand === 'string' ) {
+				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon !== 'undefined' ) {
+					brandImage = lookRecord.brands[thisItem.brand].icon
+				} else {
+					brandImage = ( fsgUtil.knownBrand.includes(thisItem.brand.toLowerCase()) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.png` : null
+				}
+			}
+
+			const maxSpeed   = getDefault(thisItem?.specs?.maxspeed)
+			const thePower   = getDefault(thisItem?.specs?.power)
+			const getPower   = getDefault(thisItem?.specs?.neededpower)
+			const theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
+			const theFill    = getDefault(thisItem.fillLevel)
+			const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.includes(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
+			
+			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
+				brandHIDE         : shouldHide(brandImage),
+				brandIMG          : fsgUtil.iconMaker(brandImage),
+				category          : thisItem.category,
+				enginePower       : formatManyNumber(thePower, currentLocale, [
+					{ factor : 1,      precision : 0, unit : 'unit_hp' },
+					{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
+				]),
+				fillImages        : fillImages.join(' '),
+				fillUnit          : formatManyNumber(theFill, currentLocale, [
+					{ factor : 1,         precision : 0, unit : 'unit_l' },
+					{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
+					{ factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
+				]),
+				functions         : thisItem.functions.join('<br>'),
+				iconIMG           : fsgUtil.iconMaker(lookRecord?.icons?.[storeitem] || null),
+				itemName          : thisItem.name,
+				itemTitle         : thisItem.type,
+				maxSpeed          : formatManyNumber(maxSpeed, currentLocale, [
+					{ factor : 1,        precision : 0, unit : 'unit_kph' },
+					{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
+				]),
+				needPower         : formatManyNumber(getPower, currentLocale, [
+					{ factor : 1,      precision : 0, unit : 'unit_hp' },
+					{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
+				]),
+				price             : Intl.NumberFormat(currentLocale).format(thisItem.price),
+				show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
+				show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
+				show_enginePower  : shouldHide(thisItem?.specs?.power),
+				show_fillUnit     : thisItem.fillLevel > 0 ? '' : 'd-none',
+				show_hasBeacons   : shouldHide(thisItem.hasBeacons),
+				show_hasLights    : shouldHide(thisItem.hasLights),
+				show_hasPaint     : shouldHide(thisItem.hasColor),
+				show_hasWheels    : shouldHide(thisItem.hasWheelChoice),
+				show_maxSpeed     : shouldHide(thisItem?.specs?.maxspeed),
+				show_methane      : shouldHide(thisItem.fuelType, 'methane'),
+				show_needPower    : shouldHide(thisItem?.specs?.neededpower),
+				show_price        : shouldHide(thisItem.price),
+				show_transmission : shouldHide(thisItem.transType),
+				show_weight       : shouldHide(thisItem.weight),
+				show_workWidth    : shouldHide(thisItem?.specs?.workingwidth),
+				transmission      : thisItem.transType,
+				typeDesc          : thisItem.typeDesc,
+				weight            : formatManyNumber(thisItem.weight, currentLocale, [
+					{ factor : 1,    precision : 0, unit : 'unit_kg' },
+					{ factor : 0.01, precision : 1, unit : 'unit_t' },
+				]),
+				workWidth         : formatManyNumber(theWidth, currentLocale, [
+					{ factor : 1,       precision : 1, unit : 'unit_m' },
+					{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
+				]),
+			}))
+		}
+
+		if ( thisItem.masterType === 'placeable' ) {
+			const fillImages = thisItem.silo.types.map((thisFill) => fsgUtil.knownFills.includes(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
+
+			storeItemsHTML.push(fsgUtil.useTemplate('place_div', {
+				animalCount      : thisItem.husbandry.capacity,
+				category          : thisItem.category,
+				fillImages       : fillImages.join(' '),
+				fillUnit         : formatManyNumber(thisItem.silo.capacity, currentLocale, [
+					{ factor : 1,         precision : 0, unit : 'unit_l' },
+					{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
+					{ factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
+				]),
+				functions        : thisItem.functions.join('<br>'),
+				hasBee           : `${formatManyNumber(thisItem.beehive.radius, currentLocale, [{factor : 1, precision : 0, unit : 'unit_m'}])} / ${formatManyNumber(thisItem.beehive.liters, currentLocale, [{factor : 1, precision : 0, unit : 'unit_l'}])}`,
+				iconIMG          : fsgUtil.iconMaker(lookRecord?.icons?.[storeitem] || null),
+				income           : thisItem.incomePerHour ?? 0,
+				itemName         : thisItem.name,
+				itemTitle        : thisItem.type,
+				objectCount      : thisItem.objectStorage ?? 0,
+				price            : Intl.NumberFormat(currentLocale).format(thisItem.price),
+				show_fillUnit    : shouldHide(thisItem.silo.exists),
+				show_hasBee      : shouldHide(thisItem.beehive.exists),
+				show_hasChicken  : shouldHide(thisItem.husbandry.type, 'CHICKEN'),
+				show_hasCow      : shouldHide(thisItem.husbandry.type, 'COW'),
+				show_hasHorse    : shouldHide(thisItem.husbandry.type, 'HORSE'),
+				show_hasPaint    : shouldHide(thisItem.hasColor),
+				show_hasPig      : shouldHide(thisItem.husbandry.type, 'PIG'),
+				show_hasSheep    : shouldHide(thisItem.husbandry.type, 'SHEEP'),
+				show_income      : shouldHide(thisItem.incomePerHour),
+				show_objectStore : shouldHide(thisItem.objectStorage),
+			}))
+		}
+	}
+
+	fsgUtil.byId('storeitems').innerHTML = storeItemsHTML.join('')
+	fsgUtil.byId('store_div').classList.remove('d-none')
+}
 
 const buildPage = (modCollect) => {
 	const modRecord = modCollect.opts.selected
@@ -38,7 +169,7 @@ const buildPage = (modCollect) => {
 		mod_location   : modRecord.fileDetail.fullPath,
 		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 )  ? modRecord.fileDetail.pngTexture.join('\n')  : getText('detail_extra_clean')),
 		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 )  ? modRecord.fileDetail.spaceFiles.join('\n')  : getText('detail_extra_clean')),
-		store_items    : `${modRecord.modDesc.storeItems > 0 ? makeStoreButton(modRecord) : ''} ${checkX(modRecord.modDesc.storeItems)}`,
+		store_items    : checkX(modRecord.modDesc.storeItems),
 		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
 		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
 	}
@@ -139,9 +270,6 @@ const buildPage = (modCollect) => {
 	}
 }
 
-function makeStoreButton(modRecord) {
-	return ( modRecord.gameVersion < 22 ) ? '' : `<button onclick="window.mods.lookInMod('${modRecord.colUUID}')" class="btn btn-vsm btn-primary"><l10n name="look_detail_button"></l10n></button>`
-}
 
 function checkX(amount, showCount = true) {
 	let returner = ''
@@ -151,4 +279,31 @@ function checkX(amount, showCount = true) {
 		returner += fsgUtil.getIcon('x', 'danger')
 	}
 	return `${(showCount)?amount:''} ${returner}`
+}
+
+
+function getDefault(value, float = false, safe = 0) {
+	const newValue = typeof value !== 'undefined' ? value : safe
+	return !float ? parseInt(newValue) : parseFloat(newValue)
+}
+
+function formatManyNumber(value, locale, transArray) {
+	const returnText = []
+
+	for ( const thisTrans of transArray ) {
+		const thisNumber = value * thisTrans.factor
+		returnText.push(`${Intl.NumberFormat(locale, { maximumFractionDigits : thisTrans.precision }).format(thisNumber)} ${getText(thisTrans.unit)}`)
+	}
+
+	return returnText.join(' / ')
+}
+
+function shouldHide(item, wanted = null) {
+	if ( typeof item === 'undefined' || item === null || item === false || item === '' ) {
+		return 'd-none'
+	}
+	if ( wanted !== null && item.toLowerCase() !== wanted.toLowerCase() ) {
+		return 'd-none'
+	}
+	return ''
 }

@@ -540,35 +540,36 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 
 /** Detail window operation */
-ipcMain.on('toMain_openModDetail', (_, thisMod) => { win.createNamedWindow('detail', {selected : modCollect.modColUUIDToRecord(thisMod) }) })
-ipcMain.on('toMain_lookInMod',     (_, thisMod) => { doLookInMod(thisMod) })
-
-function doLookInMod(thisMod) {
-	const thisModRecord = modCollect.modColUUIDToRecord(thisMod)
-	
-	const countItems = thisModRecord.modDesc.storeItems
-	if ( countItems > 5 ) {
-		win.loading.open('look')
-		win.loading.noCount()
-	}
-	
-	const thisModLook = new modLooker(
-		iconParser,
-		thisModRecord,
-		modCollect.modColUUIDToFolder(thisMod),
-		log,
-		myTranslator.currentLocale
+function openDetailWindow(thisMod) {
+	win.createNamedWindow(
+		'detail',
+		{ selected : thisMod},
+		async () => {
+			try {
+				if ( thisMod.modDesc.storeItems > 0 ) {
+					const thisModLook = new modLooker(
+						iconParser,
+						thisMod,
+						modCollect.modColUUIDToFolder(thisMod.colUUID),
+						log,
+						myTranslator.currentLocale
+					)
+				
+					thisModLook.getInfo().then((results) => {
+						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, myTranslator.currentLocale)
+					})
+				}
+			} catch (e) {
+				log.log.notice(`Failed to load store items :: ${e}`, 'mod-look')
+			}
+		}
 	)
 
-	thisModLook.getInfo().then((results) => {
-		if ( countItems > 5 ) { win.loading.hide(500) }
-		win.createNamedWindow(
-			'looker', {
-				selected : modCollect.modColUUIDToRecord(thisMod),
-				look     : results,
-			})
-	})
+	
 }
+
+ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(modCollect.modColUUIDToRecord(thisMod)) })
+
 
 /** END: Detail window operation */
 
@@ -601,18 +602,9 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	if ( !isSave ) {
 		template.push({
 			label : myTranslator.syncStringLookup('context_mod_detail'),
-			click : () => { win.createNamedWindow('detail', {selected : thisMod}) },
+			click : () => { openDetailWindow(thisMod) },
 		})
-	}
-
-	if ( thisMod.gameVersion > 19 && thisMod.modDesc.storeItems > 0 ) {
-		template.push({
-			label : myTranslator.syncStringLookup('look_detail_button'),
-			click : () => { doLookInMod(thisMod) },
-		})
-	}
-
-	if ( isSave ) {
+	} else {
 		const thisFolder  = modCollect.mapCollectionToFolder(modID.split('--')[0])
 		const savePath    = path.join(thisFolder, path.basename(thisMod.fileDetail.fullPath))
 		const subMenu     = []
