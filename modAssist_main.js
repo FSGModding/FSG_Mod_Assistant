@@ -19,6 +19,7 @@ const semverGt        = require('semver/functions/gt')
 const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock, debugDangerCallback)
 const path            = require('path')
 const fs              = require('fs')
+const win             = new (require('./lib/modAssist_window_lib.js')).windowLib(log)
 
 const devDebug      = !(app.isPackaged)
 const devTools      = true && !(app.isPackaged)
@@ -75,7 +76,7 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 			title   : myTranslator.syncStringLookup('update_title'),
 			type    : 'info',
 		}
-		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
+		dialog.showMessageBox(null, dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) {
 				if ( tray ) { tray.destroy() }
 				if ( gameLogFileWatch ) { gameLogFileWatch.close() }
@@ -157,18 +158,12 @@ const { modFileCollection, modLooker, saveFileChecker, savegameTrack } = require
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
 
 let   tray      = null
+
+
 const {windows} = require('./lib/modAssist_window_lib.js')
 
-const settingsMig = {
-	'>=1.2.1' : (store) => {
-		store.delete('main_window_x')
-		store.delete('main_window_y')
-		store.delete('main_window_max')
-		store.delete('detail_window_x')
-		store.delete('detail_window_y')
-		store.delete('detail_window_max')
-	},
-}
+console.log(win)
+
 
 const settingsSchema = require('./lib/modAssist_window_lib.js').settingsSchema(foundGame, pathBestGuess)
 
@@ -186,10 +181,12 @@ const Store   = require('electron-store')
 const unzip   = require('unzip-stream')
 const makeZip = require('archiver')
 
-const mcStore = new Store({schema : settingsSchema, migrations : settingsMig, clearInvalidConfig : true })
+const mcStore = new Store({schema : settingsSchema, clearInvalidConfig : true })
 const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 const modSite = new Store({name : 'mod_source_site', migrations : siteMigrate, clearInvalidConfig : true})
+
+win.settings = mcStore
 
 let modFolders       = new Set()
 let modFoldersWatch  = []
@@ -766,29 +763,18 @@ ipcMain.on('toMain_langList_change', (_, lang) => {
 ipcMain.on('toMain_themeList_change', (_, theme) => {
 	mcStore.set('color_theme', theme)
 
-	currentColorTheme = ( theme === 'system' ) ? (nativeTheme.shouldUseDarkColors ? 'dark' : 'light') : theme
-
-	themeUpdater()
+	win.themeCurrentColor = ( theme === 'system' ) ? (nativeTheme.shouldUseDarkColors ? 'dark' : 'light') : theme
+	win.themeUpdater()
 })
+
 nativeTheme.on('updated', () => {
 	const savedTheme = mcStore.get('color_theme')
 
 	if ( savedTheme === 'system' ) {
-		currentColorTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
-		themeUpdater()
+		win.themeCurrentColor = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
+		win.themeUpdater()
 	}
 })
-function themeUpdater() {
-	for ( const thisWinKey in windows ) {
-		if ( windows[thisWinKey] !== null && windows[thisWinKey].isVisible() ) {
-			windows[thisWinKey].webContents.send('fromMain_themeSetting', currentColorTheme)
-			windows[thisWinKey].setTitleBarOverlay({
-				color       : themeColors[currentColorTheme].background,
-				symbolColor : themeColors[currentColorTheme].font,
-			})
-		}
-	}
-}
 
 ipcMain.on('toMain_langList_send',   (event) => {
 	myTranslator.getLangList().then((langList) => {
