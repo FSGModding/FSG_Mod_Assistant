@@ -33,6 +33,7 @@ const mainProcessFlags = {
 	intervalLoad    : null,
 	intervalUpdate  : null,
 	lastFolderLoc   : null,
+	modFolders      : new Set(),
 	pathBestGuess   : userHome,
 	pathGameGuess   : '',
 	watchGameLog    : null,
@@ -41,7 +42,7 @@ const mainProcessFlags = {
 }
 
 const { autoUpdater } = require('electron-updater')
-const { ma_logger, translator, ddsDecoder }   = require('./lib/modUtilLib.js')
+const { ma_logger, translator, ddsDecoder } = require('./lib/modUtilLib.js')
 
 const semverGt         = require('semver/functions/gt')
 const log              = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
@@ -66,10 +67,10 @@ log.dangerCallBack = () => { win.toggleMainDangerFlag() }
 const skipCache     = false && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 
-log.log.info(`ModAssist Logger: ${app.getVersion()}`)
-log.log.info(` - Node.js Version: ${process.versions.node}`)
-log.log.info(` - Electron Version: ${process.versions.electron}`)
-log.log.info(` - Chrome Version: ${process.versions.chrome}`)
+log.log.info(`ModAssist Logger    : ${app.getVersion()}`)
+log.log.info(` - Node.js Version  : ${process.versions.node}`)
+log.log.info(` - Electron Version : ${process.versions.electron}`)
+log.log.info(` - Chrome Version   : ${process.versions.chrome}`)
 
 function handleUnhandled(type, err, origin) {
 	const rightNow = new Date()
@@ -95,8 +96,9 @@ process.on('unhandledRejection', (err, origin) => { handleUnhandled('rejection',
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
 	autoUpdater.logger = log.log
 	autoUpdater.on('update-checking-for-update', () => { log.log.debug('Checking for update', 'auto-update') })
-	autoUpdater.on('update-available', () => { log.log.info('Update Available', 'auto-update') })
-	autoUpdater.on('update-not-available', () => { log.log.debug('No Update Available', 'auto-update') })
+	autoUpdater.on('update-available',           () => { log.log.info('Update Available', 'auto-update') })
+	autoUpdater.on('update-not-available',       () => { log.log.debug('No Update Available', 'auto-update') })
+
 	autoUpdater.on('error', (message) => { log.log.warning(`Updater Failed: ${message}`, 'auto-update') })
 
 	autoUpdater.on('update-downloaded', (_, releaseNotes, releaseName) => {
@@ -124,8 +126,6 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 }
 
 const fxml          = require('fast-xml-parser')
-const oldModHub     = require('./lib/oldModHub.json')
-const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
 const hubURLCombo   = 'https://jtsage.dev/modHubData22_combo.json'
 const modHubURL     = 'https://www.farming-simulator.com/mod.php?mod_id='
 const trayIcon      = !app.isPackaged
@@ -146,19 +146,12 @@ const pathGuesses = [
 	path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
 ]
 
-for ( const testPath of gameGuesses ) {
-	if ( fs.existsSync(path.join(testPath, gameExeName)) ) {
-		mainProcessFlags.pathGameGuess = path.join(testPath, gameExeName)
-		break
-	}
+function guessPath(paths, file = '') {
+	for ( const testPath of paths ) { if ( fs.existsSync(path.join(testPath, file)) ) { return testPath } } return ''
 }
 
-for ( const testPath of pathGuesses ) {
-	if ( fs.existsSync(testPath) ) {
-		mainProcessFlags.pathBestGuess = testPath
-		break
-	}
-}
+mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
+mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
 const { modFileCollection, modLooker, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
@@ -176,14 +169,11 @@ const modSite = new Store({name : 'mod_source_site', migrations : settingDefault
 
 win.settings = mcStore
 
-let modFolders       = new Set()
-
 const gameSetOverride = {
 	folder : null,
 	index  : 999,
 	active : false,
 }
-
 
 /** Upgrade Cache Version Here */
 
@@ -346,7 +336,7 @@ ipcMain.on('toMain_addFolder', () => {
 
 		mainProcessFlags.lastFolderLoc = path.resolve(path.join(potentialFolder, '..'))
 
-		for ( const thisPath of modFolders ) {
+		for ( const thisPath of mainProcessFlags.modFolders ) {
 			if ( path.relative(thisPath, potentialFolder) === '' ) {
 				log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
 				return
@@ -355,10 +345,10 @@ ipcMain.on('toMain_addFolder', () => {
 
 		const thisFolderCollectKey = modCollect.getFolderHash(potentialFolder)
 
-		modFolders.add(potentialFolder)
+		mainProcessFlags.modFolders.add(potentialFolder)
 		mainProcessFlags.foldersDirty = true
 
-		mcStore.set('modFolders', Array.from(modFolders))
+		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
 		modNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
 		processModFolders()
@@ -371,9 +361,9 @@ ipcMain.on('toMain_refreshFolders', () => { processModFolders(true) })
 ipcMain.on('toMain_openFolder',     (_, collectKey) => { shell.openPath(modCollect.mapCollectionToFolder(collectKey)) })
 ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	const folder = modCollect.mapCollectionToFolder(collectKey)
-	if ( modFolders.delete(folder) ) {
+	if ( mainProcessFlags.modFolders.delete(folder) ) {
 		log.log.notice(`Folder removed from tracking ${folder}`, 'folder-opts')
-		mcStore.set('modFolders', Array.from(modFolders))
+		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 
 		modCollect.removeCollection(collectKey)
 		
@@ -386,17 +376,17 @@ ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	}
 })
 ipcMain.on('toMain_reorderFolder', (_, from, to) => {
-	const newOrder    = Array.from(modFolders)
+	const newOrder    = Array.from(mainProcessFlags.modFolders)
 	const item        = newOrder.splice(from, 1)[0]
 
 	newOrder.splice(to, 0, item)
 
 	const newSetOrder = newOrder.map((thisPath) => modCollect.mapFolderToCollection(thisPath))
 
-	modFolders                    = new Set(newOrder)
+	mainProcessFlags.modFolders   = new Set(newOrder)
 	modCollect.newCollectionOrder = new Set(newSetOrder)
 
-	mcStore.set('modFolders', Array.from(modFolders))
+	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 
 	win.sendModList({},	'fromMain_getFolders', 'folder', false )
 	mainProcessFlags.foldersDirty = true
@@ -427,21 +417,21 @@ ipcMain.on('toMain_reorderFolderAlpha', () => {
 		newModSetOrder.add(orderPart.collectKey)
 	}
 
-	modFolders                    = newModFolders
+	mainProcessFlags.modFolders   = newModFolders
 	modCollect.newCollectionOrder = newModSetOrder
 
-	mcStore.set('modFolders', Array.from(modFolders))
+	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 
 	win.sendModList({},	'fromMain_getFolders', 'folder', false )
 	mainProcessFlags.foldersDirty = true
 	win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
 })
 ipcMain.on('toMain_dropFolder', (_, newFolder) => {
-	if ( ! modFolders.has(newFolder) ) {
+	if ( ! mainProcessFlags.modFolders.has(newFolder) ) {
 		const thisFolderCollectKey = modCollect.getFolderHash(newFolder)
 
-		modFolders.add(newFolder)
-		mcStore.set('modFolders', Array.from(modFolders))
+		mainProcessFlags.modFolders.add(newFolder)
+		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
 		processModFolders(true)
 	} else {
@@ -481,10 +471,7 @@ ipcMain.on('toMain_themeList_send',   (event) => {
 		['dark',   myTranslator.syncStringLookup('theme_name_dark')],
 	]
 	
-	event.sender.send('fromMain_themeList_return', themeOpts, win.currentColorTheme)
-})
-ipcMain.on('toMain_getText_sync', (event, text) => {
-	event.returnValue = myTranslator.syncStringLookup(text)
+	event.sender.send('fromMain_themeList_return', themeOpts, win.themeCurrentColor)
 })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return', [entry, text]) }
@@ -1654,13 +1641,13 @@ function processModFoldersOnDisk() {
 	mainProcessFlags.watchModFolder.forEach((oldWatcher) => { oldWatcher.close() })
 	mainProcessFlags.watchModFolder = []
 	// Cleaner for no-longer existing folders, set watcher for others
-	for ( const folder of modFolders ) {
+	for ( const folder of mainProcessFlags.modFolders ) {
 		if ( ! fs.existsSync(folder) ) {
 			const colHash     = modCollect.getMD5FromFolder(folder)
 			const isRemovable = modNote.get(`${colHash}.notes_removable`, false)
 
 			if ( !isRemovable ) {
-				modFolders.delete(folder)
+				mainProcessFlags.modFolders.delete(folder)
 			} else {
 				offlineFolders.push(folder)
 			}
@@ -1671,9 +1658,9 @@ function processModFoldersOnDisk() {
 		}
 	}
 
-	mcStore.set('modFolders', Array.from(modFolders))
+	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 
-	for ( const folder of modFolders ) {
+	for ( const folder of mainProcessFlags.modFolders ) {
 		if ( ! offlineFolders.includes(folder) ) {
 			const thisCollectionStats = modCollect.addCollection(folder)
 
@@ -1714,8 +1701,9 @@ function updateFolderDirtyWatch(eventType, fileName, folder) {
 
 function loadSaveFile(filename) {
 	try {
-		const rawData  = fs.readFileSync(path.join(app.getPath('userData'), filename))
-		const jsonData = JSON.parse(rawData)
+		const oldModHub = require('./lib/oldModHub.json')
+		const rawData   = fs.readFileSync(path.join(app.getPath('userData'), filename))
+		const jsonData  = JSON.parse(rawData)
 
 
 		modCollect.modHubList = {
@@ -1815,7 +1803,7 @@ app.whenReady().then(() => {
 
 		win.createMainWindow(() => {
 			if ( mcStore.has('modFolders') ) {
-				modFolders   = new Set(mcStore.get('modFolders'))
+				mainProcessFlags.modFolders   = new Set(mcStore.get('modFolders'))
 				mainProcessFlags.foldersDirty = true
 				setTimeout(() => { processModFolders() }, 1500)
 			}
@@ -1824,7 +1812,7 @@ app.whenReady().then(() => {
 		app.on('activate', () => {if (BrowserWindow.getAllWindows().length === 0) {
 			win.createMainWindow(() => {
 				if ( mcStore.has('modFolders') ) {
-					modFolders   = new Set(mcStore.get('modFolders'))
+					mainProcessFlags.modFolders   = new Set(mcStore.get('modFolders'))
 					mainProcessFlags.foldersDirty = true
 					setTimeout(() => { processModFolders() }, 1500)
 				}
@@ -1843,7 +1831,7 @@ app.setAboutPanelOptions({
 	applicationVersion : app.getVersion(),
 	copyright          : '(c) 2022-present FSG Modding',
 	credits            : 'J.T.Sage <jtsage+datebox@gmail.com>',
-	iconPath           : pathIcon,
+	iconPath           : trayIcon,
 	website            : 'https://github.com/FSGModding/FSG_Mod_Assistant',
 })
 

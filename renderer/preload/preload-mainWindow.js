@@ -22,7 +22,6 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'l10n', {
 		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
-		getText_sync    : ( text )  => { return ipcRenderer.sendSync('toMain_getText_sync', text ) },
 		receive         : ( channel, func ) => {
 			const validChannels = [
 				'fromMain_getText_return_title',
