@@ -6,34 +6,71 @@
 /*eslint complexity: ["warn", 17]*/
 // Main Program
 
-const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, clipboard, nativeImage, nativeTheme } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, clipboard, nativeImage } = require('electron')
 
 const isPortable = typeof process.env.PORTABLE_EXECUTABLE_DIR !== 'undefined'
 const gotTheLock = app.requestSingleInstanceLock()
 
 if ( !gotTheLock ) { app.quit() }
 
-const { autoUpdater } = require('electron-updater')
-const { ma_logger, translator, ddsDecoder }   = require('./lib/modUtilLib.js')
-const semverGt        = require('semver/functions/gt')
-const log             = new ma_logger('modAssist', app, 'assist.log', gotTheLock, debugDangerCallback)
-const path            = require('path')
-const fs              = require('fs')
+const userHome         = app.getPath('home')
+const mainProcessFlags = {
+	devControls : {
+		13 : false,
+		15 : false,
+		17 : false,
+		19 : false,
+		22 : false,
+	},
 
-const devDebug      = !(app.isPackaged)
-const devTools      = true && !(app.isPackaged)
+	bounceGameLog   : false,
+	dlProgress      : false,
+	dlRequest       : null,
+	firstMin        : true,
+	foldersDirty    : true,
+	gameSettings    : {},
+	intervalFile    : null,
+	intervalLoad    : null,
+	intervalUpdate  : null,
+	lastFolderLoc   : null,
+	modFolders      : new Set(),
+	pathBestGuess   : userHome,
+	pathGameGuess   : '',
+	watchGameLog    : null,
+	watchModFolder  : [],
+	
+}
+
+const { autoUpdater } = require('electron-updater')
+const { ma_logger, translator, ddsDecoder } = require('./lib/modUtilLib.js')
+
+const semverGt         = require('semver/functions/gt')
+const log              = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
+const path             = require('path')
+const fs               = require('fs')
+const myTranslator     = new translator.translator(translator.getSystemLocale(), log)
+myTranslator.mcVersion = app.getVersion()
+
+const win             = new (require('./lib/modAssist_window_lib.js')).windowLib(
+	log,
+	myTranslator,
+	{
+		refreshClientModList : refreshClientModList,
+		processModFolders    : processModFolders,
+		readGameLog          : readGameLog,
+	},
+	mainProcessFlags
+)
+
+log.dangerCallBack = () => { win.toggleMainDangerFlag() }
+
 const skipCache     = false && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
-let updaterInterval = null
 
-log.log.info(`ModAssist Logger: ${app.getVersion()}`)
-log.log.info(` - Node.js Version: ${process.versions.node}`)
-log.log.info(` - Electron Version: ${process.versions.electron}`)
-log.log.info(` - Chrome Version: ${process.versions.chrome}`)
-
-function debugDangerCallback() {
-	if ( typeof windows.main !== 'undefined' && windows.main !== null ) { windows.main.webContents.send('fromMain_debugLogDanger') }
-}
+log.log.info(`ModAssist Logger    : ${app.getVersion()}`)
+log.log.info(` - Node.js Version  : ${process.versions.node}`)
+log.log.info(` - Electron Version : ${process.versions.electron}`)
+log.log.info(` - Chrome Version   : ${process.versions.chrome}`)
 
 function handleUnhandled(type, err, origin) {
 	const rightNow = new Date()
@@ -47,27 +84,25 @@ function handleUnhandled(type, err, origin) {
 			title   : `Uncaught ${type} - Quitting`,
 			type    : 'error',
 		})
-		if ( gameLogFileWatch ) { gameLogFileWatch.close() }
 		app.quit()
 	} else {
 		log.log.debug(`Network error: ${err}`, `net-error-${type}`)
 	}
 }
-process.on('uncaughtException', (err, origin) => { handleUnhandled('exception', err, origin) })
+process.on('uncaughtException',  (err, origin) => { handleUnhandled('exception', err, origin) })
 process.on('unhandledRejection', (err, origin) => { handleUnhandled('rejection', err, origin) })
 
-const myTranslator     = new translator.translator(translator.getSystemLocale(), log)
-myTranslator.mcVersion = app.getVersion()
 
 if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
 	autoUpdater.logger = log.log
 	autoUpdater.on('update-checking-for-update', () => { log.log.debug('Checking for update', 'auto-update') })
-	autoUpdater.on('update-available', () => { log.log.info('Update Available', 'auto-update') })
-	autoUpdater.on('update-not-available', () => { log.log.debug('No Update Available', 'auto-update') })
+	autoUpdater.on('update-available',           () => { log.log.info('Update Available', 'auto-update') })
+	autoUpdater.on('update-not-available',       () => { log.log.debug('No Update Available', 'auto-update') })
+
 	autoUpdater.on('error', (message) => { log.log.warning(`Updater Failed: ${message}`, 'auto-update') })
 
 	autoUpdater.on('update-downloaded', (_, releaseNotes, releaseName) => {
-		clearInterval(updaterInterval)
+		clearInterval(mainProcessFlags.intervalUpdate)
 		const dialogOpts = {
 			buttons : [myTranslator.syncStringLookup('update_restart'), myTranslator.syncStringLookup('update_later')],
 			detail  : myTranslator.syncStringLookup('update_detail'),
@@ -75,15 +110,9 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 			title   : myTranslator.syncStringLookup('update_title'),
 			type    : 'info',
 		}
-		dialog.showMessageBox(windows.main, dialogOpts).then((returnValue) => {
+		dialog.showMessageBox(null, dialogOpts).then((returnValue) => {
 			if (returnValue.response === 0) {
-				if ( tray ) { tray.destroy() }
-				if ( gameLogFileWatch ) { gameLogFileWatch.close() }
-				for ( const thisWin in windows ) {
-					if ( thisWin !== 'main' && windows[thisWin] !== null ) {
-						windows[thisWin].destroy()
-					}
-				}
+				win.closeAllSubWin()
 				autoUpdater.quitAndInstall()
 			}
 		})
@@ -91,17 +120,12 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 
 	autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.warning(`Updater Issue: ${err}`, 'auto-update'))
 
-	updaterInterval = setInterval(() => {
+	mainProcessFlags.intervalUpdate = setInterval(() => {
 		autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.warning(`Updater Issue: ${err}`, 'auto-update'))
 	}, ( 30 * 60 * 1000))
 }
 
 const fxml          = require('fast-xml-parser')
-const oldModHub     = require('./lib/oldModHub.json')
-const userHome      = app.getPath('home')
-const pathRender    = path.join(app.getAppPath(), 'renderer')
-const pathPreload   = path.join(pathRender, 'preload')
-const pathIcon      = path.join(app.getAppPath(), 'build', 'icon.ico')
 const hubURLCombo   = 'https://jtsage.dev/modHubData22_combo.json'
 const modHubURL     = 'https://www.farming-simulator.com/mod.php?mod_id='
 const trayIcon      = !app.isPackaged
@@ -111,24 +135,7 @@ const convertPath   = !app.isPackaged
 	? path.join(app.getAppPath(), 'texconv.exe')
 	: path.join(process.resourcesPath, '..', 'texconv.exe')
 
-let pathBestGuess = userHome
-let foundGame     = ''
-
-const themeColors = {
-	'dark' : {
-		background : '#2b3035',
-		font       : '#6d757a',
-	},
-	'light' : {
-		background : '#f8f9fa',
-		font       : '#7b8fa0',
-	},
-}
-let gameLogFileWatch  = null
-let gameLogFileBounce = false
-
 const gameExeName = 'FarmingSimulator2022.exe'
-
 const gameGuesses = [
 	'C:\\Program Files (x86)\\Farming Simulator 2022\\',
 	'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Farming Simulator 22'
@@ -139,83 +146,33 @@ const pathGuesses = [
 	path.join(userHome, 'Documents', 'My Games', 'FarmingSimulator2022')
 ]
 
-for ( const testPath of gameGuesses ) {
-	if ( fs.existsSync(path.join(testPath, gameExeName)) ) {
-		foundGame = path.join(testPath, gameExeName)
-		break
-	}
+function guessPath(paths, file = '') {
+	for ( const testPath of paths ) { if ( fs.existsSync(path.join(testPath, file)) ) { return testPath } } return ''
 }
 
-for ( const testPath of pathGuesses ) {
-	if ( fs.existsSync(testPath) ) {
-		pathBestGuess = testPath
-		break
-	}
-}
+mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
+mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
 const { modFileCollection, modLooker, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
 const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
 
-let   tray      = null
-const {windows} = require('./lib/modAssist_window_lib.js')
-
-const settingsMig = {
-	'>=1.2.1' : (store) => {
-		store.delete('main_window_x')
-		store.delete('main_window_y')
-		store.delete('main_window_max')
-		store.delete('detail_window_x')
-		store.delete('detail_window_y')
-		store.delete('detail_window_max')
-	},
-}
-
-const settingsSchema = require('./lib/modAssist_window_lib.js').settingsSchema(foundGame, pathBestGuess)
-
-const siteMigrate = {
-	'<=2.1.1' : (store) => {
-		store.set('FS22_UniversalAutoload', 'https://github.com/loki79uk/FS22_UniversalAutoload/')
-		store.set('FS22_Courseplay', 'https://github.com/Courseplay/Courseplay_FS22/')
-		store.set('FS22_AutoDrive', 'https://github.com/Stephan-S/FS22_AutoDrive')
-		store.set('FS22_SimpleInspector', 'https://github.com/jtsage/FS22_simpleInspector/')
-		store.set('FS22_ProductionInspector', 'https://github.com/jtsage/FS22_ProductionInspector/')
-	},
-}
+const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 
 const Store   = require('electron-store')
 const unzip   = require('unzip-stream')
 const makeZip = require('archiver')
 
-const mcStore = new Store({schema : settingsSchema, migrations : settingsMig, clearInvalidConfig : true })
+const mcStore = new Store({schema : settingDefault.defaults, clearInvalidConfig : true })
 const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
-const modSite = new Store({name : 'mod_source_site', migrations : siteMigrate, clearInvalidConfig : true})
+const modSite = new Store({name : 'mod_source_site', migrations : settingDefault.migrateSite, clearInvalidConfig : true})
 
-let modFolders       = new Set()
-let modFoldersWatch  = []
-let lastFolderLoc    = null
-let lastGameSettings = {}
+win.settings = mcStore
 
-let foldersDirty = true
-let firstMin     = true
-
-let currentColorTheme = mcStore.get('color_theme')
-
-currentColorTheme = ( currentColorTheme === 'system' ) ?
-	(nativeTheme.shouldUseDarkColors ? 'dark' : 'light') :
-	currentColorTheme
-
-// let gameSettingsXML = null
-let gameXML         = null
-let overrideFolder  = null
-let overrideIndex   = '999'
-let overrideActive  = null
-const devControls   = {
-	13 : false,
-	15 : false,
-	17 : false,
-	19 : false,
-	22 : false,
+const gameSetOverride = {
+	folder : null,
+	index  : 999,
+	active : false,
 }
 
 /** Upgrade Cache Version Here */
@@ -232,279 +189,19 @@ mcStore.set('cache_version', app.getVersion())
 /** END: Upgrade Cache Version Here */
 
 
-/*  _    _  ____  _  _  ____   _____  _    _  ___ 
-   ( \/\/ )(_  _)( \( )(  _ \ (  _  )( \/\/ )/ __)
-    )    (  _)(_  )  (  )(_) ) )(_)(  )    ( \__ \
-   (__/\__)(____)(_)\_)(____/ (_____)(__/\__)(___/ */
-
-const getRealCenter = require('./lib/modAssist_window_lib.js').getRealCenter(mcStore)
-const { getWindowOpts, destroyAndFocus } = require('./lib/modAssist_window_lib.js')
-
-function createSubWindow(winName, { useCustomTitle = true, skipTaskbar = false, noSelect = true, show = true, parent = null, title = null, fixed = false, frame = true, move = true, preload = null, fixedOnTop = true} = {}) {
-	const realCenter  = getRealCenter(winName)
-	const winSettings = mcStore.get(`wins.${winName}`)
-
-	const winTitle = ( title === null ) ? myTranslator.syncStringLookup('app_name') : title
-	const thisWindow = new BrowserWindow(getWindowOpts(
-		winSettings, parent, fixed, fixedOnTop, frame, move,
-		show, skipTaskbar, winTitle, pathIcon, themeColors,
-		currentColorTheme, preload, pathPreload, useCustomTitle,
-		realCenter
-	))
-
-	if ( noSelect ) {
-		thisWindow.webContents.on('before-input-event', (event, input) => {
-			if (input.control && input.code === 'KeyA') {
-				thisWindow.webContents.send('fromMain_subWindowSelectAll')
-				event.preventDefault()
-			}
-			if (input.control && input.shift && input.code === 'KeyA') {
-				thisWindow.webContents.send('fromMain_subWindowSelectNone')
-				event.preventDefault()
-			}
-			if ( input.alt && input.control && input.code === 'KeyD' ) {
-				createNamedWindow('debug')
-				event.preventDefault()
-			}
-		})
-	}
-
-	if ( winName !== 'load' && winName !== 'splash' ) {
-		thisWindow.on('moved', () => {
-			const newRect = thisWindow.getBounds()
-			mcStore.set(`wins.${winName}.x`, newRect.x)
-			mcStore.set(`wins.${winName}.y`, newRect.y)
-		})
-		thisWindow.on('resized', () => {
-			const newRect = thisWindow.getBounds()
-			mcStore.set(`wins.${winName}.w`, newRect.width)
-			mcStore.set(`wins.${winName}.h`, newRect.height)
-		})
-		thisWindow.on('maximize',   () => { mcStore.set(`wins.${winName}.m`, true) })
-		thisWindow.on('unmaximize', () => { mcStore.set(`wins.${winName}.m`, false) })
-
-		thisWindow.on('focus', () => {
-			thisWindow.webContents.send('fromMain_clearTooltips')
-		})
-	}
-
-	if ( !devDebug ) { thisWindow.removeMenu()}
-	if ( winSettings.m )  { thisWindow.maximize() }
-	return thisWindow
-}
-
-function createMainWindow () {
-	windows.load = createSubWindow('load', {
-		fixed          : true,
-		fixedOnTop     : false,
-		frame          : false,
-		move           : false,
-		preload        : 'loadingWindow',
-		show           : false,
-		skipTaskbar    : true,
-		useCustomTitle : false,
-	})
-	windows.load.loadFile(path.join(pathRender, 'loading.html'))
-	windows.load.on('close', (event) => { event.preventDefault() })
-
-	windows.main = createSubWindow('main', { noSelect : false, show : devDebug, preload : 'mainWindow' })
-	
-	windows.main.on('closed',   () => {
-		windows.main = null
-		if ( tray ) { tray.destroy() }
-		windows.load.destroy()
-		if ( gameLogFileWatch ) { gameLogFileWatch.close() }
-		app.quit()
-	})
-
-	if ( !devDebug ) {
-		windows.splash = createSubWindow('splash', { center : true, fixed : true, frame : false, move : false, useCustomTitle : false })
-		windows.splash.loadURL(`file://${path.join(pathRender, 'splash.html')}?version=${app.getVersion()}`)
-
-		windows.splash.on('closed', () => { windows.splash = null })
-
-		windows.main.once('ready-to-show', () => {
-			setTimeout(() => { windows.main.show(); windows.splash.destroy() }, 2000)
-		})
-	}
-
-	windows.main.loadFile(path.join(pathRender, 'main.html'))
-
-	windows.main.webContents.session.setPermissionCheckHandler((_, permission) => {
-		if (permission === 'hid') { return true }
-		return false
-	})
-
-	windows.main.webContents.session.on('select-hid-device', (event, details, callback) => {
-		event.preventDefault()
-		const selectedDevice = details.deviceList.find((device) => {
-			return device.vendorId === 0x340d && device.productId === 0x1710
-		})
-		callback(selectedDevice?.deviceId)
-	})
-
-	windows.main.webContents.on('did-finish-load', () => {
-		const showCount = setInterval(() => {
-			if ( windows.main.isVisible() ) {
-				clearInterval(showCount)
-				windows.main.webContents.send('fromMain_themeSetting', currentColorTheme)
-				if ( mcStore.has('modFolders') ) {
-					modFolders   = new Set(mcStore.get('modFolders'))
-					foldersDirty = true
-					setTimeout(() => { processModFolders() }, 1500)
-				}
-				if ( devDebug && devTools ) { windows.main.webContents.openDevTools() }
-			}
-		}, 250)
-	})
-
-	windows.main.webContents.on('before-input-event', (event, input) => {
-		if (input.control && input.code === 'KeyA') {
-			windows.main.webContents.send('fromMain_selectAllOpen')
-			event.preventDefault()
-		}
-		if (input.control && input.shift && input.code === 'KeyA' ) {
-			windows.main.webContents.send('fromMain_selectNoneOpen')
-			event.preventDefault()
-		}
-		if (input.control && input.code === 'KeyI') {
-			windows.main.webContents.send('fromMain_selectInvertOpen')
-			event.preventDefault()
-		}
-		if ( input.alt && input.control && input.code === 'KeyD' ) {
-			createNamedWindow('debug')
-			event.preventDefault()
-		}
-	})
-	
-	windows.main.webContents.setWindowOpenHandler(({ url }) => {
-		shell.openExternal(url)
-		return { action : 'deny' }
-	})
-}
-
-function createNamedWindow(winName, windowArgs) {
-	const subWinDef  = subWindows[winName]
-	const thisWindow = subWinDef.winName
-
-	if ( windows[thisWindow] ) {
-		windows[thisWindow].focus()
-		if ( subWinDef.refocusCallback ) { subWinDef.callback(windowArgs) }
-		return
-	}
-
-	windows[thisWindow] = createSubWindow(subWinDef.winName, subWinDef.subWindowArgs)
-
-	windows[thisWindow].webContents.on('did-finish-load', async () => {
-		windows[thisWindow].webContents.send('fromMain_themeSetting', currentColorTheme)
-		subWinDef.callback(windowArgs)
-
-		if ( devDebug && devTools && subWindowDev.has(subWinDef.winName) ) {
-			windows[thisWindow].webContents.openDevTools()
-		}
-	})
-
-	windows[thisWindow].loadFile(path.join(pathRender, subWinDef.HTMLFile))
-
-	windows[thisWindow].on('closed', () => {
-		destroyAndFocus(subWinDef.winName)
-		if ( typeof subWinDef.extraCloseFunc === 'function' ) {
-			subWinDef.extraCloseFunc()
-		}
-		
-	})
-
-	if ( subWinDef.handleURLinWin ) {
-		windows[thisWindow].webContents.setWindowOpenHandler(({ url }) => {
-			shell.openExternal(url)
-			return { action : 'deny' }
-		})
-	}
-}
-
-/* eslint-disable sort-keys */
-const subWindowDev = require('./lib/modAssist_window_lib.js').subWindowDev
-const subWindows   = require('./lib/modAssist_window_lib.js').subWindowDefinitions(
-	sendModList,
-	processModFolders,
-	refreshClientModList,
-	log,
-	readGameLog,
-	mcStore,
-	devControls
-)
-
-const loadingWindow = {
-	counter : {
-		total   : 0,
-		current : 0,
-	},
-	current : (amount = 1, reset = false, inMB = false) => {
-		loadingWindow.doCount('current', amount, reset, inMB)
-	},
-	doCount : (whichCount, amount, reset, inMB) => {
-		loadingWindow.counter[whichCount] = ( reset ) ? amount : amount + loadingWindow.counter[whichCount]
-	
-		if ( whichCount === 'current' && windows.main !== null && ! windows.main.isDestroyed() ) {
-			windows.main.setProgressBar(Math.max(0, Math.min(1, loadingWindow.counter.current / loadingWindow.counter.total)))
-		}
-	
-		if ( ! windows.load.isDestroyed() ) {
-			windows.load.webContents.send(`fromMain_loading_${whichCount}`, loadingWindow.counter[whichCount], inMB)
-		}
-	},
-	hide : (time = 1250) => {
-		setTimeout(() => {
-			if ( windows.main !== null && ! windows.main.isDestroyed() ) { windows.main.setProgressBar(-1)}
-			if ( windows.load !== null && ! windows.load.isDestroyed() ) { windows.load.hide() }
-		}, time)
-	},
-	noCount : () => {
-		if ( ! windows.load.isDestroyed() ) { windows.load.webContents.send('fromMain_loadingNoCount') }
-	},
-	open : ( l10n, isDownload = false ) => {
-		const newCenter   = getRealCenter('load')
-		const winTitle    = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_title` : 'app_name')
-		const winSubTitle = myTranslator.syncStringLookup((l10n) !== 'launch' ? `loading_${l10n}_subtitle` : 'launch_game')
-		const dlCancel    = myTranslator.syncStringLookup('cancel_download')
-		if ( windows.load ) {
-			try {
-				windows.load.setBounds({x : newCenter.x, y : newCenter.y})
-			} catch (e) {
-				windows.load.center()
-			}
-
-			windows.load.show()
-			windows.load.focus()
-			windows.load.webContents.send('formMain_loadingTitles', winTitle, winSubTitle, dlCancel)
-
-			setTimeout(() => {
-				windows.load.show()
-				windows.load.focus()
-				if ( isDownload ) { windows.load.webContents.send('fromMain_loadingDownload') }
-			}, 250)
-			return
-		}
-	},
-	total : (amount, reset = false, inMB = false) => {
-		loadingWindow.doCount('total', amount, reset, inMB)
-	},
-}
-
 const modCollect = new modFileCollection(
 	iconParser,
 	log,
 	modNote,
 	maCache,
 	app.getPath('home'),
-	{
-		hide  : loadingWindow.hide,
-		count : loadingWindow.current,
-	},
+	win.loading,
 	mcStore,
 	myTranslator.deferCurrentLocale,
 	skipCache
 )
+
+win.modCollect = modCollect
 
 /*  ____  ____   ___ 
    (_  _)(  _ \ / __)
@@ -512,23 +209,23 @@ const modCollect = new modFileCollection(
    (____)(__)   \___) */
 
 ipcMain.on('toMain_sendMainToTray', () => {
-	if ( tray ) {
-		if ( firstMin ) {
+	if ( win.tray ) {
+		if ( mainProcessFlags.firstMin ) {
 			const bubbleOpts = {
 				icon    : trayIcon,
 				title   : myTranslator.syncStringLookup('minimize_message_title'),
 				content : myTranslator.syncStringLookup('minimize_message'),
 			}
 
-			tray.displayBalloon(bubbleOpts)
+			win.tray.displayBalloon(bubbleOpts)
 
 			setTimeout(() => {
-				if ( tray && !tray.isDestroyed() ) { tray.removeBalloon() }
+				if ( win.tray && !win.tray.isDestroyed() ) { win.tray.removeBalloon() }
 			}, 5000)
 		}
 		
-		firstMin = false
-		windows.main.hide()
+		mainProcessFlags.firstMin = false
+		win.win.main.hide()
 	}
 })
 ipcMain.on('toMain_populateClipboard', (_, text) => { clipboard.writeText(text, 'selection') })
@@ -590,7 +287,7 @@ ipcMain.on('toMain_copyFavorites',  () => {
 	}
 
 	if ( sourceFiles.length > 0 ) {
-		createNamedWindow(
+		win.createNamedWindow(
 			'confirmFav',
 			{
 				destinations : destinationCollections,
@@ -603,7 +300,7 @@ ipcMain.on('toMain_copyFavorites',  () => {
 
 function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
 	if ( modIDS.length > 0 ) {
-		createNamedWindow(windowName, {
+		win.createNamedWindow(windowName, {
 			records : ( modRecords === null ) ? modCollect.modColUUIDsToRecords(modIDS) : modRecords,
 			originCollectKey : modIDS[0].split('--')[0],
 		})
@@ -624,22 +321,22 @@ ipcMain.on('toMain_realMultiFileCopy', (_, fileMap) => { fileOperation('copy_mul
 ipcMain.on('toMain_realFileImport',    (_, fileMap) => { fileOperation('import', fileMap, 'import') })
 ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
 	fileOperation('copy', fileMap, 'resolve')
-	setTimeout(() => { sendModList({}, 'fromMain_modList', 'version', false ) }, 1500)
+	setTimeout(() => { win.sendModList({}, 'fromMain_modList', 'version', false ) }, 1500)
 })
 /** END: File operation buttons */
 
 
 /** Folder Window Operation */
 ipcMain.on('toMain_addFolder', () => {
-	dialog.showOpenDialog(windows.main, {
+	dialog.showOpenDialog(win.win.main, {
 		properties  : ['openDirectory'],
-		defaultPath : lastFolderLoc ?? userHome,
+		defaultPath : mainProcessFlags.lastFolderLoc ?? userHome,
 	}).then((result) => { if ( !result.canceled ) {
 		const potentialFolder = result.filePaths[0]
 
-		lastFolderLoc = path.resolve(path.join(potentialFolder, '..'))
+		mainProcessFlags.lastFolderLoc = path.resolve(path.join(potentialFolder, '..'))
 
-		for ( const thisPath of modFolders ) {
+		for ( const thisPath of mainProcessFlags.modFolders ) {
 			if ( path.relative(thisPath, potentialFolder) === '' ) {
 				log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
 				return
@@ -648,10 +345,10 @@ ipcMain.on('toMain_addFolder', () => {
 
 		const thisFolderCollectKey = modCollect.getFolderHash(potentialFolder)
 
-		modFolders.add(potentialFolder)
-		foldersDirty = true
+		mainProcessFlags.modFolders.add(potentialFolder)
+		mainProcessFlags.foldersDirty = true
 
-		mcStore.set('modFolders', Array.from(modFolders))
+		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
 		modNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
 		processModFolders()
@@ -659,41 +356,41 @@ ipcMain.on('toMain_addFolder', () => {
 		log.log.danger(`Could not read specified add folder : ${unknownError}`, 'folder-opts')
 	})
 })
-ipcMain.on('toMain_editFolders',    () => { createNamedWindow('folder') })
+ipcMain.on('toMain_editFolders',    () => { win.createNamedWindow('folder') })
 ipcMain.on('toMain_refreshFolders', () => { processModFolders(true) })
 ipcMain.on('toMain_openFolder',     (_, collectKey) => { shell.openPath(modCollect.mapCollectionToFolder(collectKey)) })
 ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	const folder = modCollect.mapCollectionToFolder(collectKey)
-	if ( modFolders.delete(folder) ) {
+	if ( mainProcessFlags.modFolders.delete(folder) ) {
 		log.log.notice(`Folder removed from tracking ${folder}`, 'folder-opts')
-		mcStore.set('modFolders', Array.from(modFolders))
+		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 
 		modCollect.removeCollection(collectKey)
 		
-		sendModList({},	'fromMain_getFolders', 'folder', false )
+		win.sendModList({},	'fromMain_getFolders', 'folder', false )
 
-		foldersDirty = true
-		sendFoldersDirtyUpdate()
+		mainProcessFlags.foldersDirty = true
+		win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
 	} else {
 		log.log.warning(`Folder NOT removed from tracking ${folder}`, 'folder-opts')
 	}
 })
 ipcMain.on('toMain_reorderFolder', (_, from, to) => {
-	const newOrder    = Array.from(modFolders)
+	const newOrder    = Array.from(mainProcessFlags.modFolders)
 	const item        = newOrder.splice(from, 1)[0]
 
 	newOrder.splice(to, 0, item)
 
 	const newSetOrder = newOrder.map((thisPath) => modCollect.mapFolderToCollection(thisPath))
 
-	modFolders                    = new Set(newOrder)
+	mainProcessFlags.modFolders   = new Set(newOrder)
 	modCollect.newCollectionOrder = new Set(newSetOrder)
 
-	mcStore.set('modFolders', Array.from(modFolders))
+	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 
-	sendModList({},	'fromMain_getFolders', 'folder', false )
-	foldersDirty = true
-	sendFoldersDirtyUpdate()
+	win.sendModList({},	'fromMain_getFolders', 'folder', false )
+	mainProcessFlags.foldersDirty = true
+	win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
 })
 ipcMain.on('toMain_reorderFolderAlpha', () => {
 	const newOrder = []
@@ -720,31 +417,31 @@ ipcMain.on('toMain_reorderFolderAlpha', () => {
 		newModSetOrder.add(orderPart.collectKey)
 	}
 
-	modFolders                    = newModFolders
+	mainProcessFlags.modFolders   = newModFolders
 	modCollect.newCollectionOrder = newModSetOrder
 
-	mcStore.set('modFolders', Array.from(modFolders))
+	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 
-	sendModList({},	'fromMain_getFolders', 'folder', false )
-	foldersDirty = true
-	sendFoldersDirtyUpdate()
+	win.sendModList({},	'fromMain_getFolders', 'folder', false )
+	mainProcessFlags.foldersDirty = true
+	win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
 })
 ipcMain.on('toMain_dropFolder', (_, newFolder) => {
-	if ( ! modFolders.has(newFolder) ) {
+	if ( ! mainProcessFlags.modFolders.has(newFolder) ) {
 		const thisFolderCollectKey = modCollect.getFolderHash(newFolder)
 
-		modFolders.add(newFolder)
-		mcStore.set('modFolders', Array.from(modFolders))
+		mainProcessFlags.modFolders.add(newFolder)
+		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
 		processModFolders(true)
 	} else {
-		doDialogBox('main', {
+		win.doDialogBox('main', {
 			type        : 'error',
 			messageL10n : 'drop_folder_exists',
 		})
 	}
 })
-ipcMain.on('toMain_dropFiles', (_, files) => { createNamedWindow('import', { files : files }) })
+ipcMain.on('toMain_dropFiles', (_, files) => { win.createNamedWindow('import', { files : files }) })
 /** END: Folder Window Operation */
 
 /** Logging Operation */
@@ -757,38 +454,10 @@ ipcMain.on('toMain_langList_change', (_, lang) => {
 
 	mcStore.set('force_lang', myTranslator.currentLocale)
 
-	for ( const thisWindow in windows ) {
-		if ( windows[thisWindow] !== null ) {
-			windows[thisWindow].webContents.send('fromMain_l10n_refresh', myTranslator.currentLocale)
-		}
-	}
+	win.refreshL10n(myTranslator.currentLocale)
 })
-ipcMain.on('toMain_themeList_change', (_, theme) => {
-	mcStore.set('color_theme', theme)
+ipcMain.on('toMain_themeList_change', (_, theme) => { win.changeTheme(theme) })
 
-	currentColorTheme = ( theme === 'system' ) ? (nativeTheme.shouldUseDarkColors ? 'dark' : 'light') : theme
-
-	themeUpdater()
-})
-nativeTheme.on('updated', () => {
-	const savedTheme = mcStore.get('color_theme')
-
-	if ( savedTheme === 'system' ) {
-		currentColorTheme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
-		themeUpdater()
-	}
-})
-function themeUpdater() {
-	for ( const thisWinKey in windows ) {
-		if ( windows[thisWinKey] !== null && windows[thisWinKey].isVisible() ) {
-			windows[thisWinKey].webContents.send('fromMain_themeSetting', currentColorTheme)
-			windows[thisWinKey].setTitleBarOverlay({
-				color       : themeColors[currentColorTheme].background,
-				symbolColor : themeColors[currentColorTheme].font,
-			})
-		}
-	}
-}
 
 ipcMain.on('toMain_langList_send',   (event) => {
 	myTranslator.getLangList().then((langList) => {
@@ -802,10 +471,7 @@ ipcMain.on('toMain_themeList_send',   (event) => {
 		['dark',   myTranslator.syncStringLookup('theme_name_dark')],
 	]
 	
-	event.sender.send('fromMain_themeList_return', themeOpts, currentColorTheme)
-})
-ipcMain.on('toMain_getText_sync', (event, text) => {
-	event.returnValue = myTranslator.syncStringLookup(text)
+	event.sender.send('fromMain_themeList_return', themeOpts, win.themeCurrentColor)
 })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return', [entry, text]) }
@@ -874,50 +540,49 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 
 /** Detail window operation */
-ipcMain.on('toMain_openModDetail', (_, thisMod) => { createNamedWindow('detail', {selected : modCollect.modColUUIDToRecord(thisMod) }) })
-ipcMain.on('toMain_lookInMod',     (_, thisMod) => { doLookInMod(thisMod) })
-
-function doLookInMod(thisMod) {
-	const thisModRecord = modCollect.modColUUIDToRecord(thisMod)
-	
-	const countItems = thisModRecord.modDesc.storeItems
-	if ( countItems > 5 ) {
-		loadingWindow.open('look')
-		loadingWindow.noCount()
-	}
-	
-	const thisModLook = new modLooker(
-		iconParser,
-		thisModRecord,
-		modCollect.modColUUIDToFolder(thisMod),
-		log,
-		myTranslator.currentLocale
+function openDetailWindow(thisMod) {
+	win.createNamedWindow(
+		'detail',
+		{ selected : thisMod},
+		async () => {
+			try {
+				if ( thisMod.modDesc.storeItems > 0 ) {
+					const thisModLook = new modLooker(
+						iconParser,
+						thisMod,
+						modCollect.modColUUIDToFolder(thisMod.colUUID),
+						log,
+						myTranslator.currentLocale
+					)
+				
+					thisModLook.getInfo().then((results) => {
+						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, myTranslator.currentLocale)
+					})
+				}
+			} catch (e) {
+				log.log.notice(`Failed to load store items :: ${e}`, 'mod-look')
+			}
+		}
 	)
 
-	thisModLook.getInfo().then((results) => {
-		if ( countItems > 5 ) { loadingWindow.hide(500) }
-		createNamedWindow(
-			'looker', {
-				selected : modCollect.modColUUIDToRecord(thisMod),
-				look     : results,
-			})
-	})
+	
 }
+
+ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(modCollect.modColUUIDToRecord(thisMod)) })
+
 
 /** END: Detail window operation */
 
 /** Changelog window operation */
-ipcMain.on('toMain_showChangelog', () => { createNamedWindow('change') } )
+ipcMain.on('toMain_showChangelog', () => { win.createNamedWindow('change') } )
 /** END: Changelog window operation */
 
 
 /** Main window context menus */
 ipcMain.on('toMain_dragOut', (event, modID) => {
-	const thisMod    = modCollect.modColUUIDToRecord(modID)
-	const thisFolder = modCollect.modColUUIDToFolder(modID)
-
-	let iconDataURL = thisMod.modDesc.iconImageCache
-	iconDataURL ??= 'data:image/png;base64,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'
+	const thisMod     = modCollect.modColUUIDToRecord(modID)
+	const thisFolder  = modCollect.modColUUIDToFolder(modID)
+	const iconDataURL = thisMod.modDesc.iconImageCache ?? 'data:image/png;base64,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'
 
 	event.sender.startDrag({
 		file : path.join(thisFolder, path.basename(thisMod.fileDetail.fullPath)),
@@ -937,18 +602,9 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	if ( !isSave ) {
 		template.push({
 			label : myTranslator.syncStringLookup('context_mod_detail'),
-			click : () => { createNamedWindow('detail', {selected : thisMod}) },
+			click : () => { openDetailWindow(thisMod) },
 		})
-	}
-
-	if ( thisMod.gameVersion > 19 && thisMod.modDesc.storeItems > 0 ) {
-		template.push({
-			label : myTranslator.syncStringLookup('look_detail_button'),
-			click : () => { doLookInMod(thisMod) },
-		})
-	}
-
-	if ( isSave ) {
+	} else {
 		const thisFolder  = modCollect.mapCollectionToFolder(modID.split('--')[0])
 		const savePath    = path.join(thisFolder, path.basename(thisMod.fileDetail.fullPath))
 		const subMenu     = []
@@ -961,7 +617,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 				subMenu.push({
 					label : collectName,
 					click : () => {
-						createNamedWindow('save', { collectKey : collectKey })
+						win.createNamedWindow('save', { collectKey : collectKey })
 						setTimeout(() => { readSaveGame(savePath, false) }, 250)
 					},
 				})
@@ -997,7 +653,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		{
 			label : myTranslator.syncStringLookup('context_set_website'),
 			click : () => {
-				windows.main.webContents.send('fromMain_modInfoPop', thisMod, thisSite)
+				win.sendToWindow('main', 'fromMain_modInfoPop', thisMod, thisSite)
 			},
 		}
 	)
@@ -1034,28 +690,27 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const template  = [
 		{ label : myTranslator.syncStringLookup('context_main_title').padEnd(subLabel.length, ' '), sublabel : subLabel },
 		{ type  : 'separator' },
-		{ label : myTranslator.syncStringLookup('list-active'), enabled : (colFolder !== overrideFolder), click : () => { newSettingsFile(collection) } },
+		{ label : myTranslator.syncStringLookup('list-active'), enabled : (colFolder !== gameSetOverride.folder), click : () => { newSettingsFile(collection) } },
 		{ type  : 'separator' },
 		{ label : myTranslator.syncStringLookup('open_folder'), click : () => { shell.openPath(modCollect.mapCollectionToFolder(collection)) }}
 	]
 
-	const noteItems = ['username', 'password', 'website', 'admin', 'server']
-	let foundOne = false
+	const noteItems     = ['username', 'password', 'website', 'admin', 'server']
+	const noteMenuItems = []
 	
 	for ( const noteItem of noteItems ) {
 		const thisNoteItem = modNote.get(`${collection}.notes_${noteItem}`, null)
 		if ( thisNoteItem !== null ) {
-			if ( !foundOne ) {
-				template.push({ type : 'separator' })
-				foundOne = true
-			}
-
-			template.push({
+			noteMenuItems.push({
 				label : `${myTranslator.syncStringLookup('context_main_copy')} : ${myTranslator.syncStringLookup(`notes_title_${noteItem}`)}`,
 				click : () => {
 					clipboard.writeText(thisNoteItem, 'selection') },
 			})
 		}
+	}
+
+	if ( noteMenuItems.length > 0 ) {
+		template.push({ type : 'separator' }, ...noteMenuItems)
 	}
 	
 	const menu = Menu.buildFromTemplate(template)
@@ -1084,17 +739,15 @@ ipcMain.on('toMain_logContextMenu', async (event) => {
 
 /** Game log window operation */
 ipcMain.on('toMain_openGameLog',       () => {
-	if ( gameLogFileWatch === null ) {
+	if ( mainProcessFlags.watchGameLog === null ) {
 		if ( mcStore.get('game_log_file') === null ) {
-			const currentVersion       =  mcStore.get('game_version')
-			const gameSettingsKey      = ( currentVersion === 22 ) ? 'game_settings' : `game_settings_${currentVersion}`
-			const gameSettingsFileName = mcStore.get(gameSettingsKey, '')
+			const gameSettingsFileName = versionConfigGet('game_settings', mcStore.get('game_version'))
 			mcStore.set('game_log_file', path.join(path.dirname(gameSettingsFileName), 'log.txt'))
 		}
 		loadGameLog()
 	}
 
-	createNamedWindow('gamelog')
+	win.createNamedWindow('gamelog')
 })
 ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(mcStore.get('game_log_file')) })
 ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
@@ -1104,9 +757,9 @@ ipcMain.on('toMain_guessGameLog',      () => {
 	readGameLog()
 })
 ipcMain.on('toMain_changeGameLog',     () => {
-	dialog.showOpenDialog(windows.prefs, {
+	dialog.showOpenDialog(win.win.prefs, {
 		properties  : ['openFile'],
-		defaultPath : path.join(pathBestGuess, 'log.txt'),
+		defaultPath : path.join(mainProcessFlags.pathBestGuess, 'log.txt'),
 		filters     : [
 			{ name : 'Log Files', extensions : ['txt'] },
 			{ name : 'All', extensions : ['*'] },
@@ -1122,23 +775,15 @@ ipcMain.on('toMain_changeGameLog',     () => {
 })
 
 function readGameLog() {
-	if ( windows.gamelog === null ) { return }
+	if ( ! win.isVisible('gamelog') === null ) { return }
 
-	let thisGameLog = null
-
-	if ( mcStore.get('game_log_auto') ) {
-		const currentVersion = mcStore.get('game_version')
-		const gameSettings   = mcStore.get( currentVersion === 22 ? 'game_settings' : `game_settings_${currentVersion}`)
-		thisGameLog = path.join(path.dirname(gameSettings), 'log.txt')
-		// guess from gamesettings
-	} else {
-		thisGameLog = mcStore.get('game_log_file', null)
-	}
+	const thisGameLog = gameLogFilename()
 
 	if ( thisGameLog === null || !fs.existsSync(thisGameLog) ) { return }
 
 	try {
-		windows.gamelog.webContents.send(
+		win.sendToValidWindow(
+			'gamelog',
 			'fromMain_gameLog',
 			fs.readFileSync(thisGameLog, {encoding : 'utf8', flag : 'r'}),
 			thisGameLog
@@ -1150,7 +795,7 @@ function readGameLog() {
 /** END: Game log window operation */
 
 /** Debug window operation */
-ipcMain.on('toMain_openDebugLog',    () => { createNamedWindow('debug') })
+ipcMain.on('toMain_openDebugLog',    () => { win.createNamedWindow('debug') })
 ipcMain.on('toMain_openDebugFolder', () => { shell.showItemInFolder(log.pathToLog) })
 ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_debugLog', log.htmlLog) })
 /** END: Debug window operation */
@@ -1158,16 +803,15 @@ ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_de
 /** Game launcher */
 function gameLauncher() {
 	const currentVersion = mcStore.get('game_version')
-	const gamePathKey    = ( currentVersion === 22 ) ? 'game_path' : `game_path_${currentVersion}`
-	const gameArgsKey    = ( currentVersion === 22 ) ? 'game_args' : `game_args_${currentVersion}`
-	const progPath       = mcStore.get(gamePathKey)
+	const gameArgs       = versionConfigGet('game_args', currentVersion)
+	const progPath       = versionConfigGet('game_path', currentVersion)
 	if ( progPath !== '' && fs.existsSync(progPath) ) {
-		loadingWindow.open('launch')
-		loadingWindow.noCount()
-		loadingWindow.hide(3500)
+		win.loading.open('launch')
+		win.loading.noCount()
+		win.loading.hide(3500)
 
 		try {
-			const child = require('child_process').spawn(progPath, mcStore.get(gameArgsKey).split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
+			const child = require('child_process').spawn(progPath, gameArgs.split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
 
 			child.on('error', (err) => { log.log.danger(`Game launch failed ${err}!`, 'game-launcher') })
 			child.unref()
@@ -1180,7 +824,7 @@ function gameLauncher() {
 			title   : myTranslator.syncStringLookup('launcher_error_title'),
 			message : myTranslator.syncStringLookup('launcher_error_message'),
 		}
-		dialog.showMessageBox(windows.main, dialogOpts)
+		dialog.showMessageBox(null, dialogOpts)
 		log.log.warning('Game path not set or invalid!', 'game-launcher')
 	}
 }
@@ -1188,7 +832,7 @@ ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 /** END: game launcher */
 
 /** Find window operation */
-ipcMain.on('toMain_openFind', () => {  createNamedWindow('find') })
+ipcMain.on('toMain_openFind', () => {  win.createNamedWindow('find') })
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 	const template = [
 		{ label : myTranslator.syncStringLookup('select_in_main'), sublabel : thisMod.name },
@@ -1198,8 +842,10 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 		template.push({
 			label : `${instance.name} :: ${instance.version}`,
 			click : () => {
-				windows.main.focus()
-				windows.main.webContents.send('fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
+				if ( win.isValid('main') ) {
+					win.win.main.focus()
+					win.sendToWindow.send('main', 'fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
+				}
 			},
 		})
 	}
@@ -1210,14 +856,13 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 /** END : Find window operation*/
 
 /** Preferences window operation */
-ipcMain.on('toMain_openPrefs',  () => { createNamedWindow('prefs') })
+ipcMain.on('toMain_openPrefs',  () => { win.createNamedWindow('prefs') })
 ipcMain.on('toMain_getPref',    (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setModInfo', (_, mod, site) => {
 	modSite.set(mod, site)
 	refreshClientModList()
 })
 ipcMain.on('toMain_setPref', (event, name, value) => {
-
 	switch ( name ) {
 		case 'dev_mode' :
 			parseGameXML(22, value)
@@ -1243,23 +888,9 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 		parseGameXML(13, null)
 	}
 
-	event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
+	event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
 })
-ipcMain.on('toMain_resetWindows', () => {
-	mcStore.reset('wins')
-	const mainBounds = mcStore.get('wins.main')
-	const prefBounds = mcStore.get('wins.prefs')
-	windows.main.unmaximize()
-	windows.prefs.unmaximize()
-	try {
-		windows.main.setBounds({width : Math.floor(mainBounds.w), height : Math.floor(mainBounds.h)})
-		windows.prefs.setBounds({width : Math.floor(prefBounds.w), height : Math.floor(prefBounds.h)})
-	} catch (e) {
-		log.log.debug(`Reset failed : ${e}`, 'reset-windows')
-	}
-	windows.main.center()
-	windows.prefs.center()
-})
+ipcMain.on('toMain_resetWindows',   () => { win.resetPositions() })
 ipcMain.on('toMain_clearCacheFile', () => {
 	maCache.clear()
 	processModFolders(true)
@@ -1281,8 +912,8 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 	event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 })
 ipcMain.on('toMain_setPrefFile', (event, version) => {
-	const pathBestGuessNew = pathBestGuess.replace(/FarmingSimulator20\d\d/, `FarmingSimulator20${version}`)
-	dialog.showOpenDialog(windows.prefs, {
+	const pathBestGuessNew = mainProcessFlags.pathBestGuess.replace(/FarmingSimulator20\d\d/, `FarmingSimulator20${version}`)
+	dialog.showOpenDialog(win.win.prefs, {
 		properties  : ['openFile'],
 		defaultPath : path.join(pathBestGuessNew, 'gameSettings.xml'),
 		filters     : [
@@ -1291,31 +922,17 @@ ipcMain.on('toMain_setPrefFile', (event, version) => {
 		],
 	}).then((result) => {
 		if ( ! result.canceled ) {
-			switch ( version ) {
-				case 22 :
-					mcStore.set('game_settings', result.filePaths[0])
-					break
-				case 19 :
-				case 17 :
-				case 15 :
-				case 13 :
-					mcStore.set(`game_settings_${version}`, result.filePaths[0])
-					break
-				default :
-					log.log.danger('Unknown version for game settings', 'game-settings')
-					break
-			}
-
+			versionConfigSet('game_settings', result.filePaths[0], version)
 			parseSettings()
 			refreshClientModList()
-			event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
+			event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
 		}
 	}).catch((unknownError) => {
 		log.log.danger(`Could not read specified gamesettings : ${unknownError}`, 'game-settings')
 	})
 })
 ipcMain.on('toMain_setGamePath', (event, version) => {
-	dialog.showOpenDialog(windows.prefs, {
+	dialog.showOpenDialog(win.win.prefs, {
 		properties  : ['openFile'],
 		defaultPath : path.join(userHome, `FarmingSimulator20${version}.exe`),
 		filters     : [
@@ -1324,23 +941,10 @@ ipcMain.on('toMain_setGamePath', (event, version) => {
 		],
 	}).then((result) => {
 		if ( ! result.canceled ) {
-			switch ( version ) {
-				case 22:
-					mcStore.set('game_path', result.filePaths[0])
-					break
-				case 19 :
-				case 17 :
-				case 15 :
-				case 13 :
-					mcStore.set(`game_path_${version}`, result.filePaths[0])
-					break
-				default:
-					log.log.danger('Unknown game path setting!', 'game-path')
-					break
-			}
+			versionConfigSet('game_path', result.filePaths[0], version)
 			parseSettings()
 			refreshClientModList()
-			event.sender.send( 'fromMain_allSettings', mcStore.store, devControls )
+			event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
 		}
 	}).catch((unknownError) => {
 		log.log.danger(`Could not read specified game EXE : ${unknownError}`, 'game-path')
@@ -1358,9 +962,9 @@ ipcMain.on('toMain_setGameVersion', (_, newVersion) => {
 
 /** Notes Operation */
 ipcMain.on('toMain_openNotes', (_, collectKey) => {
-	createNamedWindow('notes', {
+	win.createNamedWindow('notes', {
 		collectKey       : collectKey,
-		lastGameSettings : lastGameSettings,
+		lastGameSettings : mainProcessFlags.gameSettings,
 	})
 })
 ipcMain.on('toMain_setNote', (_, id, value, collectKey) => {
@@ -1372,58 +976,57 @@ ipcMain.on('toMain_setNote', (_, id, value, collectKey) => {
 		modNote.set(`${collectKey}.${id}`, cleanValue)
 	}
 
-	createNamedWindow('notes', {
+	win.createNamedWindow('notes', {
 		collectKey       : collectKey,
-		lastGameSettings : lastGameSettings,
+		lastGameSettings : mainProcessFlags.gameSettings,
 	})
 })
 /** END: Notes Operation */
 
-let dlReq      = null
-let dlProgress = false
+
 
 /** Download operation */
-ipcMain.on('toMain_cancelDownload', () => { if ( dlReq !== null ) { dlReq.abort() } })
-ipcMain.on('toMain_downloadList', (_, collection) => {
-	if ( dlProgress ) { windows.load.focus(); return }
+ipcMain.on('toMain_cancelDownload', () => { if ( mainProcessFlags.dlRequest !== null ) { mainProcessFlags.dlRequest.abort() } })
+ipcMain.on('toMain_downloadList',   (_, collection) => {
+	if ( mainProcessFlags.dlProgress ) { win.win.load.focus(); return }
 	const thisSite = modNote.get(`${collection}.notes_website`, null)
 	const thisDoDL = modNote.get(`${collection}.notes_websiteDL`, false)
 	const thisLink = `${thisSite}all_mods_download?onlyActive=true`
 
 	if ( thisSite === null || !thisDoDL ) { return }
 
-	doDialogBox('main', {
+	win.doDialogBox('main', {
 		titleL10n : 'download_title',
 		message   : `${myTranslator.syncStringLookup('download_started')} :: ${modCollect.mapCollectionToName(collection)}\n${myTranslator.syncStringLookup('download_finished')}`,
 	})
 
-	dlProgress = true
+	mainProcessFlags.dlProgress = true
 	log.log.info(`Downloading Collection : ${collection}`, 'mod-download')
 	log.log.debug(`Download Link : ${thisLink}`, 'mod-download')
 
-	dlReq = net.request(thisLink)
+	mainProcessFlags.dlRequest = net.request(thisLink)
 
-	dlReq.on('response', (response) => {
+	mainProcessFlags.dlRequest.on('response', (response) => {
 		log.log.info(`Got download: ${response.statusCode}`, 'mod-download')
 
 		if ( response.statusCode < 200 || response.statusCode >= 400 ) {
-			doDialogBox('main', {
+			win.doDialogBox('main', {
 				type      : 'error',
 				titleL10n : 'download_title',
 				message   : `${myTranslator.syncStringLookup('download_failed')} :: ${modCollect.mapCollectionToName(collection)}`,
 			})
-			dlProgress = false
+			mainProcessFlags.dlProgress = false
 		} else {
-			loadingWindow.open('download', true)
+			win.loading.open('download', true)
 
-			loadingWindow.total(response.headers['content-length'] || 0, true, true)
-			loadingWindow.current(0, true, true)
+			win.loading.total(response.headers['content-length'] || 0, true, true)
+			win.loading.current(0, true, true)
 
 			const dlPath      = path.join(app.getPath('temp'), `${collection}.zip`)
 			const writeStream = fs.createWriteStream(dlPath)
 
 			response.pipe(writeStream)
-			response.on('data', (chunk) => { loadingWindow.current(chunk.length, false, true) })
+			response.on('data', (chunk) => { win.loading.current(chunk.length, false, true) })
 
 			writeStream.on('finish', () => {
 				writeStream.close()
@@ -1432,19 +1035,19 @@ ipcMain.on('toMain_downloadList', (_, collection) => {
 					let zipBytesSoFar   = 0
 					const zipBytesTotal = fs.statSync(dlPath).size
 
-					loadingWindow.open('zip')
-					loadingWindow.total(100, true)
+					win.loading.open('zip')
+					win.loading.total(100, true)
 
 					const zipReadStream  = fs.createReadStream(dlPath)
 
 					zipReadStream.on('data', (chunk) => {
 						zipBytesSoFar += chunk.length
-						loadingWindow.current(((zipBytesSoFar/zipBytesTotal)*100).toFixed(2), true)
+						win.loading.current(((zipBytesSoFar/zipBytesTotal)*100).toFixed(2), true)
 					})
 
 					zipReadStream.on('error', (err) => {
-						loadingWindow.hide()
-						dlProgress = false
+						win.loading.hide()
+						mainProcessFlags.dlProgress = false
 						log.log.warning(`Download unzip failed : ${err}`, 'mod-download')
 					})
 
@@ -1452,29 +1055,29 @@ ipcMain.on('toMain_downloadList', (_, collection) => {
 						log.log.info('Unzipping complete', 'mod-download')
 						zipReadStream.close()
 						fs.unlinkSync(dlPath)
-						dlProgress = false
+						mainProcessFlags.dlProgress = false
 						processModFolders(true)
 					})
 
 					zipReadStream.pipe(unzip.Extract({ path : modCollect.mapCollectionToFolder(collection) }))
 				} catch (e) {
 					log.log.warning(`Download failed : (${response.statusCode}) ${e}`, 'mod-download')
-					loadingWindow.hide()
+					win.loading.hide()
 				}
 			})
 		}
 	})
-	dlReq.on('abort', () => {
+	mainProcessFlags.dlRequest.on('abort', () => {
 		log.log.notice('Download canceled', 'mod-download')
-		dlProgress = false
-		loadingWindow.hide()
+		mainProcessFlags.dlProgress = false
+		win.loading.hide()
 	})
-	dlReq.on('error', (error) => {
+	mainProcessFlags.dlRequest.on('error', (error) => {
 		log.log.warning(`Network error : ${error}`, 'mod-download')
-		dlProgress = false
-		loadingWindow.hide()
+		mainProcessFlags.dlProgress = false
+		win.loading.hide()
 	})
-	dlReq.end()
+	mainProcessFlags.dlRequest.end()
 })
 /** END: download operation */
 
@@ -1500,7 +1103,7 @@ ipcMain.on('toMain_exportList', (_, collection) => {
 		]))
 	}
 
-	dialog.showSaveDialog(windows.main, {
+	dialog.showSaveDialog(win.win.main, {
 		defaultPath : path.join(app.getPath('desktop'), `${modCollect.mapCollectionToName(collection)}.csv`),
 		filters     : [{ name : 'CSV', extensions : ['csv'] }],
 	}).then(async (result) => {
@@ -1510,10 +1113,10 @@ ipcMain.on('toMain_exportList', (_, collection) => {
 			try {
 				fs.writeFileSync(result.filePath, csvTable.join('\n'))
 				app.addRecentDocument(result.filePath)
-				doDialogBox('main', { messageL10n : 'save_csv_worked' })
+				win.doDialogBox('main', { messageL10n : 'save_csv_worked' })
 			} catch (err) {
 				log.log.warning(`Could not save csv file : ${err}`, 'csv-export')
-				doDialogBox('main', { type : 'warning', messageL10n : 'save_csv_failed' })
+				win.doDialogBox('main', { type : 'warning', messageL10n : 'save_csv_failed' })
 			}
 		}
 	}).catch((unknownError) => {
@@ -1527,7 +1130,7 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 		filePaths.push([mod.fileDetail.shortName, mod.fileDetail.fullPath])
 	}
 
-	dialog.showSaveDialog(windows.main, {
+	dialog.showSaveDialog(win.win.main, {
 		defaultPath : app.getPath('desktop'),
 		filters     : [
 			{ name : 'ZIP', extensions : ['zip'] },
@@ -1537,9 +1140,9 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 			log.log.debug('Export ZIP Cancelled', 'zip-export')
 		} else {
 			try {
-				loadingWindow.open('makezip')
-				loadingWindow.total(filePaths.length, true)
-				loadingWindow.current(0, true)
+				win.loading.open('makezip')
+				win.loading.total(filePaths.length, true)
+				win.loading.current(0, true)
 
 				const zipOutput  = fs.createWriteStream(result.filePath)
 				const zipArchive = makeZip('zip', {
@@ -1552,10 +1155,10 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 				})
 
 				zipArchive.on('error', (err) => {
-					loadingWindow.hide()
+					win.loading.hide()
 					log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
 					setTimeout(() => {
-						doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
+						win.doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
 					}, 1500)
 				})
 
@@ -1564,7 +1167,7 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 				})
 
 				zipArchive.on('entry', (entry) => {
-					loadingWindow.current()
+					win.loading.current()
 					log.log.info(`Added file to ZIP : ${entry.name}`, 'zip-export')
 				})
 
@@ -1574,13 +1177,13 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 					zipArchive.file(thisFile[1], { name : `${thisFile[0]}.zip` })
 				}
 
-				zipArchive.finalize().then(() => { loadingWindow.hide() })
+				zipArchive.finalize().then(() => { win.loading.hide() })
 
 			} catch (err) {
 				log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
-				loadingWindow.hide()
+				win.loading.hide()
 				setTimeout(() => {
-					doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
+					win.doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
 				}, 1500)
 			}
 		}
@@ -1591,19 +1194,19 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 /** END: Export operation */
 
 /** Savetrack window operation */
-ipcMain.on('toMain_openSaveTrack',   () => { createNamedWindow('save_track') })
+ipcMain.on('toMain_openSaveTrack',   () => { win.createNamedWindow('save_track') })
 ipcMain.on('toMain_openTrackFolder', () => {
 	const options = {
 		properties  : ['openDirectory'],
-		defaultPath : pathBestGuess,
+		defaultPath : mainProcessFlags.pathBestGuess,
 	}
 
-	dialog.showOpenDialog(windows.save_track, options).then((result) => {
+	dialog.showOpenDialog(win.win.save_track, options).then((result) => {
 		if ( !result.canceled ) {
 			try {
 				const thisSaveInfo = new savegameTrack(result.filePaths[0], log)
 
-				sendModList({ saveInfo : thisSaveInfo.modList }, 'fromMain_saveInfo', 'save_track', false )
+				win.sendModList({ saveInfo : thisSaveInfo.modList }, 'fromMain_saveInfo', 'save_track', false )
 			} catch (e) {
 				log.log.danger(`Load failed: ${e}`, 'save-track')
 			}
@@ -1614,10 +1217,12 @@ ipcMain.on('toMain_openTrackFolder', () => {
 })
 
 /** Savegame window operation */
-ipcMain.on('toMain_openSave',       (_, collection) => { createNamedWindow('save', { collectKey : collection }) })
+ipcMain.on('toMain_openSave',       (_, collection) => { win.createNamedWindow('save', { collectKey : collection }) })
 ipcMain.on('toMain_selectInMain',   (_, selectList) => {
-	windows.main.focus()
-	windows.main.webContents.send('fromMain_selectOnly', selectList)
+	if ( win.isValid('main') ) {
+		win.win.main.focus()
+		win.sendToWindow('main', 'fromMain_selectOnly', selectList)
+	}
 })
 ipcMain.on('toMain_openSaveFolder', () => { openSaveGame(false) })
 ipcMain.on('toMain_openSaveZIP',    () => { openSaveGame(true) })
@@ -1632,7 +1237,7 @@ function readSaveGame(thisPath, isFolder) {
 	try {
 		const thisSavegame = new saveFileChecker(thisPath, isFolder, log)
 
-		sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
+		win.sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
 	} catch (e) {
 		log.log.danger(`Load failed: ${e}`, 'savegame')
 	}
@@ -1640,13 +1245,13 @@ function readSaveGame(thisPath, isFolder) {
 function openSaveGame(zipMode = false) {
 	const options = {
 		properties  : [(zipMode) ? 'openFile' : 'openDirectory'],
-		defaultPath : pathBestGuess,
+		defaultPath : mainProcessFlags.pathBestGuess,
 	}
 	if ( zipMode ) {
 		options.filters = [{ name : 'ZIP Files', extensions : ['zip'] }]
 	}
 
-	dialog.showOpenDialog(windows.save, options).then((result) => {
+	dialog.showOpenDialog(win.win.save, options).then((result) => {
 		if ( !result.canceled ) {
 			readSaveGame(result.filePaths[0], !zipMode)
 		}
@@ -1658,8 +1263,8 @@ function openSaveGame(zipMode = false) {
 
 
 /** Version window operation */
-ipcMain.on('toMain_versionCheck',    () => { createNamedWindow('version') })
-ipcMain.on('toMain_refreshVersions', () => { sendModList({}, 'fromMain_modList', 'version', false ) } )
+ipcMain.on('toMain_versionCheck',    () => { win.createNamedWindow('version') })
+ipcMain.on('toMain_refreshVersions', () => { win.sendModList({}, 'fromMain_modList', 'version', false ) } )
 ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 	const modSet    = []
 	const foundMods = modCollect.shortNames[shortName]
@@ -1676,7 +1281,7 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 			})
 		}
 	}
-	createNamedWindow('resolve', {
+	win.createNamedWindow('resolve', {
 		modSet    : modSet,
 		shortName : shortName,
 	})
@@ -1688,23 +1293,12 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
 
 
-function sendModList(extraArgs = {}, eventName = 'fromMain_modList', toWindow = 'main', closeLoader = true) {
-	modCollect.toRenderer(extraArgs).then((modCollection) => {
-		windows[toWindow].webContents.send(eventName, modCollection)
-
-		if ( toWindow === 'main' && windows.version && windows.version.isVisible() ) {
-			windows.version.webContents.send(eventName, modCollection)
-		}
-		if ( closeLoader ) { loadingWindow.hide(1500) }
-	})
-}
-
 function refreshClientModList(closeLoader = true) {
-	sendModList(
+	win.sendModList(
 		{
-			activeCollection       : overrideIndex,
+			activeCollection       : gameSetOverride.index,
 			currentLocale          : myTranslator.deferCurrentLocale(),
-			foldersDirty           : foldersDirty,
+			foldersDirty           : mainProcessFlags.foldersDirty,
 			l10n                   : {
 				disable : myTranslator.syncStringLookup('override_disabled'),
 				unknown : myTranslator.syncStringLookup('override_unknown'),
@@ -1721,43 +1315,42 @@ function refreshClientModList(closeLoader = true) {
 
 
 /** Business Functions */
+function gameLogFilename() {
+	if ( mcStore.get('game_log_auto') ) {
+		return path.join(path.dirname(versionConfigGet('game_settings', mcStore.get('game_version'))), 'log.txt')
+	}
+	return mcStore.get('game_log_file', null)
+}
+
 function loadGameLog(newPath = false) {
 	if ( newPath ) {
 		mcStore.set('game_log_file', newPath)
 		mcStore.set('game_log_auto', false)
 	}
 
-	if ( gameLogFileWatch !== null ) {
-		gameLogFileWatch.close()
-		gameLogFileWatch = null
+	if ( mainProcessFlags.watchGameLog !== null ) {
+		mainProcessFlags.watchGameLog.close()
+		mainProcessFlags.watchGameLog = null
 	}
 
-	let thisGameLog = null
+	const thisGameLog = gameLogFilename()
 
-	if ( mcStore.get('game_log_auto') ) {
-		const currentVersion = mcStore.get('game_version')
-		const gameSettings   = mcStore.get( currentVersion === 22 ? 'game_settings' : `game_settings_${currentVersion}`)
-		thisGameLog = path.join(path.dirname(gameSettings), 'log.txt')
-	} else {
-		thisGameLog = mcStore.get('game_log_file', null)
-	}
-
-	if ( thisGameLog !== null && gameLogFileWatch === null ) {
+	if ( thisGameLog !== null && mainProcessFlags.watchGameLog === null ) {
 		log.log.debug(`Trying to open game log: ${thisGameLog}`, 'game-log')
 
 		if ( fs.existsSync(thisGameLog) ) {
-			gameLogFileWatch = fs.watch(thisGameLog, (_, filename) => {
+			mainProcessFlags.watchGameLog = fs.watch(thisGameLog, (_, filename) => {
 				if ( filename ) {
-					if ( gameLogFileBounce ) return
-					gameLogFileBounce = setTimeout(() => {
-						gameLogFileBounce = false
+					if ( mainProcessFlags.bounceGameLog ) return
+					mainProcessFlags.bounceGameLog = setTimeout(() => {
+						mainProcessFlags.bounceGameLog = false
 						readGameLog()
 					}, 5000)
 				}
 			})
-			gameLogFileWatch.on('error', (err) => {
+			mainProcessFlags.watchGameLog.on('error', (err) => {
 				log.log.warning(`Error with game log: ${err}`, 'game-log')
-				gameLogFileWatch = null
+				mainProcessFlags.watchGameLog = null
 			})
 		} else {
 			log.log.warning(`Game Log not found at: ${thisGameLog}`, 'game-log')
@@ -1765,15 +1358,16 @@ function loadGameLog(newPath = false) {
 		}
 	}
 }
-function parseGameXML(version = 22, devMode = null) {
-	const gameSettingsKey     = version === 22 ? 'game_settings' : `game_settings_${version}`
+
+function parseGameXML(version = 22, setDevMode = null) {
 	const gameEnabledValue    = version === 22 ? true : mcStore.get(`game_enabled_${version}`)
-	const thisGameSettingsXML = mcStore.get(gameSettingsKey)
+	const thisGameSettingsXML = versionConfigGet('game_settings', version)
 	const gameXMLFile         = thisGameSettingsXML.replace('gameSettings.xml', 'game.xml')
 
 	if ( !gameEnabledValue ) { return }
 
 	let   XMLString = ''
+	let   XMLDoc    = null
 	const XMLParser = new fxml.XMLParser({
 		commentPropName    : '#comment',
 		ignoreAttributes   : false,
@@ -1781,7 +1375,6 @@ function parseGameXML(version = 22, devMode = null) {
 	})
 	
 	try {
-		if ( ! fs.existsSync(gameXMLFile) ) { throw `File Not Found ${gameXMLFile}` }
 		XMLString = fs.readFileSync(gameXMLFile, 'utf8')
 	} catch (e) {
 		log.log.danger(`Could not read game xml (version:${version}) ${e}`, 'game-xml')
@@ -1789,14 +1382,14 @@ function parseGameXML(version = 22, devMode = null) {
 	}
 
 	try {
-		gameXML = XMLParser.parse(XMLString)
-		devControls[version] = gameXML.game.development.controls
+		XMLDoc = XMLParser.parse(XMLString)
+		mainProcessFlags.devControls[version] = XMLDoc.game.development.controls
 	} catch (e) {
 		log.log.danger(`Could not read game xml (version:${version}) ${e}`, 'game-xml')
 	}
 	
-	if ( devMode !== null ) {
-		gameXML.game.development.controls = devMode
+	if ( setDevMode !== null && XMLDoc !== null ) {
+		XMLDoc.game.development.controls = setDevMode
 
 		const builder    = new fxml.XMLBuilder({
 			commentPropName           : '#comment',
@@ -1808,13 +1401,23 @@ function parseGameXML(version = 22, devMode = null) {
 		})
 
 		try {
-			fs.writeFileSync(gameXMLFile, builder.build(gameXML))
+			fs.writeFileSync(gameXMLFile, builder.build(XMLDoc))
 		} catch (e) {
 			log.log.danger(`Could not write game xml ${e}`, 'game-xml')
 		}
 
 		parseGameXML(version, null)
 	}
+}
+
+function versionConfigSet(key, value, version = 22) {
+	mcStore.set(versionConfigKey(key, version), value)
+}
+function versionConfigGet(key, version = 22 ) {
+	return mcStore.get(versionConfigKey(key, version))
+}
+function versionConfigKey(key, version = 22) {
+	return ( version === 22 ) ? key : `${key}_${version}`
 }
 
 function newSettingsFile(newList) {
@@ -1827,17 +1430,16 @@ function newSettingsFile(newList) {
 }
 
 function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
+	let   XMLString = ''
+	let   XMLDoc    = null
+
 	// Version must be the one of the newFolder *or* the current
-	let operationFailed = false
 	const currentVersion = ( newFolder === null ) ?
 		mcStore.get('game_version', 22) :
 		modNote.get(`${modCollect.mapFolderToCollection(newFolder)}.notes_version`, 22)
 
-	const gameSettingsKey = ( currentVersion === 22 ) ? 'game_settings' : `game_settings_${currentVersion}`
-	const gameSettingsFileName = mcStore.get(gameSettingsKey, '')
+	const gameSettingsFileName = versionConfigGet('game_settings', currentVersion)
 
-	let   XMLString = ''
-	let   gameSettingsXML = null
 	const XMLParser = new fxml.XMLParser({
 		commentPropName    : '#comment',
 		ignoreAttributes   : false,
@@ -1845,30 +1447,27 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 	})
 	
 	try {
-		if ( ! fs.existsSync(gameSettingsFileName) ) {
-			operationFailed = true
-			throw `File Not Found: ${gameSettingsFileName}`
+		XMLString = fs.readFileSync(gameSettingsFileName, 'utf8')
+		XMLDoc    = XMLParser.parse(XMLString)
+
+		gameSetOverride.active = (XMLDoc.gameSettings.modsDirectoryOverride['@_active'] === 'true')
+		gameSetOverride.folder = XMLDoc.gameSettings.modsDirectoryOverride['@_directory']
+
+		mainProcessFlags.gameSettings = {
+			username : XMLDoc.gameSettings?.onlinePresenceName || XMLDoc.gameSettings?.player?.name || '',
+			password : XMLDoc.gameSettings?.joinGame?.['@_password'] || '',
+			server   : XMLDoc.gameSettings?.joinGame?.['@_serverName'] || '',
 		}
 
-		XMLString       = fs.readFileSync(gameSettingsFileName, 'utf8')
-		gameSettingsXML = XMLParser.parse(XMLString)
-		overrideActive  = (gameSettingsXML.gameSettings.modsDirectoryOverride['@_active'] === 'true')
-		overrideFolder  = gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory']
-		lastGameSettings = {
-			username : gameSettingsXML.gameSettings?.onlinePresenceName || gameSettingsXML.gameSettings?.player?.name || '',
-			password : gameSettingsXML.gameSettings?.joinGame?.['@_password'] || '',
-			server   : gameSettingsXML.gameSettings?.joinGame?.['@_serverName'] || '',
-		}
+		gameSetOverride.index = ( !gameSetOverride.active ) ? '0' : modCollect.mapFolderToCollection(gameSetOverride.folder) || '999'
 	} catch (e) {
-		operationFailed = true
 		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
+		return
 	}
 
-	overrideIndex = ( !overrideActive ) ? '0' : modCollect.mapFolderToCollection(overrideFolder) || '999'
-
-	if ( ! operationFailed && ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) ) {
+	if ( disable !== null || newFolder !== null || userName !== null || password !== null || serverName !== null ) {
 		modNote.set(`${modCollect.mapFolderToCollection(newFolder)}.notes_last`, new Date())
-		writeGameSettings(gameSettingsFileName, gameSettingsXML, {
+		writeGameSettings(gameSettingsFileName, XMLDoc, {
 			disable    : disable,
 			newFolder  : newFolder,
 			password   : password,
@@ -1887,8 +1486,8 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 		return
 	}
 
-	loadingWindow.open('set')
-	loadingWindow.noCount()
+	win.loading.open('set')
+	win.loading.noCount()
 
 	gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( opts.disable === false || opts.disable === null )
 	gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( opts.newFolder !== null ) ? opts.newFolder : ''
@@ -1924,24 +1523,24 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 	refreshClientModList()
 }
 
-let fileWait = null
-function fileOperation(type, fileMap, srcWindow = 'confirm') {
 
+function fileOperation(type, fileMap, srcWindow = 'confirm') {
 	if ( typeof fileMap !== 'object' ) { return }
 
-	windows[srcWindow].close()
+	win.safeClose(srcWindow)
 
-	loadingWindow.open('files')
-	loadingWindow.total(fileMap.length, true)
-	loadingWindow.current(0, true)
+	win.loading.open('files')
+	win.loading.total(fileMap.length, true)
+	win.loading.current(0, true)
 
-	fileWait = setInterval(() => {
-		if ( windows.load.isVisible() ) {
-			clearInterval(fileWait)
+	mainProcessFlags.intervalFile = setInterval(() => {
+		if ( win.loading.isReady ) {
+			clearInterval(mainProcessFlags.intervalFile)
 			fileOperation_post(type, fileMap)
 		}
 	}, 250)
 }
+
 function fileOperation_post(type, fileMap) {
 	const fullPathMap = []
 	const cleanupSet  = new Set()
@@ -1965,7 +1564,7 @@ function fileOperation_post(type, fileMap) {
 		}
 	}
 
-	foldersDirty = true
+	mainProcessFlags.foldersDirty = true
 
 	for ( const file of fullPathMap ) {
 		try {
@@ -1992,7 +1591,7 @@ function fileOperation_post(type, fileMap) {
 			log.log.danger(`Could not ${type} file : ${e}`, `${type}-file`)
 		}
 
-		loadingWindow.current()
+		win.loading.current()
 	}
 
 	if ( type === 'move_multi' ) {
@@ -2009,61 +1608,62 @@ function fileOperation_post(type, fileMap) {
 	processModFolders()
 }
 
-let loadingWait = null
+
 async function processModFolders(force = false) {
-	if ( !force && !foldersDirty ) { loadingWindow.hide(); return }
+	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(); return }
 
-	loadingWindow.open('mods')
-	loadingWindow.total(0, true)
-	loadingWindow.current(0, true)
+	win.loading.open('mods')
+	win.loading.total(0, true)
+	win.loading.current(0, true)
 
-	loadingWait = setInterval(() => {
-		if ( windows.load.isVisible() ) {
-			clearInterval(loadingWait)
+	mainProcessFlags.intervalLoad = setInterval(() => {
+		if ( win.loading.isReady ) {
+			clearInterval(mainProcessFlags.intervalLoad)
 			processModFoldersOnDisk()
 		}
 	}, 250)
 }
+
 function processModFoldersOnDisk() {
 	modCollect.syncSafe = mcStore.get('use_one_drive', false)
 	modCollect.clearAll()
 
 	const offlineFolders = []
 
-	modFoldersWatch.forEach((oldWatcher) => { oldWatcher.close() })
-	modFoldersWatch = []
+	mainProcessFlags.watchModFolder.forEach((oldWatcher) => { oldWatcher.close() })
+	mainProcessFlags.watchModFolder = []
 	// Cleaner for no-longer existing folders, set watcher for others
-	for ( const folder of modFolders ) {
+	for ( const folder of mainProcessFlags.modFolders ) {
 		if ( ! fs.existsSync(folder) ) {
 			const colHash     = modCollect.getMD5FromFolder(folder)
 			const isRemovable = modNote.get(`${colHash}.notes_removable`, false)
 
 			if ( !isRemovable ) {
-				modFolders.delete(folder)
+				mainProcessFlags.modFolders.delete(folder)
 			} else {
 				offlineFolders.push(folder)
 			}
 		} else {
 			const thisWatch = fs.watch(folder, (eventType, fileName) => { updateFolderDirtyWatch(eventType, fileName, folder) })
 			thisWatch.on('error', () => { log.log.warning(`Folder Watch Error: ${folder}`, 'folder-watcher') })
-			modFoldersWatch.push(thisWatch)
+			mainProcessFlags.watchModFolder.push(thisWatch)
 		}
 	}
 
-	mcStore.set('modFolders', Array.from(modFolders))
+	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
 
-	for ( const folder of modFolders ) {
+	for ( const folder of mainProcessFlags.modFolders ) {
 		if ( ! offlineFolders.includes(folder) ) {
 			const thisCollectionStats = modCollect.addCollection(folder)
 
-			loadingWindow.total(thisCollectionStats.fileCount)
+			win.loading.total(thisCollectionStats.fileCount)
 		}
 	}
 
 	modCollect.processMods()
 
 	modCollect.processPromise.then(() => {
-		foldersDirty = false
+		mainProcessFlags.foldersDirty = false
 		parseSettings()
 		parseGameXML(22, null)
 		parseGameXML(19, null)
@@ -2075,27 +1675,27 @@ function processModFoldersOnDisk() {
 		if ( mcStore.get('rel_notes') !== app.getVersion() ) {
 			mcStore.set('rel_notes', app.getVersion() )
 			log.log.info('New version detected, show changelog')
-			createNamedWindow('change')
+			win.createNamedWindow('change')
 		}
 	})
 }
+
 function updateFolderDirtyWatch(eventType, fileName, folder) {
 	if ( eventType === 'rename' ) {
 		if ( ! fileName.endsWith('.tmp') && ! fileName.endsWith('.crdownload')) {
 			log.log.debug(`Folders now dirty due to ${path.basename(folder)} :: ${fileName}`, 'folder-watcher')
 
-			foldersDirty = true
-			sendFoldersDirtyUpdate()
+			mainProcessFlags.foldersDirty = true
+			win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
 		}
 	}
 }
 
-function sendFoldersDirtyUpdate() { windows.main.webContents.send('fromMain_dirtyUpdate', foldersDirty) }
-
 function loadSaveFile(filename) {
 	try {
-		const rawData  = fs.readFileSync(path.join(app.getPath('userData'), filename))
-		const jsonData = JSON.parse(rawData)
+		const oldModHub = require('./lib/oldModHub.json')
+		const rawData   = fs.readFileSync(path.join(app.getPath('userData'), filename))
+		const jsonData  = JSON.parse(rawData)
 
 
 		modCollect.modHubList = {
@@ -2134,20 +1734,6 @@ function dlSaveFile(url, filename) {
 }
 /** END: Business Functions */
 
-function doDialogBox(attachTo, {type = 'info', message = null, messageL10n = null, title = null, titleL10n = null }) {
-	const attachWin = ( attachTo === null ) ? null : windows[attachTo]
-
-	const thisTitle = ( title !== null ) ? title : myTranslator.syncStringLookup(( titleL10n === null ) ? 'app_name' : titleL10n)
-	const thisMessage = ( message !== null ) ? message : myTranslator.syncStringLookup(messageL10n)
-
-	dialog.showMessageBoxSync(attachWin, {
-		title   : thisTitle,
-		message : thisMessage,
-		type    : type,
-	})
-}
-
-
 
 
 
@@ -2162,14 +1748,14 @@ app.whenReady().then(() => {
 			app.setAppUserModelId('jtsage.fsmodassist')
 		}
 		
-		tray = new Tray(trayIcon)
+		win.tray = new Tray(trayIcon)
 
 		const template = [
 			{ label : 'FSG Mod Assist', /*icon : pathIcon, */enabled : false },
 			{ type  : 'separator' },
 			{
 				label : myTranslator.syncStringLookup('tray_show'),
-				click : () => { windows.main.show() },
+				click : () => { win.win.main.show() },
 			},
 			{
 				label : myTranslator.syncStringLookup('launch_game'),
@@ -2177,22 +1763,22 @@ app.whenReady().then(() => {
 			},
 			{
 				label : myTranslator.syncStringLookup('tray_quit'),
-				click : () => { windows.main.close() },
+				click : () => { win.win.main.close() },
 			},
 		]
 		const contextMenu = Menu.buildFromTemplate(template)
-		tray.setContextMenu(contextMenu)
-		tray.setToolTip('FSG Mod Assist')
-		tray.on('click', () => { windows.main.show() })
+		win.tray.setContextMenu(contextMenu)
+		win.tray.setToolTip('FSG Mod Assist')
+		win.tray.on('click', () => { win.win.main.show() })
 
 		dlSaveFile(hubURLCombo, 'modHubDataCombo.json')
 
 		app.on('second-instance', (_, argv) => {
 			// Someone tried to run a second instance, we should focus our window.
 			if ( argv.includes('--start-game') ) { gameLauncher() }
-			if (windows.main) {
-				if ( windows.main.isMinimized()) { windows.main.show() }
-				windows.main.focus()
+			if ( win.isValid('main') ) {
+				if ( win.win.main.isMinimized()) { win.win.main.show() }
+				win.win.main.focus()
 			}
 		})
 
@@ -2207,10 +1793,28 @@ app.whenReady().then(() => {
 			}
 		])
 
-		createMainWindow()
+		win.createMainWindow(() => {
+			if ( mcStore.has('modFolders') ) {
+				mainProcessFlags.modFolders   = new Set(mcStore.get('modFolders'))
+				mainProcessFlags.foldersDirty = true
+				setTimeout(() => { processModFolders() }, 1500)
+			}
+		})
 
-		app.on('activate', () => {if (BrowserWindow.getAllWindows().length === 0) { createMainWindow() } })
-		app.on('quit',     () => { iconParser.clearTemp() })
+		app.on('activate', () => {if (BrowserWindow.getAllWindows().length === 0) {
+			win.createMainWindow(() => {
+				if ( mcStore.has('modFolders') ) {
+					mainProcessFlags.modFolders   = new Set(mcStore.get('modFolders'))
+					mainProcessFlags.foldersDirty = true
+					setTimeout(() => { processModFolders() }, 1500)
+				}
+			})
+		} })
+		app.on('quit',     () => {
+			if ( win.tray ) { win.tray.destroy() }
+			if ( mainProcessFlags.watchGameLog ) { mainProcessFlags.watchGameLog.close() }
+			iconParser.clearTemp()
+		})
 	}
 })
 
@@ -2219,7 +1823,7 @@ app.setAboutPanelOptions({
 	applicationVersion : app.getVersion(),
 	copyright          : '(c) 2022-present FSG Modding',
 	credits            : 'J.T.Sage <jtsage+datebox@gmail.com>',
-	iconPath           : pathIcon,
+	iconPath           : trayIcon,
 	website            : 'https://github.com/FSGModding/FSG_Mod_Assistant',
 })
 
