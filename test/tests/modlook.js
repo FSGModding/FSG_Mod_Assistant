@@ -9,11 +9,12 @@
 const { ma_logger } = require('../../lib/modUtilLib.js')
 const { modLooker } = require('../../lib/modCheckLib.js')
 const path          = require('path')
+const {testLib}     = require('../test.js')
 
 const logger = new ma_logger('look-test')
 logger.forceNoConsole()
 
-module.exports.test = (testLib) => {
+module.exports.test = () => {
 	testGood(new testLib('Mod Looker - Good File'))
 	testBad(new testLib('Mod Looker - Missing File'))
 }

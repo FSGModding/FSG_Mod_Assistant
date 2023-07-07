@@ -9,8 +9,9 @@
 const {globSync}   = require('glob')
 const {ESLint}     = require('eslint')
 const path         = require('path')
+const {testLib}    = require('../test.js')
 
-module.exports.test =(testLib) => {
+module.exports.test =() => {
 	const test     = new testLib('ESLint Source Code Test')
 	tester(test).then(() => {test.end()})
 }

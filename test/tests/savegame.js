@@ -9,11 +9,12 @@
 const path                = require('path')
 const { ma_logger }       = require('../../lib/modUtilLib.js')
 const { saveFileChecker } = require('../../lib/modCheckLib.js')
+const {testLib}           = require('../test.js')
 
 const logger = new ma_logger('saveTest')
 logger.forceNoConsole()
 
-module.exports.test = (testLib) => {
+module.exports.test = () => {
 	testBad(new testLib('Save Game Reader - Invalid File'))
 	testZip(new testLib('Save Game Reader - Zip File'))
 	testFolder(new testLib('Save Game Reader - Folder'))

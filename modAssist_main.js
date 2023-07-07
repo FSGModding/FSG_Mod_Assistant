@@ -42,18 +42,21 @@ const mainProcessFlags = {
 }
 
 const { autoUpdater } = require('electron-updater')
-const { ma_logger, translator, ddsDecoder } = require('./lib/modUtilLib.js')
+const modUtilLib = require('./lib/modUtilLib')
 
 const semverGt         = require('semver/functions/gt')
-const log              = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
 const path             = require('path')
 const fs               = require('fs')
-const myTranslator     = new translator.translator(translator.getSystemLocale(), log)
+
+const log              = new modUtilLib.ma_logger('modAssist', app, 'assist.log', gotTheLock)
+modUtilLib.currentLogger = log
+
+const myTranslator     = new modUtilLib.translator.translator(modUtilLib.translator.getSystemLocale(), log)
 myTranslator.mcVersion = app.getVersion()
 
+modUtilLib.currentTranslator = myTranslator
+
 const win             = new (require('./lib/modAssist_window_lib.js')).windowLib(
-	log,
-	myTranslator,
 	{
 		refreshClientModList : refreshClientModList,
 		processModFolders    : processModFolders,
@@ -154,7 +157,7 @@ mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
 const { modFileCollection, modLooker, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
-const iconParser = new ddsDecoder(convertPath, app.getPath('temp'), log)
+const iconParser = new modUtilLib.ddsDecoder(convertPath, app.getPath('temp'), log)
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 

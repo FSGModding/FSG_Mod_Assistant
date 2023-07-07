@@ -6,10 +6,11 @@
 
 // Test Program - Language Files
 
-const path = require('path')
-const fs   = require('fs')
+const path      = require('path')
+const fs        = require('fs')
+const {testLib} = require('../test.js')
 
-module.exports.test = (testLib) => {
+module.exports.test = () => {
 	const test     = new testLib('Language Test')
 	const langPath = path.join(__dirname, '..', '..', 'translations')
 	

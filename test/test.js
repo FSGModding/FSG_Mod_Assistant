@@ -17,7 +17,7 @@ const testList   = [
 ]
 
 const c       = require('ansi-colors')
-const testLog = class {
+module.exports.testLib = class {
 	#steps    = []
 	#title    = null
 	#didFail  = false
@@ -48,5 +48,5 @@ const testLog = class {
 }
 
 for ( const thisTest of testList ) {
-	require(`./tests/${thisTest}.js`).test(testLog)
+	require(`./tests/${thisTest}.js`).test()
 }

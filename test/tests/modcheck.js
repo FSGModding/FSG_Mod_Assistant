@@ -10,6 +10,7 @@ const path                      = require('path')
 const os                        = require('os')
 const { modFileChecker }        = require('../../lib/modCheckLib.js')
 const { ma_logger, ddsDecoder } = require('../../lib/modUtilLib.js')
+const {testLib}                 = require('../test.js')
 
 const basePath = path.join(__dirname, 'mods')
 
@@ -18,7 +19,7 @@ logger.forceNoConsole()
 
 const iconParser = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir(), logger)
 
-module.exports.test = (testLib) => {
+module.exports.test = () => {
 	testSingleFlag(
 		'EXAMPLE_Fake_Cracked_DLC.zip',
 		'INFO_MIGHT_BE_PIRACY',
