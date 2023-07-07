@@ -6,6 +6,8 @@
 
 The tool for comparing a savegame to a collection is located to the left of each collection.
 
+Additionally, if a ZIP savegame is detected in an added collection (for instance your downloads), you can right click it and compare it against any collection.
+
 ![Main Window](img/savegame-001.png)
 
 ## Loading a savegame

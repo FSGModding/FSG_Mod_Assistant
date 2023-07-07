@@ -26,10 +26,10 @@ Please note that this documentation is auto-generated, and may refer to a newer 
 - [Import and Export](importexport.html)
 - [Move and Copy and Delete and Copy Favorites](fileoper.html)
 - [Savegame Compare](savegame.html)
+- [Savegame Mod Track](savetrack.html)
 - [Version Check](versions.html)
 - [Search All Collections](search.html)
 - [Detail Window](moddetail.html)
-- [Store Detail](storeitem.html)
 - [User Preferences](preferences.html)
 - [Game Log Viewer](gamelog.html)
 - [Multiple Game Version Mode](multi-version.html)
@@ -67,9 +67,11 @@ Builds are available for the following:
 - __win x64 Installer__ : with auto updating
 - __win x64 Portable__ : no need to install, but no auto updating
 
-### Install Video
+### Install & How-To Videos
 
-[![Install Video](https://markdown-videos.deta.dev/youtube/elzFhp2EBEs)](https://youtu.be/elzFhp2EBEs)
+[![Install Video](https://img.youtube.com/vi/elzFhp2EBEs/default.jpg)](https://youtu.be/elzFhp2EBEs)
+
+[![Install Video](https://img.youtube.com/vi/VIqkN3yRkew/default.jpg)](https://youtu.be/VIqkN3yRkew)
 
 ### Updating
 
@@ -77,8 +79,8 @@ Either download the new version and install over top, or, the program will self-
 
 ### Mod Assistant Speed
 
-__PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk so that this app can run as fast as possible - but the initial scanning process is in depth, and ___not very fast___.  So, be aware than when you add a folder of a lot of mods, it may take a bit of time to scan them for the first time. Mod Assistant goes out of it's way to only scan a "version" of a file once, so subsequent loads on the program will be much, much fast.  If you are interested in the details of the cache, see the FAQ.
+__PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk so that this app can run as fast as possible - but the initial scanning process is in depth, and ___not very fast___.  So, be aware than when you add a folder of a lot of mods, it may take a bit of time to scan them for the first time. Mod Assistant goes out of it's way to only scan a "version" of a file once, so subsequent loads on the program will be much, much fast.  If you are interested in the details of the cache, see the FAQ. If you find that your collections continue to full rescan, you may need to enable sync mode - see the page on [User Preferences](preferences.html)
 
 ## Translations and Localizations
 
-Some effort has been made to produce a version of Mod Assistant in your preferred language, but as the creators only speak english, we need help on this.  We accept we have an active [CrowdIn](https://crowdin.com/project/fsg-mod-assistant) project
+Some effort has been made to produce a version of Mod Assistant in your preferred language, but as the creators only speak english, we need help on this.  We accept pull requests, and we have an active [CrowdIn](https://crowdin.com/project/fsg-mod-assistant) project.  Many, many thanks to all of the folks who have contributed so far to this effort!

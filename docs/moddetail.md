@@ -8,7 +8,7 @@ The mod detail screen provides detailed information about each mod
 
 In the top section, you will find the mod Title, Author, current version, current modhub version (if applicable), size, file data, and if the mod uses scripts, has store items, or is multiplayer safe.
 
-![overview](img/moddetail-001.png)
+![overview](img/moddetail-008.png)
 
 Click `See Store Details` to bring up the [Store Detail](storeitem.html) page
 
@@ -17,6 +17,24 @@ Click `See Store Details` to bring up the [Store Detail](storeitem.html) page
 The next section contains the text of the modDesc.xml file, the information shown on the modhub
 
 ![desc](img/moddetail-002.png)
+
+## Crop Calendar
+
+For maps, the crop calendar will be shown that would apply to the map.
+
+![crop](img/moddetail-006.png)
+
+## Store Items
+
+For mods that include store items, those items will be shown
+
+### Vehicles & Implements
+
+![crop](img/moddetail-001.png)
+
+### Placeables
+
+![crop](img/moddetail-007.png)
 
 ## Dependencies
 

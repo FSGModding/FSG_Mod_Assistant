@@ -20,7 +20,6 @@ Managing the active collection is done with the button and drop down set at the 
 
 ![Buttons](img/interfacemap_collect.png)
 
-
 ## Adding Collections
 
 To add a collection to Mod Assistant, you can use the `Add Folder` button, or drag and drop a single folder to the interface in the area labeled `Add as collection to Mod Assistant`
@@ -33,7 +32,7 @@ To manage the order of collections or remove them, use the `Edit Folders` button
 
 ![Alt text](img/colmanage-003.png)
 
-The `FS##` Badge denotes which version of Farming Simulator this collection is for - if you are _not_ in multi-version mode, you can safely ignore this notation.
+The `FS##` Badge denotes which version of Farming Simulator this collection is for - if you are _not_ in multi-version mode, you can safely ignore this notation.  `Added` shows when the collection was added to Mod Assistant (if after version 2.4.0), and `Last Active` shows the last time the collection was marked active in the game
 
 Use `Forget Collection` to remove the folder from Mod Assistant. This will not remove the files or folder from your hard disk.
 

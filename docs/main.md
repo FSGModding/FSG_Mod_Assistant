@@ -16,6 +16,7 @@ On the top line, you'll see the application title (drag to move the window), a g
 
 From left to right, those buttons are:
 
+- __Calendar :__ [Savegame Mod Tracking](savetrack.html)
 - __Spyglass :__ [Search All Collections](search.html)
 - __Text File :__ [Game Log Viewer](gamelog.html)
 - __Gear :__ [User Preferences](preferences.html)

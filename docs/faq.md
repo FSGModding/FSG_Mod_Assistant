@@ -6,7 +6,7 @@
 
 ### Do you have any time saving tips?
 
-Yes. Think about adding your `Downloads` folder to the program to easily move or copy new mods into your collections.  Mod Assist is pretty smart about what is and isn't a mod, and will happily ignore anything else that might be in your `Downloads` folder.
+Yes. Think about adding your `Downloads` folder to the program to easily move or copy new mods into your collections.  Mod Assist is pretty smart about what is and isn't a mod, and will happily ignore anything else that might be in your `Downloads` folder.  For bonus points, set your `Downloads` folder to be of the 'Holding Pen' type (see collection details)
 
 ---
 

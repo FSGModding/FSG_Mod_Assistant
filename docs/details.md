@@ -30,6 +30,22 @@ Favorite collections are those collections that the `Copy Favorites To` button w
 
 ---
 
+### Removable Store Collection
+
+![Alt text](img/detail-013.png)
+
+This option marks the collection as existing on removable storage.  Usually when a collection folder disappears (you've deleted it), Mod Assistant will automatically forget it and never try and scan it again.  This prevents that, and the folder will be re-scanned when it next appears.
+
+---
+
+### Holding Pen Collection
+
+![Alt text](img/detail-012.png)
+
+This option marks the collection as a special "Holding Pen" type.  This will switch the copy and move interface from single destination with option over-writing to the multi-destination automatic over-write mode.
+
+---
+
 ### Description
 
 ![Alt text](img/detail-005.png)
