@@ -7,12 +7,8 @@
 // Test Program - Savegame Mod Tracking
 
 const path              = require('path')
-const { ma_logger }     = require('../../lib/modUtilLib.js')
 const { savegameTrack } = require('../../lib/modCheckLib.js')
 const {testLib}         = require('../test.js')
-
-const logger = new ma_logger('saveTest')
-logger.forceNoConsole()
 
 module.exports.test = () => {
 	testBad(new testLib('Mod Tracker - Invalid Savegame'))
@@ -24,7 +20,7 @@ const testBad = (test) => {
 	const saveGamePath = path.join(__dirname, 'modtrack', 'savegame2')
 
 	try {
-		const saveBack = new savegameTrack(saveGamePath, logger)
+		const saveBack = new savegameTrack(saveGamePath)
 		const saveBackMods = saveBack.modList
 		if ( saveBackMods.current.length === 0 ) {
 			test.step('Empty object returned')
@@ -43,7 +39,7 @@ const testGood = (test) => {
 	const saveGamePath = path.join(__dirname, 'modtrack', 'savegame1')
 
 	try {
-		const saveBack = new savegameTrack(saveGamePath, logger)
+		const saveBack = new savegameTrack(saveGamePath)
 		const saveBackMods = saveBack.modList
 
 		if ( saveBackMods.current.length === 4 ) {

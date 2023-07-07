@@ -7,17 +7,10 @@
 // Test Program - Mod Checker
 
 const path                      = require('path')
-const os                        = require('os')
 const { modFileChecker }        = require('../../lib/modCheckLib.js')
-const { ma_logger, ddsDecoder } = require('../../lib/modUtilLib.js')
 const {testLib}                 = require('../test.js')
 
 const basePath = path.join(__dirname, 'mods')
-
-const logger     = new ma_logger('multi-test')
-logger.forceNoConsole()
-
-const iconParser = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir(), logger)
 
 module.exports.test = () => {
 	testSingleFlag(
@@ -88,9 +81,8 @@ module.exports.test = () => {
 
 const testSingleGood = (fileName, test) => {
 	const modRecord = new modFileChecker(
-		iconParser,
 		path.join(basePath, fileName),
-		false, 0, new Date(), null, logger, () => 'en'
+		false, 0, new Date(), null
 	)
 
 	modRecord.doTests().then(() => {
@@ -108,9 +100,8 @@ const testSingleGood = (fileName, test) => {
 
 const testSingleFlag = (fileName, flag, test) => {
 	const modRecord = new modFileChecker(
-		iconParser,
 		path.join(basePath, fileName),
-		false, 0, new Date(), null, logger, () => 'en'
+		false, 0, new Date()
 	)
 
 	modRecord.doTests().then(() => {

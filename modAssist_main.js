@@ -42,19 +42,20 @@ const mainProcessFlags = {
 }
 
 const { autoUpdater } = require('electron-updater')
-const modUtilLib = require('./lib/modUtilLib')
+const { maIPC, ma_logger, translator, ddsDecoder } = require('./lib/modUtilLib')
 
 const semverGt         = require('semver/functions/gt')
 const path             = require('path')
 const fs               = require('fs')
 
-const log              = new modUtilLib.ma_logger('modAssist', app, 'assist.log', gotTheLock)
-modUtilLib.currentLogger = log
+const log              = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
 
-const myTranslator     = new modUtilLib.translator.translator(modUtilLib.translator.getSystemLocale(), log)
+maIPC.log = log
+
+const myTranslator     = new translator()
 myTranslator.mcVersion = app.getVersion()
 
-modUtilLib.currentTranslator = myTranslator
+maIPC.l10n = myTranslator
 
 const win             = new (require('./lib/modAssist_window_lib.js')).windowLib(
 	{
@@ -157,7 +158,8 @@ mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
 const { modFileCollection, modLooker, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
-const iconParser = new modUtilLib.ddsDecoder(convertPath, app.getPath('temp'), log)
+maIPC.decode = new ddsDecoder(convertPath, app.getPath('temp'))
+
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 
@@ -170,7 +172,11 @@ const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 const modSite = new Store({name : 'mod_source_site', migrations : settingDefault.migrateSite, clearInvalidConfig : true})
 
-win.settings = mcStore
+maIPC.modCache = maCache
+maIPC.notes    = modNote
+maIPC.settings = mcStore
+
+win.loadSettings()
 
 const gameSetOverride = {
 	folder : null,
@@ -192,17 +198,7 @@ mcStore.set('cache_version', app.getVersion())
 /** END: Upgrade Cache Version Here */
 
 
-const modCollect = new modFileCollection(
-	iconParser,
-	log,
-	modNote,
-	maCache,
-	app.getPath('home'),
-	win.loading,
-	mcStore,
-	myTranslator.deferCurrentLocale,
-	skipCache
-)
+const modCollect = new modFileCollection( app.getPath('home'), skipCache )
 
 win.modCollect = modCollect
 
@@ -551,11 +547,8 @@ function openDetailWindow(thisMod) {
 			try {
 				if ( thisMod.modDesc.storeItems > 0 ) {
 					const thisModLook = new modLooker(
-						iconParser,
 						thisMod,
-						modCollect.modColUUIDToFolder(thisMod.colUUID),
-						log,
-						myTranslator.currentLocale
+						modCollect.modColUUIDToFolder(thisMod.colUUID)
 					)
 				
 					thisModLook.getInfo().then((results) => {
@@ -1207,7 +1200,7 @@ ipcMain.on('toMain_openTrackFolder', () => {
 	dialog.showOpenDialog(win.win.save_track, options).then((result) => {
 		if ( !result.canceled ) {
 			try {
-				const thisSaveInfo = new savegameTrack(result.filePaths[0], log)
+				const thisSaveInfo = new savegameTrack(result.filePaths[0])
 
 				win.sendModList({ saveInfo : thisSaveInfo.modList }, 'fromMain_saveInfo', 'save_track', false )
 			} catch (e) {
@@ -1238,7 +1231,7 @@ ipcMain.on('toMain_openHubByID',    (_, hubID) => { shell.openExternal(`${modHub
 
 function readSaveGame(thisPath, isFolder) {
 	try {
-		const thisSavegame = new saveFileChecker(thisPath, isFolder, log)
+		const thisSavegame = new saveFileChecker(thisPath, isFolder)
 
 		win.sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
 	} catch (e) {
@@ -1816,7 +1809,7 @@ app.whenReady().then(() => {
 		app.on('quit',     () => {
 			if ( win.tray ) { win.tray.destroy() }
 			if ( mainProcessFlags.watchGameLog ) { mainProcessFlags.watchGameLog.close() }
-			iconParser.clearTemp()
+			maIPC.decode.clearTemp()
 		})
 	}
 })

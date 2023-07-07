@@ -6,13 +6,9 @@
 
 // Test Program - Mod Internals Looker
 
-const { ma_logger } = require('../../lib/modUtilLib.js')
 const { modLooker } = require('../../lib/modCheckLib.js')
 const path          = require('path')
 const {testLib}     = require('../test.js')
-
-const logger = new ma_logger('look-test')
-logger.forceNoConsole()
 
 module.exports.test = () => {
 	testGood(new testLib('Mod Looker - Good File'))
@@ -22,7 +18,6 @@ module.exports.test = () => {
 const testGood = (test) => {
 	const searchPath = path.join(__dirname, 'mods')
 	const looker    = new modLooker(
-		null,
 		{
 			fileDetail : {
 				fullPath  : path.join(searchPath, 'TestMod_TotallyValidZIP.zip'),
@@ -32,8 +27,6 @@ const testGood = (test) => {
 			},
 		},
 		searchPath,
-		logger,
-		'en',
 		true
 	)
 
@@ -59,7 +52,6 @@ const testGood = (test) => {
 const testBad = (test) => {
 	const searchPath = path.join(__dirname, 'mods')
 	const looker    = new modLooker(
-		null,
 		{
 			fileDetail : {
 				fullPath  : path.join(searchPath, 'TestMod_NonExistentFile.zip'),
@@ -69,8 +61,6 @@ const testBad = (test) => {
 			},
 		},
 		searchPath,
-		logger,
-		'en',
 		true
 	)
 

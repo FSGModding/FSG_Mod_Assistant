@@ -17,6 +17,16 @@ const testList   = [
 ]
 
 const c       = require('ansi-colors')
+const path    = require('path')
+const os      = require('os')
+const { ma_logger, ddsDecoder, maIPC } = require('../lib/modUtilLib.js')
+
+maIPC.log = new ma_logger('multi-test')
+maIPC.log.forceNoConsole()
+
+maIPC.decode = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
+
+
 module.exports.testLib = class {
 	#steps    = []
 	#title    = null
