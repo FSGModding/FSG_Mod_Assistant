@@ -6,7 +6,7 @@
 
 // Main Window UI
 
-/* eslint complexity: ["warn", 26] */
+/* eslint complexity: ["warn", 30] */
 /* global processL10N, fsgUtil, bootstrap, select_lib */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
@@ -143,6 +143,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		const modRows        = []
 		const scrollRows     = []
 		const sizeOfFolder   = thisCollection.folderSize
+		const mapIcons       = []
+		const mapNames       = []
 
 		for ( const modKey of thisCollection.alphaSort ) {
 			try {
@@ -180,14 +182,21 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 				}
 
 				scrollRows.push(fsgUtil.buildScrollMod(collectKey, thisMod.colUUID))
-				modRows.push(makeModRow(
+				
+				const thisModEntry = makeModRow(
 					thisMod.colUUID,
 					thisMod,
 					displayBadges,
 					thisMod.modHub.id,
 					modCollect.appSettings.game_version,
 					typeof modCollect.opts.modSites[thisMod.fileDetail.shortName] !== 'undefined'
-				))
+				)
+				
+				modRows.push(thisModEntry[0])
+				if ( thisModEntry[1] !== null ) {
+					mapIcons.push(thisModEntry[1])
+					mapNames.push([...thisModEntry.slice(2)])
+				}
 
 			} catch (e) {
 				window.log.notice(`Error building mod row: ${modKey} :: ${e}`, 'main')
@@ -200,13 +209,15 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			modRows,
 			collectNotes.notes_website,
 			collectNotes.notes_websiteDL,
-			collectNotes.notes_tagline,
+			[collectNotes.notes_tagline, (mapIcons.length === 1 ? mapNames[0][0] : null)].filter((x) => x !== null).join(' - '),
 			collectNotes.notes_admin,
 			thisCollection.dependSet.size,
 			collectNotes.notes_favorite,
 			modCollect.opts.activeCollection === collectKey,
 			collectNotes.notes_game_admin,
-			collectNotes.notes_holding
+			collectNotes.notes_holding,
+			( mapIcons.length === 1 ) ? mapIcons[0] : null,
+			mapNames[0]
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	}
@@ -302,40 +313,52 @@ function clientMakeListActive() {
 	}
 }
 
-const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding) => fsgUtil.useTemplate('collect_row', {
+const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames) => fsgUtil.useTemplate('collect_row', {
 	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
 	class_hideDownload          : dlEnabled ? '' : 'd-none',
 	class_hideGameAdminPassword : gameAdminPass !== null ? '' : 'd-none',
 	class_hidePassword          : adminPass !== null ? '' : 'd-none',
 	class_hideWebsite           : website !== null ? '' : 'd-none',
 	class_isHolding             : isHolding ? 'is-holding-pen' : '',
+	class_mapIcon               : singleMapIcon === null ? 'd-none' : '',
 	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive, isHolding),
 	game_admin_password         : gameAdminPass,
 	id                          : id,
+	mapClick                    : mapNames?.[2],
+	mapIcon                     : fsgUtil.iconMaker(singleMapIcon),
+	mapTitle                    : mapNames?.[1],
 	mod_rows                    : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`,
 	name                        : name,
 	password                    : adminPass,
-	tagLine                     : tagLine !== null ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : '',
+	tagLine                     : tagLine !== '' ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : '',
 	totalCount                  : modCount > 999 ? '999+' : modCount,
 	website                     : website,
 })
 
 
-const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) => fsgUtil.useTemplate('mod_row', {
-	author            : fsgUtil.escapeSpecial(thisMod.modDesc.author),
-	badges            : Array.from(badges, (badge) => fsgUtil.badge(false, badge)).join(' '),
-	class_hasHash     : modId!==null ? ' has-hash' : '',
-	class_hasSite     : hasExtSite ? ' has-ext-site' : '',
-	class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
-	class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':'',
-	click_modEnabled  : ! ( thisMod.badgeArray.includes('savegame') || thisMod.badgeArray.includes('notmod') ),
-	fileSize          : ( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : '',
-	icon              : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
-	id                : id,
-	shortname         : thisMod.fileDetail.shortName,
-	title             : fsgUtil.escapeSpecial(thisMod.l10n.title),
-	version           : fsgUtil.escapeSpecial(thisMod.modDesc.version),
-})
+const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) => {
+	return [
+		fsgUtil.useTemplate('mod_row', {
+			author            : fsgUtil.escapeSpecial(thisMod.modDesc.author),
+			badges            : Array.from(badges, (badge) => fsgUtil.badge(false, badge)).join(' '),
+			class_hasHash     : modId!==null ? ' has-hash' : '',
+			class_hasSite     : hasExtSite ? ' has-ext-site' : '',
+			class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
+			class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':'',
+			click_modEnabled  : ! ( thisMod.badgeArray.includes('savegame') || thisMod.badgeArray.includes('notmod') ),
+			fileSize          : ( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : '',
+			icon              : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
+			id                : id,
+			shortname         : thisMod.fileDetail.shortName,
+			title             : fsgUtil.escapeSpecial(thisMod.l10n.title),
+			version           : fsgUtil.escapeSpecial(thisMod.modDesc.version),
+		}),
+		thisMod.modDesc.mapConfigFile ? thisMod.modDesc.iconImageCache : null,
+		thisMod.fileDetail.shortName,
+		fsgUtil.escapeSpecial(thisMod.l10n.title),
+		id,
+	]
+}
 
 
 function makeVersionRow(version, options, modCollect) {

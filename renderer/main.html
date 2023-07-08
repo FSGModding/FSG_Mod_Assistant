@@ -431,9 +431,13 @@
 			{{folderSVG}}
 		</td>
 		<td class="folder-name collapsed" {{bootstrap_data}}>
-			<div class="d-inline-block">{{name}}{{tagLine}}</div>
+			<div class="d-inline-block align-middle">{{name}}{{tagLine}}</div>
 		</td>
 		<td class="align-middle text-end">
+			<button class="{{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="clientOpenMod('true', '{{mapClick}}')">
+				<img class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}"  />
+			</button>
+			
 			<button class="{{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button"></l10n></button>
 			<button class="{{class_hideGameAdminPassword}} btn btn-outline-success btn-sm me-2" onclick="window.mods.popClipboard('{{game_admin_password}}')"><l10n name="game_admin_pass_button"></l10n></button>
 			<button class="{{class_hidePassword}} btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('{{password}}')"><l10n name="admin_pass_button"></l10n></button>
