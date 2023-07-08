@@ -89,6 +89,10 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	}
 	lastLocale = modCollect.opts.currentLocale
 
+	if ( modCollect.updateReady ) {
+		fsgUtil.byID('update-is-ready-button').classList.remove('d-none')
+	}
+
 	fsgUtil.byId('lang-style-div').setAttribute('class', modCollect.opts.currentLocale)
 
 	fsgUtil.byId('dirty_folders').classList[(modCollect.opts.foldersDirty)?'remove':'add']('d-none')
@@ -305,7 +309,7 @@ const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, admi
 	class_hidePassword          : adminPass !== null ? '' : 'd-none',
 	class_hideWebsite           : website !== null ? '' : 'd-none',
 	class_isHolding             : isHolding ? 'is-holding-pen' : '',
-	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive),
+	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive, isHolding),
 	game_admin_password         : gameAdminPass,
 	id                          : id,
 	mod_rows                    : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`,

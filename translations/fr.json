@@ -196,10 +196,6 @@
 	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-modHub",
 	"savegame_nohub__title": "Ce mod n'est pas sur le modhub du jeu",
-	"update_restart": "Redémarrer",
-	"update_later": "Plus tard",
-	"update_title": "Mise à jour de FSG Mod Assistant",
-	"update_detail": "Une nouvelle version de Mod Assistant a été téléchargée. Redémarrez FSG Mod Assistant pour appliquer les mises à jour.",
 	"launcher_error_title": "Chemin du jeu non trouvé",
 	"launcher_error_message": "Veuillez définir le chemin de jeu dans les préférences (non défini, ou non valide!)",
 	"user_pref_title_changelog": "Journal de modifications",
@@ -428,5 +424,6 @@
 	"save_track_only_current": "Uniquement actif dans la sauvegarde en cours",
 	"save_track_current": "Sauvegarde actuelle",
 	"save_track_none": "Aucun jeu de sauvegarde n'a été chargé, ou le jeu de sauvegarde spécifié n'a pas de fichiers de sauvegarde",
-	"save_track_duplicate": "Même liste de mods que la sauvegarde actuelle"
+	"save_track_duplicate": "Même liste de mods que la sauvegarde actuelle",
+	"update_ready__title": "Une nouvelle version de Mod Assistant a été téléchargée. Cliquez pour redémarrer FSG Mod Assistant afin d'appliquer la mise à jour."
 }

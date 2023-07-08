@@ -47,6 +47,7 @@ contextBridge.exposeInMainWorld(
 		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
 		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
+		runUpdate       : () => { ipcRenderer.send('toMain_runUpdateInstall') },
 		sendToTray      : () => { ipcRenderer.send('toMain_sendMainToTray') },
 		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
 		versionCheck    : () => { ipcRenderer.send('toMain_versionCheck' ) },

@@ -196,10 +196,6 @@
 	"user_pref_setting_game_args_example": "（例如：<em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>）",
 	"savegame_nohub": "非 ModHub",
 	"savegame_nohub__title": "此模组不在游戏内的模组中心中",
-	"update_restart": "重新启动",
-	"update_later": "稍后",
-	"update_title": "FSG Mod Assistant 更新",
-	"update_detail": "A new version of Mod Assistant has been downloaded. Restart FSG Mod Assistant to apply the updates.",
 	"launcher_error_title": "Game Path Not Found",
 	"launcher_error_message": "Please set the game path in preferences (not set, or not valid!)",
 	"user_pref_title_changelog": "Changelog",
@@ -428,5 +424,6 @@
 	"save_track_only_current": "Only active in current save",
 	"save_track_current": "Current Save Game",
 	"save_track_none": "No save game loaded, or save game specified had no backup files",
-	"save_track_duplicate": "Same Mod List as Current Save Game"
+	"save_track_duplicate": "Same Mod List as Current Save Game",
+	"update_ready__title": "A new version of Mod Assistant has been downloaded. Click to restart FSG Mod Assistant to apply the update."
 }

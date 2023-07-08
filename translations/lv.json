@@ -196,10 +196,6 @@
 	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-ModHub",
 	"savegame_nohub__title": "Šis mod nav uz in-game modhub",
-	"update_restart": "Restartējiet",
-	"update_later": "Vēlāk",
-	"update_title": "Atjaunināt FSG Mod Assistant",
-	"update_detail": "Ir lejupielādēta jauna Mod Assistant versija. Restartējiet FSG Mod Assistant, lai piemērotu atjauninājumus.",
 	"launcher_error_title": "Spēles ceļš nav atrasts",
 	"launcher_error_message": "Lūdzu, iestatiet spēles ceļu preferencēs (nav iestatīts vai nav derīgs!)",
 	"user_pref_title_changelog": "Izmaiņu žurnāls",
@@ -428,5 +424,6 @@
 	"save_track_only_current": "Aktīvs tikai pašreizējā saglabāšanas reizē",
 	"save_track_current": "Pašreizējā saglabāšanas spēle",
 	"save_track_none": "Nav ielādēta neviena saglabāšanas spēle vai norādītajai saglabāšanas spēlei nav dublējuma failu",
-	"save_track_duplicate": "Tas pats Mod saraksts kā pašreizējā saglabātā spēle"
+	"save_track_duplicate": "Tas pats Mod saraksts kā pašreizējā saglabātā spēle",
+	"update_ready__title": "Ir lejupielādēta jauna Mod Assistant versija. Noklikšķiniet, lai restartētu FSG Mod Assistant, lai piemērotu atjauninājumu."
 }

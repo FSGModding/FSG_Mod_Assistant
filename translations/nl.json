@@ -196,10 +196,6 @@
 	"user_pref_setting_game_args_example": "(b.v. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "niet-ModHub",
 	"savegame_nohub__title": "Deze mod staat niet op de in-game modhub.",
-	"update_restart": "Herstart",
-	"update_later": "Later",
-	"update_title": "FSG Mod Assistant Update",
-	"update_detail": "Een nieuwe versie van Mod Assistant is gedownload. Herstart FSG Mod Assistant om updates toe te passen.",
 	"launcher_error_title": "Spelpad niet gevonden",
 	"launcher_error_message": "Stel het pad van het spel in bij de voorkeuren (niet ingesteld, of niet geldig!)",
 	"user_pref_title_changelog": "Changelog",
@@ -428,5 +424,6 @@
 	"save_track_only_current": "Alleen actief in huidige opslag",
 	"save_track_current": "Huidig opgeslagen spel",
 	"save_track_none": "Geen spel opgeslagen of spel opgeslagen zonder back-upbestanden",
-	"save_track_duplicate": "Zelfde mod lijst als huidige save game"
+	"save_track_duplicate": "Zelfde mod lijst als huidige save game",
+	"update_ready__title": "Er is een nieuwe versie van Mod Assistant gedownload. Klik om FSG Mod Assistant opnieuw te starten om de update toe te passen."
 }

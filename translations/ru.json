@@ -196,10 +196,6 @@
 	"user_pref_setting_game_args_example": "(например: <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Не с ModHub",
 	"savegame_nohub__title": "Этого мода нет на внутриигровом ModHub",
-	"update_restart": "Перезагрузка",
-	"update_later": "Позже",
-	"update_title": "Обновление FSG Mod Assistant",
-	"update_detail": "Загружена новая версия Mod Assistant. Перезапустите FSG Mod Assistant, чтобы применить обновления.",
 	"launcher_error_title": "Путь игры не найден",
 	"launcher_error_message": "Пожалуйста, укажите путь к игре в настройках (не задан или недействителен!)",
 	"user_pref_title_changelog": "Изменения",
@@ -428,5 +424,6 @@
 	"save_track_only_current": "Только активированные в текущем сохранении",
 	"save_track_current": "Текущее сохранение игры",
 	"save_track_none": "Сохранение не загружено или в указанном сохранении нет файлов резервной копии",
-	"save_track_duplicate": "Такой же список модов, что и в текущем сохранении"
+	"save_track_duplicate": "Такой же список модов, что и в текущем сохранении",
+	"update_ready__title": "Была загружена новая версия программы Mod Assistant. Нажмите, чтобы перезапустить FSG Mod Assistant для применения обновления."
 }

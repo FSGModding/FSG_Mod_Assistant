@@ -196,10 +196,6 @@
 	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "NekódHubu",
 	"savegame_nohub__title": "Tento mod není na modhub ve hře",
-	"update_restart": "Restartovat",
-	"update_later": "Později",
-	"update_title": "FSG aktualizace asistenta modu",
-	"update_detail": "Byla stažena nová verze Mod Assistant. Restartujte FSG Mod Assistant pro aplikaci aktualizací.",
 	"launcher_error_title": "Cesta k partii nebyla nalezena",
 	"launcher_error_message": "Nastavte prosím cestu k hře v předvolbách (nenastaveno, nebo není platné!)",
 	"user_pref_title_changelog": "Seznam změn",
@@ -428,5 +424,6 @@
 	"save_track_only_current": "Aktivní pouze v aktuálním uložení",
 	"save_track_current": "Aktuální uložená hra",
 	"save_track_none": "Nebyla načtena žádná uložená hra nebo zadaná uložená hra neměla žádné záložní soubory",
-	"save_track_duplicate": "Stejný seznam modů jako v aktuální uložené hře"
+	"save_track_duplicate": "Stejný seznam modů jako v aktuální uložené hře",
+	"update_ready__title": "Byla stažena nová verze programu Mod Assistant. Kliknutím na tlačítko restartujte aplikaci FSG Mod Assistant a použijte aktualizaci."
 }

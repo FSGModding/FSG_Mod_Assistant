@@ -193,10 +193,6 @@
 	"user_pref_setting_game_args_example": "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Non-ModHub",
 	"savegame_nohub__title": "Diese Mod ist nicht im Modhub des Spiels enthalten",
-	"update_restart": "Restart",
-	"update_later": "Später",
-	"update_title": "Aktualisierung der Anwendung",
-	"update_detail": "Es wurde eine neue Version heruntergeladen. Starten Sie die Anwendung neu, um die Updates anzuwenden",
 	"launcher_error_title": "Spielpfad nicht gefunden",
 	"launcher_error_message": "Bitte stellen Sie den Spielpfad in den Einstellungen ein",
 	"user_pref_title_changelog": "Changelog",
@@ -428,5 +424,6 @@
 	"save_track_only_current": "Nur im aktuellen Spielstand aktiv",
 	"save_track_current": "Aktuelles Spiel speichern",
 	"save_track_none": "Kein Spielstand geladen, oder der angegebene Spielstand hatte keine Sicherungsdateien",
-	"save_track_duplicate": "Dieselbe Mod-Liste wie beim aktuellen Spielstand"
+	"save_track_duplicate": "Dieselbe Mod-Liste wie beim aktuellen Spielstand",
+	"update_ready__title": "Es wurde eine neue Version von Mod Assistant heruntergeladen. Klicken Sie auf , um den FSG Mod Assistant neu zu starten und das Update anzuwenden."
 }

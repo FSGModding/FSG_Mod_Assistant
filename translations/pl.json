@@ -196,10 +196,6 @@
 	"user_pref_setting_game_args_example": "(np. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"savegame_nohub": "Brak na ModHub",
 	"savegame_nohub__title": "Tego modu nie ma na ModHubie",
-	"update_restart": "Restart",
-	"update_later": "Później",
-	"update_title": "Aktualizacja aplikacji",
-	"update_detail": "Została pobrana nowa wersja. Uruchom ponownie aplikację, aby zastosować aktualizacje.",
 	"launcher_error_title": "Ścieżka gry nieznaleziona",
 	"launcher_error_message": "Proszę ustawić ścieżkę gry w preferencjach",
 	"user_pref_title_changelog": "Dziennik zmian",
@@ -428,5 +424,6 @@
 	"save_track_only_current": "Aktywny tylko w bieżącym zapisie",
 	"save_track_current": "Bieżąca zapisana gra",
 	"save_track_none": "Nie załadowano zapisanej gry lub określona zapisana gra nie miała plików kopii zapasowej",
-	"save_track_duplicate": "Ta sama lista modów, co w bieżącej zapisanej grze"
+	"save_track_duplicate": "Ta sama lista modów, co w bieżącej zapisanej grze",
+	"update_ready__title": "Pobrano nową wersję programu Mod Assistant. Kliknij, aby ponownie uruchomić FSG Mod Assistant w celu zastosowania aktualizacji."
 }

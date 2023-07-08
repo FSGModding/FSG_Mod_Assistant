@@ -36,6 +36,7 @@ const mainProcessFlags = {
 	modFolders      : new Set(),
 	pathBestGuess   : userHome,
 	pathGameGuess   : '',
+	processRunning  : false,
 	watchGameLog    : null,
 	watchModFolder  : [],
 	
@@ -101,8 +102,8 @@ process.on('uncaughtException',  (err, origin) => { handleUnhandled('exception',
 process.on('unhandledRejection', (err, origin) => { handleUnhandled('rejection', err, origin) })
 
 
-if ( process.platform === 'win32' && /*app.isPackaged && */gotTheLock && !isPortable ) {
-	const updateLog = log.group('auto-update')
+if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
+	const updateLog    = log.group('auto-update')
 	autoUpdater.logger = updateLog
 	autoUpdater.on('update-checking-for-update', () => { updateLog.debug('Checking for update', 'auto-update') })
 	autoUpdater.on('update-available',           () => { updateLog.info('Update Available', 'auto-update') })
@@ -110,21 +111,11 @@ if ( process.platform === 'win32' && /*app.isPackaged && */gotTheLock && !isPort
 
 	autoUpdater.on('error', (message) => { updateLog.warning(`Updater Failed: ${message}`, 'auto-update') })
 
-	autoUpdater.on('update-downloaded', (_, releaseNotes, releaseName) => {
+	autoUpdater.on('update-downloaded', () => {
 		clearInterval(mainProcessFlags.intervalUpdate)
-		const dialogOpts = {
-			buttons : [myTranslator.syncStringLookup('update_restart'), myTranslator.syncStringLookup('update_later')],
-			detail  : myTranslator.syncStringLookup('update_detail'),
-			message : process.platform === 'win32' ? releaseNotes : releaseName,
-			title   : myTranslator.syncStringLookup('update_title'),
-			type    : 'info',
-		}
-		dialog.showMessageBox(null, dialogOpts).then((returnValue) => {
-			if (returnValue.response === 0) {
-				win.closeAllSubWin()
-				autoUpdater.quitAndInstall()
-			}
-		})
+		updateLog.info('Update Downloaded and Ready', 'auto-update')
+		modCollect.updateIsReady = true
+		processModFolders()
 	})
 
 	autoUpdater.checkForUpdatesAndNotify().catch((err) => updateLog.warning(`Updater Issue: ${err}`, 'auto-update'))
@@ -230,6 +221,13 @@ ipcMain.on('toMain_sendMainToTray', () => {
 		
 		mainProcessFlags.firstMin = false
 		win.win.main.hide()
+	}
+})
+ipcMain.on('toMain_runUpdateInstall', () => {
+	if ( modCollect.updateIsReady ) {
+		autoUpdater.quitAndInstall()
+	} else {
+		log.log.debug('Auto-Update Called Before Ready.', 'auto-update')
 	}
 })
 ipcMain.on('toMain_populateClipboard', (_, text) => { clipboard.writeText(text, 'selection') })
@@ -1611,7 +1609,10 @@ function fileOperation_post(type, fileMap) {
 
 
 async function processModFolders(force = false) {
+	if ( mainProcessFlags.processRunning ) { return }
 	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(); return }
+
+	mainProcessFlags.processRunning = true
 
 	win.loading.open('mods')
 	win.loading.total(0, true)
@@ -1678,6 +1679,7 @@ function processModFoldersOnDisk() {
 			log.log.info('New version detected, show changelog')
 			win.createNamedWindow('change')
 		}
+		mainProcessFlags.processRunning = false
 	})
 }
 
