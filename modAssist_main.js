@@ -52,7 +52,12 @@ const log              = new ma_logger('modAssist', app, 'assist.log', gotTheLoc
 
 maIPC.log = log
 
-const myTranslator     = new translator()
+log.log.info(`ModAssist Logger    : ${app.getVersion()}`)
+log.log.info(` - Node.js Version  : ${process.versions.node}`)
+log.log.info(` - Electron Version : ${process.versions.electron}`)
+log.log.info(` - Chrome Version   : ${process.versions.chrome}`)
+
+const myTranslator     = new translator(null, !app.isPackaged)
 myTranslator.mcVersion = app.getVersion()
 
 maIPC.l10n = myTranslator
@@ -71,11 +76,6 @@ log.dangerCallBack = () => { win.toggleMainDangerFlag() }
 const skipCache     = false && !(app.isPackaged)
 const crashLog      = path.join(app.getPath('userData'), 'crash.log')
 
-log.log.info(`ModAssist Logger    : ${app.getVersion()}`)
-log.log.info(` - Node.js Version  : ${process.versions.node}`)
-log.log.info(` - Electron Version : ${process.versions.electron}`)
-log.log.info(` - Chrome Version   : ${process.versions.chrome}`)
-
 function handleUnhandled(type, err, origin) {
 	const rightNow = new Date()
 	fs.appendFileSync(
@@ -83,12 +83,16 @@ function handleUnhandled(type, err, origin) {
 		`${type} Timestamp : ${rightNow.toISOString()}\n\nCaught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}`
 	)
 	if ( !err.message.startsWith('net::ERR_') ) {
-		dialog.showMessageBoxSync(null, {
-			message : `Caught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
-			title   : `Uncaught ${type} - Quitting`,
-			type    : 'error',
-		})
-		app.quit()
+		if ( app.isReady() ) {
+			dialog.showMessageBoxSync(null, {
+				message : `Caught ${type}: ${err}\n\nOrigin: ${origin}\n\n${err.stack}\n\n\nCan't Continue, exiting now!\n\nTo send file, please see ${crashLog}`,
+				title   : `Uncaught ${type} - Quitting`,
+				type    : 'error',
+			})
+			app.quit()
+		} else {
+			app.exit()
+		}
 	} else {
 		log.log.debug(`Network error: ${err}`, `net-error-${type}`)
 	}
@@ -97,13 +101,14 @@ process.on('uncaughtException',  (err, origin) => { handleUnhandled('exception',
 process.on('unhandledRejection', (err, origin) => { handleUnhandled('rejection', err, origin) })
 
 
-if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
-	autoUpdater.logger = log.log
-	autoUpdater.on('update-checking-for-update', () => { log.log.debug('Checking for update', 'auto-update') })
-	autoUpdater.on('update-available',           () => { log.log.info('Update Available', 'auto-update') })
-	autoUpdater.on('update-not-available',       () => { log.log.debug('No Update Available', 'auto-update') })
+if ( process.platform === 'win32' && /*app.isPackaged && */gotTheLock && !isPortable ) {
+	const updateLog = log.group('auto-update')
+	autoUpdater.logger = updateLog
+	autoUpdater.on('update-checking-for-update', () => { updateLog.debug('Checking for update', 'auto-update') })
+	autoUpdater.on('update-available',           () => { updateLog.info('Update Available', 'auto-update') })
+	autoUpdater.on('update-not-available',       () => { updateLog.debug('No Update Available', 'auto-update') })
 
-	autoUpdater.on('error', (message) => { log.log.warning(`Updater Failed: ${message}`, 'auto-update') })
+	autoUpdater.on('error', (message) => { updateLog.warning(`Updater Failed: ${message}`, 'auto-update') })
 
 	autoUpdater.on('update-downloaded', (_, releaseNotes, releaseName) => {
 		clearInterval(mainProcessFlags.intervalUpdate)
@@ -122,10 +127,10 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 		})
 	})
 
-	autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.warning(`Updater Issue: ${err}`, 'auto-update'))
+	autoUpdater.checkForUpdatesAndNotify().catch((err) => updateLog.warning(`Updater Issue: ${err}`, 'auto-update'))
 
 	mainProcessFlags.intervalUpdate = setInterval(() => {
-		autoUpdater.checkForUpdatesAndNotify().catch((err) => log.log.warning(`Updater Issue: ${err}`, 'auto-update'))
+		autoUpdater.checkForUpdatesAndNotify().catch((err) => updateLog.warning(`Updater Issue: ${err}`, 'auto-update'))
 	}, ( 30 * 60 * 1000))
 }
 
@@ -187,11 +192,11 @@ const gameSetOverride = {
 /** Upgrade Cache Version Here */
 
 if ( semverGt('2.4.0', mcStore.get('cache_version'))) {
-	log.log.warning('Invalid Mod Cache (old), resetting.')
+	log.log.warning('Invalid Mod Cache (old), resetting.', 'mod-cache')
 	maCache.clear()
-	log.log.info('Mod Cache Cleared')
+	log.log.info('Mod Cache Cleared', 'mod-cache')
 } else {
-	log.log.debug('Mod Cache Version Good')
+	log.log.debug('Mod Cache Version Good', 'mod-cache')
 }
 
 mcStore.set('cache_version', app.getVersion())
@@ -522,12 +527,7 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 				break
 			}
 			default :
-				myTranslator.stringLookup(l10nEntry).then((text) => {
-					if ( text === null || text === '' ) {
-						log.log.debug(`Null or empty translator string: ${l10nEntry} :: locale: ${myTranslator.currentLocale}`)
-					}
-					sendEntry(l10nEntry, text)
-				})
+				myTranslator.stringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
 				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
 					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
 				})
@@ -798,6 +798,7 @@ ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_de
 
 /** Game launcher */
 function gameLauncher() {
+	const launchLog      = log.group('game-launcher')
 	const currentVersion = mcStore.get('game_version')
 	const gameArgs       = versionConfigGet('game_args', currentVersion)
 	const progPath       = versionConfigGet('game_path', currentVersion)
@@ -809,10 +810,10 @@ function gameLauncher() {
 		try {
 			const child = require('child_process').spawn(progPath, gameArgs.split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
 
-			child.on('error', (err) => { log.log.danger(`Game launch failed ${err}!`, 'game-launcher') })
+			child.on('error', (err) => { launchLog.danger(`Game launch failed ${err}!`) })
 			child.unref()
 		} catch (e) {
-			log.log.danger(`Game launch failed: ${e}`, 'game-launcher')
+			launchLog.danger(`Game launch failed: ${e}`)
 		}
 	} else {
 		const dialogOpts = {
@@ -821,7 +822,7 @@ function gameLauncher() {
 			message : myTranslator.syncStringLookup('launcher_error_message'),
 		}
 		dialog.showMessageBox(null, dialogOpts)
-		log.log.warning('Game path not set or invalid!', 'game-launcher')
+		launchLog.warning('Game path not set or invalid!')
 	}
 }
 ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
@@ -985,6 +986,7 @@ ipcMain.on('toMain_setNote', (_, id, value, collectKey) => {
 ipcMain.on('toMain_cancelDownload', () => { if ( mainProcessFlags.dlRequest !== null ) { mainProcessFlags.dlRequest.abort() } })
 ipcMain.on('toMain_downloadList',   (_, collection) => {
 	if ( mainProcessFlags.dlProgress ) { win.win.load.focus(); return }
+	const modDLLog = log.group('mod-download')
 	const thisSite = modNote.get(`${collection}.notes_website`, null)
 	const thisDoDL = modNote.get(`${collection}.notes_websiteDL`, false)
 	const thisLink = `${thisSite}all_mods_download?onlyActive=true`
@@ -997,13 +999,13 @@ ipcMain.on('toMain_downloadList',   (_, collection) => {
 	})
 
 	mainProcessFlags.dlProgress = true
-	log.log.info(`Downloading Collection : ${collection}`, 'mod-download')
-	log.log.debug(`Download Link : ${thisLink}`, 'mod-download')
+	modDLLog.info(`Downloading Collection : ${collection}`)
+	modDLLog.debug(`Download Link : ${thisLink}`)
 
 	mainProcessFlags.dlRequest = net.request(thisLink)
 
 	mainProcessFlags.dlRequest.on('response', (response) => {
-		log.log.info(`Got download: ${response.statusCode}`, 'mod-download')
+		modDLLog.info(`Got download: ${response.statusCode}`)
 
 		if ( response.statusCode < 200 || response.statusCode >= 400 ) {
 			win.doDialogBox('main', {
@@ -1026,7 +1028,7 @@ ipcMain.on('toMain_downloadList',   (_, collection) => {
 
 			writeStream.on('finish', () => {
 				writeStream.close()
-				log.log.info('Download complete, unzipping', 'mod-download')
+				modDLLog.info('Download complete, unzipping')
 				try {
 					let zipBytesSoFar   = 0
 					const zipBytesTotal = fs.statSync(dlPath).size
@@ -1044,11 +1046,11 @@ ipcMain.on('toMain_downloadList',   (_, collection) => {
 					zipReadStream.on('error', (err) => {
 						win.loading.hide()
 						mainProcessFlags.dlProgress = false
-						log.log.warning(`Download unzip failed : ${err}`, 'mod-download')
+						modDLLog.warning(`Download unzip failed : ${err}`)
 					})
 
 					zipReadStream.on('end', () => {
-						log.log.info('Unzipping complete', 'mod-download')
+						modDLLog.info('Unzipping complete')
 						zipReadStream.close()
 						fs.unlinkSync(dlPath)
 						mainProcessFlags.dlProgress = false
@@ -1057,19 +1059,19 @@ ipcMain.on('toMain_downloadList',   (_, collection) => {
 
 					zipReadStream.pipe(unzip.Extract({ path : modCollect.mapCollectionToFolder(collection) }))
 				} catch (e) {
-					log.log.warning(`Download failed : (${response.statusCode}) ${e}`, 'mod-download')
+					modDLLog.warning(`Download failed : (${response.statusCode}) ${e}`)
 					win.loading.hide()
 				}
 			})
 		}
 	})
 	mainProcessFlags.dlRequest.on('abort', () => {
-		log.log.notice('Download canceled', 'mod-download')
+		modDLLog.notice('Download canceled')
 		mainProcessFlags.dlProgress = false
 		win.loading.hide()
 	})
 	mainProcessFlags.dlRequest.on('error', (error) => {
-		log.log.warning(`Network error : ${error}`, 'mod-download')
+		modDLLog.warning(`Network error : ${error}`)
 		mainProcessFlags.dlProgress = false
 		win.loading.hide()
 	})
@@ -1082,6 +1084,7 @@ const csvRow = (entries) => entries.map((entry) => `"${typeof entry === 'string'
 
 ipcMain.on('toMain_exportList', (_, collection) => {
 	const csvTable = []
+	const csvLog   = log.group('csv-export')
 
 	csvTable.push(csvRow(['Mod', 'Title', 'Version', 'Author', 'ModHub', 'Link']))
 
@@ -1104,23 +1107,24 @@ ipcMain.on('toMain_exportList', (_, collection) => {
 		filters     : [{ name : 'CSV', extensions : ['csv'] }],
 	}).then(async (result) => {
 		if ( result.canceled ) {
-			log.log.debug('Save CSV Cancelled', 'csv-export')
+			csvLog.debug('Save CSV Cancelled')
 		} else {
 			try {
 				fs.writeFileSync(result.filePath, csvTable.join('\n'))
 				app.addRecentDocument(result.filePath)
 				win.doDialogBox('main', { messageL10n : 'save_csv_worked' })
 			} catch (err) {
-				log.log.warning(`Could not save csv file : ${err}`, 'csv-export')
+				csvLog.warning(`Could not save csv file : ${err}`)
 				win.doDialogBox('main', { type : 'warning', messageL10n : 'save_csv_failed' })
 			}
 		}
 	}).catch((unknownError) => {
-		log.log.warning(`Could not save csv file : ${unknownError}`, 'csv-export')
+		csvLog.warning(`Could not save csv file : ${unknownError}`)
 	})
 })
 ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 	const filePaths = []
+	const zipLog    = log.group('zip-export')
 
 	for ( const mod of modCollect.modColUUIDsToRecords(selectedMods) ) {
 		filePaths.push([mod.fileDetail.shortName, mod.fileDetail.fullPath])
@@ -1133,7 +1137,7 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 		],
 	}).then(async (result) => {
 		if ( result.canceled ) {
-			log.log.debug('Export ZIP Cancelled', 'zip-export')
+			zipLog.debug('Export ZIP Cancelled')
 		} else {
 			try {
 				win.loading.open('makezip')
@@ -1146,25 +1150,25 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 				})
 				
 				zipOutput.on('close', () => {
-					log.log.info(`ZIP file created : ${result.filePath}`, 'zip-export')
+					zipLog.info(`ZIP file created : ${result.filePath}`)
 					app.addRecentDocument(result.filePath)
 				})
 
 				zipArchive.on('error', (err) => {
 					win.loading.hide()
-					log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
+					zipLog.warning(`Could not create zip file : ${err}`)
 					setTimeout(() => {
 						win.doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
 					}, 1500)
 				})
 
 				zipArchive.on('warning', (err) => {
-					log.log.warning(`Problem with ZIP file : ${err}`, 'zip-export')
+					zipLog.warning(`Problem with ZIP file : ${err}`)
 				})
 
 				zipArchive.on('entry', (entry) => {
 					win.loading.current()
-					log.log.info(`Added file to ZIP : ${entry.name}`, 'zip-export')
+					zipLog.info(`Added file to ZIP : ${entry.name}`)
 				})
 
 				zipArchive.pipe(zipOutput)
@@ -1176,7 +1180,7 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 				zipArchive.finalize().then(() => { win.loading.hide() })
 
 			} catch (err) {
-				log.log.warning(`Could not create zip file : ${err}`, 'zip-export')
+				zipLog.warning(`Could not create zip file : ${err}`)
 				win.loading.hide()
 				setTimeout(() => {
 					win.doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
@@ -1184,7 +1188,7 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 			}
 		}
 	}).catch((unknownError) => {
-		log.log.warning(`Could not create zip file : ${unknownError}`, 'zip-export')
+		zipLog.warning(`Could not create zip file : ${unknownError}`)
 	})
 })
 /** END: Export operation */
@@ -1235,7 +1239,7 @@ function readSaveGame(thisPath, isFolder) {
 
 		win.sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
 	} catch (e) {
-		log.log.danger(`Load failed: ${e}`, 'savegame')
+		log.log.danger(`Load failed: ${e}`, 'save-check')
 	}
 }
 function openSaveGame(zipMode = false) {
@@ -1252,7 +1256,7 @@ function openSaveGame(zipMode = false) {
 			readSaveGame(result.filePaths[0], !zipMode)
 		}
 	}).catch((unknownError) => {
-		log.log.danger(`Could not read specified file/folder : ${unknownError}`, 'savegame')
+		log.log.danger(`Could not read specified file/folder : ${unknownError}`, 'save-check')
 	})
 }
 /** END: Savegame window operation */
@@ -1538,6 +1542,7 @@ function fileOperation(type, fileMap, srcWindow = 'confirm') {
 }
 
 function fileOperation_post(type, fileMap) {
+	const fileLog     = log.group('file-opts')
 	const fullPathMap = []
 	const cleanupSet  = new Set()
 
@@ -1565,14 +1570,14 @@ function fileOperation_post(type, fileMap) {
 	for ( const file of fullPathMap ) {
 		try {
 			if ( ['move_multi', 'copy_multi', 'copy', 'move', 'import'].includes(type) ) {
-				log.log.info(`Copy File : ${file.src} -> ${file.dest}`, 'file-ops')
+				fileLog.info(`Copy File : ${file.src} -> ${file.dest}`)
 
 				if ( ! fs.statSync(file.src).isDirectory() ) {
 					fs.copyFileSync(file.src, file.dest)
 				} else {
 					if ( fs.existsSync(file.dest) ) {
 						// remove **folder** to be overwritten (otherwise will merge)
-						log.log.info(`Delete Existing Folder First : ${file.dest}`, 'file-ops')
+						fileLog.info(`Delete Existing Folder First : ${file.dest}`)
 						fs.rmSync(file.dest, { recursive : true })
 					}
 					fs.cpSync(file.src, file.dest, { recursive : true })
@@ -1580,11 +1585,11 @@ function fileOperation_post(type, fileMap) {
 			}
 
 			if ( ['move', 'delete'].includes(type) ) {
-				log.log.info(`Delete File : ${file.src}`, 'file-ops')
+				fileLog.info(`Delete File : ${file.src}`)
 				fs.rmSync(file.src, { recursive : true } )
 			}
 		} catch (e) {
-			log.log.danger(`Could not ${type} file : ${e}`, `${type}-file`)
+			fileLog.danger(`Could not ${type} file : ${e}`)
 		}
 
 		win.loading.current()
@@ -1593,10 +1598,10 @@ function fileOperation_post(type, fileMap) {
 	if ( type === 'move_multi' ) {
 		for ( const thisFile of cleanupSet ) {
 			try {
-				log.log.info(`Delete File : ${thisFile}`, 'file-ops')
+				fileLog.info(`Delete File : ${thisFile}`)
 				fs.rmSync(thisFile, { recursive : true } )
 			} catch (e) {
-				log.log.danger(`Could not delete file : ${e}`, 'move_multi-file')
+				fileLog.danger(`Could not delete file : ${e}`)
 			}
 		}
 	}
@@ -1700,9 +1705,9 @@ function loadSaveFile(filename) {
 		}
 		modCollect.modHubVersion = { ...oldModHub.versions, ...jsonData.version}
 
-		log.log.debug(`Loaded ${filename}`, 'local-cache')
+		log.log.debug(`Loaded ${filename}`, 'modhub-cache')
 	} catch (e) {
-		log.log.warning(`Loading ${filename} failed: ${e}`, 'local-cache')
+		log.log.warning(`Loading ${filename} failed: ${e}`, 'modhub-cache')
 	}
 }
 
@@ -1713,7 +1718,7 @@ function dlSaveFile(url, filename) {
 		request.setHeader('pragma', 'no-cache')
 
 		request.on('response', (response) => {
-			log.log.info(`Got ${filename}: ${response.statusCode}`, 'local-cache')
+			log.log.info(`Got ${filename}: ${response.statusCode}`, 'modhub-cache')
 			let responseData = ''
 			response.on('data', (chunk) => { responseData = responseData + chunk.toString() })
 			response.on('end',  () => {
@@ -1723,7 +1728,7 @@ function dlSaveFile(url, filename) {
 		})
 		request.on('error', (error) => {
 			loadSaveFile(filename)
-			log.log.info(`Network error : ${url} :: ${error}`, 'net-request')
+			log.log.info(`Network error : ${url} :: ${error}`, 'modhub-cache')
 		})
 		request.end()
 	}
