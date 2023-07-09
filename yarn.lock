@@ -45,32 +45,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.22.6":
-  version: 7.22.6
-  resolution: "@babel/core@npm:7.22.6"
+"@babel/core@npm:^7.22.8":
+  version: 7.22.8
+  resolution: "@babel/core@npm:7.22.8"
   dependencies:
     "@ampproject/remapping": ^2.2.0
     "@babel/code-frame": ^7.22.5
-    "@babel/generator": ^7.22.5
+    "@babel/generator": ^7.22.7
     "@babel/helper-compilation-targets": ^7.22.6
     "@babel/helper-module-transforms": ^7.22.5
     "@babel/helpers": ^7.22.6
-    "@babel/parser": ^7.22.6
+    "@babel/parser": ^7.22.7
     "@babel/template": ^7.22.5
-    "@babel/traverse": ^7.22.6
+    "@babel/traverse": ^7.22.8
     "@babel/types": ^7.22.5
     "@nicolo-ribaudo/semver-v6": ^6.3.3
     convert-source-map: ^1.7.0
     debug: ^4.1.0
     gensync: ^1.0.0-beta.2
     json5: ^2.2.2
-  checksum: 6113ff87c0b707f9c2216285cd3e0a02088ecee427a75a6f3f865da7db25a4863ceb34950248df6ad86f6dd5c608b0f7220f972533f1cc27ff6a9b4380d6ef2c
+  checksum: 75ed701c14ad17070382ae1dd166f7534b31f2c71e00995a5f261ee2398ee96335b0736573b8ff24ab6e3e6f5814ee2a48fa11ab90fabcd3dfc70ea87c5f30a6
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:^7.22.6":
-  version: 7.22.6
-  resolution: "@babel/eslint-parser@npm:7.22.6"
+"@babel/eslint-parser@npm:^7.22.7":
+  version: 7.22.7
+  resolution: "@babel/eslint-parser@npm:7.22.7"
   dependencies:
     "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
     "@nicolo-ribaudo/semver-v6": ^6.3.3
@@ -78,7 +78,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ">=7.11.0"
     eslint: ^7.5.0 || ^8.0.0
-  checksum: 330af44be28f8a7afacd57e34024403ca9fc515745336b7e3a0bbd2403fa8f4a7a164c46c2f6bebc8a63d9fd46aed583b2bb96347acca846c2177574e909caaf
+  checksum: 2909c61cca8a2eddb65c30181d7cbb740688a231dfd665ae4b189cc11494228dc15046084e3c15009f1203eb51f3cb3c1b62feed743e546603d18a040b60b108
   languageName: node
   linkType: hard
 
@@ -91,6 +91,18 @@ __metadata:
     "@jridgewell/trace-mapping": ^0.3.17
     jsesc: ^2.5.1
   checksum: efa64da70ca88fe69f05520cf5feed6eba6d30a85d32237671488cc355fdc379fe2c3246382a861d49574c4c2f82a317584f8811e95eb024e365faff3232b49d
+  languageName: node
+  linkType: hard
+
+"@babel/generator@npm:^7.22.7":
+  version: 7.22.7
+  resolution: "@babel/generator@npm:7.22.7"
+  dependencies:
+    "@babel/types": ^7.22.5
+    "@jridgewell/gen-mapping": ^0.3.2
+    "@jridgewell/trace-mapping": ^0.3.17
+    jsesc: ^2.5.1
+  checksum: cee15558888bdf5564e19cfaf95101b2910fa425f30cc1a25ac9b8621bd62b63544eb1b36ad89c80b5e41915699219f78712cab128d1f7e3da6a21fbf4143927
   languageName: node
   linkType: hard
 
@@ -262,6 +274,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/parser@npm:^7.22.7":
+  version: 7.22.7
+  resolution: "@babel/parser@npm:7.22.7"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: 02209ddbd445831ee8bf966fdf7c29d189ed4b14343a68eb2479d940e7e3846340d7cc6bd654a5f3d87d19dc84f49f50a58cf9363bee249dc5409ff3ba3dab54
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.22.5":
   version: 7.22.5
   resolution: "@babel/template@npm:7.22.5"
@@ -306,6 +327,24 @@ __metadata:
     debug: ^4.1.0
     globals: ^11.1.0
   checksum: e38c6bf31c62b646dab0e90b86ed4fd03ba5be2f14bbdb5370939b9479c477633c33c34efd2ea45f24aa41ac50605cb41d7f1f4281193f79dcf99e999ebe6166
+  languageName: node
+  linkType: hard
+
+"@babel/traverse@npm:^7.22.8":
+  version: 7.22.8
+  resolution: "@babel/traverse@npm:7.22.8"
+  dependencies:
+    "@babel/code-frame": ^7.22.5
+    "@babel/generator": ^7.22.7
+    "@babel/helper-environment-visitor": ^7.22.5
+    "@babel/helper-function-name": ^7.22.5
+    "@babel/helper-hoist-variables": ^7.22.5
+    "@babel/helper-split-export-declaration": ^7.22.6
+    "@babel/parser": ^7.22.7
+    "@babel/types": ^7.22.5
+    debug: ^4.1.0
+    globals: ^11.1.0
+  checksum: a381369bc3eedfd13ed5fef7b884657f1c29024ea7388198149f0edc34bd69ce3966e9f40188d15f56490a5e12ba250ccc485f2882b53d41b054fccefb233e33
   languageName: node
   linkType: hard
 
@@ -2370,8 +2409,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "fsg-mod-assistant@workspace:."
   dependencies:
-    "@babel/core": ^7.22.6
-    "@babel/eslint-parser": ^7.22.6
+    "@babel/core": ^7.22.8
+    "@babel/eslint-parser": ^7.22.7
     adm-zip: ^0.5.10
     ansi-colors: ^4.1.3
     archiver: ^5.3.1
@@ -2382,10 +2421,10 @@ __metadata:
     electron-updater: ^6.1.3
     eslint: ^8.44.0
     fast-xml-parser: ^4.2.5
-    glob: ^10.3.1
+    glob: ^10.3.3
     jpeg-js: ^0.4.4
     pngjs: ^7.0.0
-    semver: ^7.5.3
+    semver: ^7.5.4
     unzip-stream: ^0.3.1
   languageName: unknown
   linkType: soft
@@ -2456,7 +2495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.2, glob@npm:^10.3.1":
+"glob@npm:^10.2.2":
   version: 10.3.1
   resolution: "glob@npm:10.3.1"
   dependencies:
@@ -2468,6 +2507,21 @@ __metadata:
   bin:
     glob: dist/cjs/src/bin.js
   checksum: 19c8c2805658b1002fecf0722cd609a33153d756a0d5260676bd0e9c5e6ef889ec9cce6d3dac0411aa90bce8de3d14f25b6f5589a3292582cccbfeddd0e98cc4
+  languageName: node
+  linkType: hard
+
+"glob@npm:^10.3.3":
+  version: 10.3.3
+  resolution: "glob@npm:10.3.3"
+  dependencies:
+    foreground-child: ^3.1.0
+    jackspeak: ^2.0.3
+    minimatch: ^9.0.1
+    minipass: ^5.0.0 || ^6.0.2 || ^7.0.0
+    path-scurry: ^1.10.1
+  bin:
+    glob: dist/cjs/src/bin.js
+  checksum: 29190d3291f422da0cb40b77a72fc8d2c51a36524e99b8bf412548b7676a6627489528b57250429612b6eec2e6fe7826d328451d3e694a9d15e575389308ec53
   languageName: node
   linkType: hard
 
@@ -3392,6 +3446,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0":
+  version: 7.0.1
+  resolution: "minipass@npm:7.0.1"
+  checksum: fedd1293f6a1b4e406c242a1cecfb75d0a81422bb2c365d999e33a88642fb68d70a89d95b550e08c640b3c0d9162829310e0c58b9b846b9218de25779818c709
+  languageName: node
+  linkType: hard
+
 "minizlib@npm:^2.1.1, minizlib@npm:^2.1.2":
   version: 2.1.2
   resolution: "minizlib@npm:2.1.2"
@@ -3724,6 +3785,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-scurry@npm:^1.10.1":
+  version: 1.10.1
+  resolution: "path-scurry@npm:1.10.1"
+  dependencies:
+    lru-cache: ^9.1.1 || ^10.0.0
+    minipass: ^5.0.0 || ^6.0.2 || ^7.0.0
+  checksum: e2557cff3a8fb8bc07afdd6ab163a92587884f9969b05bbbaf6fe7379348bfb09af9ed292af12ed32398b15fb443e81692047b786d1eeb6d898a51eb17ed7d90
+  languageName: node
+  linkType: hard
+
 "pend@npm:~1.2.0":
   version: 1.2.0
   resolution: "pend@npm:1.2.0"
@@ -4041,7 +4112,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.8, semver@npm:^7.5.3":
+"semver@npm:^7.3.8":
   version: 7.5.3
   resolution: "semver@npm:7.5.3"
   dependencies:
@@ -4049,6 +4120,17 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 9d58db16525e9f749ad0a696a1f27deabaa51f66e91d2fa2b0db3de3e9644e8677de3b7d7a03f4c15bc81521e0c3916d7369e0572dbde250d9bedf5194e2a8a7
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.5.4":
+  version: 7.5.4
+  resolution: "semver@npm:7.5.4"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
   languageName: node
   linkType: hard
 
