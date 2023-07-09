@@ -90,7 +90,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	lastLocale = modCollect.opts.currentLocale
 
 	if ( modCollect.updateReady ) {
-		fsgUtil.byID('update-is-ready-button').classList.remove('d-none')
+		fsgUtil.byId('update-is-ready-button').classList.remove('d-none')
 	}
 
 	fsgUtil.byId('lang-style-div').setAttribute('class', modCollect.opts.currentLocale)
