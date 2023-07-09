@@ -551,6 +551,8 @@ function openDetailWindow(thisMod) {
 				
 					thisModLook.getInfo().then((results) => {
 						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, myTranslator.currentLocale)
+					}).catch((err) => {
+						log.log.notice(`Failed to load store items :: ${err}`, 'mod-look')
 					})
 				}
 			} catch (e) {
