@@ -42,7 +42,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="input-group input-group-sm btn-group w-100 mt-2 mb-2 px-1">
+			<div class="input-group input-group-sm btn-group w-100 mt-2 mb-0 px-1">
 				<span class="input-group-text" id="basic-addon1">Show: </span>
 				<button class="btn btn-outline-light border" onclick="clientResetButtons()">RESET</button>
 				<input type="checkbox" class="btn-check filter_only" id="debug_dupes" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
@@ -65,6 +65,14 @@
 				<label data-bs-toggle="tooltip" title="DEV Info" class="btn btn-outline-success btn-sm border" for="debug_dev_info">DEV INFO</label>
 				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_warning" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="DEV Warning" class="btn btn-outline-success btn-sm border" for="debug_dev_warning">DEV WARN</label>
+			</div>
+			<div class="input-group input-group-sm mb-2 mt-1 px-1">
+				<span class="input-group-text">Find In page</span>
+				<input onkeypress="clientCatchEnter(event)" type="text" id="gamelog_find" class="form-control mod-row-filter rounded-end">
+				
+				<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Find Next" type="button" onclick="clientFind(false)" class="btn btn-secondary"><span class="bi bi-arrow-up"></span></button>
+				<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Find Previous" type="button" onclick="clientFind(true)" class="btn btn-secondary"><span class="bi bi-arrow-down"></span></button>
+				<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Clear Input" type="button" onclick="clientClearInput()" class="btn btn-secondary"><span class="bi bi-eraser"></span></button>
 			</div>
 		</div>
 		<div class="px-2">

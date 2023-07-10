@@ -160,6 +160,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 
 	document.getElementById('game_log').innerHTML = showData.join('')
 
+	clientFind(true, true)
 	if ( autoScroll ) {
 		window.scrollTo(0, document.body.scrollHeight)
 	}
@@ -181,6 +182,57 @@ function clientResetButtons() {
 		element.checked = ! ( element.id === 'debug_dupes' )
 	}
 	window.gamelog.getGameLogContents()
+}
+
+let lastFind = null
+let findIdx  = 0
+function clientFind(doForward = false, isReload = false) {
+	const finds = []
+	const thisFind = fsgUtil.byId('gamelog_find').value.toLowerCase()
+	const allLines = fsgUtil.query('.logLine')
+
+	/* clear current */
+	for ( const thisLine of allLines ) {
+		thisLine.classList.remove('bg-warning', 'bg-opacity-25', 'bg-opacity-50', 'text-white')
+	}
+
+	/* too short, exit */
+	if ( thisFind.length < 2 ) { lastFind = null; return }
+
+	/* is new? */
+	if ( lastFind === null || thisFind !== lastFind ) {
+		lastFind = thisFind
+		findIdx  = 0
+	} else {
+		findIdx = !isReload ? findIdx + ( doForward ? 1 : -1 ) : findIdx
+	}
+
+	/* highlight them */
+	for ( const thisLine of allLines ) {
+		if ( thisLine.innerText.toLowerCase().includes(thisFind) ) {
+			thisLine.classList.add('bg-warning', 'bg-opacity-25')
+			finds.push(thisLine)
+		}
+	}
+	if ( finds.length > 0 && !isReload ) {
+		let thisRealIndex = findIdx % (finds.length )
+		thisRealIndex = thisRealIndex < 0 ? thisRealIndex + finds.length : thisRealIndex
+		finds[thisRealIndex].classList.remove('bg-opacity-25')
+		finds[thisRealIndex].classList.add('bg-opacity-50', 'text-white')
+		window.scrollTo({top : finds[thisRealIndex].offsetTop, behavior : 'instant'})
+	}
+}
+
+function clientClearInput() {
+	fsgUtil.byId('gamelog_find').value = ''
+	clientFind(true)
+}
+
+function clientCatchEnter(e) {
+	if ( e.code === 'Enter' ) {
+		e.preventDefault()
+		clientFind(true)
+	}
 }
 
 window.addEventListener('DOMContentLoaded', () => {
