@@ -263,8 +263,10 @@ document.addEventListener('keydown', (event) => {
 	}
 })
 
-window.addEventListener('error', (message, source) => {
-	window.log.warning(message, source)
+window.addEventListener('error', (errorObj) => {
+	if ( typeof errorObj === 'object' ) {
+		window.log.warning(errorObj.message, errorObj.filename.split('/').pop())
+	}
 })
 
 window?.win_ops?.receive('fromMain_themeSetting', (theme) => fsgUtil.setTheme(theme))
