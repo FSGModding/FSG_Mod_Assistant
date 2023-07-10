@@ -1782,7 +1782,7 @@ app.whenReady().then(() => {
 			// Someone tried to run a second instance, we should focus our window.
 			if ( argv.includes('--start-game') ) { gameLauncher() }
 			if ( win.isValid('main') ) {
-				if ( win.win.main.isMinimized()) { win.win.main.show() }
+				if ( win.win.main.isMinimized() || !win.win.main.isVisible() ) { win.win.main.show() }
 				win.win.main.focus()
 			}
 		})
