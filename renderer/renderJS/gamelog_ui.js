@@ -229,7 +229,7 @@ function clientClearInput() {
 }
 
 function clientCatchEnter(e) {
-	if ( e.code === 'Enter' ) {
+	if ( e.code === 'Enter' || e.code === 'NumpadEnter' ) {
 		e.preventDefault()
 		clientFind(true)
 	}
