@@ -165,6 +165,7 @@ const makeZip = require('archiver')
 
 const mcStore = new Store({schema : settingDefault.defaults, clearInvalidConfig : true })
 const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
+const mdCache = new Store({name : 'mod_detail_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 const modSite = new Store({name : 'mod_source_site', migrations : settingDefault.migrateSite, clearInvalidConfig : true})
 
@@ -192,6 +193,19 @@ if ( semverGt('2.4.0', mcStore.get('cache_version'))) {
 
 mcStore.set('cache_version', app.getVersion())
 /** END: Upgrade Cache Version Here */
+
+/** Expire old details (1 week) */
+const detailCache = mdCache.store
+const oneWeek     = Date.now() - ( 1000 * 60 * 60 * 24 * 7)
+
+for ( const uuidKey in detailCache ) {
+	if ( Date.parse(detailCache[uuidKey].date) < oneWeek ) {
+		delete detailCache[uuidKey]
+	}
+}
+mdCache.store = detailCache
+/** END: Expire old details (1 week) */
+
 
 
 const modCollect = new modFileCollection( app.getPath('home'), skipCache )
@@ -544,12 +558,31 @@ function openDetailWindow(thisMod) {
 		async () => {
 			try {
 				if ( thisMod.modDesc.storeItems > 0 ) {
+					const thisUUID = thisMod.uuid
+
+					if ( !thisMod.fileDetail.isFolder && mdCache.has(thisUUID) ) {
+						const thisCache = mdCache.get(thisUUID)
+						mdCache.set(thisUUID, {
+							date    : new Date(),
+							results : thisCache.results,
+						})
+						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, thisCache.results, myTranslator.currentLocale)
+						log.log.notice(`Loaded details from cache :: ${thisUUID}`, 'mod-look')
+						return
+					}
+					
 					const thisModLook = new modLooker(
 						thisMod,
 						modCollect.modColUUIDToFolder(thisMod.colUUID)
 					)
 				
 					thisModLook.getInfo().then((results) => {
+						if ( ! thisMod.isFolder ) {
+							mdCache.set(thisUUID, {
+								date    : new Date(),
+								results : results,
+							})
+						}
 						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, myTranslator.currentLocale)
 					}).catch((err) => {
 						log.log.notice(`Failed to load store items :: ${err}`, 'mod-look')
