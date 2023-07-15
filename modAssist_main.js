@@ -538,6 +538,21 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 				}
 				break
 			}
+			case 'clean_detail_cache_size' : {
+				try {
+					const cacheSize = fs.statSync(path.join(app.getPath('userData'), 'mod_detail_cache.json')).size/(1024*1024)
+					sendEntry(
+						l10nEntry,
+						`${myTranslator.syncStringLookup(l10nEntry)} ${cacheSize.toFixed(2)}MB`
+					)
+				} catch {
+					sendEntry(
+						l10nEntry,
+						`${myTranslator.syncStringLookup(l10nEntry)} 0.00MB`
+					)
+				}
+				break
+			}
 			default :
 				myTranslator.stringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
 				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
@@ -924,6 +939,10 @@ ipcMain.on('toMain_resetWindows',   () => { win.resetPositions() })
 ipcMain.on('toMain_clearCacheFile', () => {
 	maCache.clear()
 	processModFolders(true)
+})
+ipcMain.on('toMain_clearDetailCacheFile', (event) => {
+	mdCache.clear()
+	event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 })
 ipcMain.on('toMain_cleanCacheFile', (event) => {
 	const localStore = maCache.store

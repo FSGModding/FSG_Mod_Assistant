@@ -46,6 +46,7 @@ contextBridge.exposeInMainWorld(
 	'mods', {
 		cleanCache    : () => { ipcRenderer.send('toMain_cleanCacheFile') },
 		clearCache    : () => { ipcRenderer.send('toMain_clearCacheFile') },
+		clearDetailCache : () => { ipcRenderer.send('toMain_clearDetailCacheFile') },
 		resetWindows  : () => { ipcRenderer.send('toMain_resetWindows') },
 		setGamePath   : (ver = 22) => { ipcRenderer.send('toMain_setGamePath', ver) },
 		setPref       : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
