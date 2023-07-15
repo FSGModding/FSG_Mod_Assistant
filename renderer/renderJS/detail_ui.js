@@ -7,7 +7,7 @@
 // Detail window UI
 
 /*eslint complexity: off*/
-/* global processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
+/* global Chart, processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
 window.mods.receive('fromMain_lookRecord', (modRecord, lookRecord, currentLocale) => {
 	try {
@@ -36,9 +36,11 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
 
 	const storeItemsHTML = []
+	const storeItemsJS   = []
 
 	for ( const storeitem in lookRecord.items ) {
-		const thisItem = lookRecord.items[storeitem]
+		const thisItem     = lookRecord.items[storeitem]
+		const thisItemUUID = crypto.randomUUID()
 
 		if ( thisItem.masterType === 'vehicle' ) {
 			let brandImage = null
@@ -46,7 +48,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon !== 'undefined' ) {
 					brandImage = lookRecord.brands[thisItem.brand].icon
 				} else {
-					brandImage = ( fsgUtil.knownBrand.includes(thisItem.brand.toLowerCase()) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.png` : null
+					brandImage = ( fsgUtil.knownBrand.includes(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.png` : null
 				}
 			}
 
@@ -88,6 +90,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 				show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
 				show_enginePower  : shouldHide(thisItem?.specs?.power),
 				show_fillUnit     : thisItem.fillLevel > 0 ? '' : 'd-none',
+				show_graph        : thisItem.motorInfo === null ? 'd-none' : '',
 				show_hasBeacons   : shouldHide(thisItem.hasBeacons),
 				show_hasLights    : shouldHide(thisItem.hasLights),
 				show_hasPaint     : shouldHide(thisItem.hasColor),
@@ -101,6 +104,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 				show_workWidth    : shouldHide(thisItem?.specs?.workingwidth),
 				transmission      : thisItem.transType,
 				typeDesc          : thisItem.typeDesc,
+				uuid              : thisItemUUID,
 				weight            : formatManyNumber(thisItem.weight, currentLocale, [
 					{ factor : 1,    precision : 0, unit : 'unit_kg' },
 					{ factor : 0.01, precision : 1, unit : 'unit_t' },
@@ -110,6 +114,163 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 					{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
 				]),
 			}))
+
+			if ( thisItem.motorInfo !== null ) {
+				storeItemsJS.push(async () => {
+					new Chart(
+						fsgUtil.byId(`${thisItemUUID}_canvas_hp`),
+						{
+							type : 'line',
+							data : {
+								datasets : [
+									...thisItem.motorInfo.hp,
+								],
+							},
+							options : {
+								interaction : {
+									intersect : false,
+									mode      : 'dataset',
+								},
+								plugins : {
+									legend     : { display : false },
+									tooltip    : {
+										bodyAlign      : 'right',
+										bodyFontFamily : 'courier',
+										callbacks      : {
+											label : (context) => `${context.parsed.y}hp @ ${context.parsed.x} RPM`,
+										},
+										mode           : 'dataset',
+										titleAlign     : 'center',
+									},
+								},
+								scales  : {
+									x : {
+										display : true,
+										title   : {
+											text    : 'RPM',
+											display : true,
+										},
+										type    : 'linear',
+									},
+									y : {
+										
+										display  : true,
+										position : 'left',
+										title    : {
+											text    : 'HP',
+											display : true,
+										},
+										type     : 'linear',
+									},
+								},
+								stacked : false,
+							},
+						}
+					)
+					new Chart(
+						fsgUtil.byId(`${thisItemUUID}_canvas_kph`),
+						{
+							type : 'line',
+							data : {
+								datasets : [
+									...thisItem.motorInfo.kph,
+								],
+							},
+							options : {
+								interaction : {
+									intersect : false,
+									mode      : 'index',
+								},
+								plugins : {
+									legend     : { display : false },
+									tooltip    : {
+										bodyAlign      : 'right',
+										bodyFontFamily : 'courier',
+										callbacks      : {
+											label : (context) => `${context.dataset.label} : ${context.parsed.y} km/h`,
+											title : (context) => `@ ${context[0].label} RPM`,
+										},
+										mode           : 'index',
+										titleAlign     : 'center',
+									},
+								},
+								scales  : {
+									x : {
+										display : true,
+										title   : {
+											text    : 'RPM',
+											display : true,
+										},
+										type    : 'linear',
+									},
+									y : {
+										
+										display  : true,
+										position : 'left',
+										title    : {
+											text    : 'km/h',
+											display : true,
+										},
+										type     : 'linear',
+									},
+								},
+								stacked : false,
+							},
+						}
+					)
+					new Chart(
+						fsgUtil.byId(`${thisItemUUID}_canvas_mph`),
+						{
+							type : 'line',
+							data : {
+								datasets : [
+									...thisItem.motorInfo.mph,
+								],
+							},
+							options : {
+								interaction : {
+									intersect : false,
+									mode      : 'index',
+								},
+								plugins : {
+									legend     : { display : false },
+									tooltip    : {
+										bodyAlign      : 'right',
+										bodyFontFamily : 'courier',
+										callbacks      : {
+											label : (context) => `${context.dataset.label} : ${context.parsed.y} mph`,
+											title : (context) => `@ ${context[0].label} RPM`,
+										},
+										mode           : 'index',
+										titleAlign     : 'center',
+									},
+								},
+								scales  : {
+									x : {
+										display : true,
+										title   : {
+											text    : 'RPM',
+											display : true,
+										},
+										type    : 'linear',
+									},
+									y : {
+										
+										display  : true,
+										position : 'left',
+										title    : {
+											text    : 'mph',
+											display : true,
+										},
+										type     : 'linear',
+									},
+								},
+								stacked : false,
+							},
+						}
+					)
+				})
+			}
 		}
 
 		if ( thisItem.masterType === 'placeable' ) {
@@ -148,6 +309,10 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 
 	fsgUtil.byId('storeitems').innerHTML = storeItemsHTML.join('')
 	fsgUtil.byId('store_div').classList.remove('d-none')
+
+	for ( const thisJS of storeItemsJS ) {
+		thisJS()
+	}
 }
 
 const buildPage = (modCollect) => {

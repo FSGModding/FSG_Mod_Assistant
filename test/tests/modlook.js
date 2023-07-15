@@ -15,6 +15,7 @@ module.exports.test = () => {
 	testBad(new testLib('Mod Looker - Missing File'))
 }
 
+
 const testGood = (test) => {
 	const searchPath = path.join(__dirname, 'mods')
 	const looker    = new modLooker(
@@ -34,7 +35,7 @@ const testGood = (test) => {
 		if ( Object.keys(result.items).length === 17 ) {
 			test.step('Got expected number of store items (17)')
 		} else {
-			test.error('Got unexpected number of store items')
+			test.error(`Got unexpected number of store items ${Object.keys(result.items).length}`)
 		}
 
 		if ( Object.keys(result.brands).length === 1 ) {
