@@ -325,6 +325,8 @@
 	"save_track_title": "Сравнение с модами из сохранений",
 	"save_zip_failed": "Не получилось создать ZIP-файл (проверьте журнал отладки)",
 	"save_zip_worked": "Коллекция экспортирована в ZIP-файл",
+	"savegame_consumable__title": "Мод содержит только расходные материалы",
+	"savegame_consumable": "Расходники",
 	"savegame_dlc__title": "Платный дополнительный контент",
 	"savegame_dlc": "DLC",
 	"savegame_error": "Найдены ошибки при сохранении игры",
@@ -428,7 +430,5 @@
 	"version_check": "Проверить версии",
 	"version_collections": "Коллекции",
 	"version_diff": "Несовпадающие версии",
-	"version_same": "Совпадающие версии",
-	"savegame_consumable__title": "Мод содержит только расходные материалы",
-	"savegame_consumable": "Расходный материал"
+	"version_same": "Совпадающие версии"
 }
