@@ -381,6 +381,7 @@
 	"unit_m"                                 : "m",
 	"unit_m3"                                : "m³",
 	"unit_mph"                               : "mph",
+	"unit_rpm"                               : "RPM",
 	"unit_t"                                 : "t",
 	"update_ready__title"                    : "A new version of Mod Assistant has been downloaded. Click to restart FSG Mod Assistant to apply the update.",
 	"user_pref_blurb_changelog"              : "Show the most recent changelog for the application",

@@ -9,9 +9,9 @@
 /*eslint complexity: off*/
 /* global Chart, processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
-window.mods.receive('fromMain_lookRecord', (modRecord, lookRecord, currentLocale) => {
+window.mods.receive('fromMain_lookRecord', (modRecord, lookRecord, chartUnits, currentLocale) => {
 	try {
-		buildStore(modRecord, lookRecord, currentLocale)
+		buildStore(modRecord, lookRecord, chartUnits, currentLocale)
 	} catch (e) {
 		window.log.warning(`Page build failed :: ${e}`, 'detail-ui')
 	}
@@ -27,7 +27,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	processL10N()
 })
 
-const buildStore = (modRecord, lookRecord, currentLocale) => {
+const buildStore = (modRecord, lookRecord, chartUnits, currentLocale) => {
 	const idMap = {
 		mod_location   : modRecord.fileDetail.fullPath,
 		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
@@ -137,7 +137,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 										bodyAlign      : 'right',
 										bodyFontFamily : 'courier',
 										callbacks      : {
-											label : (context) => `${context.parsed.y}hp @ ${context.parsed.x} RPM`,
+											label : (context) => `${context.parsed.y}${chartUnits.hp} @ ${context.parsed.x} ${chartUnits.rpm}`,
 										},
 										mode           : 'dataset',
 										titleAlign     : 'center',
@@ -147,7 +147,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 									x : {
 										display : true,
 										title   : {
-											text    : 'RPM',
+											text    : chartUnits.rpm,
 											display : true,
 										},
 										type    : 'linear',
@@ -157,7 +157,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 										display  : true,
 										position : 'left',
 										title    : {
-											text    : 'HP',
+											text    : chartUnits.hp,
 											display : true,
 										},
 										type     : 'linear',
@@ -187,8 +187,8 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 										bodyAlign      : 'right',
 										bodyFontFamily : 'courier',
 										callbacks      : {
-											label : (context) => `${context.dataset.label} : ${context.parsed.y} km/h`,
-											title : (context) => `@ ${context[0].label} RPM`,
+											label : (context) => `${context.dataset.label} : ${context.parsed.y} ${chartUnits.kph}`,
+											title : (context) => `@ ${context[0].label} ${chartUnits.rpm}`,
 										},
 										mode           : 'index',
 										titleAlign     : 'center',
@@ -198,7 +198,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 									x : {
 										display : true,
 										title   : {
-											text    : 'RPM',
+											text    : chartUnits.rpm,
 											display : true,
 										},
 										type    : 'linear',
@@ -208,7 +208,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 										display  : true,
 										position : 'left',
 										title    : {
-											text    : 'km/h',
+											text    : chartUnits.kph,
 											display : true,
 										},
 										type     : 'linear',
@@ -238,8 +238,8 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 										bodyAlign      : 'right',
 										bodyFontFamily : 'courier',
 										callbacks      : {
-											label : (context) => `${context.dataset.label} : ${context.parsed.y} mph`,
-											title : (context) => `@ ${context[0].label} RPM`,
+											label : (context) => `${context.dataset.label} : ${context.parsed.y} ${chartUnits.mph}`,
+											title : (context) => `@ ${context[0].label} ${chartUnits.rpm}`,
 										},
 										mode           : 'index',
 										titleAlign     : 'center',
@@ -249,7 +249,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 									x : {
 										display : true,
 										title   : {
-											text    : 'RPM',
+											text    : chartUnits.rpm,
 											display : true,
 										},
 										type    : 'linear',
@@ -259,7 +259,7 @@ const buildStore = (modRecord, lookRecord, currentLocale) => {
 										display  : true,
 										position : 'left',
 										title    : {
-											text    : 'mph',
+											text    : chartUnits.mph,
 											display : true,
 										},
 										type     : 'linear',

@@ -574,6 +574,12 @@ function openDetailWindow(thisMod) {
 			try {
 				if ( thisMod.modDesc.storeItems > 0 ) {
 					const thisUUID = thisMod.uuid
+					const currentUnits = {
+						hp  : myTranslator.syncStringLookup('unit_hp'),
+						kph : myTranslator.syncStringLookup('unit_kph'),
+						mph : myTranslator.syncStringLookup('unit_mph'),
+						rpm : myTranslator.syncStringLookup('unit_rpm'),
+					}
 
 					if ( !thisMod.fileDetail.isFolder && mdCache.has(thisUUID) ) {
 						const thisCache = mdCache.get(thisUUID)
@@ -581,7 +587,7 @@ function openDetailWindow(thisMod) {
 							date    : new Date(),
 							results : thisCache.results,
 						})
-						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, thisCache.results, myTranslator.currentLocale)
+						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, thisCache.results, currentUnits, myTranslator.currentLocale)
 						log.log.notice(`Loaded details from cache :: ${thisUUID}`, 'mod-look')
 						return
 					}
@@ -598,7 +604,7 @@ function openDetailWindow(thisMod) {
 								results : results,
 							})
 						}
-						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, myTranslator.currentLocale)
+						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, currentUnits, myTranslator.currentLocale)
 					}).catch((err) => {
 						log.log.notice(`Failed to load store items :: ${err}`, 'mod-look')
 					})
