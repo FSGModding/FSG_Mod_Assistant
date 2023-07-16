@@ -10,9 +10,11 @@ const { modLooker } = require('../../lib/modCheckLib.js')
 const path          = require('path')
 const {testLib}     = require('../test.js')
 
-module.exports.test = () => {
-	testGood(new testLib('Mod Looker - Good File'))
-	testBad(new testLib('Mod Looker - Missing File'))
+module.exports.test = async () => {
+	return Promise.all([
+		testGood(new testLib('Mod Looker - Good File')),
+		testBad(new testLib('Mod Looker - Missing File'))
+	])
 }
 
 
@@ -31,9 +33,9 @@ const testGood = (test) => {
 		true
 	)
 
-	looker.getInfo().then((result) => {
-		if ( Object.keys(result.items).length === 17 ) {
-			test.step('Got expected number of store items (17)')
+	return looker.getInfo().then((result) => {
+		if ( Object.keys(result.items).length === 21 ) {
+			test.step('Got expected number of store items (21)')
 		} else {
 			test.error(`Got unexpected number of store items ${Object.keys(result.items).length}`)
 		}
@@ -65,7 +67,7 @@ const testBad = (test) => {
 		true
 	)
 
-	looker.getInfo().then((result) => {
+	return looker.getInfo().then((result) => {
 		if ( result === null ) {
 			test.step('Got expected null object')
 		} else {

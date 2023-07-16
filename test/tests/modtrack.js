@@ -11,8 +11,10 @@ const { savegameTrack } = require('../../lib/modCheckLib.js')
 const {testLib}         = require('../test.js')
 
 module.exports.test = () => {
-	testBad(new testLib('Mod Tracker - Invalid Savegame'))
-	testGood(new testLib('Mod Tracker - Valid Savegame'))
+	return Promise.allSettled([
+		testBad(new testLib('Mod Tracker - Invalid Savegame')),
+		testGood(new testLib('Mod Tracker - Valid Savegame'))
+	])
 }
 
 const testBad = (test) => {

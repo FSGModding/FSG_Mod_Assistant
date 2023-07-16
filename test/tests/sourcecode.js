@@ -11,9 +11,9 @@ const {ESLint}     = require('eslint')
 const path         = require('path')
 const {testLib}    = require('../test.js')
 
-module.exports.test =() => {
+module.exports.test = async () => {
 	const test     = new testLib('ESLint Source Code Test')
-	tester(test).then(() => {test.end()})
+	return tester(test).then(() => {test.end()})
 }
 
 async function tester (test) {

@@ -26,17 +26,24 @@ maIPC.log.forceNoConsole()
 
 maIPC.decode = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
 
-
-module.exports.testLib = class {
+const failedTests = new Set()
+const testLib = class {
 	#steps    = []
 	#title    = null
 	#didFail  = false
+	#softFail = false
 
-	constructor(name) {	this.#title = name }
+	constructor(name, silentFail = false ) {
+		this.#title    = name
+		this.#softFail = silentFail
+	}
 
 	step(text) { this.#steps.push([false, `${text}.`]) }
 
 	error (text) {
+		if ( ! this.#softFail ) {
+			failedTests.add(this.#title)
+		}
 		process.exitCode = 1
 		this.#didFail = true
 		this.#steps.push([true, text])
@@ -57,6 +64,21 @@ module.exports.testLib = class {
 	}
 }
 
+module.exports.testLib = testLib
+
+const runTests = []
 for ( const thisTest of testList ) {
-	require(`./tests/${thisTest}.js`).test()
+	runTests.push(require(`./tests/${thisTest}.js`).test())
 }
+
+Promise.allSettled(runTests).then(() => {
+	const rootTest = new testLib('All Tests', true)
+	if ( failedTests.size !== 0 ) {
+		for ( const thisTest of failedTests ) {
+			rootTest.error(`${thisTest} -- Failed`)
+		}
+	} else {
+		rootTest.step('All Tests Passed')
+	}
+	rootTest.end()
+})

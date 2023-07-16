@@ -11,9 +11,11 @@ const { saveFileChecker } = require('../../lib/modCheckLib.js')
 const {testLib}           = require('../test.js')
 
 module.exports.test = () => {
-	testBad(new testLib('Save Game Reader - Invalid File'))
-	testZip(new testLib('Save Game Reader - Zip File'))
-	testFolder(new testLib('Save Game Reader - Folder'))
+	return Promise.allSettled([
+		testBad(new testLib('Save Game Reader - Invalid File')),
+		testZip(new testLib('Save Game Reader - Zip File')),
+		testFolder(new testLib('Save Game Reader - Folder')),
+	])
 }
 
 const testBad = (test) => {
