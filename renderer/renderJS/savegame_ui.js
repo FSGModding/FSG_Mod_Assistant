@@ -10,6 +10,12 @@
 /* global fsgUtil, processL10N */
 
 let thisCollection = null
+const alwaysUsedActive = [
+	'FS22_BetterContracts',
+	'FS22_PrecisionFarmingAnhydrousReady',
+	'FS22_precisionFarming',
+]
+
 const selectList = {
 	active   : [],
 	inactive : [],
@@ -110,6 +116,9 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 		if ( typeof haveModSet[thisMod] !== 'undefined' ) {
 			if ( haveModSet[thisMod].modDesc.storeItems < 1 && haveModSet[thisMod].modDesc.scriptFiles > 0 ) {
 				thisModDetail.scriptOnly = true
+				thisModDetail.isUsed     = thisModDetail.isLoaded
+			} else if ( alwaysUsedActive.includes(thisMod) ) {
+				// Catch a few special cases
 				thisModDetail.isUsed     = thisModDetail.isLoaded
 			}
 
