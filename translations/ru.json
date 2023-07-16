@@ -15,7 +15,7 @@
 	"check_save__title": "Загрузить сохранение игры, чтобы сравнить его с этой коллекцией",
 	"check_save": "Сравнить с сохранением",
 	"clean_cache_size": "Текущий размер кеша:",
-	"clean_detail_cache_size": "Текущий размер кэша деталей:",
+	"clean_detail_cache_size": "Текущий размер кеша сведений:",
 	"config_working_set_list": "Настройка папки с игровыми модами (это займёт всего несколько секунд)…",
 	"config_working_status": "Чтение, копирование, перемещение или тестирование (это может занять некоторое время)…",
 	"confirm_copy_blurb": "Чтобы скопировать моды, выберите целевую коллекцию ниже и выберите перезаписывать или нет для каждого мода (где это применимо)",
@@ -381,6 +381,7 @@
 	"unit_m": "м",
 	"unit_m3": "м³",
 	"unit_mph": "миля/ч",
+	"unit_rpm": "об/мин",
 	"unit_t": "т",
 	"update_ready__title": "Скачана новая версия Mod Assistant. Нажмите, чтобы перезапустить FSG Mod Assistant, чтобы применить обновление.",
 	"user_pref_blurb_changelog": "Показать самый последний список изменений для приложения",
@@ -400,7 +401,7 @@
 	"user_pref_button_changelog": "Показать список изменений",
 	"user_pref_button_clean_cache": "Очистить кеш",
 	"user_pref_button_clear_cache": "Очистить кеш [ОСТОРОЖНО!]",
-	"user_pref_button_clear_detail_cache": "Очистить кэш детали [SAFE!]",
+	"user_pref_button_clear_detail_cache": "Очистить кеш сведений [БЕЗОПАСНО!]",
 	"user_pref_button_game_path": "Задать путь к игре",
 	"user_pref_button_game_settings": "Изменить файл gameSettings.xml",
 	"user_pref_button_reset_window": "Сбросить изменения всех окон",
@@ -428,5 +429,6 @@
 	"version_collections": "Коллекции",
 	"version_diff": "Несовпадающие версии",
 	"version_same": "Совпадающие версии",
-	"unit_rpm": "об/мин"
+	"savegame_consumable__title": "Мод содержит только расходные материалы",
+	"savegame_consumable": "Расходный материал"
 }

@@ -428,5 +428,7 @@
 	"version_collections": "Collecties",
 	"version_diff": "Verkeerde versie",
 	"version_same": "Versie wedstrijd",
-	"unit_rpm": "RPM"
+	"unit_rpm": "RPM",
+	"savegame_consumable__title": "Mod bevat alleen verbruiksartikelen",
+	"savegame_consumable": "Verbruikbaar"
 }

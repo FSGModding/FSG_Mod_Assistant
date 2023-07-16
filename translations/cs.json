@@ -428,5 +428,7 @@
 	"version_collections": "集合",
 	"version_diff": "版本不匹配",
 	"version_same": "版本匹配",
-	"unit_rpm": "转速"
+	"unit_rpm": "转速",
+	"savegame_consumable__title": "Mod contains only consumable items",
+	"savegame_consumable": "Consumable"
 }

@@ -6,7 +6,7 @@
 
 // Detail window UI
 
-/* eslint complexity: ["warn", 20] */
+/* eslint complexity: ["warn", 21] */
 /* global fsgUtil, processL10N */
 
 let thisCollection = null
@@ -14,6 +14,59 @@ const alwaysUsedActive = [
 	'FS22_BetterContracts',
 	'FS22_PrecisionFarmingAnhydrousReady',
 	'FS22_precisionFarming',
+]
+
+const consumableOnly = [
+	'FS22_AGRAHIM_BigBagsPack',
+	'FS22_Animal_Food_BigBag',
+	'FS22_Bags_and_Support_Package',
+	'FS22_BarrelsOfLiquids',
+	'FS22_BigBagCattlePack',
+	'FS22_BonsilageBulkTank',
+	'FS22_BuyableProducts',
+	'FS22_cfFertilisersPack',
+	'FS22_CzeBigBag',
+	'FS22_Diesel_Pallet',
+	'FS22_DieselCanister',
+	'FS22_DieselJerrican',
+	'FS22_DynamicCrushableRocksPack',
+	'FS22_Farm_Supply_Pack',
+	'FS22_Fertilisers_Bigbag_Pack',
+	'FS22_FertilizerBigBagsPack',
+	'FS22_FinnishBagsNPallets',
+	'FS22_ForagePack',
+	'FS22_IBCstack',
+	'FS22_IndustrialSugar',
+	'FS22_Interactive_BigBags',
+	'FS22_IronOreBigBagPE',
+	'FS22_lizardFertilisersPack_crossplay',
+	'FS22_MineralFood50l',
+	'FS22_MultiPurchasePallet',
+	'FS22_norwegianBigbags',
+	'FS22_NZFertilizerPack',
+	'FS22_oneHandSeeds',
+	'FS22_Pallet_Pack',
+	'FS22_Pallets_And_Bags_Pack',
+	'FS22_Pioneer_Seeds',
+	'FS22_PolandBigBags',
+	'FS22_PolishBigBag',
+	'FS22_PolishFertilizersBag50l',
+	'FS22_PolishSeeds',
+	'FS22_Potato_pallet',
+	'FS22_Production_Pallets_Pack',
+	'FS22_PulawyFertilizers',
+	'FS22_RaisinAndGrapesPallet',
+	'FS22_SackOldPack',
+	'FS22_ScandagraBigBags',
+	'FS22_Schaumann_Animal_Food_Pallet',
+	'FS22_SilageDrum',
+	'FS22_SmallLiquidTank',
+	'FS22_StonePallet',
+	'FS22_treeSaplingPallet120',
+	'FS22_Water_And_Diesel_Tank',
+	'FS22_Yara_Fertilizer_Pack',
+	'FS22_Yara_Fertilizer_Pallets',
+	'FS22_YaraBigBagFertilizer',
 ]
 
 const selectList = {
@@ -84,6 +137,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	for ( const thisMod of fullModSet ) {
 		if ( thisMod.endsWith('.csv') ) { continue }
 		const thisModDetail = {
+			consumable      : false,
 			isDLC           : false,
 			isLoaded        : false,
 			isModHub        : typeof modCollect.modHub.list.mods[thisMod] !== 'undefined',
@@ -119,6 +173,9 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 				thisModDetail.isUsed     = thisModDetail.isLoaded
 			} else if ( alwaysUsedActive.includes(thisMod) ) {
 				// Catch a few special cases
+				thisModDetail.isUsed     = thisModDetail.isLoaded
+			} else if ( consumableOnly.includes(thisMod) ) {
+				thisModDetail.consumable = true
 				thisModDetail.isUsed     = thisModDetail.isLoaded
 			}
 
@@ -167,7 +224,7 @@ function updateCounts() {
 }
 
 function makeLine(name, mod, singleFarm, hubID) {
-	const badges       = ['versionMismatch', 'scriptOnly', 'isUsed', 'isLoaded']
+	const badges       = ['versionMismatch', 'consumable', 'scriptOnly', 'isUsed', 'isLoaded']
 	const displayBadge = []
 	let colorClass     = ''
 

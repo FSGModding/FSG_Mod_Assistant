@@ -428,5 +428,7 @@
 	"version_collections": "Sammlungen",
 	"version_diff": "Versionsabweichung",
 	"version_same": "Version Match",
-	"unit_rpm": "U/min"
+	"unit_rpm": "U/min",
+	"savegame_consumable__title": "Mod enthält nur verbrauchbare Gegenstände",
+	"savegame_consumable": "Verbrauchsmaterial"
 }

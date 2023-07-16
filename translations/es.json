@@ -428,5 +428,7 @@
 	"version_collections": "Colecciones",
 	"version_diff": "Desajuste de la versión",
 	"version_same": "Versión de la partida",
-	"unit_rpm": "r. p. m."
+	"unit_rpm": "r. p. m.",
+	"savegame_consumable__title": "Mod contiene sólo artículos consumibles",
+	"savegame_consumable": "Consumible"
 }

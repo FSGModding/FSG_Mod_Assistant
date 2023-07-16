@@ -325,6 +325,8 @@
 	"save_track_title"                       : "Save Game Mod Tracker",
 	"save_zip_failed"                        : "Unable to save ZIP file (check debug log)",
 	"save_zip_worked"                        : "Collection Exported to ZIP File",
+	"savegame_consumable__title"             : "Mod contains only consumable items",
+	"savegame_consumable"                    : "Consumable",
 	"savegame_dlc__title"                    : "Paid DLC Content",
 	"savegame_dlc"                           : "DLC",
 	"savegame_error"                         : "Errors found with savegame",

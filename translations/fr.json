@@ -428,5 +428,7 @@
 	"version_collections": "Collections",
 	"version_diff": "Erreur de version",
 	"version_same": "Correspondance de version",
-	"unit_rpm": "RPM"
+	"unit_rpm": "RPM",
+	"savegame_consumable__title": "Le mod ne contient que des éléments consommables",
+	"savegame_consumable": "Consommable"
 }

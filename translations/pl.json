@@ -428,5 +428,7 @@
 	"version_collections": "Foldery",
 	"version_diff": "Różne wersje",
 	"version_same": "Ta sama wersja",
-	"unit_rpm": "Obroty"
+	"unit_rpm": "Obroty",
+	"savegame_consumable__title": "Mod zawiera tylko przedmioty zużywalne",
+	"savegame_consumable": "Zużywalny"
 }

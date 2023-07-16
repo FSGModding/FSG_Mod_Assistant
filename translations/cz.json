@@ -428,5 +428,7 @@
 	"version_collections": "Sbírka",
 	"version_diff": "Nesprávná verze",
 	"version_same": "Verze shodná",
-	"unit_rpm": "Otáčky za minutu"
+	"unit_rpm": "Otáčky za minutu",
+	"savegame_consumable__title": "Mod obsahuje pouze spotřební předměty",
+	"savegame_consumable": "Spotřební"
 }

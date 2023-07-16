@@ -428,5 +428,7 @@
 	"version_collections": "Kolekcijas",
 	"version_diff": "Versijas neatbilstība",
 	"version_same": "Versijas atbilstība",
-	"unit_rpm": "RPM"
+	"unit_rpm": "RPM",
+	"savegame_consumable__title": "Mod modulī ir tikai patērējami priekšmeti",
+	"savegame_consumable": "Patērējams"
 }
