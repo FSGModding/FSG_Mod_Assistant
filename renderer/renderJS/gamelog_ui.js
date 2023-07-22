@@ -7,107 +7,71 @@
 // Debug window UI
 
 /* global processL10N, fsgUtil, bootstrap */
+/*eslint complexity: ["warn", 19]*/
 
+const maxLinesWatch = 10000
+let   fileTooBig    = false
 
-window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
+window.gamelog.receive('fromMain_gameLog', (data, fileName, watchTrigger) => {
+	fileTooBig = false
 	fsgUtil.byId('gameLogPath').innerHTML = fileName
 	const autoScroll = fsgUtil.byId('auto_scroll').checked || false
-	const showThese  = new Set(fsgUtil.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
 	const showData   = []
 	const logRegExp  = {
 		cp_ad : {
-			regex     : [
-				new RegExp(/:\d\d \[/),
-				new RegExp(/\[AD\]/),
-				new RegExp(/\[AutoDrive\]/),
-				new RegExp(/\[AutoDriveSync\]/),
-			],
+			regex     : new RegExp(/(?::\d\d \[|\[AD\]|\[AutoDrive\]|\[AutoDriveSync\])/),
 			className : 'text-light-emphasis',
-			filter : 'cpad',
+			filter    : 'cpad',
 		},
 		cpp_stack : {
-			regex     : [
-				new RegExp(/\.cpp/),
-			],
+			regex     : new RegExp(/\.cpp/),
 			className : 'text-danger',
-			filter : 'lua_error',
+			filter    : 'lua_error',
+		},
+		dev_info : {
+			regex     : new RegExp(/DevInfo:/),
+			className : 'text-info fst-italic',
+			filter    : 'dev_info',
+			
+		},
+		dev_warning : {
+			regex     : new RegExp(/DevWarning:/),
+			className : 'text-warning fst-italic',
+			filter    : 'dev_warning',
 		},
 		error : {
-			regex     : [
-				new RegExp(/Error:/),
-				new RegExp(/ERROR/),
-				new RegExp(/Error \(.+?\):/),
-				new RegExp(/CollisionFlag-Check/),
-			],
+			regex     : new RegExp(/(?:Error:|ERROR|Error \(.+?\):|CollisionFlag-Check)/),
 			className : 'text-danger',
-			filter : 'error',
+			filter    : 'error',
 		},
 		info : {
-			regex     : [
-				new RegExp(/Application: /),
-				new RegExp(/(?<!Dev)Info:/),
-				new RegExp(/Info \(.+?\):/),
-			],
+			regex     : new RegExp(/(?:Application: |(?<!Dev)Info:|Info \(.+?\):)/),
 			className : 'text-info',
-			filter : 'info',
+			filter    : 'info',
 		},
 		lua_intro : {
-			regex     : [
-				new RegExp(/LUA call stack:/),
-			],
+			regex     : new RegExp(/LUA call stack:/),
 			className : 'text-danger-emphasis',
-			filter : 'lua_error',
+			filter    : 'lua_error',
 		},
 		lua_stack : {
-			regex     : [
-				new RegExp(/\.lua/),
-				new RegExp(/^ {2}=\[/),
-			],
+			regex     : new RegExp(/(?:\.lua|^ {2}=\[)/),
 			className : 'text-danger-emphasis fst-italic',
-			filter : 'lua_error',
+			filter    : 'lua_error',
 		},
 		mod_load : {
-			regex     : [
-				new RegExp(/Available dlc:/),
-				new RegExp(/Available mod:/),
-				new RegExp(/Load mod:/),
-				new RegExp(/Load dlc:/),
-				new RegExp(/ExtraContent:/),
-				new RegExp(/ {6}adding mod/),
-			],
+			regex     : new RegExp(/(?:Available dlc:|Available mod:|Load mod:|Load dlc:|ExtraContent:| {6}adding mod)/),
 			className : 'text-success',
 			filter : 'mod_loading',
 		},
 		time : {
-			regex : [
-				new RegExp(/(^\d\d\d\d-\d\d-\d\d \d\d:\d\d )/)
-			],
+			regex : new RegExp(/(^\d\d\d\d-\d\d-\d\d \d\d:\d\d )/),
 			wrap  : ['<em class="text-info-emphasis">', '</em>'],
 		},
 		warning : {
-			regex     : [
-				new RegExp(/(?<!Dev)Warning:/),
-				new RegExp(/Warning \(.+?\):/),
-			],
+			regex     : new RegExp(/(?:(?<!Dev)Warning:|Warning \(.+?\):)/),
 			className : 'text-warning',
-			filter : 'warning',
-		},
-
-		dev_info : {
-			regex     : [
-				new RegExp(/DevInfo:/),
-			],
-			className : 'text-info fst-italic',
-			filter : 'dev_info',
-			
-		},
-		dev_warning : {
-			regex     : [
-				new RegExp(/DevWarning:/),
-			],
-			className : 'text-warning fst-italic',
-			filter : 'dev_warning',
-			
+			filter    : 'warning',
 		},
 	}
 
@@ -117,11 +81,23 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 	let   classList  = null
 	let   thisLine   = null
 	let   filterList = null
+	
+	const allLines     = data.split('\n')
+	const displayLines = ( allLines.length > maxLinesWatch && watchTrigger ) ? allLines.slice(-1 * maxLinesWatch) : allLines
+	
+	if ( displayLines.length > maxLinesWatch) {
+		for ( const element of fsgUtil.query('.filter_only') ) {
+			element.checked = ! ( element.id === 'debug_dupes' )
+		}
+		fileTooBig = true
+		showData.push('<tr class="ps-3 "><td class="py-0 my-0 text-center"></td><td class="logLineName py-0 my-0 border-end text-white-50 fst-italic">-</td><td class="logLine py-0 my-0 text-white text-bg-danger text-center">FILTERS AND COLOR DISABLED - LOG FILE TOO LARGE!!</td></tr>')
+	}
+
+	const showThese  = new Set(fsgUtil.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
 	const showDupes  = showThese.has('dupes')
 
-	for ( const line of data.split('\n') ) {
+	for ( const line of displayLines ) {
 		if ( lastLine === line && !showDupes ) {
-			
 			dupeCount++
 		} else {
 			if ( lastLine !== null ) {
@@ -134,17 +110,13 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			filterList = new Set()
 			thisLine   = line
 		
-			for ( const regType in logRegExp ) {
-				if ( typeof logRegExp[regType].wrap !== 'undefined' ) {
-					for ( const thisRegExp of logRegExp[regType].regex ) {
-						thisLine = line.replace(thisRegExp, `${logRegExp[regType].wrap[0]}$1${logRegExp[regType].wrap[1]}`)
-					}
-				} else {
-					for ( const thisRegExp of logRegExp[regType].regex ) {
-						if ( line.match(thisRegExp) ) {
-							filterList.add(logRegExp[regType].filter)
-							classList.add(logRegExp[regType].className)
-						}
+			if ( displayLines.length <= maxLinesWatch ) {
+				for ( const regType in logRegExp ) {
+					if ( typeof logRegExp[regType].wrap !== 'undefined' ) {
+						thisLine = line.replace(logRegExp[regType].regex, `${logRegExp[regType].wrap[0]}$1${logRegExp[regType].wrap[1]}`)
+					} else if ( line.match(logRegExp[regType].regex) ) {
+						filterList.add(logRegExp[regType].filter)
+						classList.add(logRegExp[regType].className)
 					}
 				}
 			}
@@ -167,16 +139,30 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 })
 
 function doLine(filterList, showThese, dupeCount, showDupes, classList, lineNum, thisLine) {
-	let showMe = true
-	for ( const filter of filterList ) { if ( !showThese.has(filter) ) { showMe = false } }
-	const dupePart = `<td class="py-0 my-0 text-center">${dupeCount > 1? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` :''}</td>`
+	let   showMe           = true
+	const displayClassList = fileTooBig ? 'logLine py-0 my-0' : [...classList].join(' ')
+
+	if ( !fileTooBig ) {
+		for ( const filter of filterList ) { if ( !showThese.has(filter) ) { showMe = false } }
+	}
 	return `<tr class="ps-3 ${showMe ? '' : 'd-none'}">
-		${!showDupes ? dupePart : ''}
+		<td class="py-0 my-0 text-center">
+			${ !showDupes && dupeCount > 1 ? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` : '' }
+		</td>
 		<td class="logLineName py-0 my-0 border-end text-white-50 fst-italic">${lineNum}</td>
-		<td class="${[...classList].join(' ')}">${thisLine}</td>
+		<td class="${displayClassList}">${thisLine}</td>
 	</tr>`
 }
 
+function clientChangeFilter() {
+	if ( fileTooBig ) {
+		for ( const element of fsgUtil.query('.filter_only') ) {
+			element.checked = ! ( element.id === 'debug_dupes' )
+		}
+	} else {
+		window.gamelog.getGameLogContents()
+	}
+}
 function clientResetButtons() {
 	for ( const element of fsgUtil.query('.filter_only') ) {
 		element.checked = ! ( element.id === 'debug_dupes' )
@@ -222,6 +208,7 @@ function clientFind(doForward = false, isReload = false) {
 		window.scrollTo({top : finds[thisRealIndex].offsetTop, behavior : 'instant'})
 	}
 }
+
 
 function clientClearInput() {
 	fsgUtil.byId('gamelog_find').value = ''

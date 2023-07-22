@@ -45,25 +45,25 @@
 			<div class="input-group input-group-sm btn-group w-100 mt-2 mb-0 px-1">
 				<span class="input-group-text" id="basic-addon1">Show: </span>
 				<button class="btn btn-outline-light border" onclick="clientResetButtons()">RESET</button>
-				<input type="checkbox" class="btn-check filter_only" id="debug_dupes" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" class="btn-check filter_only" id="debug_dupes" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="Show Duplicate Entries" class="btn btn-outline-success btn-sm border" for="debug_dupes">DUPLICATES</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_other" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_other" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="Everything Else" class="btn btn-outline-success btn-sm border" for="debug_other">OTHER</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_cpad" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_cpad" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="CoursePlay / AutoDrive" class="btn btn-outline-success btn-sm border" for="debug_cpad">CP / AD</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_mod_loading" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_mod_loading" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="Mod Loading" class="btn btn-outline-success btn-sm border" for="debug_mod_loading">MOD LOAD</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="Info: messages" class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="Warning: messages" class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_error" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_error" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="Error: messages" class="btn btn-outline-success btn-sm border" for="debug_error">ERROR</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_lua_error" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_lua_error" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="Lua Errors" class="btn btn-outline-success btn-sm border" for="debug_lua_error">LUA ERROR</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_info" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_info" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="DEV Info" class="btn btn-outline-success btn-sm border" for="debug_dev_info">DEV INFO</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_warning" onchange="window.gamelog.getGameLogContents()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_warning" onchange="clientChangeFilter()" autocomplete="off">
 				<label data-bs-toggle="tooltip" title="DEV Warning" class="btn btn-outline-success btn-sm border" for="debug_dev_warning">DEV WARN</label>
 			</div>
 			<div class="input-group input-group-sm mb-2 mt-1 px-1">

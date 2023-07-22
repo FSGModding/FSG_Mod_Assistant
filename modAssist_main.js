@@ -824,7 +824,7 @@ ipcMain.on('toMain_changeGameLog',     () => {
 	})
 })
 
-function readGameLog() {
+function readGameLog(watchTrigger = false) {
 	if ( ! win.isVisible('gamelog') === null ) { return }
 
 	const thisGameLog = gameLogFilename()
@@ -832,12 +832,18 @@ function readGameLog() {
 	if ( thisGameLog === null || !fs.existsSync(thisGameLog) ) { return }
 
 	try {
-		win.sendToValidWindow(
-			'gamelog',
-			'fromMain_gameLog',
-			fs.readFileSync(thisGameLog, {encoding : 'utf8', flag : 'r'}),
-			thisGameLog
-		)
+		log.log.debug(`Starting log read: ${thisGameLog}`, 'game-log')
+		fs.readFile(thisGameLog, {encoding : 'utf8', flag : 'r'}, (err, contents) => {
+			if ( err ) { throw err }
+			log.log.debug(`Finished log read: ${thisGameLog}`, 'game-log')
+			win.sendToValidWindow(
+				'gamelog',
+				'fromMain_gameLog',
+				contents,
+				thisGameLog,
+				watchTrigger
+			)
+		})
 	} catch (e) {
 		log.log.warning(`Could not read game log file: ${e}`, 'game-log')
 	}
@@ -1402,7 +1408,7 @@ function loadGameLog(newPath = false) {
 					if ( mainProcessFlags.bounceGameLog ) return
 					mainProcessFlags.bounceGameLog = setTimeout(() => {
 						mainProcessFlags.bounceGameLog = false
-						readGameLog()
+						readGameLog(true)
 					}, 5000)
 				}
 			})
