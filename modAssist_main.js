@@ -824,7 +824,7 @@ ipcMain.on('toMain_changeGameLog',     () => {
 	})
 })
 
-function readGameLog(watchTrigger = false) {
+function readGameLog() {
 	if ( ! win.isVisible('gamelog') === null ) { return }
 
 	const thisGameLog = gameLogFilename()
@@ -840,8 +840,7 @@ function readGameLog(watchTrigger = false) {
 				'gamelog',
 				'fromMain_gameLog',
 				contents,
-				thisGameLog,
-				watchTrigger
+				thisGameLog
 			)
 		})
 	} catch (e) {
@@ -1408,7 +1407,7 @@ function loadGameLog(newPath = false) {
 					if ( mainProcessFlags.bounceGameLog ) return
 					mainProcessFlags.bounceGameLog = setTimeout(() => {
 						mainProcessFlags.bounceGameLog = false
-						readGameLog(true)
+						readGameLog()
 					}, 5000)
 				}
 			})

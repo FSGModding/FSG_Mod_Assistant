@@ -9,14 +9,20 @@
 /* global processL10N, fsgUtil, bootstrap */
 /*eslint complexity: ["warn", 19]*/
 
-const maxLinesWatch = 10000
-let   fileTooBig    = false
+// const maxLinesWatch = 10000
+let   dataCache     = []
+let   findCache     = []
+let   dataCacheGood = false
+let   showData      = []
 
-window.gamelog.receive('fromMain_gameLog', (data, fileName, watchTrigger) => {
-	fileTooBig = false
-	fsgUtil.byId('gameLogPath').innerHTML = fileName
+window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 	const autoScroll = fsgUtil.byId('auto_scroll').checked || false
-	const showData   = []
+	
+	fsgUtil.byId('gameLogPath').innerHTML = fileName
+	
+	dataCacheGood = false
+	showData      = []
+
 	const logRegExp  = {
 		cp_ad : {
 			regex     : new RegExp(/(?::\d\d \[|\[AD\]|\[AutoDrive\]|\[AutoDriveSync\])/),
@@ -82,26 +88,16 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName, watchTrigger) => {
 	let   thisLine   = null
 	let   filterList = null
 	
-	const allLines     = data.split('\n')
-	const displayLines = ( allLines.length > maxLinesWatch && watchTrigger ) ? allLines.slice(-1 * maxLinesWatch) : allLines
-	
-	if ( displayLines.length > maxLinesWatch) {
-		for ( const element of fsgUtil.query('.filter_only') ) {
-			element.checked = ! ( element.id === 'debug_dupes' )
-		}
-		fileTooBig = true
-		showData.push('<tr class="ps-3 "><td class="py-0 my-0 text-center"></td><td class="logLineName py-0 my-0 border-end text-white-50 fst-italic">-</td><td class="logLine py-0 my-0 text-white text-bg-danger text-center">FILTERS AND COLOR DISABLED - LOG FILE TOO LARGE!!</td></tr>')
-	}
-
+	const allLines   = data.split('\n')
 	const showThese  = new Set(fsgUtil.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
 	const showDupes  = showThese.has('dupes')
 
-	for ( const line of displayLines ) {
+	for ( const line of allLines ) {
 		if ( lastLine === line && !showDupes ) {
 			dupeCount++
 		} else {
 			if ( lastLine !== null ) {
-				showData.push(doLine(filterList, showThese, dupeCount, showDupes, classList, lineNum, thisLine))
+				showData.push(doLine(filterList, dupeCount, showDupes, classList, lineNum, thisLine))
 			}
 
 			dupeCount  = 1
@@ -110,14 +106,12 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName, watchTrigger) => {
 			filterList = new Set()
 			thisLine   = line
 		
-			if ( displayLines.length <= maxLinesWatch ) {
-				for ( const regType in logRegExp ) {
-					if ( typeof logRegExp[regType].wrap !== 'undefined' ) {
-						thisLine = line.replace(logRegExp[regType].regex, `${logRegExp[regType].wrap[0]}$1${logRegExp[regType].wrap[1]}`)
-					} else if ( line.match(logRegExp[regType].regex) ) {
-						filterList.add(logRegExp[regType].filter)
-						classList.add(logRegExp[regType].className)
-					}
+			for ( const regType in logRegExp ) {
+				if ( typeof logRegExp[regType].wrap !== 'undefined' ) {
+					thisLine = line.replace(logRegExp[regType].regex, `${logRegExp[regType].wrap[0]}$1${logRegExp[regType].wrap[1]}`)
+				} else if ( line.match(logRegExp[regType].regex) ) {
+					filterList.add(logRegExp[regType].filter)
+					classList.add(logRegExp[regType].className)
 				}
 			}
 
@@ -127,42 +121,77 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName, watchTrigger) => {
 	}
 
 	if ( thisLine !== '' ) {
-		showData.push(doLine(filterList, showThese, dupeCount, showDupes, classList, lineNum, thisLine))
+		showData.push(doLine(filterList, dupeCount, showDupes, classList, lineNum, thisLine))
 	}
 
-	document.getElementById('game_log').innerHTML = showData.join('')
+	clientBuildTable()
 
 	clientFind(true, true)
+
 	if ( autoScroll ) {
-		window.scrollTo(0, document.body.scrollHeight)
+		fsgUtil.byId('game_log_contain').scrollTo(0, fsgUtil.byId('game_log_contain').scrollHeight)
 	}
 })
 
-function doLine(filterList, showThese, dupeCount, showDupes, classList, lineNum, thisLine) {
-	let   showMe           = true
-	const displayClassList = fileTooBig ? 'logLine py-0 my-0' : [...classList].join(' ')
+function filterLines() {
+	if ( dataCacheGood ) { return dataCache }
+	const showThese  = new Set(fsgUtil.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
+	const returnLines = []
+	findCache         = []
 
-	if ( !fileTooBig ) {
-		for ( const filter of filterList ) { if ( !showThese.has(filter) ) { showMe = false } }
+	for ( const thisLine of showData ) {
+		let goodData = true
+		for ( const filter of thisLine[0] ) { if ( !showThese.has(filter) ) { goodData = false; break } }
+
+		if ( goodData ) {
+			returnLines.push(thisLine[1])
+			findCache.push([thisLine[2], thisLine[3]])
+		}
 	}
-	return `<tr class="ps-3 ${showMe ? '' : 'd-none'}">
-		<td class="py-0 my-0 text-center">
+	dataCache = returnLines
+	dataCacheGood = true
+	return returnLines
+}
+
+function clientBuildTable() {
+	const theTable   = fsgUtil.byId('game_log')
+	const theContain = fsgUtil.byId('game_log_contain')
+	const rowHeight  = 19
+	const thisData   = filterLines()
+
+	
+	if ( theContain.scrollTop > ((thisData.length - 1) * rowHeight) + 100 ) {
+		theContain.scrollTo({top : ((thisData.length - 1) * rowHeight) - theContain.offsetHeight - 50, behavior : 'instant'})
+	}
+	
+	const startAt   = Math.floor(theContain.scrollTop)
+	const startIdx  = Math.floor(startAt / rowHeight)
+	const totalShow = Math.floor( theContain.offsetHeight / rowHeight )
+	const endIdx    = startIdx + totalShow
+	const endPad    = Math.max(rowHeight * 2, ((thisData.length - 1) * rowHeight) - theContain.offsetHeight - startAt)
+	
+	theTable.innerHTML = `
+		<tr style="height: ${startAt}px"><td class="py-0 my-0" style="width: 2em;"></td><td class="logLineName py-0 my-0" style="width: 4em;" ></td><td></td></tr>
+		${thisData.slice(startIdx, endIdx).join('')}
+		<tr style="height: ${endPad}px"><td class="py-0 my-0" style="width: 2em;"></td><td class="logLineName py-0 my-0" style="width: 4em;" ></td><td></td></tr>
+	`
+	highLightFinds()
+}
+
+function doLine(filterList, dupeCount, showDupes, classList, lineNum, thisLine) {
+	return [filterList, `<tr style="height:19px;" class="ps-3">
+		<td class="py-0 my-0 text-center" style="width: 2em;">
 			${ !showDupes && dupeCount > 1 ? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` : '' }
 		</td>
-		<td class="logLineName py-0 my-0 border-end text-white-50 fst-italic">${lineNum}</td>
-		<td class="${displayClassList}">${thisLine}</td>
-	</tr>`
+		<td class="logLineName py-0 my-0 border-end text-white-50 fst-italic" style="width: 4em;" >${lineNum}</td>
+		<td class="${[...classList].join(' ')}">${thisLine}</td>
+	</tr>`, thisLine, lineNum]
 }
 
 function clientChangeFilter() {
-	if ( fileTooBig ) {
-		for ( const element of fsgUtil.query('.filter_only') ) {
-			element.checked = ! ( element.id === 'debug_dupes' )
-		}
-	} else {
-		window.gamelog.getGameLogContents()
-	}
+	window.gamelog.getGameLogContents()
 }
+
 function clientResetButtons() {
 	for ( const element of fsgUtil.query('.filter_only') ) {
 		element.checked = ! ( element.id === 'debug_dupes' )
@@ -170,20 +199,46 @@ function clientResetButtons() {
 	window.gamelog.getGameLogContents()
 }
 
-let lastFind = null
-let findIdx  = 0
-function clientFind(doForward = false, isReload = false) {
-	const finds = []
+function highLightFinds() {
 	const thisFind = fsgUtil.byId('gamelog_find').value.toLowerCase()
 	const allLines = fsgUtil.query('.logLine')
 
-	/* clear current */
-	for ( const thisLine of allLines ) {
-		thisLine.classList.remove('bg-warning', 'bg-opacity-25', 'bg-opacity-50', 'text-white')
+	/* too short, clear input and reset display */
+	if ( thisFind.length < 2 ) {
+		for ( const thisLine of allLines ) {
+			thisLine.classList.remove('bg-warning', 'text-white', 'bg-opacity-50', 'bg-opacity-25')
+		}
+		return
 	}
 
-	/* too short, exit */
-	if ( thisFind.length < 2 ) { lastFind = null; return }
+	for ( const thisLine of allLines ) {
+		if ( thisLine.innerText.toLowerCase().includes(thisFind) ) {
+			if ( finds[findIdx][1].toString() === thisLine.parentElement.querySelector('.logLineName').innerText ) {
+				thisLine.classList.add('bg-warning', 'text-white', 'bg-opacity-50')
+			} else {
+				thisLine.classList.add('bg-warning', 'bg-opacity-25')
+			}
+		}
+	}
+}
+
+let lastFind = null
+let findIdx  = 0
+let finds    = []
+function clientFind(doForward = false, isReload = false) {
+	finds    = []
+	const thisFind = fsgUtil.byId('gamelog_find').value.toLowerCase()
+
+	/* too short, clear input and reset display */
+	if ( thisFind.length < 2 ) {
+		if ( thisFind.length !== 0 ) {
+			fsgUtil.byId('gamelog_find').value = ''
+		}
+		lastFind = null
+		findIdx  = 0
+		highLightFinds()
+		return
+	}
 
 	/* is new? */
 	if ( lastFind === null || thisFind !== lastFind ) {
@@ -194,21 +249,22 @@ function clientFind(doForward = false, isReload = false) {
 	}
 
 	/* highlight them */
-	for ( const thisLine of allLines ) {
-		if ( thisLine.innerText.toLowerCase().includes(thisFind) ) {
-			thisLine.classList.add('bg-warning', 'bg-opacity-25')
-			finds.push(thisLine)
+	for ( let i = 0; i < dataCache.length; i++ ) {
+		if ( findCache[i][0].toLowerCase().includes(thisFind) ) {
+			finds.push([i, findCache[i][1]])
 		}
 	}
+
+	/* fix index if needed */
+	if ( finds.length > 0 ) {
+		findIdx = findIdx % (finds.length)
+		findIdx = findIdx < 0 ? findIdx + finds.length : findIdx
+	}
+	
 	if ( finds.length > 0 && !isReload ) {
-		let thisRealIndex = findIdx % (finds.length )
-		thisRealIndex = thisRealIndex < 0 ? thisRealIndex + finds.length : thisRealIndex
-		finds[thisRealIndex].classList.remove('bg-opacity-25')
-		finds[thisRealIndex].classList.add('bg-opacity-50', 'text-white')
-		window.scrollTo({top : finds[thisRealIndex].offsetTop, behavior : 'instant'})
+		fsgUtil.byId('game_log_contain').scrollTo({top : finds[findIdx][0] * 19, behavior : 'instant'})
 	}
 }
-
 
 function clientClearInput() {
 	fsgUtil.byId('gamelog_find').value = ''
