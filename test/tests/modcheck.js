@@ -80,12 +80,10 @@ module.exports.test = async () => { return Promise.allSettled([
 ])}
 
 const testSingleGood = (fileName, test) => {
-	const modRecord = new modFileChecker(
+	return new modFileChecker(
 		path.join(basePath, fileName),
 		false, 0, new Date(), null
-	)
-
-	return modRecord.getInfo().then((results) => {
+	).getInfo().then((results) => {
 		if ( results.issues.length === 0 ) {
 			test.step('No flags detected, good mod')
 		} else {
@@ -99,12 +97,10 @@ const testSingleGood = (fileName, test) => {
 }
 
 const testSingleFlag = (fileName, flag, test) => {
-	const modRecord = new modFileChecker(
+	return new modFileChecker(
 		path.join(basePath, fileName),
 		false, 0, new Date()
-	)
-
-	return modRecord.getInfo().then((results) => {
+	).getInfo().then((results) => {
 		checkIssues(results, test, flag)
 	}).catch((e) => {
 		test.error(`Unexpected Error :: ${e}`)
