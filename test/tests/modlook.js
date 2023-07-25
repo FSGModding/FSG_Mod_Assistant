@@ -20,7 +20,7 @@ module.exports.test = async () => {
 
 const testGood = (test) => {
 	const searchPath = path.join(__dirname, 'mods')
-	const looker    = new modLooker(
+	return new modLooker(
 		{
 			fileDetail : {
 				fullPath  : path.join(searchPath, 'TestMod_TotallyValidZIP.zip'),
@@ -31,9 +31,7 @@ const testGood = (test) => {
 		},
 		searchPath,
 		true
-	)
-
-	return looker.getInfo().then((result) => {
+	).getInfo().then((result) => {
 		if ( Object.keys(result.items).length === 21 ) {
 			test.step('Got expected number of store items (21)')
 		} else {
@@ -54,7 +52,7 @@ const testGood = (test) => {
 
 const testBad = (test) => {
 	const searchPath = path.join(__dirname, 'mods')
-	const looker    = new modLooker(
+	return new modLooker(
 		{
 			fileDetail : {
 				fullPath  : path.join(searchPath, 'TestMod_NonExistentFile.zip'),
@@ -65,9 +63,7 @@ const testBad = (test) => {
 		},
 		searchPath,
 		true
-	)
-
-	return looker.getInfo().then((result) => {
+	).getInfo().then((result) => {
 		if ( result === null ) {
 			test.step('Got expected null object')
 		} else {
