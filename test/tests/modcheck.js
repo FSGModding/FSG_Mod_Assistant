@@ -7,7 +7,7 @@
 // Test Program - Mod Checker
 
 const path                      = require('path')
-const { modFileChecker }        = require('../../lib/modCheckLib.js')
+const { modFileChecker }        = require('../../lib/modCheckLib_new.js')
 const {testLib}                 = require('../test.js')
 
 const basePath = path.join(__dirname, 'mods')
@@ -85,8 +85,8 @@ const testSingleGood = (fileName, test) => {
 		false, 0, new Date(), null
 	)
 
-	return modRecord.doTests().then(() => {
-		if ( modRecord.issues.length === 0 ) {
+	return modRecord.getInfo().then((results) => {
+		if ( results.issues.length === 0 ) {
 			test.step('No flags detected, good mod')
 		} else {
 			test.error('Flags were found')
@@ -104,8 +104,8 @@ const testSingleFlag = (fileName, flag, test) => {
 		false, 0, new Date()
 	)
 
-	return modRecord.doTests().then(() => {
-		checkIssues(modRecord, test, flag)
+	return modRecord.getInfo().then((results) => {
+		checkIssues(results, test, flag)
 	}).catch((e) => {
 		test.error(`Unexpected Error :: ${e}`)
 	}).finally(() => {
