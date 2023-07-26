@@ -7,7 +7,6 @@
 // Debug window UI
 
 /* global processL10N, fsgUtil, bootstrap */
-/*eslint complexity: ["warn", 19]*/
 
 // const maxLinesWatch = 10000
 let   dataCache     = []
