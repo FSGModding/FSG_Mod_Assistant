@@ -23,6 +23,7 @@ const testGood = (test) => {
 
 	const modPath    = path.join(__dirname, 'mods')
 	// const modPath    = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
+	// const modPath    = 'C:\\Users\\jtsag\\Downloads'
 	const modCollect = new modFileCollection( require('os').homedir, true )
 	const folderID   = modCollect.getMD5FromFolder(modPath)
 
