@@ -1267,9 +1267,9 @@ ipcMain.on('toMain_openTrackFolder', () => {
 	dialog.showOpenDialog(win.win.save_track, options).then((result) => {
 		if ( !result.canceled ) {
 			try {
-				const thisSaveInfo = new savegameTrack(result.filePaths[0])
-
-				win.sendModList({ saveInfo : thisSaveInfo.modList }, 'fromMain_saveInfo', 'save_track', false )
+				new savegameTrack(result.filePaths[0]).getInfo().then((results) => {
+					win.sendModList({ saveInfo : results }, 'fromMain_saveInfo', 'save_track', false )
+				})
 			} catch (e) {
 				log.log.danger(`Load failed: ${e}`, 'save-track')
 			}
@@ -1298,9 +1298,9 @@ ipcMain.on('toMain_openHubByID',    (_, hubID) => { shell.openExternal(`${modHub
 
 function readSaveGame(thisPath, isFolder) {
 	try {
-		const thisSavegame = new saveFileChecker(thisPath, isFolder)
-
-		win.sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
+		new saveFileChecker(thisPath, isFolder).getInfo().then((results) => {
+			win.sendModList({ thisSaveGame : results }, 'fromMain_saveInfo', 'save', false )
+		})
 	} catch (e) {
 		log.log.danger(`Load failed: ${e}`, 'save-check')
 	}
