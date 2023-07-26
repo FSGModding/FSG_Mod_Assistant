@@ -31,6 +31,7 @@ maIPC.decode = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), o
 maIPC.notes    = { store : {}, get : () => null }
 maIPC.settings = { store : {}, get : () => null }
 maIPC.modCache = { store : {}, get : () => null }
+maIPC.sites    = { store : {}, get : () => null }
 
 const failedTests = new Set()
 const testLib = class {

@@ -3,7 +3,6 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-/*eslint complexity: ["warn", 17]*/
 // Main Program
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, clipboard, nativeImage } = require('electron')
@@ -147,7 +146,7 @@ const pathGuesses = [
 ]
 
 function guessPath(paths, file = '') {
-	for ( const testPath of paths ) { if ( fs.existsSync(path.join(testPath, file)) ) { return testPath } } return ''
+	for ( const testPath of paths ) { if ( fs.existsSync(path.join(testPath, file)) ) { return path.join(testPath, file) } } return ''
 }
 
 mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
@@ -172,6 +171,7 @@ const modSite = new Store({name : 'mod_source_site', migrations : settingDefault
 maIPC.modCache = maCache
 maIPC.notes    = modNote
 maIPC.settings = mcStore
+maIPC.sites    = modSite
 
 win.loadSettings()
 
