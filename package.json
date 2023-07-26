@@ -37,10 +37,9 @@
     "electron-updater": "^6.1.4",
     "fast-xml-parser": "^4.2.6",
     "glob": "^10.3.3",
-    "jpeg-js": "^0.4.4",
-    "pngjs": "^7.0.0",
     "semver": "^7.5.4",
-    "unzip-stream": "^0.3.1"
+    "unzip-stream": "^0.3.1",
+    "wasm-vips": "^0.0.5"
   },
   "build": {
     "appId": "jtsage.fsmodassist",

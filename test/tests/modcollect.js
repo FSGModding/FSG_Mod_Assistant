@@ -43,7 +43,7 @@ const testGood = (test) => {
 			test.error(`Found unexpected count of mods (${testSet.modSet.size})`)
 		}
 
-		const expectSize = 109599
+		const expectSize = 66270
 		const actualSize = JSON.stringify(testSet).length
 		if ( actualSize === expectSize ) {
 			test.step(`Got expected ${expectSize} bytes of data`)

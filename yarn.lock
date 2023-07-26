@@ -2192,10 +2192,9 @@ __metadata:
     eslint: ^8.45.0
     fast-xml-parser: ^4.2.6
     glob: ^10.3.3
-    jpeg-js: ^0.4.4
-    pngjs: ^7.0.0
     semver: ^7.5.4
     unzip-stream: ^0.3.1
+    wasm-vips: ^0.0.5
   languageName: unknown
   linkType: soft
 
@@ -2664,13 +2663,6 @@ __metadata:
   bin:
     jake: bin/cli.js
   checksum: a23fd2273fb13f0d0d845502d02c791fd55ef5c6a2d207df72f72d8e1eac6d2b8ffa6caf660bc8006b3242e0daaa88a3ecc600194d72b5c6016ad56e9cd43553
-  languageName: node
-  linkType: hard
-
-"jpeg-js@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "jpeg-js@npm:0.4.4"
-  checksum: bd7cb61aa8df40a9ee2c2106839c3df6054891e56cfc22c0ac581402e06c6295f962a4754b0b2ac50a401789131b1c6dc9df8d24400f1352168be1894833c590
   languageName: node
   linkType: hard
 
@@ -3437,13 +3429,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pngjs@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "pngjs@npm:7.0.0"
-  checksum: b19a018930d27de26229c1b3ff250b3a25d09caa22cbb0b0459987d91eb0a560a18ab5d67da45a38ed7514140f26d1db58de83c31159ec101f2bb270a3c707f1
-  languageName: node
-  linkType: hard
-
 "prelude-ls@npm:^1.2.1":
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
@@ -4166,6 +4151,13 @@ __metadata:
     core-util-is: 1.0.2
     extsprintf: ^1.2.0
   checksum: 690a8d6ad5a4001672290e9719e3107c86269bc45fe19f844758eecf502e59f8aa9631b19b839f6d3dea562334884d22d1eb95ae7c863032075a9212c889e116
+  languageName: node
+  linkType: hard
+
+"wasm-vips@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "wasm-vips@npm:0.0.5"
+  checksum: fcca44ecedb66b261c6b22174b0a7be87ff9d92c85732f24c38bf41e2eada1db0b481dc561a1cf5feea03c2f6744ad88ce8796a7652fdd0fdad6870799796210
   languageName: node
   linkType: hard
 
