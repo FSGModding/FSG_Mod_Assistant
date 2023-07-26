@@ -56,6 +56,15 @@ const fsgUtil = {
 			element.classList.add(...classArray)
 		}
 	},
+	clsHideFalse : ( id, test ) => { fsgUtil.clsHideTrue(id, !test) },
+	clsHideTrue  : ( id, test ) => {
+		const element = fsgUtil.byId(id)
+		if ( test ) {
+			element.classList.add('d-none')
+		} else {
+			element.classList.remove('d-none')
+		}
+	},
 	clsOrGate   : ( id, test, ifTrue, ifFalse ) => {
 		const element = fsgUtil.byId(id)
 		if ( test ) {
@@ -73,6 +82,8 @@ const fsgUtil = {
 			element.classList.remove(...classArray)
 		}
 	},
+	clsShowFalse : ( id, test ) => { fsgUtil.clsHideTrue(id, test) },
+	clsShowTrue : ( id, test ) => { fsgUtil.clsHideFalse(id, test) },
 	getAttribNullEmpty : (element, attrib) => {
 		const attribValue = element.getAttribute(attrib)
 	
@@ -181,6 +192,12 @@ const fsgUtil = {
 	
 	existAndNonEmpty : ( arr ) => typeof arr !== 'undefined' && arr.length > 0,
 	exists : ( obj ) => typeof obj !== 'undefined',
+
+	firstOrNull : ( arr ) => {
+		if ( typeof arr !== 'object' ) { return null }
+		if ( arr.length !== 1 ) { return null }
+		return arr[0]
+	},
 	
 	classPerTest : ( query, test, class_add_when_false = 'd-none' ) => {
 		for ( const element of fsgUtil.query(query) ) {
