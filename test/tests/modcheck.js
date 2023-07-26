@@ -7,7 +7,7 @@
 // Test Program - Mod Checker
 
 const path                      = require('path')
-const { modFileChecker }        = require('../../lib/modCheckLib_new.js')
+const { modFileChecker }        = require('../../lib/modCheckLib.js')
 const {testLib}                 = require('../test.js')
 
 const basePath = path.join(__dirname, 'mods')

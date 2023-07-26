@@ -7,7 +7,7 @@
 // Test Program - Savegame Mod Tracking
 
 const path              = require('path')
-const { savegameTrack } = require('../../lib/modCheckLib_new.js')
+const { savegameTrack } = require('../../lib/modCheckLib.js')
 const {testLib}         = require('../test.js')
 
 module.exports.test = () => {

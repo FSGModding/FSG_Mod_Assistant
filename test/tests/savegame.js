@@ -7,7 +7,7 @@
 // Test Program - Savegame Parser
 
 const path                = require('path')
-const { saveFileChecker } = require('../../lib/modCheckLib_new.js')
+const { saveFileChecker } = require('../../lib/modCheckLib.js')
 const {testLib}           = require('../test.js')
 
 module.exports.test = () => {

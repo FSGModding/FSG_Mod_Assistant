@@ -6,7 +6,7 @@
 
 // Test Program - Mod Internals Looker
 
-const { modLooker } = require('../../lib/modCheckLib_new.js')
+const { modLooker } = require('../../lib/modCheckLib.js')
 const path          = require('path')
 const {testLib}     = require('../test.js')
 
