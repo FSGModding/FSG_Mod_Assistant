@@ -247,7 +247,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 function doBadgeSet(originalBadges, thisMod, thisCollection, bindConflicts, currentGameVersion, modSites) {
 	const theseBadges = new Set([...originalBadges] || [])
 
-	if ( theseBadges.includes('savegame') ) { return ['savegame', 'notmod'] }
+	if ( theseBadges.has('savegame') ) { return ['savegame', 'notmod'] }
 
 	if ( fsgUtil.existAndNonEmpty(thisMod.modDesc.depend) ) {
 		const unmetDeps = thisMod.modDesc.depend.filter((x) => ! thisCollection.dependSet.has(x))
@@ -269,7 +269,7 @@ function doBadgeSet(originalBadges, thisMod, thisCollection, bindConflicts, curr
 	}
 	if ( thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) {
 		theseBadges.add('nonmh')
-		theseBadges.remove('update')
+		theseBadges.delete('update')
 	}
 	if ( currentGameVersion !== thisMod.gameVersion ) {
 		theseBadges.delete(`fs${thisMod.gameVersion}`)
