@@ -29,7 +29,7 @@ const testGood = (test) => {
 
 	modCollect.addCollection(modPath)
 
-	modCollect.processMods().then(() => {
+	return modCollect.processMods().then(() => {
 		if ( modCollect.collections.size === 1 ) {
 			test.step('Found expected (1) collection')
 		} else {
