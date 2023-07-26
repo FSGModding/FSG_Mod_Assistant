@@ -153,7 +153,6 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					thisMod.badgeArray,
 					thisMod,
 					thisCollection,
-					modCollect.newMods,
 					modCollect.bindConflict?.[collectKey],
 					modCollect.appSettings.game_version,
 					modCollect.opts.modSites
@@ -245,58 +244,43 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 })
 
 
-function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts, currentGameVersion, modSites) {
-	const theseBadges = [...originalBadges] || []
-	let   hasAllDeps  = true
-	const isASave     = theseBadges.includes('savegame')
+function doBadgeSet(originalBadges, thisMod, thisCollection, bindConflicts, currentGameVersion, modSites) {
+	const theseBadges = new Set([...originalBadges] || [])
 
-	if ( typeof thisMod.modDesc.depend !== 'undefined' && thisMod.modDesc.depend.length > 0 ) {
-		for ( const thisDep of thisMod.modDesc.depend ) {
-			if ( ! thisCollection.dependSet.has(thisDep) ) {
-				hasAllDeps = false; break
-			}
-		}
+	if ( theseBadges.includes('savegame') ) { return ['savegame', 'notmod'] }
+
+	if ( fsgUtil.existAndNonEmpty(thisMod.modDesc.depend) ) {
+		const unmetDeps = thisMod.modDesc.depend.filter((x) => ! thisCollection.dependSet.has(x))
+
+		if ( unmetDeps.length < 1 ) { theseBadges.delete('depend') }
 	}
 
-	if ( !hasAllDeps ) {
-		theseBadges.unshift('depend')
+	if ( fsgUtil.existAndNonEmpty(thisMod.modDesc.binds) ) {
+		theseBadges.add(typeof bindConflicts?.[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok')
 	}
-	if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
-		theseBadges.push(typeof bindConflicts?.[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok')
+	if ( thisMod.modDesc.version !== thisMod.modHub.version) {
+		theseBadges.add('update')
 	}
-	if ( thisMod.modHub.version !== null && thisMod.modDesc.version !== thisMod.modHub.version) {
-		theseBadges.push('update')
-	}
-	if ( typeof modSites?.[thisMod.fileDetail.shortName] !== 'undefined' && modSites?.[thisMod.fileDetail.shortName] !== '' ) {
-		theseBadges.push('web')
-	}
-	if ( newMods.has(thisMod.md5Sum) && !thisMod.canNotUse ) {
-		theseBadges.push('new')
+	if ( fsgUtil.existAndNonEmpty(modSites?.[thisMod.fileDetail.shortName]) ) {
+		theseBadges.add('web')
 	}
 	if ( thisMod.modHub.recent ) {
-		theseBadges.push('recent')
+		theseBadges.add('recent')
 	}
-	if ( !isASave && thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) {
-		theseBadges.push('nonmh')
+	if ( thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) {
+		theseBadges.add('nonmh')
+		theseBadges.remove('update')
 	}
-	if ( !isASave && currentGameVersion !== thisMod.gameVersion ) {
-		theseBadges.unshift(`fs${thisMod.gameVersion}`)
-	}
-
-
-	const theseBadgesSet = new Set(theseBadges)
-
-	if ( thisMod.gameVersion < 22 ) { theseBadgesSet.delete('pconly') }
-
-	if ( theseBadgesSet.has('keys_bad') && theseBadgesSet.has('keys_ok') ) {
-		theseBadgesSet.delete('keys_ok')
+	if ( currentGameVersion !== thisMod.gameVersion ) {
+		theseBadges.delete(`fs${thisMod.gameVersion}`)
 	}
 
-	if ( theseBadgesSet.has('broken') && theseBadgesSet.has('notmod') ) {
-		theseBadgesSet.delete('broken')
-	}
+	if ( thisMod.gameVersion < 22 ) { theseBadges.delete('pconly') }
 
-	return Array.from(theseBadgesSet)
+	if ( theseBadges.has('keys_bad') ) { theseBadges.delete('keys_ok') }
+	if ( theseBadges.has('notmod') )   { theseBadges.delete('broken') }
+
+	return Array.from(theseBadges)
 }
 
 function clientMakeListInactive() {

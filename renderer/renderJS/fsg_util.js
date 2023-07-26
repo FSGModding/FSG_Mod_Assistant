@@ -170,6 +170,8 @@ const fsgUtil = {
 	escapeDesc    : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;') : text,
 	escapeSpecial : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
 	
+	existAndNonEmpty : ( arr ) => typeof arr !== 'undefined' && arr.length > 0,
+	
 	classPerTest : ( query, test, class_add_when_false = 'd-none' ) => {
 		for ( const element of fsgUtil.query(query) ) {
 			element.classList[test ? 'remove' : 'add'](class_add_when_false)
