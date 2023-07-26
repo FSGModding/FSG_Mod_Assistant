@@ -21,8 +21,8 @@ module.exports.test = () => {
 const testGood = (test) => {
 	test.step('Loading Valid Collection')
 
-	// const modPath    = path.join(__dirname, 'mods')
-	const modPath    = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
+	const modPath    = path.join(__dirname, 'mods')
+	// const modPath    = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
 	const modCollect = new modFileCollection( require('os').homedir, true )
 	const folderID   = modCollect.getMD5FromFolder(modPath)
 

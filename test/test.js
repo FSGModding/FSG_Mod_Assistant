@@ -7,7 +7,9 @@
 // Test Program
 
 // Define tests here, using the file name.  Called with .test(<log library class>)
+const startTime  = Date.now()
 const testList   = [
+	'modcollect',   // Collection test
 	'translations', // Translation file check
 	'modtrack',     // Mod tracking
 	'modlook',      // Mod Internal Looker
@@ -25,6 +27,10 @@ maIPC.log = new ma_logger('multi-test')
 maIPC.log.forceNoConsole()
 
 maIPC.decode = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
+
+maIPC.notes    = { store : {}, get : () => null }
+maIPC.settings = { store : {}, get : () => null }
+maIPC.modCache = { store : {}, get : () => null }
 
 const failedTests = new Set()
 const testLib = class {
@@ -80,5 +86,7 @@ Promise.allSettled(runTests).then(() => {
 	} else {
 		rootTest.step('All Tests Passed')
 	}
+	rootTest.step(`Tests took ${Date.now() - startTime}ms to complete`)
 	rootTest.end()
+	// console.log(maIPC.log.textLog)
 })
