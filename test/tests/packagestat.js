@@ -15,7 +15,7 @@ const knowSet   = new Set([...imgSet, '.css', '.scss', '.xml', '.js', '.json', '
 
 module.exports.test = async () => {
 	return Promise.all([
-		countFiles(new testLib('Package Statistics'))
+		countFiles(new testLib('Package Statistics', false, true))
 	])
 }
 
@@ -66,12 +66,12 @@ const toMByte   = (num) => typeof num !== 'number' ? num : Intl.NumberFormat('en
 
 const makeLine  = (type, data) => {
 	return [
-		type.padEnd(11), ' |',
-		padData(toNum(data.total), 7), ' |',
-		padData(toNum(data.blank), 7), ' |',
+		'| ', type.padEnd(11), ' |',
+		padData(toNum(data.total), 6), ' |',
+		padData(toNum(data.blank), 6), ' |',
 		padData(toNum(data.code), 7), ' |',
 		padData(toNum(data.comment), 7), ' |',
-		padData(toNum(data.size), 12), ' |',
+		padData(toNum(data.size), 11), ' |',
 		padData(toMByte(data.size), 6), ' MB |'
 	].join('')
 }
@@ -80,7 +80,7 @@ const countFiles = (test) => {
 	return glob('**', { cwd : path.join(__dirname, '..', '..'), ignore : 'node_modules/**', stat : true, withFileTypes : true }).then((results) => {
 		const fileList = results.filter((x) => x.isFile())
 		test.step_fmt(makeLine('', { blank : 'Blank', code : 'Code', comment : '/* */', size : 'Size', total : 'Files' }))
-		test.step_fmt(''.padStart(74, '-'))
+		test.step_fmt(''.padStart(73, '-'))
 		test.step_fmt(makeLine('javaScript', countTextFile(fileList.filter((x) => path.extname(x.name) === '.js'), true)))
 		test.step_fmt(makeLine('JSON', countTextFile(fileList.filter((x) => path.extname(x.name) === '.json'))))
 		test.step_fmt(makeLine('XML', countTextFile(fileList.filter((x) => path.extname(x.name) === '.xml'))))
@@ -90,7 +90,7 @@ const countFiles = (test) => {
 		test.step_fmt(makeLine('Images', countOthers(fileList.filter((x) => imgSet.has(path.extname(x.name)) ))))
 		test.step_fmt(makeLine('ZIP Archive', countOthers(fileList.filter((x) => path.extname(x.name) === '.md'))))
 		test.step_fmt(makeLine('Other', countOthers(fileList.filter((x) => !knowSet.has(path.extname(x.name)) ))))
-		test.step_fmt(''.padStart(74, '-'))
+		test.step_fmt(''.padStart(73, '-'))
 		test.step_fmt(makeLine('TOTAL', countOthers(fileList)))
 	}).catch((err) => {
 		test.error(err)
