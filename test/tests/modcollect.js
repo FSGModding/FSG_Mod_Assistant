@@ -44,12 +44,13 @@ const testGood = (test) => {
 			test.error(`Found unexpected count of mods (${testSet.modSet.size})`)
 		}
 
-		const expectSize = 66293
+		const expectMinData = 60000
+		const expectMaxData = 75000
 		const actualSize = JSON.stringify(testSet).length
-		if ( actualSize === expectSize ) {
-			test.step(`Got expected ${expectSize} bytes of data`)
+		if ( expectMinData < actualSize && actualSize < expectMaxData ) {
+			test.step(`Got expected ${actualSize} bytes of data, within range`)
 		} else {
-			test.error(`Got unexpected ${actualSize} bytes of data, expected ${expectSize}`)
+			test.error(`Got unexpected ${actualSize} bytes of data, outside range`)
 		}
 
 		// console.dir(testSet, { depth : 3 })

@@ -21,7 +21,8 @@ const testList   = [
 const c       = require('ansi-colors')
 const path    = require('path')
 const os      = require('os')
-// const process = require('process')
+const fs      = require('fs')
+
 const { ma_logger, ddsDecoder, maIPC } = require('../lib/modUtilLib.js')
 
 
@@ -69,7 +70,7 @@ const testLib = class {
 				`## ✓ PASSED: ${this.#title}` :
 				`## 🗙 FAILED: ${this.#title}`
 			, '')
-			envLines.push(...this.#steps.map((x) => `${x[2] ? '' : ' - '}${x[1]}`), '')
+			envLines.push(...this.#steps.map((x) => `${x[2] ? '' : '- '}${x[1]}`), '')
 		}
 
 		console.log(
@@ -82,7 +83,7 @@ const testLib = class {
 			'\n'
 		)
 		if ( doEnv ) {
-			process.env.GITHUB_STEP_SUMMARY =['# Testing Results', '', ...envLines].join('\n')
+			fs.writeFileSync(path.join(__dirname, '..', 'TEST_OUTPUT.md'), ['# Testing Results', '', ...envLines].join('\n'))
 		}
 		/* eslint-enable no-console */
 	}
