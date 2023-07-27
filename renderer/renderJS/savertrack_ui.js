@@ -6,7 +6,6 @@
 
 // Detail window UI
 
-/* eslint complexity: ['warn', 20] */
 /* global fsgUtil, processL10N */
 
 window.mods.receive('fromMain_saveInfo', (modCollect) => {

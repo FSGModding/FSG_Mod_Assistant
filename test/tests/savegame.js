@@ -20,74 +20,72 @@ module.exports.test = () => {
 
 const testBad = (test) => {
 	const fullPath = path.join(__dirname, 'savegame', 'savegame1.zip')
-	try {
-		const saveCheck = new saveFileChecker(fullPath, false)
-		if ( saveCheck.mapMod === null ) {
+
+	return new saveFileChecker(fullPath, false).getInfo().then((results) => {
+		if ( results.mapMod === null ) {
 			test.step('Expected empty result set received')
 		} else {
 			test.error('Got a non-empty result set')
 		}
-	} catch (e) {
-		test.error(`Unexpected error: ${e}`)
-	} finally {
+	}).catch((e) => {
+		test.error(`Unexpected Error :: ${e}`)
+	}).finally(() => {
 		test.end()
-	}
+	})
 }
 
 const testZip = (test) => {
 	const fullPath = path.join(__dirname, 'savegame', 'savegame8.zip')
-	try {
-		const saveCheck = new saveFileChecker(fullPath, false)
-
-		if ( saveCheck.mapMod !== null ) {
+	
+	return new saveFileChecker(fullPath, false).getInfo().then((results) => {
+		if ( results.mapMod !== null ) {
 			test.step('Got expected map name')
 		} else {
 			test.error('Got unexpected map name')
 		}
 
-		if ( Object.keys(saveCheck.farms).length === 6 ) {
+		if ( Object.keys(results.farms).length === 6 ) {
 			test.step('Got expected number of farms (6)')
 		} else {
 			test.error('Got unexpected number of farms')
 		}
 
-		if ( Object.keys(saveCheck.mods).length === 38 ) {
+		if ( Object.keys(results.mods).length === 38 ) {
 			test.step('Got expected number of mods (38)')
 		} else {
 			test.error('Got unexpected number of mods')
 		}
-	} catch (e) {
-		test.error(`Unexpected error: ${e}`)
-	} finally {
+	}).catch((e) => {
+		test.error(`Unexpected Error :: ${e}`)
+	}).finally(() => {
 		test.end()
-	}
+	})
 }
 
 const testFolder = (test) => {
 	const fullPath = path.join(__dirname, 'savegame', 'savegame8')
-	try {
-		const saveCheck = new saveFileChecker(fullPath, true)
 
-		if ( saveCheck.mapMod !== null ) {
+	return new saveFileChecker(fullPath, true).getInfo().then((results) => {
+		if ( results.mapMod !== null ) {
 			test.step('Got expected map name')
 		} else {
 			test.error('Got unexpected map name')
 		}
 
-		if ( Object.keys(saveCheck.farms).length === 6 ) {
+		if ( Object.keys(results.farms).length === 6 ) {
 			test.step('Got expected number of farms (6)')
 		} else {
 			test.error('Got unexpected number of farms')
 		}
 
-		if ( Object.keys(saveCheck.mods).length === 38 ) {
+		if ( Object.keys(results.mods).length === 38 ) {
 			test.step('Got expected number of mods (38)')
 		} else {
 			test.error('Got unexpected number of mods')
 		}
-	} catch (e) {
-		test.error(`Unexpected error: ${e}`)
-	} finally {
+	}).catch((e) => {
+		test.error(`Unexpected Error :: ${e}`)
+	}).finally(() => {
 		test.end()
-	}
+	})
 }

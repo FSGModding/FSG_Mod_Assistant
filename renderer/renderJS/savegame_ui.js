@@ -6,17 +6,17 @@
 
 // Detail window UI
 
-/* eslint complexity: ["warn", 21] */
 /* global fsgUtil, processL10N */
 
 let thisCollection = null
-const alwaysUsedActive = [
+/* CSpell: disable */
+const alwaysUsedActive = new Set([
 	'FS22_BetterContracts',
 	'FS22_PrecisionFarmingAnhydrousReady',
 	'FS22_precisionFarming',
-]
+])
 
-const consumableOnly = [
+const consumableOnly = new Set([
 	'FS22_AGRAHIM_BigBagsPack',
 	'FS22_Animal_Food_BigBag',
 	'FS22_Bags_and_Support_Package',
@@ -67,15 +67,18 @@ const consumableOnly = [
 	'FS22_Yara_Fertilizer_Pack',
 	'FS22_Yara_Fertilizer_Pallets',
 	'FS22_YaraBigBagFertilizer',
-]
+])
+/* CSpell: enable */
 
-const selectList = {
+
+const empty_list = () => { return {
 	active   : [],
 	inactive : [],
 	nohub    : [],
 	unused   : [],
-}
-const selectCount = {
+} }
+
+const empty_count = () => { return {
 	active     : 0,
 	dlc        : 0,
 	inactive   : 0,
@@ -85,7 +88,59 @@ const selectCount = {
 	nohub      : 0,
 	scriptonly : 0,
 	unused     : 0,
+}}
+
+const final_count = () => {
+	selectCount.nohub    = selectList.nohub.length
+	selectCount.inactive = selectList.inactive.length
+	selectCount.unused   = selectList.unused.length
+	selectCount.active   = selectList.active.length
 }
+
+const getFarms   = (modFarms, allFarms) => {
+	if ( modFarms.size < 1 ) { return null }
+	return [...modFarms].map((x) => allFarms[x])
+}
+const scriptOnly = (modDesc) => ( modDesc.storeItems < 1 && modDesc.scriptFiles > 0 )
+
+const newRecord = (isMH) => { return {
+	consumable      : false,
+	isDLC           : false,
+	isLoaded        : false,
+	isModHub        : isMH,
+	isPresent       : false,
+	isUsed          : false,
+	scriptOnly      : false,
+	title           : null,
+	usedBy          : null,
+	version         : null,
+	versionMismatch : false,
+} }
+
+const buildSets = (mods, save_mods) => {
+	const haveModSet  = {}
+	const fullModArr = []
+	for ( const thisMod of Object.values(mods) ) {
+		haveModSet[thisMod.fileDetail.shortName] = thisMod
+		fullModArr.push(thisMod.fileDetail.shortName)
+	}
+	
+	return {
+		haveModSet : haveModSet,
+		fullModSet : new Set(fullModArr.concat(save_mods).sort(Intl.Collator().compare)),
+	}
+}
+
+const updateSelectList = (thisModDetail, thisUUID) => {
+	if ( thisUUID === null ) { return }
+	if ( thisModDetail.isUsed === false ) { selectList.unused.push(`${thisCollection}--${thisUUID}`) }
+	if ( thisModDetail.isLoaded === false ) { selectList.inactive.push(`${thisCollection}--${thisUUID}`) }
+	if ( thisModDetail.isModHub === false ) { selectList.nohub.push(`${thisCollection}--${thisUUID}`) }
+	if ( thisModDetail.isLoaded === true ) { selectList.active.push(`${thisCollection}--${thisUUID}`) }
+}
+
+let selectList  = null
+let selectCount = null
 
 window.mods.receive('fromMain_collectionName', (modCollect) => {
 	thisCollection = modCollect.opts.collectKey
@@ -98,24 +153,11 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 
 window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	const savegame   = modCollect.opts.thisSaveGame
-	const fullModArr = []
-	const haveModSet = {}
+	const {haveModSet, fullModSet} = buildSets(modCollect.modList[thisCollection].mods, Object.keys(savegame.mods))
 	const modSetHTML = []
 
-	selectList.inactive = []
-	selectList.unused   = []
-	selectList.nohub    = []
-	selectList.active   = []
-
-	selectCount.isloaded   = 0
-	selectCount.dlc        = 0
-	selectCount.missing    = 0
-	selectCount.scriptonly = 0
-	selectCount.isused     = 0
-	selectCount.unused     = 0
-	selectCount.inactive   = 0
-	selectCount.nohub      = 0
-	selectCount.active     = 0
+	selectList  = empty_list()
+	selectCount = empty_count()
 
 	if ( savegame.errorList.length > 0 ) {
 		const errors = savegame.errorList.map((error) => `<l10n name="${error[0]}"></l10n> ${error[1]}`)
@@ -123,59 +165,28 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 		modSetHTML.push(fsgUtil.useTemplate('savegame_error', { errors : errors.join(', ')}))
 	}
 
-	for ( const thisMod of Object.values(modCollect.modList[thisCollection].mods) ) {
-		haveModSet[thisMod.fileDetail.shortName] = thisMod
-		fullModArr.push(thisMod.fileDetail.shortName)
-	}
-
-	const fullModSet = new Set(fullModArr.concat(Object.keys(savegame.mods)).sort((a, b) => {
-		if (a.toLowerCase() < b.toLowerCase()) return -1
-		if (a.toLowerCase() > b.toLowerCase()) return 1
-		return 0
-	}))
-
 	for ( const thisMod of fullModSet ) {
 		if ( thisMod.endsWith('.csv') ) { continue }
-		const thisModDetail = {
-			consumable      : false,
-			isDLC           : false,
-			isLoaded        : false,
-			isModHub        : typeof modCollect.modHub.list.mods[thisMod] !== 'undefined',
-			isPresent       : false,
-			isUsed          : false,
-			scriptOnly      : false,
-			title           : null,
-			usedBy          : null,
-			version         : null,
-			versionMismatch : false,
-		}
-
+		const thisModDetail = newRecord(Object.hasOwn(modCollect.modHub.list.mods, thisMod))
 		
 		if ( thisMod.startsWith('pdlc_')) {
 			thisModDetail.isDLC     = true
 			thisModDetail.isPresent = true
 		}
 
-		if ( typeof savegame.mods[thisMod] !== 'undefined' ) {
+		if ( Object.hasOwn(savegame.mods, thisMod) ) {
 			thisModDetail.version  = savegame.mods[thisMod].version
 			thisModDetail.title    = savegame.mods[thisMod].title
 			thisModDetail.isLoaded = true
-
-			if ( savegame.mods[thisMod].farms.size > 0 ) {
-				thisModDetail.isUsed = true
-				thisModDetail.usedBy = savegame.mods[thisMod].farms
-			}
+			thisModDetail.isUsed   = savegame.mods[thisMod].farms.size > 0
+			thisModDetail.usedBy   = getFarms(savegame.mods[thisMod].farms, savegame.farms)
 		}
 
 		if ( typeof haveModSet[thisMod] !== 'undefined' ) {
-			if ( haveModSet[thisMod].modDesc.storeItems < 1 && haveModSet[thisMod].modDesc.scriptFiles > 0 ) {
-				thisModDetail.scriptOnly = true
-				thisModDetail.isUsed     = thisModDetail.isLoaded
-			} else if ( alwaysUsedActive.includes(thisMod) ) {
-				// Catch a few special cases
-				thisModDetail.isUsed     = thisModDetail.isLoaded
-			} else if ( consumableOnly.includes(thisMod) ) {
-				thisModDetail.consumable = true
+			thisModDetail.scriptOnly = scriptOnly(haveModSet[thisMod].modDesc)
+			thisModDetail.consumable = consumableOnly.has(thisMod)
+
+			if ( scriptOnly(haveModSet[thisMod].modDesc) || alwaysUsedActive.has(thisMod) || consumableOnly.has(thisMod) ) {
 				thisModDetail.isUsed     = thisModDetail.isLoaded
 			}
 
@@ -191,26 +202,14 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 			thisModDetail.usedBy   = null
 		}
 
-		const thisUUID = haveModSet?.[thisMod]?.uuid
-		
-
-		if ( typeof thisUUID !== 'undefined' && thisUUID !== null ) {
-			if ( thisModDetail.isUsed === false ) { selectList.unused.push(`${thisCollection}--${thisUUID}`) }
-			if ( thisModDetail.isLoaded === false ) { selectList.inactive.push(`${thisCollection}--${thisUUID}`) }
-			if ( thisModDetail.isModHub === false ) { selectList.nohub.push(`${thisCollection}--${thisUUID}`) }
-			if ( thisModDetail.isLoaded === true ) { selectList.active.push(`${thisCollection}--${thisUUID}`) }
-		}
+		updateSelectList(thisModDetail, haveModSet?.[thisMod]?.uuid ?? null)
 
 		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm, modCollect.modHub.list.mods[thisMod]))
 	}
 
 	fsgUtil.byId('modList').innerHTML = modSetHTML.join('')
 
-	selectCount.nohub    = selectList.nohub.length
-	selectCount.inactive = selectList.inactive.length
-	selectCount.unused   = selectList.unused.length
-	selectCount.active   = selectList.active.length
-
+	final_count()
 	updateCounts()
 	processL10N()
 })
@@ -223,45 +222,42 @@ function updateCounts() {
 	}
 }
 
-function makeLine(name, mod, singleFarm, hubID) {
-	const badges       = ['versionMismatch', 'consumable', 'scriptOnly', 'isUsed', 'isLoaded']
-	const displayBadge = []
-	let colorClass     = ''
+function getColor(mod) {
+	if ( !mod.isPresent )      { return 'list-group-item-danger' }
+	if ( mod.versionMismatch ) { return 'list-group-item-info' }
+	if ( mod.isUsed )          { return 'list-group-item-success' }
+	if ( mod.isLoaded )        { return 'list-group-item-warning' }
+	return 'list-group-item-secondary'
+}
 
-	switch ( true ) {
-		case ( !mod.isPresent ) :
-			colorClass = 'list-group-item-danger'
-			break
-		case ( mod.versionMismatch ) :
-			colorClass = 'list-group-item-info'
-			break
-		case ( mod.isUsed ) :
-			colorClass = 'list-group-item-success'
-			break
-		case ( mod.isLoaded ) :
-			colorClass = 'list-group-item-warning'
-			break
-		default :
-			colorClass = 'list-group-item-secondary'
-			break
-	}
-
+function getBadges(mod) {
+	const returnBadge = []
 
 	if ( !mod.isModHub && !mod.isDLC ) {
-		displayBadge.push(['nohub', 'info'])
+		returnBadge.push(['nohub', 'info'])
 	}
 	if ( mod.isDLC ) {
-		displayBadge.push(['dlc', 'info']); selectCount.dlc++
+		returnBadge.push(['dlc', 'info'])
 	}
 	if ( !mod.isPresent ) {
-		displayBadge.push(['missing', 'danger']); selectCount.missing++
+		returnBadge.push(['missing', 'danger'])
 	}
 	if ( !mod.isUsed ) {
-		displayBadge.push(['unused', 'warning'])
+		returnBadge.push(['unused', 'warning'])
 	}
 	if ( !mod.isLoaded ) {
-		displayBadge.push(['inactive', 'warning'])
+		returnBadge.push(['inactive', 'warning'])
 	}
+	return returnBadge
+}
+
+function makeLine(name, mod, singleFarm, hubID) {
+	const badges       = ['versionMismatch', 'consumable', 'scriptOnly', 'isUsed', 'isLoaded']
+	const displayBadge = getBadges(mod)
+	const colorClass   = getColor(mod)
+
+	if ( mod.isDLC )      { selectCount.dlc++ }
+	if ( !mod.isPresent ) { selectCount.missing++ }
 
 	for ( const badge of badges ) {
 		if ( mod[badge] === true ) {

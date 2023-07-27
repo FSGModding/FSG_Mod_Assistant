@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci_test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Check out Git repository
@@ -24,3 +24,6 @@ jobs:
 
       - name: Test code
         run: npm test
+
+      - shell: pwsh
+        run: cat TEST_OUTPUT.md >> $env:GITHUB_STEP_SUMMARY
