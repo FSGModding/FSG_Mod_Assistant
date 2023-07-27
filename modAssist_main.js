@@ -44,7 +44,6 @@ const mainProcessFlags = {
 const { autoUpdater } = require('electron-updater')
 const { maIPC, ma_logger, translator, ddsDecoder } = require('./lib/modUtilLib')
 
-const semverGt         = require('semver/functions/gt')
 const path             = require('path')
 const fs               = require('fs')
 
@@ -183,9 +182,17 @@ const gameSetOverride = {
 
 /** Upgrade Cache Version Here */
 
-if ( semverGt('2.4.0', mcStore.get('cache_version'))) {
+const [appVerMajor, appVerMinor] = mcStore.get('cache_version').split('.').map((x) => parseInt(x))
+const updateMajor  = 2
+const updateMinor  = 4
+let updateRequired = false
+
+if ( appVerMajor < updateMajor ) { updateRequired = true }
+if ( !updateRequired && appVerMajor === updateMajor && appVerMinor < updateMinor ) { updateRequired = true }
+
+if ( updateRequired ) {
 	log.log.warning('Invalid Mod Cache (old), resetting.', 'mod-cache')
-	maCache.clear()
+	//maCache.clear()
 	log.log.info('Mod Cache Cleared', 'mod-cache')
 } else {
 	log.log.debug('Mod Cache Version Good', 'mod-cache')
