@@ -24,4 +24,6 @@ jobs:
 
       - name: Test code
         run: npm test
+
+      - name : Read Summary
         run: $env:GITHUB_STEP_SUMMARY = (Get-Content TEST_OUTPUT.md)
