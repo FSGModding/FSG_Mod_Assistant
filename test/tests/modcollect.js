@@ -23,6 +23,7 @@ const testGood = (test) => {
 
 	const modPath    = path.join(__dirname, 'mods')
 	// const modPath    = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\fsg_realism'
+	// const modPath    = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods\\~test_mods'
 	// const modPath    = 'C:\\Users\\jtsag\\Downloads'
 	const modCollect = new modFileCollection( require('os').homedir, true )
 	const folderID   = modCollect.getMD5FromFolder(modPath)
@@ -43,7 +44,7 @@ const testGood = (test) => {
 			test.error(`Found unexpected count of mods (${testSet.modSet.size})`)
 		}
 
-		const expectSize = 66270
+		const expectSize = 66293
 		const actualSize = JSON.stringify(testSet).length
 		if ( actualSize === expectSize ) {
 			test.step(`Got expected ${expectSize} bytes of data`)
