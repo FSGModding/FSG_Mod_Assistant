@@ -11,14 +11,16 @@
 window.mods.receive('fromMain_lookRecord', (_, lookRecord, chartUnits, currentLocale) => {
 	try {
 		buildStore(lookRecord, chartUnits, currentLocale)
+		fsgUtil.clsHideTrue('store_process', true)
 	} catch (e) {
-		window.log.warning(`Page build failed :: ${e}`, 'detail-ui')
+		window.log.warning(`Store build failed :: ${e}`, 'detail-ui')
 	}
 	processL10N()
 })
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
 	try {
+		fsgUtil.clsShowTrue('store_process', modCollect.opts.hasStore)
 		buildPage(modCollect)
 	} catch (e) {
 		window.log.warning(`Page build failed :: ${e}`, 'detail-ui')
@@ -40,7 +42,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon !== 'undefined' ) {
 					brandImage = lookRecord.brands[thisItem.brand].icon
 				} else {
-					brandImage = ( fsgUtil.knownBrand.includes(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.png` : null
+					brandImage = ( fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.png` : null
 				}
 			}
 
@@ -49,7 +51,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 			const getPower   = getDefault(thisItem?.specs?.neededpower)
 			const theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
 			const theFill    = getDefault(thisItem.fillLevel)
-			const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.includes(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
+			const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
 			
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
@@ -266,7 +268,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 		}
 
 		if ( thisItem.masterType === 'placeable' ) {
-			const fillImages = thisItem.silo.types.map((thisFill) => fsgUtil.knownFills.includes(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
+			const fillImages = thisItem.silo.types.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
 
 			storeItemsHTML.push(fsgUtil.useTemplate('place_div', {
 				animalCount      : thisItem.husbandry.capacity,
@@ -303,7 +305,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	fsgUtil.byId('store_div').classList.remove('d-none')
 
 	for ( const thisJS of storeItemsJS ) {
-		thisJS()
+		setTimeout(thisJS, 25)
 	}
 }
 

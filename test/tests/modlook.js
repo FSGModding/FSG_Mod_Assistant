@@ -8,6 +8,7 @@
 
 const { modLooker } = require('../../lib/modCheckLib.js')
 const path          = require('path')
+
 const {testLib}     = require('../test.js')
 
 module.exports.test = async () => {
@@ -16,6 +17,8 @@ module.exports.test = async () => {
 		testBad(new testLib('Mod Looker - Missing File'))
 	])
 }
+
+const isWin = process.platform === 'win32'
 
 
 const testGood = (test) => {
@@ -30,12 +33,20 @@ const testGood = (test) => {
 			},
 		},
 		searchPath,
-		true
+		!isWin
 	).getInfo().then((result) => {
 		if ( Object.keys(result.items).length === 21 ) {
 			test.step('Got expected number of store items (21)')
 		} else {
 			test.error(`Got unexpected number of store items ${Object.keys(result.items).length}`)
+		}
+
+		if ( isWin ) {
+			if ( Object.keys(result.icons).length === 21 ) {
+				test.step('Got expected number of icons (21)')
+			} else {
+				test.error(`Got unexpected number of icons ${Object.keys(result.icons).length}`)
+			}
 		}
 
 		if ( Object.keys(result.brands).length === 1 ) {

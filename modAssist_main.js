@@ -567,13 +567,13 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 /** Detail window operation */
 function openDetailWindow(thisMod) {
+	const thisUUID = thisMod.uuid
 	win.createNamedWindow(
 		'detail',
-		{ selected : thisMod},
+		{ selected : thisMod, hasStore : thisMod.modDesc.storeItems > 0 },
 		async () => {
 			try {
 				if ( thisMod.modDesc.storeItems > 0 ) {
-					const thisUUID = thisMod.uuid
 					const currentUnits = {
 						hp  : myTranslator.syncStringLookup('unit_hp'),
 						kph : myTranslator.syncStringLookup('unit_kph'),
@@ -591,31 +591,30 @@ function openDetailWindow(thisMod) {
 						log.log.notice(`Loaded details from cache :: ${thisUUID}`, 'mod-look')
 						return
 					}
-					
 					const thisModLook = new modLooker(
 						thisMod,
 						modCollect.modColUUIDToFolder(thisMod.colUUID)
 					)
 				
-					thisModLook.getInfo().then((results) => {
-						if ( ! thisMod.isFolder ) {
-							mdCache.set(thisUUID, {
-								date    : new Date(),
-								results : results,
-							})
-						}
-						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, currentUnits, myTranslator.currentLocale)
-					}).catch((err) => {
-						log.log.notice(`Failed to load store items :: ${err}`, 'mod-look')
-					})
+					setTimeout(async () => {
+						thisModLook.getInfo().then((results) => {
+							if ( ! thisMod.isFolder ) {
+								mdCache.set(thisUUID, {
+									date    : new Date(),
+									results : results,
+								})
+							}
+							win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, currentUnits, myTranslator.currentLocale)
+						}).catch((err) => {
+							log.log.notice(`Failed to load store items :: ${err}`, 'mod-look')
+						})
+					}, 125)
 				}
 			} catch (e) {
 				log.log.notice(`Failed to load store items :: ${e}`, 'mod-look')
 			}
 		}
 	)
-
-	
 }
 
 ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(modCollect.modColUUIDToRecord(thisMod)) })
