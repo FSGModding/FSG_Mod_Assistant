@@ -5,6 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Language Builder
+/*eslint complexity: ["warn", 10]*/
 
 const fs            = require('fs')
 const { XMLParser } = require('fast-xml-parser')

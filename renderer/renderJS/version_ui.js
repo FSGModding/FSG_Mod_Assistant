@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Version window UI
-
+/* eslint complexity: ["warn", 16] */
 /* global fsgUtil, processL10N */
 
 
@@ -30,14 +30,10 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 			if ( mod.fileDetail.isFolder ) { continue }
 
-			nameTitleMap[modName] = fsgUtil.escapeSpecial(mod.l10n.title)
-			nameIconMap[modName]  = mod.modDesc.iconImageCache
-
-			if ( Object.hasOwn(versionList, modName) ) {
-				versionList[modName].push([collectKey, mod.modDesc.version])
-			} else {
-				versionList[modName] = [[collectKey, mod.modDesc.version]]
-			}
+			nameTitleMap[modName] ??= fsgUtil.escapeSpecial(mod.l10n.title)
+			nameIconMap[modName]  ??= mod.modDesc.iconImageCache
+			versionList[modName]  ??= []
+			versionList[modName].push([collectKey, mod.modDesc.version])
 		}
 	}
 

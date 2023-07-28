@@ -1,6 +1,6 @@
 {
   "name": "fsg-mod-assistant",
-  "version": "2.9.90",
+  "version": "2.9.0",
   "description": "FSG Farm Sim Mod Assistant",
   "main": "modAssist_main.js",
   "homepage": "https://github.com/FSGModding/FSG_Mod_Assistant#readme",
@@ -37,8 +37,10 @@
     "electron-updater": "^6.1.4",
     "fast-xml-parser": "^4.2.6",
     "glob": "^10.3.3",
-    "unzip-stream": "^0.3.1",
-    "wasm-vips": "^0.0.5"
+    "jpeg-js": "^0.4.4",
+    "pngjs": "^7.0.0",
+    "semver": "^7.5.4",
+    "unzip-stream": "^0.3.1"
   },
   "build": {
     "appId": "jtsage.fsmodassist",

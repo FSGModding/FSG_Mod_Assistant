@@ -21,29 +21,34 @@ const testBad = (test) => {
 	test.step('Loading Invalid Savegame')
 	const saveGamePath = path.join(__dirname, 'modtrack', 'savegame2')
 
-	return new savegameTrack(saveGamePath).getInfo().then((results) => {
-		if ( results.current.length === 0 ) {
+	try {
+		const saveBack = new savegameTrack(saveGamePath)
+		const saveBackMods = saveBack.modList
+		if ( saveBackMods.current.length === 0 ) {
 			test.step('Empty object returned')
 		} else {
 			test.error('Return object not empty')
 		}
-	}).catch((e) => {
-		test.error(`Unexpected error :: ${e}`)
-	}).finally(() => {
+	} catch (e) {
+		test.error(`Something went wrong: ${e}`)
+	} finally {
 		test.end()
-	})
+	}
 }
 
 const testGood = (test) => {
-	test.step('Loading Valid Savegame')
+	test.step('Loading Invalid Savegame')
 	const saveGamePath = path.join(__dirname, 'modtrack', 'savegame1')
 
-	return new savegameTrack(saveGamePath).getInfo().then((results) => {
-		if ( results.current.length === 4 ) {
+	try {
+		const saveBack = new savegameTrack(saveGamePath)
+		const saveBackMods = saveBack.modList
+
+		if ( saveBackMods.current.length === 4 ) {
 			test.step('Expected set of mods returned from current save')
 		}
 
-		for ( const thisBack of results.byDate ) {
+		for ( const thisBack of saveBackMods.byDate ) {
 			switch ( thisBack.date ) {
 				case '2021-03-01_01-00' :
 					if ( thisBack.duplicate === true ) {
@@ -54,26 +59,26 @@ const testGood = (test) => {
 					break
 				case '2021-02-01_01-00' :
 					if ( thisBack.onlyOriginal.length === 1 ) {
-						test.step('Expected "added since" mod found in 2021-02-01')
+						test.step('Expected not present mod found in 2021-02-01')
 					} else {
-						test.error('"added since" mod not detected in 2021-02-01')
+						test.error('Not present mod not detected in 2021-02-01')
 					}
 					break
 				case '2021-01-01_01-00' :
 					if ( thisBack.onlyBackup.length === 1 ) {
-						test.step('Expected "removed since" found in 2021-01-01')
+						test.step('Expected extra mod found in 2021-01-01')
 					} else {
-						test.error('"removed since" not detected in 2021-01-01')
+						test.error('Extra mod not detected in 2021-01-01')
 					}
 					break
 				default :
 					break
 			}
 		}
-	}).catch((e) => {
-		test.error(`Unexpected error :: ${e}`)
-	}).finally(() => {
+	} catch (e) {
+		test.error(`Something went wrong: ${e}`)
+	} finally {
 		test.end()
-	})
+	}
 }
 

@@ -6,7 +6,7 @@
 
 // Selection library, split for readability of main ui script
 
-/* es lint complexity: ["warn", 20]*/
+/*eslint complexity: ["warn", 20]*/
 /* exported select_lib */
 /* global fsgUtil searchStringMap searchTagMap */
 
@@ -192,12 +192,6 @@ const select_lib = {
 	update_color_post    : () => {
 		select_lib.clear_scroll_color()
 		const allModRows    = select_lib.get_visible_mods()
-		const doLast        = (element) => {
-			if ( element !== null && typeof element !== 'undefined' ) {
-				element.classList.add('rounded-bottom')
-				return null
-			}
-		}
 		let   countSelected = 0
 		let   hasHash       = false
 		let   hasExtSite    = false
@@ -221,7 +215,10 @@ const select_lib = {
 				}
 			} else {
 				isFirst = true
-				wasLast = doLast(wasLast)
+				if ( wasLast !== null ) {
+					wasLast.classList.add('rounded-bottom')
+					wasLast = null
+				}
 			}
 
 			if ( isChecked ) {
@@ -231,7 +228,10 @@ const select_lib = {
 			}
 		}
 		
-		wasLast = doLast(wasLast)
+		if ( wasLast !== null ) {
+			wasLast.classList.add('rounded-bottom')
+			wasLast = null
+		}
 
 		const moveButtons = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
 
@@ -256,30 +256,6 @@ const select_lib = {
 			select_lib.filter_post(forceValue)
 		}, 350)
 	},
-	filter_getFilterHides : (tags) => {
-		const returnArray = []
-		for ( const thisElement of tags ) {
-			const thisTag = thisElement.id.split('__')[1]
-			returnArray.push(...searchTagMap[thisTag])
-		}
-		return new Set(returnArray)
-	},
-	filter_getFilterShows : (tags) => {
-		const fullArrays  = []
-		let   finalArray  = []
-		for ( const thisElement of tags ) {
-			const thisTag = thisElement.id.split('__')[1]
-			fullArrays.push(searchTagMap[thisTag])
-		}
-
-		if ( fullArrays.length > 0 ) {
-			finalArray = fullArrays.reduce((resultArray, currentArray) => {
-				return resultArray.filter((el) => currentArray.includes(el))
-			})
-		}
-
-		return new Set(finalArray)
-	},
 	filter_post : (forceValue = false) => {
 		select_lib.update_scroll()
 
@@ -298,8 +274,25 @@ const select_lib = {
 		fsgUtil.byId('tag_filter_out_count').innerHTML = tagHiders.length
 		fsgUtil.byId('filter_clear').classList[(rawSearchTerm === '') ? 'add' : 'remove']('d-none')
 
-		const hideUUIDByTags = select_lib.filter_getFilterHides(tagHiders)
-		const showUUIDByTags = select_lib.filter_getFilterShows(tagLimit)
+
+		const hideByTags_arr = []
+
+		for ( const element of tagHiders ) {
+			const thisTag = element.id.split('__')[1]
+			hideByTags_arr.push(...searchTagMap[thisTag])
+		}
+
+		const hideUUIDByTags = hideByTags_arr.length > 0 ? new Set(hideByTags_arr) : false
+
+
+		const showByTags_sets = []
+
+		for ( const element of tagLimit ) {
+			const thisTag = element.id.split('__')[1]
+			showByTags_sets.push(searchTagMap[thisTag])
+		}
+
+		const showUUIDByTags = showByTags_sets.length > 0 ? select_lib.setIntersection(showByTags_sets) : false
 
 		for ( const modRow of theseMods ) {
 			const modRowUUID = modRow.id
@@ -307,17 +300,21 @@ const select_lib = {
 			modRow.classList.remove('d-none')
 
 			if ( modRow.querySelector('.mod-row-checkbox').checked ) { continue }
-
-			if ( tagHiders.length > 0 && hideUUIDByTags.has(modRowUUID) ) {
-				select_lib.scroll_hide(modRowUUID)
-				modRow.classList.add('d-none')
-				continue
+		
+			if ( hideUUIDByTags !== false ) {
+				if ( hideUUIDByTags.has(modRowUUID) ) {
+					select_lib.scroll_hide(modRowUUID)
+					modRow.classList.add('d-none')
+					continue
+				}
 			}
 
-			if ( tagLimit.length > 0 && ! showUUIDByTags.has(modRowUUID) ) {
-				select_lib.scroll_hide(modRowUUID)
-				modRow.classList.add('d-none')
-				continue
+			if ( showUUIDByTags !== false ) {
+				if ( ! showUUIDByTags.has(modRowUUID) ) {
+					select_lib.scroll_hide(modRowUUID)
+					modRow.classList.add('d-none')
+					continue
+				}
 			}
 
 			if ( searchTerm.length < 2 ) { continue }
@@ -364,5 +361,23 @@ const select_lib = {
 	},
 	get_visible_mods  : () => {
 		return fsgUtil.byId('mod-collections').querySelectorAll('.collapse.show .mod-row')
+	},
+	setIntersection : (sets) => {
+		sets.sort((a, b) => b.length - a.length)
+		
+		const smallestSet = sets[sets.length-1]
+		const returnSet   = new Set(sets[sets.length-1])
+
+		if ( sets.length === 1 ) { return returnSet }
+
+		for ( const thisMod of smallestSet ) {
+			for (let i = 0; i < sets.length-1; i++ ) {
+				if ( ! sets[i].includes(thisMod) ) {
+					returnSet.delete(thisMod)
+					break
+				}
+			}
+		}
+		return returnSet
 	},
 }

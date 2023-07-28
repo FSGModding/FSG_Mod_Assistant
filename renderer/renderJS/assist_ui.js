@@ -6,6 +6,7 @@
 
 // Main Window UI
 
+/* eslint complexity: ["warn", 30] */
 /* global processL10N, fsgUtil, bootstrap, select_lib */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
@@ -68,7 +69,10 @@ let searchTagMap    = {}
 let lastList        = null
 let fullList        = {}
 
-const searchTagMap_empty = () => {
+window.mods.receive('fromMain_modList', (modCollect) => {
+	const multiVersion = modCollect.appSettings.multi_version
+	const curVersion   = modCollect.appSettings.game_version
+	searchStringMap = {}
 	searchTagMap    = {
 		broken   : [],
 		folder   : [],
@@ -83,47 +87,20 @@ const searchTagMap_empty = () => {
 		recent   : [],
 		update   : [],
 	}
-}
-const searchStringMap_empty = () => {
-	searchStringMap = {}
-}
+	lastLocale = modCollect.opts.currentLocale
 
-const buildSearchString = (thisMod) => {
-	return [
-		thisMod.fileDetail.shortName,
-		thisMod.l10n.title,
-		thisMod.modDesc.author
-	].join(' ').toLowerCase()
-}
-
-const buildBadges = (thisMod) => {
-	const displayBadges = []
-	
-	for ( const badge of thisMod.displayBadges ) {
-		displayBadges.push(fsgUtil.badge_main(badge))
-		const badge_lower = badge[0].toLowerCase()
-		if ( typeof searchTagMap?.[badge_lower]?.push === 'function' ) {
-			searchTagMap[badge_lower].push(thisMod.colUUID)
-		}
+	if ( modCollect.updateReady ) {
+		fsgUtil.byId('update-is-ready-button').classList.remove('d-none')
 	}
-	return displayBadges.join('')
-}
 
-window.mods.receive('fromMain_modList', (modCollect) => {
-	const multiVersion = modCollect.appSettings.multi_version
-	const curVersion   = modCollect.appSettings.game_version
-	lastLocale         = modCollect.opts.currentLocale
+	fsgUtil.byId('lang-style-div').setAttribute('class', modCollect.opts.currentLocale)
 
-	searchStringMap_empty()
-	searchTagMap_empty()
+	fsgUtil.byId('dirty_folders').classList[(modCollect.opts.foldersDirty)?'remove':'add']('d-none')
 
-	document.body.setAttribute('data-version', curVersion)
+	const versionsHTML = [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings, modCollect))
+	fsgUtil.byId('farm_sim_versions').innerHTML = versionsHTML.join('')
+	fsgUtil.byId('multi_version_button').classList[(modCollect.appSettings.multi_version)?'remove':'add']('d-none')
 
-	fsgUtil.clsShowTrue('update-is-ready-button', modCollect.updateReady)
-	fsgUtil.clsShowTrue('dirty_folders', modCollect.opts.foldersDirty)
-	fsgUtil.clsShowTrue('multi_version_button', multiVersion)
-
-	fsgUtil.byId('farm_sim_versions').innerHTML = [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings, modCollect)).join('')
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
@@ -131,18 +108,38 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const scrollStart = window.scrollY
 
 	const modTable     = []
+	const optList      = []
 	const scrollTable  = []
 	const verList      = {}
 	let   verFlag      = false
 
 	/* List selection */
-	fsgUtil.byId('collectionSelect').innerHTML = buildCollectSelect(modCollect)
+	lastList = ( modCollect.opts.activeCollection !== '999' && modCollect.opts.activeCollection !== '0') ? `collection--${modCollect.opts.activeCollection}` : modCollect.opts.activeCollection
+	fullList = {}
+
+	fullList[0] = `--${modCollect.opts.l10n.disable}--`
+	optList.push(fsgUtil.buildSelectOpt('0', `--${modCollect.opts.l10n.disable}--`, lastList, true))
+
+	for ( const collectKey of modCollect.set_Collections ) {
+		fullList[`collection--${collectKey}`] = modCollect.modList[collectKey].fullName
+		if ( !multiVersion || modCollect.collectionNotes[collectKey].notes_version === curVersion ) {
+			optList.push(fsgUtil.buildSelectOpt(`collection--${collectKey}`, modCollect.modList[collectKey].fullName, lastList, false, modCollect.collectionToFolder[collectKey]))
+		}
+		if ( multiVersion && `collection--${collectKey}` === lastList && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) {
+			lastList = '999'
+		}
+	}
+
+	fullList[999] = `--${modCollect.opts.l10n.unknown}--`
+	optList.push(fsgUtil.buildSelectOpt('999', `--${modCollect.opts.l10n.unknown}--`, lastList, true))
+
+	fsgUtil.byId('collectionSelect').innerHTML = optList.join('')
 	/* END : List selection */
 
 	for ( const collectKey of modCollect.set_Collections ) {
 		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
 		const thisCollection = modCollect.modList[collectKey]
-		const collectNotes   = modCollect.collectionNotes[collectKey]
+		const collectNotes   = modCollect.collectionNotes?.[collectKey]
 		const modRows        = []
 		const scrollRows     = []
 		const sizeOfFolder   = thisCollection.folderSize
@@ -152,33 +149,55 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		for ( const modKey of thisCollection.alphaSort ) {
 			try {
 				const thisMod       = thisCollection.mods[modKey.split('::')[1]]
+				const displayBadges = doBadgeSet(
+					thisMod.badgeArray,
+					thisMod,
+					thisCollection,
+					modCollect.newMods,
+					modCollect.bindConflict?.[collectKey],
+					modCollect.appSettings.game_version,
+					modCollect.opts.modSites
+				)
 
 				if ( !verFlag ) {
-					if ( Object.hasOwn(verList, thisMod.fileDetail.shortName) && verList[thisMod.fileDetail.shortName] !== thisMod.modDesc.version ) {
-						verFlag = true
+					if ( typeof verList[thisMod.fileDetail.shortName] !== 'undefined' ) {
+						if ( verList[thisMod.fileDetail.shortName] !== thisMod.modDesc.version ) {
+							verFlag = true
+						}
 					}
 					verList[thisMod.fileDetail.shortName] = thisMod.modDesc.version
 				}
 
-				searchStringMap[thisMod.colUUID] = buildSearchString(thisMod)
+				searchStringMap[thisMod.colUUID] = [
+					thisMod.fileDetail.shortName,
+					thisMod.l10n.title,
+					thisMod.modDesc.author
+				].join(' ').toLowerCase()
+
+				for ( const badge of displayBadges ) {
+					const badge_lower = badge.toLowerCase()
+					if ( typeof searchTagMap?.[badge_lower]?.push === 'function' ) {
+						searchTagMap[badge_lower].push(thisMod.colUUID)
+					}
+				}
 
 				scrollRows.push(fsgUtil.buildScrollMod(collectKey, thisMod.colUUID))
 				
 				const thisModEntry = makeModRow(
 					thisMod.colUUID,
 					thisMod,
-					buildBadges(thisMod),
+					displayBadges,
 					thisMod.modHub.id,
 					modCollect.appSettings.game_version,
-					Object.hasOwn(modCollect.opts.modSites, thisMod.fileDetail.shortName)
+					typeof modCollect.opts.modSites[thisMod.fileDetail.shortName] !== 'undefined'
 				)
 				
 				modRows.push(thisModEntry[0])
-
 				if ( thisModEntry[1] !== null ) {
 					mapIcons.push(thisModEntry[1])
 					mapNames.push([...thisModEntry.slice(2)])
 				}
+
 			} catch (e) {
 				window.log.notice(`Error building mod row: ${modKey} :: ${e}`, 'main')
 			}
@@ -197,7 +216,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			modCollect.opts.activeCollection === collectKey,
 			collectNotes.notes_game_admin,
 			collectNotes.notes_holding,
-			fsgUtil.firstOrNull(mapIcons),
+			( mapIcons.length === 1 ) ? mapIcons[0] : null,
 			mapNames[0]
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
@@ -224,6 +243,61 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	select_lib.filter()
 	processL10N()
 })
+
+
+function doBadgeSet(originalBadges, thisMod, thisCollection, newMods, bindConflicts, currentGameVersion, modSites) {
+	const theseBadges = [...originalBadges] || []
+	let   hasAllDeps  = true
+	const isASave     = theseBadges.includes('savegame')
+
+	if ( typeof thisMod.modDesc.depend !== 'undefined' && thisMod.modDesc.depend.length > 0 ) {
+		for ( const thisDep of thisMod.modDesc.depend ) {
+			if ( ! thisCollection.dependSet.has(thisDep) ) {
+				hasAllDeps = false; break
+			}
+		}
+	}
+
+	if ( !hasAllDeps ) {
+		theseBadges.unshift('depend')
+	}
+	if ( Object.keys(thisMod.modDesc.binds).length > 0 ) {
+		theseBadges.push(typeof bindConflicts?.[thisMod.fileDetail.shortName] !== 'undefined' ? 'keys_bad' : 'keys_ok')
+	}
+	if ( thisMod.modHub.version !== null && thisMod.modDesc.version !== thisMod.modHub.version) {
+		theseBadges.push('update')
+	}
+	if ( typeof modSites?.[thisMod.fileDetail.shortName] !== 'undefined' && modSites?.[thisMod.fileDetail.shortName] !== '' ) {
+		theseBadges.push('web')
+	}
+	if ( newMods.has(thisMod.md5Sum) && !thisMod.canNotUse ) {
+		theseBadges.push('new')
+	}
+	if ( thisMod.modHub.recent ) {
+		theseBadges.push('recent')
+	}
+	if ( !isASave && thisMod.modHub.id === null && thisMod.gameVersion !== 13 ) {
+		theseBadges.push('nonmh')
+	}
+	if ( !isASave && currentGameVersion !== thisMod.gameVersion ) {
+		theseBadges.unshift(`fs${thisMod.gameVersion}`)
+	}
+
+
+	const theseBadgesSet = new Set(theseBadges)
+
+	if ( thisMod.gameVersion < 22 ) { theseBadgesSet.delete('pconly') }
+
+	if ( theseBadgesSet.has('keys_bad') && theseBadgesSet.has('keys_ok') ) {
+		theseBadgesSet.delete('keys_ok')
+	}
+
+	if ( theseBadgesSet.has('broken') && theseBadgesSet.has('notmod') ) {
+		theseBadgesSet.delete('broken')
+	}
+
+	return Array.from(theseBadgesSet)
+}
 
 function clientMakeListInactive() {
 	fsgUtil.byId('collectionSelect').value = 0
@@ -266,7 +340,7 @@ const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) 
 	return [
 		fsgUtil.useTemplate('mod_row', {
 			author            : fsgUtil.escapeSpecial(thisMod.modDesc.author),
-			badges            : badges,
+			badges            : Array.from(badges, (badge) => fsgUtil.badge(false, badge)).join(' '),
 			class_hasHash     : modId!==null ? ' has-hash' : '',
 			class_hasSite     : hasExtSite ? ' has-ext-site' : '',
 			class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
@@ -307,55 +381,6 @@ function makeVersionRow(version, options, modCollect) {
 	})
 }
 
-function buildCollectSelect(modCollect) {
-	const optList          = []
-	const activeCollection = modCollect.opts.activeCollection
-	const multiVersion     = modCollect.appSettings.multi_version
-	const curVersion       = modCollect.appSettings.game_version
-
-	lastList = ( activeCollection !== '999' && activeCollection !== '0') ? `collection--${modCollect.opts.activeCollection}` : modCollect.opts.activeCollection
-	fullList = {
-		0   : `--${modCollect.opts.l10n.disable}--`,
-		999 : `--${modCollect.opts.l10n.unknown}--`,
-	}
-	
-	optList.push(fsgUtil.buildSelectOpt(
-		'0',
-		`--${modCollect.opts.l10n.disable}--`,
-		lastList,
-		true
-	))
-
-	for ( const collectKey of modCollect.set_Collections ) {
-		const thisVersion = modCollect.collectionNotes[collectKey].notes_version
-		const fullKey     = `collection--${collectKey}`
-
-		fullList[fullKey] = modCollect.modList[collectKey].fullName
-
-		if ( !multiVersion || thisVersion === curVersion ) {
-			optList.push(fsgUtil.buildSelectOpt(
-				fullKey,
-				modCollect.modList[collectKey].fullName,
-				lastList,
-				false,
-				modCollect.collectionToFolder[collectKey]
-			))
-		}
-		if ( multiVersion && fullKey === lastList && thisVersion !== curVersion ) {
-			lastList = '999'
-		}
-	}
-
-	optList.push(fsgUtil.buildSelectOpt(
-		'999',
-		`--${modCollect.opts.l10n.unknown}--`,
-		lastList,
-		true
-	))
-
-	return optList.join('')
-}
-
 function clientOpenMod(enabled, modID) {
 	if ( enabled === 'true' ) {
 		window.mods.openMod(modID)
@@ -375,23 +400,54 @@ function clientBatchOperation(mode) {
 	const allModRows     = fsgUtil.query('.mod-row .mod-row-checkbox:checked')
 	const selectedMods   = Array.from(allModRows).map((thisRow) => thisRow.id.replace('__checkbox', ''))
 
+	const isHoldingPen   = fsgUtil.byId(`${selectedMods[0].split('--')[0]}_mods`).classList.contains('is-holding-pen')
+	
 	if ( selectedMods.length < 1 ) { return }
 
-	const isHoldingPen   = fsgUtil.byId(`${selectedMods[0].split('--')[0]}_mods`).classList.contains('is-holding-pen')
-
-	if ( mode === 'copy' || mode ==='move' ) {
-		window.mods[`${mode}${isHoldingPen ? 'Multi' : 'Mods'}`](selectedMods)
-	} else if ( mode === 'delete' || mode === 'zip' ) {
-		window.mods[`${mode}Mods`](selectedMods)
-	} else {
-		if ( select_lib.last_alt_select !== null ) {
-			selectedMods.length = 0
-			selectedMods.push(select_lib.last_alt_select)
-		}
-		if ( selectedMods.length !== 1 ) { return }
-		if ( mode === 'open' ) { window.mods.openMods(selectedMods) }
-		if ( mode === 'hub' )  { window.mods.openHub(selectedMods) }
-		if ( mode === 'site' ) { window.mods.openExt(selectedMods) }
+	switch (mode) {
+		case 'copy':
+			if ( isHoldingPen ) {
+				window.mods.copyMulti(selectedMods)
+			} else {
+				window.mods.copyMods(selectedMods)
+			}
+			break
+		case 'move':
+			if ( isHoldingPen ) {
+				window.mods.moveMulti(selectedMods)
+			} else {
+				window.mods.moveMods(selectedMods)
+			}
+			break
+		case 'delete':
+			window.mods.deleteMods(selectedMods)
+			break
+		case 'open':
+			if ( select_lib.last_alt_select !== null ) {
+				selectedMods.length = 0
+				selectedMods.push(select_lib.last_alt_select)
+			}
+			if ( selectedMods.length === 1 ) { window.mods.openMods(selectedMods) }
+			break
+		case 'hub':
+			if ( select_lib.last_alt_hash && select_lib.last_alt_select !== null ) {
+				selectedMods.length = 0
+				selectedMods.push(select_lib.last_alt_select)
+			}
+			if ( selectedMods.length === 1 ) { window.mods.openHub(selectedMods) }
+			break
+		case 'site':
+			if ( select_lib.last_alt_hash && select_lib.last_alt_select !== null ) {
+				selectedMods.length = 0
+				selectedMods.push(select_lib.last_alt_select)
+			}
+			if ( selectedMods.length === 1 ) { window.mods.openExt(selectedMods) }
+			break
+		case 'zip':
+			window.mods.zipMods(selectedMods)
+			break
+		default:
+			break
 	}
 }
 
