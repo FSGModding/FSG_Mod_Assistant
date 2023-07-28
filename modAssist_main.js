@@ -509,13 +509,13 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			case 'game_icon' :
 				sendEntry(
 					l10nEntry,
-					`<img src="img/fs${mcStore.get('game_version')}.png" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
+					`<img src="img/fs${mcStore.get('game_version')}.webp" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
 				)
 				break
 			case 'game_icon_lg' :
 				sendEntry(
 					l10nEntry,
-					`<img src="img/fs${mcStore.get('game_version')}_256.png" class="img-fluid" style="height: 69px;"/>`
+					`<img src="img/fs${mcStore.get('game_version')}_256.webp" class="img-fluid" style="height: 69px;"/>`
 				)
 				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
 					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
@@ -574,10 +574,11 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 /** Detail window operation */
 function openDetailWindow(thisMod) {
-	const thisUUID = thisMod.uuid
+	const thisUUID  = thisMod.uuid
+	const slowStore = thisMod.modDesc.storeItems > 0 && (thisMod.fileDetail.isFolder || !mdCache.has(thisUUID))
 	win.createNamedWindow(
 		'detail',
-		{ selected : thisMod, hasStore : thisMod.modDesc.storeItems > 0 },
+		{ selected : thisMod, hasStore : slowStore },
 		async () => {
 			try {
 				if ( thisMod.modDesc.storeItems > 0 ) {

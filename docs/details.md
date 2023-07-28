@@ -6,7 +6,7 @@
 
 Mod Assistant allows you to set some extra, helpful data on each collection.
 
-![Alt text](img/detail-001.png)
+![Alt text](img/detail-001.webp)
 
 The highlighted blue button will open the collection details editor window.
 
@@ -14,7 +14,7 @@ The highlighted `key` will copy that collection's server *website* administratio
 
 Right clicking on a collection will bring up a context menu where you can copy most of the detail data to the clipboard.
 
-![Alt text](img/detail-002.png)
+![Alt text](img/detail-002.webp)
 
 ## Editing Collection Details
 
@@ -22,17 +22,17 @@ Clicking on the blue edit details button will bring up the details for that coll
 
 ### Favorite Collection
 
-![Alt text](img/detail-003.png)
+![Alt text](img/detail-003.webp)
 
 Favorite collections are those collections that the `Copy Favorites To` button works with.  It is visually indicated with a star on top of the folder icon
 
-![Alt text](img/detail-fav.png)
+![Alt text](img/detail-fav.webp)
 
 ---
 
 ### Removable Store Collection
 
-![Alt text](img/detail-013.png)
+![Alt text](img/detail-013.webp)
 
 This option marks the collection as existing on removable storage.  Usually when a collection folder disappears (you've deleted it), Mod Assistant will automatically forget it and never try and scan it again.  This prevents that, and the folder will be re-scanned when it next appears.
 
@@ -40,7 +40,7 @@ This option marks the collection as existing on removable storage.  Usually when
 
 ### Holding Pen Collection
 
-![Alt text](img/detail-012.png)
+![Alt text](img/detail-012.webp)
 
 This option marks the collection as a special "Holding Pen" type.  This will switch the copy and move interface from single destination with option over-writing to the multi-destination automatic over-write mode.
 
@@ -48,7 +48,7 @@ This option marks the collection as a special "Holding Pen" type.  This will swi
 
 ### Description
 
-![Alt text](img/detail-005.png)
+![Alt text](img/detail-005.webp)
 
 The description displays as a sub-title to the collection in the main interface, and a number of other places.
 
@@ -56,7 +56,7 @@ The description displays as a sub-title to the collection in the main interface,
 
 ### Player Name
 
-![Alt text](img/detail-006.png)
+![Alt text](img/detail-006.webp)
 
 This is what your display name in game will be set to when joining a server with this collection
 
@@ -64,7 +64,7 @@ This is what your display name in game will be set to when joining a server with
 
 ### Server Name
 
-![Alt text](img/detail-007.png)
+![Alt text](img/detail-007.webp)
 
 This is the name of the multiplayer server for this collection. It will be pre-populated in the search field in the server browser
 
@@ -72,7 +72,7 @@ This is the name of the multiplayer server for this collection. It will be pre-p
 
 ### Server Password
 
-![Alt text](img/detail-008.png)
+![Alt text](img/detail-008.webp)
 
 This is the server (game) password for the multiplayer server for this collection.  It will be pre-filled in the password popup when joining
 
@@ -80,7 +80,7 @@ This is the server (game) password for the multiplayer server for this collectio
 
 ### Server Web Site
 
-![Alt text](img/detail-009.png)
+![Alt text](img/detail-009.webp)
 
 This is the address of the multiplayer server administration website, and a checkbox the indicates if the server has downloading of mods enabled.  Note that the server address *must* follow the indicated format for the download function to work.  This is the website that is opened in your default browser when clicking the `globe` button
 
@@ -88,7 +88,7 @@ This is the address of the multiplayer server administration website, and a chec
 
 ### Server Web Site Admin Password
 
-![Alt text](img/detail-010.png)
+![Alt text](img/detail-010.webp)
 
 This is the server *website* admin password. It is the password that is copied via the `key` button in the main interface.
 
@@ -96,7 +96,7 @@ This is the server *website* admin password. It is the password that is copied v
 
 ### Notes
 
-![Alt text](img/detail-011.png)
+![Alt text](img/detail-011.webp)
 
 This allows you to set freeform notes on a collection.
 
@@ -104,6 +104,6 @@ This allows you to set freeform notes on a collection.
 
 ### Game Version
 
-![Alt text](img/detail-004.png)
+![Alt text](img/detail-004.webp)
 
 This sets the intended game version for this collection.  This setting will only appear if you have opted into the Multiple Version mode on the preferences screen.

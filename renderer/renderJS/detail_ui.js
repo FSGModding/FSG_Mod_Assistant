@@ -42,7 +42,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon !== 'undefined' ) {
 					brandImage = lookRecord.brands[thisItem.brand].icon
 				} else {
-					brandImage = ( fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.png` : null
+					brandImage = ( fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
 				}
 			}
 
@@ -51,7 +51,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 			const getPower   = getDefault(thisItem?.specs?.neededpower)
 			const theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
 			const theFill    = getDefault(thisItem.fillLevel)
-			const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
+			const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
 			
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
@@ -268,7 +268,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 		}
 
 		if ( thisItem.masterType === 'placeable' ) {
-			const fillImages = thisItem.silo.types.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
+			const fillImages = thisItem.silo.types.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
 
 			storeItemsHTML.push(fsgUtil.useTemplate('place_div', {
 				animalCount      : thisItem.husbandry.capacity,

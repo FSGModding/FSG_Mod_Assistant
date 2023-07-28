@@ -18,7 +18,7 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 
 ## At A Glance
 
-![main window](docs/img/mainarea-999.png)
+![main window](docs/img/mainarea-999.webp)
 
 ## What is a Broken Mod?
 
