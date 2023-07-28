@@ -264,7 +264,7 @@ window?.l10n?.receive('fromMain_getText_return_title', (data) => {
 		if ( data[0] === 'game_icon_lg' ) { thisTitle = item.closest('#multi_version_button') }
 
 		if ( thisTitle !== null ) {
-			thisTitle.title = `${data[1]}${extTitle !== null ? ` : ${extTitle}` : ''}`
+			thisTitle.title = `${data[1]}${extTitle !== null && extTitle !== '' ? ` : ${extTitle}` : ''}`
 			new bootstrap.Tooltip(thisTitle)
 		}
 	}
