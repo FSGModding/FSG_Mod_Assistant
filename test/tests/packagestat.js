@@ -10,8 +10,8 @@ const path      = require('path')
 const fs        = require('fs')
 const {glob}    = require('glob')
 const {testLib} = require('../test.js')
-const imgSet    = new Set(['.jpg', '.png', '.psd', '.ico', '.icns', '.woff', '.woff2', '.webp', '.zip'])
-const knowSet   = new Set([...imgSet, '.css', '.scss', '.xml', '.js', '.json', '.html', '.md'])
+const imgSet    = new Set(['.jpg', '.png', '.psd', '.ico', '.icns', '.woff', '.woff2', '.webp'])
+const knowSet   = new Set([...imgSet, '.css', '.scss', '.xml', '.js', '.json', '.html', '.md', '.zip'])
 
 module.exports.test = async () => {
 	return Promise.all([
