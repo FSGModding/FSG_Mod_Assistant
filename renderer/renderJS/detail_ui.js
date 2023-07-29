@@ -8,7 +8,7 @@
 
 /* global Chart, processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
-window.mods.receive('fromMain_lookRecord', (_, lookRecord, chartUnits, currentLocale) => {
+window.mods.receive('fromMain_lookRecord', (lookRecord, chartUnits, currentLocale) => {
 	try {
 		buildStore(lookRecord, chartUnits, currentLocale)
 		fsgUtil.clsHideTrue('store_process', true)

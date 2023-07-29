@@ -6,9 +6,14 @@
 
 // Test Program - Mod Checker
 
-const path                      = require('path')
-const { modFileChecker }        = require('../../lib/modCheckLib.js')
-const {testLib}                 = require('../test.js')
+const path                              = require('path')
+const os                                = require('os')
+const { modFileChecker, requiredItems } = require('../../lib/workerThreadLib.js')
+const {testLib}                         = require('../test.js')
+const { ddsDecoder }                    = require('../../lib/modUtilLib.js')
+
+requiredItems.currentLocale = 'en'
+requiredItems.iconDecoder   = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
 
 const basePath = path.join(__dirname, 'mods')
 
@@ -84,7 +89,10 @@ const testSingleGood = (fileName, test) => {
 		path.join(basePath, fileName),
 		false, 0, new Date(), null
 	).getInfo().then((results) => {
-		if ( results.issues.length === 0 ) {
+		for ( const logLine of results.log.items ) {
+			test.step_log(`Log :: ${logLine[0].padEnd(7)} -> ${logLine[1]}`)
+		}
+		if ( results.record.issues.length === 0 ) {
 			test.step('No flags detected, good mod')
 		} else {
 			test.error('Flags were found')
@@ -101,7 +109,10 @@ const testSingleFlag = (fileName, flag, test) => {
 		path.join(basePath, fileName),
 		false, 0, new Date()
 	).getInfo().then((results) => {
-		checkIssues(results, test, flag)
+		for ( const logLine of results.log.items ) {
+			test.step_log(`Log :: ${logLine[0].padEnd(7)} -> ${logLine[1]}`)
+		}
+		checkIssues(results.record, test, flag)
 	}).catch((e) => {
 		test.error(`Unexpected Error :: ${e}`)
 	}).finally(() => {

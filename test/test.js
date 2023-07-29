@@ -52,6 +52,7 @@ const testLib = class {
 	}
 
 	step(text) { this.#steps.push([false, `${text}.`, false]) }
+	step_log(text) { this.#steps.push([null, `${text}.`, false]) }
 	step_fmt(text) { this.#steps.push([false, text, true]) }
 
 	error (text) {
@@ -79,7 +80,7 @@ const testLib = class {
 				c.redBright(`🗙 FAILED: ${c.red(this.#title)}`)
 		)
 		console.log(
-			this.#steps.map((x) => c.gray(` --${c[x[0] ? 'red' : 'cyan'](`  ${x[1]}`)}`)).join('\n'),
+			this.#steps.map((x) => c.gray(` --${c[x[0] === null ? 'gray' : x[0] ? 'red' : 'cyan'](`  ${x[1]}`)}`)).join('\n'),
 			'\n'
 		)
 		if ( doEnv ) {
