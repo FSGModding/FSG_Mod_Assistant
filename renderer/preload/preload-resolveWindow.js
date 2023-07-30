@@ -45,6 +45,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_modSet',
 				'fromMain_subWindowSelectAll',
 				'fromMain_subWindowSelectNone',
+				'fromMain_subWindowSelectInvert',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

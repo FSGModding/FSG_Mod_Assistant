@@ -220,6 +220,9 @@ const fsgUtil = {
 	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip.remove() } },
 	setTheme        : (theme) => { document.body.setAttribute('data-bs-theme', theme) },
 	windowCheckAll  : () => { fsgUtil.windowCheckOp(true) },
+	windowCheckInv  : () => {
+		for ( const element of fsgUtil.query('[type="checkbox"]') ) { element.checked = !element.checked }
+	},
 	windowCheckNone : () => { fsgUtil.windowCheckOp(false) },
 	windowCheckOp   : ( newChecked = true ) => {
 		for ( const element of fsgUtil.query('[type="checkbox"]') ) { element.checked = newChecked }

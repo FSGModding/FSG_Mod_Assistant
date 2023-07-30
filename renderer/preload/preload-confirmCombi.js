@@ -49,6 +49,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_confirmList',
 				'fromMain_subWindowSelectAll',
 				'fromMain_subWindowSelectNone',
+				'fromMain_subWindowSelectInvert',
 			]
 		
 			if ( validChannels.includes( channel ) ) {

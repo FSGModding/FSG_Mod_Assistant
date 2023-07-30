@@ -13,6 +13,7 @@ let lastSourceCollect = null
 
 window.mods.receive('fromMain_subWindowSelectAll', fsgUtil.windowCheckAll)
 window.mods.receive('fromMain_subWindowSelectNone', fsgUtil.windowCheckNone)
+window.mods.receive('fromMain_subWindowSelectInvert', fsgUtil.windowCheckInv)
 
 window.mods.receive('fromMain_confirmList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
