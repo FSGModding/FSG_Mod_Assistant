@@ -119,6 +119,16 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 		updateLog.info('Update Downloaded and Ready', 'auto-update')
 		modCollect.updateIsReady = true
 		processModFolders()
+
+		const bubbleOpts = {
+			icon    : trayIcon,
+			title   : myTranslator.syncStringLookup('app_name'),
+			content : myTranslator.syncStringLookup('update_ready__title'),
+		}
+
+		if ( win.tray && !win.tray.isDestroyed() ) {
+			win.tray.displayBalloon(bubbleOpts)
+		}
 	})
 
 	autoUpdater.checkForUpdatesAndNotify().catch((err) => updateLog.warning(`Updater Issue: ${err}`, 'auto-update'))
