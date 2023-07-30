@@ -156,7 +156,8 @@ mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
 const { modFileCollection, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
-maIPC.decode = new ddsDecoder(convertPath, app.getPath('temp'))
+maIPC.decode     = new ddsDecoder(convertPath, app.getPath('temp'))
+maIPC.decodePath = convertPath
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 

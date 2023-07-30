@@ -40,6 +40,8 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 			let brandImage = null
 			if ( typeof thisItem.brand === 'string' ) {
 				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon !== 'undefined' ) {
+					console.log(lookRecord.brands)
+					console.log(thisItem.brand)
 					brandImage = lookRecord.brands[thisItem.brand].icon
 				} else {
 					brandImage = ( fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
