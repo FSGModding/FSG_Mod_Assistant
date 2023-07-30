@@ -69,19 +69,23 @@ let lastList        = null
 let fullList        = {}
 
 const searchTagMap_empty = () => {
+	// Add tag here to also add to the filter drop downs. (auto-magic)
 	searchTagMap    = {
-		broken   : [],
-		folder   : [],
-		keys_bad : [],
-		keys_ok  : [],
-		new      : [],
-		nomp     : [],
-		nonmh    : [],
-		notmod   : [],
-		pconly   : [],
-		problem  : [],
-		recent   : [],
-		update   : [],
+		broken      : [],
+		depend      : [],
+		depend_flag : [],
+		folder      : [],
+		keys_bad    : [],
+		keys_ok     : [],
+		new         : [],
+		nomp        : [],
+		nonmh       : [],
+		notmod      : [],
+		pconly      : [],
+		problem     : [],
+		recent      : [],
+		savegame    : [],
+		update      : [],
 	}
 }
 const searchStringMap_empty = () => {
@@ -208,6 +212,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	fsgUtil.clsOrGate('verButton', verFlag, 'btn-danger', 'btn-success')
 
+	buildDropDownFilters(modCollect.badgeL10n)
+
 	select_lib.clear_range()
 
 	try {
@@ -237,6 +243,43 @@ function clientMakeListActive() {
 		blinkLED()
 		window.mods.makeActive(activePick)
 	}
+}
+
+const buildDropDownFilters = ( l10n ) => {
+	// Dynamically build filter lists based on what is in the collections
+	const tagOrder = Object.keys(l10n)
+		.sort((a, b) => new Intl.Collator().compare(l10n[a], l10n[b]))
+		.filter((x) => Object.hasOwn(searchTagMap, x) && searchTagMap[x].length > 0)
+
+	const hideTags  = tagOrder.map((x) => makeFilterButton(x, true))
+	const limitTags = tagOrder.map((x) => makeFilterButton(x, false))
+
+	limitTags.unshift(makeFilterButton('selected', false))
+
+	hideTags.unshift(makeFilterReset(true))
+	limitTags.unshift(makeFilterReset(false))
+
+	fsgUtil.byId('filter_out__tags').innerHTML = hideTags.join('')
+	fsgUtil.byId('filter__tags').innerHTML     = limitTags.join('')
+}
+
+const makeFilterReset  = (isHide = false) => {
+	const funcName = isHide ? 'out_tag_reset' : 'tag_reset'
+	return `<button class="btn btn-outline-warning text-center" onclick="select_lib.${funcName}()"><l10n name="filter_tag_reset"></l10n></button>`
+
+}
+
+const makeFilterButton = ( name, isHide = false ) => {
+	const id     = `${isHide ? 'tag_filter_out__' : 'tag_filter__'}${name}`
+	const cls    = isHide ? 'filter_out_tag_buttons' : 'filter_tag_buttons'
+	const l10n   = name === 'selected' ? 'select_quantity' : `mod_badge_${name}`
+	const qty    = searchTagMap?.[name]?.length ?? null
+	const color  = name === 'keys_bad' || name === 'depend_flag' ? 'danger' : 'success'
+
+	return `
+		<input type="checkbox" id="${id}" onchange="select_lib.filter()" class="btn-check ${cls}" autocomplete="off">
+		<label class="btn btn-outline-${color}" for="${id}"><l10n name="${l10n}"></l10n>${qty !== null ? ` [${qty}]` : ''}</label>
+	`
 }
 
 const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames) => fsgUtil.useTemplate('collect_row', {
