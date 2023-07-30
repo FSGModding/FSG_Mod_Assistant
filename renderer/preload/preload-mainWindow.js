@@ -37,6 +37,26 @@ contextBridge.exposeInMainWorld(
 )
 
 contextBridge.exposeInMainWorld(
+	'loader', {
+		receive   : ( channel, func ) => {
+			const validChannels = [
+				'formMain_loading_show',
+				'formMain_loading_hide',
+				'formMain_loadingTitles',
+				'fromMain_loadingDownload',
+				'fromMain_loadingNoCount',
+				'fromMain_loading_total',
+				'fromMain_loading_current',
+			]
+		
+			if ( validChannels.includes( channel ) ) {
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
+			}
+		},
+	}
+)
+
+contextBridge.exposeInMainWorld(
 	'mods', {
 		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
 		cutCopyPaste    : () => { ipcRenderer.send('toMain_notesContextMenu') },
@@ -53,6 +73,7 @@ contextBridge.exposeInMainWorld(
 		versionCheck    : () => { ipcRenderer.send('toMain_versionCheck' ) },
 
 		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
+		cancelDownload  : () => { ipcRenderer.send('toMain_cancelDownload') },
 		changeVersion   : (ver) => { ipcRenderer.send('toMain_setGameVersion', ver) },
 		editFolders     : () => { ipcRenderer.send('toMain_editFolders') },
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },

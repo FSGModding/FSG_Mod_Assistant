@@ -456,6 +456,79 @@ let modInfoDialog       = null
 let dragDropOperation   = false
 let dragDropInFolder    = false
 
+let loadOverlay = null
+let startTime   = Date.now()
+let lastTotal   = 1
+
+window.loader.receive('formMain_loading_show', () => {
+	if ( loadOverlay !== null ) { loadOverlay.show() }
+})
+
+window.loader.receive('formMain_loading_hide', () => {
+	if ( loadOverlay !== null ) { loadOverlay.hide() }
+})
+
+window.loader.receive('formMain_loadingTitles', (mainTitle, subTitle, dlCancel) => {
+	fsgUtil.byId('loadOverlay_statusMessage').innerHTML        = mainTitle
+	fsgUtil.byId('loadOverlay_statusDetail').innerHTML         = subTitle
+	fsgUtil.byId('loadOverlay_statusTotal').innerHTML          = '0'
+	fsgUtil.byId('loadOverlay_statusCurrent').innerHTML        = '0'
+	fsgUtil.byId('loadOverlay_downloadCancelButton').innerHTML = dlCancel
+
+	fsgUtil.clsShow('loadOverlay_statusCount')
+	fsgUtil.clsShow('loadOverlay_statusProgBar')
+
+	fsgUtil.clsHide('loadOverlay_downloadCancel')
+	fsgUtil.clsHide('loadOverlay_speed')
+	
+	if ( loadOverlay !== null ) { loadOverlay.show() }
+})
+
+window.loader.receive('fromMain_loadingDownload', () => {
+	fsgUtil.clsShow('loadOverlay_downloadCancel')
+	fsgUtil.clsShow('loadOverlay_speed')
+})
+
+window.loader.receive('fromMain_loadingNoCount', () => {
+	fsgUtil.clsHide('loadOverlay_statusCount')
+	fsgUtil.clsHide('loadOverlay_statusProgBar')
+})
+
+window.loader.receive('fromMain_loading_total', (count, inMB = false) => {
+	if ( inMB ) { startTime = Date.now() }
+	const thisCount   = inMB ? fsgUtil.toMB(count) : count
+	const thisElement = document.getElementById('loadOverlay_statusTotal')
+	lastTotal = ( count < 1 ) ? 1 : count
+
+	if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
+})
+
+window.loader.receive('fromMain_loading_current', (count, inMB = false) => {
+	const thisCount   = inMB ? fsgUtil.toMB(count, false) : count
+	const thisElement = document.getElementById('loadOverlay_statusCurrent')
+	const thisProg    = document.getElementById('loadOverlay_statusProgBarInner')
+	const thisPercent = `${Math.ceil((count / lastTotal) * 100)}%` || '0%'
+
+	if ( thisProg !== null ) { thisProg.style.width = thisPercent }
+
+	if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
+
+	if ( inMB ) {
+		const perDone    = Math.max(1, Math.ceil((count / lastTotal) * 100))
+		const perRem     = 100 - perDone
+		const endTime    = Date.now()
+		const elapsedMS  = endTime - startTime
+		const elapsedSec = elapsedMS / 1000
+		const estSpeed   = fsgUtil.toMB(count, false) / elapsedSec // MB/sec
+		const secRemain  = elapsedSec / perDone * perRem
+
+		const prettyMinRemain = Math.floor(secRemain / 60)
+		const prettySecRemain = secRemain % 60
+
+		document.getElementById('loadOverlay_speed_speed').innerHTML = `${estSpeed.toFixed(1)} MB/s`
+		document.getElementById('loadOverlay_speed_time').innerHTML = `~ ${prettyMinRemain.toFixed(0).padStart(2, '0')}:${prettySecRemain.toFixed(0).padStart(2, '0')}`
+	}
+})
 
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
@@ -463,6 +536,8 @@ window.addEventListener('DOMContentLoaded', () => {
 	mismatchDialog.hide()
 	modInfoDialog = new bootstrap.Modal(document.getElementById('open_mod_info_modal'), {backdrop : 'static'})
 	modInfoDialog.hide()
+	loadOverlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
+	loadOverlay.hide()
 	const dragTarget = fsgUtil.byId('drag_target')
 
 	dragTarget.addEventListener('dragenter', clientDragEnter )

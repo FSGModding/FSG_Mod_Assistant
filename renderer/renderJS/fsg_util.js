@@ -56,6 +56,7 @@ const fsgUtil = {
 			element.classList.add(...classArray)
 		}
 	},
+	clsHide : ( id ) => { fsgUtil.clsHideTrue(id, true) },
 	clsHideFalse : ( id, test ) => { fsgUtil.clsHideTrue(id, !test) },
 	clsHideTrue  : ( id, test ) => {
 		const element = fsgUtil.byId(id)
@@ -82,6 +83,7 @@ const fsgUtil = {
 			element.classList.remove(...classArray)
 		}
 	},
+	clsShow : ( id ) => { fsgUtil.clsShowTrue(id, true) },
 	clsShowFalse : ( id, test ) => { fsgUtil.clsHideTrue(id, test) },
 	clsShowTrue : ( id, test ) => { fsgUtil.clsHideFalse(id, test) },
 	getAttribNullEmpty : (element, attrib) => {
@@ -187,6 +189,7 @@ const fsgUtil = {
 			units[u]
 		].join(' ')
 	},
+	bytesToMB : (count, suffix = true) => `${Math.round((count / ( 1024 * 1024)*100))/100}${suffix?' MB':''}`,
 	escapeDesc    : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;') : text,
 	escapeSpecial : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
 	

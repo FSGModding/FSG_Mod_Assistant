@@ -599,7 +599,7 @@ function doModLook_response(m, thisMod, thisUUID) {
 				}
 				win.sendToValidWindow('detail', 'fromMain_lookRecord', m.modLook, currentUnits, myTranslator.currentLocale)
 
-				log.log.debug(`Sent(got) modLook :: ${Object.keys(m.modLook.items).length}`, `worker-thread-${m.pid}`)
+				log.log.debug(`Sent(got) modLook :: ${Object.keys(m.modLook.items).length} items`, `worker-thread-${m.pid}`)
 				break
 			}
 			default :
@@ -1718,7 +1718,7 @@ function fileOperation_post(type, fileMap) {
 
 async function processModFolders(force = false) {
 	if ( mainProcessFlags.processRunning ) { return }
-	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(); return }
+	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(125); return }
 
 	mainProcessFlags.processRunning = true
 
