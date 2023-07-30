@@ -8,7 +8,7 @@ Mod Assistant works on the principal of mod collections.  A mod collection is si
 
 For my collections, I choose to create multiple folders in the default mods folder.
 
-![Folder setup](img/colmanage-001.png)
+![Folder setup](img/colmanage-001.webp)
 
 ## Collection Management Functions
 
@@ -18,19 +18,19 @@ Adding and Editing folders is done using the buttons in the upper right of the i
 
 Managing the active collection is done with the button and drop down set at the top center of the interface.
 
-![Buttons](img/interfacemap_collect.png)
+![Buttons](img/interfacemap_collect.webp)
 
 ## Adding Collections
 
 To add a collection to Mod Assistant, you can use the `Add Folder` button, or drag and drop a single folder to the interface in the area labeled `Add as collection to Mod Assistant`
 
-![drag-and-drop](img/colmanage-002.png)
+![drag-and-drop](img/colmanage-002.webp)
 
 ## Managing Collections
 
 To manage the order of collections or remove them, use the `Edit Folders` button.
 
-![Alt text](img/colmanage-003.png)
+![Alt text](img/colmanage-003.webp)
 
 The `FS##` Badge denotes which version of Farming Simulator this collection is for - if you are _not_ in multi-version mode, you can safely ignore this notation.  `Added` shows when the collection was added to Mod Assistant (if after version 2.4.0), and `Last Active` shows the last time the collection was marked active in the game
 
@@ -46,7 +46,7 @@ The arrow buttons at the side will allow you to reorder your collections.  From 
 
 To force Mod Assistant to rescan your collections - for instance if you added files yourself - you can press the `Reload Folders` button.  If Mod Assistant has detected changes to your collections it will add a red dot to the button.
 
-![Reload needed](img/colmanage-007.png)
+![Reload needed](img/colmanage-007.webp)
 
 ## Using Collections
 
@@ -54,7 +54,7 @@ To use a collection in the game, select it from the dropdown list at the center 
 
 Alternatively, you can right click on a collection and click `Set Active`
 
-![Alt text](img/colmanage-004.png)
+![Alt text](img/colmanage-004.webp)
 
 If you decide down the line to remove Mod Assistant, or wish you use the standard mod location for whatever reason, you can use the `Deactivate` button.
 
@@ -64,4 +64,4 @@ If the dropdown displays `--unknown--` that means that Farm Sim is set to use a 
 
 The currently active collection will have a green folder icon with a large white checkmark on it.
 
-![Alt text](img/colmanage-006.png)
+![Alt text](img/colmanage-006.webp)

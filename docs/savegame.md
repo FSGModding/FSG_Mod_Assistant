@@ -8,7 +8,7 @@ The tool for comparing a savegame to a collection is located to the left of each
 
 Additionally, if a ZIP savegame is detected in an added collection (for instance your downloads), you can right click it and compare it against any collection.
 
-![Main Window](img/savegame-001.png)
+![Main Window](img/savegame-001.webp)
 
 ## Loading a savegame
 
@@ -17,13 +17,13 @@ To load a savegame, you have 2 options
 - Load a folder directly
 - Load a ZIP file, like you would download from a server
 
-![Alt text](img/savegame-008.png)
+![Alt text](img/savegame-008.webp)
 
 ## Filtering Results
 
 You can filter the results of opening a file by the badges they are given
 
-![Alt text](img/savegame-007.png)
+![Alt text](img/savegame-007.webp)
 
 The badge meanings are as follows:
 
@@ -40,7 +40,7 @@ The badge meanings are as follows:
 
 Often, it is useful to select a subset of this collection's mods in the main window based on the results of the savegame scan
 
-![Alt text](img/savegame-006.png)
+![Alt text](img/savegame-006.webp)
 
 You can select:
 
@@ -60,7 +60,7 @@ There are multiple context colors used in the resulting display.
   - Maybe just taking up space
 - **Red** - Used, active mods that are ***missing*** from the collection
 
-![Alt text](img/savegame-003.png)  
-![Alt text](img/savegame-002.png)
-![Alt text](img/savegame-004.png)
-![Alt text](img/savegame-005.png)
+![Alt text](img/savegame-003.webp)  
+![Alt text](img/savegame-002.webp)
+![Alt text](img/savegame-004.webp)
+![Alt text](img/savegame-005.webp)

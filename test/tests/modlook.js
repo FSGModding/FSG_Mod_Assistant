@@ -6,8 +6,14 @@
 
 // Test Program - Mod Internals Looker
 
-const { modLooker } = require('../../lib/modCheckLib.js')
-const path          = require('path')
+const path                         = require('path')
+const os                           = require('os')
+const { modLooker, requiredItems } = require('../../lib/workerThreadLib')
+const { ddsDecoder }               = require('../../lib/modUtilLib.js')
+
+requiredItems.currentLocale = 'en'
+requiredItems.iconDecoder   = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
+
 const {testLib}     = require('../test.js')
 
 module.exports.test = async () => {
@@ -17,10 +23,12 @@ module.exports.test = async () => {
 	])
 }
 
+const isWin = process.platform === 'win32'
+
 
 const testGood = (test) => {
 	const searchPath = path.join(__dirname, 'mods')
-	const looker    = new modLooker(
+	return new modLooker(
 		{
 			fileDetail : {
 				fullPath  : path.join(searchPath, 'TestMod_TotallyValidZIP.zip'),
@@ -30,17 +38,26 @@ const testGood = (test) => {
 			},
 		},
 		searchPath,
-		true
-	)
-
-	return looker.getInfo().then((result) => {
-		if ( Object.keys(result.items).length === 21 ) {
+		!isWin
+	).getInfo().then((result) => {
+		for ( const logLine of result.log.items ) {
+			test.step_log(`Log :: ${logLine[0].padEnd(7)} -> ${logLine[1]}`)
+		}
+		if ( Object.keys(result.record.items).length === 21 ) {
 			test.step('Got expected number of store items (21)')
 		} else {
-			test.error(`Got unexpected number of store items ${Object.keys(result.items).length}`)
+			test.error(`Got unexpected number of store items ${Object.keys(result.record.items).length}`)
 		}
 
-		if ( Object.keys(result.brands).length === 1 ) {
+		if ( isWin ) {
+			if ( Object.keys(result.record.icons).length === 21 ) {
+				test.step('Got expected number of icons (21)')
+			} else {
+				test.error(`Got unexpected number of icons ${Object.keys(result.record.icons).length}`)
+			}
+		}
+
+		if ( Object.keys(result.record.brands).length === 1 ) {
 			test.step('Got expected number of new brands (1)')
 		} else {
 			test.error('Got unexpected number of new brands')
@@ -54,7 +71,7 @@ const testGood = (test) => {
 
 const testBad = (test) => {
 	const searchPath = path.join(__dirname, 'mods')
-	const looker    = new modLooker(
+	return new modLooker(
 		{
 			fileDetail : {
 				fullPath  : path.join(searchPath, 'TestMod_NonExistentFile.zip'),
@@ -65,10 +82,11 @@ const testBad = (test) => {
 		},
 		searchPath,
 		true
-	)
-
-	return looker.getInfo().then((result) => {
-		if ( result === null ) {
+	).getInfo().then((result) => {
+		for ( const logLine of result.log.items ) {
+			test.step_log(`Log :: ${logLine[0].padEnd(7)} -> ${logLine[1]}`)
+		}
+		if ( result.record === null ) {
 			test.step('Got expected null object')
 		} else {
 			test.error('Return object was not null')

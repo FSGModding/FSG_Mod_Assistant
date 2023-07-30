@@ -6,25 +6,25 @@
 
 The mod collection area is the main informational center of Mod Assistant.  Here you can view, select and process your mod collections.
 
-![multi](img/collect-001.png)
+![multi](img/collect-001.webp)
 
 ### A Valid Mod
 
 This is a valid, working mod entry
 
-![valid](img/collect-002.png)
+![valid](img/collect-002.webp)
 
 ### An Invalid Mod
 
 This is a broken mod (in fact, the file name is invalid).  Note the title, author, version, and size are all omitted.
 
-![invalid](img/collect-003.png)
+![invalid](img/collect-003.webp)
 
 ### An Valid Mod for a Different Version
 
 This mod is valid, however it is for FS19.  Please see the [Multiple Game Versions](multi-version.html) documentation on how to do this correctly.
 
-![invalid](img/collect-005.png)
+![invalid](img/collect-005.webp)
 
 ## Information Displayed
 
@@ -59,7 +59,7 @@ __Special Note:__ - The Issue badge is based on all the possible issues we know 
 
 There are quick selection buttons on the right side of the interface.  The number in white is the number of mods currently selected. Not that None/All/Invert work on the mods currently in view - they will respect searches and filters.
 
-![Alt text](img/collect_sel.png)
+![Alt text](img/collect_sel.webp)
 
 ### Keyboard Shortcuts
 
@@ -81,4 +81,4 @@ There are quick selection buttons on the right side of the interface.  The numbe
 
 - `RIGHT CLICK` a mod will to display a context menu where you can carry out most operations on that single mod
 
-![Alt text](img/collect-004.png)
+![Alt text](img/collect-004.webp)

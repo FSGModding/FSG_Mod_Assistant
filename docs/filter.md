@@ -6,9 +6,9 @@
 
 The filter bar allows you to filter your mod collections
 
-![Alt text](img/interfacemap_filter.png)
+![Alt text](img/interfacemap_filter.webp)
 
-![Alt text](img/filter-002.png)
+![Alt text](img/filter-002.webp)
 
 ## Limit To field
 
@@ -18,7 +18,7 @@ This field allows you to limit to the mods that are displayed. This is a full te
 
 These dropdowns allow you to filter mods by tag
 
-![Alt text](img/filter-003.png)
+![Alt text](img/filter-003.webp)
 
 For more information about what the tags mean, see the [Collection Area](mods.html) section.
 

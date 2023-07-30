@@ -7,38 +7,53 @@
 // Test Program
 
 // Define tests here, using the file name.  Called with .test(<log library class>)
+const startTime  = Date.now()
 const testList   = [
-	'translations', // Translation file check
-	'modtrack',     // Mod tracking
-	'modlook',      // Mod Internal Looker
 	'modcheck',     // Mod Checker
+	'modcollect',   // Collection test
+	'modlook',      // Mod Internal Looker
+	'modtrack',     // Mod tracking
 	'savegame',     // Savegame Reading
 	'sourcecode',   // ESLint Source code
+	'translations', // Translation file check
 ]
 
 const c       = require('ansi-colors')
 const path    = require('path')
 const os      = require('os')
+const fs      = require('fs')
+
 const { ma_logger, ddsDecoder, maIPC } = require('../lib/modUtilLib.js')
+
 
 maIPC.log = new ma_logger('multi-test')
 maIPC.log.forceNoConsole()
 
 maIPC.decode = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
 
+maIPC.notes    = { store : {}, get : () => null }
+maIPC.settings = { store : {}, get : () => null }
+maIPC.modCache = { store : {}, get : () => null }
+maIPC.sites    = { store : {}, get : () => null }
+
+const envLines = []
 const failedTests = new Set()
 const testLib = class {
+	#setENV   = false
 	#steps    = []
 	#title    = null
 	#didFail  = false
 	#softFail = false
 
-	constructor(name, silentFail = false ) {
+	constructor(name, silentFail = false, setENV = false ) {
 		this.#title    = name
 		this.#softFail = silentFail
+		this.#setENV   = setENV
 	}
 
-	step(text) { this.#steps.push([false, `${text}.`]) }
+	step(text) { this.#steps.push([false, `${text}.`, false]) }
+	step_log(text) { this.#steps.push([null, `${text}.`, false]) }
+	step_fmt(text) { this.#steps.push([false, text, true]) }
 
 	error (text) {
 		if ( ! this.#softFail ) {
@@ -46,20 +61,31 @@ const testLib = class {
 		}
 		process.exitCode = 1
 		this.#didFail = true
-		this.#steps.push([true, text])
+		this.#steps.push([true, text, false])
 	}
 
-	end() {
+	end(doEnv = false) {
 		/* eslint-disable no-console */
+		if ( this.#setENV ) {
+			envLines.push(!this.#didFail ?
+				`## ✓ PASSED: ${this.#title}` :
+				`## 🗙 FAILED: ${this.#title}`
+			, '')
+			envLines.push(...this.#steps.map((x) => `${x[2] ? '' : '- '}${x[1]}`), '')
+		}
+
 		console.log(
 			!this.#didFail ?
 				c.greenBright(`✓ PASSED: ${c.green(this.#title)}`) :
 				c.redBright(`🗙 FAILED: ${c.red(this.#title)}`)
 		)
 		console.log(
-			this.#steps.map((x) => c.gray(` --${c[x[0] ? 'red' : 'cyan'](`  ${x[1]}`)}`)).join('\n'),
+			this.#steps.map((x) => c.gray(` --${c[x[0] === null ? 'gray' : x[0] ? 'red' : 'cyan'](`  ${x[1]}`)}`)).join('\n'),
 			'\n'
 		)
+		if ( doEnv ) {
+			fs.writeFileSync(path.join(__dirname, '..', 'TEST_OUTPUT.md'), ['# Testing Results', '', ...envLines].join('\n'))
+		}
 		/* eslint-enable no-console */
 	}
 }
@@ -72,7 +98,7 @@ for ( const thisTest of testList ) {
 }
 
 Promise.allSettled(runTests).then(() => {
-	const rootTest = new testLib('All Tests', true)
+	const rootTest = new testLib('All Tests', true, true)
 	if ( failedTests.size !== 0 ) {
 		for ( const thisTest of failedTests ) {
 			rootTest.error(`${thisTest} -- Failed`)
@@ -80,5 +106,11 @@ Promise.allSettled(runTests).then(() => {
 	} else {
 		rootTest.step('All Tests Passed')
 	}
-	rootTest.end()
+	
+	rootTest.step(`Tests took ${Date.now() - startTime}ms to complete`)
+	require('./tests/packagestat.js').test().then(() => {
+		rootTest.end(true)
+	})
+	
+	// console.log(maIPC.log.textLog)
 })

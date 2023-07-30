@@ -65,6 +65,12 @@
 
 		.ex-small { font-size: .75em }
 
+		body[data-version="22"] .bdg_no_fs22 { display : none }
+		body[data-version="19"] .bdg_no_fs19 { display : none }
+		body[data-version="17"] .bdg_no_fs17 { display : none }
+		body[data-version="15"] .bdg_no_fs15 { display : none }
+		body[data-version="13"] .bdg_no_fs13 { display : none }
+
 		@media screen and (max-width: 1019px) {
 
 			body[data-i18n="es"] [name="version_check"] { font-size: 0.9em; }
@@ -304,7 +310,7 @@
 				<div class="modal-footer">
 					<div class="row">
 						<div class="col-3">
-							<img src="img/facepalm.png" class="w-100">
+							<img src="img/facepalm.webp" class="w-100">
 						</div>
 						<div class="col-9">
 							<button type="button" class="w-100 mb-2 btn btn-warning" onclick="clientOpenGame_IGNORE()"><l10n name="active_no_match_ignore"></l10n></button>
@@ -345,7 +351,7 @@
 			<div class="row" style="height:35px">
 				<div class="col align-self-center">
 					<a target="_blank" href="https://www.farmsimgame.com/">
-						<img src="img/fsg_banner.png" style="max-height: 30px" class="img-fluid">
+						<img src="img/fsg_banner.webp" style="max-height: 30px" class="img-fluid">
 					</a>
 				</div>
 				<div class="col-auto align-self-center">
@@ -360,7 +366,7 @@
 				</div>
 				<div class="col align-self-center">
 					<a target="_blank" href="https://discord.gg/NxrDJYNC7Q">
-						<img src="img/discord.png" class="img-fluid" style="max-height: 30px">
+						<img src="img/discord.webp" class="img-fluid" style="max-height: 30px">
 					</a>
 				</div>
 			</div>
@@ -393,12 +399,41 @@
 			<div id="farm_sim_versions" class="mt-3"></div>
 		</div>
 	</div>
+
+	<div id="loadOverlay" class="modal" tabindex="-1">
+		<div class="modal-dialog modal-lg modal-dialog-centered" style="width:600px; height:300px;">
+			<div class="modal-content p-0 m-0">
+				<img style="margin:0; padding:0; width:600px; height:300px; opacity: 0.4;" src="img/splash.webp">
+				<div style="position: absolute; left: 311px; height: 270px; width: 270px; top: 20px; opacity: 7%; z-index:2; ">
+					<img src="img/wait_ani.webp" class="w-100">
+				</div>
+				<div id="loadOverlay_downloadCancel" style="position: absolute; left: 10px; width: 280px; top: 250px;" class="py-1 px-3">
+					<button id="loadOverlay_downloadCancelButton" onclick="window.mods.cancelDownload()" class="btn btn-danger text-white w-100"></button>
+				</div>
+				<div style="position: absolute; left: 310px; height: 270px; width: 280px; top: 20px;" class="bg-dark py-1 px-3">
+					<div id="loadOverlay_statusMessage" class="text-center display-6 mb-3">Status Title</div>
+					<div id="status-icon-working" class="d-flex justify-content-center">
+						<div class="spinner-border" style="width: 6rem; height: 6rem;"role="status"></div>
+						<div id="loadOverlay_speed" class="d-none position-fixed" style="text-align:center; margin-top:1.7rem; width:4rem; display:block;"><span id="loadOverlay_speed_speed" style="white-space:nowrap" class="small">SPEED</span><br><span id="loadOverlay_speed_time" style="white-space:nowrap" class="small">TIME</span></div>
+					</div>
+					<div id="loadOverlay_statusProgBar" class="progress mt-2">
+						<div id="loadOverlay_statusProgBarInner" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+					</div>
+					<div id="loadOverlay_statusDetail" class="text-center mw-bold my-2 small">Status Title</div>
+					<div id="loadOverlay_statusCount" class="text-center mw-bold my-2">
+						<span id="loadOverlay_statusCurrent">0</span> / <span id="loadOverlay_statusTotal">0</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
+
 
 <template id="version_row">
 	<div data-bs-dismiss="offcanvas" class="row {{backgroundClass}} mb-3 mx-2 py-2 rounded-2 d-flex align-items-center" style="cursor: pointer;" onclick="clientSetGameVersion('{{version}}')">
 		<div class="col-3">
-			<img src="img/fs{{version}}_256.png" class="img-fluid">
+			<img src="img/fs{{version}}_256.webp" class="img-fluid">
 		</div>
 		<div class="col-9 text-white" style="font-size: 150%">
 			<l10n name="game_title_farming_simulator"></l10n> 20{{version}}<br />

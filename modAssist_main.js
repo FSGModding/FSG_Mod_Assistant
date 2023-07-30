@@ -3,7 +3,6 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-/*eslint complexity: ["warn", 17]*/
 // Main Program
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, clipboard, nativeImage } = require('electron')
@@ -44,8 +43,8 @@ const mainProcessFlags = {
 
 const { autoUpdater } = require('electron-updater')
 const { maIPC, ma_logger, translator, ddsDecoder } = require('./lib/modUtilLib')
+const { EventEmitter }           = require('events')
 
-const semverGt         = require('semver/functions/gt')
 const path             = require('path')
 const fs               = require('fs')
 
@@ -62,6 +61,9 @@ const myTranslator     = new translator(null, !app.isPackaged)
 myTranslator.mcVersion = app.getVersion()
 
 maIPC.l10n = myTranslator
+
+class queueEmitter extends EventEmitter {}
+const modQueueRunner = new queueEmitter()
 
 const win             = new (require('./lib/modAssist_window_lib.js')).windowLib(
 	{
@@ -147,15 +149,14 @@ const pathGuesses = [
 ]
 
 function guessPath(paths, file = '') {
-	for ( const testPath of paths ) { if ( fs.existsSync(path.join(testPath, file)) ) { return testPath } } return ''
+	for ( const testPath of paths ) { if ( fs.existsSync(path.join(testPath, file)) ) { return path.join(testPath, file) } } return ''
 }
 
 mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
-const { modFileCollection, modLooker, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
+const { modFileCollection, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
 maIPC.decode = new ddsDecoder(convertPath, app.getPath('temp'))
-
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 
@@ -172,6 +173,7 @@ const modSite = new Store({name : 'mod_source_site', migrations : settingDefault
 maIPC.modCache = maCache
 maIPC.notes    = modNote
 maIPC.settings = mcStore
+maIPC.sites    = modSite
 
 win.loadSettings()
 
@@ -183,9 +185,17 @@ const gameSetOverride = {
 
 /** Upgrade Cache Version Here */
 
-if ( semverGt('2.4.0', mcStore.get('cache_version'))) {
+const [appVerMajor, appVerMinor] = mcStore.get('cache_version').split('.').map((x) => parseInt(x))
+const updateMajor  = 2
+const updateMinor  = 4
+let updateRequired = false
+
+if ( appVerMajor < updateMajor ) { updateRequired = true }
+if ( !updateRequired && appVerMajor === updateMajor && appVerMinor < updateMinor ) { updateRequired = true }
+
+if ( updateRequired ) {
 	log.log.warning('Invalid Mod Cache (old), resetting.', 'mod-cache')
-	maCache.clear()
+	//maCache.clear()
 	log.log.info('Mod Cache Cleared', 'mod-cache')
 } else {
 	log.log.debug('Mod Cache Version Good', 'mod-cache')
@@ -208,7 +218,7 @@ mdCache.store = detailCache
 
 
 
-const modCollect = new modFileCollection( app.getPath('home'), skipCache )
+const modCollect = new modFileCollection( app.getPath('home'), modQueueRunner, skipCache )
 
 win.modCollect = modCollect
 
@@ -502,13 +512,13 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			case 'game_icon' :
 				sendEntry(
 					l10nEntry,
-					`<img src="img/fs${mcStore.get('game_version')}.png" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
+					`<img src="img/fs${mcStore.get('game_version')}.webp" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
 				)
 				break
 			case 'game_icon_lg' :
 				sendEntry(
 					l10nEntry,
-					`<img src="img/fs${mcStore.get('game_version')}_256.png" class="img-fluid" style="height: 69px;"/>`
+					`<img src="img/fs${mcStore.get('game_version')}_256.webp" class="img-fluid" style="height: 69px;"/>`
 				)
 				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
 					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
@@ -564,58 +574,91 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 })
 /** END: l10n Operation */
 
+function doModLook_response(m, thisMod, thisUUID) {
+	if ( Object.hasOwn(m, 'type') ) {
+		switch (m.type) {
+			case 'log' :
+				log.log[m.level](m.data.join(' '), `worker-thread-${m.pid}`)
+				break
+			case 'modLook' : {
+				for ( const logLine of m.logLines.items ) {
+					log.log[logLine[0]](logLine[1], m.logLines.group)
+				}
+				const currentUnits = {
+					hp  : myTranslator.syncStringLookup('unit_hp'),
+					kph : myTranslator.syncStringLookup('unit_kph'),
+					mph : myTranslator.syncStringLookup('unit_mph'),
+					rpm : myTranslator.syncStringLookup('unit_rpm'),
+				}
+
+				if ( ! thisMod.isFolder ) {
+					mdCache.set(thisUUID, {
+						date    : new Date(),
+						results : m.modLook,
+					})
+				}
+				win.sendToValidWindow('detail', 'fromMain_lookRecord', m.modLook, currentUnits, myTranslator.currentLocale)
+
+				log.log.debug(`Sent(got) modLook :: ${Object.keys(m.modLook.items).length} items`, `worker-thread-${m.pid}`)
+				break
+			}
+			default :
+				break
+		}
+	}
+}
+
+function doModLook_thread(thisMod, thisUUID) {
+	const lookThread = require('child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
+		23,
+		maIPC.decodePath,
+		maIPC.l10n.deferCurrentLocale(),
+		maIPC.l10n.syncStringLookup('unit_hp')
+	])
+	lookThread.on('message', (m) => { doModLook_response(m, thisMod, thisUUID) })
+	lookThread.send({
+		type : 'look',
+		data : {
+			modRecord  : thisMod,
+			searchPath : modCollect.modColUUIDToFolder(thisMod.colUUID),
+		},
+	})
+	lookThread.send({ type : 'exit' })
+}
 
 /** Detail window operation */
 function openDetailWindow(thisMod) {
+	const thisUUID  = thisMod.uuid
+	const slowStore = thisMod.modDesc.storeItems > 0 && (thisMod.fileDetail.isFolder || !mdCache.has(thisUUID))
 	win.createNamedWindow(
 		'detail',
-		{ selected : thisMod},
+		{ selected : thisMod, hasStore : slowStore },
 		async () => {
 			try {
 				if ( thisMod.modDesc.storeItems > 0 ) {
-					const thisUUID = thisMod.uuid
-					const currentUnits = {
-						hp  : myTranslator.syncStringLookup('unit_hp'),
-						kph : myTranslator.syncStringLookup('unit_kph'),
-						mph : myTranslator.syncStringLookup('unit_mph'),
-						rpm : myTranslator.syncStringLookup('unit_rpm'),
-					}
-
 					if ( !thisMod.fileDetail.isFolder && mdCache.has(thisUUID) ) {
+						const currentUnits = {
+							hp  : myTranslator.syncStringLookup('unit_hp'),
+							kph : myTranslator.syncStringLookup('unit_kph'),
+							mph : myTranslator.syncStringLookup('unit_mph'),
+							rpm : myTranslator.syncStringLookup('unit_rpm'),
+						}
 						const thisCache = mdCache.get(thisUUID)
 						mdCache.set(thisUUID, {
 							date    : new Date(),
 							results : thisCache.results,
 						})
-						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, thisCache.results, currentUnits, myTranslator.currentLocale)
+						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisCache.results, currentUnits, myTranslator.currentLocale)
 						log.log.notice(`Loaded details from cache :: ${thisUUID}`, 'mod-look')
 						return
 					}
-					
-					const thisModLook = new modLooker(
-						thisMod,
-						modCollect.modColUUIDToFolder(thisMod.colUUID)
-					)
-				
-					thisModLook.getInfo().then((results) => {
-						if ( ! thisMod.isFolder ) {
-							mdCache.set(thisUUID, {
-								date    : new Date(),
-								results : results,
-							})
-						}
-						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisMod, results, currentUnits, myTranslator.currentLocale)
-					}).catch((err) => {
-						log.log.notice(`Failed to load store items :: ${err}`, 'mod-look')
-					})
+					doModLook_thread(thisMod, thisUUID)
 				}
 			} catch (e) {
 				log.log.notice(`Failed to load store items :: ${e}`, 'mod-look')
 			}
 		}
 	)
-
-	
 }
 
 ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(modCollect.modColUUIDToRecord(thisMod)) })
@@ -1267,9 +1310,9 @@ ipcMain.on('toMain_openTrackFolder', () => {
 	dialog.showOpenDialog(win.win.save_track, options).then((result) => {
 		if ( !result.canceled ) {
 			try {
-				const thisSaveInfo = new savegameTrack(result.filePaths[0])
-
-				win.sendModList({ saveInfo : thisSaveInfo.modList }, 'fromMain_saveInfo', 'save_track', false )
+				new savegameTrack(result.filePaths[0]).getInfo().then((results) => {
+					win.sendModList({ saveInfo : results }, 'fromMain_saveInfo', 'save_track', false )
+				})
 			} catch (e) {
 				log.log.danger(`Load failed: ${e}`, 'save-track')
 			}
@@ -1298,9 +1341,9 @@ ipcMain.on('toMain_openHubByID',    (_, hubID) => { shell.openExternal(`${modHub
 
 function readSaveGame(thisPath, isFolder) {
 	try {
-		const thisSavegame = new saveFileChecker(thisPath, isFolder)
-
-		win.sendModList({ thisSaveGame : thisSavegame }, 'fromMain_saveInfo', 'save', false )
+		new saveFileChecker(thisPath, isFolder).getInfo().then((results) => {
+			win.sendModList({ thisSaveGame : results }, 'fromMain_saveInfo', 'save', false )
+		})
 	} catch (e) {
 		log.log.danger(`Load failed: ${e}`, 'save-check')
 	}
@@ -1675,9 +1718,10 @@ function fileOperation_post(type, fileMap) {
 
 async function processModFolders(force = false) {
 	if ( mainProcessFlags.processRunning ) { return }
-	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(); return }
+	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(125); return }
 
 	mainProcessFlags.processRunning = true
+	maIPC.processing = true
 
 	win.loading.open('mods')
 	win.loading.total(0, true)
@@ -1690,6 +1734,25 @@ async function processModFolders(force = false) {
 		}
 	}, 250)
 }
+
+modQueueRunner.on('process-mods-done', () => {
+	mainProcessFlags.foldersDirty = false
+	parseSettings()
+	parseGameXML(22, null)
+	parseGameXML(19, null)
+	parseGameXML(17, null)
+	parseGameXML(15, null)
+	parseGameXML(13, null)
+	refreshClientModList()
+
+	if ( mcStore.get('rel_notes') !== app.getVersion() ) {
+		mcStore.set('rel_notes', app.getVersion() )
+		log.log.info('New version detected, show changelog')
+		win.createNamedWindow('change')
+	}
+	mainProcessFlags.processRunning = false
+	maIPC.processing = false
+})
 
 function processModFoldersOnDisk() {
 	modCollect.syncSafe = mcStore.get('use_one_drive', false)
@@ -1728,24 +1791,6 @@ function processModFoldersOnDisk() {
 	}
 
 	modCollect.processMods()
-
-	modCollect.processPromise.then(() => {
-		mainProcessFlags.foldersDirty = false
-		parseSettings()
-		parseGameXML(22, null)
-		parseGameXML(19, null)
-		parseGameXML(17, null)
-		parseGameXML(15, null)
-		parseGameXML(13, null)
-		refreshClientModList()
-
-		if ( mcStore.get('rel_notes') !== app.getVersion() ) {
-			mcStore.set('rel_notes', app.getVersion() )
-			log.log.info('New version detected, show changelog')
-			win.createNamedWindow('change')
-		}
-		mainProcessFlags.processRunning = false
-	})
 }
 
 function updateFolderDirtyWatch(eventType, fileName, folder) {

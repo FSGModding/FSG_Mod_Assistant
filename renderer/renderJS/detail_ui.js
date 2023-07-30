@@ -6,20 +6,21 @@
 
 // Detail window UI
 
-/*eslint complexity: off*/
 /* global Chart, processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
-window.mods.receive('fromMain_lookRecord', (modRecord, lookRecord, chartUnits, currentLocale) => {
+window.mods.receive('fromMain_lookRecord', (lookRecord, chartUnits, currentLocale) => {
 	try {
-		buildStore(modRecord, lookRecord, chartUnits, currentLocale)
+		buildStore(lookRecord, chartUnits, currentLocale)
+		fsgUtil.clsHideTrue('store_process', true)
 	} catch (e) {
-		window.log.warning(`Page build failed :: ${e}`, 'detail-ui')
+		window.log.warning(`Store build failed :: ${e}`, 'detail-ui')
 	}
 	processL10N()
 })
 
 window.mods.receive('fromMain_modRecord', (modCollect) => {
 	try {
+		fsgUtil.clsShowTrue('store_process', modCollect.opts.hasStore)
 		buildPage(modCollect)
 	} catch (e) {
 		window.log.warning(`Page build failed :: ${e}`, 'detail-ui')
@@ -27,14 +28,7 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	processL10N()
 })
 
-const buildStore = (modRecord, lookRecord, chartUnits, currentLocale) => {
-	const idMap = {
-		mod_location   : modRecord.fileDetail.fullPath,
-		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
-	}
-
-	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
-
+const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
 
@@ -48,7 +42,7 @@ const buildStore = (modRecord, lookRecord, chartUnits, currentLocale) => {
 				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon !== 'undefined' ) {
 					brandImage = lookRecord.brands[thisItem.brand].icon
 				} else {
-					brandImage = ( fsgUtil.knownBrand.includes(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.png` : null
+					brandImage = ( fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
 				}
 			}
 
@@ -57,7 +51,7 @@ const buildStore = (modRecord, lookRecord, chartUnits, currentLocale) => {
 			const getPower   = getDefault(thisItem?.specs?.neededpower)
 			const theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
 			const theFill    = getDefault(thisItem.fillLevel)
-			const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.includes(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
+			const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
 			
 			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 				brandHIDE         : shouldHide(brandImage),
@@ -274,7 +268,7 @@ const buildStore = (modRecord, lookRecord, chartUnits, currentLocale) => {
 		}
 
 		if ( thisItem.masterType === 'placeable' ) {
-			const fillImages = thisItem.silo.types.map((thisFill) => fsgUtil.knownFills.includes(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.png">` : '')
+			const fillImages = thisItem.silo.types.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
 
 			storeItemsHTML.push(fsgUtil.useTemplate('place_div', {
 				animalCount      : thisItem.husbandry.capacity,
@@ -311,29 +305,43 @@ const buildStore = (modRecord, lookRecord, chartUnits, currentLocale) => {
 	fsgUtil.byId('store_div').classList.remove('d-none')
 
 	for ( const thisJS of storeItemsJS ) {
-		thisJS()
+		setTimeout(thisJS, 25)
 	}
 }
 
+const cleanOrJoin = (arr, text = 'detail_extra_clean') => typeof arr !== 'undefined' && arr.length > 0 ? arr.join('\n') : getText(text)
+
+const doKeyBinds = (modRecord, locale) => {
+	const keyBinds = []
+	for ( const action in modRecord.modDesc.binds ) {
+		const thisBinds = modRecord.modDesc.binds[action].map((keyCombo) => clientGetKeyMapSimple(keyCombo, locale))
+		keyBinds.push(`${action} :: ${thisBinds.join(' / ')}`)
+	}
+	return keyBinds
+}
+
 const buildPage = (modCollect) => {
+	document.body.setAttribute('data-version', modCollect.appSettings.game_version)
+
 	const modRecord = modCollect.opts.selected
-	const modDate   = new Date(Date.parse(modRecord.fileDetail.fileDate))
+	const modDate   = new Date(Date.parse(modRecord.fileDetail.fileDate)).toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'})
 
 	const idMap = {
-		bigFiles       : (( modRecord.fileDetail.tooBigFiles.length > 0 ) ? modRecord.fileDetail.tooBigFiles.join('\n') : getText('detail_extra_clean')),
-		depends        : (( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 )  ? modRecord.modDesc.depend.join('\n')  : getText('detail_depend_clean')),
+		bigFiles       : cleanOrJoin(modRecord.fileDetail.tooBigFiles),
+		depends        : cleanOrJoin(modRecord.modDesc.depend, 'detail_depend_clean'),
 		description    : fsgUtil.escapeDesc(modRecord.l10n.description),
-		extraFiles     : (( modRecord.fileDetail.extraFiles.length > 0 )  ? modRecord.fileDetail.extraFiles.join('\n')  : getText('detail_extra_clean')),
-		file_date      : modDate.toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'}),
+		extraFiles     : cleanOrJoin(modRecord.fileDetail.extraFiles),
+		file_date      : modDate,
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
 		has_scripts    : checkX(modRecord.modDesc.scriptFiles),
 		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
 		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
+		keyBinds       : cleanOrJoin(doKeyBinds(modRecord, modCollect.currentLocale), 'detail_key_none'),
 		mh_version     : ( modRecord.modHub.id !== null ) ? modRecord.modHub.version : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
 		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
 		mod_location   : modRecord.fileDetail.fullPath,
-		pngTexture     : (( modRecord.fileDetail.pngTexture.length > 0 )  ? modRecord.fileDetail.pngTexture.join('\n')  : getText('detail_extra_clean')),
-		spaceFiles     : (( modRecord.fileDetail.spaceFiles.length > 0 )  ? modRecord.fileDetail.spaceFiles.join('\n')  : getText('detail_extra_clean')),
+		pngTexture     : cleanOrJoin(modRecord.fileDetail.pngTexture),
+		spaceFiles     : cleanOrJoin(modRecord.fileDetail.spaceFiles),
 		store_items    : checkX(modRecord.modDesc.storeItems),
 		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
 		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
@@ -343,78 +351,20 @@ const buildPage = (modCollect) => {
 
 	fsgUtil.query('#description a').forEach((link) => { link.target = '_BLANK' })
 
-	const keyBinds = []
-	for ( const action in modRecord.modDesc.binds ) {
-		const thisBinds = modRecord.modDesc.binds[action].map((keyCombo) => clientGetKeyMapSimple(keyCombo, modCollect.currentLocale))
-		keyBinds.push(`${action} :: ${thisBinds.join(' / ')}`)
-	}
-	
-	fsgUtil.byId('keyBinds').innerHTML = ( keyBinds.length > 0 ) ? keyBinds.join('\n') : getText('detail_key_none')
+	const bindingIssue     = modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] ?? null
 
-	const bindingIssue     = modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName]
-	const bindingIssueTest = typeof bindingIssue !== 'undefined'
-
-	if ( modRecord.issues.length < 1 && !bindingIssueTest ) {
+	if ( modRecord.issues.length < 1 && bindingIssue === null ) {
 		fsgUtil.byId('problem_div').classList.add('d-none')
 	} else {
-		const problems = []
-		for ( const issue of modRecord.issues ) {
-			let issueText = getText(issue)
-		
-			if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
-				issueText += ` ${getText('file_error_copy_name')} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
-			}
-			problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
-		}
-
-		if ( bindingIssueTest ) {
-			for ( const keyCombo in bindingIssue ) {
-				const actualKey = clientGetKeyMap(keyCombo, modCollect.currentLocale)
-				const confList  = bindingIssue[keyCombo].join(', ')
-				const issueText = `${getText('bind_conflict')} : ${actualKey} :: ${confList}`
-				problems.push(`<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${issueText}</td></tr>`)
-			}
-		}
+		const problems = [
+			...doStep_issues(modRecord),
+			...doStep_binds(bindingIssue, modCollect.currentLocale)
+		].map((x) => `<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${x}</td></tr>`)
 
 		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`
 	}
 
-	const displayBadges = modRecord.badgeArray || []
-
-	
-	if ( Object.keys(modRecord.modDesc.binds).length > 0 ) {
-		displayBadges.push(( typeof modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] !== 'undefined' ) ?
-			'keys_bad' :
-			'keys_ok'
-		)
-	}
-	if ( modRecord.modHub.id !== null && modRecord.modHub.version !== null && modRecord.modDesc.version !== modRecord.modHub.version ) {
-		displayBadges.push('update')
-	}
-	if ( modRecord.modHub.recent ) {
-		displayBadges.push('recent')
-	}
-	if ( modRecord.modHub.id === null ){
-		displayBadges.push('nonmh')
-		fsgUtil.byId('modhub_link').classList.add('d-none')
-	}
-	if ( modRecord.modHub.id !== null ){
-		fsgUtil.byId('modhub_link').innerHTML = `<a target="_BLANK" href="https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}">www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}</a>`
-	}
-	if ( typeof modRecord.modDesc.depend !== 'undefined' && modRecord.modDesc.depend.length > 0 ) {
-		displayBadges.unshift('depend_flag')
-	}
-	if (modCollect.appSettings.game_version !== modRecord.gameVersion) {
-		displayBadges.unshift(`fs${modRecord.gameVersion}`)
-	}
-	
-
-	if ( displayBadges.includes('broken') && displayBadges.includes('notmod') ) {
-		const brokenIdx = displayBadges.indexOf('broken')
-		displayBadges.splice(brokenIdx, brokenIdx !== -1 ? 1 : 0)
-	}
-
-	const theseBadges = Array.from(displayBadges, (badge) => fsgUtil.badge(false, badge)).join(' ')
+	const theseBadges = Array.from(modRecord.displayBadges, (badge) => fsgUtil.badge_main(badge)).join(' ')
 
 	fsgUtil.setTextOrHide(
 		'badges',
@@ -435,6 +385,31 @@ const buildPage = (modCollect) => {
 	}
 }
 
+function doStep_issues(modRecord) {
+	const problems = []
+	for ( const issue of modRecord.issues ) {
+		let issueText = getText(issue)
+		
+		if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
+			issueText += ` ${getText('file_error_copy_name')} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
+		}
+		problems.push(issueText)
+	}
+	return problems
+}
+
+function doStep_binds(bindingIssue, locale) {
+	const problems = []
+	if ( bindingIssue !== null ) {
+		for ( const keyCombo in bindingIssue ) {
+			const actualKey = clientGetKeyMap(keyCombo, locale)
+			const confList  = bindingIssue[keyCombo].join(', ')
+			const issueText = `${getText('bind_conflict')} : ${actualKey} :: ${confList}`
+			problems.push(issueText)
+		}
+	}
+	return problems
+}
 
 function checkX(amount, showCount = true) {
 	let returner = ''
