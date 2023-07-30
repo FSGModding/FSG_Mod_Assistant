@@ -30,6 +30,7 @@ const mainProcessFlags = {
 	gameSettings    : {},
 	intervalFile    : null,
 	intervalLoad    : null,
+	intervalModHub  : null,
 	intervalUpdate  : null,
 	lastFolderLoc   : null,
 	modFolders      : new Set(),
@@ -1886,6 +1887,10 @@ app.whenReady().then(() => {
 		win.tray.on('click', () => { win.win.main.show() })
 
 		dlSaveFile(hubURLCombo, 'modHubDataCombo.json')
+
+		mainProcessFlags.intervalModHub = setInterval(() => {
+			dlSaveFile(hubURLCombo, 'modHubDataCombo.json')
+		}, ( 6 * 60 * 60 * 1000))
 
 		app.on('second-instance', (_, argv) => {
 			// Someone tried to run a second instance, we should focus our window.
