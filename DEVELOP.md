@@ -15,9 +15,7 @@ ___Contents___
     - [Build Executable](#build-executable)
   - [Testing](#testing)
     - [Test everything](#test-everything)
-    - [Check translations against each other](#check-translations-against-each-other)
     - [Fix translations](#fix-translations)
-    - [Check Dependencies](#check-dependencies)
   - [Folder Structure](#folder-structure)
   - [Utility Classes `fsg_util.js`](#utility-classes-fsg_utiljs)
   - [Pull Requests](#pull-requests)
@@ -26,7 +24,7 @@ ___Contents___
 
 ### Node.js
 
-Mod Assistant expects to be built using at least Node 16.x, 18.x is preferred.
+Mod Assistant expects to be built using at least Node 18.x.
 
 - [Node Download](https://nodejs.org/en/download/)
 
@@ -60,34 +58,25 @@ This package provides a number of test cases:
 
 `# npm test`
 
-### Check translations against each other
-
-See if translation files match keys
-
-`# npm run lang_test`
-
 ### Fix translations
 
 If translation files are mismatched, this will fix it (english is master)
 
 `# npm run lang_fix`
 
-### Check Dependencies
-
-This is for an automated system for checking dependency versions
-
-`# npm run depends`
-
 ## Folder Structure
 
 - `modAssist_main.js` : Master electron server process
 - __F:__`/build` : Build files (icons)
 - __F:__`/lib` : Custom libraries for master process
-  - `ddsLibrary.js` : DDS -> PNG conversion
-  - `ma-logger.js` : Logging class
-  - `savegame-parser.js` : Save game file/folder parser
-  - `single-mod-checker.js` : Mod parser
-  - `translate.js` : Localization library
+  - `modAssist_window_lib.js` : Window handling library
+  - `modCheckLib_static.js`   : Some static data structures that get reused multiple places
+  - `modCheckLib.js` : Mod Collection Class, Save Game Checker Class, Save Game Track Class
+  - `modLookerLang.json` : Localization for modLooker Class, imported from base game
+  - `modUtilLib.js` : DDS Decoder Class, Logger Class, Localization Class, IPC Object for main process
+  - `oldModHub.json` : ModHub Data for FS19 and below
+  - `queueRunner.js` : Thread runner control (modLook and modFileChecker)
+  - `workerThreadLib.js` : Mod Parser Class, Mod Looker Class, IPC Object for threads
 - __F:__`/renderer` : User facing renderer files
   - `<window name>.html` : Render side HTML
   - __F:__`/img` : Image includes
