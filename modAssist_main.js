@@ -1718,7 +1718,7 @@ function fileOperation_post(type, fileMap) {
 
 async function processModFolders(force = false) {
 	if ( mainProcessFlags.processRunning ) { return }
-	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(125); return }
+	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(500); return }
 
 	mainProcessFlags.processRunning = true
 	maIPC.processing = true
