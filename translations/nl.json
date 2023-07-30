@@ -360,7 +360,6 @@
 	"select_none__title": "Deselecteer alles (SHIFT+CTRL+A)",
 	"select_none": "geen",
 	"select_pick": "Selecteer",
-	"select_quantity": "Geselecteerd",
 	"status-processing-title": "Mods verwerken...",
 	"status-set-list-title": "Game Mod Map instellen...",
 	"theme_name_dark": "Donker",
@@ -430,5 +429,7 @@
 	"version_same": "Versie wedstrijd",
 	"unit_rpm": "RPM",
 	"savegame_consumable__title": "Mod bevat alleen verbruiksartikelen",
-	"savegame_consumable": "Verbruikbaar"
+	"savegame_consumable": "Verbruikbaar",
+	"select_only": "&#8203;",
+	"select_only__title": "Alleen geselecteerde tonen"
 }

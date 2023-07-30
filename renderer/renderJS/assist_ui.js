@@ -254,8 +254,6 @@ const buildDropDownFilters = ( l10n ) => {
 	const hideTags  = tagOrder.map((x) => makeFilterButton(x, true))
 	const limitTags = tagOrder.map((x) => makeFilterButton(x, false))
 
-	limitTags.unshift(makeFilterButton('selected', false))
-
 	hideTags.unshift(makeFilterReset(true))
 	limitTags.unshift(makeFilterReset(false))
 
@@ -272,7 +270,7 @@ const makeFilterReset  = (isHide = false) => {
 const makeFilterButton = ( name, isHide = false ) => {
 	const id     = `${isHide ? 'tag_filter_out__' : 'tag_filter__'}${name}`
 	const cls    = isHide ? 'filter_out_tag_buttons' : 'filter_tag_buttons'
-	const l10n   = name === 'selected' ? 'select_quantity' : `mod_badge_${name}`
+	const l10n   = `mod_badge_${name}`
 	const qty    = searchTagMap?.[name]?.length ?? null
 	const color  = name === 'keys_bad' || name === 'depend_flag' ? 'danger' : 'success'
 

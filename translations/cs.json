@@ -360,7 +360,6 @@
 	"select_none__title": "取消选择 (SHIFT+CTRL+A)",
 	"select_none": "无",
 	"select_pick": "选择",
-	"select_quantity": "Selected",
 	"status-processing-title": "处理模组...",
 	"status-set-list-title": "设置游戏模组文件夹...",
 	"theme_name_dark": "Dark",
@@ -430,5 +429,7 @@
 	"version_same": "版本匹配",
 	"unit_rpm": "转速",
 	"savegame_consumable__title": "Mod contains only consumable items",
-	"savegame_consumable": "Consumable"
+	"savegame_consumable": "Consumable",
+	"select_only": "&#8203;",
+	"select_only__title": "Show Only Selected"
 }

@@ -360,7 +360,6 @@
 	"select_none__title": "Zrušit výběr všech (SHIFT + CTRL + A)",
 	"select_none": "žádný",
 	"select_pick": "Zvolit",
-	"select_quantity": "Vybrané",
 	"status-processing-title": "Zpracované modifikace...",
 	"status-set-list-title": "Nastavení složky Herní modifikace...",
 	"theme_name_dark": "Tmavý",
@@ -430,5 +429,7 @@
 	"version_same": "Verze shodná",
 	"unit_rpm": "Otáčky za minutu",
 	"savegame_consumable__title": "Mod obsahuje pouze spotřební předměty",
-	"savegame_consumable": "Spotřební"
+	"savegame_consumable": "Spotřební",
+	"select_only": "&#8203;",
+	"select_only__title": "Zobrazit pouze vybrané"
 }

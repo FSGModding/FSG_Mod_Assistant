@@ -360,7 +360,6 @@
 	"select_none__title": "Deseleccionar todo",
 	"select_none": "ninguno",
 	"select_pick": "Seleccione",
-	"select_quantity": "Seleccionado",
 	"status-processing-title": "Procesamiento de mods...",
 	"status-set-list-title": "Configuración de la carpeta de mods del juego...",
 	"theme_name_dark": "Oscuro",
@@ -430,5 +429,7 @@
 	"version_same": "Versión de la partida",
 	"unit_rpm": "r. p. m.",
 	"savegame_consumable__title": "Mod contiene sólo artículos consumibles",
-	"savegame_consumable": "Consumible"
+	"savegame_consumable": "Consumible",
+	"select_only": "&#8203;",
+	"select_only__title": "Mostrar sólo seleccionados"
 }

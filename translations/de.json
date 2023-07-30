@@ -360,7 +360,6 @@
 	"select_none__title": "Alle abwählen",
 	"select_none": "keine",
 	"select_pick": "Wählen Sie",
-	"select_quantity": "Ausgewählt",
 	"status-processing-title": "Verarbeitung von Mods...",
 	"status-set-list-title": "Spiel-Mod-Ordner einstellen...",
 	"theme_name_dark": "Dunkel",
@@ -430,5 +429,7 @@
 	"version_same": "Version Match",
 	"unit_rpm": "U/min",
 	"savegame_consumable__title": "Mod enthält nur verbrauchbare Gegenstände",
-	"savegame_consumable": "Verbrauchsmaterial"
+	"savegame_consumable": "Verbrauchsmaterial",
+	"select_only": "&#8203;",
+	"select_only__title": "Nur ausgewählte anzeigen"
 }

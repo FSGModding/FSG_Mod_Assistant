@@ -360,7 +360,6 @@
 	"select_none__title": "Odznacz wszystko",
 	"select_none": "Brak",
 	"select_pick": "Wybierz",
-	"select_quantity": "Wybrane:",
 	"status-processing-title": "Przetwarzanie modów...",
 	"status-set-list-title": "Ustawianie folderu z modami...",
 	"theme_name_dark": "Ciemny",
@@ -430,5 +429,7 @@
 	"version_same": "Ta sama wersja",
 	"unit_rpm": "Obroty",
 	"savegame_consumable__title": "Mod zawiera tylko przedmioty zużywalne",
-	"savegame_consumable": "Zużywalny"
+	"savegame_consumable": "Zużywalny",
+	"select_only": "&#8203;",
+	"select_only__title": "Pokaż tylko wybrane"
 }

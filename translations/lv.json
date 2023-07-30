@@ -360,7 +360,6 @@
 	"select_none__title": "Atcelt visu atlasi (SHIFT+CTRL+A)",
 	"select_none": "none",
 	"select_pick": "Select",
-	"select_quantity": "Izvēlēts",
 	"status-processing-title": "Moduļu apstrāde...",
 	"status-set-list-title": "Spēļu modu mapes iestatīšana...",
 	"theme_name_dark": "Tumšs",
@@ -430,5 +429,7 @@
 	"version_same": "Versijas atbilstība",
 	"unit_rpm": "RPM",
 	"savegame_consumable__title": "Mod modulī ir tikai patērējami priekšmeti",
-	"savegame_consumable": "Patērējams"
+	"savegame_consumable": "Patērējams",
+	"select_only": "&#8203;",
+	"select_only__title": "Rādīt tikai atlasīto"
 }

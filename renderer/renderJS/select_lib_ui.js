@@ -266,10 +266,17 @@ const select_lib = {
 	},
 	filter_getFilterShows : (tags) => {
 		const fullArrays  = []
+		const selectList  = new Set(fsgUtil.queryA('.mod-row-checkbox:checked').map((x) => x.id))
 		let   finalArray  = []
+
 		for ( const thisElement of tags ) {
 			const thisTag = thisElement.id.split('__')[1]
-			fullArrays.push(searchTagMap[thisTag])
+			if ( thisTag === 'selected' ) {
+				// Shortcut when filter on selected
+				return selectList
+			} else if ( typeof searchTagMap[thisTag] !== 'undefined' ) {
+				fullArrays.push(searchTagMap[thisTag])
+			}
 		}
 
 		if ( fullArrays.length > 0 ) {
@@ -287,8 +294,8 @@ const select_lib = {
 			fsgUtil.byId('filter_input').value = forceValue
 		}
 
-		const tagLimit      = fsgUtil.byId('filter__tags').querySelectorAll(':checked')
-		const tagHiders     = fsgUtil.byId('filter_out__tags').querySelectorAll(':checked')
+		const tagHiders     = fsgUtil.query('[id*="tag_filter_out__"]:checked')
+		const tagLimit      = fsgUtil.query('[id*="tag_filter__"]:checked')
 		const theseMods     = select_lib.get_visible_mods()
 		const rawSearchTerm = fsgUtil.byId('filter_input').value.toLowerCase()
 		const inverseSearch = rawSearchTerm.startsWith('!')
@@ -321,7 +328,7 @@ const select_lib = {
 			}
 
 			if ( searchTerm.length < 2 ) { continue }
-		
+
 			const modText = searchStringMap[modRowUUID]
 			const showMe  = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
 

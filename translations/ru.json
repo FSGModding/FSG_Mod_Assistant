@@ -362,7 +362,6 @@
 	"select_none__title": "Отменить весь выбор (SHIFT+CTRL+A)",
 	"select_none": "отмена",
 	"select_pick": "Выбрать",
-	"select_quantity": "Выбрано",
 	"status-processing-title": "Обработка модов…",
 	"status-set-list-title": "Настройка папки с игровыми модами…",
 	"theme_name_dark": "Тёмная",
@@ -430,5 +429,7 @@
 	"version_check": "Проверить версии",
 	"version_collections": "Коллекции",
 	"version_diff": "Несовпадающие версии",
-	"version_same": "Совпадающие версии"
+	"version_same": "Совпадающие версии",
+	"select_only": "&#8203;",
+	"select_only__title": "Показать только выбранные"
 }

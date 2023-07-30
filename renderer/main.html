@@ -71,6 +71,8 @@
 		body[data-version="15"] .bdg_no_fs15 { display : none }
 		body[data-version="13"] .bdg_no_fs13 { display : none }
 
+		.btn-check:checked+.btn.btn-selected-mods { background-color: #229b69; }
+
 		@media screen and (max-width: 1019px) {
 
 			body[data-i18n="es"] [name="version_check"] { font-size: 0.9em; }
@@ -182,7 +184,8 @@
 								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
 								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
 								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
-								<span class="input-group-text bg-secondary text-light border-secondary border-opacity-25" id="select_quantity">0</span>
+								<input type="checkbox" id="tag_filter__selected" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<label class="btn btn-secondary btn-selected-mods" for="tag_filter__selected"><l10n name="select_only"></l10n><span id="select_quantity">0</span></label>
 							</div>
 						</div>
 					</div><!-- end: filters -->

@@ -360,7 +360,6 @@
 	"select_none__title": "Désélectionner tout (SHIFT+CTRL+A)",
 	"select_none": "aucun",
 	"select_pick": "Sélectionnez",
-	"select_quantity": "Sélectionné",
 	"status-processing-title": "Modes de traitement...",
 	"status-set-list-title": "Réglage du dossier de modélisation du jeu...",
 	"theme_name_dark": "Sombre",
@@ -430,5 +429,7 @@
 	"version_same": "Correspondance de version",
 	"unit_rpm": "RPM",
 	"savegame_consumable__title": "Le mod ne contient que des éléments consommables",
-	"savegame_consumable": "Consommable"
+	"savegame_consumable": "Consommable",
+	"select_only": "&#8203;",
+	"select_only__title": "Afficher uniquement la sélection"
 }
