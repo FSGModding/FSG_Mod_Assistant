@@ -537,7 +537,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	modInfoDialog = new bootstrap.Modal(document.getElementById('open_mod_info_modal'), {backdrop : 'static'})
 	modInfoDialog.hide()
 	loadOverlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
-	loadOverlay.hide()
 	const dragTarget = fsgUtil.byId('drag_target')
 
 	dragTarget.addEventListener('dragenter', clientDragEnter )

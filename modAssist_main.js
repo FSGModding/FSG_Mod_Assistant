@@ -1721,6 +1721,7 @@ async function processModFolders(force = false) {
 	if ( !force && !mainProcessFlags.foldersDirty ) { win.loading.hide(125); return }
 
 	mainProcessFlags.processRunning = true
+	maIPC.processing = true
 
 	win.loading.open('mods')
 	win.loading.total(0, true)
@@ -1750,6 +1751,7 @@ modQueueRunner.on('process-mods-done', () => {
 		win.createNamedWindow('change')
 	}
 	mainProcessFlags.processRunning = false
+	maIPC.processing = false
 })
 
 function processModFoldersOnDisk() {
