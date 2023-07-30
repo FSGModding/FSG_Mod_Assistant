@@ -93,15 +93,6 @@ const fsgUtil = {
 			null :
 			attribValue
 	},
-	getAttribNullError : (element, attrib) => {
-		const attribValue = element.getAttribute(attrib)
-	
-		if ( typeof attribValue === 'undefined' || attribValue === null ) {
-			throw new TypeError(`attribute ${attrib} not defined on ${element}`)
-		} else {
-			return attribValue
-		}
-	},
 	query      : ( query ) => document.querySelectorAll( query ),
 	queryA     : ( query ) => Array.from(document.querySelectorAll( query )),
 
@@ -192,9 +183,6 @@ const fsgUtil = {
 	bytesToMB : (count, suffix = true) => `${Math.round((count / ( 1024 * 1024)*100))/100}${suffix?' MB':''}`,
 	escapeDesc    : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;') : text,
 	escapeSpecial : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
-	
-	existAndNonEmpty : ( arr ) => typeof arr !== 'undefined' && arr.length > 0,
-	exists : ( obj ) => typeof obj !== 'undefined',
 
 	firstOrNull : ( arr ) => {
 		if ( typeof arr !== 'object' ) { return null }
