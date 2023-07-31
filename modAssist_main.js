@@ -43,11 +43,11 @@ const mainProcessFlags = {
 }
 
 const { autoUpdater } = require('electron-updater')
-const { maIPC, ma_logger, translator, ddsDecoder } = require('./lib/modUtilLib')
-const { EventEmitter }           = require('events')
+const { maIPC, ma_logger, translator} = require('./lib/modUtilLib')
+const { EventEmitter }           = require('node:events')
 
-const path             = require('path')
-const fs               = require('fs')
+const path             = require('node:path')
+const fs               = require('node:fs')
 
 const log              = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
 
@@ -145,7 +145,8 @@ const modHubURL     = 'https://www.farming-simulator.com/mod.php?mod_id='
 const trayIcon      = !app.isPackaged
 	? path.join(app.getAppPath(), 'renderer', 'img', 'icon.ico')
 	: path.join(process.resourcesPath, 'app.asar', 'renderer', 'img', 'icon.ico')
-const convertPath   = !app.isPackaged
+
+maIPC.decodePath   = !app.isPackaged
 	? path.join(app.getAppPath(), 'texconv.exe')
 	: path.join(process.resourcesPath, '..', 'texconv.exe')
 
@@ -168,8 +169,6 @@ mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
 const { modFileCollection, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
-maIPC.decode     = new ddsDecoder(convertPath, app.getPath('temp'))
-maIPC.decodePath = convertPath
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 
@@ -325,7 +324,7 @@ ipcMain.on('toMain_copyFavorites',  () => {
 		}
 	}
 
-	if ( sourceFiles.length > 0 ) {
+	if ( sourceFiles.length !== 0 ) {
 		win.createNamedWindow(
 			'confirmFav',
 			{
@@ -338,7 +337,7 @@ ipcMain.on('toMain_copyFavorites',  () => {
 })
 
 function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
-	if ( modIDS.length > 0 ) {
+	if ( modIDS.length !== 0 ) {
 		win.createNamedWindow(windowName, {
 			records : ( modRecords === null ) ? modCollect.modColUUIDsToRecords(modIDS) : modRecords,
 			originCollectKey : modIDS[0].split('--')[0],
@@ -387,12 +386,12 @@ ipcMain.on('toMain_addFolder', () => {
 		mainProcessFlags.modFolders.add(potentialFolder)
 		mainProcessFlags.foldersDirty = true
 
-		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
+		mcStore.set('modFolders', [...mainProcessFlags.modFolders])
 		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
 		modNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
 		processModFolders()
-	}}).catch((unknownError) => {
-		log.log.danger(`Could not read specified add folder : ${unknownError}`, 'folder-opts')
+	}}).catch((err) => {
+		log.log.danger(`Could not read specified add folder : ${err}`, 'folder-opts')
 	})
 })
 ipcMain.on('toMain_editFolders',    () => { win.createNamedWindow('folder') })
@@ -402,7 +401,7 @@ ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	const folder = modCollect.mapCollectionToFolder(collectKey)
 	if ( mainProcessFlags.modFolders.delete(folder) ) {
 		log.log.notice(`Folder removed from tracking ${folder}`, 'folder-opts')
-		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
+		mcStore.set('modFolders', [...mainProcessFlags.modFolders])
 
 		modCollect.removeCollection(collectKey)
 		
@@ -415,7 +414,7 @@ ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	}
 })
 ipcMain.on('toMain_reorderFolder', (_, from, to) => {
-	const newOrder    = Array.from(mainProcessFlags.modFolders)
+	const newOrder    = [...mainProcessFlags.modFolders]
 	const item        = newOrder.splice(from, 1)[0]
 
 	newOrder.splice(to, 0, item)
@@ -425,7 +424,7 @@ ipcMain.on('toMain_reorderFolder', (_, from, to) => {
 	mainProcessFlags.modFolders   = new Set(newOrder)
 	modCollect.newCollectionOrder = new Set(newSetOrder)
 
-	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
+	mcStore.set('modFolders', [...mainProcessFlags.modFolders])
 
 	win.sendModList({},	'fromMain_getFolders', 'folder', false )
 	mainProcessFlags.foldersDirty = true
@@ -459,7 +458,7 @@ ipcMain.on('toMain_reorderFolderAlpha', () => {
 	mainProcessFlags.modFolders   = newModFolders
 	modCollect.newCollectionOrder = newModSetOrder
 
-	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
+	mcStore.set('modFolders', [...mainProcessFlags.modFolders])
 
 	win.sendModList({},	'fromMain_getFolders', 'folder', false )
 	mainProcessFlags.foldersDirty = true
@@ -470,7 +469,7 @@ ipcMain.on('toMain_dropFolder', (_, newFolder) => {
 		const thisFolderCollectKey = modCollect.getFolderHash(newFolder)
 
 		mainProcessFlags.modFolders.add(newFolder)
-		mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
+		mcStore.set('modFolders', [...mainProcessFlags.modFolders])
 		modNote.set(`${thisFolderCollectKey}.notes_version`, mcStore.get('game_version'))
 		processModFolders(true)
 	} else {
@@ -622,7 +621,7 @@ function doModLook_response(m, thisMod, thisUUID) {
 }
 
 function doModLook_thread(thisMod, thisUUID) {
-	const lookThread = require('child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
+	const lookThread = require('node:child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
 		23,
 		maIPC.decodePath,
 		maIPC.l10n.deferCurrentLocale(),
@@ -667,8 +666,8 @@ function openDetailWindow(thisMod) {
 					}
 					doModLook_thread(thisMod, thisUUID)
 				}
-			} catch (e) {
-				log.log.notice(`Failed to load store items :: ${e}`, 'mod-look')
+			} catch (err) {
+				log.log.notice(`Failed to load store items :: ${err}`, 'mod-look')
 			}
 		}
 	)
@@ -815,7 +814,7 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 		}
 	}
 
-	if ( noteMenuItems.length > 0 ) {
+	if ( noteMenuItems.length !== 0 ) {
 		template.push({ type : 'separator' }, ...noteMenuItems)
 	}
 	
@@ -875,8 +874,8 @@ ipcMain.on('toMain_changeGameLog',     () => {
 			loadGameLog(result.filePaths[0])
 			readGameLog()
 		}
-	}).catch((unknownError) => {
-		log.log.danger(`Could not read specified log : ${unknownError}`, 'game-log')
+	}).catch((err) => {
+		log.log.danger(`Could not read specified log : ${err}`, 'game-log')
 	})
 })
 
@@ -899,8 +898,8 @@ function readGameLog() {
 				thisGameLog
 			)
 		})
-	} catch (e) {
-		log.log.warning(`Could not read game log file: ${e}`, 'game-log')
+	} catch (err) {
+		log.log.warning(`Could not read game log file: ${err}`, 'game-log')
 	}
 }
 /** END: Game log window operation */
@@ -923,12 +922,12 @@ function gameLauncher() {
 		win.loading.hide(3500)
 
 		try {
-			const child = require('child_process').spawn(progPath, gameArgs.split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
+			const child = require('node:child_process').spawn(progPath, gameArgs.split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
 
 			child.on('error', (err) => { launchLog.danger(`Game launch failed ${err}!`) })
 			child.unref()
-		} catch (e) {
-			launchLog.danger(`Game launch failed: ${e}`)
+		} catch (err) {
+			launchLog.danger(`Game launch failed: ${err}`)
 		}
 	} else {
 		const dialogOpts = {
@@ -1043,8 +1042,8 @@ ipcMain.on('toMain_setPrefFile', (event, version) => {
 			refreshClientModList()
 			event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
 		}
-	}).catch((unknownError) => {
-		log.log.danger(`Could not read specified gamesettings : ${unknownError}`, 'game-settings')
+	}).catch((err) => {
+		log.log.danger(`Could not read specified gamesettings : ${err}`, 'game-settings')
 	})
 })
 ipcMain.on('toMain_setGamePath', (event, version) => {
@@ -1062,8 +1061,8 @@ ipcMain.on('toMain_setGamePath', (event, version) => {
 			refreshClientModList()
 			event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
 		}
-	}).catch((unknownError) => {
-		log.log.danger(`Could not read specified game EXE : ${unknownError}`, 'game-path')
+	}).catch((err) => {
+		log.log.danger(`Could not read specified game EXE : ${err}`, 'game-path')
 	})
 })
 ipcMain.on('toMain_setGameVersion', (_, newVersion) => {
@@ -1177,8 +1176,8 @@ ipcMain.on('toMain_downloadList',   (_, collection) => {
 					})
 
 					zipReadStream.pipe(unzip.Extract({ path : modCollect.mapCollectionToFolder(collection) }))
-				} catch (e) {
-					modDLLog.warning(`Download failed : (${response.statusCode}) ${e}`)
+				} catch (err) {
+					modDLLog.warning(`Download failed : (${response.statusCode}) ${err}`)
 					win.loading.hide()
 				}
 			})
@@ -1237,8 +1236,8 @@ ipcMain.on('toMain_exportList', (_, collection) => {
 				win.doDialogBox('main', { type : 'warning', messageL10n : 'save_csv_failed' })
 			}
 		}
-	}).catch((unknownError) => {
-		csvLog.warning(`Could not save csv file : ${unknownError}`)
+	}).catch((err) => {
+		csvLog.warning(`Could not save csv file : ${err}`)
 	})
 })
 ipcMain.on('toMain_exportZip', (_, selectedMods) => {
@@ -1306,8 +1305,8 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 				}, 1500)
 			}
 		}
-	}).catch((unknownError) => {
-		zipLog.warning(`Could not create zip file : ${unknownError}`)
+	}).catch((err) => {
+		zipLog.warning(`Could not create zip file : ${err}`)
 	})
 })
 /** END: Export operation */
@@ -1326,12 +1325,12 @@ ipcMain.on('toMain_openTrackFolder', () => {
 				new savegameTrack(result.filePaths[0]).getInfo().then((results) => {
 					win.sendModList({ saveInfo : results }, 'fromMain_saveInfo', 'save_track', false )
 				})
-			} catch (e) {
-				log.log.danger(`Load failed: ${e}`, 'save-track')
+			} catch (err) {
+				log.log.danger(`Load failed: ${err}`, 'save-track')
 			}
 		}
-	}).catch((unknownError) => {
-		log.log.danger(`Could not read specified folder : ${unknownError}`, 'save-track')
+	}).catch((err) => {
+		log.log.danger(`Could not read specified folder : ${err}`, 'save-track')
 	})
 })
 
@@ -1357,8 +1356,8 @@ function readSaveGame(thisPath, isFolder) {
 		new saveFileChecker(thisPath, isFolder).getInfo().then((results) => {
 			win.sendModList({ thisSaveGame : results }, 'fromMain_saveInfo', 'save', false )
 		})
-	} catch (e) {
-		log.log.danger(`Load failed: ${e}`, 'save-check')
+	} catch (err) {
+		log.log.danger(`Load failed: ${err}`, 'save-check')
 	}
 }
 function openSaveGame(zipMode = false) {
@@ -1374,8 +1373,8 @@ function openSaveGame(zipMode = false) {
 		if ( !result.canceled ) {
 			readSaveGame(result.filePaths[0], !zipMode)
 		}
-	}).catch((unknownError) => {
-		log.log.danger(`Could not read specified file/folder : ${unknownError}`, 'save-check')
+	}).catch((err) => {
+		log.log.danger(`Could not read specified file/folder : ${err}`, 'save-check')
 	})
 }
 /** END: Savegame window operation */
@@ -1490,21 +1489,21 @@ function parseGameXML(version = 22, setDevMode = null) {
 	const XMLParser = new fxml.XMLParser({
 		commentPropName    : '#comment',
 		ignoreAttributes   : false,
-		numberParseOptions : { leadingZeros : true, hex : true, skipLike : /[0-9]\.[0-9]{6}/ },
+		numberParseOptions : { leadingZeros : true, hex : true, skipLike : /\d\.\d{6}/ },
 	})
 	
 	try {
 		XMLString = fs.readFileSync(gameXMLFile, 'utf8')
-	} catch (e) {
-		log.log.danger(`Could not read game xml (version:${version}) ${e}`, 'game-xml')
+	} catch (err) {
+		log.log.danger(`Could not read game xml (version:${version}) ${err}`, 'game-xml')
 		return
 	}
 
 	try {
 		XMLDoc = XMLParser.parse(XMLString)
 		mainProcessFlags.devControls[version] = XMLDoc.game.development.controls
-	} catch (e) {
-		log.log.danger(`Could not read game xml (version:${version}) ${e}`, 'game-xml')
+	} catch (err) {
+		log.log.danger(`Could not read game xml (version:${version}) ${err}`, 'game-xml')
 	}
 	
 	if ( setDevMode !== null && XMLDoc !== null ) {
@@ -1521,8 +1520,8 @@ function parseGameXML(version = 22, setDevMode = null) {
 
 		try {
 			fs.writeFileSync(gameXMLFile, builder.build(XMLDoc))
-		} catch (e) {
-			log.log.danger(`Could not write game xml ${e}`, 'game-xml')
+		} catch (err) {
+			log.log.danger(`Could not write game xml ${err}`, 'game-xml')
 		}
 
 		parseGameXML(version, null)
@@ -1562,7 +1561,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 	const XMLParser = new fxml.XMLParser({
 		commentPropName    : '#comment',
 		ignoreAttributes   : false,
-		numberParseOptions : { leadingZeros : true, hex : true, skipLike : /[0-9]\.[0-9]{6}/ },
+		numberParseOptions : { leadingZeros : true, hex : true, skipLike : /\d\.\d{6}/ },
 	})
 	
 	try {
@@ -1579,8 +1578,8 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		}
 
 		gameSetOverride.index = ( !gameSetOverride.active ) ? '0' : modCollect.mapFolderToCollection(gameSetOverride.folder) || '999'
-	} catch (e) {
-		log.log.danger(`Could not read game settings ${e}`, 'game-settings')
+	} catch (err) {
+		log.log.danger(`Could not read game settings ${err}`, 'game-settings')
 		return
 	}
 
@@ -1634,8 +1633,8 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 		outputXML = outputXML.replace('<ingameMapFruitFilter/>', '<ingameMapFruitFilter></ingameMapFruitFilter>')
 
 		fs.writeFileSync(gameSettingsFileName, outputXML)
-	} catch (e) {
-		log.log.danger(`Could not write game settings ${e}`, 'game-settings')
+	} catch (err) {
+		log.log.danger(`Could not write game settings ${err}`, 'game-settings')
 	}
 
 	parseSettings()
@@ -1686,9 +1685,12 @@ function fileOperation_post(type, fileMap) {
 
 	mainProcessFlags.foldersDirty = true
 
+	const typeCopyMove = new Set(['move_multi', 'copy_multi', 'copy', 'move', 'import'])
+	const typeMoveDel  = new Set(['move', 'delete'])
+
 	for ( const file of fullPathMap ) {
 		try {
-			if ( ['move_multi', 'copy_multi', 'copy', 'move', 'import'].includes(type) ) {
+			if ( typeCopyMove.has(type) ) {
 				fileLog.info(`Copy File : ${file.src} -> ${file.dest}`)
 
 				if ( ! fs.statSync(file.src).isDirectory() ) {
@@ -1703,12 +1705,12 @@ function fileOperation_post(type, fileMap) {
 				}
 			}
 
-			if ( ['move', 'delete'].includes(type) ) {
+			if ( typeMoveDel.has(type) ) {
 				fileLog.info(`Delete File : ${file.src}`)
 				fs.rmSync(file.src, { recursive : true } )
 			}
-		} catch (e) {
-			fileLog.danger(`Could not ${type} file : ${e}`)
+		} catch (err) {
+			fileLog.danger(`Could not ${type} file : ${err}`)
 		}
 
 		win.loading.current()
@@ -1719,8 +1721,8 @@ function fileOperation_post(type, fileMap) {
 			try {
 				fileLog.info(`Delete File : ${thisFile}`)
 				fs.rmSync(thisFile, { recursive : true } )
-			} catch (e) {
-				fileLog.danger(`Could not delete file : ${e}`)
+			} catch (err) {
+				fileLog.danger(`Could not delete file : ${err}`)
 			}
 		}
 	}
@@ -1773,7 +1775,8 @@ function processModFoldersOnDisk() {
 
 	const offlineFolders = []
 
-	mainProcessFlags.watchModFolder.forEach((oldWatcher) => { oldWatcher.close() })
+	for ( const oldWatcher of mainProcessFlags.watchModFolder ) { oldWatcher.close() }
+
 	mainProcessFlags.watchModFolder = []
 	// Cleaner for no-longer existing folders, set watcher for others
 	for ( const folder of mainProcessFlags.modFolders ) {
@@ -1793,7 +1796,7 @@ function processModFoldersOnDisk() {
 		}
 	}
 
-	mcStore.set('modFolders', Array.from(mainProcessFlags.modFolders))
+	mcStore.set('modFolders', [...mainProcessFlags.modFolders])
 
 	for ( const folder of mainProcessFlags.modFolders ) {
 		if ( ! offlineFolders.includes(folder) ) {
@@ -1807,13 +1810,11 @@ function processModFoldersOnDisk() {
 }
 
 function updateFolderDirtyWatch(eventType, fileName, folder) {
-	if ( eventType === 'rename' ) {
-		if ( ! fileName.endsWith('.tmp') && ! fileName.endsWith('.crdownload')) {
-			log.log.debug(`Folders now dirty due to ${path.basename(folder)} :: ${fileName}`, 'folder-watcher')
+	if ( eventType === 'rename' && ! fileName.endsWith('.tmp') && ! fileName.endsWith('.crdownload')) {
+		log.log.debug(`Folders now dirty due to ${path.basename(folder)} :: ${fileName}`, 'folder-watcher')
 
-			mainProcessFlags.foldersDirty = true
-			win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
-		}
+		mainProcessFlags.foldersDirty = true
+		win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
 	}
 }
 
@@ -1831,8 +1832,8 @@ function loadSaveFile(filename) {
 		modCollect.modHubVersion = { ...oldModHub.versions, ...jsonData.version}
 
 		log.log.debug(`Loaded ${filename}`, 'modhub-cache')
-	} catch (e) {
-		log.log.warning(`Loading ${filename} failed: ${e}`, 'modhub-cache')
+	} catch (err) {
+		log.log.warning(`Loading ${filename} failed: ${err}`, 'modhub-cache')
 	}
 }
 
