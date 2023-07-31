@@ -6,10 +6,10 @@
 
 // Test Program - Mod Internals Looker
 
-const path                         = require('path')
-const os                           = require('os')
-const { modLooker, requiredItems } = require('../../lib/workerThreadLib')
-const { ddsDecoder }               = require('../../lib/modUtilLib.js')
+const path = require('node:path')
+const os   = require('node:os')
+
+const { modLooker, requiredItems, ddsDecoder } = require('../../lib/workerThreadLib')
 
 requiredItems.currentLocale = 'en'
 requiredItems.iconDecoder   = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
@@ -25,7 +25,6 @@ module.exports.test = async () => {
 
 const isWin = process.platform === 'win32'
 
-
 const testGood = (test) => {
 	const searchPath = path.join(__dirname, 'mods')
 	return new modLooker(
@@ -37,8 +36,7 @@ const testGood = (test) => {
 				shortName : 'TestMod_TotallyValidZIP',
 			},
 		},
-		searchPath,
-		!isWin
+		searchPath
 	).getInfo().then((result) => {
 		for ( const logLine of result.log.items ) {
 			test.step_log(`Log :: ${logLine[0].padEnd(7)} -> ${logLine[1]}`)
@@ -62,8 +60,8 @@ const testGood = (test) => {
 		} else {
 			test.error('Got unexpected number of new brands')
 		}
-	}).catch((e) => {
-		test.error(`Unexpected error :: ${e}`)
+	}).catch((err) => {
+		test.error(`Unexpected error :: ${err}`)
 	}).finally(() => {
 		test.end()
 	})
@@ -80,8 +78,7 @@ const testBad = (test) => {
 				shortName : 'TestMod_NonExistentFile',
 			},
 		},
-		searchPath,
-		true
+		searchPath
 	).getInfo().then((result) => {
 		for ( const logLine of result.log.items ) {
 			test.step_log(`Log :: ${logLine[0].padEnd(7)} -> ${logLine[1]}`)
@@ -91,8 +88,8 @@ const testBad = (test) => {
 		} else {
 			test.error('Return object was not null')
 		}
-	}).catch((e) => {
-		test.error(`Unexpected error :: ${e}`)
+	}).catch((err) => {
+		test.error(`Unexpected error :: ${err}`)
 	}).finally(() => {
 		test.end()
 	})

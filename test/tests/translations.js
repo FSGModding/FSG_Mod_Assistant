@@ -6,8 +6,8 @@
 
 // Test Program - Language Files
 
-const path      = require('path')
-const fs        = require('fs/promises')
+const path      = require('node:path')
+const fs        = require('node:fs/promises')
 const {testLib} = require('../test.js')
 
 module.exports.test = async () => {
@@ -45,7 +45,7 @@ const checkLangs = () => {
 					}
 				}
 
-				if ( errors.length > 0 ) {
+				if ( errors.length !== 0 ) {
 					test.error(`${thisFile.name} has ${errors.join(' and ')} Keys`)
 				} else {
 					test.step(`${thisFile.name} is correct`)

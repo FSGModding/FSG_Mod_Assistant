@@ -6,7 +6,7 @@
 
 // Test Program - Savegame Mod Tracking
 
-const path              = require('path')
+const path              = require('node:path')
 const { savegameTrack } = require('../../lib/modCheckLib.js')
 const {testLib}         = require('../test.js')
 
@@ -27,8 +27,8 @@ const testBad = (test) => {
 		} else {
 			test.error('Return object not empty')
 		}
-	}).catch((e) => {
-		test.error(`Unexpected error :: ${e}`)
+	}).catch((err) => {
+		test.error(`Unexpected error :: ${err}`)
 	}).finally(() => {
 		test.end()
 	})
@@ -70,8 +70,8 @@ const testGood = (test) => {
 					break
 			}
 		}
-	}).catch((e) => {
-		test.error(`Unexpected error :: ${e}`)
+	}).catch((err) => {
+		test.error(`Unexpected error :: ${err}`)
 	}).finally(() => {
 		test.end()
 	})

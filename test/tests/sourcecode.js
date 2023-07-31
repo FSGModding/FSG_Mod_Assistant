@@ -6,14 +6,14 @@
 
 // Test Program - ESLint Source Code
 
-const {globSync}   = require('glob')
-const {ESLint}     = require('eslint')
-const path         = require('path')
-const {testLib}    = require('../test.js')
+const path         = require('node:path')
+const { globSync } = require('glob')
+const { ESLint }   = require('eslint')
+const { testLib }  = require('../test.js')
 
 module.exports.test = async () => {
 	const test     = new testLib('ESLint Source Code Test')
-	return tester(test).then(() => {test.end()})
+	return tester(test).then(() => {test.end(false, true)})
 }
 
 async function tester (test) {
@@ -40,13 +40,13 @@ async function tester (test) {
 			if ( result[0].warningCount > 0 ) {
 				problems.push(`${result[0].warningCount} Warnings`)
 			}
-			if ( problems.length > 0 ) {
+			if ( problems.length !== 0 ) {
 				test.error(`${thisFile} has ${problems.join(' and ')}`)
 			} else {
 				test.step(`${thisFile} is clean`)
 			}
-		}).catch((e) => {
-			test.error(e)
+		}).catch((err) => {
+			test.error(err)
 		}))
 	}
 	return Promise.all(promiseArray)

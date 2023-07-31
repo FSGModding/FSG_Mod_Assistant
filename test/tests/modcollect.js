@@ -8,18 +8,18 @@
 
 const localCollections           = 'C:\\Users\\jtsag\\Documents\\My Games\\FarmingSimulator2022\\mods'
 const useLocalCollections        = false // only valid for developer, causes test fail
-const path                       = require('path')
-const fs                         = require('fs')
+
+const path                       = require('node:path')
+const fs                         = require('node:fs')
+const { EventEmitter }           = require('node:events')
 const { modFileCollection }      = require('../../lib/modCheckLib.js')
 const { testLib }                = require('../test.js')
 const { maIPC, getDeferPromise } = require('../../lib/modUtilLib.js')
-const { EventEmitter }           = require('events')
-
 
 class queueEmitter extends EventEmitter {}
 const queueDoneEmit = new queueEmitter()
 
-const modCollect = new modFileCollection( require('os').homedir, queueDoneEmit, true )
+const modCollect = new modFileCollection( require('node:os').homedir, queueDoneEmit, true )
 
 maIPC.decodePath = path.join(__dirname, '..', '..', 'texconv.exe')
 
@@ -77,8 +77,8 @@ const testGood = (test) => {
 		}
 
 		// console.dir(testSet, { depth : 3 })
-	}).catch((e) => {
-		test.error(`Unexpected error :: ${e}`)
+	}).catch((err) => {
+		test.error(`Unexpected error :: ${err}`)
 	}).finally(() => {
 		test.end()
 	})

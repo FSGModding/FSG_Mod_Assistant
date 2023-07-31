@@ -7,8 +7,8 @@
 /* eslint no-console: off */
 // Test Program
 
-const path       = require('path')
-const fs         = require('fs')
+const path       = require('node:path')
+const fs         = require('node:fs')
 const testPath   = path.join(__dirname, '../translations')
 
 const raw_en = fs.readFileSync(path.join(testPath, 'en.json'))
@@ -22,8 +22,8 @@ let folderContents = []
 
 try {
 	folderContents = fs.readdirSync(testPath, {withFileTypes : true})
-} catch (e) {
-	console.log(`Couldn't open test folder :: ${e}`)
+} catch (err) {
+	console.log(`Couldn't open test folder :: ${err}`)
 	exitCode = 1
 	process.exit(exitCode)
 }
@@ -56,12 +56,12 @@ for ( const thisFile of folderContents ) {
 			}
 		}
 
-		if ( Object.keys(entryExtra).length > 0 ) {
+		if ( Object.keys(entryExtra).length !== 0 ) {
 			console.log('  --Extra Keys Removed:')
 			console.log(JSON.stringify(entryExtra, null, '  '))
 			console.log('\n')
 		}
-		if ( Object.keys(entryMissing).length > 0 ) {
+		if ( Object.keys(entryMissing).length !== 0 ) {
 			console.log('  --Missing Keys Added:')
 			console.log(JSON.stringify(entryMissing, null, '  '))
 			console.log('\n')
@@ -73,8 +73,8 @@ for ( const thisFile of folderContents ) {
 		if ( !noneFound ) {
 			fs.writeFileSync(path.join(testPath, thisFile.name), JSON.stringify(fileContents, null, '\t'))
 		}
-	} catch (e) {
-		console.log(`Issue with file ${thisFile.name} :: ${e}`)
+	} catch (err) {
+		console.log(`Issue with file ${thisFile.name} :: ${err}`)
 		exitCode = 1
 	}
 }

@@ -6,8 +6,8 @@
 
 // Test Program - Language Files
 
-const path      = require('path')
-const fs        = require('fs')
+const path      = require('node:path')
+const fs        = require('node:fs')
 const {glob}    = require('glob')
 const {testLib} = require('../test.js')
 const imgSet    = new Set(['.jpg', '.png', '.psd', '.ico', '.icns', '.woff', '.woff2', '.webp'])
@@ -33,8 +33,8 @@ const countTextFile = (fileList, isJS = false) => {
 	return fileList.reduce((total, x) => {
 		const fileContents = fs.readFileSync(x.fullpath(), 'utf-8').replace(/\r/g, '')
 
-		let   thisComment = (fileContents.match(/^[ |\t]*\/\/.+\r*$/gm) ?? []).length
-		const thisBlank   = (fileContents.match(/^[ \t]*\r*$/gm) || []).length
+		let   thisComment = (fileContents.match(/^[\t |]*\/\/.+\r*$/gm) ?? []).length
+		const thisBlank   = (fileContents.match(/^[\t ]*\r*$/gm) || []).length
 		const thisTotal   = fileContents.split('\n').length
 
 		if ( isJS ) {

@@ -6,7 +6,7 @@
 
 // Test Program - Savegame Parser
 
-const path                = require('path')
+const path                = require('node:path')
 const { saveFileChecker } = require('../../lib/modCheckLib.js')
 const {testLib}           = require('../test.js')
 
@@ -27,8 +27,8 @@ const testBad = (test) => {
 		} else {
 			test.error('Got a non-empty result set')
 		}
-	}).catch((e) => {
-		test.error(`Unexpected Error :: ${e}`)
+	}).catch((err) => {
+		test.error(`Unexpected Error :: ${err}`)
 	}).finally(() => {
 		test.end()
 	})
@@ -55,8 +55,8 @@ const testZip = (test) => {
 		} else {
 			test.error('Got unexpected number of mods')
 		}
-	}).catch((e) => {
-		test.error(`Unexpected Error :: ${e}`)
+	}).catch((err) => {
+		test.error(`Unexpected Error :: ${err}`)
 	}).finally(() => {
 		test.end()
 	})
@@ -83,8 +83,8 @@ const testFolder = (test) => {
 		} else {
 			test.error('Got unexpected number of mods')
 		}
-	}).catch((e) => {
-		test.error(`Unexpected Error :: ${e}`)
+	}).catch((err) => {
+		test.error(`Unexpected Error :: ${err}`)
 	}).finally(() => {
 		test.end()
 	})
