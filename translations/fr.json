@@ -431,5 +431,7 @@
 	"savegame_consumable__title": "Le mod ne contient que des éléments consommables",
 	"savegame_consumable": "Consommable",
 	"select_only": "&#8203;",
-	"select_only__title": "Afficher uniquement la sélection"
+	"select_only__title": "Afficher uniquement la sélection",
+	"user_pref_blurb_show_tooltips": "Lorsque cette option est activée, des infobulles utiles s'affichent sur les boutons et les badges de l'interface.  Les utilisateurs expérimentés peuvent les trouver gênantes, vous pouvez donc les désactiver ici",
+	"user_pref_title_show_tooltips": "Afficher les infobulles des fenêtres contextuelles"
 }

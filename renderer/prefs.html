@@ -44,6 +44,18 @@
 		</div>
 
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
+			<div class="col-8">
+				<h5><l10n name="user_pref_title_show_tooltips"></l10n></h5>
+				<p class="ps-2"><l10n name="user_pref_blurb_show_tooltips"></l10n></p>
+			</div>
+			<div class="col-4">
+				<div class="form-check form-switch form-control-lg">
+					<input onchange="clientSetPref('show_tooltips')" class="form-check-input mt-2" type="checkbox" id="show_tooltips">
+				</div>
+			</div>
+		</div>
+
+		<div class="row mx-4 mb-3 pb-2 border-bottom">
 			<h5><l10n name="user_pref_title_game_config"></l10n> <l10n name="mod_badge_fs22" class="badge bg-info me-1 p-1 bg-gradient"></h5>
 			<div class="row">
 				<div class="col-2"><img src="img/fs22_256.webp" class="img-fluid"></div>

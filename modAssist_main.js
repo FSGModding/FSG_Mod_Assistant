@@ -513,6 +513,7 @@ ipcMain.on('toMain_themeList_send',   (event) => {
 })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return', [entry, text]) }
+	const doTitle   = mcStore.get('show_tooltips', true)
 
 	sendEntry('__currentLocale__', myTranslator.currentLocale)
 
@@ -577,9 +578,11 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			}
 			default :
 				myTranslator.stringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
-				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
-					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
-				})
+				if ( doTitle ) {
+					myTranslator.stringTitleLookup(l10nEntry).then((text) => {
+						if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
+					})
+				}
 				break
 		}
 	}

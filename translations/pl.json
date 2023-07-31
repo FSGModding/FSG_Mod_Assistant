@@ -431,5 +431,7 @@
 	"savegame_consumable__title": "Mod zawiera tylko przedmioty zużywalne",
 	"savegame_consumable": "Zużywalny",
 	"select_only": "&#8203;",
-	"select_only__title": "Pokaż tylko wybrane"
+	"select_only__title": "Pokaż tylko wybrane",
+	"user_pref_blurb_show_tooltips": "Gdy opcja ta jest aktywna, wyświetla pomocne podpowiedzi na przyciskach interfejsu i odznakach.  Doświadczeni użytkownicy mogą uznać je za rozpraszające, więc można je tutaj wyłączyć",
+	"user_pref_title_show_tooltips": "Pokaż wyskakujące podpowiedzi"
 }

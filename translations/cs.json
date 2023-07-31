@@ -431,5 +431,7 @@
 	"savegame_consumable__title": "Mod contains only consumable items",
 	"savegame_consumable": "Consumable",
 	"select_only": "&#8203;",
-	"select_only__title": "Show Only Selected"
+	"select_only__title": "Show Only Selected",
+	"user_pref_blurb_show_tooltips": "When active, show helpful popup tooltips on interface buttons and badges.  Experienced users may find them distracting, so you can turn them off here.",
+	"user_pref_title_show_tooltips": "Show Popup Tooltips"
 }

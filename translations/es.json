@@ -431,5 +431,7 @@
 	"savegame_consumable__title": "Mod contiene sólo artículos consumibles",
 	"savegame_consumable": "Consumible",
 	"select_only": "&#8203;",
-	"select_only__title": "Mostrar sólo seleccionados"
+	"select_only__title": "Mostrar sólo seleccionados",
+	"user_pref_blurb_show_tooltips": "Cuando está activo, muestra información emergente útil en los botones e insignias de la interfaz.  Los usuarios experimentados pueden encontrarlas molestas, así que puedes desactivarlas aquí",
+	"user_pref_title_show_tooltips": "Mostrar información emergente"
 }

@@ -431,5 +431,7 @@
 	"savegame_consumable__title": "Mod bevat alleen verbruiksartikelen",
 	"savegame_consumable": "Verbruikbaar",
 	"select_only": "&#8203;",
-	"select_only__title": "Alleen geselecteerde tonen"
+	"select_only__title": "Alleen geselecteerde tonen",
+	"user_pref_blurb_show_tooltips": "Toont, indien actief, handige pop-up tooltips op interfaceknoppen en badges.  Ervaren gebruikers vinden ze misschien afleidend, dus je kunt ze hier uitschakelen.",
+	"user_pref_title_show_tooltips": "Toon pop-up tooltips"
 }
