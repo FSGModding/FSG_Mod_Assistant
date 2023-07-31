@@ -68,9 +68,10 @@ const modQueueRunner = new queueEmitter()
 
 const win             = new (require('./lib/modAssist_window_lib.js')).windowLib(
 	{
-		refreshClientModList : refreshClientModList,
+		gameLauncher         : gameLauncher,
 		processModFolders    : processModFolders,
 		readGameLog          : readGameLog,
+		refreshClientModList : refreshClientModList,
 	},
 	mainProcessFlags
 )
@@ -955,7 +956,7 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 			click : () => {
 				if ( win.isValid('main') ) {
 					win.win.main.focus()
-					win.sendToWindow.send('main', 'fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
+					win.sendToValidWindow('main', 'fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
 				}
 			},
 		})

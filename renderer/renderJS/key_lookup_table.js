@@ -295,3 +295,10 @@ const localKeys = {
 		'MOUSE_BUTTON_WHEEL_UP'   : 'КОЛЁСИКО МЫШИ ВВЕРХ',
 	},
 }
+
+if ( typeof module !== 'undefined' ) {
+	module.exports = {
+		keyMap : keyMap,
+		localKeys : localKeys,
+	}
+}
