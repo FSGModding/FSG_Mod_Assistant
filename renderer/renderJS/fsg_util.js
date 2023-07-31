@@ -13,8 +13,8 @@ const getText = (text, extraTitle = null) => `<l10n ${extraTitle!==null ? `data-
 const fsgUtil = {
 	badgeDefault : {
 		broken      : 'danger',
-		depend      : 'success',
-		depend_flag : 'danger',
+		depend      : 'danger',
+		depend_flag : 'success',
 		folder      : 'primary',
 		fs0         : 'danger',
 		fs11        : 'info border-danger',
