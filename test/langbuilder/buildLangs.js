@@ -6,7 +6,7 @@
 
 // Language Builder
 
-const fs            = require('fs')
+const fs            = require('node:fs')
 const { XMLParser } = require('fast-xml-parser')
 const { globSync }  = require('glob')
 
