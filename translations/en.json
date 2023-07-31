@@ -231,6 +231,8 @@
 	"mod_badge_problem"                      : "issue",
 	"mod_badge_recent__title"                : "This mod was recently added or updated on the ModHub",
 	"mod_badge_recent"                       : "recent",
+	"mod_badge_require__title"               : "This mod is required by another mod in the collection",
+	"mod_badge_require"                      : "required",
 	"mod_badge_savegame__title"              : "This file is a savegame archive",
 	"mod_badge_savegame"                     : "savegame",
 	"mod_badge_update__title"                : "The version on ModHub is different",

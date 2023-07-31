@@ -433,5 +433,7 @@
 	"select_only": "&#8203;",
 	"select_only__title": "Rādīt tikai atlasīto",
 	"user_pref_blurb_show_tooltips": "Kad tas ir aktīvs, uz saskarnes pogām un nozīmītēm tiek rādīti noderīgi uznirstošie uzskates logrīki.  Pieredzējušiem lietotājiem tie var šķist traucējoši, tāpēc šeit tos var izslēgt.",
-	"user_pref_title_show_tooltips": "Rādīt uznirstošos logus"
+	"user_pref_title_show_tooltips": "Rādīt uznirstošos logus",
+	"mod_badge_require__title": "Šis mods ir nepieciešams citam kolekcijas modam",
+	"mod_badge_require": "nepieciešams"
 }

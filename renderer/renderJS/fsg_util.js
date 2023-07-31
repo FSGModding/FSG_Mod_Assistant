@@ -32,6 +32,7 @@ const fsgUtil = {
 		pconly      : 'info text-black',
 		problem     : 'warning',
 		recent      : 'success',
+		require     : 'info text-black',
 		savegame    : 'info fw-bold fst-italic',
 		update      : 'light border-dark-subtle text-black',
 		web         : 'light border-dark-subtle text-black',

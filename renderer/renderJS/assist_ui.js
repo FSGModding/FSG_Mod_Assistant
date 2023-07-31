@@ -84,6 +84,7 @@ const searchTagMap_empty = () => {
 		pconly      : [],
 		problem     : [],
 		recent      : [],
+		require     : [],
 		savegame    : [],
 		update      : [],
 	}
@@ -104,7 +105,7 @@ const buildBadges = (thisMod) => {
 	const displayBadges = []
 	
 	if ( !Array.isArray(thisMod.displayBadges ) ) { return '' }
-	
+
 	for ( const badge of thisMod.displayBadges ) {
 		displayBadges.push(fsgUtil.badge_main(badge))
 		const badge_lower = badge[0].toLowerCase()
@@ -274,7 +275,7 @@ const makeFilterButton = ( name, isHide = false ) => {
 	const cls    = isHide ? 'filter_out_tag_buttons' : 'filter_tag_buttons'
 	const l10n   = `mod_badge_${name}`
 	const qty    = searchTagMap?.[name]?.length ?? null
-	const color  = name === 'keys_bad' || name === 'depend_flag' ? 'danger' : 'success'
+	const color  = name === 'keys_bad' || name === 'depend' ? 'danger' : 'success'
 
 	return `
 		<input type="checkbox" id="${id}" onchange="select_lib.filter_begin()" class="btn-check ${cls}" autocomplete="off">
