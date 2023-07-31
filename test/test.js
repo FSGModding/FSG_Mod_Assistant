@@ -19,17 +19,13 @@ const testList   = [
 ]
 
 const c       = require('ansi-colors')
-const path    = require('path')
-const os      = require('os')
-const fs      = require('fs')
+const path    = require('node:path')
+const fs      = require('node:fs')
 
-const { ma_logger, ddsDecoder, maIPC } = require('../lib/modUtilLib.js')
-
+const { ma_logger, maIPC } = require('../lib/modUtilLib.js')
 
 maIPC.log = new ma_logger('multi-test')
 maIPC.log.forceNoConsole()
-
-maIPC.decode = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
 
 maIPC.notes    = { store : {}, get : () => null }
 maIPC.settings = { store : {}, get : () => null }
@@ -64,14 +60,18 @@ const testLib = class {
 		this.#steps.push([true, text, false])
 	}
 
-	end(doEnv = false) {
+	end(doEnv = false, onlyError = false) {
 		/* eslint-disable no-console */
+		const displaySteps = onlyError && this.#didFail ? this.#steps.filter((x) => x[0]): this.#steps
 		if ( this.#setENV ) {
-			envLines.push(!this.#didFail ?
-				`## ✓ PASSED: ${this.#title}` :
-				`## 🗙 FAILED: ${this.#title}`
-			, '')
-			envLines.push(...this.#steps.map((x) => `${x[2] ? '' : '- '}${x[1]}`), '')
+			envLines.push(
+				!this.#didFail ?
+					`## ✓ PASSED: ${this.#title}` :
+					`## 🗙 FAILED: ${this.#title}`,
+				'',
+				...this.#steps.map((x) => `${x[2] ? '' : '- '}${x[1]}`),
+				''
+			)
 		}
 
 		console.log(
@@ -80,7 +80,7 @@ const testLib = class {
 				c.redBright(`🗙 FAILED: ${c.red(this.#title)}`)
 		)
 		console.log(
-			this.#steps.map((x) => c.gray(` --${c[x[0] === null ? 'gray' : x[0] ? 'red' : 'cyan'](`  ${x[1]}`)}`)).join('\n'),
+			displaySteps.map((x) => c.gray(` --${c[x[0] === null ? 'gray' : x[0] ? 'red' : 'cyan'](`  ${x[1]}`)}`)).join('\n'),
 			'\n'
 		)
 		if ( doEnv ) {
