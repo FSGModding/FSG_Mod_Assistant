@@ -23,13 +23,13 @@ contextBridge.exposeInMainWorld(
 	'l10n', {
 		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
 		receive         : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_getText_return',
 				'fromMain_getText_return_title',
 				'fromMain_l10n_refresh'
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
@@ -41,14 +41,14 @@ contextBridge.exposeInMainWorld(
 		refreshList  : () => { ipcRenderer.send('toMain_refreshVersions') },
 		realCopyFile : ( fileMap ) => { ipcRenderer.send('toMain_realFileVerCP', fileMap) },
 		receive      : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_modSet',
 				'fromMain_subWindowSelectAll',
 				'fromMain_subWindowSelectNone',
 				'fromMain_subWindowSelectInvert',
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
@@ -59,12 +59,12 @@ contextBridge.exposeInMainWorld(
 	'win_ops', {
 		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow') },
 		receive            : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_clearTooltips',
 				'fromMain_themeSetting',
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},

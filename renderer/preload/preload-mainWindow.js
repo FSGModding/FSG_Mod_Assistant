@@ -23,13 +23,13 @@ contextBridge.exposeInMainWorld(
 	'l10n', {
 		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
 		receive         : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_getText_return_title',
 				'fromMain_getText_return',
 				'fromMain_l10n_refresh'
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
@@ -39,7 +39,7 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'loader', {
 		receive   : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'formMain_loading_show',
 				'formMain_loading_hide',
 				'formMain_loadingTitles',
@@ -47,9 +47,9 @@ contextBridge.exposeInMainWorld(
 				'fromMain_loadingNoCount',
 				'fromMain_loading_total',
 				'fromMain_loading_current',
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
@@ -104,7 +104,7 @@ contextBridge.exposeInMainWorld(
 		dropFolder : (folder) => { ipcRenderer.send('toMain_dropFolder', folder) },
 
 		receive   : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_debugLogNoDanger',
 				'fromMain_debugLogDanger',
 				'fromMain_dirtyUpdate',
@@ -115,9 +115,9 @@ contextBridge.exposeInMainWorld(
 				'fromMain_selectNoneOpen',
 				'fromMain_selectOnly',
 				'fromMain_selectOnlyFilter',
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
@@ -128,12 +128,12 @@ contextBridge.exposeInMainWorld(
 	'win_ops', {
 		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow') },
 		receive            : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_clearTooltips',
 				'fromMain_themeSetting',
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},

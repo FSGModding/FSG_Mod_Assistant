@@ -28,14 +28,14 @@ contextBridge.exposeInMainWorld(
 		themeList_send   : ()        => { ipcRenderer.send('toMain_themeList_send') },
 
 		receive          : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_getText_return',
 				'fromMain_langList_return',
 				'fromMain_themeList_return',
 				'fromMain_l10n_refresh'
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
@@ -54,11 +54,11 @@ contextBridge.exposeInMainWorld(
 		showChangelog : () => { ipcRenderer.send('toMain_showChangelog') },
 
 		receive   : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_allSettings',
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
@@ -69,12 +69,12 @@ contextBridge.exposeInMainWorld(
 	'win_ops', {
 		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow') },
 		receive            : ( channel, func ) => {
-			const validChannels = [
+			const validChannels = new Set([
 				'fromMain_clearTooltips',
 				'fromMain_themeSetting',
-			]
+			])
 		
-			if ( validChannels.includes( channel ) ) {
+			if ( validChannels.has( channel ) ) {
 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
 			}
 		},
