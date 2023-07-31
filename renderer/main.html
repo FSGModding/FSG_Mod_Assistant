@@ -152,7 +152,7 @@
 						<div class="col">
 							<div class="input-group input-group-sm mb-0">
 								<span class="input-group-text"><l10n name="filter_only"></l10n></span>
-								<input oncontextmenu="window.mods.cutCopyPaste()" type="text" id="filter_input" oninput="select_lib.filter()" class="form-control mod-row-filter rounded-end">
+								<input oncontextmenu="window.mods.cutCopyPaste()" type="text" id="filter_input" oninput="select_lib.filter_begin()" class="form-control mod-row-filter rounded-end">
 								<span id="filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px;"></span>
 							</div>
 						</div>
@@ -184,7 +184,7 @@
 								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
 								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
 								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
-								<input type="checkbox" id="tag_filter__selected" onchange="select_lib.filter()" class="btn-check filter_tag_buttons" autocomplete="off">
+								<input type="checkbox" id="tag_filter__selected" onchange="select_lib.filter_begin()" class="btn-check filter_tag_buttons" autocomplete="off">
 								<label class="btn btn-secondary btn-selected-mods" for="tag_filter__selected"><l10n name="select_only"></l10n><span id="select_quantity">0</span></label>
 							</div>
 						</div>

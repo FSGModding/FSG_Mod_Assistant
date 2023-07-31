@@ -435,5 +435,7 @@
 	"user_pref_blurb_show_tooltips": "Lorsque cette option est activée, des infobulles utiles s'affichent sur les boutons et les badges de l'interface.  Les utilisateurs expérimentés peuvent les trouver gênantes, vous pouvez donc les désactiver ici",
 	"user_pref_title_show_tooltips": "Afficher les infobulles des fenêtres contextuelles",
 	"mod_badge_require__title": "Ce module est requis par un autre module de la collection",
-	"mod_badge_require": "requis"
+	"mod_badge_require": "requis",
+	"mod_badge_map__title": "Ce mod est une carte",
+	"mod_badge_map": "carte"
 }

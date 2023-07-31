@@ -435,5 +435,7 @@
 	"user_pref_blurb_show_tooltips": "Toont, indien actief, handige pop-up tooltips op interfaceknoppen en badges.  Ervaren gebruikers vinden ze misschien afleidend, dus je kunt ze hier uitschakelen.",
 	"user_pref_title_show_tooltips": "Toon pop-up tooltips",
 	"mod_badge_require__title": "Deze mod is vereist door een andere mod in de collectie",
-	"mod_badge_require": "vereist"
+	"mod_badge_require": "vereist",
+	"mod_badge_map__title": "Deze mod is een kaart",
+	"mod_badge_map": "kaart"
 }

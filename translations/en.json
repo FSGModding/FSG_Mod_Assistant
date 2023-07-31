@@ -217,6 +217,8 @@
 	"mod_badge_keys_bad"                     : "keys",
 	"mod_badge_keys_ok__title"               : "This mod adds keybindings to the game",
 	"mod_badge_keys_ok"                      : "keys",
+	"mod_badge_map__title"                   : "This mod is a map",
+	"mod_badge_map"                          : "map",
 	"mod_badge_new__title"                   : "This file is new since the last scan",
 	"mod_badge_new"                          : "new",
 	"mod_badge_nomp__title"                  : "This can't be used in multiplayer",

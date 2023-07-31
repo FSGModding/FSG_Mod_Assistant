@@ -435,5 +435,7 @@
 	"user_pref_blurb_show_tooltips": "Quando ativo, mostra dicas de ferramentas pop-up úteis nos botões e emblemas da interface.  Os utilizadores experientes podem considerá-las uma distração, pelo que pode desactivá-las aqui.",
 	"user_pref_title_show_tooltips": "Mostrar dicas de ferramentas pop-up",
 	"mod_badge_require__title": "Esta modificação é exigida por outra modificação da coleção",
-	"mod_badge_require": "obrigatório"
+	"mod_badge_require": "obrigatório",
+	"mod_badge_map__title": "Esta modificação é um mapa",
+	"mod_badge_map": "mapa"
 }

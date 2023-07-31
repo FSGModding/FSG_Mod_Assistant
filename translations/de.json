@@ -435,5 +435,7 @@
 	"user_pref_blurb_show_tooltips": "Wenn aktiv, zeige hilfreiche Popup-Tooltips auf Schaltflächen und Abzeichen der Benutzeroberfläche.  Erfahrene Benutzer können sie als störend empfinden, daher können Sie sie hier ausschalten.",
 	"user_pref_title_show_tooltips": "Popup-Tooltips anzeigen",
 	"mod_badge_require__title": "Diese Mod ist für eine andere Mod in der Sammlung erforderlich",
-	"mod_badge_require": "erforderlich"
+	"mod_badge_require": "erforderlich",
+	"mod_badge_map__title": "Diese Mod ist eine Karte",
+	"mod_badge_map": "karte"
 }

@@ -435,5 +435,7 @@
 	"user_pref_blurb_show_tooltips": "Když je aktivní, zobrazuje užitečné vyskakovací popisky na tlačítkách a odznacích rozhraní.  Zkušené uživatele mohou rozptylovat, proto je zde můžete vypnout.",
 	"user_pref_title_show_tooltips": "Zobrazit vyskakovací panely nástrojů",
 	"mod_badge_require__title": "Tento mod je vyžadován jiným modem v kolekci",
-	"mod_badge_require": "požadované"
+	"mod_badge_require": "požadované",
+	"mod_badge_map__title": "Tento mod je mapa",
+	"mod_badge_map": "mapa"
 }
