@@ -11,6 +11,9 @@ module.exports = {
 		'ecmaVersion'       : 12,
 		'requireConfigFile' : false,
 	},
+	'plugins' : [
+		'unicorn'
+	],
 	'rules' : {
 		'comma-dangle' : [
 			'error',
@@ -66,6 +69,7 @@ module.exports = {
 		'no-duplicate-imports'            : 'error',
 		'no-else-return'                  : 'error',
 		'no-global-assign'                : 'error',
+		'no-implicit-coercion'            : 'error',
 		'no-implicit-globals'             : 'error',
 		'no-lonely-if'                    : 'error',
 		'no-multi-str'                    : 'error',
@@ -75,6 +79,7 @@ module.exports = {
 		'no-sequences'                    : 'error',
 		'no-shadow'                       : 'error',
 		'no-template-curly-in-string'     : 'error',
+		'no-throw-literal'                : 'error',
 		'no-unneeded-ternary'             : 'error',
 		'no-unreachable-loop'             : 'error',
 		'no-unused-expressions'           : 'error',
@@ -91,5 +96,37 @@ module.exports = {
 
 		'complexity'                      : ['warn', 15],
 		'sort-keys'                       : ['warn', 'asc', {'allowLineSeparatedGroups' : true, 'caseSensitive' : false, 'minKeys' : 4, 'natural' : true}],
+
+		'unicorn/better-regex'                     : 'error',
+		'unicorn/catch-error-name'                 : ['error', { 'name' : 'err' }],
+		'unicorn/consistent-destructuring'         : 'error',
+		'unicorn/consistent-function-scoping'      : 'error',
+		'unicorn/empty-brace-spaces'               : 'error',
+		'unicorn/error-message'                    : 'error',
+		'unicorn/escape-case'                      : 'error',
+		'unicorn/explicit-length-check'            : ['error', { 'non-zero' : 'not-equal' }],
+		'unicorn/new-for-builtins'                 : 'error',
+		'unicorn/no-abusive-eslint-disable'        : 'error',
+		'unicorn/no-array-callback-reference'      : 'error',
+		'unicorn/no-array-for-each'                : 'error',
+		'unicorn/no-array-method-this-argument'    : 'error',
+		'unicorn/no-array-push-push'               : 'error',
+		'unicorn/no-for-loop'                      : 'error',
+		'unicorn/no-lonely-if'                     : 'error',
+		'unicorn/no-this-assignment'               : 'error',
+		'unicorn/no-unnecessary-await'             : 'error',
+		'unicorn/no-unused-properties'             : 'error',
+		'unicorn/no-useless-length-check'          : 'error',
+		'unicorn/no-useless-spread'                : 'error',
+		'unicorn/no-useless-switch-case'           : 'error',
+		'unicorn/prefer-array-some'                : 'error',
+		'unicorn/prefer-json-parse-buffer'         : 'error',
+		'unicorn/prefer-native-coercion-functions' : 'error',
+		'unicorn/prefer-node-protocol'             : 'error',
+		'unicorn/prefer-set-has'                   : 'error',
+		'unicorn/prefer-spread'                    : 'error',
+		'unicorn/require-array-join-separator'     : 'error',
+		'unicorn/throw-new-error'                  : 'error',
+
 	},
 }
