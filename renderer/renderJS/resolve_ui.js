@@ -74,8 +74,8 @@ function compareVersion(latestVersion, thisVersion, collectKey) {
 		}
 
 		return latestVersionRet
-	} catch (e) {
-		window.log.warning(`Version compare failed :: ${latestVersion} / ${thisVersion} :: ${e}`, 'resolve_ui')
+	} catch (err) {
+		window.log.warning(`Version compare failed :: ${latestVersion} / ${thisVersion} :: ${err}`, 'resolve_ui')
 	}
 }
 

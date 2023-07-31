@@ -111,11 +111,13 @@ function clientMakeCropCalendar(elementID, theData, isSouth = false) {
 				))
 			}
 
-			tableLines.push(`<tr>${cropNameCell}${orderLine(plantLines, isSouth)}</tr>`)
-			tableLines.push(`<tr>${orderLine(harvestLines, isSouth)}</tr>`)
+			tableLines.push(
+				`<tr>${cropNameCell}${orderLine(plantLines, isSouth)}</tr>`,
+				`<tr>${orderLine(harvestLines, isSouth)}</tr>`
+			)
 			evenRow = !evenRow
-		} catch (e) {
-			window.log.warning(`Unable to build calendar row :: ${e}`, 'cropcal')
+		} catch (err) {
+			window.log.warning(`Unable to build calendar row :: ${err}`, 'cropcal')
 		}
 	}
 

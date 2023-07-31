@@ -80,7 +80,7 @@ const select_lib = {
 		select_lib.last_select_mod = null
 		select_lib.last_select_table = null
 		select_lib.update_color()
-		select_lib.filter()
+		select_lib.filter_begin()
 	},
 
 	click_all         : () => {
@@ -124,10 +124,11 @@ const select_lib = {
 		select_lib.clear_range_then_filter()
 	},
 	click_only        : (tableID, checkList) => {
+		const checkListSet = new Set(checkList)
 		fsgUtil.byId('filter_input').value = ''
 		for ( const element of select_lib.get_checks(tableID) ) {
 			const modRow = element.parentElement.parentElement
-			element.checked = checkList.includes(element.id)
+			element.checked = checkListSet.has(element.id)
 			if ( modRow.classList.contains('mod-disabled') && modRow.querySelector('.mod-short-name').innerText.endsWith('.csv') ) {
 				element.checked = false
 			}
@@ -159,11 +160,11 @@ const select_lib = {
 			let thisPosition = null
 			let lastPosition = null
 
-			for ( let i=0; i<tableRows.length; i++ ) {
-				if ( tableRows[i].id === modID ) {
+			for ( const [i, tableRow] of tableRows.entries() ) {
+				if ( tableRow.id === modID ) {
 					thisPosition = i
 				}
-				if ( tableRows[i].id === select_lib.last_select_mod ) {
+				if ( tableRow.id === select_lib.last_select_mod ) {
 					lastPosition = i
 				}
 			}
@@ -180,7 +181,7 @@ const select_lib = {
 			select_lib.last_select_mod = modID
 		}
 		select_lib.update_color()
-		select_lib.filter(select_lib.last_select_table)
+		select_lib.filter_begin(select_lib.last_select_table)
 	},
 	
 	update_color : () => {
@@ -192,12 +193,6 @@ const select_lib = {
 	update_color_post    : () => {
 		select_lib.clear_scroll_color()
 		const allModRows    = select_lib.get_visible_mods()
-		const doLast        = (element) => {
-			if ( element !== null && typeof element !== 'undefined' ) {
-				element.classList.add('rounded-bottom')
-				return null
-			}
-		}
 		let   countSelected = 0
 		let   hasHash       = false
 		let   hasExtSite    = false
@@ -221,7 +216,7 @@ const select_lib = {
 				}
 			} else {
 				isFirst = true
-				wasLast = doLast(wasLast)
+				wasLast = select_lib.update_do_last(wasLast)
 			}
 
 			if ( isChecked ) {
@@ -231,7 +226,7 @@ const select_lib = {
 			}
 		}
 		
-		wasLast = doLast(wasLast)
+		wasLast = select_lib.update_do_last(wasLast)
 
 		const moveButtons = fsgUtil.byId('moveButtonsInt').querySelectorAll('button')
 
@@ -249,8 +244,14 @@ const select_lib = {
 		
 		select_lib.change_count(countSelected)
 	},
+	update_do_last       : (element) => {
+		if ( element !== null && typeof element !== 'undefined' ) {
+			element.classList.add('rounded-bottom')
+			return null
+		}
+	},
 
-	filter : (_, forceValue = false) => {
+	filter_begin : (_, forceValue = false) => {
 		select_lib.debounceF = setTimeout(() => {
 			select_lib.debounceF = null
 			select_lib.filter_post(forceValue)
@@ -279,7 +280,7 @@ const select_lib = {
 			}
 		}
 
-		if ( fullArrays.length > 0 ) {
+		if ( fullArrays.length !== 0 ) {
 			finalArray = fullArrays.reduce((resultArray, currentArray) => {
 				return resultArray.filter((el) => currentArray.includes(el))
 			})
@@ -315,13 +316,13 @@ const select_lib = {
 
 			if ( modRow.querySelector('.mod-row-checkbox').checked ) { continue }
 
-			if ( tagHiders.length > 0 && hideUUIDByTags.has(modRowUUID) ) {
+			if ( tagHiders.length !== 0 && hideUUIDByTags.has(modRowUUID) ) {
 				select_lib.scroll_hide(modRowUUID)
 				modRow.classList.add('d-none')
 				continue
 			}
 
-			if ( tagLimit.length > 0 && ! showUUIDByTags.has(modRowUUID) ) {
+			if ( tagLimit.length !== 0 && ! showUUIDByTags.has(modRowUUID) ) {
 				select_lib.scroll_hide(modRowUUID)
 				modRow.classList.add('d-none')
 				continue
@@ -351,12 +352,12 @@ const select_lib = {
 	out_tag_reset : () => {
 		fsgUtil.checkChangeAll(fsgUtil.query('.filter_out_tag_buttons:checked', false))
 		
-		select_lib.filter()
+		select_lib.filter_begin()
 	},
 	tag_reset : () => {
 		fsgUtil.checkChangeAll(fsgUtil.query('.filter_tag_buttons:checked', false))
 
-		select_lib.filter()
+		select_lib.filter_begin()
 	},
 	
 

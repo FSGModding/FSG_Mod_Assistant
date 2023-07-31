@@ -11,10 +11,10 @@
 window.debug.receive('fromMain_debugLog', (data) => {
 	const showData  = []
 	const levelInfo = new RegExp(/<span class="log_level .+?">(.+?)<\/span>/)
-	const showThese = fsgUtil.queryA(':checked').map((element) => element.id.replace('debug_', '').toUpperCase() )
+	const showThese = new Set(fsgUtil.queryA(':checked').map((element) => element.id.replace('debug_', '').toUpperCase()))
 
 	for ( const line of data.split('\n') ) {
-		if ( showThese.includes(line.match(levelInfo)[1].trim()) ) { showData.push(line) }
+		if ( showThese.has(line.match(levelInfo)[1].trim()) ) { showData.push(line) }
 	}
 
 	fsgUtil.byId('debug_log').innerHTML = showData.join('\n')

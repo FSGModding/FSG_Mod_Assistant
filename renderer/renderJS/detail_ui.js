@@ -12,8 +12,8 @@ window.mods.receive('fromMain_lookRecord', (lookRecord, chartUnits, currentLocal
 	try {
 		buildStore(lookRecord, chartUnits, currentLocale)
 		fsgUtil.clsHideTrue('store_process', true)
-	} catch (e) {
-		window.log.warning(`Store build failed :: ${e}`, 'detail-ui')
+	} catch (err) {
+		window.log.warning(`Store build failed :: ${err}`, 'detail-ui')
 	}
 	processL10N()
 })
@@ -22,8 +22,8 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	try {
 		fsgUtil.clsShowTrue('store_process', modCollect.opts.hasStore)
 		buildPage(modCollect)
-	} catch (e) {
-		window.log.warning(`Page build failed :: ${e}`, 'detail-ui')
+	} catch (err) {
+		window.log.warning(`Page build failed :: ${err}`, 'detail-ui')
 	}
 	processL10N()
 })
@@ -309,7 +309,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	}
 }
 
-const cleanOrJoin = (arr, text = 'detail_extra_clean') => typeof arr !== 'undefined' && arr.length > 0 ? arr.join('\n') : getText(text)
+const cleanOrJoin = (arr, text = 'detail_extra_clean') => typeof arr !== 'undefined' && arr.length !== 0 ? arr.join('\n') : getText(text)
 
 const doKeyBinds = (modRecord, locale) => {
 	const keyBinds = []
@@ -349,11 +349,11 @@ const buildPage = (modCollect) => {
 
 	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
 
-	fsgUtil.query('#description a').forEach((link) => { link.target = '_BLANK' })
+	for ( const element of fsgUtil.query('#description a') ) { element.target = '_BLANK' }
 
 	const bindingIssue     = modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] ?? null
 
-	if ( modRecord.issues.length < 1 && bindingIssue === null ) {
+	if ( modRecord.issues.length === 0 && bindingIssue === null ) {
 		fsgUtil.byId('problem_div').classList.add('d-none')
 	} else {
 		const problems = [

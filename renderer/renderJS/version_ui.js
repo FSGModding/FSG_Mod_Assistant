@@ -57,8 +57,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					break
 				}
 			}
-		} catch (e) {
-			window.log.warning(`Issue with version sorting : ${key} :: ${e}`, 'version_ui')
+		} catch (err) {
+			window.log.warning(`Issue with version sorting : ${key} :: ${err}`, 'version_ui')
 		}
 	}
 	

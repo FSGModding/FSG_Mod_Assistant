@@ -94,7 +94,7 @@ const fsgUtil = {
 			attribValue
 	},
 	query      : ( query ) => document.querySelectorAll( query ),
-	queryA     : ( query ) => Array.from(document.querySelectorAll( query )),
+	queryA     : ( query ) => [...document.querySelectorAll( query )],
 
 	getIcon    : ( type, cls ) => `<span class="text-${cls}">${fsgUtil.getIconSVG(type)}</span>`,
 	getIconSVG : ( type, isFav = false, isAct = false, isDrop = false )  => {
@@ -154,8 +154,8 @@ const fsgUtil = {
 			}
 
 			return thisTemplate
-		} catch (e) {
-			window.log.warning(`Template usage failed :: ${e}`, templateName)
+		} catch (err) {
+			window.log.warning(`Template usage failed :: ${err}`, templateName)
 		}
 	},
 	

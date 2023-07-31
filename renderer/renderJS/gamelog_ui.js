@@ -24,7 +24,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 
 	const logRegExp  = {
 		cp_ad : {
-			regex     : new RegExp(/(?::\d\d \[|\[AD\]|\[AutoDrive\]|\[AutoDriveSync\])/),
+			regex     : new RegExp(/:\d\d \[|\[AD]|\[AutoDrive]|\[AutoDriveSync]/),
 			className : 'text-light-emphasis',
 			filter    : 'cpad',
 		},
@@ -45,12 +45,12 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			filter    : 'dev_warning',
 		},
 		error : {
-			regex     : new RegExp(/(?:Error:|ERROR|Error \(.+?\):|CollisionFlag-Check)/),
+			regex     : new RegExp(/Error:|ERROR|Error \(.+?\):|CollisionFlag-Check/),
 			className : 'text-danger',
 			filter    : 'error',
 		},
 		info : {
-			regex     : new RegExp(/(?:Application: |(?<!Dev)Info:|Info \(.+?\):)/),
+			regex     : new RegExp(/Application: |(?<!Dev)Info:|Info \(.+?\):/),
 			className : 'text-info',
 			filter    : 'info',
 		},
@@ -60,12 +60,12 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			filter    : 'lua_error',
 		},
 		lua_stack : {
-			regex     : new RegExp(/(?:\.lua|^ {2}=\[)/),
+			regex     : new RegExp(/\.lua|^ {2}=\[/),
 			className : 'text-danger-emphasis fst-italic',
 			filter    : 'lua_error',
 		},
 		mod_load : {
-			regex     : new RegExp(/(?:Available dlc:|Available mod:|Load mod:|Load dlc:|ExtraContent:| {6}adding mod)/),
+			regex     : new RegExp(/Available dlc:|Available mod:|Load mod:|Load dlc:|ExtraContent:| {6}adding mod/),
 			className : 'text-success',
 			filter : 'mod_loading',
 		},
@@ -74,7 +74,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			wrap  : ['<em class="text-info-emphasis">', '</em>'],
 		},
 		warning : {
-			regex     : new RegExp(/(?:(?<!Dev)Warning:|Warning \(.+?\):)/),
+			regex     : new RegExp(/(?<!Dev)Warning:|Warning \(.+?\):/),
 			className : 'text-warning',
 			filter    : 'warning',
 		},
@@ -114,7 +114,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 				}
 			}
 
-			if ( filterList.size < 1 ) { filterList.add('other') }
+			if ( filterList.size === 0 ) { filterList.add('other') }
 		}
 		lineNum++
 	}
@@ -255,12 +255,12 @@ function clientFind(doForward = false, isReload = false) {
 	}
 
 	/* fix index if needed */
-	if ( finds.length > 0 ) {
+	if ( finds.length !== 0 ) {
 		findIdx = findIdx % (finds.length)
 		findIdx = findIdx < 0 ? findIdx + finds.length : findIdx
 	}
 	
-	if ( finds.length > 0 && !isReload ) {
+	if ( finds.length !== 0 && !isReload ) {
 		fsgUtil.byId('game_log_contain').scrollTo({top : finds[findIdx][0] * 19, behavior : 'instant'})
 	}
 }

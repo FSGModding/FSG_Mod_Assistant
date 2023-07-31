@@ -43,7 +43,7 @@ window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 	
 	select_lib.close_all(tableID)
 	select_lib.click_only(tableID, checkList)
-	select_lib.filter(tableID, filterText)
+	select_lib.filter_begin(tableID, filterText)
 })
 
 window.mods.receive('fromMain_dirtyUpdate', (dirtyFlag) => {
@@ -181,10 +181,10 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 				if ( thisModEntry[1] !== null ) {
 					mapIcons.push(thisModEntry[1])
-					mapNames.push([...thisModEntry.slice(2)])
+					mapNames.push(thisModEntry.slice(2))
 				}
-			} catch (e) {
-				window.log.notice(`Error building mod row: ${modKey} :: ${e}`, 'main')
+			} catch (err) {
+				window.log.notice(`Error building mod row: ${modKey} :: ${err}`, 'main')
 			}
 		}
 		
@@ -220,14 +220,14 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		select_lib.open_table(lastOpenID)
 
 		if ( lastOpenQ !== '' ) {
-			select_lib.filter(lastOpenID, lastOpenQ)
+			select_lib.filter_begin(lastOpenID, lastOpenQ)
 		}
 		window.scrollTo(0, scrollStart)
 	} catch {
 		// Don't Care
 	}
 
-	select_lib.filter()
+	select_lib.filter_begin()
 	processL10N()
 })
 
@@ -249,7 +249,7 @@ const buildDropDownFilters = ( l10n ) => {
 	// Dynamically build filter lists based on what is in the collections
 	const tagOrder = Object.keys(l10n)
 		.sort((a, b) => new Intl.Collator().compare(l10n[a], l10n[b]))
-		.filter((x) => Object.hasOwn(searchTagMap, x) && searchTagMap[x].length > 0)
+		.filter((x) => Object.hasOwn(searchTagMap, x) && searchTagMap[x].length !== 0)
 
 	const hideTags  = tagOrder.map((x) => makeFilterButton(x, true))
 	const limitTags = tagOrder.map((x) => makeFilterButton(x, false))
@@ -275,7 +275,7 @@ const makeFilterButton = ( name, isHide = false ) => {
 	const color  = name === 'keys_bad' || name === 'depend_flag' ? 'danger' : 'success'
 
 	return `
-		<input type="checkbox" id="${id}" onchange="select_lib.filter()" class="btn-check ${cls}" autocomplete="off">
+		<input type="checkbox" id="${id}" onchange="select_lib.filter_begin()" class="btn-check ${cls}" autocomplete="off">
 		<label class="btn btn-outline-${color}" for="${id}"><l10n name="${l10n}"></l10n>${qty !== null ? ` [${qty}]` : ''}</label>
 	`
 }
@@ -410,13 +410,13 @@ function clientSetModInfo() {
 }
 function clientSetGameVersion(version) { window.mods.changeVersion(parseInt(version, 10)) }
 
-function clientClearInput() { select_lib.filter(null, '') }
+function clientClearInput() { select_lib.filter_begin(null, '') }
 
 function clientBatchOperation(mode) {
-	const allModRows     = fsgUtil.query('.mod-row .mod-row-checkbox:checked')
-	const selectedMods   = Array.from(allModRows).map((thisRow) => thisRow.id.replace('__checkbox', ''))
+	const allModRows     = fsgUtil.queryA('.mod-row .mod-row-checkbox:checked')
+	const selectedMods   = allModRows.map((thisRow) => thisRow.id.replace('__checkbox', ''))
 
-	if ( selectedMods.length < 1 ) { return }
+	if ( selectedMods.length === 0 ) { return }
 
 	const isHoldingPen   = fsgUtil.byId(`${selectedMods[0].split('--')[0]}_mods`).classList.contains('is-holding-pen')
 
@@ -477,7 +477,7 @@ async function operateLED(type = 'spin', time = 2500) {
 	try {
 		const clientLED = await navigator.hid.requestDevice(giantsLED)
 
-		if ( clientLED.length < 1 ) { return }
+		if ( clientLED.length === 0 ) { return }
 
 		const clientLEDDevice = clientLED[0]
 
@@ -487,8 +487,8 @@ async function operateLED(type = 'spin', time = 2500) {
 			await clientLEDDevice.sendReport(0x00, fsgUtil.led.off)
 			await clientLEDDevice.close()
 		}, time)
-	} catch (e) {
-		window.log.debug(`Unable to spin LED (no light?) : ${e}`, 'main')
+	} catch (err) {
+		window.log.debug(`Unable to spin LED (no light?) : ${err}`, 'main')
 	}
 }
 

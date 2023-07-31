@@ -98,7 +98,7 @@ const final_count = () => {
 }
 
 const getFarms   = (modFarms, allFarms) => {
-	if ( modFarms.size < 1 ) { return null }
+	if ( modFarms.size === 0 ) { return null }
 	return [...modFarms].map((x) => allFarms[x])
 }
 const scriptOnly = (modDesc) => ( modDesc.storeItems < 1 && modDesc.scriptFiles > 0 )
@@ -127,7 +127,7 @@ const buildSets = (mods, save_mods) => {
 	
 	return {
 		haveModSet : haveModSet,
-		fullModSet : new Set(fullModArr.concat(save_mods).sort(Intl.Collator().compare)),
+		fullModSet : new Set([...fullModArr, ...save_mods].sort(Intl.Collator().compare)),
 	}
 }
 
@@ -159,7 +159,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	selectList  = empty_list()
 	selectCount = empty_count()
 
-	if ( savegame.errorList.length > 0 ) {
+	if ( savegame.errorList.length !== 0 ) {
 		const errors = savegame.errorList.map((error) => `<l10n name="${error[0]}"></l10n> ${error[1]}`)
 
 		modSetHTML.push(fsgUtil.useTemplate('savegame_error', { errors : errors.join(', ')}))
@@ -178,7 +178,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 			thisModDetail.version  = savegame.mods[thisMod].version
 			thisModDetail.title    = savegame.mods[thisMod].title
 			thisModDetail.isLoaded = true
-			thisModDetail.isUsed   = savegame.mods[thisMod].farms.size > 0
+			thisModDetail.isUsed   = savegame.mods[thisMod].farms.size !== 0
 			thisModDetail.usedBy   = getFarms(savegame.mods[thisMod].farms, savegame.farms)
 		}
 
@@ -271,7 +271,7 @@ function makeLine(name, mod, singleFarm, hubID) {
 	return fsgUtil.useTemplate('savegame_mod', {
 		badges        : displayBadge.map((part) => fsgUtil.badge(`${part[1]} bg-gradient rounded-1 ms-1`, `savegame_${part[0]}`, true)).join(''),
 		colorClass    : colorClass,
-		farms         : mod.usedBy !== null ? Array.from(mod.usedBy).join(', ') : '',
+		farms         : mod.usedBy !== null ? [...mod.usedBy].join(', ') : '',
 		hideShowFarms : ( mod.usedBy !== null && !singleFarm ) ? '' : 'd-none',
 		hubID         : hubID,
 		hubIDHide     : typeof hubID !== 'undefined' ? '' : 'd-none',
@@ -282,7 +282,7 @@ function makeLine(name, mod, singleFarm, hubID) {
 
 
 function clientSelectMain(type) {
-	if ( selectList[type].length > 0 ) {
+	if ( selectList[type].length !== 0 ) {
 		window.mods.selectInMain(selectList[type])
 	}
 }

@@ -38,8 +38,8 @@ window.mods.receive('fromMain_modRecords', (modCollect) => {
 				}
 			}
 		}
-	} catch (e) {
-		window.log.warning(`Failed to build search data :: ${e}`, 'find-ui')
+	} catch (err) {
+		window.log.warning(`Failed to build search data :: ${err}`, 'find-ui')
 	}
 	
 	fullListSort = Object.keys(fullList).sort( (a, b) => {
