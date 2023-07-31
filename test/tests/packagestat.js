@@ -89,7 +89,7 @@ const countFiles = (test) => {
 		test.step_fmt(makeLine('CSS', countTextFile(fileList.filter((x) => path.extname(x.name) === '.css' || path.extname(x.name) === '.scss'), true)))
 		test.step_fmt(makeLine('markDown', countTextFile(fileList.filter((x) => path.extname(x.name) === '.md'))))
 		test.step_fmt(makeLine('Images', countOthers(fileList.filter((x) => imgSet.has(path.extname(x.name)) ))))
-		test.step_fmt(makeLine('ZIP Archive', countOthers(fileList.filter((x) => path.extname(x.name) === '.md'))))
+		test.step_fmt(makeLine('ZIP Archive', countOthers(fileList.filter((x) => path.extname(x.name) === '.zip'))))
 		test.step_fmt(makeLine('Other', countOthers(fileList.filter((x) => !knowSet.has(path.extname(x.name)) ))))
 		test.step_fmt(tblHeader)
 		test.step_fmt(makeLine('TOTAL', countOthers(fileList)))
