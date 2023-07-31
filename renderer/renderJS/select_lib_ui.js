@@ -245,7 +245,7 @@ const select_lib = {
 		select_lib.change_count(countSelected)
 	},
 	update_do_last       : (element) => {
-		if ( element !== null && typeof element !== 'undefined' ) {
+		if ( typeof element === 'object' && element !== null ) {
 			element.classList.add('rounded-bottom')
 			return null
 		}
@@ -275,7 +275,7 @@ const select_lib = {
 			if ( thisTag === 'selected' ) {
 				// Shortcut when filter on selected
 				return selectList
-			} else if ( typeof searchTagMap[thisTag] !== 'undefined' ) {
+			} else if ( Object.hasOwn(searchTagMap, thisTag) ) {
 				fullArrays.push(searchTagMap[thisTag])
 			}
 		}

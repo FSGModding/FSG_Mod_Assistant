@@ -39,7 +39,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 		if ( thisItem.masterType === 'vehicle' ) {
 			let brandImage = null
 			if ( typeof thisItem.brand === 'string' ) {
-				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon !== 'undefined' ) {
+				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon === 'string' ) {
 					brandImage = lookRecord.brands[thisItem.brand].icon
 				} else {
 					brandImage = ( fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
@@ -309,7 +309,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	}
 }
 
-const cleanOrJoin = (arr, text = 'detail_extra_clean') => typeof arr !== 'undefined' && arr.length !== 0 ? arr.join('\n') : getText(text)
+const cleanOrJoin = (arr, text = 'detail_extra_clean') => Array.isArray(arr) && arr.length !== 0 ? arr.join('\n') : getText(text)
 
 const doKeyBinds = (modRecord, locale) => {
 	const keyBinds = []
@@ -343,7 +343,7 @@ const buildPage = (modCollect) => {
 		pngTexture     : cleanOrJoin(modRecord.fileDetail.pngTexture),
 		spaceFiles     : cleanOrJoin(modRecord.fileDetail.spaceFiles),
 		store_items    : checkX(modRecord.modDesc.storeItems),
-		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== 'n/a' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
+		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== '--' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
 		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
 	}
 
@@ -378,7 +378,7 @@ const buildPage = (modCollect) => {
 		modRecord.modDesc.iconImageCache
 	)
 
-	if ( typeof modRecord.modDesc.cropInfo !== 'undefined' && modRecord.modDesc.cropInfo !== false ) {
+	if ( Array.isArray(modRecord.modDesc.cropInfo) ) {
 		fsgUtil.byId('cropcal_div').classList.remove('d-none')
 		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false)
 		fsgUtil.byId('cropjson').innerHTML = JSON.stringify(modRecord.modDesc.cropInfo)
@@ -423,7 +423,7 @@ function checkX(amount, showCount = true) {
 
 
 function getDefault(value, float = false, safe = 0) {
-	const newValue = typeof value !== 'undefined' ? value : safe
+	const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
 	return !float ? parseInt(newValue) : parseFloat(newValue)
 }
 

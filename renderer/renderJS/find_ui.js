@@ -84,9 +84,7 @@ function clientFilter() {
 }
 
 function clientRightClick(id) {
-	const thisMod = fullList[id]
-
-	if ( typeof thisMod !== 'undefined' ) { window.mods.rightClick(thisMod) }
+	if ( Object.hasOwn(fullList, id) ) { window.mods.rightClick(fullList[id]) }
 }
 
 window.addEventListener('DOMContentLoaded', () => { processL10N() })

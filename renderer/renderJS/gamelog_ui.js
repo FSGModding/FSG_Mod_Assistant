@@ -106,7 +106,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 			thisLine   = line
 		
 			for ( const regType in logRegExp ) {
-				if ( typeof logRegExp[regType].wrap !== 'undefined' ) {
+				if ( Array.isArray(logRegExp[regType].wrap) ) {
 					thisLine = line.replace(logRegExp[regType].regex, `${logRegExp[regType].wrap[0]}$1${logRegExp[regType].wrap[1]}`)
 				} else if ( line.match(logRegExp[regType].regex) ) {
 					filterList.add(logRegExp[regType].filter)

@@ -103,6 +103,8 @@ const buildSearchString = (thisMod) => {
 const buildBadges = (thisMod) => {
 	const displayBadges = []
 	
+	if ( !Array.isArray(thisMod.displayBadges ) ) { return '' }
+	
 	for ( const badge of thisMod.displayBadges ) {
 		displayBadges.push(fsgUtil.badge_main(badge))
 		const badge_lower = badge[0].toLowerCase()

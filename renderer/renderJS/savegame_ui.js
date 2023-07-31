@@ -182,7 +182,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 			thisModDetail.usedBy   = getFarms(savegame.mods[thisMod].farms, savegame.farms)
 		}
 
-		if ( typeof haveModSet[thisMod] !== 'undefined' ) {
+		if ( typeof haveModSet[thisMod] === 'object' ) {
 			thisModDetail.scriptOnly = scriptOnly(haveModSet[thisMod].modDesc)
 			thisModDetail.consumable = consumableOnly.has(thisMod)
 

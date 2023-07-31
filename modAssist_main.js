@@ -7,7 +7,7 @@
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, net, clipboard, nativeImage } = require('electron')
 
-const isPortable = typeof process.env.PORTABLE_EXECUTABLE_DIR !== 'undefined'
+const isPortable = Object.hasOwn(process.env, 'PORTABLE_EXECUTABLE_DIR')
 const gotTheLock = app.requestSingleInstanceLock()
 
 if ( !gotTheLock ) { app.quit() }
@@ -726,7 +726,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 					label : collectName,
 					click : () => {
 						win.createNamedWindow('save', { collectKey : collectKey })
-						setTimeout(() => { readSaveGame(savePath, false) }, 250)
+						setTimeout(() => { readSaveGame(savePath, thisMod.fileDetail.isFolder) }, 250)
 					},
 				})
 			}
@@ -1614,7 +1614,8 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 	gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( opts.newFolder !== null ) ? opts.newFolder : ''
 
 	if ( opts.version === 22 || opts.version === 19 ) {
-		if ( typeof gameSettingsXML.gameSettings.joinGame === 'undefined' ) { gameSettingsXML.gameSettings.joinGame = {} }
+		gameSettingsXML.gameSettings.joinGame ??= {}
+
 		if ( opts.userName !== null && opts.version === 22 ) { gameSettingsXML.gameSettings.onlinePresenceName = opts.userName }
 		if ( opts.userName !== null && opts.version === 19 ) { gameSettingsXML.gameSettings.player.name = opts.userName }
 		if ( opts.password !== null ) { gameSettingsXML.gameSettings.joinGame['@_password'] = opts.password }
@@ -1947,7 +1948,6 @@ app.whenReady().then(() => {
 		app.on('quit',     () => {
 			if ( win.tray ) { win.tray.destroy() }
 			if ( mainProcessFlags.watchGameLog ) { mainProcessFlags.watchGameLog.close() }
-			maIPC.decode.clearTemp()
 		})
 	}
 })

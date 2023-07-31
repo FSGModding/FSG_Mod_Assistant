@@ -32,7 +32,7 @@ const knownCrops = {
 const nameMonth = ['mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb']
 
 function getCropInfo(name) {
-	if ( typeof knownCrops[name] === 'undefined' ) {
+	if ( ! Object.hasOwn(knownCrops, name) ) {
 		return `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
 	}
 	return `<img style="width: 30px; height: 30px;" src="img/fills/${knownCrops[name].icon}"> <l10n name="${knownCrops[name].name}"></l10n>`

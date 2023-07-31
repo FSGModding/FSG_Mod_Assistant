@@ -40,11 +40,9 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 		clientCheckValid(element.id)
 	}
 	
-	fsgUtil.byId('notes_version').value =  modCollect.collectionNotes[thisCollection].notes_version
+	fsgUtil.byId('notes_version').value = modCollect.collectionNotes[thisCollection].notes_version
 
-	if ( typeof modCollect.collectionNotes[thisCollection] !== 'undefined' ) {
-		fsgUtil.byId('notes_notes').innerHTML = modCollect.collectionNotes[thisCollection].notes_notes || ''
-	}
+	fsgUtil.byId('notes_notes').innerHTML = modCollect.collectionNotes?.[thisCollection]?.notes_notes || ''
 
 	processL10N()
 })

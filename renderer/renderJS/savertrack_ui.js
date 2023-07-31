@@ -11,7 +11,7 @@
 window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	const saveInfo = modCollect.opts.saveInfo
 
-	if ( saveInfo === null || typeof saveInfo.current === 'undefined' || saveInfo.current.length === 0 ) {
+	if ( saveInfo === null || !Array.isArray(saveInfo.current) || saveInfo.current.length === 0 ) {
 		fsgUtil.byId('no_list_yet').classList.remove('d-none')
 		return
 	}
