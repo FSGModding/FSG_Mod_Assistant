@@ -249,6 +249,7 @@ window?.l10n?.receive('fromMain_getText_return', (data) => {
 	}
 })
 
+const currentTooltips = []
 window?.l10n?.receive('fromMain_getText_return_title', (data) => {
 	for ( const item of fsgUtil.query(`l10n[name="${data[0]}"]`) ) {
 		const extTitle = item.getAttribute('data-extra-title')
@@ -260,12 +261,16 @@ window?.l10n?.receive('fromMain_getText_return_title', (data) => {
 
 		if ( thisTitle !== null ) {
 			thisTitle.title = `${data[1]}${extTitle !== null && extTitle !== '' ? ` : ${extTitle}` : ''}`
-			new bootstrap.Tooltip(thisTitle)
+			currentTooltips.push(new bootstrap.Tooltip(thisTitle))
 		}
 	}
 })
 
 window?.l10n?.receive('fromMain_l10n_refresh', (newLang) => {
+	for ( const oldTooltip of currentTooltips ) {
+		oldTooltip?.dispose?.()
+	}
+	currentTooltips.length = 0
 	document.body.setAttribute('data-i18n', newLang)
 	processL10N()
 })

@@ -987,6 +987,10 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 		case 'dev_mode_13':
 			parseGameXML(parseInt(name.slice(-2), 10), value)
 			break
+		case 'show_tooltips':
+			mcStore.set(name, value)
+			win.refreshL10n()
+			break
 		case 'lock_lang':
 			mcStore.set('force_lang', myTranslator.currentLocale)
 			// falls through
