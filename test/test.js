@@ -9,12 +9,12 @@
 // Define tests here, using the file name.  Called with .test(<log library class>)
 const startTime  = Date.now()
 const testList   = [
-	// 'modcheck',     // Mod Checker
-	// 'modcollect',   // Collection test
-	// 'modlook',      // Mod Internal Looker
-	// 'modtrack',     // Mod tracking
+	'modcheck',     // Mod Checker
+	'modcollect',   // Collection test
+	'modlook',      // Mod Internal Looker
+	'modtrack',     // Mod tracking
 	'savegame',     // Savegame Reading
-	// 'sourcecode',   // ESLint Source code
+	'sourcecode',   // ESLint Source code
 	'translations', // Translation file check
 ]
 
@@ -129,28 +129,30 @@ const testLib     = class {
 
 module.exports.testLib = testLib
 
-const runTests = []
-for ( const thisTest of testList ) {
-	runTests.push(require(`./tests/${thisTest}.js`).test())
-}
-
-Promise.allSettled(runTests).then(() => {
-	const rootTest = new testLib('All Tests', true, true)
-	if ( failedTests.size !== 0 || warnedTests !== 0 ) {
-		for ( const thisTest of failedTests ) {
-			rootTest.error(`${thisTest} -- Failed`)
-		}
-		for ( const thisTest of warnedTests ) {
-			rootTest.warn(`${thisTest} -- Warnings`)
-		}
-	} else {
-		rootTest.step('All Tests Passed')
+if (require.main === module) {
+	const runTests = []
+	for ( const thisTest of testList ) {
+		runTests.push(require(`./tests/${thisTest}.js`).test())
 	}
-	
-	rootTest.step(`Tests took ${Date.now() - startTime}ms to complete`)
-	require('./tests/packagestat.js').test().then(() => {
-		rootTest.end(true)
+
+	Promise.allSettled(runTests).then(() => {
+		const rootTest = new testLib('All Tests', true, true)
+		if ( failedTests.size !== 0 || warnedTests !== 0 ) {
+			for ( const thisTest of failedTests ) {
+				rootTest.error(`${thisTest} -- Failed`)
+			}
+			for ( const thisTest of warnedTests ) {
+				rootTest.warn(`${thisTest} -- Warnings`)
+			}
+		} else {
+			rootTest.step('All Tests Passed')
+		}
+		
+		rootTest.step(`Tests took ${Date.now() - startTime}ms to complete`)
+		require('./tests/packagestat.js').test().then(() => {
+			rootTest.end(true)
+		})
+		
+		// console.log(maIPC.log.textLog)
 	})
-	
-	// console.log(maIPC.log.textLog)
-})
+}
