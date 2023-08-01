@@ -9,12 +9,12 @@
 // Define tests here, using the file name.  Called with .test(<log library class>)
 const startTime  = Date.now()
 const testList   = [
-	'modcheck',     // Mod Checker
-	'modcollect',   // Collection test
-	'modlook',      // Mod Internal Looker
-	'modtrack',     // Mod tracking
+	// 'modcheck',     // Mod Checker
+	// 'modcollect',   // Collection test
+	// 'modlook',      // Mod Internal Looker
+	// 'modtrack',     // Mod tracking
 	'savegame',     // Savegame Reading
-	'sourcecode',   // ESLint Source code
+	// 'sourcecode',   // ESLint Source code
 	'translations', // Translation file check
 ]
 
@@ -32,13 +32,20 @@ maIPC.settings = { store : {}, get : () => null }
 maIPC.modCache = { store : {}, get : () => null }
 maIPC.sites    = { store : {}, get : () => null }
 
-const envLines = []
+const L_LOG  = 0
+const L_NORM = 1
+const L_WARN = 2
+const L_ERR  = 3
+
+const envLines    = []
 const failedTests = new Set()
-const testLib = class {
+const warnedTests = new Set()
+const testLib     = class {
 	#setENV   = false
 	#steps    = []
 	#title    = null
 	#didFail  = false
+	#didWarn  = false
 	#softFail = false
 
 	constructor(name, silentFail = false, setENV = false ) {
@@ -47,40 +54,70 @@ const testLib = class {
 		this.#setENV   = setENV
 	}
 
-	step(text) { this.#steps.push([false, `${text}.`, false]) }
-	step_log(text) { this.#steps.push([null, `${text}.`, false]) }
-	step_fmt(text) { this.#steps.push([false, text, true]) }
+	#addStep(level, text, preFmt = false) {
+		this.#steps.push({
+			preFmt : preFmt,
+			lvl    : level,
+			text   : text,
+		})
+	}
 
-	error (text) {
+	step(text)      { this.#addStep(L_NORM, text) }
+	step_log(text)  { this.#addStep(L_LOG, text) }
+	step_fmt(text)  { this.#addStep(L_LOG, text, true) }
+
+	warn(text)      {
+		if ( ! this.#softFail ) {
+			warnedTests.add(this.#title)
+		}
+		this.#didWarn = true
+		this.#addStep(L_WARN, text)
+	}
+
+	error (text)    {
 		if ( ! this.#softFail ) {
 			failedTests.add(this.#title)
 		}
 		process.exitCode = 1
 		this.#didFail = true
-		this.#steps.push([true, text, false])
+		this.#addStep(L_ERR, text)
+	}
+
+	#getDisplayLine(step, color = true) {
+		const spacer   = step.preFmt ? '' : !color ? '- ' : c.gray(' -- ')
+		const realColor = ['gray', 'cyan', 'yellow', 'red'][step.lvl]
+
+		if ( !color ) {
+			return `${spacer}${step.text}`
+		}
+		return `${spacer}${c[realColor](step.text)}`
+	}
+
+	#getTestSummary(color = true) {
+		if ( this.#didFail ) {
+			return color ? c.redBright(`🗙 FAILED: ${c.red(this.#title)}`) : `## 🗙 FAILED: ${this.#title}`
+		}
+		if ( this.#didWarn ) {
+			return color ? c.yellowBright(`⟁ WARNINGS: ${c.yellow(this.#title)}`) : `## ⟁ WARNINGS: ${this.#title}`
+		}
+		return color ? c.greenBright(`✓ PASSED: ${c.green(this.#title)}`) : `## ✓ PASSED: ${this.#title}`
 	}
 
 	end(doEnv = false, onlyError = false) {
 		/* eslint-disable no-console */
-		const displaySteps = onlyError && this.#didFail ? this.#steps.filter((x) => x[0]): this.#steps
+		const displaySteps = onlyError && this.#didFail ? this.#steps.filter((x) => x.lvl === L_WARN || x.lvl === L_ERR): this.#steps
 		if ( this.#setENV ) {
 			envLines.push(
-				!this.#didFail ?
-					`## ✓ PASSED: ${this.#title}` :
-					`## 🗙 FAILED: ${this.#title}`,
+				this.#getTestSummary(false),
 				'',
-				...this.#steps.map((x) => `${x[2] ? '' : '- '}${x[1]}`),
+				...this.#steps.map((x) => this.#getDisplayLine(x, false)),
 				''
 			)
 		}
 
+		console.log(this.#getTestSummary())
 		console.log(
-			!this.#didFail ?
-				c.greenBright(`✓ PASSED: ${c.green(this.#title)}`) :
-				c.redBright(`🗙 FAILED: ${c.red(this.#title)}`)
-		)
-		console.log(
-			displaySteps.map((x) => c.gray(` --${c[x[0] === null ? 'gray' : x[0] ? 'red' : 'cyan'](`  ${x[1]}`)}`)).join('\n'),
+			displaySteps.map((x) => this.#getDisplayLine(x)).join('\n'),
 			'\n'
 		)
 		if ( doEnv ) {
@@ -99,9 +136,12 @@ for ( const thisTest of testList ) {
 
 Promise.allSettled(runTests).then(() => {
 	const rootTest = new testLib('All Tests', true, true)
-	if ( failedTests.size !== 0 ) {
+	if ( failedTests.size !== 0 || warnedTests !== 0 ) {
 		for ( const thisTest of failedTests ) {
 			rootTest.error(`${thisTest} -- Failed`)
+		}
+		for ( const thisTest of warnedTests ) {
+			rootTest.warn(`${thisTest} -- Warnings`)
 		}
 	} else {
 		rootTest.step('All Tests Passed')

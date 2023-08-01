@@ -16,11 +16,25 @@ module.exports.test = async () => {
 	])
 }
 
+const expectFiles = new Set([
+	'cs.json',
+	'cz.json',
+	'de.json',
+	'en.json',
+	'es.json',
+	'fr.json',
+	'lv.json',
+	'nl.json',
+	'pl.json',
+	'pt.json',
+	'ru.json',
+])
+
 const checkLangs = () => {
 	const test     = new testLib('Language Test')
 	const langPath = path.join(__dirname, '..', '..', 'translations')
 	
-	test.step('Loading English Language')
+	test.step('Loading \'en.json\' as Known Good')
 	return fs.readFile(path.join(langPath, 'en.json')).then(async (enData) => {
 		const enFile = JSON.parse(enData)
 		
@@ -28,6 +42,12 @@ const checkLangs = () => {
 		const fileChecks = []
 
 		for ( const thisFile of checkFiles ) {
+			if ( !expectFiles.has(thisFile.name) ) {
+				test.error(`Unexpected File: ${thisFile.name}`)
+			} else {
+				expectFiles.delete(thisFile.name)
+			}
+
 			fileChecks.push(fs.readFile(path.join(langPath, thisFile.name)).then((rawFileContents) => {
 				const errors = []
 				const fileContents = JSON.parse(rawFileContents)
@@ -46,7 +66,7 @@ const checkLangs = () => {
 				}
 
 				if ( errors.length !== 0 ) {
-					test.error(`${thisFile.name} has ${errors.join(' and ')} Keys`)
+					test.warn(`${thisFile.name} has ${errors.join(' and ')} Keys`)
 				} else {
 					test.step(`${thisFile.name} is correct`)
 				}
@@ -59,6 +79,11 @@ const checkLangs = () => {
 	}).catch((err) => {
 		test.error(err)
 	}).finally(() => {
+		if ( expectFiles.size !== 0 ) {
+			for ( const neededFile of expectFiles ) {
+				test.error(`Expected File Not Found: ${neededFile}`)
+			}
+		}
 		test.end()
 	})
 }

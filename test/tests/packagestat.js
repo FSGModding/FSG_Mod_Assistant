@@ -12,6 +12,7 @@ const {glob}    = require('glob')
 const {testLib} = require('../test.js')
 const imgSet    = new Set(['.jpg', '.png', '.psd', '.ico', '.icns', '.woff', '.woff2', '.webp'])
 const knowSet   = new Set([...imgSet, '.css', '.scss', '.xml', '.js', '.json', '.html', '.md', '.zip'])
+const pkgDetail = require('../../package.json')
 
 module.exports.test = async () => {
 	return Promise.all([
@@ -75,10 +76,12 @@ const makeLine  = (type, data) => {
 		padData(toMByte(data.size), 6), ' MB |'
 	].join('')
 }
-const tblHeader = '| ----------- | ----- | ----- | ------ | ------ | ---------- | -------- |'
+const tblHeader = '| ----------- | ----: | ----: | -----: | -----: | ---------: | -------: |'
 
 const countFiles = (test) => {
 	return glob('**', { cwd : path.join(__dirname, '..', '..'), ignore : 'node_modules/**', stat : true, withFileTypes : true }).then((results) => {
+		test.step(`Current App Version is ${pkgDetail.version}`)
+		test.step('Current File Statistics:\n')
 		const fileList = results.filter((x) => x.isFile())
 		test.step_fmt(makeLine('', { blank : 'Blank', code : 'Code', comment : '/* */', size : 'Size', total : 'Files' }))
 		test.step_fmt(tblHeader)
@@ -91,7 +94,7 @@ const countFiles = (test) => {
 		test.step_fmt(makeLine('Images', countOthers(fileList.filter((x) => imgSet.has(path.extname(x.name)) ))))
 		test.step_fmt(makeLine('ZIP Archive', countOthers(fileList.filter((x) => path.extname(x.name) === '.zip'))))
 		test.step_fmt(makeLine('Other', countOthers(fileList.filter((x) => !knowSet.has(path.extname(x.name)) ))))
-		test.step_fmt(tblHeader)
+		// test.step_fmt(tblHeader)
 		test.step_fmt(makeLine('TOTAL', countOthers(fileList)))
 	}).catch((err) => {
 		test.error(err)
