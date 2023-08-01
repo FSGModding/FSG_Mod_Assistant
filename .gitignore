@@ -12,3 +12,4 @@ yarn-error.log
 test/langbuilder/gamefiles/*.xml
 .VSCodeCounter
 TEST_OUTPUT.md
+.deepl_key
