@@ -364,7 +364,7 @@ const buildPage = (modCollect) => {
 		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`
 	}
 
-	const theseBadges = Array.from(modRecord.displayBadges, (badge) => fsgUtil.badge_main(badge)).join(' ')
+	const theseBadges = Array.isArray(modRecord.displayBadges) ? modRecord.displayBadges.map((badge) => fsgUtil.badge_main(badge)).join(' ') : false
 
 	fsgUtil.setTextOrHide(
 		'badges',
