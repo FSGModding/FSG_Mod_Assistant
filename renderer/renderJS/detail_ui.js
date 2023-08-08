@@ -28,9 +28,17 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	processL10N()
 })
 
+const doMapImage = (mapImage) => {
+	if ( mapImage === null || typeof mapImage !== 'string') { return }
+	fsgUtil.byId('map_image_div').classList.remove('d-none')
+	fsgUtil.byId('map_image').src = mapImage
+}
+
 const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
+
+	doMapImage(lookRecord?.mapImage)
 
 	for ( const storeitem in lookRecord.items ) {
 		const thisItem     = lookRecord.items[storeitem]
