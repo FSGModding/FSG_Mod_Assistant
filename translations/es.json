@@ -217,6 +217,8 @@
 	"mod_badge_keys_bad__title"             : "Este mod añade combinaciones de teclas al juego, algunas pueden entrar en conflicto",
 	"mod_badge_keys_ok"                     : "llaves",
 	"mod_badge_keys_ok__title"              : "Este mod añade combinaciones de teclas al juego",
+	"mod_badge_log"                         : "registro",
+	"mod_badge_log__title"                  : "Este es un archivo de registro del juego",
 	"mod_badge_map"                         : "mapa",
 	"mod_badge_map__title"                  : "Este mod es un mapa",
 	"mod_badge_new"                         : "NUEVO",

@@ -217,6 +217,8 @@
 	"mod_badge_keys_bad__title"             : "Tento mod přidá do hry klávesové vazby, některé mohou být konfliktní",
 	"mod_badge_keys_ok"                     : "klíče",
 	"mod_badge_keys_ok__title"              : "Tento mod přidá klávesové vazby do hry",
+	"mod_badge_log"                         : "Přihlásit se",
+	"mod_badge_log__title"                  : "Toto je soubor protokolu hry",
 	"mod_badge_map"                         : "mapa",
 	"mod_badge_map__title"                  : "Tento mod je mapa",
 	"mod_badge_new"                         : "nový",

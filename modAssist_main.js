@@ -702,17 +702,30 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	const thisSite  = modSite.get(thisMod.fileDetail.shortName, '')
 	const isSave    = thisMod.badgeArray.includes('savegame')
 	const notMod    = thisMod.badgeArray.includes('notmod')
+	const isLog     = thisMod.badgeArray.includes('log')
 
 	const template = [
 		{ label : thisMod.fileDetail.shortName},
 		{ type : 'separator' },
 	]
 
-	if ( !isSave && !notMod ) {
+	if ( !isSave && !notMod && !isLog ) {
 		template.push({
 			label : myTranslator.syncStringLookup('context_mod_detail'),
 			click : () => { openDetailWindow(thisMod) },
 		})
+	} else if ( isLog ) {
+		const thisFolder  = modCollect.mapCollectionToFolder(modID.split('--')[0])
+		const logPath     = path.join(thisFolder, path.basename(thisMod.fileDetail.fullPath))
+
+		template.push({
+			label : myTranslator.syncStringLookup('button_gamelog__title'),
+			click : () => {
+				loadGameLog(logPath)
+				win.createNamedWindow('gamelog')
+			},
+		})
+
 	} else if ( isSave ) {
 		const thisFolder  = modCollect.mapCollectionToFolder(modID.split('--')[0])
 		const savePath    = path.join(thisFolder, path.basename(thisMod.fileDetail.fullPath))

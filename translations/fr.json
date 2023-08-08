@@ -217,6 +217,8 @@
 	"mod_badge_keys_bad__title"             : "Ce mod ajoute des raccourcis clavier au jeu, certains peuvent entrer en conflit",
 	"mod_badge_keys_ok"                     : "clés",
 	"mod_badge_keys_ok__title"              : "Ce mod ajoute des raccourcis clavier au jeu",
+	"mod_badge_log"                         : "journal",
+	"mod_badge_log__title"                  : "Il s'agit d'un fichier journal du jeu",
 	"mod_badge_map"                         : "carte",
 	"mod_badge_map__title"                  : "Ce mod est une carte",
 	"mod_badge_new"                         : "NOUVEAU",

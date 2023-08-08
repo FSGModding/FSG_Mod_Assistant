@@ -25,6 +25,7 @@ const fsgUtil = {
 		fs22        : 'info border-danger',
 		keys_bad    : 'danger',
 		keys_ok     : 'success',
+		log         : 'info fw-bold fst-italic',
 		map         : 'primary fst-italic',
 		new         : 'success',
 		nomp        : 'secondary',

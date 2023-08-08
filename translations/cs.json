@@ -217,6 +217,8 @@
 	"mod_badge_keys_bad__title"             : "This mod adds keybindings to the game, some may conflict",
 	"mod_badge_keys_ok"                     : "keys",
 	"mod_badge_keys_ok__title"              : "This mod adds keybindings to the game",
+	"mod_badge_log"                         : "登录",
+	"mod_badge_log__title"                  : "这是游戏日志文件",
 	"mod_badge_map"                         : "map",
 	"mod_badge_map__title"                  : "This mod is a map",
 	"mod_badge_new"                         : "新的",

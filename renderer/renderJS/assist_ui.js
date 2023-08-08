@@ -77,6 +77,7 @@ const searchTagMap_empty = () => {
 		folder      : [],
 		keys_bad    : [],
 		keys_ok     : [],
+		log         : [],
 		map         : [],
 		new         : [],
 		nomp        : [],

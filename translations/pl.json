@@ -217,6 +217,8 @@
 	"mod_badge_keys_bad__title"             : "Ten mod dodaje skróty klawiszowe do gry, niektóre mogą wchodzić w konflikt",
 	"mod_badge_keys_ok"                     : "Skróty klawiszowe",
 	"mod_badge_keys_ok__title"              : "Ten mod dodaje skróty klawiszowe do gry",
+	"mod_badge_log"                         : "dziennik",
+	"mod_badge_log__title"                  : "To jest plik dziennika gry",
 	"mod_badge_map"                         : "kaart",
 	"mod_badge_map__title"                  : "Deze mod is een kaart",
 	"mod_badge_new"                         : "NOWOŚĆ",
