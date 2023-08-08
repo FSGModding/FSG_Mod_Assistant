@@ -309,7 +309,16 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	}
 }
 
-const cleanOrJoin = (arr, text = 'detail_extra_clean') => Array.isArray(arr) && arr.length !== 0 ? arr.join('\n') : getText(text)
+const cleanOrJoin    = (arr, text = 'detail_extra_clean') => Array.isArray(arr) && arr.length !== 0 ? arr.join('\n') : getText(text)
+const extraInfoColor = (id, arr, badColor = 'text-danger') => {
+	const element = fsgUtil.byId(id)
+	element.classList.remove(badColor, 'text-success')
+	if ( Array.isArray(arr) && arr.length !== 0 ) {
+		element.classList.add(badColor)
+	} else {
+		element.classList.add('text-success')
+	}
+}
 
 const doKeyBinds = (modRecord, locale) => {
 	const keyBinds = []
@@ -323,9 +332,9 @@ const doKeyBinds = (modRecord, locale) => {
 const buildPage = (modCollect) => {
 	document.body.setAttribute('data-version', modCollect.appSettings.game_version)
 
-	const modRecord = modCollect.opts.selected
-	const modDate   = new Date(Date.parse(modRecord.fileDetail.fileDate)).toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'})
-
+	const modRecord    = modCollect.opts.selected
+	const modDate      = new Date(Date.parse(modRecord.fileDetail.fileDate)).toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'})
+	const doneKeyBinds = doKeyBinds(modRecord, modCollect.currentLocale)
 	const idMap = {
 		bigFiles       : cleanOrJoin(modRecord.fileDetail.tooBigFiles),
 		depends        : cleanOrJoin(modRecord.modDesc.depend, 'detail_depend_clean'),
@@ -336,7 +345,7 @@ const buildPage = (modCollect) => {
 		has_scripts    : checkX(modRecord.modDesc.scriptFiles),
 		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
 		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
-		keyBinds       : cleanOrJoin(doKeyBinds(modRecord, modCollect.currentLocale), 'detail_key_none'),
+		keyBinds       : cleanOrJoin(doneKeyBinds, 'detail_key_none'),
 		mh_version     : ( modRecord.modHub.id !== null ) ? modRecord.modHub.version : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
 		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
 		mod_location   : modRecord.fileDetail.fullPath,
@@ -348,6 +357,12 @@ const buildPage = (modCollect) => {
 	}
 
 	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
+
+	extraInfoColor('keyBinds', doneKeyBinds, 'text-info')
+	extraInfoColor('pngTexture', modRecord.fileDetail.pngTexture)
+	extraInfoColor('spaceFiles', modRecord.fileDetail.spaceFiles)
+	extraInfoColor('extraFiles', modRecord.fileDetail.extraFiles)
+	extraInfoColor('bigFiles', modRecord.fileDetail.tooBigFiles)
 
 	for ( const element of fsgUtil.query('#description a') ) { element.target = '_BLANK' }
 
