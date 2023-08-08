@@ -700,19 +700,20 @@ ipcMain.on('toMain_dragOut', (event, modID) => {
 ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 	const thisMod   = modCollect.modColUUIDToRecord(modID)
 	const thisSite  = modSite.get(thisMod.fileDetail.shortName, '')
-	const isSave    = thisMod.badgeArray.includes('savegame') || thisMod.badgeArray.includes('notmod')
+	const isSave    = thisMod.badgeArray.includes('savegame')
+	const notMod    = thisMod.badgeArray.includes('notmod')
 
 	const template = [
 		{ label : thisMod.fileDetail.shortName},
 		{ type : 'separator' },
 	]
 
-	if ( !isSave ) {
+	if ( !isSave && !notMod ) {
 		template.push({
 			label : myTranslator.syncStringLookup('context_mod_detail'),
 			click : () => { openDetailWindow(thisMod) },
 		})
-	} else {
+	} else if ( isSave ) {
 		const thisFolder  = modCollect.mapCollectionToFolder(modID.split('--')[0])
 		const savePath    = path.join(thisFolder, path.basename(thisMod.fileDetail.fullPath))
 		const subMenu     = []
