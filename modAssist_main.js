@@ -1810,7 +1810,7 @@ function processModFoldersOnDisk() {
 		if ( ! offlineFolders.includes(folder) ) {
 			const thisCollectionStats = modCollect.addCollection(folder)
 
-			win.loading.total(thisCollectionStats.fileCount)
+			win.loading.total(thisCollectionStats?.fileCount ?? 0)
 		}
 	}
 
