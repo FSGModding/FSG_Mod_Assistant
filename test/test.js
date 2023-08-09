@@ -29,7 +29,7 @@ maIPC.log.forceNoConsole()
 
 maIPC.notes    = { store : {}, get : () => null }
 maIPC.settings = { store : {}, get : () => null }
-maIPC.modCache = { store : {}, get : () => null }
+maIPC.modCache = { getMod : () => false, setMod : () => null, saveFile : () => null }
 maIPC.sites    = { store : {}, get : () => null }
 
 const L_LOG  = 0

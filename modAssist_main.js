@@ -43,7 +43,7 @@ const mainProcessFlags = {
 }
 
 const { autoUpdater } = require('electron-updater')
-const { maIPC, ma_logger, translator} = require('./lib/modUtilLib')
+const { maIPC, ma_logger, translator, modCacheManager} = require('./lib/modUtilLib')
 const { EventEmitter }           = require('node:events')
 
 const path             = require('node:path')
@@ -177,12 +177,14 @@ const unzip   = require('unzip-stream')
 const makeZip = require('archiver')
 
 const mcStore = new Store({schema : settingDefault.defaults, clearInvalidConfig : true })
-const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
+//const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
 const mdCache = new Store({name : 'mod_detail_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 const modSite = new Store({name : 'mod_source_site', migrations : settingDefault.migrateSite, clearInvalidConfig : true})
 
-maIPC.modCache = maCache
+const newMaCache = new modCacheManager(app.getPath('userData'))
+
+maIPC.modCache = newMaCache
 maIPC.notes    = modNote
 maIPC.settings = mcStore
 maIPC.sites    = modSite
@@ -207,7 +209,7 @@ if ( !updateRequired && appVerMajor === updateMajor && appVerMinor < updateMinor
 
 if ( updateRequired ) {
 	log.log.warning('Invalid Mod Cache (old), resetting.', 'mod-cache')
-	//maCache.clear()
+	newMaCache.clearAll()
 	log.log.info('Mod Cache Cleared', 'mod-cache')
 } else {
 	log.log.debug('Mod Cache Version Good', 'mod-cache')
@@ -549,9 +551,10 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			case 'clean_cache_size' : {
 				try {
 					const cacheSize = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json')).size/(1024*1024)
+					const iconSize  = fs.statSync(path.join(app.getPath('userData'), 'mod_icons.json')).size/(1024*1024)
 					sendEntry(
 						l10nEntry,
-						`${myTranslator.syncStringLookup(l10nEntry)} ${cacheSize.toFixed(2)}MB`
+						`${myTranslator.syncStringLookup(l10nEntry)} ${cacheSize.toFixed(2)}MB / ${iconSize.toFixed(2)}MB`
 					)
 				} catch {
 					sendEntry(
@@ -1024,7 +1027,7 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 })
 ipcMain.on('toMain_resetWindows',   () => { win.resetPositions() })
 ipcMain.on('toMain_clearCacheFile', () => {
-	maCache.clear()
+	newMaCache.clearAll()
 	processModFolders(true)
 })
 ipcMain.on('toMain_clearDetailCacheFile', (event) => {
@@ -1032,8 +1035,8 @@ ipcMain.on('toMain_clearDetailCacheFile', (event) => {
 	event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 })
 ipcMain.on('toMain_cleanCacheFile', (event) => {
-	const localStore = maCache.store
-	const md5Set     = new Set(Object.keys(localStore))
+	//TODO : fix this bit.
+	const md5Set     = new Set(newMaCache.keys)
 	
 	for ( const collectKey of modCollect.collections ) {
 		for ( const thisSum of Array.from(Object.values(modCollect.getModListFromCollection(collectKey)), (mod) => mod.md5Sum).filter((x) => x !== null) ) {
@@ -1041,9 +1044,9 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 		}
 	}
 
-	for ( const md5 of md5Set ) { delete localStore[md5] }
+	for ( const md5 of md5Set ) { delete newMaCache.remMod(md5) }
 
-	maCache.store = localStore
+	newMaCache.saveFile()
 
 	event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
 })
