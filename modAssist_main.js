@@ -881,6 +881,18 @@ ipcMain.on('toMain_guessGameLog',      () => {
 	loadGameLog()
 	readGameLog()
 })
+ipcMain.on('toMain_clearGameLog',      () => {
+	const thisGameLog = gameLogFilename()
+
+	if ( thisGameLog === null || !fs.existsSync(thisGameLog) ) { return }
+
+	try {
+		fs.writeFileSync(thisGameLog, '')
+	} catch (err)  {
+		log.log.danger(`Could not clear specified log : ${err}`, 'game-log')
+	}
+	readGameLog()
+})
 ipcMain.on('toMain_changeGameLog',     () => {
 	dialog.showOpenDialog(win.win.prefs, {
 		properties  : ['openFile'],
