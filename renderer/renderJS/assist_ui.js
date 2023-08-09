@@ -542,7 +542,7 @@ window.loader.receive('fromMain_loadingNoCount', () => {
 
 window.loader.receive('fromMain_loading_total', (count, inMB = false) => {
 	if ( inMB ) { startTime = Date.now() }
-	const thisCount   = inMB ? fsgUtil.toMB(count) : count
+	const thisCount   = inMB ? fsgUtil.bytesToMB(count) : count
 	const thisElement = document.getElementById('loadOverlay_statusTotal')
 	lastTotal = ( count < 1 ) ? 1 : count
 
@@ -550,7 +550,7 @@ window.loader.receive('fromMain_loading_total', (count, inMB = false) => {
 })
 
 window.loader.receive('fromMain_loading_current', (count, inMB = false) => {
-	const thisCount   = inMB ? fsgUtil.toMB(count, false) : count
+	const thisCount   = inMB ? fsgUtil.bytesToMB(count, false) : count
 	const thisElement = document.getElementById('loadOverlay_statusCurrent')
 	const thisProg    = document.getElementById('loadOverlay_statusProgBarInner')
 	const thisPercent = `${Math.ceil((count / lastTotal) * 100)}%` || '0%'
@@ -565,7 +565,7 @@ window.loader.receive('fromMain_loading_current', (count, inMB = false) => {
 		const endTime    = Date.now()
 		const elapsedMS  = endTime - startTime
 		const elapsedSec = elapsedMS / 1000
-		const estSpeed   = fsgUtil.toMB(count, false) / elapsedSec // MB/sec
+		const estSpeed   = fsgUtil.bytesToMB(count, false) / elapsedSec // MB/sec
 		const secRemain  = elapsedSec / perDone * perRem
 
 		const prettyMinRemain = Math.floor(secRemain / 60)

@@ -1213,6 +1213,11 @@ ipcMain.on('toMain_downloadList',   (_, collection) => {
 		win.loading.hide()
 	})
 	mainProcessFlags.dlRequest.on('error', (error) => {
+		win.doDialogBox('main', {
+			type      : 'error',
+			titleL10n : 'download_title',
+			message   : `${myTranslator.syncStringLookup('download_failed')} :: ${error}`,
+		})
 		modDLLog.warning(`Network error : ${error}`)
 		mainProcessFlags.dlProgress = false
 		win.loading.hide()

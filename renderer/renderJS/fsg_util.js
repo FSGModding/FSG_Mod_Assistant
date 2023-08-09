@@ -183,7 +183,7 @@ const fsgUtil = {
 			units[u]
 		].join(' ')
 	},
-	bytesToMB : (count, suffix = true) => `${Math.round((count / ( 1024 * 1024)*100))/100}${suffix?' MB':''}`,
+	bytesToMB     : (count, suffix = true) => `${Math.round((count / ( 1024 * 1024)*100))/100}${suffix?' MB':''}`,
 	escapeDesc    : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;') : text,
 	escapeSpecial : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
 
