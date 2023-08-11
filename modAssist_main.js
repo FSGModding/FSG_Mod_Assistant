@@ -168,7 +168,7 @@ function guessPath(paths, file = '') {
 mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
-const { modFileCollection, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
+const { modFileCollection, saveFileChecker, savegameTrack, saveGameManager } = require('./lib/modCheckLib.js')
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 
@@ -1352,6 +1352,14 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 })
 /** END: Export operation */
 
+/** Savegame manager operation */
+ipcMain.on('toMain_openSaveManage', () => {
+	const saveManage = new saveGameManager(mcStore.get('game_settings'))
+
+	saveManage.getInfo().then((results) => {
+		win.createNamedWindow('save_manage', { saveInfo : results } )
+	})
+})
 /** Savetrack window operation */
 ipcMain.on('toMain_openSaveTrack',   () => { win.createNamedWindow('save_track') })
 ipcMain.on('toMain_openTrackFolder', () => {
