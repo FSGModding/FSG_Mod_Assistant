@@ -21,6 +21,13 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 
 	const activeGameHTML = []
 	const backGameHTML   = []
+	const compareHTML    = []
+
+	for ( const collectKey of modCollect.set_Collections ) {
+		if ( modCollect.appSettings.game_version === modCollect.collectionNotes[collectKey].notes_version ) {
+			compareHTML.push(fsgUtil.buildSelectOpt(collectKey, modCollect.collectionToFullName[collectKey]))
+		}
+	}
 
 	for ( const thisID of activeIDS ) {
 		uuidMap[theseSaves[thisID].active.uuid] = {
@@ -31,6 +38,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	}
 
 	for ( const thisID of backIDS ) {
+		theseSaves[thisID].backups.reverse()
 		for ( const thisRecord of theseSaves[thisID].backups ) {
 			uuidMap[thisRecord.uuid] = {
 				path : thisRecord.fullPath,
@@ -40,8 +48,11 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 		}
 	}
 
-	fsgUtil.byId('active_games').innerHTML = activeGameHTML.join('')
-	fsgUtil.byId('backup_games').innerHTML = backGameHTML.join('')
+	fsgUtil.setContent({
+		active_games        : activeGameHTML.join(''),
+		backup_games        : backGameHTML.join(''),
+		save_collect_choice : compareHTML.join(''),
+	})
 	processL10N()
 })
 
@@ -93,5 +104,54 @@ window.addEventListener('DOMContentLoaded', () => {
 	restoreDialog = new bootstrap.Modal(document.getElementById('restore_savegame_modal'), {backdrop : 'static', keyboard : false})
 	restoreDialog.hide()
 	collectDialog = new bootstrap.Modal(document.getElementById('collect_savegame_modal'), {backdrop : 'static', keyboard : false})
-	collectDialog.show()
+	collectDialog.hide()
 })
+
+function clientExportSave(uuid) {
+	window.mods.doExportSave(uuidMap[uuid].path)
+}
+
+function clientDeleteSave(uuid) {
+	fsgUtil.setContent({
+		save_delete_name : uuidMap[uuid].name,
+		save_delete_path : uuidMap[uuid].path,
+	})
+	deleteDialog.show()
+}
+
+function clientRestoreSave(uuid) {
+	fsgUtil.setContent({
+		save_restore_name : uuidMap[uuid].name,
+		save_restore_path : uuidMap[uuid].path,
+	})
+	restoreDialog.show()
+}
+
+function clientCompareSave(uuid) {
+	fsgUtil.setContent({
+		save_collect_name : uuidMap[uuid].name,
+		save_collect_path : uuidMap[uuid].path,
+	})
+	collectDialog.show()
+}
+
+function clientDeleteSave_go() {
+	window.mods.doDeleteSave(fsgUtil.byId('save_delete_path').innerHTML)
+	deleteDialog.hide()
+}
+
+function clientRestoreSave_go() {
+	const destSlot = fsgUtil.byId('save_restore_choice').value
+	if ( destSlot !== '--') {
+		window.mods.doRestoreSave(fsgUtil.byId('save_restore_path').innerHTML, destSlot)
+		restoreDialog.hide()
+	}
+}
+
+function clientCompareSave_go() {
+	const collectKey = fsgUtil.byId('save_collect_choice').value
+	if ( collectKey !== '--') {
+		window.mods.doCompareSave(fsgUtil.byId('save_collect_path').innerHTML, collectKey)
+		collectDialog.hide()
+	}
+}

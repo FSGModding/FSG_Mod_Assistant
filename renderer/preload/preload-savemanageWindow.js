@@ -38,7 +38,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		//openFolder     : ()      => { ipcRenderer.send('toMain_openTrackFolder')},
+		doCompareSave : (path, collectKey) => { ipcRenderer.send('toMain_saveManageCompare', path, collectKey) },
+		doDeleteSave  : (path)             => { ipcRenderer.send('toMain_saveManageDelete', path) },
+		doExportSave  : (path)             => { ipcRenderer.send('toMain_saveManageExport', path) },
+		doRestoreSave : (path, slot)       => { ipcRenderer.send('toMain_saveManageRestore', path, slot) },
 
 		receive      : ( channel, func ) => {
 			const validChannels = new Set([

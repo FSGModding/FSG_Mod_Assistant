@@ -22,6 +22,9 @@
 		.farm_06 { color : #638aff; }
 		.farm_07 { color : #63f6ff; }
 		.farm_08 { color : #84ff82; }
+		.table-sm>:not(caption)>*>* {
+			padding: .15rem .25rem;
+		}
 	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2" id="drag_target" style="min-height: 100vh;">
@@ -38,22 +41,14 @@
 			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="save_manage_blurb"></l10n></span>
 		</div>
 
-		<h3 class="text-center border-bottom"><l10n name="save_manage_active"></l10n></h3>
+		<h3 class="text-center border-bottom pb-2"><l10n name="save_manage_active"></l10n></h3>
 		<div class="table-responsive">
-			<table class="table table-sm" id="active_games"></table>
+			<table class="table table-sm table-striped" id="active_games"></table>
 		</div>
 
-		<h3 class="text-center border-bottom"><l10n name="save_manage_backup"></l10n></h3>
+		<h3 class="text-center border-bottom pb-2 mt-4"><l10n name="save_manage_backup"></l10n></h3>
 		<div class="table-responsive">
-			<table class="table table-sm" id="backup_games"></table>
-		</div>
-
-		<div class="d-none">
-			<l10n name="save_manage_confirm_delete" id="save_manage_confirm_delete"></l10n>
-			<l10n name="save_manage_select_collection" id="save_manage_select_collection"></l10n>
-			<l10n name="save_manage_select_restore" id="save_manage_select_restore"></l10n>
-			<l10n name="save_manage_button_cancel" id="save_manage_button_cancel"></l10n>
-			<l10n name="save_manage_button_ok" id="save_manage_button_ok"></l10n>
+			<table class="table table-sm table-striped" id="backup_games"></table>
 		</div>
 	</div>
 
@@ -178,31 +173,34 @@
 <template id="savegame_record">
 	<tr>
 		<td class="px-4 align-middle text-center"><span class="h2">{{saveNumber}}</span></td>
-		<td class="align-middle"><table class="table table-sm table-borderless">
+		<td class="align-middle pt-2"><table class="table table-sm table-borderless">
 			<tr><td><l10n class="fst-italic" name="save_manage_name"></l10n></td><td>{{saveName}}</td></tr>
-			<tr><td><l10n class="fst-italic" name="save_manage_mods"></l10n></td><td>{{saveModCount}}</td></tr>
-			<tr><td><l10n class="fst-italic" name="save_manage_map"></l10n></td><td>{{saveMap}}</td></tr>
 			<tr><td><l10n class="fst-italic" name="save_manage_time"></l10n></td><td>{{savePlayTime}}</td></tr>
 			<tr><td><l10n class="fst-italic" name="save_manage_date"></l10n></td><td>{{saveDate}}</td></tr>
 			<tr><td><l10n class="fst-italic" name="save_manage_real_date"></l10n></td><td>{{saveRealDate}}</td></tr>
+			<tr><td><l10n class="fst-italic" name="save_manage_mods"></l10n></td><td>{{saveModCount}}</td></tr>
+			<tr><td><l10n class="fst-italic" name="save_manage_map"></l10n></td><td>{{saveMap}}</td></tr>
 		</table></td>
-		<td>{{farms}}</td>
-		<td class="align-middle">{{buttons}}</td>
+		<td class="pt-2">{{farms}}</td>
+		<td class="align-bottom pb-3 ps-3">{{buttons}}</td>
 	</tr>
 </template>
 
 <template id="savegame_active_buttons">
 	<div class="btn-group-vertical">
-		<button onclick="clientCompareSave('{{uuid}}')" class="btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
-		<button onclick="clientDeleteSave('{{uuid}}')" class="btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
+		<button onclick="clientCompareSave('{{uuid}}')" class="border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
+		<button onclick="clientExportSave('{{uuid}}')" class="border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
+		<button onclick="clientRestoreSave('{{uuid}}')" class="border-dark btn btn-sm btn-warning"><l10n name="save_manage_duplicate"></l10n></button>
+		<button onclick="clientDeleteSave('{{uuid}}')" class="border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
 	</div>
 </template>
 
 <template id="savegame_backup_buttons">
 	<div class="btn-group-vertical">
-		<button onclick="clientCompareSave('{{uuid}}')" class="btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
-		<button onclick="clientRestoreSave('{{uuid}}')" class="btn btn-sm btn-warning"><l10n name="save_manage_restore"></l10n></button>
-		<button onclick="clientDeleteSave('{{uuid}}')" class="btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
+		<button onclick="clientCompareSave('{{uuid}}')" class="border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
+		<button onclick="clientExportSave('{{uuid}}')" class="border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
+		<button onclick="clientRestoreSave('{{uuid}}')" class="border-dark btn btn-sm btn-warning"><l10n name="save_manage_restore"></l10n></button>
+		<button onclick="clientDeleteSave('{{uuid}}')" class="border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
 	</div>
 </template>
 

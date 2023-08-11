@@ -1353,13 +1353,100 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 /** END: Export operation */
 
 /** Savegame manager operation */
-ipcMain.on('toMain_openSaveManage', () => {
+function refreshSaveManager() {
 	const saveManage = new saveGameManager(mcStore.get('game_settings'))
 
 	saveManage.getInfo().then((results) => {
 		win.createNamedWindow('save_manage', { saveInfo : results } )
 	})
+}
+ipcMain.on('toMain_openSaveManage', () => { refreshSaveManager() })
+ipcMain.on('toMain_saveManageCompare', (_, fullPath, collectKey) => {
+	win.createNamedWindow('save', { collectKey : collectKey })
+	setTimeout(() => { readSaveGame(fullPath, true) }, 250)
 })
+ipcMain.on('toMain_saveManageDelete', (_, fullPath) => {
+	try {
+		log.log.info(`Delete Existing Save : ${fullPath}`, 'save-manager')
+		fs.rmSync(fullPath, { recursive : true })
+	} catch (err) {
+		log.log.warning(`Save Remove Failed : ${err}`, 'save-manager')
+	}
+	refreshSaveManager()
+})
+ipcMain.on('toMain_saveManageExport', (_, fullPath) => {
+	const zipLog    = log.group('zip-export')
+
+	dialog.showSaveDialog(win.win.main, {
+		defaultPath : app.getPath('desktop'),
+		filters     : [
+			{ name : 'ZIP', extensions : ['zip'] },
+		],
+	}).then(async (result) => {
+		if ( result.canceled ) {
+			zipLog.debug('Export ZIP Cancelled')
+		} else {
+			try {
+				const zipOutput  = fs.createWriteStream(result.filePath)
+				const zipArchive = makeZip('zip', {
+					zlib : { level : 6 },
+				})
+				
+				zipOutput.on('close', () => {
+					zipLog.info(`ZIP file created : ${result.filePath}`)
+					app.addRecentDocument(result.filePath)
+				})
+
+				zipArchive.on('error', (err) => {
+					zipLog.warning(`Could not create zip file : ${err}`)
+					setTimeout(() => {
+						win.doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
+					}, 1500)
+				})
+
+				zipArchive.on('warning', (err) => {
+					zipLog.warning(`Problem with ZIP file : ${err}`)
+				})
+
+				zipArchive.on('entry', (entry) => {
+					zipLog.info(`Added file to ZIP : ${entry.name}`)
+				})
+
+				zipArchive.pipe(zipOutput)
+
+				// append files from a sub-directory, putting its contents at the root of archive
+				zipArchive.directory(fullPath, false)
+
+				zipArchive.finalize()
+
+			} catch (err) {
+				zipLog.warning(`Could not create zip file : ${err}`)
+				setTimeout(() => {
+					win.doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
+				}, 1500)
+			}
+		}
+	}).catch((err) => {
+		zipLog.warning(`Could not create zip file : ${err}`)
+	})
+})
+ipcMain.on('toMain_saveManageRestore', (_, fullPath, newSlot) => {
+	try {
+		const newSlotFull = path.join(path.dirname(mcStore.get('game_settings')), `savegame${newSlot}`)
+
+		if ( fs.existsSync(newSlotFull) ) {
+			log.log.info(`Delete Existing Save First : ${newSlotFull}`, 'save-manager')
+			fs.rmSync(newSlotFull, { recursive : true })
+		}
+
+		log.log.info(`Restoring Save : ${fullPath} -> ${newSlot}`, 'save-manager')
+		fs.cpSync(fullPath, newSlotFull, { recursive : true })
+	} catch (err) {
+		log.log.warning(`Save Restore Failed : ${err}`, 'save-manager')
+	}
+	refreshSaveManager()
+})
+
 /** Savetrack window operation */
 ipcMain.on('toMain_openSaveTrack',   () => { win.createNamedWindow('save_track') })
 ipcMain.on('toMain_openTrackFolder', () => {
