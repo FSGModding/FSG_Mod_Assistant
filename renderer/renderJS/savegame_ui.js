@@ -281,6 +281,10 @@ function makeLine(name, mod, singleFarm, hubID) {
 	})
 }
 
+function clientCopyVisible() {
+	const shownMods = fsgUtil.queryA('.mod-item').filter((x) => !x.classList.contains('d-none')).map((x) => x.querySelector('.fw-bold').innerHTML)
+	window.mods.popClipboard(shownMods.join('\n'))
+}
 
 function clientSelectMain(type) {
 	if ( selectList[type].length !== 0 ) {

@@ -16,6 +16,7 @@
 	"check_save__title"                     : "加载保存游戏以比较此收藏",
 	"clean_cache_size"                      : "当前缓存大小：",
 	"clean_detail_cache_size"               : "Current detail cache size:",
+	"clipboard_visible"                     : "将可见条目复制到剪贴板",
 	"config_working_set_list"               : "正在设置游戏模组文件夹 (这只需要几秒钟)...",
 	"config_working_status"                 : "正在读取、复制、移动或测试 (这可能需要一些时间)...",
 	"confirm_copy_blurb"                    : "要复制模组，请在下面选择目标集合，并选择是否覆盖每个模组(如果适用)",

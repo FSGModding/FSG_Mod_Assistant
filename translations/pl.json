@@ -16,6 +16,7 @@
 	"check_save__title"                     : "Załaduj savegame, aby porównać go z tym folderem",
 	"clean_cache_size"                      : "Aktualny rozmiar pamięci podręcznej:",
 	"clean_detail_cache_size"               : "Bieżący rozmiar pamięci podręcznej szczegółów:",
+	"clipboard_visible"                     : "Kopiowanie widocznych wpisów do schowka",
 	"config_working_set_list"               : "Ustawienie folderu game mod (to zajmuje tylko sekundę)...",
 	"config_working_status"                 : "Czytanie, kopiowanie, przenoszenie lub testowanie (to może trochę potrwać)...",
 	"confirm_copy_blurb"                    : "Aby skopiować mod, wybierz poniżej folder docelowy i zdecyduj czy nadpisać czy nie każdego moda (jeśli to możliwe)",

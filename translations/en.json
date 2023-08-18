@@ -16,6 +16,7 @@
 	"check_save__title"                     : "Load a savegame to compare to this collection",
 	"clean_cache_size"                      : "Current cache size:",
 	"clean_detail_cache_size"               : "Current detail cache size:",
+	"clipboard_visible"                     : "Copy visible entries to clipboard",
 	"config_working_set_list"               : "Setting game mod folder (this only takes a second)...",
 	"config_working_status"                 : "Reading, Copying, Moving, or Testing (this could take a while)...",
 	"confirm_copy_blurb"                    : "To copy mods, select the destination collection below, and choose to overwrite or not for each mod (where applicable)",

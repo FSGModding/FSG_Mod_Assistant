@@ -43,6 +43,7 @@ contextBridge.exposeInMainWorld(
 		openFolder     : ()      => { ipcRenderer.send('toMain_openSaveFolder')},
 		openHUB        : (hubID) => { ipcRenderer.send('toMain_openHubByID', parseInt(hubID, 10) ) },
 		openZIP        : ()      => { ipcRenderer.send('toMain_openSaveZIP')},
+		popClipboard   : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
 		selectInMain   : (list)  => { ipcRenderer.send('toMain_selectInMain', list)},
 
 		receive      : ( channel, func ) => {

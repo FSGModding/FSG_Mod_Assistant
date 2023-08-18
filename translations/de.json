@@ -16,6 +16,7 @@
 	"check_save__title"                     : "Laden Sie ein Savegame zum Vergleich mit dieser Sammlung",
 	"clean_cache_size"                      : "Aktuelle Cache-Größe:",
 	"clean_detail_cache_size"               : "Aktuelle Größe des Detail-Caches:",
+	"clipboard_visible"                     : "Sichtbare Einträge in die Zwischenablage kopieren",
 	"config_working_set_list"               : "Einstellen des Spielmod-Ordners (dies dauert nur eine Sekunde)...",
 	"config_working_status"                 : "Lesen, Kopieren, Verschieben oder Testen (das kann eine Weile dauern)...",
 	"confirm_copy_blurb"                    : "Um Mods zu kopieren, wählen Sie unten die Zielsammlung aus, und wählen Sie für jede Mod, ob sie überschrieben werden soll oder nicht (falls zutreffend)",

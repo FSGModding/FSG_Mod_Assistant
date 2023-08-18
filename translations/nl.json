@@ -16,6 +16,7 @@
 	"check_save__title"                     : "Laad een savegame om te vergelijken met deze collectie",
 	"clean_cache_size"                      : "Huidige cache grootte:",
 	"clean_detail_cache_size"               : "Huidige detail cache grootte:",
+	"clipboard_visible"                     : "Zichtbare vermeldingen naar klembord kopiëren",
 	"config_working_set_list"               : "Game mod folder instellen (dit duurt maar een seconde)...",
 	"config_working_status"                 : "Lezen, kopiëren, verplaatsen of testen (dit kan even duren)...",
 	"confirm_copy_blurb"                    : "Om mods te kopiëren, selecteer de doelcollectie hieronder, en kies voor overschrijven of niet voor elke mod (waar van toepassing)",

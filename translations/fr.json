@@ -16,6 +16,7 @@
 	"check_save__title"                     : "Charger une sauvegarde pour la comparer à cette collection.",
 	"clean_cache_size"                      : "Taille actuelle du cache :",
 	"clean_detail_cache_size"               : "Taille actuelle de la mémoire cache :",
+	"clipboard_visible"                     : "Copier les entrées visibles dans le presse-papiers",
 	"config_working_set_list"               : "Configuration du dossier du mod de jeu (cela ne prend qu'une seconde)...",
 	"config_working_status"                 : "Lire, copier, déplacer ou tester (cela peut prendre un certain temps)...",
 	"confirm_copy_blurb"                    : "Pour copier des mods, sélectionnez la collection de destination ci-dessous, et choisissez d'écraser ou non chaque mod (le cas échéant).",

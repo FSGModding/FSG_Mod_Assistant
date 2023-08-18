@@ -16,6 +16,7 @@
 	"check_save__title"                     : "Cargar una partida guardada para compararla con esta colección",
 	"clean_cache_size"                      : "Tamaño actual de la caché:",
 	"clean_detail_cache_size"               : "Tamaño actual de la caché de detalles:",
+	"clipboard_visible"                     : "Copiar entradas visibles en el portapapeles",
 	"config_working_set_list"               : "Configurar la carpeta de mods del juego (esto sólo lleva un segundo)...",
 	"config_working_status"                 : "Leer, copiar, mover o probar (esto podría llevar un tiempo)...",
 	"confirm_copy_blurb"                    : "Para copiar los mods, seleccione la colección de destino a continuación y elija si desea sobrescribir o no cada mod (cuando corresponda)",

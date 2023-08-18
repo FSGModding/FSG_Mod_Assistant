@@ -16,6 +16,7 @@
 	"check_save__title"                     : "Carregue um jogo salvo para compará-lo com esta coleção",
 	"clean_cache_size"                      : "Tamanho atual do cache:",
 	"clean_detail_cache_size"               : "Tamanho atual da cache de dados:",
+	"clipboard_visible"                     : "Copiar entradas visíveis para a área de transferência",
 	"config_working_set_list"               : "Configure a pasta mods do jogo (leva apenas um segundo)...",
 	"config_working_status"                 : "Leia, copie, mova ou teste (isso pode demorar um pouco)...",
 	"confirm_copy_blurb"                    : "Para copiar mods, selecione a coleção de destino abaixo e escolha se deseja ou não substituir cada mod (quando aplicável)",

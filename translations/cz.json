@@ -16,6 +16,7 @@
 	"check_save__title"                     : "Načte savegame pro porovnání s touto kolekcí",
 	"clean_cache_size"                      : "Aktuální velikost mezipaměti:",
 	"clean_detail_cache_size"               : "Aktuální velikost mezipaměti detailů:",
+	"clipboard_visible"                     : "Kopírování viditelných položek do schránky",
 	"config_working_set_list"               : "Nastavuji herní mod složku (trvá to jen sekundu)...",
 	"config_working_status"                 : "Čtení, kopírování, přesouvání nebo testování (může to chvíli trvat)...",
 	"confirm_copy_blurb"                    : "Chcete-li zkopírovat mody, vyberte cílovou sbírku níže a zvolte možnost přepsat nebo ne pro každý mód (použije-li se)",
