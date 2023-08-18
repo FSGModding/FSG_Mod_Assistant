@@ -1977,13 +1977,14 @@ function processModFoldersOnDisk() {
 			const isRemovable = modNote.get(`${colHash}.notes_removable`, false)
 
 			if ( !isRemovable ) {
+				log.log.warning(`Folder no longer exists, removing: ${folder}`, 'mod-processor')
 				mainProcessFlags.modFolders.delete(folder)
 			} else {
 				offlineFolders.push(folder)
 			}
 		} else {
 			const thisWatch = fs.watch(folder, (eventType, fileName) => { updateFolderDirtyWatch(eventType, fileName, folder) })
-			thisWatch.on('error', () => { log.log.warning(`Folder Watch Error: ${folder}`, 'folder-watcher') })
+			thisWatch.on('error', (err) => { log.log.warning(`Folder Watch Error: ${folder} :: ${err}`, 'folder-watcher') })
 			mainProcessFlags.watchModFolder.push(thisWatch)
 		}
 	}
