@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimizing to system tray",
 	"mod_badge_broken"                      : "broken",
 	"mod_badge_broken__title"               : "This mod is broken",
+	"mod_badge_collect"                     : "collection",
+	"mod_badge_collect__title"              : "This is a tracked mod collection",
 	"mod_badge_depend"                      : "depend",
 	"mod_badge_depend__title"               : "This mod has unmet dependencies in this collection",
 	"mod_badge_depend_flag"                 : "depend",

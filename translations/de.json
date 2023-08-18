@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimieren in die Taskleiste",
 	"mod_badge_broken"                      : "gebrochen",
 	"mod_badge_broken__title"               : "Dieser Mod ist kaputt",
+	"mod_badge_collect"                     : "Sammlung",
+	"mod_badge_collect__title"              : "Dies ist eine nachverfolgbare Mod-Sammlung",
 	"mod_badge_depend"                      : "abhängen",
 	"mod_badge_depend__title"               : "Diese Mod hat unerfüllte Abhängigkeiten in dieser Sammlung",
 	"mod_badge_depend_flag"                 : "abhängen",

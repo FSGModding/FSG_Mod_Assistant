@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimizar a la bandeja del sistema",
 	"mod_badge_broken"                      : "roto",
 	"mod_badge_broken__title"               : "Este mod está roto",
+	"mod_badge_collect"                     : "colección",
+	"mod_badge_collect__title"              : "Se trata de una colección de mods rastreados",
 	"mod_badge_depend"                      : "depender",
 	"mod_badge_depend__title"               : "Este mod tiene dependencias no satisfechas en esta colección",
 	"mod_badge_depend_flag"                 : "depender",

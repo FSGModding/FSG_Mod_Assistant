@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimizar para a bandeja do sistema",
 	"mod_badge_broken"                      : "Interrompido",
 	"mod_badge_broken__title"               : "Este modo está interrompido",
+	"mod_badge_collect"                     : "coleção",
+	"mod_badge_collect__title"              : "Esta é uma coleção de mods controlada",
 	"mod_badge_depend"                      : "Depender",
 	"mod_badge_depend__title"               : "Este mod tem dependências insatisfeitas nesta coleção",
 	"mod_badge_depend_flag"                 : "Depender",

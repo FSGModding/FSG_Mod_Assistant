@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimaliseren naar systeemvak",
 	"mod_badge_broken"                      : "kapot",
 	"mod_badge_broken__title"               : "Deze mod is kapot",
+	"mod_badge_collect"                     : "collectie",
+	"mod_badge_collect__title"              : "Dit is een bijgehouden modverzameling",
 	"mod_badge_depend"                      : "Afhankelijk",
 	"mod_badge_depend__title"               : "Deze mod heeft onvervulde afhankelijkheden in deze collectie",
 	"mod_badge_depend_flag"                 : "Afhankelijk",

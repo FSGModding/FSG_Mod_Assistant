@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "最小化到系统栏",
 	"mod_badge_broken"                      : "损坏",
 	"mod_badge_broken__title"               : "模组已损坏",
+	"mod_badge_collect"                     : "系列",
+	"mod_badge_collect__title"              : "这是一个跟踪模式集合",
 	"mod_badge_depend"                      : "depend",
 	"mod_badge_depend__title"               : "This mod has unmet dependencies in this collection",
 	"mod_badge_depend_flag"                 : "depend",

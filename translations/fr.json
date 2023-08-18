@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimiser dans la barre d'état système",
 	"mod_badge_broken"                      : "brisé",
 	"mod_badge_broken__title"               : "Ce mod est cassé",
+	"mod_badge_collect"                     : "collection",
+	"mod_badge_collect__title"              : "Il s'agit d'une collection de mods suivis",
 	"mod_badge_depend"                      : "dépendre",
 	"mod_badge_depend__title"               : "Ce mod a des dépendances non satisfaites dans cette collection",
 	"mod_badge_depend_flag"                 : "dépendre",

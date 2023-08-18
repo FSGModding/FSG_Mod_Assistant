@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimalizace do systémové lišty",
 	"mod_badge_broken"                      : "rozbitý",
 	"mod_badge_broken__title"               : "Tento mod je rozbitý",
+	"mod_badge_collect"                     : "sbírka",
+	"mod_badge_collect__title"              : "Jedná se o kolekci sledovaných modů",
 	"mod_badge_depend"                      : "závisí",
 	"mod_badge_depend__title"               : "Tento mod nemá v této sbírce žádné závislosti",
 	"mod_badge_depend_flag"                 : "závisí",

@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Сведение к минимуму в системном трее",
 	"mod_badge_broken"                      : "с ошибками",
 	"mod_badge_broken__title"               : "Этот мод с ошибками",
+	"mod_badge_collect"                     : "коллекция",
+	"mod_badge_collect__title"              : "Это отслеживаемая коллекция модов",
 	"mod_badge_depend"                      : "зависит",
 	"mod_badge_depend__title"               : "У этого мода есть неудовлетворённые зависимости в этой коллекции",
 	"mod_badge_depend_flag"                 : "зависит",

@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimalizacja do zasobnika systemowego",
 	"mod_badge_broken"                      : "Uszkodzony",
 	"mod_badge_broken__title"               : "Ten mod jest uszkodzony",
+	"mod_badge_collect"                     : "kolekcja",
+	"mod_badge_collect__title"              : "Jest to śledzona kolekcja modów",
 	"mod_badge_depend"                      : "Zależny",
 	"mod_badge_depend__title"               : "Ten mod ma niespełnione wymagania innych modów w tym folderze",
 	"mod_badge_depend_flag"                 : "Zależny",

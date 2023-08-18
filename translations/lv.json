@@ -194,6 +194,8 @@
 	"minimize_message_title"                : "Minimizēšana sistēmas teknē",
 	"mod_badge_broken"                      : "broken",
 	"mod_badge_broken__title"               : "Šis mod ir bojāts",
+	"mod_badge_collect"                     : "kolekcija",
+	"mod_badge_collect__title"              : "Šī ir izsekojama moda kolekcija",
 	"mod_badge_depend"                      : "depend",
 	"mod_badge_depend__title"               : "Šim modam ir neizpildītas atkarības šajā kolekcijā",
 	"mod_badge_depend_flag"                 : "depend",

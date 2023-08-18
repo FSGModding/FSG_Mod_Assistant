@@ -14,6 +14,7 @@ const getText = (text, extraTitle = null) => `<l10n ${extraTitle!==null ? `data-
 const fsgUtil = {
 	badgeDefault : {
 		broken      : 'danger',
+		collect     : 'primary fw-bold fst-italic',
 		depend      : 'danger',
 		depend_flag : 'success',
 		folder      : 'primary',
