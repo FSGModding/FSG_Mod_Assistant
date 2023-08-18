@@ -168,7 +168,7 @@ function guessPath(paths, file = '') {
 mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
-const { modFileCollection, saveFileChecker, savegameTrack } = require('./lib/modCheckLib.js')
+const { modFileCollection, saveFileChecker, savegameTrack, saveGameManager } = require('./lib/modCheckLib.js')
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 
@@ -1352,6 +1352,156 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 })
 /** END: Export operation */
 
+/** Savegame manager operation */
+function refreshSaveManager() {
+	const saveManage = new saveGameManager(mcStore.get('game_settings'))
+
+	saveManage.getInfo().then((results) => {
+		win.createNamedWindow('save_manage', { saveInfo : results } )
+	})
+}
+ipcMain.on('toMain_openSaveManage', () => { refreshSaveManager() })
+ipcMain.on('toMain_saveManageCompare', (_, fullPath, collectKey) => {
+	win.createNamedWindow('save', { collectKey : collectKey })
+	setTimeout(() => { readSaveGame(fullPath, true) }, 250)
+})
+ipcMain.on('toMain_saveManageDelete', (_, fullPath) => {
+	try {
+		log.log.info(`Delete Existing Save : ${fullPath}`, 'save-manager')
+		fs.rmSync(fullPath, { recursive : true })
+	} catch (err) {
+		log.log.warning(`Save Remove Failed : ${err}`, 'save-manager')
+	}
+	refreshSaveManager()
+})
+ipcMain.on('toMain_saveManageExport', (_, fullPath) => {
+	const zipLog    = log.group('zip-export')
+
+	dialog.showSaveDialog(win.win.main, {
+		defaultPath : app.getPath('desktop'),
+		filters     : [
+			{ name : 'ZIP', extensions : ['zip'] },
+		],
+	}).then(async (result) => {
+		if ( result.canceled ) {
+			zipLog.debug('Export ZIP Cancelled')
+		} else {
+			try {
+				const zipOutput  = fs.createWriteStream(result.filePath)
+				const zipArchive = makeZip('zip', {
+					zlib : { level : 6 },
+				})
+				
+				zipOutput.on('close', () => {
+					zipLog.info(`ZIP file created : ${result.filePath}`)
+					app.addRecentDocument(result.filePath)
+				})
+
+				zipArchive.on('error', (err) => {
+					zipLog.warning(`Could not create zip file : ${err}`)
+					setTimeout(() => {
+						win.doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
+					}, 1500)
+				})
+
+				zipArchive.on('warning', (err) => {
+					zipLog.warning(`Problem with ZIP file : ${err}`)
+				})
+
+				zipArchive.on('entry', (entry) => {
+					zipLog.info(`Added file to ZIP : ${entry.name}`)
+				})
+
+				zipArchive.pipe(zipOutput)
+
+				// append files from a sub-directory, putting its contents at the root of archive
+				zipArchive.directory(fullPath, false)
+
+				zipArchive.finalize()
+
+			} catch (err) {
+				zipLog.warning(`Could not create zip file : ${err}`)
+				setTimeout(() => {
+					win.doDialogBox('main', { type : 'warning', messageL10n : 'save_zip_failed' })
+				}, 1500)
+			}
+		}
+	}).catch((err) => {
+		zipLog.warning(`Could not create zip file : ${err}`)
+	})
+})
+ipcMain.on('toMain_saveManageRestore', (_, fullPath, newSlot) => {
+	try {
+		const newSlotFull = path.join(path.dirname(mcStore.get('game_settings')), `savegame${newSlot}`)
+
+		if ( fs.existsSync(newSlotFull) ) {
+			log.log.info(`Delete Existing Save First : ${newSlotFull}`, 'save-manager')
+			fs.rmSync(newSlotFull, { recursive : true })
+		}
+
+		log.log.info(`Restoring Save : ${fullPath} -> ${newSlot}`, 'save-manager')
+		fs.cpSync(fullPath, newSlotFull, { recursive : true })
+	} catch (err) {
+		log.log.warning(`Save Restore Failed : ${err}`, 'save-manager')
+	}
+	refreshSaveManager()
+})
+ipcMain.on('toMain_saveManageImport', (_, fullPath, newSlot) => {
+	const saveImportLog = log.group('save-manager-import')
+	const newSlotFull = path.join(path.dirname(mcStore.get('game_settings')), `savegame${newSlot}`)
+	try {
+		if ( fs.existsSync(newSlotFull) ) {
+			saveImportLog.info(`Delete Existing Save First : ${newSlotFull}`, 'save-manager')
+			fs.rmSync(newSlotFull, { recursive : true })
+		}
+
+		saveImportLog.info(`Importing Save : ${fullPath} -> ${newSlot} -> ${newSlotFull}`, 'save-manager')
+
+		fs.mkdirSync(newSlotFull)
+
+		fs.createReadStream(fullPath)
+			.pipe(unzip.Parse())
+			.on('error', (err) => {
+				saveImportLog.warning(`Import unzip failed : ${err}`)
+			})
+			.on('entry', (entry) => {
+				if ( entry.type === 'File' ) {
+					entry.pipe(fs.createWriteStream(path.join(newSlotFull, entry.path)))
+				} else {
+					entry.autodrain()
+				}
+			})
+			.on('end', () => {
+				saveImportLog.info('Import unzipping complete')
+				refreshSaveManager()
+			})
+	} catch (err) {
+		saveImportLog.warning(`Save Restore Failed : ${err}`, 'save-manager')
+		refreshSaveManager()
+	}
+})
+ipcMain.on('toMain_saveManageGetImport', () => {
+	const options = {
+		properties  : ['openFile'],
+		defaultPath : userHome,
+		filters     : [{ name : 'ZIP Files', extensions : ['zip'] }],
+	}
+
+	dialog.showOpenDialog(win.win.save_manage, options).then((result) => {
+		if ( !result.canceled ) {
+			new saveFileChecker(result.filePaths[0], false).getInfo().then((results) => {
+				if ( results.errorList.length === 0 ) {
+					win.sendToValidWindow('save_manage', 'fromMain_saveImport', result.filePaths[0])
+				} else {
+					log.log.danger('Invalid Save File', 'save-manage')
+				}
+			})
+		}
+	}).catch((err) => {
+		log.log.danger(`Could not read specified file : ${err}`, 'save-manage')
+	})
+})
+
 /** Savetrack window operation */
 ipcMain.on('toMain_openSaveTrack',   () => { win.createNamedWindow('save_track') })
 ipcMain.on('toMain_openTrackFolder', () => {
@@ -1827,13 +1977,14 @@ function processModFoldersOnDisk() {
 			const isRemovable = modNote.get(`${colHash}.notes_removable`, false)
 
 			if ( !isRemovable ) {
+				log.log.warning(`Folder no longer exists, removing: ${folder}`, 'mod-processor')
 				mainProcessFlags.modFolders.delete(folder)
 			} else {
 				offlineFolders.push(folder)
 			}
 		} else {
 			const thisWatch = fs.watch(folder, (eventType, fileName) => { updateFolderDirtyWatch(eventType, fileName, folder) })
-			thisWatch.on('error', () => { log.log.warning(`Folder Watch Error: ${folder}`, 'folder-watcher') })
+			thisWatch.on('error', (err) => { log.log.warning(`Folder Watch Error: ${folder} :: ${err}`, 'folder-watcher') })
 			mainProcessFlags.watchModFolder.push(thisWatch)
 		}
 	}

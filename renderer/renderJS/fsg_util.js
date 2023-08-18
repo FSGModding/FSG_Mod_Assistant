@@ -7,6 +7,7 @@
 // FSG Mod Assist Utilities (client side)
 
 /* global l10n, bootstrap */
+/* exported tableBuilder */
 
 const getText = (text, extraTitle = null) => `<l10n ${extraTitle!==null ? `data-extra-title="${extraTitle}"` : ''} name="${text}"></l10n>`
 
@@ -204,8 +205,6 @@ const fsgUtil = {
 			fsgUtil.byId(id).innerHTML = content
 		}
 	},
-	
-	
 
 	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip.remove() } },
 	setTheme        : (theme) => { document.body.setAttribute('data-bs-theme', theme) },
@@ -216,6 +215,12 @@ const fsgUtil = {
 	windowCheckNone : () => { fsgUtil.windowCheckOp(false) },
 	windowCheckOp   : ( newChecked = true ) => {
 		for ( const element of fsgUtil.query('[type="checkbox"]') ) { element.checked = newChecked }
+	},
+
+	setContent      : (kvPair) => {
+		for ( const [id, value] of Object.entries(kvPair) ) {
+			fsgUtil.byId(id).innerHTML = value
+		}
 	},
 
 	/* cSpell:disable */

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/savemanage_ui.js"></script>
+	<style>
+		.farm_01 { color : #ffaf00; }
+		.farm_02 { color : #ff6201; }
+		.farm_03 { color : #db277e; }
+		.farm_04 { color : #8a13bd; }
+		.farm_05 { color : #7958ef; }
+		.farm_06 { color : #638aff; }
+		.farm_07 { color : #63f6ff; }
+		.farm_08 { color : #84ff82; }
+		.table-sm>:not(caption)>*>* {
+			padding: .15rem .25rem;
+		}
+	</style>
+</head>
+<body data-bs-theme="dark" class="overflow-custom2" id="drag_target" style="min-height: 100vh;">
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100 g-0">
+				<div class="col-7" style="-webkit-app-region: drag;">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+				</div>
+				<div class="col-5 pt-4">
+					<div class="badge bg-primary mx-auto w-100 d-block rounded-pill"><l10n class="h4" name="save_manage_title"></l10n></div>
+				</div>
+			</div>
+			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="save_manage_blurb"></l10n></span>
+		</div>
+
+		<div class="border-bottom pb-2">
+			<div class="btn-group mx-auto w-75 d-flex">
+				<button class="btn btn-primary btn-sm border" onclick="clientImportSave()"><i class="bi bi-folder"></i> <l10n name="save_manage_import"></l10n></button>
+			</div>
+		</div>
+
+		<h3 class="text-center border-bottom pb-2"><l10n name="save_manage_active"></l10n></h3>
+		<div class="table-responsive">
+			<table class="table table-sm table-striped" id="active_games"></table>
+		</div>
+
+		<h3 class="text-center border-bottom pb-2 mt-4"><l10n name="save_manage_backup"></l10n></h3>
+		<div class="table-responsive">
+			<table class="table table-sm table-striped" id="backup_games"></table>
+		</div>
+	</div>
+
+	<div class="modal" id="collect_savegame_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body">
+					<p class="m-0"><l10n name="save_manage_select_collection"></l10n></p>
+					<ul class="m-0 py-2">
+						<li><strong><l10n name="save_manage_name"></l10n>:</strong> <span id="save_collect_name"></span></li>
+						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_collect_path"></span></li>
+					</ul>
+					<div class="row">
+						<div class="col-auto">
+							<label for="save_collect_choice" class="col-form-label"><l10n name="save_manage_collection"></l10n></label>
+						</div>
+						<div class="col">
+							<select id="save_collect_choice" class="form-select" aria-label="Default select example">
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100">
+						<div class="col-3">
+							<img src="img/info_ask.webp" class="w-100">
+						</div>
+						<div class="col-9">
+							<button type="button" class="w-100 mb-2 btn btn-warning" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
+							<button type="button" class="w-100 btn btn-success" onclick="clientCompareSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="delete_savegame_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body">
+					<p class="m-0"><l10n name="save_manage_confirm_delete"></l10n></p>
+					<ul class="m-0 py-2">
+						<li><strong><l10n name="save_manage_name"></l10n>:</strong> <span id="save_delete_name"></span></li>
+						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_delete_path"></span></li>
+					</ul>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100">
+						<div class="col-3">
+							<img src="img/info_warn.webp" class="w-100">
+						</div>
+						<div class="col-9">
+							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
+							<button type="button" class="w-100 btn btn-success" onclick="clientDeleteSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="restore_savegame_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body">
+					<p class="m-0"><l10n name="save_manage_select_restore"></l10n></p>
+					<ul class="m-0 py-2">
+						<li><strong><l10n name="save_manage_name"></l10n>:</strong> <span id="save_restore_name"></span></li>
+						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_restore_path"></span></li>
+					</ul>
+					<div class="row">
+						<div class="col-auto">
+							<label for="save_restore_choice" class="col-form-label"><l10n name="save_restore_slot"></l10n></label>
+						</div>
+						<div class="col">
+							<select id="save_restore_choice" class="form-select" aria-label="Default select example">
+								<option selected>--</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="19">19</option>
+								<option value="20">20</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100">
+						<div class="col-3">
+							<img src="img/info_warn.webp" class="w-100">
+						</div>
+						<div class="col-9">
+							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
+							<button type="button" class="w-100 btn btn-success" onclick="clientRestoreSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="import_savegame_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body">
+					<p class="m-0 mb-3"><l10n name="save_manage_select_import"></l10n></p>
+					<ul class="m-0 py-2">
+						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_import_path"></span></li>
+					</ul>
+					<div class="mb-3">
+						<button type="button" class="w-100 mb-2 btn btn-warning text-white" onclick="clientImportSave_load()"><l10n name="save_manage_button_import"></l10n></button>
+					</div>
+					<div class="row">
+						<div class="col-auto">
+							<label for="save_import_choice" class="col-form-label"><l10n name="save_import_slot"></l10n></label>
+						</div>
+						<div class="col">
+							<select id="save_import_choice" class="form-select" aria-label="Default select example">
+								<option selected>--</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="19">19</option>
+								<option value="20">20</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100">
+						<div class="col-3">
+							<img src="img/info_ask.webp" class="w-100">
+						</div>
+						<div class="col-9">
+							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
+							<button type="button" class="w-100 btn btn-success" onclick="clientImportSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+
+
+<template id="savegame_record">
+	<tr>
+		<td class="px-4 align-middle text-center"><span class="h2">{{saveNumber}}</span></td>
+		<td class="align-middle pt-2"><table class="table table-sm table-borderless">
+			<tr><td><l10n class="fst-italic" name="save_manage_name"></l10n></td><td>{{saveName}}</td></tr>
+			<tr><td><l10n class="fst-italic" name="save_manage_time"></l10n></td><td>{{savePlayTime}}</td></tr>
+			<tr><td><l10n class="fst-italic" name="save_manage_date"></l10n></td><td>{{saveDate}}</td></tr>
+			<tr><td><l10n class="fst-italic" name="save_manage_real_date"></l10n></td><td>{{saveRealDate}}</td></tr>
+			<tr><td><l10n class="fst-italic" name="save_manage_mods"></l10n></td><td>{{saveModCount}}</td></tr>
+			<tr><td><l10n class="fst-italic" name="save_manage_map"></l10n></td><td>{{saveMap}}</td></tr>
+		</table></td>
+		<td class="pt-2">{{farms}}</td>
+		<td class="align-bottom pb-3 ps-3">{{buttons}}</td>
+	</tr>
+</template>
+
+<template id="savegame_active_buttons">
+	<div class="btn-group-vertical">
+		<button onclick="clientCompareSave('{{uuid}}')" class="border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
+		<button onclick="clientExportSave('{{uuid}}')" class="border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
+		<button onclick="clientRestoreSave('{{uuid}}')" class="border-dark btn btn-sm btn-warning"><l10n name="save_manage_duplicate"></l10n></button>
+		<button onclick="clientDeleteSave('{{uuid}}')" class="border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
+	</div>
+</template>
+
+<template id="savegame_backup_buttons">
+	<div class="btn-group-vertical">
+		<button onclick="clientCompareSave('{{uuid}}')" class="border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
+		<button onclick="clientExportSave('{{uuid}}')" class="border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
+		<button onclick="clientRestoreSave('{{uuid}}')" class="border-dark btn btn-sm btn-warning"><l10n name="save_manage_restore"></l10n></button>
+		<button onclick="clientDeleteSave('{{uuid}}')" class="border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
+	</div>
+</template>
+
+
+</html>

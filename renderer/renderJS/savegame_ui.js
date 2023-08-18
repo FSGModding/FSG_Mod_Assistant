@@ -22,6 +22,7 @@ const consumableOnly = new Set([
 	'FS22_Bags_and_Support_Package',
 	'FS22_BarrelsOfLiquids',
 	'FS22_BigBagCattlePack',
+	'FS22_BigBagsAsDefault',
 	'FS22_BonsilageBulkTank',
 	'FS22_BuyableProducts',
 	'FS22_cfFertilisersPack',
@@ -280,6 +281,10 @@ function makeLine(name, mod, singleFarm, hubID) {
 	})
 }
 
+function clientCopyVisible() {
+	const shownMods = fsgUtil.queryA('.mod-item').filter((x) => !x.classList.contains('d-none')).map((x) => x.querySelector('.fw-bold').innerHTML)
+	window.mods.popClipboard(shownMods.join('\n'))
+}
 
 function clientSelectMain(type) {
 	if ( selectList[type].length !== 0 ) {

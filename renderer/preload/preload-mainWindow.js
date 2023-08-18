@@ -66,6 +66,7 @@ contextBridge.exposeInMainWorld(
 		openGameLog     : () => { ipcRenderer.send('toMain_openGameLog') },
 		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
+		openSaveManage  : () => { ipcRenderer.send('toMain_openSaveManage') },
 		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
 		runUpdate       : () => { ipcRenderer.send('toMain_runUpdateInstall') },
 		sendToTray      : () => { ipcRenderer.send('toMain_sendMainToTray') },

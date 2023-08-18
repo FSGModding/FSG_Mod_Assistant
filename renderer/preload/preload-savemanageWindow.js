@@ -38,18 +38,17 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		openDropFolder : (path)  => { ipcRenderer.send('toMain_openSaveDrop', 'folder', path)},
-		openDropZIP    : (path)  => { ipcRenderer.send('toMain_openSaveDrop', 'zip', path)},
-		openFolder     : ()      => { ipcRenderer.send('toMain_openSaveFolder')},
-		openHUB        : (hubID) => { ipcRenderer.send('toMain_openHubByID', parseInt(hubID, 10) ) },
-		openZIP        : ()      => { ipcRenderer.send('toMain_openSaveZIP')},
-		popClipboard   : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
-		selectInMain   : (list)  => { ipcRenderer.send('toMain_selectInMain', list)},
+		doCompareSave : (path, collectKey) => { ipcRenderer.send('toMain_saveManageCompare', path, collectKey) },
+		doDeleteSave  : (path)             => { ipcRenderer.send('toMain_saveManageDelete', path) },
+		doExportSave  : (path)             => { ipcRenderer.send('toMain_saveManageExport', path) },
+		doImportLoad  : ()                 => { ipcRenderer.send('toMain_saveManageGetImport') },
+		doImportSave  : (path, slot)       => { ipcRenderer.send('toMain_saveManageImport', path, slot) },
+		doRestoreSave : (path, slot)       => { ipcRenderer.send('toMain_saveManageRestore', path, slot) },
 
 		receive      : ( channel, func ) => {
 			const validChannels = new Set([
-				'fromMain_collectionName',
 				'fromMain_saveInfo',
+				'fromMain_saveImport',
 			])
 		
 			if ( validChannels.has( channel ) ) {
