@@ -1446,6 +1446,61 @@ ipcMain.on('toMain_saveManageRestore', (_, fullPath, newSlot) => {
 	}
 	refreshSaveManager()
 })
+ipcMain.on('toMain_saveManageImport', (_, fullPath, newSlot) => {
+	const saveImportLog = log.group('save-manager-import')
+	const newSlotFull = path.join(path.dirname(mcStore.get('game_settings')), `savegame${newSlot}`)
+	try {
+		if ( fs.existsSync(newSlotFull) ) {
+			saveImportLog.info(`Delete Existing Save First : ${newSlotFull}`, 'save-manager')
+			fs.rmSync(newSlotFull, { recursive : true })
+		}
+
+		saveImportLog.info(`Importing Save : ${fullPath} -> ${newSlot} -> ${newSlotFull}`, 'save-manager')
+
+		fs.mkdirSync(newSlotFull)
+
+		fs.createReadStream(fullPath)
+			.pipe(unzip.Parse())
+			.on('error', (err) => {
+				saveImportLog.warning(`Import unzip failed : ${err}`)
+			})
+			.on('entry', (entry) => {
+				if ( entry.type === 'File' ) {
+					entry.pipe(fs.createWriteStream(path.join(newSlotFull, entry.path)))
+				} else {
+					entry.autodrain()
+				}
+			})
+			.on('end', () => {
+				saveImportLog.info('Import unzipping complete')
+				refreshSaveManager()
+			})
+	} catch (err) {
+		saveImportLog.warning(`Save Restore Failed : ${err}`, 'save-manager')
+		refreshSaveManager()
+	}
+})
+ipcMain.on('toMain_saveManageGetImport', () => {
+	const options = {
+		properties  : ['openFile'],
+		defaultPath : userHome,
+		filters     : [{ name : 'ZIP Files', extensions : ['zip'] }],
+	}
+
+	dialog.showOpenDialog(win.win.save_manage, options).then((result) => {
+		if ( !result.canceled ) {
+			new saveFileChecker(result.filePaths[0], false).getInfo().then((results) => {
+				if ( results.errorList.length === 0 ) {
+					win.sendToValidWindow('save_manage', 'fromMain_saveImport', result.filePaths[0])
+				} else {
+					log.log.danger('Invalid Save File', 'save-manage')
+				}
+			})
+		}
+	}).catch((err) => {
+		log.log.danger(`Could not read specified file : ${err}`, 'save-manage')
+	})
+})
 
 /** Savetrack window operation */
 ipcMain.on('toMain_openSaveTrack',   () => { win.createNamedWindow('save_track') })

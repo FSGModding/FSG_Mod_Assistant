@@ -11,12 +11,18 @@
 let lastLocale = 'en'
 let uuidMap    = {}
 
+window.mods.receive('fromMain_saveImport', (savePath) => {
+	fsgUtil.setContent({
+		save_import_path : savePath,
+	})
+})
+
 window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	lastLocale = modCollect.currentLocale
 	uuidMap    = {}
 	const theseSaves = modCollect.opts.saveInfo
 
-	const activeIDS      = Object.keys(theseSaves).filter((x) => theseSaves[x].active !== false)
+	const activeIDS      = Object.keys(theseSaves).filter((x) => theseSaves[x].active !== false && theseSaves[x].active.error === false)
 	const backIDS        = Object.keys(theseSaves).filter((x) => theseSaves[x].backups.length !== 0 )
 
 	const activeGameHTML = []
@@ -97,6 +103,7 @@ function doFarms(farms) {
 let deleteDialog  = null
 let restoreDialog = null
 let collectDialog = null
+let importDialog  = null
 
 window.addEventListener('DOMContentLoaded', () => {
 	deleteDialog = new bootstrap.Modal(document.getElementById('delete_savegame_modal'), {backdrop : 'static', keyboard : false})
@@ -105,7 +112,26 @@ window.addEventListener('DOMContentLoaded', () => {
 	restoreDialog.hide()
 	collectDialog = new bootstrap.Modal(document.getElementById('collect_savegame_modal'), {backdrop : 'static', keyboard : false})
 	collectDialog.hide()
+	importDialog = new bootstrap.Modal(document.getElementById('import_savegame_modal'), {backdrop : 'static', keyboard : false})
+	importDialog.hide()
 })
+
+function clientImportSave() {
+	importDialog.show()
+}
+
+function clientImportSave_load() {
+	window.mods.doImportLoad()
+}
+
+function clientImportSave_go() {
+	const destSlot = fsgUtil.byId('save_import_choice').value
+	const srcFile  = fsgUtil.byId('save_import_path').innerHTML
+	if ( destSlot !== '--' && srcFile !== '' ) {
+		window.mods.doImportSave(srcFile, destSlot)
+		importDialog.hide()
+	}
+}
 
 function clientExportSave(uuid) {
 	window.mods.doExportSave(uuidMap[uuid].path)

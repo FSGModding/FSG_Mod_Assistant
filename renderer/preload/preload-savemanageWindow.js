@@ -41,11 +41,14 @@ contextBridge.exposeInMainWorld(
 		doCompareSave : (path, collectKey) => { ipcRenderer.send('toMain_saveManageCompare', path, collectKey) },
 		doDeleteSave  : (path)             => { ipcRenderer.send('toMain_saveManageDelete', path) },
 		doExportSave  : (path)             => { ipcRenderer.send('toMain_saveManageExport', path) },
+		doImportLoad  : ()                 => { ipcRenderer.send('toMain_saveManageGetImport') },
+		doImportSave  : (path, slot)       => { ipcRenderer.send('toMain_saveManageImport', path, slot) },
 		doRestoreSave : (path, slot)       => { ipcRenderer.send('toMain_saveManageRestore', path, slot) },
 
 		receive      : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_saveInfo',
+				'fromMain_saveImport',
 			])
 		
 			if ( validChannels.has( channel ) ) {

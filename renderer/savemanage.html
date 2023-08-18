@@ -41,6 +41,12 @@
 			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="save_manage_blurb"></l10n></span>
 		</div>
 
+		<div class="border-bottom pb-2">
+			<div class="btn-group mx-auto w-75 d-flex">
+				<button class="btn btn-primary btn-sm border" onclick="clientImportSave()"><i class="bi bi-folder"></i> <l10n name="save_manage_import"></l10n></button>
+			</div>
+		</div>
+
 		<h3 class="text-center border-bottom pb-2"><l10n name="save_manage_active"></l10n></h3>
 		<div class="table-responsive">
 			<table class="table table-sm table-striped" id="active_games"></table>
@@ -159,6 +165,63 @@
 						<div class="col-9">
 							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
 							<button type="button" class="w-100 btn btn-success" onclick="clientRestoreSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="import_savegame_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body">
+					<p class="m-0 mb-3"><l10n name="save_manage_select_import"></l10n></p>
+					<ul class="m-0 py-2">
+						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_import_path"></span></li>
+					</ul>
+					<div class="mb-3">
+						<button type="button" class="w-100 mb-2 btn btn-warning text-white" onclick="clientImportSave_load()"><l10n name="save_manage_button_import"></l10n></button>
+					</div>
+					<div class="row">
+						<div class="col-auto">
+							<label for="save_import_choice" class="col-form-label"><l10n name="save_import_slot"></l10n></label>
+						</div>
+						<div class="col">
+							<select id="save_import_choice" class="form-select" aria-label="Default select example">
+								<option selected>--</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="19">19</option>
+								<option value="20">20</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100">
+						<div class="col-3">
+							<img src="img/info_ask.webp" class="w-100">
+						</div>
+						<div class="col-9">
+							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
+							<button type="button" class="w-100 btn btn-success" onclick="clientImportSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
 						</div>
 					</div>
 				</div>
