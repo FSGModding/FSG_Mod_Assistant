@@ -34,13 +34,18 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 
 		if ( element.getAttribute('type') === 'checkbox' ) {
 			thisValue       = modCollect.collectionNotes[thisCollection][element.id]
+
+			if ( element.id.startsWith('notes_unit') && thisValue === null ) {
+				thisValue = modCollect.opts.lastGameSettings?.[element.id.replace('notes_', '')]
+			}
 			element.checked = (thisValue !== '') ? thisValue : false
 		}
 
 		clientCheckValid(element.id)
 	}
 	
-	fsgUtil.byId('notes_version').value = modCollect.collectionNotes[thisCollection].notes_version
+	fsgUtil.byId('notes_unit_money').value = modCollect.collectionNotes[thisCollection].notes_unit_money ?? modCollect.opts.lastGameSettings.unit_money
+	fsgUtil.byId('notes_version').value    = modCollect.collectionNotes[thisCollection].notes_version
 
 	fsgUtil.byId('notes_notes').innerHTML = modCollect.collectionNotes?.[thisCollection]?.notes_notes || ''
 

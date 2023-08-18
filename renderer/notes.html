@@ -163,6 +163,48 @@
 			</div>
 		</div>
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
+			<div class="col-12">
+				<h5><l10n name="notes_title_units"></l10n></h5>
+				<p class="ps-2"><l10n name="notes_blurb_units"></l10n></p>
+			</div>
+
+			<div class="col-6">
+				<p class="ps-2"><l10n name="notes_units_money_title"></l10n></p>
+			</div>
+			<div class="col-6">
+				<select class="form-select form-select-sm" id="notes_unit_money" onchange="clientSetNote('notes_unit_money')">
+					<option value="1">€</option>
+					<option value="2">$</option>
+					<option value="3">£</option>
+				</select>
+			</div>
+
+			<div class="col-6">
+				<p class="ps-2"><l10n name="notes_units_use_miles"></l10n></p>
+			</div>
+			<div class="col-6">
+				<div class="form-check form-switch form-control-lg pt-0">
+					<input onchange="clientSetNote('notes_unit_mile')" type="checkbox" class="form-check-input" id="notes_unit_mile">
+				</div>
+			</div>
+			<div class="col-6">
+				<p class="ps-2"><l10n name="notes_units_use_fahrenheit"></l10n></p>
+			</div>
+			<div class="col-6">
+				<div class="form-check form-switch form-control-lg pt-0">
+					<input onchange="clientSetNote('notes_unit_temp')" type="checkbox" class="form-check-input" id="notes_unit_temp">
+				</div>
+			</div>
+			<div class="col-6">
+				<p class="ps-2"><l10n name="notes_units_use_acres"></l10n></p>
+			</div>
+			<div class="col-6">
+				<div class="form-check form-switch form-control-lg pt-0">
+					<input onchange="clientSetNote('notes_unit_acre')" type="checkbox" class="form-check-input" id="notes_unit_acre">
+				</div>
+			</div>
+		</div>
+		<div class="row mx-4 mb-3 pb-2 border-bottom">
 			<div class="col-6">
 				<h5><l10n name="notes_title_notes"></l10n></h5>
 				<p class="ps-2"><l10n name="notes_blurb_notes"></l10n></p>

@@ -1734,11 +1734,37 @@ function newSettingsFile(newList) {
 		newFolder  : modCollect.mapCollectionToFolder(newList),
 		password   : modNote.get(`${newList}.notes_password`, null),
 		serverName : modNote.get(`${newList}.notes_server`, null),
+		unit_acre  : modNote.get(`${newList}.notes_unit_acre`, null),
+		unit_miles : modNote.get(`${newList}.notes_unit_miles`, null),
+		unit_money : modNote.get(`${newList}.notes_unit_money`, null),
+		unit_temp  : modNote.get(`${newList}.notes_unit_temp`, null),
 		userName   : modNote.get(`${newList}.notes_username`, null),
 	})
 }
 
-function parseSettings({disable = null, newFolder = null, userName = null, serverName = null, password = null } = {}) {
+function parseSettingsXML(XMLDoc) {
+	return {
+		password   : XMLDoc.gameSettings?.joinGame?.['@_password'] ?? '',
+		server     : XMLDoc.gameSettings?.joinGame?.['@_serverName'] ?? '',
+		unit_acre  : XMLDoc.gameSettings?.units?.acre ?? false,
+		unit_mile  : XMLDoc.gameSettings?.units?.miles ?? false,
+		unit_money : XMLDoc.gameSettings?.units?.money ?? 0,
+		unit_temp  : XMLDoc.gameSettings?.units?.fahrenheit ?? false,
+		username   : XMLDoc.gameSettings?.onlinePresenceName ?? XMLDoc.gameSettings?.player?.name ?? '',
+	}
+}
+
+function parseSettings({
+	disable = null,
+	newFolder = null,
+	userName = null,
+	serverName = null,
+	password = null,
+	unit_money = null,
+	unit_acre = null,
+	unit_temp = null,
+	unit_miles = null,
+} = {}) {
 	let   XMLString = ''
 	let   XMLDoc    = null
 
@@ -1762,11 +1788,7 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 		gameSetOverride.active = (XMLDoc.gameSettings.modsDirectoryOverride['@_active'] === 'true')
 		gameSetOverride.folder = XMLDoc.gameSettings.modsDirectoryOverride['@_directory']
 
-		mainProcessFlags.gameSettings = {
-			username : XMLDoc.gameSettings?.onlinePresenceName || XMLDoc.gameSettings?.player?.name || '',
-			password : XMLDoc.gameSettings?.joinGame?.['@_password'] || '',
-			server   : XMLDoc.gameSettings?.joinGame?.['@_serverName'] || '',
-		}
+		mainProcessFlags.gameSettings = parseSettingsXML(XMLDoc)
 
 		gameSetOverride.index = ( !gameSetOverride.active ) ? '0' : modCollect.mapFolderToCollection(gameSetOverride.folder) || '999'
 	} catch (err) {
@@ -1781,12 +1803,17 @@ function parseSettings({disable = null, newFolder = null, userName = null, serve
 			newFolder  : newFolder,
 			password   : password,
 			serverName : serverName,
+			unit_acre  : unit_acre,
+			unit_miles : unit_miles,
+			unit_money : unit_money,
+			unit_temp  : unit_temp,
 			userName   : userName,
 			version    : currentVersion,
 		})
 	}
 }
 
+/* eslint-disable complexity */
 function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 	if ( gameSettingsXML === null || typeof gameSettingsXML.gameSettings === 'undefined' ) {
 		log.log.danger('Could not write game settings (read failed)', 'game-settings')
@@ -1800,6 +1827,13 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 
 	gameSettingsXML.gameSettings.modsDirectoryOverride['@_active']    = ( opts.disable === false || opts.disable === null )
 	gameSettingsXML.gameSettings.modsDirectoryOverride['@_directory'] = ( opts.newFolder !== null ) ? opts.newFolder : ''
+
+	if ( opts.version === 22 ) {
+		if ( opts.unit_acre !== null )  { gameSettingsXML.gameSettings.units.acre = opts.unit_acre }
+		if ( opts.unit_miles !== null ) { gameSettingsXML.gameSettings.units.miles = opts.unit_miles }
+		if ( opts.unit_money !== null ) { gameSettingsXML.gameSettings.units.money = opts.unit_money }
+		if ( opts.unit_temp !== null )  { gameSettingsXML.gameSettings.units.fahrenheit = opts.unit_temp }
+	}
 
 	if ( opts.version === 22 || opts.version === 19 ) {
 		gameSettingsXML.gameSettings.joinGame ??= {}
@@ -1832,7 +1866,7 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 	parseSettings()
 	refreshClientModList()
 }
-
+/* eslint-enable complexity */
 
 function fileOperation(type, fileMap, srcWindow = 'confirm') {
 	if ( typeof fileMap !== 'object' ) { return }
