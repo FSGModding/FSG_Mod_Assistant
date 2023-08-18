@@ -22,6 +22,7 @@ const consumableOnly = new Set([
 	'FS22_Bags_and_Support_Package',
 	'FS22_BarrelsOfLiquids',
 	'FS22_BigBagCattlePack',
+	'FS22_BigBagsAsDefault',
 	'FS22_BonsilageBulkTank',
 	'FS22_BuyableProducts',
 	'FS22_cfFertilisersPack',
