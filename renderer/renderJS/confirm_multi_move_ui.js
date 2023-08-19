@@ -10,6 +10,7 @@
 
 let lastSourceMods = null
 let lastSourceCollect = null
+let lastFolderRelative = null
 
 window.mods.receive('fromMain_subWindowSelectAll', fsgUtil.windowCheckAll)
 window.mods.receive('fromMain_subWindowSelectNone', fsgUtil.windowCheckNone)
@@ -19,9 +20,9 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 
-	lastSourceMods    = modCollect.opts.records.map((modItem) => modItem.fileDetail.fullPath)
-	lastSourceCollect = modCollect.opts.originCollectKey
-
+	lastFolderRelative = modCollect.collectionToFolderRelative[modCollect.opts.originCollectKey]
+	lastSourceMods     = modCollect.opts.records.map((modItem) => modItem.fileDetail.fullPath)
+	lastSourceCollect  = modCollect.opts.originCollectKey
 
 	const destChecks = []
 
@@ -35,7 +36,12 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 		}))
 	}
 
-	const confRows   = modCollect.opts.records.map((modItem) => fsgUtil.arrayToTableRow([modItem.fileDetail.shortName, modItem.l10n.title]))
+	const confRows   = modCollect.opts.records.map((thisMod) => fsgUtil.useTemplate('mod_row', {
+		icon      : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
+		printPath : `${lastFolderRelative}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`,
+		shortname : thisMod.fileDetail.shortName,
+		title     : fsgUtil.escapeSpecial(thisMod.l10n.title),
+	}))
 
 	fsgUtil.byId('dest_list').innerHTML    = destChecks.join('')
 	fsgUtil.byId('confirm_list').innerHTML = confRows.join('')

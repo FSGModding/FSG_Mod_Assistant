@@ -33,9 +33,7 @@
 			<div id="dest_list"></div>
 		</div>
 		
-		<div class="mx-3">
-			<table class="table table-striped mt-4" id="confirm_list"></table>
-		</div>
+		<div class="mx-4 my-3 border-top" id="confirm_list"></div>
 
 		<div class="btn btn-danger w-75 mx-auto d-block text-white" onclick="clientDoMultiMove()"><i class="bi bi-check2-circle"></i> <l10n name="move"></l10n></div>
 	</div>
@@ -48,6 +46,20 @@
 		<label class="ms-2 form-check-label row" for="{{id}}">
 			<div class="col-3">{{name}}</div><div class="col-9"><small>{{folder}}</small></div>
 		</label>
+	</div>
+</template>
+
+<template id="mod_row">
+	<div class="row border-bottom">
+		<div class="col col-auto">
+			<div class="p-2" style="width: 110px; height:110px;">
+				<img class="img-fluid" src="{{icon}}" />
+			</div>
+		</div>
+		<div class="col">
+			<h4 class="mb-0 mt-2">{{shortname}} <span class="ps-3 small text-muted">{{title}}</span></h4>
+			<p class="font-monospace small mb-1">{{printPath}}</p>
+		</div>
 	</div>
 </template>
 
