@@ -201,7 +201,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			collectNotes.notes_websiteDL,
 			[collectNotes.notes_tagline, (mapIcons.length === 1 ? mapNames[0][0] : null)].filter((x) => x !== null).join(' - '),
 			collectNotes.notes_admin,
-			thisCollection.dependSet.size,
+			modRows.length, //thisCollection.dependSet.size,
 			collectNotes.notes_favorite,
 			modCollect.opts.activeCollection === collectKey,
 			collectNotes.notes_game_admin,
@@ -407,6 +407,7 @@ function clientOpenMod(enabled, modID) {
 		window.mods.openMod(modID)
 	}
 }
+
 function clientSetModInfo() {
 	const modName = fsgUtil.byId('mod_info_mod_name').innerHTML
 	const newSite = fsgUtil.byId('mod_info_input').value
