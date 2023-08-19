@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "Plik modDesc.xml zawiera błędy. Jeśli jest to jedyny błąd, który pojawia się przy tym modzie, prawdopodobnie możesz go zignorować.",
 	"mod_error_no_mod_icon"                 : "Ten mod nie ma pliku \"icon\". FS nie załaduje tego modu poprawnie.",
 	"mod_error_no_mod_version"              : "Ten mod nie posiada czytelnej wersji. FS prawdopodobnie nie załaduje go lub spowoduje to błędy.",
+	"mod_pack_import"                       : "Podałeś pojedynczy plik ZIP do zaimportowania, który wygląda na paczkę modów.  Plik ten zostanie rozpakowany do wybranych lokalizacji!",
 	"move"                                  : "Tak, przenieś",
 	"move_to_list"                          : "Przenieś do...",
 	"move_to_list__title"                   : "Przenieś wybrane mody do innego folderu",

@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "ModDesc.xml存在错误，但已经被恢复了。如果这是该模组唯一出现的错误，您可以忽略这个错误。",
 	"mod_error_no_mod_icon"                 : "这个模组没有图标文件。FS（Farming Simulator）不喜欢没有有效图标的模组。",
 	"mod_error_no_mod_version"              : "这个模组缺少可读的版本信息。FS（Farming Simulator）可能会拒绝该模组或者行为不一致。",
+	"mod_pack_import"                       : "您提供了一个要导入的 ZIP 文件，该文件似乎是一个修改包。  该文件将被解压缩到所选位置！",
 	"move"                                  : "是的，移动模组",
 	"move_to_list"                          : "移动至...",
 	"move_to_list__title"                   : "将选定的模组移动到另一个收藏夹中",

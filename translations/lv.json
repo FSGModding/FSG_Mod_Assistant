@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "ModDesc.xml ir kļūdas, bet tās tika atgūtas no. Ja šī ir vienīgā kļūda, kas parādās šim modam, jūs, iespējams, varat ignorēt šo kļūdu.",
 	"mod_error_no_mod_icon"                 : "Šim modelim nav ikonas faila. FS nepatīk modi bez derīgām ikonām.",
 	"mod_error_no_mod_version"              : "Šim modam trūkst lasāmās versijas. FS, visticamāk, noraidīs šo modi vai rīkosies nekonsekventi.",
+	"mod_pack_import"                       : "Jūs esat iesnieguši vienu ZIP failu, lai importētu, kas, šķiet, ir mod pakete.  Šis fails tiks izplēsts uz izvēlētajām vietām!",
 	"move"                                  : "Jā, pārvietot Mods",
 	"move_to_list"                          : "Pārcelties uz...",
 	"move_to_list__title"                   : "Pārvietot atlasītos Mods uz citu kolekciju",

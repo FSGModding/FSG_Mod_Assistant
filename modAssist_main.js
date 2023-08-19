@@ -168,7 +168,7 @@ function guessPath(paths, file = '') {
 mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
-const { modFileCollection, saveFileChecker, savegameTrack, saveGameManager } = require('./lib/modCheckLib.js')
+const { modFileCollection, modPackChecker, saveFileChecker, savegameTrack, saveGameManager } = require('./lib/modCheckLib.js')
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 
@@ -358,7 +358,7 @@ ipcMain.on('toMain_realFileMove',      (_, fileMap) => { fileOperation('move', f
 ipcMain.on('toMain_realFileCopy',      (_, fileMap) => { fileOperation('copy', fileMap) })
 ipcMain.on('toMain_realMultiFileMove', (_, fileMap) => { fileOperation('move_multi', fileMap) })
 ipcMain.on('toMain_realMultiFileCopy', (_, fileMap) => { fileOperation('copy_multi', fileMap) })
-ipcMain.on('toMain_realFileImport',    (_, fileMap) => { fileOperation('import', fileMap, 'import') })
+ipcMain.on('toMain_realFileImport',    (_, fileMap, unzipMe) => { fileOperation(unzipMe ? 'importZIP' : 'import', fileMap, 'import') })
 ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
 	fileOperation('copy', fileMap, 'resolve')
 	setTimeout(() => { win.sendModList({}, 'fromMain_modList', 'version', false ) }, 1500)
@@ -481,7 +481,13 @@ ipcMain.on('toMain_dropFolder', (_, newFolder) => {
 		})
 	}
 })
-ipcMain.on('toMain_dropFiles', (_, files) => { win.createNamedWindow('import', { files : files }) })
+ipcMain.on('toMain_dropFiles', (_, files) => {
+	let isZipImport = false
+	if ( files.length === 1 && files[0].endsWith('.zip') ) {
+		isZipImport = new modPackChecker(files[0]).getInfo()
+	}
+	win.createNamedWindow('import', { files : files, isZipImport : isZipImport })
+})
 /** END: Folder Window Operation */
 
 /** Logging Operation */
@@ -1286,7 +1292,7 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 	const zipLog    = log.group('zip-export')
 
 	for ( const mod of modCollect.modColUUIDsToRecords(selectedMods) ) {
-		filePaths.push([mod.fileDetail.shortName, mod.fileDetail.fullPath])
+		filePaths.push([mod.fileDetail.shortName, mod.fileDetail.fullPath, mod.fileDetail.isFolder])
 	}
 
 	dialog.showSaveDialog(win.win.main, {
@@ -1311,6 +1317,7 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 				zipOutput.on('close', () => {
 					zipLog.info(`ZIP file created : ${result.filePath}`)
 					app.addRecentDocument(result.filePath)
+					win.loading.hide()
 				})
 
 				zipArchive.on('error', (err) => {
@@ -1333,10 +1340,14 @@ ipcMain.on('toMain_exportZip', (_, selectedMods) => {
 				zipArchive.pipe(zipOutput)
 
 				for ( const thisFile of filePaths ) {
-					zipArchive.file(thisFile[1], { name : `${thisFile[0]}.zip` })
+					if ( thisFile[2] ) {
+						zipArchive.directory(thisFile[1], thisFile[0])
+					} else {
+						zipArchive.file(thisFile[1], { name : `${thisFile[0]}.zip` })
+					}
 				}
 
-				zipArchive.finalize().then(() => { win.loading.hide() })
+				zipArchive.finalize()
 
 			} catch (err) {
 				zipLog.warning(`Could not create zip file : ${err}`)
@@ -1893,7 +1904,7 @@ function fileOperation_post(type, fileMap) {
 	for ( const file of fileMap ) {
 		// fileMap is [destCollectKey, sourceCollectKey, fullPath (guess)]
 		const thisFileName = path.basename(file[2])
-		if ( type !== 'import' ) {
+		if ( type !== 'import' && type !== 'importZIP' ) {
 			fullPathMap.push({
 				src  : path.join(modCollect.mapCollectionToFolder(file[1]), thisFileName), // source
 				dest : path.join(modCollect.mapCollectionToFolder(file[0]), thisFileName), // dest
@@ -1953,7 +1964,25 @@ function fileOperation_post(type, fileMap) {
 		}
 	}
 
-	processModFolders()
+	if ( type === 'importZIP' ) {
+		let pathsToProcess = fullPathMap.length
+		for ( const file of fullPathMap ) {
+			const destPath = path.dirname(file.dest)
+
+			fs.createReadStream(file.src)
+				.pipe(unzip.Extract({ path : destPath }))
+				.on('error', (err) => {
+					fileLog.warning(`Import unzip failed : ${destPath} :: ${err}`)
+				})
+				.on('close', () => {
+					fileLog.info(`Import unzipping complete (${destPath})`)
+					pathsToProcess--
+					if ( pathsToProcess <= 0 ) { processModFolders() }
+				})
+		}
+	} else {
+		processModFolders()
+	}
 }
 
 

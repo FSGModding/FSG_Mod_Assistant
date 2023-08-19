@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "De modDesc.xml bevat fouten, maar ze konden worden hersteld. Als dit de enige fout is die voor deze mod verschijnt, kun je deze fout waarschijnlijk negeren.",
 	"mod_error_no_mod_icon"                 : "Deze mod heeft geen icoon. FS19 weigert mods zonder geldige iconen.",
 	"mod_error_no_mod_version"              : "Deze mod heeft geen leesbare versie. FS19 zal deze mod waarschijnlijk afwijzen of zich inconsequent gedragen.",
+	"mod_pack_import"                       : "Je hebt een enkel ZIP-bestand geleverd om te importeren dat een mod pack lijkt te zijn.  Dit bestand wordt uitgepakt op de gekozen locaties!",
 	"move"                                  : "Ja, Move Mods",
 	"move_to_list"                          : "Verhuizen naar...",
 	"move_to_list__title"                   : "Geselecteerde modules naar een andere collectie verplaatsen",

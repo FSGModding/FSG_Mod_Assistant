@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "O modDesc.xml contém erros, mas pode ser processado. Se essa é a única falha neste mod, provavelmente pode ser ignorada.",
 	"mod_error_no_mod_icon"                 : "Este mod não possui um arquivo de ícone. FS não gosta de mods sem ícones válidos.",
 	"mod_error_no_mod_version"              : "Este mod não possui uma versão legível. FS provavelmente rejeitará este mod ou se comportará de forma inconsistente.",
+	"mod_pack_import"                       : "Forneceste um único ficheiro ZIP para importar que parece ser um pacote de modificações.  Este ficheiro será descomprimido para os locais escolhidos!",
 	"move"                                  : "Sim, Mover Mods",
 	"move_to_list"                          : "Mover para...",
 	"move_to_list__title"                   : "Mover os mods selecionados para uma coleção diferente",

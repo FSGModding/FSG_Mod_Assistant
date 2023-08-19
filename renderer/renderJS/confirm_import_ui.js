@@ -9,6 +9,7 @@
 /* global processL10N, fsgUtil */
 
 let lastSourceMods = null
+let isZipImport    = false
 
 window.mods.receive('fromMain_subWindowSelectAll', fsgUtil.windowCheckAll)
 window.mods.receive('fromMain_subWindowSelectNone', fsgUtil.windowCheckNone)
@@ -18,7 +19,10 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 
+	isZipImport    = modCollect.opts.isZipImport
 	lastSourceMods = modCollect.opts.files
+
+	fsgUtil.clsHideFalse('modPackImport', isZipImport)
 
 	const destChecks = []
 
@@ -50,6 +54,6 @@ function clientDoImport() {
 		}
 	}
 
-	window.mods.realImportFile(fileMap)
+	window.mods.realImportFile(fileMap, isZipImport)
 }
 

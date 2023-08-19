@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "ModDesc.xml má chyby, ale byly obnoveny. Pokud je to jediná chyba, která se objeví pro tento režim, můžete tuto chybu pravděpodobně ignorovat.",
 	"mod_error_no_mod_icon"                 : "Tento mod nemá soubor ikony. FS se nelíbí mody bez platných ikon.",
 	"mod_error_no_mod_version"              : "Tomuto módu chybí čitelná verze. FS pravděpodobně odmítne tento mód nebo se bude chovat nedůsledně.",
+	"mod_pack_import"                       : "Poskytli jste jediný soubor ZIP k importu, který vypadá jako balíček modů.  Tento soubor bude rozbalen do zvolených umístění!",
 	"move"                                  : "Ano, přesunout módy",
 	"move_to_list"                          : "Přesunout do...",
 	"move_to_list__title"                   : "Kopírovat vybrané mody do jiné kolekce",

@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "El modDesc.xml tiene errores, pero podría ser procesado. Si ese es el único defecto de este mod, probablemente pueda ignorarse.",
 	"mod_error_no_mod_icon"                 : "Este mod no tiene un archivo de icono (normalmente icon.dds). FS19 rechazará mods sin íconos válidos.",
 	"mod_error_no_mod_version"              : "Este mod carece de una versión legible. Es probable que FS19 rechace este mod o se comporte de manera incoherente.",
+	"mod_pack_import"                       : "Has proporcionado un único archivo ZIP para importar que parece ser un pack de mods.  Este archivo se descomprimirá en las ubicaciones elegidas.",
 	"move"                                  : "Sí, Mover Mods",
 	"move_to_list"                          : "Muévete a...",
 	"move_to_list__title"                   : "Mover los mods seleccionados a una colección diferente",

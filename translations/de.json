@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "Die modDesc.xml ist zwar fehlerhaft, konnte aber trotzdem verarbeitet werden. Wenn das der einzige Fehler zu diesem Mod ist, kann er wahrscheinlich ignoriert werden.",
 	"mod_error_no_mod_icon"                 : "Diesem Mod fehlt ein Icon. FS22 lehnt Mods ohne Icon ab.",
 	"mod_error_no_mod_version"              : "Diesem Mod fehlt eine lesbare Version. FS22 wird diesen Mod also wahrscheinlich ablehnen oder sich seltsam verhalten.",
+	"mod_pack_import"                       : "Sie haben eine einzelne ZIP-Datei zum Importieren bereitgestellt, die ein Mod-Pack zu sein scheint.  Diese Datei wird an den ausgewählten Orten entpackt!",
 	"move"                                  : "Ja, Mods verschieben",
 	"move_to_list"                          : "Umzug nach...",
 	"move_to_list__title"                   : "Ausgewählte Mods in eine andere Sammlung verschieben",

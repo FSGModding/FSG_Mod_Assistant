@@ -249,6 +249,7 @@
 	"mod_error_moddesc_damaged_recoverable" : "Le fichier modDesc.xml comporte des erreurs, mais elles ont été récupérées. Si c'est la seule erreur qui apparaît pour ce mod, vous pouvez probablement l'ignorer.",
 	"mod_error_no_mod_icon"                 : "Ce mod ne possède pas de fichier d'icône. FS19 rejettera les mods sans icônes valides.",
 	"mod_error_no_mod_version"              : "Ce mod ne dispose pas d'une version lisible. FS19 rejettera probablement ce mod ou se comportera de manière incohérente.",
+	"mod_pack_import"                       : "Vous avez fourni un seul fichier ZIP à importer qui semble être un pack de mods.  Ce fichier sera décompressé aux emplacements choisis !",
 	"move"                                  : "Oui, déplacer les mods",
 	"move_to_list"                          : "Déménager à...",
 	"move_to_list__title"                   : "Déplacer les mods sélectionnés vers une autre collection",

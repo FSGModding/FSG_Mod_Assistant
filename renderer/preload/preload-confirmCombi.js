@@ -40,7 +40,7 @@ contextBridge.exposeInMainWorld(
 		realCopyFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileCopy', fileMap) },
 		realCopyMultiFile : ( fileMap )          => { ipcRenderer.send('toMain_realMultiFileCopy', fileMap) },
 		realDeleteFile    : ( collection, uuid ) => { ipcRenderer.send('toMain_realFileDelete', collection, uuid) },
-		realImportFile    : ( fileMap )          => { ipcRenderer.send('toMain_realFileImport', fileMap) },
+		realImportFile    : ( fileMap, unzipMe ) => { ipcRenderer.send('toMain_realFileImport', fileMap, unzipMe) },
 		realMoveFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileMove', fileMap) },
 		realMoveMultiFile : ( fileMap )          => { ipcRenderer.send('toMain_realMultiFileMove', fileMap) },
 
