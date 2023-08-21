@@ -1048,11 +1048,11 @@ ipcMain.on('toMain_clearCacheFile', () => {
 	newMaCache.clearAll()
 	processModFolders(true)
 })
-ipcMain.on('toMain_clearDetailCacheFile', (event) => {
+ipcMain.on('toMain_clearDetailCacheFile', () => {
 	mdCache.clear()
 	win.sendToValidWindow('prefs', 'fromMain_l10n_refresh', myTranslator.currentLocale)
 })
-ipcMain.on('toMain_cleanCacheFile', (event) => {
+ipcMain.on('toMain_cleanCacheFile', () => {
 	const md5Set     = new Set(newMaCache.keys)
 	
 	for ( const collectKey of modCollect.collections ) {
