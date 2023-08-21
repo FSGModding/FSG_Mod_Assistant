@@ -177,7 +177,6 @@ const unzip   = require('unzip-stream')
 const makeZip = require('archiver')
 
 const mcStore = new Store({schema : settingDefault.defaults, clearInvalidConfig : true })
-//const maCache = new Store({name : 'mod_cache', clearInvalidConfig : true})
 const mdCache = new Store({name : 'mod_detail_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
 const modSite = new Store({name : 'mod_source_site', migrations : settingDefault.migrateSite, clearInvalidConfig : true})
@@ -200,8 +199,8 @@ const gameSetOverride = {
 /** Upgrade Cache Version Here */
 
 const [appVerMajor, appVerMinor] = mcStore.get('cache_version').split('.').map((x) => parseInt(x))
-const updateMajor  = 2
-const updateMinor  = 4
+const updateMajor  = 3
+const updateMinor  = 1
 let updateRequired = false
 
 if ( appVerMajor < updateMajor ) { updateRequired = true }
