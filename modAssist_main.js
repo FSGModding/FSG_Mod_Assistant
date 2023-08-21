@@ -1050,10 +1050,9 @@ ipcMain.on('toMain_clearCacheFile', () => {
 })
 ipcMain.on('toMain_clearDetailCacheFile', (event) => {
 	mdCache.clear()
-	event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
+	win.sendToValidWindow('prefs', 'fromMain_l10n_refresh', myTranslator.currentLocale)
 })
 ipcMain.on('toMain_cleanCacheFile', (event) => {
-	//TODO : fix this bit.
 	const md5Set     = new Set(newMaCache.keys)
 	
 	for ( const collectKey of modCollect.collections ) {
@@ -1066,7 +1065,9 @@ ipcMain.on('toMain_cleanCacheFile', (event) => {
 
 	newMaCache.saveFile()
 
-	event.sender.send('fromMain_l10n_refresh', myTranslator.currentLocale)
+	setTimeout(() => {
+		win.sendToValidWindow('prefs', 'fromMain_l10n_refresh', myTranslator.currentLocale)
+	}, 1000)
 })
 ipcMain.on('toMain_setPrefFile', (event, version) => {
 	const pathBestGuessNew = mainProcessFlags.pathBestGuess.replace(/FarmingSimulator20\d\d/, `FarmingSimulator20${version}`)
