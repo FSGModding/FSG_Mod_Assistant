@@ -292,7 +292,7 @@
 	"notes_usage_blurb"                     : "<strong>Bitte beachten Sie:</strong> Um hier Änderungen zu aktivieren, müssen Sie die Schaltfläche \"Aktiv setzen\" für diese Sammlung erneut drücken!",
 	"offcanvas_blurb"                       : "Wählen Sie die Version des Landwirtschafts-Simulator aus, die Sie aktivieren möchten",
 	"open_debug_log"                        : "Debug-Log anzeigen",
-	"open_folder"                           : "Open in Explorer",
+	"open_folder"                           : "Im Explorer aufrufen",
 	"open_folder__title"                    : "Diesen Ordner im Windows-Explorer öffnen",
 	"open_from_list"                        : "Im Explorer anzeigen",
 	"open_from_list__title"                 : "Ausgewählte Mod im Datei-Explorer öffnen",
