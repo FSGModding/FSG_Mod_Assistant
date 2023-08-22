@@ -40,6 +40,10 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 			}
 			element.checked = (thisValue !== '') ? thisValue : false
 		}
+		if ( element.getAttribute('type') === 'radio' ) {
+			thisValue       = modCollect.collectionNotes[thisCollection][element.getAttribute('name')]
+			element.checked = thisValue === element.value
+		}
 
 		clientCheckValid(element.id)
 	}
@@ -100,6 +104,14 @@ function clientMarkIP(id) {
 	clientCheckValid(id, true)
 }
 
+function clientSetColor() {
+	const checkValue = fsgUtil.query('[name="notes_color"]:checked')?.[0]?.value ?? null
+
+	if ( checkValue !== null ) {
+		window.mods.setNote('notes_color', checkValue, thisCollection)
+	}
+}
+
 function clientSetNote(id) {
 	const formControl = fsgUtil.byId(id)
 	
@@ -109,3 +121,11 @@ function clientSetNote(id) {
 		window.mods.setNote(id, formControl.value, thisCollection)
 	}
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+	const colorLabels = fsgUtil.query('.notes-color-label')
+	for ( const thisLabel of colorLabels ) {
+		const thisNum = parseInt(thisLabel.getAttribute('for').replace('notes_color', ''))
+		thisLabel.innerHTML = fsgUtil.getIconSVG('folder', false, false, false, thisNum)
+	}
+})

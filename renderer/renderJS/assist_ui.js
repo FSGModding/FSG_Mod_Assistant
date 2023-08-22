@@ -119,6 +119,7 @@ const buildBadges = (thisMod) => {
 }
 
 window.mods.receive('fromMain_modList', (modCollect) => {
+	console.log(modCollect)
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 	lastLocale         = modCollect.opts.currentLocale
@@ -207,7 +208,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			collectNotes.notes_game_admin,
 			collectNotes.notes_holding,
 			fsgUtil.firstOrNull(mapIcons),
-			mapNames[0]
+			mapNames[0],
+			parseInt(collectNotes.notes_color)
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	}
@@ -285,7 +287,7 @@ const makeFilterButton = ( name, isHide = false ) => {
 	`
 }
 
-const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames) => fsgUtil.useTemplate('collect_row', {
+const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor) => fsgUtil.useTemplate('collect_row', {
 	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
 	class_hideDownload          : dlEnabled ? '' : 'd-none',
 	class_hideGameAdminPassword : gameAdminPass !== null ? '' : 'd-none',
@@ -293,7 +295,7 @@ const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, admi
 	class_hideWebsite           : website !== null ? '' : 'd-none',
 	class_isHolding             : isHolding ? 'is-holding-pen' : '',
 	class_mapIcon               : singleMapIcon === null ? 'd-none' : '',
-	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive, isHolding),
+	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive, isHolding, folderColor),
 	game_admin_password         : gameAdminPass,
 	id                          : id,
 	mapClick                    : mapNames?.[2],
