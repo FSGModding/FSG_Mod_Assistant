@@ -187,6 +187,8 @@
 	"look_methane"                          : "Item ist Methan betrieben",
 	"make_zip"                              : "ZIP-Datei exportieren",
 	"make_zip__title"                       : "Erstelle eine ZIP-Datei der ausgewählten Mods zum Teilen oder Verteilen",
+	"menu_depend_on"                        : "Hängt ab von",
+	"menu_require_by"                       : "Erforderlich bis",
 	"mh_norecord"                           : "--nicht auf Modhub--",
 	"mh_unknown"                            : "--unbekannt--",
 	"min_tray_button__title"                : "In Infobereich minimieren",

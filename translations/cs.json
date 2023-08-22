@@ -187,6 +187,8 @@
 	"look_methane"                          : "Item is Methane Powered",
 	"make_zip"                              : "Export ZIP File",
 	"make_zip__title"                       : "Make a ZIP file of selected mods for sharing or distribution",
+	"menu_depend_on"                        : "取决于",
+	"menu_require_by"                       : "要求",
 	"mh_norecord"                           : "--不在 Modhub 上--",
 	"mh_unknown"                            : "--未知--",
 	"min_tray_button__title"                : "Minimize to tray",

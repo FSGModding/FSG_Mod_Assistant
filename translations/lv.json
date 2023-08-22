@@ -187,6 +187,8 @@
 	"look_methane"                          : "Priekšmets darbojas ar metānu",
 	"make_zip"                              : "Eksportēt ZIP failu",
 	"make_zip__title"                       : "Izvēlēto modu ZIP failu koplietošanai vai izplatīšanai",
+	"menu_depend_on"                        : "Atkarīgs no",
+	"menu_require_by"                       : "Nepieciešams līdz",
 	"mh_norecord"                           : "--not on modhub--",
 	"mh_unknown"                            : "--unknown--",
 	"min_tray_button__title"                : "Minimizēt uz paplāti",

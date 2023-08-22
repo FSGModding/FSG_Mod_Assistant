@@ -187,6 +187,8 @@
 	"look_methane"                          : "Przedmiot jest zasilany metanem",
 	"make_zip"                              : "Eksportuj plik ZIP",
 	"make_zip__title"                       : "Zrób plik ZIP z wybranymi modami do udostępnienia lub dystrybucji",
+	"menu_depend_on"                        : "Zależy od",
+	"menu_require_by"                       : "Wymagane przez",
 	"mh_norecord"                           : "- Brak na modhubie -",
 	"mh_unknown"                            : "-- Nieznane --",
 	"min_tray_button__title"                : "Minimalizuj do zasobnika",

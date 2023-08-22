@@ -119,7 +119,6 @@ const buildBadges = (thisMod) => {
 }
 
 window.mods.receive('fromMain_modList', (modCollect) => {
-	console.log(modCollect)
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 	lastLocale         = modCollect.opts.currentLocale

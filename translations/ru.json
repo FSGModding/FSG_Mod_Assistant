@@ -187,6 +187,8 @@
 	"look_methane"                          : "Работает на метане",
 	"make_zip"                              : "Экспорт в ZIP-файл",
 	"make_zip__title"                       : "Создать ZIP-файл выбранных модов для обмена или распространения",
+	"menu_depend_on"                        : "Зависит от",
+	"menu_require_by"                       : "Требуется",
 	"mh_norecord"                           : "--нет на ModHub--",
 	"mh_unknown"                            : "--неизвестно--",
 	"min_tray_button__title"                : "Свернуть в трей",

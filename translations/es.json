@@ -187,6 +187,8 @@
 	"look_methane"                          : "El artículo funciona con metano",
 	"make_zip"                              : "Exportar archivo ZIP",
 	"make_zip__title"                       : "Crea un archivo ZIP con los mods seleccionados para compartirlos o distribuirlos",
+	"menu_depend_on"                        : "Depende de",
+	"menu_require_by"                       : "Requerido por",
 	"mh_norecord"                           : "--no en modhub--",
 	"mh_unknown"                            : "--desconocido--",
 	"min_tray_button__title"                : "Minimizar a bandeja",

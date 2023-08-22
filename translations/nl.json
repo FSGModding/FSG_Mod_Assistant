@@ -187,6 +187,8 @@
 	"look_methane"                          : "Item is aangedreven door Methaan",
 	"make_zip"                              : "ZIP-bestand exporteren",
 	"make_zip__title"                       : "Maak een ZIP-bestand van geselecteerde mods voor het delen of verspreiden",
+	"menu_depend_on"                        : "Afhankelijk van",
+	"menu_require_by"                       : "Vereist door",
 	"mh_norecord"                           : "--niet op modhub--",
 	"mh_unknown"                            : "--onbekend--",
 	"min_tray_button__title"                : "Minimaliseer naar systeemvak",

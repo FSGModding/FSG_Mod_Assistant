@@ -187,6 +187,8 @@
 	"look_methane"                          : "Item é movido a metano",
 	"make_zip"                              : "Exportar Ficheiro ZIP",
 	"make_zip__title"                       : "Crie um ficheiro ZIP dos mods selecionados para compartilhar ou distribuir",
+	"menu_depend_on"                        : "Depende de",
+	"menu_require_by"                       : "Requerido por",
 	"mh_norecord"                           : "--Não no modhub--",
 	"mh_unknown"                            : "--Desconhecido--",
 	"min_tray_button__title"                : "Minimizar para a bandeja",

@@ -778,6 +778,41 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		})
 	}
 
+	let didDep = false
+	if ( Array.isArray(thisMod.modDesc.depend) && thisMod.modDesc.depend.length !== 0 ) {
+		didDep = true
+		const subMenu     = []
+		for ( const thisDep of thisMod.modDesc.depend ) {
+			subMenu.push({ label : thisDep })
+		}
+		template.push(
+			{ type : 'separator' },
+			{
+				label   : myTranslator.syncStringLookup('menu_depend_on'),
+				submenu : subMenu,
+			}
+		)
+	}
+
+	const requireBy = modCollect.getModCollection(modID.split('--')[0]).requireBy
+	
+	if ( Object.hasOwn(requireBy, thisMod.fileDetail.shortName) ) {
+		const subMenu     = []
+		for ( const thisReq of requireBy[thisMod.fileDetail.shortName] ) {
+			subMenu.push({ label : thisReq })
+		}
+		
+		if ( ! didDep ) { template.push({ type : 'separator' }) }
+
+		template.push(
+			{
+				label   : myTranslator.syncStringLookup('menu_require_by'),
+				submenu : subMenu,
+			}
+		)
+	}
+
+
 	template.push(
 		{ type : 'separator' },
 		{
