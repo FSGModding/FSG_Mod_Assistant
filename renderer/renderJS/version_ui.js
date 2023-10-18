@@ -19,6 +19,10 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const versionListNoMatch = {}
 
 	for ( const collectKey of modCollect.set_Collections ) {
+		if ( modCollect?.collectionNotes?.[collectKey]?.notes_frozen === true ) {
+			continue
+		}
+
 		if ( doMultiVersion && modCollect?.collectionNotes?.[collectKey]?.notes_version !== thisVersion ) {
 			continue
 		}

@@ -1625,9 +1625,10 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 	const foundMods = modCollect.shortNames[shortName]
 
 	for ( const modPointer of foundMods ) {
-		const mod = modCollect.modColAndUUID(modPointer[0], modPointer[1])
+		const frozen = modNote.get(`${modPointer[0]}.notes_frozen`, false)
+		const mod    = modCollect.modColAndUUID(modPointer[0], modPointer[1])
 		
-		if ( !mod.fileDetail.isFolder ) {
+		if ( !mod.fileDetail.isFolder && !frozen ) {
 			modSet.push({
 				collectKey  : modPointer[0],
 				collectName : modCollect.mapCollectionToName(modPointer[0]),
