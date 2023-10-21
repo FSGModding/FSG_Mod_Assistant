@@ -253,21 +253,27 @@ async function setActivity() {
 
 		buttons : [
 			{label : 'Get Mod Assistant', url : 'https://github.com/FSGModding/FSG_Mod_Assistant/releases/latest'},
-			{label : 'Visit FSG', url : 'https://farmsimgame.com/'}
+			{label : 'Visit FSG Website', url : 'https://farmsimgame.com/'}
 		],
 	})
 }
 
-disRPC.on('ready', () => {
-	setActivity()
+//TODO: trap user option for discord
+if ( mcStore.get('use_discord', true ) ) {
+	log.log.notice('Discord Rich Presence Enabled', 'discord-rpc')
+	disRPC.on('ready', () => {
+		setActivity()
 
-	// activity can only be set every 15 seconds
-	setInterval(() => { setActivity() }, 15e3)
-})
+		// activity can only be set every 15 seconds
+		setInterval(() => { setActivity() }, 15e3)
+	})
 
-disRPC.login({ clientId : discordID }).catch((err) => {
-	log.log.notice(err, 'discord-rpc')
-})
+	disRPC.login({ clientId : discordID }).catch((err) => {
+		log.log.notice(err, 'discord-rpc')
+	})
+} else {
+	log.log.notice('Discord Rich Presence Disabled', 'discord-rpc')
+}
 
 /*  ____  ____   ___ 
    (_  _)(  _ \ / __)
