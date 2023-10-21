@@ -48,6 +48,8 @@ const { EventEmitter }           = require('node:events')
 
 const path             = require('node:path')
 const fs               = require('node:fs')
+const DiscordRPC       = require('discord-rpc')
+const discordID        = '1165310050013827123'
 
 const log              = new ma_logger('modAssist', app, 'assist.log', gotTheLock)
 
@@ -57,6 +59,10 @@ log.log.info(`ModAssist Logger    : ${app.getVersion()}`)
 log.log.info(` - Node.js Version  : ${process.versions.node}`)
 log.log.info(` - Electron Version : ${process.versions.electron}`)
 log.log.info(` - Chrome Version   : ${process.versions.chrome}`)
+
+//DiscordRPC.register(discordID)
+const disRPC    = new DiscordRPC.Client({transport : 'ipc'})
+const startTime = new Date()
 
 const myTranslator     = new translator(null, !app.isPackaged)
 myTranslator.mcVersion = app.getVersion()
@@ -234,6 +240,34 @@ mdCache.store = detailCache
 const modCollect = new modFileCollection( app.getPath('home'), modQueueRunner, skipCache )
 
 win.modCollect = modCollect
+
+async function setActivity() {
+	if (!disRPC || !win.win.main ) { return }
+
+	disRPC.setActivity({
+		details        : `Managing ${modCollect.modFullCount} Mods`,
+		instance       : true,
+		largeImageKey  : 'fsgmaicon_large',
+		largeImageText : 'FSG Mod Assist',
+		startTimestamp : startTime.getTime(),
+
+		buttons : [
+			{label : 'Get Mod Assistant', url : 'https://github.com/FSGModding/FSG_Mod_Assistant/releases/latest'},
+			{label : 'Visit FSG', url : 'https://farmsimgame.com/'}
+		],
+	})
+}
+
+disRPC.on('ready', () => {
+	setActivity()
+
+	// activity can only be set every 15 seconds
+	setInterval(() => { setActivity() }, 15e3)
+})
+
+disRPC.login({ clientId : discordID }).catch((err) => {
+	log.log.notice(err, 'discord-rpc')
+})
 
 /*  ____  ____   ___ 
    (_  _)(  _ \ / __)
