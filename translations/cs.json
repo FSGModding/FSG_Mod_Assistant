@@ -470,6 +470,8 @@
 	"user_pref_button_game_settings"        : "更改 gameSettings.xml 文件",
 	"user_pref_button_reset_window"         : "Reset All Windows",
 	"user_pref_clean_cache_did"             : "所有不在当前集合中的模组缓存已被清除",
+	"user_pref_setting_discord_1"           : "自定义 Discord 状态（空白 = 模式计数）",
+	"user_pref_setting_discord_2"           : "自定义 Discord 详细信息（空白 = 活动收藏）",
 	"user_pref_setting_game_args"           : "游戏参数",
 	"user_pref_setting_game_args_example"   : "（例如：<em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>）",
 	"user_pref_setting_lock_lang"           : "启动时跳过语言检测",

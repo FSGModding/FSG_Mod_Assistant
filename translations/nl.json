@@ -470,6 +470,8 @@
 	"user_pref_button_game_settings"        : "GameSettings.xml-bestand wijzigen",
 	"user_pref_button_reset_window"         : "Venster status herstellen",
 	"user_pref_clean_cache_did"             : "Mod Cache is opgeschoond van alle mods die niet in de huidige collecties zitten.",
+	"user_pref_setting_discord_1"           : "Aangepaste Discord-status (leeg = Mod Count)",
+	"user_pref_setting_discord_2"           : "Aangepast Discord Detail (leeg = actieve collectie)",
 	"user_pref_setting_game_args"           : "Spelargumenten",
 	"user_pref_setting_game_args_example"   : "(b.v. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"user_pref_setting_lock_lang"           : "Taaldetectie bij het opstarten overslaan",

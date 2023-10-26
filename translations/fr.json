@@ -470,6 +470,8 @@
 	"user_pref_button_game_settings"        : "Modifier le fichier gameSettings.xml",
 	"user_pref_button_reset_window"         : "Réinitialiser les fenêtres",
 	"user_pref_clean_cache_did"             : "Le cache des mods a été nettoyé de tous les mods qui ne font pas partie des collections actuelles.",
+	"user_pref_setting_discord_1"           : "État personnalisé du Discord (blanc = nombre de mods)",
+	"user_pref_setting_discord_2"           : "Détail du Discord personnalisé (blanc = collection active)",
 	"user_pref_setting_game_args"           : "Arguments de jeu",
 	"user_pref_setting_game_args_example"   : "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"user_pref_setting_lock_lang"           : "Ignorer la détection de langue au démarrage",

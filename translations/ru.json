@@ -470,6 +470,8 @@
 	"user_pref_button_game_settings"        : "Изменить файл gameSettings.xml",
 	"user_pref_button_reset_window"         : "Сбросить изменения всех окон",
 	"user_pref_clean_cache_did"             : "Кеш модов очищен от всех модов, которых нет в текущих коллекциях",
+	"user_pref_setting_discord_1"           : "Пользовательское состояние Discord (пусто = Mod Count)",
+	"user_pref_setting_discord_2"           : "Пользовательский Discord Detail (пусто = активная коллекция)",
 	"user_pref_setting_game_args"           : "Параметры запуска",
 	"user_pref_setting_game_args_example"   : "(например: <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"user_pref_setting_lock_lang"           : "Пропустить определение языка при запуске",

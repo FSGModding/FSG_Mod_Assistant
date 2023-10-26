@@ -244,12 +244,16 @@ win.modCollect = modCollect
 async function setActivity() {
 	if (!disRPC || !win.win.main ) { return }
 
+	const custom_state  = mcStore.get('use_discord_c1', '' )
+	const custom_detail = mcStore.get('use_discord_c2', '' )
+
 	disRPC.setActivity({
-		details        : `Managing ${modCollect.modFullCount} Mods`,
+		details        : custom_detail !== '' ? custom_detail : `Active Collection: \n${gameSetOverride.folder !== null ? path.basename(gameSetOverride.folder) : '--'}`,
 		instance       : true,
 		largeImageKey  : 'fsgmaicon_large',
 		largeImageText : 'FSG Mod Assist',
-		startTimestamp : startTime.getTime(),
+		//startTimestamp : startTime.getTime(),
+		state          : custom_state !== '' ? custom_state : `Managing ${modCollect.modFullCount} Mods`,
 
 		buttons : [
 			{label : 'Get Mod Assistant', url : 'https://github.com/FSGModding/FSG_Mod_Assistant/releases/latest'},

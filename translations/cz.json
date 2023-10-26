@@ -470,6 +470,8 @@
 	"user_pref_button_game_settings"        : "Změnit gameSettings.xml soubor",
 	"user_pref_button_reset_window"         : "Resetovat všechna okna",
 	"user_pref_clean_cache_did"             : "Mezipaměť modů byla vyčištěna ze všech modů, které nejsou v aktuální sbírce",
+	"user_pref_setting_discord_1"           : "Vlastní stav Discordu (prázdný = počet modů)",
+	"user_pref_setting_discord_2"           : "Vlastní detail Discord (prázdný = aktivní sbírka)",
 	"user_pref_setting_game_args"           : "Herní argumenty",
 	"user_pref_setting_game_args_example"   : "(e.g. <em>-cheats -skipStartVideos -scriptDebug -autoStartSavegameId ##</em>)",
 	"user_pref_setting_lock_lang"           : "Přeskočit detekci jazyka při spuštění",
