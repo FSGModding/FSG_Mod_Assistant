@@ -60,9 +60,7 @@ log.log.info(` - Node.js Version  : ${process.versions.node}`)
 log.log.info(` - Electron Version : ${process.versions.electron}`)
 log.log.info(` - Chrome Version   : ${process.versions.chrome}`)
 
-//DiscordRPC.register(discordID)
 const disRPC    = new DiscordRPC.Client({transport : 'ipc'})
-const startTime = new Date()
 
 const myTranslator     = new translator(null, !app.isPackaged)
 myTranslator.mcVersion = app.getVersion()
@@ -251,8 +249,7 @@ async function setActivity() {
 		details        : custom_detail !== '' ? custom_detail : `Active Collection: \n${gameSetOverride.folder !== null ? path.basename(gameSetOverride.folder) : '--'}`,
 		instance       : true,
 		largeImageKey  : 'fsgmaicon_large',
-		largeImageText : 'FSG Mod Assist',
-		//startTimestamp : startTime.getTime(),
+		largeImageText : 'FSG Mod Assistant',
 		state          : custom_state !== '' ? custom_state : `Managing ${modCollect.modFullCount} Mods`,
 
 		buttons : [
