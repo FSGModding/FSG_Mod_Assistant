@@ -12,11 +12,10 @@ let lastScroll = null
 
 
 window.mods.receive('fromMain_getFolders', (modCollect) => {
-	let   folderNum       = 0
 	const localFolderList = []
 	const lastFolder      = modCollect.set_Collections.size - 1
 
-	for ( const collectKey of modCollect.set_Collections ) {
+	for ( const [idx, collectKey] of [...modCollect.set_Collections].entries() ) {
 		localFolderList.push(makeFolderLine(
 			{
 				collectKey : collectKey,
@@ -29,10 +28,9 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 				tag        : modCollect.collectionNotes[collectKey].notes_tagline,
 				version    : modCollect.collectionNotes[collectKey].notes_version,
 			},
-			folderNum,
+			idx,
 			lastFolder
 		))
-		folderNum++
 	}
 
 	fsgUtil.byId('folderList').innerHTML = localFolderList.join('')
