@@ -208,7 +208,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			collectNotes.notes_holding,
 			fsgUtil.firstOrNull(mapIcons),
 			mapNames[0],
-			parseInt(collectNotes.notes_color)
+			parseInt(collectNotes.notes_color),
+			collectNotes.notes_removable
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	}
@@ -286,11 +287,12 @@ const makeFilterButton = ( name, isHide = false ) => {
 	`
 }
 
-const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor) => fsgUtil.useTemplate('collect_row', {
+const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor, removable) => fsgUtil.useTemplate('collect_row', {
 	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
 	class_hideDownload          : dlEnabled ? '' : 'd-none',
 	class_hideGameAdminPassword : gameAdminPass !== null ? '' : 'd-none',
 	class_hidePassword          : adminPass !== null ? '' : 'd-none',
+	class_hideRemovable         : removable ? '' : 'd-none',
 	class_hideWebsite           : website !== null ? '' : 'd-none',
 	class_isHolding             : isHolding ? 'is-holding-pen' : '',
 	class_mapIcon               : singleMapIcon === null ? 'd-none' : '',

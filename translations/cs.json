@@ -327,6 +327,7 @@
 	"pref_feedback_limit_30"                : "30 Character Limit",
 	"preferences_button__title"             : "用户首选项设置",
 	"refresh_version"                       : "刷新版本列表",
+	"removable_button__title"               : "收藏在可移动存储器中",
 	"remove_folder"                         : "忘记收藏",
 	"remove_folder__title"                  : "在 Mod Assistant 中忘记这个文件夹",
 	"remove_from_list"                      : "删除...",

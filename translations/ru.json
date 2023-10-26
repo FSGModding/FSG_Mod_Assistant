@@ -327,6 +327,7 @@
 	"pref_feedback_limit_30"                : "Максимум 30 знаков",
 	"preferences_button__title"             : "Пользовательские настройки",
 	"refresh_version"                       : "Обновить список версий",
+	"removable_button__title"               : "Коллекция находится на съемном носителе",
 	"remove_folder"                         : "Забыть коллекцию",
 	"remove_folder__title"                  : "Забыть эту папку в Mod Assistant",
 	"remove_from_list"                      : "Удалить…",

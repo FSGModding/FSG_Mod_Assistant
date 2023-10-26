@@ -327,6 +327,7 @@
 	"pref_feedback_limit_30"                : "Límite de 30 caracteres",
 	"preferences_button__title"             : "Configurar las preferencias del usuario",
 	"refresh_version"                       : "Actualizar la lista de versiones",
+	"removable_button__title"               : "La colección está en un soporte extraíble",
 	"remove_folder"                         : "Olvidar la colección",
 	"remove_folder__title"                  : "Olvida esta carpeta en el Asistente de Mod",
 	"remove_from_list"                      : "Borrar...",

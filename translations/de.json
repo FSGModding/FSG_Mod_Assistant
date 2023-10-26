@@ -327,6 +327,7 @@
 	"pref_feedback_limit_30"                : "Maximal 30 Zeichen",
 	"preferences_button__title"             : "Benutzerpräferenzen festlegen",
 	"refresh_version"                       : "Versionsliste aktualisieren",
+	"removable_button__title"               : "Die Sammlung befindet sich auf einem Wechseldatenträger",
 	"remove_folder"                         : "Sammlung entfernen",
 	"remove_folder__title"                  : "Entfernen Sie diesen Ordner im Mod Assistant",
 	"remove_from_list"                      : "Löschen...",
