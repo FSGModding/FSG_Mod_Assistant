@@ -6,7 +6,7 @@
 
 // Main Window UI
 
-/* global processL10N, fsgUtil, bootstrap, select_lib */
+/* global processL10N, fsgUtil, bootstrap, select_lib, getText */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -193,9 +193,13 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			}
 		}
 		
+		const isOnline = modCollect.collectionToStatus[collectKey]
+		const fullName = `${thisCollection.name} <small>[${isOnline ? fsgUtil.bytesToHR(sizeOfFolder, lastLocale) : getText('removable_offline') }]</small>`
+
 		modTable.push(makeModCollection(
+			isOnline,
 			collectKey,
-			`${thisCollection.name} <small>[${fsgUtil.bytesToHR(sizeOfFolder, lastLocale)}]</small>`,
+			fullName,
 			modRows,
 			collectNotes.notes_website,
 			collectNotes.notes_websiteDL,
@@ -287,7 +291,7 @@ const makeFilterButton = ( name, isHide = false ) => {
 	`
 }
 
-const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor, removable) => fsgUtil.useTemplate('collect_row', {
+const makeModCollection = (isOnline, id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor, removable) => fsgUtil.useTemplate('collect_row', {
 	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
 	class_hideDownload          : dlEnabled ? '' : 'd-none',
 	class_hideGameAdminPassword : gameAdminPass !== null ? '' : 'd-none',
@@ -296,6 +300,7 @@ const makeModCollection = (id, name, modsRows, website, dlEnabled, tagLine, admi
 	class_hideWebsite           : website !== null ? '' : 'd-none',
 	class_isHolding             : isHolding ? 'is-holding-pen' : '',
 	class_mapIcon               : singleMapIcon === null ? 'd-none' : '',
+	class_status                : !isOnline ? 'text-decoration-line-through' : '',
 	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive, isHolding, folderColor),
 	game_admin_password         : gameAdminPass,
 	id                          : id,

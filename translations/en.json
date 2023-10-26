@@ -328,6 +328,7 @@
 	"preferences_button__title"             : "Set User Preferences",
 	"refresh_version"                       : "Refresh Version List",
 	"removable_button__title"               : "Collection is on removable storage",
+	"removable_offline"                     : "OFFLINE",
 	"remove_folder"                         : "Forget Collection",
 	"remove_folder__title"                  : "Forget this folder in Mod Assistant",
 	"remove_from_list"                      : "Delete...",

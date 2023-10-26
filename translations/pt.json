@@ -328,6 +328,7 @@
 	"preferences_button__title"             : "Definir preferências do usuário",
 	"refresh_version"                       : "Atualizar lista de versões",
 	"removable_button__title"               : "A coleção encontra-se numa memória amovível",
+	"removable_offline"                     : "FORA DE LINHA",
 	"remove_folder"                         : "Esquecer coleção",
 	"remove_folder__title"                  : "Esqueça esta pasta no Mod Assistant",
 	"remove_from_list"                      : "Apagar...",

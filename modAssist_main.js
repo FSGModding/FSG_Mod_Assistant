@@ -2135,6 +2135,8 @@ function processModFoldersOnDisk() {
 			const thisCollectionStats = modCollect.addCollection(folder)
 
 			win.loading.total(thisCollectionStats?.fileCount ?? 0)
+		} else {
+			modCollect.addCollection(folder, true)
 		}
 	}
 

@@ -6,7 +6,7 @@
 
 // Folder window UI
 
-/* global processL10N, fsgUtil */
+/* global processL10N, fsgUtil, getText */
 
 let lastScroll = null
 
@@ -25,6 +25,7 @@ window.mods.receive('fromMain_getFolders', (modCollect) => {
 				multiVer   : modCollect.appSettings.multi_version,
 				name       : modCollect.collectionToName[collectKey],
 				pathRel    : modCollect.collectionToFolderRelative[collectKey],
+				status     : modCollect.collectionToStatus[collectKey],
 				tag        : modCollect.collectionNotes[collectKey].notes_tagline,
 				version    : modCollect.collectionNotes[collectKey].notes_version,
 			},
@@ -63,16 +64,18 @@ const dnBtn = (num, last, disable) => `${moveBtn('folder_down_button', num, num+
 
 
 const makeFolderLine = (details, num, last) => fsgUtil.useTemplate('folder_line', {
-	collectKey  : details.collectKey,
-	dateAdd     : details.dateAdd,
-	dateUsed    : details.dateUsed,
-	downButtons : dnBtn(num, last, num === last),
-	name        : details.name,
-	pathRel     : details.pathRel,
-	tagLine     : details.tag === null ? '' : details.tag,
-	upButtons   : upBtn(num, num < 1),
-	version     : details.multiVer ? `<l10n class="small" name="mod_badge_fs${details.version}"></l10n>` : '',
+	class_status : !details.status ? 'text-decoration-line-through' : '',
+	collectKey   : details.collectKey,
+	dateAdd      : details.dateAdd,
+	dateUsed     : details.dateUsed,
+	downButtons  : dnBtn(num, last, num === last),
+	name         : `${details.name}${ !details.status ? ` <small>[${getText('removable_offline')}]</small>` : ''}`,
+	pathRel      : details.pathRel,
+	tagLine      : details.tag === null ? '' : details.tag,
+	upButtons    : upBtn(num, num < 1),
+	version      : details.multiVer ? `<l10n class="small" name="mod_badge_fs${details.version}"></l10n>` : '',
 })
+
 
 
 function clientMoveItem(from, to) {

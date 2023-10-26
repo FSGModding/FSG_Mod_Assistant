@@ -328,6 +328,7 @@
 	"preferences_button__title"             : "Gebruikersvoorkeuren instellen",
 	"refresh_version"                       : "Vernieuwen versielijst",
 	"removable_button__title"               : "Collectie staat op verwijderbare opslag",
+	"removable_offline"                     : "OFFLINE",
 	"remove_folder"                         : "Vergeet collectie",
 	"remove_folder__title"                  : "Vergeet deze map in Mod Assistant",
 	"remove_from_list"                      : "Verwijderen...",

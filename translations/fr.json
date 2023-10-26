@@ -328,6 +328,7 @@
 	"preferences_button__title"             : "Définir les préférences de l'utilisateur",
 	"refresh_version"                       : "Actualiser la liste des versions",
 	"removable_button__title"               : "La collection est sur un support amovible",
+	"removable_offline"                     : "HORS LIGNE",
 	"remove_folder"                         : "Collection Forget",
 	"remove_folder__title"                  : "Oubliez ce dossier dans Mod Assistant",
 	"remove_from_list"                      : "Supprimer...",
