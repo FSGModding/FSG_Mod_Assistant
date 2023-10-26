@@ -427,21 +427,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.51.0":
-  version: 8.51.0
-  resolution: "@eslint/js@npm:8.51.0"
-  checksum: 0228bf1e1e0414843e56d9ff362a2a72d579c078f93174666f29315690e9e30a8633ad72c923297f7fd7182381b5a476805ff04dac8debe638953eb1ded3ac73
+"@eslint/js@npm:8.52.0":
+  version: 8.52.0
+  resolution: "@eslint/js@npm:8.52.0"
+  checksum: 490893b8091a66415f4ac98b963d23eb287264ea3bd6af7ec788f0570705cf64fd6ab84b717785980f55e39d08ff5c7fde6d8e4391ccb507169370ce3a6d091a
   languageName: node
   linkType: hard
 
-"@humanwhocodes/config-array@npm:^0.11.11":
-  version: 0.11.11
-  resolution: "@humanwhocodes/config-array@npm:0.11.11"
+"@humanwhocodes/config-array@npm:^0.11.13":
+  version: 0.11.13
+  resolution: "@humanwhocodes/config-array@npm:0.11.13"
   dependencies:
-    "@humanwhocodes/object-schema": ^1.2.1
+    "@humanwhocodes/object-schema": ^2.0.1
     debug: ^4.1.1
     minimatch: ^3.0.5
-  checksum: db84507375ab77b8ffdd24f498a5b49ad6b64391d30dd2ac56885501d03964d29637e05b1ed5aefa09d57ac667e28028bc22d2da872bfcd619652fbdb5f4ca19
+  checksum: f8ea57b0d7ed7f2d64cd3944654976829d9da91c04d9c860e18804729a33f7681f78166ef4c761850b8c324d362f7d53f14c5c44907a6b38b32c703ff85e4805
   languageName: node
   linkType: hard
 
@@ -452,10 +452,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/object-schema@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@humanwhocodes/object-schema@npm:1.2.1"
-  checksum: a824a1ec31591231e4bad5787641f59e9633827d0a2eaae131a288d33c9ef0290bd16fda8da6f7c0fcb014147865d12118df10db57f27f41e20da92369fcb3f1
+"@humanwhocodes/object-schema@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@humanwhocodes/object-schema@npm:2.0.1"
+  checksum: 24929487b1ed48795d2f08346a0116cc5ee4634848bce64161fb947109352c562310fd159fc64dda0e8b853307f5794605191a9547f7341158559ca3c8262a45
   languageName: node
   linkType: hard
 
@@ -727,6 +727,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ungap/structured-clone@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@ungap/structured-clone@npm:1.2.0"
+  checksum: 4f656b7b4672f2ce6e272f2427d8b0824ed11546a601d8d5412b9d7704e83db38a8d9f402ecdf2b9063fc164af842ad0ec4a55819f621ed7e7ea4d1efcc74524
+  languageName: node
+  linkType: hard
+
 "@xmldom/xmldom@npm:^0.8.8":
   version: 0.8.10
   resolution: "@xmldom/xmldom@npm:0.8.10"
@@ -896,9 +903,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-builder-lib@npm:24.7.0":
-  version: 24.7.0
-  resolution: "app-builder-lib@npm:24.7.0"
+"app-builder-lib@npm:24.8.0":
+  version: 24.8.0
+  resolution: "app-builder-lib@npm:24.8.0"
   dependencies:
     7zip-bin: ~5.1.1
     "@develar/schema-utils": ~2.6.5
@@ -909,12 +916,12 @@ __metadata:
     "@types/fs-extra": 9.0.13
     async-exit-hook: ^2.0.1
     bluebird-lst: ^1.0.9
-    builder-util: 24.5.0
-    builder-util-runtime: 9.2.1
+    builder-util: 24.8.0
+    builder-util-runtime: 9.2.2
     chromium-pickle-js: ^0.2.0
     debug: ^4.3.4
     ejs: ^3.1.8
-    electron-publish: 24.5.0
+    electron-publish: 24.8.0
     form-data: ^4.0.0
     fs-extra: ^10.1.0
     hosted-git-info: ^4.1.0
@@ -928,7 +935,7 @@ __metadata:
     semver: ^7.3.8
     tar: ^6.1.12
     temp-file: ^3.4.0
-  checksum: fa42b782fb396a002f72398eb9264d22d85fb9caf062d5246a9f5e23b03f0daa206753fae2129fb71ed6f9aad5f67180158959f2db88b31d78bfffe9735c503a
+  checksum: a9b369f381f328d45aef7f610bbfaef70539b29b0cedf8de52e2f5770190dfd1ce7bc6cebcec4a0fc3672b4803122b12df1b5c56d4277368699e2c2ad42f4676
   languageName: node
   linkType: hard
 
@@ -1179,25 +1186,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"builder-util-runtime@npm:9.2.1":
-  version: 9.2.1
-  resolution: "builder-util-runtime@npm:9.2.1"
+"builder-util-runtime@npm:9.2.2":
+  version: 9.2.2
+  resolution: "builder-util-runtime@npm:9.2.2"
   dependencies:
     debug: ^4.3.4
     sax: ^1.2.4
-  checksum: 6933e086b8ff9902cbd6d4c08d21d4a0437663ac849bc0939ec20a59cb2b084d7ab655c4dc2c71f854e77da152ff1f8e1240372665cb70e7b954afbfbf4d525a
+  checksum: 4ebf4a690164b47faa69f220b365f863b609a8daf440533ea68bcfd2dbccc045dfed5302ea363d7c6891e1b1a5746d3fb9c20527d6c997043f3c64c2489f4287
   languageName: node
   linkType: hard
 
-"builder-util@npm:24.5.0":
-  version: 24.5.0
-  resolution: "builder-util@npm:24.5.0"
+"builder-util@npm:24.8.0":
+  version: 24.8.0
+  resolution: "builder-util@npm:24.8.0"
   dependencies:
     7zip-bin: ~5.1.1
     "@types/debug": ^4.1.6
     app-builder-bin: 4.0.0
     bluebird-lst: ^1.0.9
-    builder-util-runtime: 9.2.1
+    builder-util-runtime: 9.2.2
     chalk: ^4.1.2
     cross-spawn: ^7.0.3
     debug: ^4.3.4
@@ -1209,7 +1216,7 @@ __metadata:
     source-map-support: ^0.5.19
     stat-mode: ^1.0.0
     temp-file: ^3.4.0
-  checksum: 8f3b27bccf4b81ce983576e9aacd06045c6f8a7c3d5e6704d45a96b0e91e4c3a36718760612e28e0de62e46e406e59c7030a472a40739e061c84294167e96859
+  checksum: 8f4019fd64ddd08fdaddc247f03287bdf3ba1d7f92e48cca5801bb456bec6f5d007ab996fb402e0cdba441369ef34da085bfc37c85b69b842fbfe8ae8854a88d
   languageName: node
   linkType: hard
 
@@ -1678,13 +1685,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dmg-builder@npm:24.7.0":
-  version: 24.7.0
-  resolution: "dmg-builder@npm:24.7.0"
+"dmg-builder@npm:24.8.0":
+  version: 24.8.0
+  resolution: "dmg-builder@npm:24.8.0"
   dependencies:
-    app-builder-lib: 24.7.0
-    builder-util: 24.5.0
-    builder-util-runtime: 9.2.1
+    app-builder-lib: 24.8.0
+    builder-util: 24.8.0
+    builder-util-runtime: 9.2.2
     dmg-license: ^1.0.11
     fs-extra: ^10.1.0
     iconv-lite: ^0.6.2
@@ -1692,7 +1699,7 @@ __metadata:
   dependenciesMeta:
     dmg-license:
       optional: true
-  checksum: f080a01a60f87ce21709854d1e2e4515add20bc6245bed20720fa4dffa27c81e18e0ab8ab76e97256390d0717722f0355c7618877297264ba94ea7e38cd247a4
+  checksum: a4f2bfd9d72c15943dd07c15e5e409c5d0b4ff3dcf9f53ea4941011296da386c8508786ff7061eef61845d0ec5f1570a9118a201b4add301d6dde17b8ecba3e8
   languageName: node
   linkType: hard
 
@@ -1764,15 +1771,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:^24.6.4":
-  version: 24.7.0
-  resolution: "electron-builder@npm:24.7.0"
+"electron-builder@npm:^24.8.0":
+  version: 24.8.0
+  resolution: "electron-builder@npm:24.8.0"
   dependencies:
-    app-builder-lib: 24.7.0
-    builder-util: 24.5.0
-    builder-util-runtime: 9.2.1
+    app-builder-lib: 24.8.0
+    builder-util: 24.8.0
+    builder-util-runtime: 9.2.2
     chalk: ^4.1.2
-    dmg-builder: 24.7.0
+    dmg-builder: 24.8.0
     fs-extra: ^10.1.0
     is-ci: ^3.0.0
     lazy-val: ^1.0.5
@@ -1782,22 +1789,22 @@ __metadata:
   bin:
     electron-builder: cli.js
     install-app-deps: install-app-deps.js
-  checksum: cbebcaf2003c20f313ee0bb6a26855ce1bf78fa506073c6ffa57474c39a7649e61cc77eb45c064e6dcbd695926c1447d52b273b5b3b948dc3ca0a2cd4da4a8ad
+  checksum: 5f97f69646db75573bf98f552849c2ad1137c98983b8741e4075fdc8e193fc3526f22b17bf049b3db62af6c242a91412caadc60770f73353222375093a1dcbab
   languageName: node
   linkType: hard
 
-"electron-publish@npm:24.5.0":
-  version: 24.5.0
-  resolution: "electron-publish@npm:24.5.0"
+"electron-publish@npm:24.8.0":
+  version: 24.8.0
+  resolution: "electron-publish@npm:24.8.0"
   dependencies:
     "@types/fs-extra": ^9.0.11
-    builder-util: 24.5.0
-    builder-util-runtime: 9.2.1
+    builder-util: 24.8.0
+    builder-util-runtime: 9.2.2
     chalk: ^4.1.2
     fs-extra: ^10.1.0
     lazy-val: ^1.0.5
     mime: ^2.5.2
-  checksum: 7f31b5f2fc959a42747afb286e8dd9c4f7a1de387ef0836ee78e7fd81aaf121e1b1d55c8810924ba82eb1e4fc31da68d519240539bf7105b009973d366efa3b5
+  checksum: 3d5b58b6ddbfb555be462da332ff6532a04825fa53ebdcc507991e7222ecf3e76eb0be2139287998088253f9b1848d4b738f9ede9bcbb04d4a6117f5959d8fab
   languageName: node
   linkType: hard
 
@@ -1818,11 +1825,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:^6.1.5":
-  version: 6.1.5
-  resolution: "electron-updater@npm:6.1.5"
+"electron-updater@npm:^6.1.6":
+  version: 6.1.6
+  resolution: "electron-updater@npm:6.1.6"
   dependencies:
-    builder-util-runtime: 9.2.1
+    builder-util-runtime: 9.2.2
     fs-extra: ^10.1.0
     js-yaml: ^4.1.0
     lazy-val: ^1.0.5
@@ -1830,20 +1837,20 @@ __metadata:
     lodash.isequal: ^4.5.0
     semver: ^7.3.8
     tiny-typed-emitter: ^2.1.0
-  checksum: 07d6cf1d3da0e6a9ed852777bb5acc73cc5bae250ffd5d20e0ddc674ae1856c675b37ea48fe0ae82445fedf033ce99d4836491fed9514d1085216a7f4fad42b8
+  checksum: 887a2824806901b82c7de492e01e037d8cc04bc8fb6b2b02c746da0afa3968fce4f988dbc87fdf5dac17b2cae36bc41868d25a455c23a163d3671d69fdb22c64
   languageName: node
   linkType: hard
 
-"electron@npm:^27.0.0":
-  version: 27.0.0
-  resolution: "electron@npm:27.0.0"
+"electron@npm:^27.0.2":
+  version: 27.0.2
+  resolution: "electron@npm:27.0.2"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^18.11.18
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 4a84cb894d5f626fe7a2b5171693e903ce82a7673aabc419e5d3d0d2f9cc8441e5088524ecd86a046beab4ba7dd13820b7a94c361c3e7bc2f0959d1a1a860df5
+  checksum: 89118fbe1891233e6c3e393f9e7e7a1c463617a9c783dc7aad2ac238c4c483dbcf5222fe791d911727ac0970aa11abf028868a0d10271d1279360cd58f5cfb1d
   languageName: node
   linkType: hard
 
@@ -1996,17 +2003,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.51.0":
-  version: 8.51.0
-  resolution: "eslint@npm:8.51.0"
+"eslint@npm:^8.52.0":
+  version: 8.52.0
+  resolution: "eslint@npm:8.52.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.6.1
     "@eslint/eslintrc": ^2.1.2
-    "@eslint/js": 8.51.0
-    "@humanwhocodes/config-array": ^0.11.11
+    "@eslint/js": 8.52.0
+    "@humanwhocodes/config-array": ^0.11.13
     "@humanwhocodes/module-importer": ^1.0.1
     "@nodelib/fs.walk": ^1.2.8
+    "@ungap/structured-clone": ^1.2.0
     ajv: ^6.12.4
     chalk: ^4.0.0
     cross-spawn: ^7.0.2
@@ -2039,7 +2047,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 214fa5d1fcb67af1b8992ce9584ccd85e1aa7a482f8b8ea5b96edc28fa838a18a3b69456db45fc1ed3ef95f1e9efa9714f737292dc681e572d471d02fda9649c
+  checksum: fd22d1e9bd7090e31b00cbc7a3b98f3b76020a4c4641f987ae7d0c8f52e1b88c3b268bdfdabac2e1a93513e5d11339b718ff45cbff48a44c35d7e52feba510ed
   languageName: node
   linkType: hard
 
@@ -2365,11 +2373,11 @@ __metadata:
     clean-css: ^5.3.2
     deepl-node: ^1.10.2
     discord-rpc: ^4.0.1
-    electron: ^27.0.0
-    electron-builder: ^24.6.4
+    electron: ^27.0.2
+    electron-builder: ^24.8.0
     electron-store: ^8.1.0
-    electron-updater: ^6.1.5
-    eslint: ^8.51.0
+    electron-updater: ^6.1.6
+    eslint: ^8.52.0
     eslint-plugin-unicorn: ^48.0.1
     fast-xml-parser: ^4.3.2
     glob: ^10.3.10
