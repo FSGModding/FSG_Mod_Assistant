@@ -455,12 +455,18 @@ ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	}
 })
 ipcMain.on('toMain_reorderFolder', (_, from, to) => {
+	log.log.debug(`Reorder Call:: FROM : ${from} | TO : ${to}`, 'folder-reorder')
+	log.log.debug(`Order IN: \n${[...mainProcessFlags.modFolders].join('\n')}`, 'folder-reorder')
 	const newOrder    = [...mainProcessFlags.modFolders]
+	const oldSetOrder = newOrder.map((thisPath) => modCollect.mapFolderToCollection(thisPath))
+	log.log.debug(`Order IN SET: \n${[...oldSetOrder].join('\n')}`, 'folder-reorder')
 	const item        = newOrder.splice(from, 1)[0]
 
 	newOrder.splice(to, 0, item)
+	log.log.debug(`Order OUT: \n${newOrder.join('\n')}`, 'folder-reorder')
 
 	const newSetOrder = newOrder.map((thisPath) => modCollect.mapFolderToCollection(thisPath))
+	log.log.debug(`Order OUT SET: \n${[...newSetOrder].join('\n')}`, 'folder-reorder')
 
 	mainProcessFlags.modFolders   = new Set(newOrder)
 	modCollect.newCollectionOrder = new Set(newSetOrder)
