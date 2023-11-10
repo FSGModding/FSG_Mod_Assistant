@@ -2107,6 +2107,73 @@ modQueueRunner.on('process-mods-done', () => {
 	maIPC.processing = false
 })
 
+function processMissingFolder(hash, fullPath) {
+	const retValue = {
+		doDelete  : true, // Unchecked, but default action
+		doMove    : false,
+		doOffline : false,
+		folder    : 'fullPath',
+		newFolder : null,
+	}
+
+	const folderInfo = modNote.get(hash)
+	const hasExtra   = typeof folderInfo === 'object'
+
+	const thisMessage = `${myTranslator.syncStringLookup('bad_folder_blurb')}\n\n${myTranslator.syncStringLookup('bad_folder_folder')} ${fullPath}${hasExtra?`\n\n${myTranslator.syncStringLookup('bad_folder_extra')}`:''}`
+
+	const userChoice = dialog.showMessageBoxSync(win.win.main, {
+		cancelId  : 1,
+		defaultId : 0,
+		message   : thisMessage,
+		title     : myTranslator.syncStringLookup('bad_folder_title'),
+		type      : 'question',
+
+		buttons : [
+			myTranslator.syncStringLookup('bad_folder_action_delete'),
+			myTranslator.syncStringLookup('bad_folder_action_offline'),
+			myTranslator.syncStringLookup('bad_folder_action_move'),
+		],
+	})
+
+	switch (userChoice) {
+		case 1:
+			retValue.doOffline = true
+			break
+		case 2: {
+			const newFolder = dialog.showOpenDialogSync(win.win.main, {
+				properties  : ['openDirectory'],
+				defaultPath : mainProcessFlags.lastFolderLoc ?? userHome,
+			})
+			if ( typeof newFolder !== 'undefined') {
+				const potentialFolder = newFolder[0]
+		
+				mainProcessFlags.lastFolderLoc = path.resolve(path.join(potentialFolder, '..'))
+		
+				for ( const thisPath of mainProcessFlags.modFolders ) {
+					if ( path.relative(thisPath, potentialFolder) === '' ) {
+						log.log.notice('Move folder :: canceled, already exists in list', 'folder-opts')
+						return retValue
+					}
+				}
+		
+				const newCollectKey = modCollect.getFolderHash(potentialFolder)
+
+				retValue.newFolder = potentialFolder
+				retValue.doMove    = true
+				for ( const key in folderInfo ) {
+					modNote.set(`${newCollectKey}.${key}`, folderInfo[key])
+				}
+				modNote.delete(hash)
+			}
+			break
+		}
+		default:
+			break
+	}
+
+	return retValue
+}
+
 function processModFoldersOnDisk() {
 	modCollect.syncSafe = mcStore.get('use_one_drive', false)
 	modCollect.clearAll()
@@ -2123,8 +2190,22 @@ function processModFoldersOnDisk() {
 			const isRemovable = modNote.get(`${colHash}.notes_removable`, false)
 
 			if ( !isRemovable ) {
-				log.log.warning(`Folder no longer exists, removing: ${folder}`, 'mod-processor')
-				mainProcessFlags.modFolders.delete(folder)
+				const folderAction = processMissingFolder(colHash, folder)
+
+				if ( folderAction.doOffline ) {
+					modNote.set(`${colHash}.notes_removable`, true)
+					offlineFolders.push(folder)
+				} else if ( folderAction.doMove ) {
+					mainProcessFlags.modFolders.add(folderAction.newFolder)
+					mainProcessFlags.modFolders.delete(folder)
+
+					const thisWatch = fs.watch(folderAction.newFolder, (eventType, fileName) => { updateFolderDirtyWatch(eventType, fileName, folderAction.newFolder) })
+					thisWatch.on('error', (err) => { log.log.warning(`Folder Watch Error: ${folderAction.newFolder} :: ${err}`, 'folder-watcher') })
+					mainProcessFlags.watchModFolder.push(thisWatch)
+				} else {
+					log.log.warning(`Folder no longer exists, removing: ${folder}`, 'mod-processor')
+					mainProcessFlags.modFolders.delete(folder)
+				}
 			} else {
 				offlineFolders.push(folder)
 			}
