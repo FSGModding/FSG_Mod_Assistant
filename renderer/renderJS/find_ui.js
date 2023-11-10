@@ -56,6 +56,7 @@ const makeModRow = (thisMod) => fsgUtil.useTemplate('mod_entry', {
 	icon     : fsgUtil.iconMaker(thisMod.icon),
 	id       : `${thisMod.name}__mod`,
 	name     : thisMod.name,
+	search   : `${thisMod.name} ${thisMod.author} ${thisMod.title}`.toLowerCase(),
 	title    : thisMod.title,
 	versions : thisMod.collect.map((collection) => fsgUtil.useTemplate('version_entry', {
 		name    : collection.name,
@@ -73,13 +74,14 @@ function clientFilter() {
 
 	fsgUtil.byId('mods__filter_clear').classList[( filterText !== '' ) ? 'remove':'add']('d-none')
 
+	for ( const element of fsgUtil.queryA('#full_table tr.d-none') ){
+		element.classList.remove('d-none')
+	}
+
 	for ( const element of fsgUtil.queryA('#full_table tr') ){
-		let foundText = true
-		if ( filterText.length > 1 ) {
-			const searchText = element.querySelector('.search-string').innerText.toLowerCase()
-			foundText = searchText.includes(filterText)
+		if ( filterText.length > 1 && !element.querySelector('.search-string').getAttribute('data-search').includes(filterText) ) {
+			element.classList.add('d-none')
 		}
-		element.classList[foundText?'remove':'add']('d-none')
 	}
 }
 
