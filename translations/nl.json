@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--niet op modhub--",
 	"mh_unknown"                            : "--onbekend--",
 	"min_tray_button__title"                : "Minimaliseer naar systeemvak",
+	"mini_mode_button__title"               : "Toggle mini-modus",
 	"minimize_message"                      : "Toepassing is geminimaliseerd naar het systeemvak",
 	"minimize_message_title"                : "Minimaliseren naar systeemvak",
 	"mod_badge_broken"                      : "kapot",

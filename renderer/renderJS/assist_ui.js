@@ -128,6 +128,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	document.body.setAttribute('data-version', curVersion)
 
+	fsgUtil.clsOrGate('mini_button', modCollect.opts.showMini, 'btn-outline-light', 'unused-class')
 	fsgUtil.clsShowTrue('update-is-ready-button', modCollect.updateReady)
 	fsgUtil.clsShowTrue('dirty_folders', modCollect.opts.foldersDirty)
 	fsgUtil.clsShowTrue('multi_version_button', multiVersion)

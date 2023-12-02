@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--not on modhub--",
 	"mh_unknown"                            : "--unknown--",
 	"min_tray_button__title"                : "Minimizēt uz paplāti",
+	"mini_mode_button__title"               : "Mini režīma pārslēgšana",
 	"minimize_message"                      : "Lietojumprogramma ir minimizēta sistēmas teknē",
 	"minimize_message_title"                : "Minimizēšana sistēmas teknē",
 	"mod_badge_broken"                      : "broken",

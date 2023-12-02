@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "- Brak na modhubie -",
 	"mh_unknown"                            : "-- Nieznane --",
 	"min_tray_button__title"                : "Minimalizuj do zasobnika",
+	"mini_mode_button__title"               : "Przełączanie trybu mini",
 	"minimize_message"                      : "Aplikacja została zminimalizowana do zasobnika systemowego",
 	"minimize_message_title"                : "Minimalizacja do zasobnika systemowego",
 	"mod_badge_broken"                      : "Uszkodzony",

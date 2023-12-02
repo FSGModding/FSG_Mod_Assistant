@@ -1085,6 +1085,15 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 })
 /** END : Find window operation*/
 
+ipcMain.on('toMain_toggleMiniPin', () => { win.toggleAlwaysOnTop('mini'); refreshClientModList() })
+ipcMain.on('toMain_openMiniMode',  () => {
+	if ( win.isValid('mini') && win.isVisible('mini') ) {
+		win.safeClose('mini')
+	} else {
+		win.createNamedWindow('mini')
+	}
+})
+
 /** Preferences window operation */
 ipcMain.on('toMain_openPrefs',  () => { win.createNamedWindow('prefs') })
 ipcMain.on('toMain_getPref',    (event, name) => { event.returnValue = mcStore.get(name) })
@@ -1708,6 +1717,8 @@ function refreshClientModList(closeLoader = true) {
 				unknown : myTranslator.syncStringLookup('override_unknown'),
 			},
 			modSites               : modSite.store,
+			pinMini                : win.isAlwaysOnTop('mini'),
+			showMini               : win.isVisible('mini'),
 		},
 		'fromMain_modList',
 		'main',

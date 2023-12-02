@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--нет на ModHub--",
 	"mh_unknown"                            : "--неизвестно--",
 	"min_tray_button__title"                : "Свернуть в трей",
+	"mini_mode_button__title"               : "Переключение мини-режима",
 	"minimize_message"                      : "Приложение было свёрнуто в системный трей",
 	"minimize_message_title"                : "Сведение к минимуму в системном трее",
 	"mod_badge_broken"                      : "с ошибками",

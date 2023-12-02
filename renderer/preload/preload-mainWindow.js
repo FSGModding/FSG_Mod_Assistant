@@ -65,6 +65,7 @@ contextBridge.exposeInMainWorld(
 		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },
 		openGameLog     : () => { ipcRenderer.send('toMain_openGameLog') },
 		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },
+		openMini        : () => { ipcRenderer.send('toMain_openMiniMode') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
 		openSaveManage  : () => { ipcRenderer.send('toMain_openSaveManage') },
 		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},

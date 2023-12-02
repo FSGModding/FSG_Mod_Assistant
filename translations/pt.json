@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--Não no modhub--",
 	"mh_unknown"                            : "--Desconhecido--",
 	"min_tray_button__title"                : "Minimizar para a bandeja",
+	"mini_mode_button__title"               : "Alternar o modo Mini",
 	"minimize_message"                      : "O programa foi minimizado na bandeja do sistema",
 	"minimize_message_title"                : "Minimizar para a bandeja do sistema",
 	"mod_badge_broken"                      : "Interrompido",

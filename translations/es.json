@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--no en modhub--",
 	"mh_unknown"                            : "--desconocido--",
 	"min_tray_button__title"                : "Minimizar a bandeja",
+	"mini_mode_button__title"               : "Conmutar modo Mini",
 	"minimize_message"                      : "La aplicación se ha minimizado a la bandeja del sistema",
 	"minimize_message_title"                : "Minimizar a la bandeja del sistema",
 	"mod_badge_broken"                      : "roto",

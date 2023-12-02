@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--not on modhub--",
 	"mh_unknown"                            : "--neznámé-",
 	"min_tray_button__title"                : "Minimalizovat na panel",
+	"mini_mode_button__title"               : "Přepínání miniaturního režimu",
 	"minimize_message"                      : "Aplikace byla minimalizována do systémové lišty",
 	"minimize_message_title"                : "Minimalizace do systémové lišty",
 	"mod_badge_broken"                      : "rozbitý",

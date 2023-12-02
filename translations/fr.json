@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--pas sur modhub--",
 	"mh_unknown"                            : "--inconnu--",
 	"min_tray_button__title"                : "Minimiser dans la barre d'état",
+	"mini_mode_button__title"               : "Basculer le mode mini",
 	"minimize_message"                      : "L'application a été réduite à la barre d'état système",
 	"minimize_message_title"                : "Minimiser dans la barre d'état système",
 	"mod_badge_broken"                      : "brisé",

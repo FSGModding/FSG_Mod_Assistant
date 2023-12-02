@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--不在 Modhub 上--",
 	"mh_unknown"                            : "--未知--",
 	"min_tray_button__title"                : "Minimize to tray",
+	"mini_mode_button__title"               : "切换迷你模式",
 	"minimize_message"                      : "应用程序已最小化到系统栏",
 	"minimize_message_title"                : "最小化到系统栏",
 	"mod_badge_broken"                      : "损坏",

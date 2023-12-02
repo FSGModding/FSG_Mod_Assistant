@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--nicht auf Modhub--",
 	"mh_unknown"                            : "--unbekannt--",
 	"min_tray_button__title"                : "In Infobereich minimieren",
+	"mini_mode_button__title"               : "Mini-Modus umschalten",
 	"minimize_message"                      : "Die Anwendung wurde in die Taskleiste minimiert",
 	"minimize_message_title"                : "Minimieren in die Taskleiste",
 	"mod_badge_broken"                      : "defekt",

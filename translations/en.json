@@ -199,6 +199,7 @@
 	"mh_norecord"                           : "--not on modhub--",
 	"mh_unknown"                            : "--unknown--",
 	"min_tray_button__title"                : "Minimize to tray",
+	"mini_mode_button__title"               : "Toggle Mini-Mode",
 	"minimize_message"                      : "Application has been minimized to the system tray",
 	"minimize_message_title"                : "Minimizing to system tray",
 	"mod_badge_broken"                      : "broken",
