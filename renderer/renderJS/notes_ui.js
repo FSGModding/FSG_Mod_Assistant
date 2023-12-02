@@ -66,7 +66,12 @@ function clientCheckValid(id, inProgress = false) {
 
 	switch ( id ) {
 		case 'notes_website' :
-			if (! ( formValue === '' || ( formValue.startsWith('http') && formValue.endsWith('/') ))) {
+			try {
+				const parsedURL   = new URL('', formValue)
+				if ( parsedURL.protocol !== 'http:' || parsedURL.pathname !== '/' ) {
+					validCheck = false
+				}
+			} catch {
 				validCheck = false
 			}
 			break
@@ -114,6 +119,15 @@ function clientSetColor() {
 
 function clientSetNote(id) {
 	const formControl = fsgUtil.byId(id)
+
+	if ( id === 'notes_website' ) {
+		try {
+			const parsedURL   = new URL('', formControl.value)
+			formControl.value = new URL('/', parsedURL.origin).href
+		} catch {
+			/* do nothing? */
+		}
+	}
 	
 	if ( formControl.getAttribute('type') === 'checkbox' ) {
 		window.mods.setNote(id, formControl.checked, thisCollection)
