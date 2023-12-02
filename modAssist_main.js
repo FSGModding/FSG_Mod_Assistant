@@ -1093,6 +1093,7 @@ const toggleMiniWindow = () => {
 		win.safeClose('mini')
 	} else {
 		win.createNamedWindow('mini')
+		win.toggleAlwaysOnTop('mini', true)
 	}
 }
 /** Preferences window operation */
