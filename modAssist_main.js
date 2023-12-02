@@ -2268,15 +2268,24 @@ function dlSaveFile(url, filename) {
 		request.on('response', (response) => {
 			log.log.info(`Got ${filename}: ${response.statusCode}`, 'modhub-cache')
 			let responseData = ''
+			
+			response.on('error', (err) => {
+				log.log.info(`Network error : ${url} :: ${err}`, 'modhub-cache')
+			})
+
 			response.on('data', (chunk) => { responseData = responseData + chunk.toString() })
 			response.on('end',  () => {
 				fs.writeFileSync(path.join(app.getPath('userData'), filename), responseData)
 				loadSaveFile(filename)
 			})
 		})
-		request.on('error', (error) => {
+		request.on('abort', () => {
 			loadSaveFile(filename)
-			log.log.info(`Network error : ${url} :: ${error}`, 'modhub-cache')
+			log.log.info(`Network abort : ${url}`, 'modhub-cache')
+		})
+		request.on('error', (err) => {
+			loadSaveFile(filename)
+			log.log.info(`Network error : ${url} :: ${err}`, 'modhub-cache')
 		})
 		request.end()
 	}
