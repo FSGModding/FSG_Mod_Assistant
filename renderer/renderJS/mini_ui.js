@@ -27,6 +27,18 @@ function clientMakeListActive() {
 
 	if ( activePick !== '0' && activePick !== '999' ) {
 		blinkLED()
+		fsgUtil.clsOrGate('active_button', true, 'btn-success', 'btn-warning')
+		flasherCounter  = 0
+		flasherInterval = setInterval(() => {
+			flasherCounter++
+			if ( flasherCounter > 7 ) {
+				clearInterval(flasherInterval)
+				flasherInterval = null
+				fsgUtil.clsOrGate('active_button', false, 'btn-success', 'btn-warning')
+			} else {
+				fsgUtil.clsOrGate('active_button', flasherCounter%2 === 0, 'btn-success', 'btn-warning')
+			}
+		}, 250)
 		window.mods.makeActive(activePick)
 	}
 }

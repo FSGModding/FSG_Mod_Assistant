@@ -1086,14 +1086,15 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 /** END : Find window operation*/
 
 ipcMain.on('toMain_toggleMiniPin', () => { win.toggleAlwaysOnTop('mini'); refreshClientModList() })
-ipcMain.on('toMain_openMiniMode',  () => {
+ipcMain.on('toMain_openMiniMode',  () => { toggleMiniWindow() })
+
+const toggleMiniWindow = () => {
 	if ( win.isValid('mini') && win.isVisible('mini') ) {
 		win.safeClose('mini')
 	} else {
 		win.createNamedWindow('mini')
 	}
-})
-
+}
 /** Preferences window operation */
 ipcMain.on('toMain_openPrefs',  () => { win.createNamedWindow('prefs') })
 ipcMain.on('toMain_getPref',    (event, name) => { event.returnValue = mcStore.get(name) })
@@ -2326,6 +2327,10 @@ app.whenReady().then(() => {
 			{
 				label : myTranslator.syncStringLookup('tray_show'),
 				click : () => { win.win.main.show() },
+			},
+			{
+				label : myTranslator.syncStringLookup('mini_mode_button__title'),
+				click : () => { toggleMiniWindow() },
 			},
 			{
 				label : myTranslator.syncStringLookup('launch_game'),
