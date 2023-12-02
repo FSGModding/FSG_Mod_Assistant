@@ -1127,6 +1127,7 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 ipcMain.on('toMain_resetWindows',   () => { win.resetPositions() })
 ipcMain.on('toMain_clearCacheFile', () => {
 	newMaCache.clearAll()
+	win.forceFocus('main')
 	processModFolders(true)
 })
 ipcMain.on('toMain_clearDetailCacheFile', () => {
@@ -2268,7 +2269,7 @@ function dlSaveFile(url, filename) {
 		request.on('response', (response) => {
 			log.log.info(`Got ${filename}: ${response.statusCode}`, 'modhub-cache')
 			let responseData = ''
-			
+
 			response.on('error', (err) => {
 				log.log.info(`Network error : ${url} :: ${err}`, 'modhub-cache')
 			})
