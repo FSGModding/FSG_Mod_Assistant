@@ -247,9 +247,14 @@ const fsgUtil = {
 		}
 	},
 
+	getFillImage    : (name, height = 25) => {
+		return `<img title="${name}" style="height: ${height}px" src="img/fills/${fsgUtil.knownFills.has(name) ? name : 'unknown'}.webp">`
+	},
+
 	/* cSpell:disable */
 	knownFills : new Set([
-		'air', 'barley', 'boards', 'bread', 'butter', 'cake', 'canola', 'cereals', 'chaff', 'cheese', 'chicken', 'chocolate', 'clothes', 'cotton', 'cow', 'def', 'diesel', 'digestate', 'dog', 'drygrass_windrow', 'egg', 'electriccharge', 'fabric', 'fertilizer', 'flour', 'forage', 'forage_mixing', 'foragemix', 'furniture', 'grape', 'grapejuice', 'grass', 'grass_windrow', 'herbicide', 'honey', 'horse', 'lettuce', 'lime', 'liquidfertilizer', 'liquidmanure', 'maize', 'manure', 'methane', 'milk', 'mineral_feed', 'oat', 'oil_canola', 'oil_olive', 'oil_sunflower', 'oilradish', 'olive', 'pig', 'pigfood', 'poplar', 'potato', 'product', 'raisins', 'roadsalt', 'roundbalecotton', 'roundbalegrass', 'roundbalehay', 'roundbalesilage', 'roundbalestraw', 'roundbalewood', 'seeds', 'sheep', 'silage', 'silage_additive', 'snow', 'sorghum', 'soybean', 'squarebalecotton', 'squarebalegrass', 'squarebalehay', 'squarebalesilage', 'squarebalestraw', 'squarebalewood', 'stone', 'straw', 'strawberry', 'sugar', 'sugarbeet', 'sugarbeet_cut', 'sugarcane', 'sunflower', 'tarp', 'tomato', 'treesaplings', 'unknown', 'water', 'weed', 'wheat', 'woodchips', 'wool'
+		'air', 'barley', 'boards', 'bread', 'butter', 'cake', 'canola', 'cereals', 'chaff', 'cheese', 'chicken', 'chocolate', 'clothes', 'cotton', 'cow', 'def', 'diesel', 'digestate', 'dog', 'drygrass_windrow', 'egg', 'electriccharge', 'fabric', 'fertilizer', 'flour', 'forage', 'forage_mixing', 'foragemix', 'furniture', 'grape', 'grapejuice', 'grass', 'grass_windrow', 'herbicide', 'honey', 'horse', 'lettuce', 'lime', 'liquidfertilizer', 'liquidmanure', 'maize', 'manure', 'methane', 'milk', 'mineral_feed', 'oat', 'oil_canola', 'oil_olive', 'oil_sunflower', 'oilradish', 'olive', 'pig', 'pigfood', 'poplar', 'potato', 'product', 'raisins', 'roadsalt', 'roundbalecotton', 'roundbalegrass', 'roundbalehay', 'roundbalesilage', 'roundbalestraw', 'roundbalewood', 'seeds', 'sheep', 'silage', 'silage_additive', 'snow', 'sorghum', 'soybean', 'squarebalecotton', 'squarebalegrass', 'squarebalehay', 'squarebalesilage', 'squarebalestraw', 'squarebalewood', 'stone', 'straw', 'strawberry', 'sugar', 'sugarbeet', 'sugarbeet_cut', 'sugarcane', 'sunflower', 'tarp', 'tomato', 'treesaplings', 'unknown', 'water', 'weed', 'wheat', 'woodchips', 'wool',
+		'clover', 'alfalfa', 'woodbeam', 'wine', 'whiskey', 'table', 'sugarbeetcut', 'staircaserailing', 'squarebale', 'soymilk', 'silageadditive', 'shingle', 'roundbale', 'propane', 'prefabwall', 'plankslong', 'planks', 'pictureframe', 'peppergrinder', 'pasta', 'paperroll', 'oatmeal', 'mineralfeed', 'metal', 'ironore', 'floortiles', 'ethanol', 'easel', 'dryclover', 'dryalfalfa', 'dry_maize2', 'doghouse', 'cornstalks', 'chips', 'chair', 'cattree', 'cartonroll', 'bucket', 'bowl', 'birdhouse', 'beer', 'beanstraw', 'bathtub', 'barrel', 'armoire', 'anhydrous'
 	]),
 
 	knownBrand : new Set([
