@@ -7,6 +7,7 @@
 // Main Window UI
 
 /* global processL10N, fsgUtil, bootstrap, select_lib, getText */
+/* eslint complexity: ["error", 17] */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -153,6 +154,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
 		const thisCollection = modCollect.modList[collectKey]
 		const collectNotes   = modCollect.collectionNotes[collectKey]
+		const collectFreeze  = collectNotes.notes_frozen
 		const modRows        = []
 		const scrollRows     = []
 		const sizeOfFolder   = thisCollection.folderSize
@@ -163,7 +165,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			try {
 				const thisMod       = thisCollection.mods[modKey.split('::')[1]]
 
-				if ( !verFlag ) {
+				if ( !verFlag && !collectFreeze ) {
 					if ( Object.hasOwn(verList, thisMod.fileDetail.shortName) && verList[thisMod.fileDetail.shortName] !== thisMod.modDesc.version ) {
 						verFlag = true
 					}
