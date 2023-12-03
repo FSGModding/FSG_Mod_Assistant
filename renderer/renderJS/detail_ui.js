@@ -354,7 +354,7 @@ const buildPage = (modCollect) => {
 		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
 		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
 		keyBinds       : cleanOrJoin(doneKeyBinds, 'detail_key_none'),
-		mh_version     : ( modRecord.modHub.id !== null ) ? modRecord.modHub.version : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
+		mh_version     : ( modRecord.modHub.id !== null ) ? `<a href="https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}" target="_BLANK">${modRecord.modHub.version}</a>` : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
 		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
 		mod_location   : modRecord.fileDetail.fullPath,
 		pngTexture     : cleanOrJoin(modRecord.fileDetail.pngTexture),
