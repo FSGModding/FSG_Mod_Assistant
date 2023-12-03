@@ -326,6 +326,7 @@ const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) 
 			badges            : badges,
 			class_hasHash     : modId!==null ? ' has-hash' : '',
 			class_hasSite     : hasExtSite ? ' has-ext-site' : '',
+			class_isAFolder   : !thisMod.badgeArray.includes('folder') ? 'd-none' : '',
 			class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
 			class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':'',
 			click_modEnabled  : ! ( thisMod.badgeArray.includes('savegame') || thisMod.badgeArray.includes('notmod') ),
