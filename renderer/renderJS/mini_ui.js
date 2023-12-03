@@ -23,6 +23,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 })
 
 function clientMakeListActive() {
+	fsgUtil.byId('launch_button').disabled = true
 	const activePick = fsgUtil.byId('collectionSelect').value.replace('collection--', '')
 
 	if ( activePick !== '0' && activePick !== '999' ) {
@@ -35,6 +36,7 @@ function clientMakeListActive() {
 				clearInterval(flasherInterval)
 				flasherInterval = null
 				fsgUtil.clsOrGate('active_button', false, 'btn-success', 'btn-warning')
+				fsgUtil.byId('launch_button').disabled = false
 			} else {
 				fsgUtil.clsOrGate('active_button', flasherCounter%2 === 0, 'btn-success', 'btn-warning')
 			}
@@ -104,6 +106,7 @@ function clientOpenFarmSim() {
 	} else if ( flasherInterval === null ) {
 		// Different, ask confirmation
 		fastBlinkLED()
+		fsgUtil.byId('launch_button').disabled = true
 		fsgUtil.clsOrGate('active_button', true, 'btn-danger', 'btn-warning')
 		flasherCounter  = 0
 		flasherInterval = setInterval(() => {
