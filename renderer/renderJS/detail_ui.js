@@ -34,6 +34,35 @@ const doMapImage = (mapImage) => {
 	fsgUtil.byId('map_image').src = mapImage
 }
 
+const buildProduction = (prodRecords) => {
+	if ( typeof prodRecords === 'undefined' || prodRecords === null ) { return ''}
+	const liEntry  = '<li class="list-group-item">'
+	const prodHTML = []
+
+	for ( const thisProduction of prodRecords ) {
+		const inputHTML = []
+
+		for ( const inputMix in thisProduction.inputs ) {
+			if ( inputMix !== 'no_mix' ) {
+				inputHTML.push(`${liEntry}${thisProduction.inputs[inputMix].map((x) => `${x.amount} ${fsgUtil.getFillImage(x.filltype)}`).join(' <i class="prodIcon bi bi-distribute-horizontal"></i> ')}</li>`)
+			}
+		}
+
+		inputHTML.push(...thisProduction.inputs.no_mix.map((x) => `${liEntry}${x.amount} ${fsgUtil.getFillImage(x.filltype)}</li>`))
+
+		
+		prodHTML.push(fsgUtil.useTemplate('prod_div', {
+			class_prodBoosts : thisProduction.boosts.length !== 0 ? ''                                                                                                                                                                                : 'd-none',
+			prodBoosts       : thisProduction.boosts.length !== 0 ? thisProduction.boosts.map((x) => `${liEntry}${x.amount} ${fsgUtil.getFillImage(x.filltype)}  <i class="prodIcon bi bi-caret-up-square"></i> ${x.boostFac * 100}%</li>`).join(' ') : '',
+			prodCycles       : thisProduction.cycles,
+			prodInputs       : inputHTML.join('<li class="list-group-item"><i class="prodIconLG bi bi-plus-circle"></i></li>'),
+			prodName         : thisProduction.name,
+			prodOutput       : thisProduction.outputs.map((x) => `${x.amount} ${fsgUtil.getFillImage(x.filltype)}`).join(' <i class="prodIcon bi bi-plus-lg"></i> '),
+		}))
+	}
+	return prodHTML.join('')
+}
+
 const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
@@ -295,6 +324,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				itemTitle        : thisItem.type,
 				objectCount      : thisItem.objectStorage ?? 0,
 				price            : Intl.NumberFormat(currentLocale).format(thisItem.price),
+				prodLines        : buildProduction(thisItem?.productions),
 				show_fillUnit    : shouldHide(thisItem.silo.exists),
 				show_hasBee      : shouldHide(thisItem.beehive.exists),
 				show_hasChicken  : shouldHide(thisItem.husbandry.type, 'CHICKEN'),

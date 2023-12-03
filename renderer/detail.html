@@ -38,6 +38,9 @@
 		.crop-box { width: 6.5% }
 		.crophead td { background-color: #2e3537 !important;}
 		.crophead th { background-color: #2e3537 !important;}
+
+		.prodIcon   { color:#28a5c8; }
+		.prodIconLG { color:#28a5c8; font-size: 120%; }
 	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
@@ -172,6 +175,21 @@
 	</div>
 </template>
 
+<template id="prod_div">
+	<div class="row border-bottom mt-1">
+		<div class="col-3 text-center align-self-center">{{prodName}}<br>{{prodCycles}} <i class="prodIcon bi bi-arrow-repeat"></i></div>
+		<div class="col-9 text-center">
+			<ul class="list-group list-group-flush">
+				{{prodBoosts}}
+				<li class="list-group-item {{class_prodBoosts}}"><i class="prodIconLG bi bi-plus-circle"></i></li>
+				{{prodInputs}}
+				<li class="list-group-item"><i class="prodIconLG bi bi-box-arrow-down"></i></li>
+				<li class="list-group-item">{{prodOutput}}</li>
+			</ul>
+		</div>
+	</div>
+</template>
+
 <template id="place_div">
 	<div class="card mb-3">
 		<h5 class="card-header">
@@ -200,6 +218,7 @@
 						<li class="list-group-item {{show_objectStore}}"><img style="width:30px" src='img/look/objects.webp'> {{objectCount}}</li>
 						<li class="list-group-item {{show_fillUnit}}"><img style="width:30px" src='img/look/fillunit.webp'> {{fillUnit}}<br />{{fillImages}}</li>
 					</ul>
+					{{prodLines}}
 				</div>
 				<div class="col-12 pt-2"><p class="text-center">{{functions}}</p></div>
 			</div>
