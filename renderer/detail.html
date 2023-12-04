@@ -177,7 +177,10 @@
 
 <template id="prod_div">
 	<div class="row border-bottom mt-1">
-		<div class="col-3 text-center align-self-center">{{prodName}}<br>{{prodCycles}} <i class="prodIcon bi bi-arrow-repeat"></i></div>
+		<div class="col-3 text-center align-self-center">{{prodName}}<br><br>
+			<i class="prodIcon bi bi-arrow-repeat"></i> {{prodCycles}}<br>
+			<img style="width:14px" src="img/look/price.webp"> {{prodCost}}<br>
+		</div>
 		<div class="col-9 text-center">
 			<ul class="list-group list-group-flush">
 				{{prodBoosts}}

@@ -34,30 +34,33 @@ const doMapImage = (mapImage) => {
 	fsgUtil.byId('map_image').src = mapImage
 }
 
-const buildProduction = (prodRecords) => {
+const prodMulti = (amount, multi, currentLocale) => `${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount)}${multi > 1 ? ` <small>(${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount * multi)})</small>` : ''}`
+
+const buildProduction = (prodRecords, currentLocale) => {
 	if ( typeof prodRecords === 'undefined' || prodRecords === null ) { return ''}
 	const liEntry  = '<li class="list-group-item">'
 	const prodHTML = []
 
 	for ( const thisProduction of prodRecords ) {
+		const multi     = thisProduction.cycles
 		const inputHTML = []
 
 		for ( const inputMix in thisProduction.inputs ) {
 			if ( inputMix !== 'no_mix' ) {
-				inputHTML.push(`${liEntry}${thisProduction.inputs[inputMix].map((x) => `${x.amount} ${fsgUtil.getFillImage(x.filltype)}`).join(' <i class="prodIcon bi bi-distribute-horizontal"></i> ')}</li>`)
+				inputHTML.push(`${liEntry}${thisProduction.inputs[inputMix].map((x) => `${prodMulti(x.amount, multi, currentLocale)} ${fsgUtil.getFillImage(x.filltype)}`).join(' <i class="prodIcon bi bi-distribute-horizontal"></i> ')}</li>`)
 			}
 		}
 
-		inputHTML.push(...thisProduction.inputs.no_mix.map((x) => `${liEntry}${x.amount} ${fsgUtil.getFillImage(x.filltype)}</li>`))
+		inputHTML.push(...thisProduction.inputs.no_mix.map((x) => `${liEntry}${prodMulti(x.amount, multi, currentLocale)} ${fsgUtil.getFillImage(x.filltype)}</li>`))
 
-		
 		prodHTML.push(fsgUtil.useTemplate('prod_div', {
 			class_prodBoosts : thisProduction.boosts.length !== 0 ? ''                                                                                                                                                                                : 'd-none',
-			prodBoosts       : thisProduction.boosts.length !== 0 ? thisProduction.boosts.map((x) => `${liEntry}${x.amount} ${fsgUtil.getFillImage(x.filltype)}  <i class="prodIcon bi bi-caret-up-square"></i> ${x.boostFac * 100}%</li>`).join(' ') : '',
+			prodBoosts       : thisProduction.boosts.length !== 0 ? thisProduction.boosts.map((x) => `${liEntry}${prodMulti(x.amount, multi, currentLocale)} ${fsgUtil.getFillImage(x.filltype)}  <i class="prodIcon bi bi-caret-up-square"></i> ${x.boostFac * 100}%</li>`).join(' ') : '',
+			prodCost         : Intl.NumberFormat(currentLocale).format(thisProduction.cost),
 			prodCycles       : thisProduction.cycles,
 			prodInputs       : inputHTML.join('<li class="list-group-item"><i class="prodIconLG bi bi-plus-circle"></i></li>'),
 			prodName         : thisProduction.name,
-			prodOutput       : thisProduction.outputs.map((x) => `${x.amount} ${fsgUtil.getFillImage(x.filltype)}`).join(' <i class="prodIcon bi bi-plus-lg"></i> '),
+			prodOutput       : thisProduction.outputs.map((x) => `${prodMulti(x.amount, multi, currentLocale)} ${fsgUtil.getFillImage(x.filltype)}`).join(' <i class="prodIcon bi bi-plus-lg"></i> '),
 		}))
 	}
 	return prodHTML.join('')
@@ -324,7 +327,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				itemTitle        : thisItem.type,
 				objectCount      : thisItem.objectStorage ?? 0,
 				price            : Intl.NumberFormat(currentLocale).format(thisItem.price),
-				prodLines        : buildProduction(thisItem?.productions),
+				prodLines        : buildProduction(thisItem?.productions, currentLocale),
 				show_fillUnit    : shouldHide(thisItem.silo.exists),
 				show_hasBee      : shouldHide(thisItem.beehive.exists),
 				show_hasChicken  : shouldHide(thisItem.husbandry.type, 'CHICKEN'),
