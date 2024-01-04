@@ -27,8 +27,10 @@ const mainProcessFlags = {
 	dlRequest       : null,
 	firstMin        : true,
 	foldersDirty    : true,
+	gameRunning     : false,
 	gameSettings    : {},
 	intervalFile    : null,
+	intervalGameRun : null,
 	intervalLoad    : null,
 	intervalModHub  : null,
 	intervalUpdate  : null,
@@ -1707,13 +1709,40 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 /** Utility & Convenience Functions */
 ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
 
+async function updateGameRunning() {
+	return require('node:child_process').exec('tasklist /fo csv', (err, stdout) => {
+		if ( err ) {
+			log.log.notice('Polling failed', 'game-process-poll')
+			return
+		}
+
+		let gameIsRunning = false
+
+		for ( const psLine of stdout.split('\n') ) {
+			if ( psLine.split(',')?.[0] === '"FarmingSimulator2022Game.exe"' ) {
+				log.log.debug('Game is Running', 'game-process-poll')
+				gameIsRunning = true
+			}
+		}
+
+		if ( gameIsRunning && !mainProcessFlags.gameRunning ) {
+			log.log.debug('Game Started since last check', 'game-process-poll')
+		} else if ( !gameIsRunning && mainProcessFlags.gameRunning ) {
+			log.log.debug('Game Stopped since last check', 'game-process-poll')
+		}
+		mainProcessFlags.gameRunning = gameIsRunning
+		win.sendToValidWindow('main', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, updateReady : modCollect.updateIsReady})
+	})
+}
 
 function refreshClientModList(closeLoader = true) {
+	updateGameRunning()
 	win.sendModList(
 		{
 			activeCollection       : gameSetOverride.index,
 			currentLocale          : myTranslator.deferCurrentLocale(),
 			foldersDirty           : mainProcessFlags.foldersDirty,
+			gameRunning            : mainProcessFlags.gameRunning,
 			l10n                   : {
 				disable : myTranslator.syncStringLookup('override_disabled'),
 				unknown : myTranslator.syncStringLookup('override_unknown'),
@@ -2379,6 +2408,9 @@ app.whenReady().then(() => {
 				mainProcessFlags.foldersDirty = true
 				setTimeout(() => { processModFolders() }, 1500)
 			}
+			mainProcessFlags.intervalGameRun = setInterval(() => {
+				updateGameRunning()
+			}, 15 * 1000)
 		})
 
 		app.on('activate', () => {if (BrowserWindow.getAllWindows().length === 0) {

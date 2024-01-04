@@ -110,6 +110,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_debugLogNoDanger',
 				'fromMain_debugLogDanger',
 				'fromMain_dirtyUpdate',
+				'fromMain_gameUpdate',
 				'fromMain_modInfoPop',
 				'fromMain_modList',
 				'fromMain_selectAllOpen',

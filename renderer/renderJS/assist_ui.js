@@ -119,6 +119,11 @@ const buildBadges = (thisMod) => {
 	return displayBadges.join('')
 }
 
+window.mods.receive('fromMain_gameUpdate', (status) => {
+	toggleGameStatus(status.gameRunning)
+	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
+})
+
 window.mods.receive('fromMain_modList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
@@ -226,6 +231,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	fsgUtil.clsOrGate('verButton', verFlag, 'btn-danger', 'btn-success')
 
+	toggleGameStatus(modCollect.opts.gameRunning)
+
 	buildDropDownFilters(modCollect.badgeL10n)
 
 	select_lib.clear_range()
@@ -244,6 +251,11 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	select_lib.filter_begin()
 	processL10N()
 })
+
+
+function toggleGameStatus(status = false) {
+	fsgUtil.clsOrGate('gameRunningBubble', status, 'text-success', 'text-danger')
+}
 
 function clientMakeListInactive() {
 	fsgUtil.byId('collectionSelect').value = 0
