@@ -63,6 +63,7 @@ window.mods.receive('fromMain_modInfoPop', (thisMod, thisSite) => {
 	modInfoDialog.show()
 })
 
+let gameRunAlert    = 'Game is currently running, updates to the active collection require a game restart'
 let lastLocale      = 'en'
 let searchStringMap = {}
 let searchTagMap    = {}
@@ -119,7 +120,10 @@ const buildBadges = (thisMod) => {
 	return displayBadges.join('')
 }
 
+let gameIsRunningFlag = false
+
 window.mods.receive('fromMain_gameUpdate', (status) => {
+	gameIsRunningFlag = status.gameRunning
 	toggleGameStatus(status.gameRunning)
 	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
 })
@@ -128,6 +132,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 	lastLocale         = modCollect.opts.currentLocale
+	gameRunAlert       = modCollect.opts.l10n.runMessage
 
 	searchStringMap_empty()
 	searchTagMap_empty()
@@ -232,6 +237,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	fsgUtil.clsOrGate('verButton', verFlag, 'btn-danger', 'btn-success')
 
 	toggleGameStatus(modCollect.opts.gameRunning)
+	gameIsRunningFlag = modCollect.opts.gameRunning
 
 	buildDropDownFilters(modCollect.badgeL10n)
 
@@ -268,6 +274,7 @@ function clientMakeListActive() {
 	if ( activePick !== '0' && activePick !== '999' ) {
 		blinkLED()
 		window.mods.makeActive(activePick)
+		if ( gameIsRunningFlag ) { alert(gameRunAlert) }
 	}
 }
 

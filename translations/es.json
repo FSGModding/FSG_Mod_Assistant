@@ -152,6 +152,7 @@
 	"folder_used"                           : "Último activo",
 	"game_admin_pass_button__title"         : "Copiar contraseña de administración de GAME al portapapeles",
 	"game_icon_lg__title"                   : "Cambiar la versión de Farming Simulator",
+	"game_running_warning"                  : "El juego se está ejecutando actualmente: ¡los cambios en la colección de mods activa requerirán reiniciar el juego!",
 	"game_title_farming_simulator"          : "Farming Simulator",
 	"help_button__title"                    : "Documentación abierta",
 	"info_might_be_piracy"                  : "Este mod parece ser una versión pirateada de un DLC de pago. Esta prueba es simple, por lo que podría ser un falso positivo. Sin embargo, tenga en cuenta que el uso de tales copias pirateadas puede provocar la pérdida de soporte de GIANTS y ​​el bloqueo del servidor en Discord de GIANTS y el foro. Apoye a los desarrolladores! Hombre por favor...",

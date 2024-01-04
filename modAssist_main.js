@@ -1744,8 +1744,9 @@ function refreshClientModList(closeLoader = true) {
 			foldersDirty           : mainProcessFlags.foldersDirty,
 			gameRunning            : mainProcessFlags.gameRunning,
 			l10n                   : {
-				disable : myTranslator.syncStringLookup('override_disabled'),
-				unknown : myTranslator.syncStringLookup('override_unknown'),
+				disable    : myTranslator.syncStringLookup('override_disabled'),
+				unknown    : myTranslator.syncStringLookup('override_unknown'),
+				runMessage : myTranslator.syncStringLookup('game_running_warning'),
 			},
 			modSites               : modSite.store,
 			pinMini                : win.isAlwaysOnTop('mini'),

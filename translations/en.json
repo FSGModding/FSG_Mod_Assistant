@@ -152,6 +152,7 @@
 	"folder_used"                           : "Last Active",
 	"game_admin_pass_button__title"         : "Copy GAME administration password to clipboard",
 	"game_icon_lg__title"                   : "Change the Farming Simulator Version",
+	"game_running_warning"                  : "Game is currently running - changes to the active mod collection will require a game restart!",
 	"game_title_farming_simulator"          : "Farming Simulator",
 	"help_button__title"                    : "Open Documentation",
 	"info_might_be_piracy"                  : "This mod appears to be a cracked / pirated version of a paid DLC.  This test is simplistic, so this could be a false positive, however be aware that using cracked DLC will prevent you from receiving help from Giants support, and is grounds for a ban from the official discord and forums. Please support the developers!",

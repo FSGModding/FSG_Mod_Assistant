@@ -152,6 +152,7 @@
 	"folder_used"                           : "Last Active",
 	"game_admin_pass_button__title"         : "Copy GAME administration password to clipboard",
 	"game_icon_lg__title"                   : "Change the Farming Simulator Version",
+	"game_running_warning"                  : "游戏当前正在运行 - 更改活动模式集需要重启游戏！",
 	"game_title_farming_simulator"          : "Farming Simulator",
 	"help_button__title"                    : "Open Documentation",
 	"info_might_be_piracy"                  : "这个模组似乎是一个盗版的付费DLC。这个测试比较简单，所以可能是一个误报，但请注意，使用盗版DLC将阻止您得到 Giants 支持团队的帮助，并且可能会导致在官方 Discord 和论坛上被封禁。请支持开发者！",

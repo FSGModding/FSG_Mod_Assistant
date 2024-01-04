@@ -152,6 +152,7 @@
 	"folder_used"                           : "Pēdējā aktivitāte",
 	"game_admin_pass_button__title"         : "Kopēt GAME administrēšanas paroli uz starpliktuvi",
 	"game_icon_lg__title"                   : "Mainīt Farming Simulator versiju",
+	"game_running_warning"                  : "Spēle pašlaik darbojas - lai veiktu izmaiņas aktīvajā modu kolekcijā, būs nepieciešams spēli restartēt!",
 	"game_title_farming_simulator"          : "Farming Simulator",
 	"help_button__title"                    : "Atvērt dokumentāciju",
 	"info_might_be_piracy"                  : "Šķiet, ka šis mod veids ir krekinga / pirātiska apmaksāta DLC versija.  Šis tests ir vienkāršots, tāpēc tas var būt viltus pozitīvs rezultāts, tomēr ņemiet vērā, ka, izmantojot krekinga DLC, jūs nevarēsiet saņemt palīdzību no Giants atbalsta un tas ir pamats oficiālā discord un forumu aizliegumam. Lūdzu, atbalstiet izstrādātājus!",

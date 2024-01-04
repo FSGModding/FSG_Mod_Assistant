@@ -152,6 +152,7 @@
 	"folder_used"                           : "Naposledy aktivní",
 	"game_admin_pass_button__title"         : "Zkopírovat heslo pro správu webových stránek do schránky",
 	"game_icon_lg__title"                   : "Změnit verzi simulátoru pro zemědělství",
+	"game_running_warning"                  : "Hra je právě spuštěna - změny v aktivní kolekci modů budou vyžadovat restart hry!",
 	"game_title_farming_simulator"          : "Farmářský simulátor",
 	"help_button__title"                    : "Otevřít dokumentaci",
 	"info_might_be_piracy"                  : "Zdá se, že tento mod je trhlina / pirátská verze placené DLC. Tento test je zjednodušující, takže by mohl být falešně pozitivní, ale mějte na paměti, že používání prasklých DLC vám pomůže získat pomoc od Giants podpory, a je důvodem pro zákaz oficiálních neshod a fór. Podpořte prosím vývojáře!",

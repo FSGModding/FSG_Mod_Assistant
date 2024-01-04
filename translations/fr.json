@@ -152,6 +152,7 @@
 	"folder_used"                           : "Dernier actif",
 	"game_admin_pass_button__title"         : "Copier le mot de passe de l'administration GAME dans le presse-papiers",
 	"game_icon_lg__title"                   : "Changer la version de Farming Simulator",
+	"game_running_warning"                  : "Le jeu est en cours d'exécution - les modifications apportées à la collection active de mods nécessiteront un redémarrage du jeu !",
 	"game_title_farming_simulator"          : "Farming Simulator",
 	"help_button__title"                    : "Ouvrir Documentation",
 	"info_might_be_piracy"                  : "Ce mod semble être une version craquée / piratée d'un DLC payant.  Ce test est sommaire, il peut donc s'agir d'un faux positif, mais sachez que l'utilisation d'un DLC piraté vous empêchera de recevoir de l'aide de l'assistance Giants, et constitue un motif de bannissement du discord et des forums officiels. Soutenez les développeurs !",
