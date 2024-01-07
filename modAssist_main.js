@@ -246,9 +246,10 @@ async function setActivity() {
 
 	const custom_state  = mcStore.get('use_discord_c1', '' )
 	const custom_detail = mcStore.get('use_discord_c2', '' )
+	const discord_verb  = mainProcessFlags.gameRunning ? 'Playing' : 'Active'
 
 	disRPC.setActivity({
-		details        : custom_detail !== '' ? custom_detail : `Active Collection: \n${gameSetOverride.folder !== null ? path.basename(gameSetOverride.folder) : '--'}`,
+		details        : custom_detail !== '' ? custom_detail : `${discord_verb} Collection: \n${gameSetOverride.folder !== null ? path.basename(gameSetOverride.folder) : '--'}`,
 		instance       : true,
 		largeImageKey  : 'fsgmaicon_large',
 		largeImageText : 'FSG Mod Assistant',
