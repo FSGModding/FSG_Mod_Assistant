@@ -66,6 +66,23 @@ const buildProduction = (prodRecords, currentLocale) => {
 	return prodHTML.join('')
 }
 
+const buildWidth2 = (sprayTypes, defaultWidth, currentLocale) => {
+	if ( typeof sprayTypes !== 'object' || sprayTypes === null || sprayTypes.length === 0 ) {
+		return ''
+	}
+
+	const sprayTypesHTML = []
+
+	for ( const thisType of sprayTypes ) {
+		const fillImages = thisType.fills.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
+		sprayTypesHTML.push(`<div class="ms-4">${fillImages.join(' ')} ${formatManyNumber(thisType.width !== null ? thisType.width : defaultWidth, currentLocale, [
+			{ factor : 1,       precision : 1, unit : 'unit_m' },
+			{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
+		])}</div>`)
+	}
+	return sprayTypesHTML.join('')
+}
+
 const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
@@ -147,6 +164,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 					{ factor : 1,       precision : 1, unit : 'unit_m' },
 					{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
 				]),
+				workWidth2        : buildWidth2(thisItem?.sprayTypes, theWidth, currentLocale),
 			}))
 
 			if ( thisItem.motorInfo !== null ) {
