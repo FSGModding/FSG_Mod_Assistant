@@ -259,6 +259,8 @@ async function setActivity() {
 			{label : 'Get Mod Assistant', url : 'https://github.com/FSGModding/FSG_Mod_Assistant/releases/latest'},
 			{label : 'Visit FSG Website', url : 'https://farmsimgame.com/'}
 		],
+	}).catch((err) => {
+		log.log.notice(err, 'discord-rpc')
 	})
 }
 
@@ -273,6 +275,9 @@ if ( mcStore.get('use_discord', true ) ) {
 	})
 
 	disRPC.login({ clientId : discordID }).catch((err) => {
+		log.log.notice(err, 'discord-rpc')
+	})
+	disRPC.on('error', (err) => {
 		log.log.notice(err, 'discord-rpc')
 	})
 } else {
