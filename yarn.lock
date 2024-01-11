@@ -951,9 +951,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-builder-lib@npm:24.10.0":
-  version: 24.10.0
-  resolution: "app-builder-lib@npm:24.10.0"
+"app-builder-lib@npm:24.11.0":
+  version: 24.11.0
+  resolution: "app-builder-lib@npm:24.11.0"
   dependencies:
     "@develar/schema-utils": ~2.6.5
     "@electron/notarize": 2.1.0
@@ -982,7 +982,7 @@ __metadata:
     semver: ^7.3.8
     tar: ^6.1.12
     temp-file: ^3.4.0
-  checksum: 946846920eb940e937f74c406c70fabf0403abb14cc1929209422cda2b31f8be522195a9aa3dcd28fe889015684a4d9a8d28dbd21abf6ac1a7f38378711a9436
+  checksum: 16f0e9ecfc774cfedd9c58ac9d60fcf01bcc0823f7a093cadd7d79442cc6f7806ba4ee9930298dc5f3cc5bbe823f007dd35cd29e48d6477c4ff50b4b853ee8b2
   languageName: node
   linkType: hard
 
@@ -1748,11 +1748,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dmg-builder@npm:24.10.0":
-  version: 24.10.0
-  resolution: "dmg-builder@npm:24.10.0"
+"dmg-builder@npm:24.11.0":
+  version: 24.11.0
+  resolution: "dmg-builder@npm:24.11.0"
   dependencies:
-    app-builder-lib: 24.10.0
+    app-builder-lib: 24.11.0
     builder-util: 24.9.4
     builder-util-runtime: 9.2.3
     dmg-license: ^1.0.11
@@ -1762,7 +1762,7 @@ __metadata:
   dependenciesMeta:
     dmg-license:
       optional: true
-  checksum: 00a93becb854369d5b6e8c9bfd9916db1058ca406e7eb8ddf4549d21d2c061e9de635564ff9ed65fe600688472aa861715d2b401c02e5fdde89099361443d550
+  checksum: 5db0601e294e2fd1936b628693b46e53762e7bfbb9a62345f33045a8c28a1d58deb33f024286b7d8f42861424873f9395c6c3230a72c0ad970ed6d762fe4860f
   languageName: node
   linkType: hard
 
@@ -1834,15 +1834,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:^24.10.0":
-  version: 24.10.0
-  resolution: "electron-builder@npm:24.10.0"
+"electron-builder@npm:^24.11.0":
+  version: 24.11.0
+  resolution: "electron-builder@npm:24.11.0"
   dependencies:
-    app-builder-lib: 24.10.0
+    app-builder-lib: 24.11.0
     builder-util: 24.9.4
     builder-util-runtime: 9.2.3
     chalk: ^4.1.2
-    dmg-builder: 24.10.0
+    dmg-builder: 24.11.0
     fs-extra: ^10.1.0
     is-ci: ^3.0.0
     lazy-val: ^1.0.5
@@ -1852,7 +1852,7 @@ __metadata:
   bin:
     electron-builder: cli.js
     install-app-deps: install-app-deps.js
-  checksum: 5e441b5772dcde0ad7619cc26f596df774529a6576700f8fd2994de7cbcb0bb28b2195d4e7c3c138e77a65b7298dc019239007ddba40012e692742c4d09f574d
+  checksum: bb02d048f8cc09a48a4985b612a48f52c6d016f6c4caf739bda1d7109efe4527c51b15bc2671993409879212afa9a98879dbf4be43566fd2813012343a55a60c
   languageName: node
   linkType: hard
 
@@ -1888,9 +1888,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:^6.1.7":
-  version: 6.1.7
-  resolution: "electron-updater@npm:6.1.7"
+"electron-updater@npm:^6.1.8":
+  version: 6.1.8
+  resolution: "electron-updater@npm:6.1.8"
   dependencies:
     builder-util-runtime: 9.2.3
     fs-extra: ^10.1.0
@@ -1900,20 +1900,20 @@ __metadata:
     lodash.isequal: ^4.5.0
     semver: ^7.3.8
     tiny-typed-emitter: ^2.1.0
-  checksum: 84ca265df837620a991d2d1eeb84a5bc06a5b5373f7bbfeb3bd9efe48873c1c6b6a21b783a3ccb5d175aa4d4cc6dd40542469bf7ad51a6b1311e63cd6ed922f3
+  checksum: 250371f0e12ce5eccb5a596932cbf51dcb7f862270bdd23d26ad88ca8c0d83c52ad310fb36fd77150070424535cee3e4d5630b5f484393bf20af8556795ce8ed
   languageName: node
   linkType: hard
 
-"electron@npm:^28.1.1":
-  version: 28.1.1
-  resolution: "electron@npm:28.1.1"
+"electron@npm:^28.1.3":
+  version: 28.1.3
+  resolution: "electron@npm:28.1.3"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^18.11.18
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: c957a75a4d66dcf04ef9ebf8484d4b14e9a5927073b04f4d9394d11f842fb8427a0f7b9840f15e1fb1b9eceb4ce7f84714cf8d19edd809278ac019b4c5bcda4b
+  checksum: 63476f7bac77870c5381552494665e259ce8f67fbdd1c97ead5d6957e75e54122277efed60d5aa636fa70201199b942250a91fa8af85e3d2007723eed713ed35
   languageName: node
   linkType: hard
 
@@ -2224,14 +2224,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "fast-xml-parser@npm:4.3.2"
+"fast-xml-parser@npm:^4.3.3":
+  version: 4.3.3
+  resolution: "fast-xml-parser@npm:4.3.3"
   dependencies:
     strnum: ^1.0.5
   bin:
     fxparser: src/cli/cli.js
-  checksum: d507ce2efa5fd13d0a5ba28bd76dd68f2fc30ad8748357c37b70f360d19417866d79e35a688af067d5bceaaa796033fa985206aef9692f7a421e1326b6e73309
+  checksum: 5e272a0dbb73c4341487935cd6f37df360999f680c0638efec0974dfc58071fb803919f7a030941a7f5bb894794a2f3356d4b863ba2fb9438191795004cdf36e
   languageName: node
   linkType: hard
 
@@ -2437,13 +2437,13 @@ __metadata:
     clean-css: ^5.3.3
     deepl-node: ^1.11.0
     discord-rpc: ^4.0.1
-    electron: ^28.1.1
-    electron-builder: ^24.10.0
+    electron: ^28.1.3
+    electron-builder: ^24.11.0
     electron-store: ^8.1.0
-    electron-updater: ^6.1.7
+    electron-updater: ^6.1.8
     eslint: ^8.56.0
     eslint-plugin-unicorn: ^50.0.1
-    fast-xml-parser: ^4.3.2
+    fast-xml-parser: ^4.3.3
     glob: ^10.3.10
     unzip-stream: ^0.3.1
     wasm-vips: ^0.0.7
