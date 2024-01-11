@@ -650,6 +650,13 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 		}
 	}
 })
+ipcMain.on('toMain_getTextBase_send', (event, l10nSet) => {
+	const sendEntry = (entry, text) => { event.sender.send('fromMain_getTextBase_return', [entry, text]) }
+
+	for ( const l10nEntry of l10nSet ) {
+		myTranslator.baseStringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
+	}
+})
 /** END: l10n Operation */
 
 function doModLook_response(m, thisMod, thisUUID) {
