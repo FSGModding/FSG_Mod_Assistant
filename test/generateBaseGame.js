@@ -6,6 +6,8 @@
 
 // Base Game data generator
 
+/* cSpell:disable */
+
 const path          = require('node:path')
 const os            = require('node:os')
 const fs            = require('node:fs')
@@ -129,7 +131,10 @@ const doWork = async () => {
 	}
 	/* eslint-enable no-await-in-loop */
 	
-	fs.writeFileSync(path.join(__dirname, '..', 'renderer', 'renderJS', 'baseGameData.json'), JSON.stringify(exportData, null, 2))
+	fs.writeFileSync(
+		path.join(__dirname, '..', 'renderer', 'renderJS', 'baseGameData.js'),
+		`/* eslint-disable indent, key-spacing, quotes, comma-dangle, sort-keys */\n/* cSpell:disable */\nconst client_baseGameData = ${JSON.stringify(exportData, null, 2)}`
+	)
 }
 
 doWork().then(() => { console.log('done.') })

@@ -6,6 +6,8 @@
 
 // Base Game data part 2
 
+/* cSpell:disable */
+
 const client_baseGameCats = {
 	objects : [
 		{iconName : 'bigbagpallets',           title : '$l10n_category_bigbagPallets' },
