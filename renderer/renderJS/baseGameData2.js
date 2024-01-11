@@ -8,6 +8,14 @@
 
 /* cSpell:disable */
 
+const client_baseGameTopLevel = [
+	{ icon : 'bg_brand',     page : 'brand',     name : 'basegame_brand'},
+	{ icon : 'bg_vehicle',   page : 'vehicle',   name : 'basegame_vehicle'},
+	{ icon : 'bg_tool',      page : 'tool',      name : 'basegame_tool'},
+	{ icon : 'bg_object',    page : 'object',    name : 'basegame_object'},
+	{ icon : 'bg_placeable', page : 'placeable', name : 'basegame_placeable'},
+]
+
 const client_baseGameCats = {
 	objects : [
 		{iconName : 'bigbagpallets',           title : '$l10n_category_bigbagPallets' },
@@ -118,6 +126,14 @@ const client_baseGameCats = {
 		{iconName : 'miscvehicles',           title : '$l10n_category_misc' },
 	],
 }
+
+const client_baseGameCatMap_vehicle = {}
+const client_baseGameCatMap_place   = {}
+
+for ( const mainCat of ['vehicles', 'tools', 'objects'] ) {
+	for ( const thisCat of client_baseGameCats[mainCat] ) { client_baseGameCatMap_vehicle[thisCat.iconName] = thisCat.title }
+}
+for ( const thisCat of client_baseGameCats.placeables ) { client_baseGameCatMap_place[thisCat.iconName] = thisCat.title }
 
 const client_baseGameBrands = [
 	{ title : 'Abi',                               image : 'brand_abi' },
@@ -338,3 +354,7 @@ const client_baseGameBrands = [
 	{ title : 'Ziegler',                           image : 'brand_ziegler' },
 	{ title : 'Zunhammer',                         image : 'brand_zunhammer' },
 ]
+
+const client_baseGameBrandMap = {}
+
+for ( const thisBrand of client_baseGameBrands ) { client_baseGameBrandMap[thisBrand.image] = thisBrand.title }

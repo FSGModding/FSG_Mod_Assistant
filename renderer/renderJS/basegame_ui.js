@@ -6,12 +6,13 @@
 
 // Base game window UI
 
-/* global Chart, processL10N, fsgUtil, getText, client_baseGameCats, client_baseGameBrands */
+/* global Chart, processL10N, fsgUtil, getText, client_baseGameBrandMap, client_baseGameData, client_baseGameCats, client_baseGameBrands, client_baseGameTopLevel, client_baseGameCatMap_vehicle, client_baseGameCatMap_place */
 
+let currentLocale = 'en'
 
-const prodMulti = (amount, multi, currentLocale) => `${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount)}${multi > 1 ? ` <small>(${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount * multi)})</small>` : ''}`
+const prodMulti = (amount, multi) => `${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount)}${multi > 1 ? ` <small>(${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount * multi)})</small>` : ''}`
 
-const buildProduction = (prodRecords, currentLocale) => {
+const buildProduction = (prodRecords) => {
 	if ( typeof prodRecords === 'undefined' || prodRecords === null ) { return ''}
 	const liEntry  = '<li class="list-group-item">'
 	const prodHTML = []
@@ -41,7 +42,7 @@ const buildProduction = (prodRecords, currentLocale) => {
 	return prodHTML.join('')
 }
 
-const buildWidth2 = (sprayTypes, defaultWidth, currentLocale) => {
+const buildWidth2 = (sprayTypes, defaultWidth) => {
 	if ( typeof sprayTypes !== 'object' || sprayTypes === null || sprayTypes.length === 0 ) {
 		return ''
 	}
@@ -58,7 +59,7 @@ const buildWidth2 = (sprayTypes, defaultWidth, currentLocale) => {
 	return sprayTypesHTML.join('')
 }
 
-const client_buildStore = (lookRecord, chartUnits, currentLocale) => {
+const client_buildStore = (lookRecord, chartUnits) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
 
@@ -381,42 +382,91 @@ function wrapItem(name, icon, type, page, noTrans = false) {
 	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100"><a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}"><img class="mb-3" style="width: 100px" src="${iconString}"><br />${nameString}</a></div></div>`
 }
 
+function wrapStoreItem(name, price, icon, brand, page) {
+	const iconString  = icon.startsWith('data:') ? icon : `img/baseCategory/${icon}.webp`
+	const brandString = typeof brand === 'string' ? `<br><img class="mb-3" style="width: 100px" src="img/brand/brand_${brand.toLowerCase()}.webp"></img>` : ''
+
+	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100">
+	<a class="text-decoration-none text-white-50" href="?type=item&page=${page}">
+	<img class="mb-3" style="width: 100px" src="${iconString}"><br>${brandString}
+	<br><span class="text-white">${name}</span><br><br><img style="width:30px" src="img/look/price.webp"> ${Intl.NumberFormat(currentLocale).format(price)}</a></div></div>`
+}
+
+function wrapRow(rowHTMLArray) {
+	return `<div class="row g-2 justify-content-center">${ typeof rowHTMLArray !== 'object' ? rowHTMLArray : rowHTMLArray.join('') }</div>`
+}
+
 function getTopCat(cat) {
 	switch ( cat ) {
 		case 'vehicle' :
-			return client_baseGameCats.vehicles.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)).join('')
+			return client_baseGameCats.vehicles.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
 		case 'tool' :
-			return client_baseGameCats.tools.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)).join('')
+			return client_baseGameCats.tools.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
 		case 'object' :
-			return client_baseGameCats.objects.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)).join('')
+			return client_baseGameCats.objects.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
 		case 'placeable' :
-			return client_baseGameCats.placeables.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)).join('')
+			return client_baseGameCats.placeables.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
 		case 'brand' :
-			return client_baseGameBrands.map((x) => wrapItem(x.title, x.image, 'brand', x.image, true)).join('')
+			return client_baseGameBrands.map((x) => wrapItem(x.title, x.image, 'brand', x.image, true))
+		//case 'top':
 		default :
-			break
+			return client_baseGameTopLevel.map((x) => wrapItem(x.name, x.icon, 'cat', x.page))
+			
 	}
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-	const urlParams = new URLSearchParams(window.location.search)
-	const pageType = urlParams.get('type')
-	const pageID   = urlParams.get('page')
+	const urlParams     = new URLSearchParams(window.location.search)
+	const pageType      = urlParams.get('type')
+	const pageID        = urlParams.get('page')
+
+	currentLocale = document.querySelector('body').getAttribute('data-i18n') || 'en'
+
+	console.log(`Page Loaded :: Type : '${pageType}' ID : '${pageID}'`)
 
 	if ( urlParams.size === 0 ) {
+		// Display Main Page
 		fsgUtil.byId('back_button').classList.add('d-none')
-		fsgUtil.byId('bgContent').innerHTML = fsgUtil.useTemplate('base_display', {})
+		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat('top'))
 		fsgUtil.byId('title').innerHTML     = '<l10n name="basegame_main_title"></l10n>'
 	} else if ( pageType === 'cat' ) {
-		fsgUtil.byId('bgContent').innerHTML = `<div class="row g-2">${getTopCat(pageID)}</div>`
+		// Display Top-Level Category
+		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat(pageID))
 		fsgUtil.byId('title').innerHTML     = `<l10n name="basegame_${pageID}_title"></l10n>`
-		// display top-level category
 	} else if ( pageType === 'subcat' ) {
-		// display 2nd-level category
+		// Display Sub-Category
+		const isVehicleCat = Object.hasOwn(client_baseGameCatMap_vehicle, pageID)
+		const catL10n      = isVehicleCat ? client_baseGameCatMap_vehicle[pageID] : client_baseGameCatMap_place[pageID]
+		const catContent   = ((isVehicleCat ? client_baseGameData.byCat_vehicle[catL10n] : client_baseGameData.byCat_placeable[catL10n]) ?? []).sort()
+
+		fsgUtil.byId('title').innerHTML     = `<l10nBase name="${catL10n}"></l10nBase>`
+		fsgUtil.byId('bgContent').innerHTML = wrapRow(catContent.map((x) => wrapStoreItem(
+			client_baseGameData.records[x].name,
+			client_baseGameData.records[x].price,
+			client_baseGameData.records[x].icon,
+			client_baseGameData.records[x].brand,
+			x
+		)))
 	} else if ( pageType === 'brand' ) {
-		// display brand
-	} else {
+		// Display Brand
+		const brandDisplay = pageID.replace('brand_', '').toUpperCase()
+		const brandContent = (client_baseGameData.byBrand_vehicle[brandDisplay] ?? []).sort()
+
+		fsgUtil.byId('title').innerHTML     = `<l10nBase name="${client_baseGameBrandMap[pageID]}"></l10nBase>`
+		
+		fsgUtil.byId('bgContent').innerHTML = wrapRow(brandContent.map((x) => wrapStoreItem(
+			client_baseGameData.records[x].name,
+			client_baseGameData.records[x].price,
+			client_baseGameData.records[x].icon,
+			client_baseGameData.records[x].brand,
+			x
+		)))
+	} else if ( pageType === 'item' ) {
 		// display item
+	} else {
+		fsgUtil.byId('back_button').classList.add('d-none')
+		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat('top'))
+		fsgUtil.byId('title').innerHTML     = '<l10n name="basegame_main_title"></l10n>'
 	}
 	processL10N()
 	clientGetL10NEntries2()

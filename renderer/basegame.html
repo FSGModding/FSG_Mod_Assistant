@@ -32,26 +32,14 @@
 				<div class="col-5 text-center mx-auto pt-4" id="badges"></div>
 			</div>
 			<h3 class="text-center mb-1 w-100 mx-auto display-6" id="title"><l10n name="basegame_main_title"></l10n></h3>
-			<div class="btn btn-outline-primary position-relative" id="back_button" onclick="history.back()" style="margin-top: -66px; margin-left: 20px;"><i class="h3 bi bi-arrow-left"></i></div>
+			<div class="btn-group position-relative" style="margin-top: -66px; margin-left: 20px;" id="back_button">
+				<div class="btn btn-outline-primary" onclick="location.search = ''"><i class="h3 bi bi-house-fill"></i></div>
+				<div class="btn btn-outline-primary" onclick="history.back()"><i class="h3 bi bi-arrow-left"></i></div>
+			</div>
 		</div>
 
-		<div class="mx-4 mb-3" id="bgContent">
-			
-		</div>
+		<div class="mx-4 mb-3" id="bgContent"></div>
 </body>
-
-
-<template id="base_display">
-	<div class="row g-2">
-		<div class="col-1"></div>
-		<div class="col-2 text-center"><div class="p-2 border h-100 rounded-3"><a class="text-decoration-none text-white-50" href="?type=cat&page=brand"><img src="img/baseCategory/bg_brand.webp"><br /><l10n name="basegame_brand"></l10n></a></div></div>
-		<div class="col-2 text-center"><div class="p-2 border h-100 rounded-3"><a class="text-decoration-none text-white-50" href="?type=cat&page=vehicle"><img src="img/baseCategory/bg_vehicle.webp"><br /><l10n name="basegame_vehicle"></l10n></a></div></div>
-		<div class="col-2 text-center"><div class="p-2 border h-100 rounded-3"><a class="text-decoration-none text-white-50" href="?type=cat&page=tool"><img src="img/baseCategory/bg_tool.webp"><br /><l10n name="basegame_tool"></l10n></a></div></div>
-		<div class="col-2 text-center"><div class="p-2 border h-100 rounded-3"><a class="text-decoration-none text-white-50" href="?type=cat&page=object"><img src="img/baseCategory/bg_object.webp"><br /><l10n name="basegame_object"></l10n></a></div></div>
-		<div class="col-2 text-center"><div class="p-2 border h-100 rounded-3"><a class="text-decoration-none text-white-50" href="?type=cat&page=placeable"><img src="img/baseCategory/bg_placeable.webp"><br /><l10n name="basegame_placeable"></l10n></a></div></div>
-		<div class="col-1"></div>
-	</div>
-</template>
 
 <template id="vehicle_div">
 	<div class="card mb-3">
