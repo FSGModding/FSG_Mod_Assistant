@@ -43,15 +43,6 @@
 
 <template id="vehicle_div">
 	<div class="card mb-3">
-		<h5 class="card-header">
-			{{itemName}}
-			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fst-italic">{{typeDesc}}</small>
-			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fst-italic fw-normal">{{itemTitle}}</small>
-			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fw-bold">{{category}}</small>
-		</h5>
 		<div class="card-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">
@@ -63,7 +54,7 @@
 						<li class="list-group-item {{show_price}}"><img style="width:30px" src='img/look/price.webp'> {{price}}</li>
 						<li class="list-group-item {{show_enginePower}}"><img style="width:30px" src='img/look/engine.webp'> {{enginePower}}</li>
 						<li class="list-group-item {{show_needPower}}"><img style="width:30px" src='img/look/engine.webp'> {{needPower}}</li>
-						<li class="list-group-item {{show_transmission}}"><img style="width:30px" src='img/look/transmission.webp'> {{transmission}}</li>
+						<li class="list-group-item {{show_transmission}}"><img style="width:30px" src='img/look/transmission.webp'> <l10nBase name="{{transmission}}"></l10nBase></li>
 						<li class="list-group-item {{show_diesel}}"><img style="width:30px" src='img/look/diesel.webp'> <l10n name="look_diesel"></l10n></li>
 						<li class="list-group-item {{show_electric}}"><img style="width:30px" src='img/look/electric.webp'> <l10n name="look_electric"></l10n></li>
 						<li class="list-group-item {{show_methane}}"><img style="width:30px" src='img/look/methane.webp'> <l10n name="look_methane"></l10n></li>
@@ -116,13 +107,6 @@
 
 <template id="place_div">
 	<div class="card mb-3">
-		<h5 class="card-header">
-			{{itemName}}
-			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fst-italic fw-normal">{{itemTitle}}</small>
-			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fw-bold">{{category}}</small>
-		</h5>
 		<div class="card-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">

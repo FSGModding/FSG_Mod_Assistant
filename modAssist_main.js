@@ -573,6 +573,15 @@ ipcMain.on('toMain_themeList_send',   (event) => {
 	
 	event.sender.send('fromMain_themeList_return', themeOpts, win.themeCurrentColor)
 })
+
+ipcMain.on('toMain_getText_sync', (event, l10nSet) => {
+	const returnValues = {}
+	for ( const l10nEntry of l10nSet ) {
+		returnValues[l10nEntry] = myTranslator.syncStringLookup(l10nEntry)
+	}
+	event.returnValue = returnValues
+})
+
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return', [entry, text]) }
 	const doTitle   = mcStore.get('show_tooltips', true)
