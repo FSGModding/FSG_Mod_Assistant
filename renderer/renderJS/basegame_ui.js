@@ -6,7 +6,7 @@
 
 // Base game window UI
 
-/* global Chart, processL10N, fsgUtil, getText, client_baseGameBrandMap, client_baseGameData, client_baseGameCats, client_baseGameBrands, client_baseGameTopLevel, client_baseGameCatMap_vehicle, client_baseGameCatMap_place */
+/* global Chart, processL10N, fsgUtil, getText, client_baseGameBrandMap, client_baseGameData, client_baseGameCats, client_baseGameBrandIconMap, client_baseGameBrands, client_baseGameTopLevel, client_baseGameCatMap_vehicle, client_baseGameCatMap_place */
 
 let currentLocale = 'en'
 
@@ -384,7 +384,7 @@ function wrapItem(name, icon, type, page, noTrans = false) {
 
 function wrapStoreItem(name, price, icon, brand, page) {
 	const iconString  = icon.startsWith('data:') ? icon : `img/baseCategory/${icon}.webp`
-	const brandString = typeof brand === 'string' ? `<br><img class="mb-3" style="width: 100px" src="img/brand/brand_${brand.toLowerCase()}.webp"></img>` : ''
+	const brandString = typeof brand === 'string' ? `<br><img class="mb-3" style="width: 100px" src="img/brand/${client_baseGameBrandIconMap[brand.toLowerCase()]}.webp"></img>` : ''
 
 	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100">
 	<a class="text-decoration-none text-white-50" href="?type=item&page=${page}">
@@ -407,7 +407,7 @@ function getTopCat(cat) {
 		case 'placeable' :
 			return client_baseGameCats.placeables.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
 		case 'brand' :
-			return client_baseGameBrands.map((x) => wrapItem(x.title, x.image, 'brand', x.image, true))
+			return client_baseGameBrands.map((x) => wrapItem(x.title, x.image, 'brand', x.name, true))
 		//case 'top':
 		default :
 			return client_baseGameTopLevel.map((x) => wrapItem(x.name, x.icon, 'cat', x.page))
