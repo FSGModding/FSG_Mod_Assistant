@@ -573,6 +573,15 @@ ipcMain.on('toMain_themeList_send',   (event) => {
 	
 	event.sender.send('fromMain_themeList_return', themeOpts, win.themeCurrentColor)
 })
+
+ipcMain.on('toMain_getText_sync', (event, l10nSet) => {
+	const returnValues = {}
+	for ( const l10nEntry of l10nSet ) {
+		returnValues[l10nEntry] = myTranslator.syncStringLookup(l10nEntry)
+	}
+	event.returnValue = returnValues
+})
+
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return', [entry, text]) }
 	const doTitle   = mcStore.get('show_tooltips', true)
@@ -648,6 +657,13 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 				}
 				break
 		}
+	}
+})
+ipcMain.on('toMain_getTextBase_send', (event, l10nSet) => {
+	const sendEntry = (entry, text) => { event.sender.send('fromMain_getTextBase_return', [entry, text]) }
+
+	for ( const l10nEntry of l10nSet ) {
+		myTranslator.baseStringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
 	}
 })
 /** END: l10n Operation */
@@ -1068,6 +1084,9 @@ function gameLauncher() {
 }
 ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 /** END: game launcher */
+
+
+ipcMain.on('toMain_openBaseGame', () => {  win.createNamedWindow('basegame') })
 
 /** Find window operation */
 ipcMain.on('toMain_openFind', () => {  win.createNamedWindow('find') })
