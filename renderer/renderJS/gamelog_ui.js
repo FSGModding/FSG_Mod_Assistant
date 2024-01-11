@@ -230,6 +230,8 @@ function clientFind(doForward = false, isReload = false) {
 
 	/* too short, clear input and reset display */
 	if ( thisFind.length < 2 ) {
+		fsgUtil.byId('currentFindIndex').innerHTML = '0'
+		fsgUtil.byId('currentFindTotal').innerHTML = '0'
 		if ( thisFind.length !== 0 ) {
 			fsgUtil.byId('gamelog_find').value = ''
 		}
@@ -258,6 +260,11 @@ function clientFind(doForward = false, isReload = false) {
 	if ( finds.length !== 0 ) {
 		findIdx = findIdx % (finds.length)
 		findIdx = findIdx < 0 ? findIdx + finds.length : findIdx
+		fsgUtil.byId('currentFindIndex').innerHTML = findIdx + 1
+		fsgUtil.byId('currentFindTotal').innerHTML = finds.length
+	} else {
+		fsgUtil.byId('currentFindIndex').innerHTML = '0'
+		fsgUtil.byId('currentFindTotal').innerHTML = '0'
 	}
 	
 	if ( finds.length !== 0 && !isReload ) {
