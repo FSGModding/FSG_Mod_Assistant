@@ -10,7 +10,7 @@ const fs            = require('node:fs')
 const { XMLParser } = require('fast-xml-parser')
 const { globSync }  = require('glob')
 
-const fileList    = globSync('gamefiles/*.xml')
+const fileList    = globSync('gamefiles/**/*.xml')
 const outputStruct = {}
 
 const patternToInclude = [
@@ -42,7 +42,7 @@ for ( const thisFile of fileList ) {
 	const langCode    = thisFile.slice(-6).slice(0, 2)
 	const langContent = fs.readFileSync(thisFile, 'utf-8')
 
-	outputStruct[langCode] = {}
+	outputStruct[langCode] ??= {}
 
 	try {
 		const result = langParser.parse(langContent)
