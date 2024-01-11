@@ -15,6 +15,7 @@
 	"bad_folder_extra"                      : "Esta colección tiene información adicional asociada",
 	"bad_folder_folder"                     : "Ubicación de la carpeta:",
 	"bad_folder_title"                      : "Falta la carpeta de recogida",
+	"base_game_data__title"                 : "Examinar artículos de juego base",
 	"bind_conflict"                         : "Posible conflicto de unión de llaves",
 	"button_gamelog__title"                 : "Ver diario de juego",
 	"button_save"                           : "Guardar",

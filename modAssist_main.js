@@ -1076,6 +1076,9 @@ function gameLauncher() {
 ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 /** END: game launcher */
 
+
+ipcMain.on('toMain_openBaseGame', () => {  win.createNamedWindow('basegame') })
+
 /** Find window operation */
 ipcMain.on('toMain_openFind', () => {  win.createNamedWindow('find') })
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {

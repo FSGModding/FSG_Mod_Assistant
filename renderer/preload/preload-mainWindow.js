@@ -62,6 +62,7 @@ contextBridge.exposeInMainWorld(
 		cutCopyPaste    : () => { ipcRenderer.send('toMain_notesContextMenu') },
 		debugLog        : () => { ipcRenderer.send('toMain_openDebugLog') },
 		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
+		openBaseGame    : () => { ipcRenderer.send('toMain_openBaseGame') },
 		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },
 		openGameLog     : () => { ipcRenderer.send('toMain_openGameLog') },
 		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },

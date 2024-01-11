@@ -15,6 +15,7 @@
 	"bad_folder_extra"                      : "Des informations complémentaires sont associées à cette collection",
 	"bad_folder_folder"                     : "Emplacement du dossier :",
 	"bad_folder_title"                      : "Dossier de collection manquant",
+	"base_game_data__title"                 : "Parcourir les articles de jeu de base",
 	"bind_conflict"                         : "Conflit possible entre les raccourcis",
 	"button_gamelog__title"                 : "Voir le journal de jeu",
 	"button_save"                           : "Sauvez",

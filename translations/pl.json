@@ -15,6 +15,7 @@
 	"bad_folder_extra"                      : "Z tą kolekcją powiązane są dodatkowe informacje",
 	"bad_folder_folder"                     : "Lokalizacja folderu:",
 	"bad_folder_title"                      : "Brakujący folder kolekcji",
+	"base_game_data__title"                 : "Przeglądaj bazowe elementy gier",
 	"bind_conflict"                         : "Możliwy konflikt skrótów klawiszowych",
 	"button_gamelog__title"                 : "Zobacz LOG gry",
 	"button_save"                           : "Zapisz",

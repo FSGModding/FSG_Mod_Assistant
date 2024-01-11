@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="inc/chart.min.js"></script>
+	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/baseGameData.js"></script>
+	<script src="renderJS/baseGameData2.js"></script>
+	<script src="renderJS/basegame_ui.js"></script>
+	<style>
+		
+		.prodIcon   { color:#28a5c8; }
+		.prodIconLG { color:#28a5c8; font-size: 120%; }
+	</style>
+</head>
+<body data-bs-theme="dark" class="overflow-custom2">
+	<div class="container-fluid px-1">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100">
+				<div class="col-7" style="-webkit-app-region: drag;">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+				</div>
+				<div class="col-5 text-center mx-auto pt-4" id="badges"></div>
+			</div>
+			<h3 class="text-center mb-1 w-100 mx-auto display-6" id="title"></h3>
+			<i class="text-center mt-1 w-100 mx-auto d-block small" id="mod_location"></i>
+			<i class="text-center mt-1 w-100 mx-auto d-block small" id="modhub_link"></i>
+			<i id="store_process" class="d-none text-center mt-1 w-100 mx-auto d-block bg-warning text-white"><l10n name="loading_look_title"></l10n> - <l10n name="loading_look_subtitle"></l10n></i>
+		</div>
+
+		<div class="row mx-4 mb-3">
+			<div class="col-4 my-auto mx-auto" id="icon_div"></div>
+			<div class="col-8 mx-auto">
+				<table class="table table-sm table-striped mb-0">
+					<tr><th><l10n name="detail_mod_author"></l10n></th><td class="text-end" id="mod_author"></td></tr>
+					<tr><th><l10n name="detail_mod_version"></l10n></th><td class="text-end" id="version"></td></tr>
+					<tr><th><l10n name="detail_mod_mh_version"></l10n></th><td class="text-end" id="mh_version"></td></tr>
+					<tr><th><l10n name="detail_mod_size"></l10n></th><td class="text-end" id="filesize"></td></tr>
+					<tr><th><l10n name="detail_mod_date"></l10n></th><td class="text-end" id="file_date"></td></tr>
+					<tr><th><l10n name="detail_mod_has_scripts"></l10n></th><td class="text-end" id="has_scripts"></td></tr>
+					<tr><th><l10n name="detail_mod_store_items"></l10n></th><td class="text-end" id="store_items"></td></tr>
+					<tr><th><l10n name="detail_mod_multiplayer"></l10n></th><td class="text-end" id="is_multiplayer"></td></tr>
+				</table>				
+			</div>
+		</div>
+
+		<div class="px-3 border-bottom mb-2" id="problem_div">
+			<h4><l10n name="detail_problems"></l10n></h4>
+			<div id="problems" class="w-100 mx-auto ps-5"></div>
+		</div>
+		<div class="px-3 border-bottom mb-2" id="desc_div">
+			<h4><l10n name="detail_description"></l10n></h4>
+			<div style="white-space: pre-wrap" class="ps-5 font-monospace mb-3" id="description"></div>
+		</div>
+		<div class="px-3 border-bottom mb-2 d-none" id="map_image_div">
+			<img id="map_image" class="img-fluid w-100">
+		</div>
+		<div class="px-3 border-bottom mb-2 d-none" id="cropcal_div">
+			<h4><l10n name="cropcal_title"></l10n></h4>
+			<div class="table-responsive" id="crop-cal">
+				<table id="crop-table" class="table table-sm table-borderless"></table>
+			</div>
+		</div>
+		<div class="px-3 border-bottom mb-2 d-none" id="store_div">
+			<h4><l10n name="detail_mod_store_items"></l10n></h4>
+			<div id="storeitems" class="px-2"></div>
+		</div>
+		<div class="px-3 border-bottom mb-2" id="depend_div">
+			<h4><l10n name="detail_depend"></l10n></h4>
+			<div id="depends" style="white-space: pre-wrap" class="w-100 mx-auto ps-5 mb-3"></div>
+		</div>
+		<div class="px-3 border-bottom mb-2">
+			<h4><l10n name="detail_dev_info"></l10n></h4>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_key_binds"></l10n></h6>
+			<div style="white-space: pre-wrap; line-height: 2.2em" class="px-5 font-monospace" id="keyBinds"></div>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_extra_files"></l10n></h6>
+			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="extraFiles"></div>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_big_files"></l10n></h6>
+			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="bigFiles"></div>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_space_files"></l10n></h6>
+			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="spaceFiles"></div>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_png_textures"></l10n></h6>
+			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="pngTexture"></div>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_i3d_files"></l10n></h6>
+			<div style="white-space: pre-wrap" class="px-5 text-info font-monospace" id="i3dFiles"></div>
+			<h6 class="i18n mt-4 ms-4"><l10n name="detail_crop_json"></l10n></h6>
+			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="cropjson"></div>
+		</div>
+	</div>
+
+</body>
+
+<template id="vehicle_div">
+	<div class="card mb-3">
+		<h5 class="card-header">
+			{{itemName}}
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic">{{typeDesc}}</small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic fw-normal">{{itemTitle}}</small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fw-bold">{{category}}</small>
+		</h5>
+		<div class="card-body">
+			<div class="row mx-2">
+				<div class="col-5 my-auto mx-auto" id="icon_div">
+					<img class="img-fluid mx-auto d-block mb-2 rounded-4 {{brandHIDE}}" style="height: 70px;" src="{{brandIMG}}">
+					<img class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
+				</div>
+				<div class="col-7 mx-auto">
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item {{show_price}}"><img style="width:30px" src='img/look/price.webp'> {{price}}</li>
+						<li class="list-group-item {{show_enginePower}}"><img style="width:30px" src='img/look/engine.webp'> {{enginePower}}</li>
+						<li class="list-group-item {{show_needPower}}"><img style="width:30px" src='img/look/engine.webp'> {{needPower}}</li>
+						<li class="list-group-item {{show_transmission}}"><img style="width:30px" src='img/look/transmission.webp'> {{transmission}}</li>
+						<li class="list-group-item {{show_diesel}}"><img style="width:30px" src='img/look/diesel.webp'> <l10n name="look_diesel"></l10n></li>
+						<li class="list-group-item {{show_electric}}"><img style="width:30px" src='img/look/electric.webp'> <l10n name="look_electric"></l10n></li>
+						<li class="list-group-item {{show_methane}}"><img style="width:30px" src='img/look/methane.webp'> <l10n name="look_methane"></l10n></li>
+						<li class="list-group-item {{show_maxSpeed}}"><img style="width:30px" src='img/look/maxspeed.webp'> {{maxSpeed}}</li>
+						<li class="list-group-item {{show_hasLights}}"><img style="width:30px" src='img/look/haslights.webp'> <l10n name="look_has_lights"></l10n></li>
+						<li class="list-group-item {{show_hasBeacons}}"><img style="width:30px" src='img/look/hasbeacons.webp'> <l10n name="look_has_beacons"></l10n></li>
+						<li class="list-group-item {{show_hasPaint}}"><img style="width:30px" src='img/look/paintable.webp'> <l10n name="look_has_paint"></l10n></li>
+						<li class="list-group-item {{show_hasWheels}}"><img style="width:30px" src='img/look/haswheels.webp'> <l10n name="look_has_wheels"></l10n></li>
+						<li class="list-group-item {{show_workWidth}}"><img style="width:30px" src='img/look/width.webp'> {{workWidth}}{{workWidth2}}</l10n></li>
+						<li class="list-group-item {{show_fillUnit}}"><img style="width:30px" src='img/look/fillunit.webp'> {{fillUnit}}<div class="ms-4">{{fillImages}}</div></li>
+						<li class="list-group-item {{show_weight}}"><img style="width:30px" src='img/look/weight.webp'> {{weight}}</li>
+					</ul>
+				</div>
+				<div class="col-12 py-2"><p class="text-center">{{functions}}</p></div>
+
+				<nav class="{{show_graph}}">
+					<div class="nav nav-tabs" id="{{uuid}}_nav-tab" role="tablist">
+					  <button class="nav-link active" id="{{uuid}}_hp_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_hp_graph" type="button" role="tab" ><img style="width:30px" src='img/look/engine.webp'> <l10n name="unit_hp"></l10n></button>
+					  <button class="nav-link" id="{{uuid}}_kph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_kph_graph" type="button" role="tab" ><img style="width:30px" src='img/look/maxspeed.webp'> <l10n name="unit_kph"></l10n></button>
+					  <button class="nav-link" id="{{uuid}}_mph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_mph_graph" type="button" role="tab" ><img style="width:30px" src='img/look/maxspeed.webp'> <l10n name="unit_mph"></l10n></button>
+					</div>
+				</nav>
+				<div class="tab-content {{show_graph}}" id="{{uuid}}_nav-tabContent">
+					<div class="tab-pane fade show active" id="{{uuid}}_hp_graph" role="tabpanel"><canvas id="{{uuid}}_canvas_hp" ></canvas></div>
+					<div class="tab-pane fade" id="{{uuid}}_kph_graph" role="tabpanel" ><canvas id="{{uuid}}_canvas_kph" ></canvas></div>
+					<div class="tab-pane fade" id="{{uuid}}_mph_graph" role="tabpanel" ><canvas id="{{uuid}}_canvas_mph" ></canvas></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="prod_div">
+	<div class="row border-bottom mt-1">
+		<div class="col-3 text-center align-self-center">{{prodName}}<br><br>
+			<i class="prodIcon bi bi-arrow-repeat"></i> {{prodCycles}}<br>
+			<img style="width:14px" src="img/look/price.webp"> {{prodCost}}<br>
+		</div>
+		<div class="col-9 text-center">
+			<ul class="list-group list-group-flush">
+				{{prodBoosts}}
+				<li class="list-group-item {{class_prodBoosts}}"><i class="prodIconLG bi bi-plus-circle"></i></li>
+				{{prodInputs}}
+				<li class="list-group-item"><i class="prodIconLG bi bi-box-arrow-down"></i></li>
+				<li class="list-group-item">{{prodOutput}}</li>
+			</ul>
+		</div>
+	</div>
+</template>
+
+<template id="place_div">
+	<div class="card mb-3">
+		<h5 class="card-header">
+			{{itemName}}
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic fw-normal">{{itemTitle}}</small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fw-bold">{{category}}</small>
+		</h5>
+		<div class="card-body">
+			<div class="row mx-2">
+				<div class="col-5 my-auto mx-auto" id="icon_div">
+					<img class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
+				</div>
+				<div class="col-7 mx-auto">
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item"><img style="width:30px" src='img/look/price.webp'> {{price}}</li>
+						<li class="list-group-item {{show_income}}"><img style="width:30px" src='img/look/income.webp'> {{income}}</li>
+						<li class="list-group-item {{show_hasPaint}}"><img style="width:30px" src='img/look/paintable.webp'> <l10n name="look_has_paint"></l10n></li>
+						<li class="list-group-item {{show_hasCow}}"><img style="width:30px" src='img/fills/cow.webp'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasPig}}"><img style="width:30px" src='img/fills/pig.webp'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasSheep}}"><img style="width:30px" src='img/fills/sheep.webp'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasChicken}}"><img style="width:30px" src='img/fills/chicken.webp'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasHorse}}"><img style="width:30px" src='img/fills/horse.webp'> {{animalCount}}</li>
+						<li class="list-group-item {{show_hasBee}}"><img style="width:30px" src='img/fills/honey.webp'> {{hasBee}}</li>
+						<li class="list-group-item {{show_objectStore}}"><img style="width:30px" src='img/look/objects.webp'> {{objectCount}}</li>
+						<li class="list-group-item {{show_fillUnit}}"><img style="width:30px" src='img/look/fillunit.webp'> {{fillUnit}}<br />{{fillImages}}</li>
+					</ul>
+					{{prodLines}}
+				</div>
+				<div class="col-12 pt-2"><p class="text-center">{{functions}}</p></div>
+			</div>
+		</div>
+	</div>
+</template>
+
+</html>

@@ -15,6 +15,7 @@
 	"bad_folder_extra"                      : "该收藏有与之相关的其他信息",
 	"bad_folder_folder"                     : "文件夹位置：",
 	"bad_folder_title"                      : "藏品文件夹丢失",
+	"base_game_data__title"                 : "浏览基地游戏项目",
 	"bind_conflict"                         : "Possible key binding conflict",
 	"button_gamelog__title"                 : "View Game Log",
 	"button_save"                           : "Save",

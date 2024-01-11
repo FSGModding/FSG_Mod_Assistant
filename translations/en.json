@@ -15,6 +15,7 @@
 	"bad_folder_extra"                      : "This collection has additional information associated with it",
 	"bad_folder_folder"                     : "Folder Location:",
 	"bad_folder_title"                      : "Collection Folder Missing",
+	"base_game_data__title"                 : "Browse Base Game Items",
 	"bind_conflict"                         : "Possible key binding conflict",
 	"button_gamelog__title"                 : "View Game Log",
 	"button_save"                           : "Save",
