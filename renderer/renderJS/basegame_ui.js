@@ -6,7 +6,7 @@
 
 // Base game window UI
 
-/* global Chart, processL10N, fsgUtil, getText */
+/* global Chart, processL10N, fsgUtil, getText, client_baseGameCats, client_baseGameBrands */
 
 
 const prodMulti = (amount, multi, currentLocale) => `${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount)}${multi > 1 ? ` <small>(${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount * multi)})</small>` : ''}`
@@ -367,4 +367,69 @@ function shouldHide(item, wanted = null) {
 	return ''
 }
 
-window.addEventListener('DOMContentLoaded', () => { processL10N() })
+function wrapItem(name, icon, type, page, noTrans = false) {
+	const iconString = icon.startsWith('data:') ?
+		icon :
+		icon.startsWith('brand_') ?
+			`img/brand/${icon}.webp` :
+			`img/baseCategory/${icon}.webp`
+
+	const nameString = noTrans ? name : name.startsWith('$l10n') ?
+		`<l10nBase name="${name}"></l10nBase>` :
+		`<l10n name="${name}"></l10n>`
+
+	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100"><a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}"><img class="mb-3" style="width: 100px" src="${iconString}"><br />${nameString}</a></div></div>`
+}
+
+function getTopCat(cat) {
+	switch ( cat ) {
+		case 'vehicle' :
+			return client_baseGameCats.vehicles.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)).join('')
+		case 'tool' :
+			return client_baseGameCats.tools.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)).join('')
+		case 'object' :
+			return client_baseGameCats.objects.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)).join('')
+		case 'placeable' :
+			return client_baseGameCats.placeables.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)).join('')
+		case 'brand' :
+			return client_baseGameBrands.map((x) => wrapItem(x.title, x.image, 'brand', x.image, true)).join('')
+		default :
+			break
+	}
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+	const urlParams = new URLSearchParams(window.location.search)
+	const pageType = urlParams.get('type')
+	const pageID   = urlParams.get('page')
+
+	if ( urlParams.size === 0 ) {
+		fsgUtil.byId('back_button').classList.add('d-none')
+		fsgUtil.byId('bgContent').innerHTML = fsgUtil.useTemplate('base_display', {})
+		fsgUtil.byId('title').innerHTML     = '<l10n name="basegame_main_title"></l10n>'
+	} else if ( pageType === 'cat' ) {
+		fsgUtil.byId('bgContent').innerHTML = `<div class="row g-2">${getTopCat(pageID)}</div>`
+		fsgUtil.byId('title').innerHTML     = `<l10n name="basegame_${pageID}_title"></l10n>`
+		// display top-level category
+	} else if ( pageType === 'subcat' ) {
+		// display 2nd-level category
+	} else if ( pageType === 'brand' ) {
+		// display brand
+	} else {
+		// display item
+	}
+	processL10N()
+	clientGetL10NEntries2()
+})
+
+
+
+function clientGetL10NEntries2() {
+	const l10nSendArray = fsgUtil.queryA('l10nBase').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
+
+	window.l10n.getTextBase_send(new Set(l10nSendArray))
+}
+
+window?.l10n?.receive('fromMain_getTextBase_return', (data) => {
+	for ( const item of fsgUtil.query(`l10nBase[name="${data[0]}"]`) ) { item.innerHTML = data[1] }
+})
