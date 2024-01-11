@@ -51,7 +51,7 @@ class baseLooker {
 		const thisItemInfo = this.#parseStoreItem(thisItemTree)
 
 		if ( thisItemInfo !== null && thisItemInfo.icon !== null ) {
-			iconLoads.push(this.#loadIcon(thisItemInfo.icon, this.#dataPath).then((itemIcon) => {
+			iconLoads.push(this.#loadIcon(thisItemInfo.icon, false).then((itemIcon) => {
 				thisItemInfo.icon = itemIcon
 			}).catch((err) => {
 				this.#log.notice(`Caught image error: ${err}`)
@@ -73,6 +73,7 @@ class baseLooker {
 		
 		switch ( storeType ) {
 			case 'vehicle' :
+				if ( typeof storeItemTree.vehicle.parentfile !== 'undefined' ) { return null }
 				return this.#parseVehicle(storeItemTree.vehicle)
 			case 'placeable' :
 				return this.#parsePlace(storeItemTree.placeable)
@@ -468,7 +469,8 @@ class baseLooker {
 	}
 
 	#parseName(xml, fallback = 'unknown') {
-		if ( (typeof xml !== 'string' && typeof xml !== 'object') || xml === null ) { return fallback }
+		if ( (typeof xml !== 'number' && typeof xml !== 'string' && typeof xml !== 'object') || xml === null ) { return fallback }
+		if ( typeof xml === 'number' ) { return xml.toString() }
 		if ( typeof xml === 'string' ) { return this.#translate(xml) }
 
 		if ( Object.hasOwn(xml, this.#locale) ) { return xml[this.#locale] }
