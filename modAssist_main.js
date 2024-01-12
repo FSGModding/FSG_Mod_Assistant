@@ -1087,7 +1087,9 @@ ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 
 
 ipcMain.on('toMain_openBaseGame', () => {  win.createNamedWindow('basegame') })
-
+ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
+	shell.openPath(path.join(path.dirname(versionConfigGet('game_path', 22)), 'data', ...folderParts))
+})
 /** Find window operation */
 ipcMain.on('toMain_openFind', () => {  win.createNamedWindow('find') })
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {

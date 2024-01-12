@@ -425,7 +425,7 @@ class baseLooker {
 				width : thisType?.usagescales?.$?.WORKINGWIDTH || null,
 			})
 		}
-		return sprayTypes
+		return sprayTypes.sort((a, b) => a.width - b.width)
 	}
 
 	#parseVehicle(xml) {

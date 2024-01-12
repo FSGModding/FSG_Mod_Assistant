@@ -71,10 +71,11 @@ const exportData = {
 	records           : {},
 }
 
-const handleResults = (results) => {
+const handleResults = (results, fileDetails) => {
 	if ( results.record === null ) { return }
 
 	const thisName = results.shortname
+	
 
 	if ( results.record.masterType === 'vehicle' ) {
 		exportData.byBrand_vehicle[results.record.brand] ??= []
@@ -88,6 +89,10 @@ const handleResults = (results) => {
 	}
 
 	exportData.records[thisName] = results.record
+
+	exportData.records[thisName].dlcKey   = fileDetails[2]
+	exportData.records[thisName].isBase   = (fileDetails[2] === null)
+	exportData.records[thisName].diskPath = (fileDetails[2] !== null) ? null : path.relative(fileDetails[1], fileDetails[0]).split(path.sep)
 
 	/* eslint-disable no-console */
 	if ( results.log.items.length !== 0 ) {
@@ -104,7 +109,7 @@ const fullFileList = []
 for ( const thisPath of filePaths ) {
 	const theseFiles = globSync('**/*.xml', { cwd : thisPath, follow : true, mark : true, stat : true, withFileTypes : true })
 	for ( const thisFile of theseFiles ) {
-		fullFileList.push([thisFile.fullpath(), dataPath])
+		fullFileList.push([thisFile.fullpath(), dataPath, null])
 	}
 }
 
@@ -112,7 +117,7 @@ for ( const packKey in dlcPaths ) {
 	for ( const thisPath of dlcPaths[packKey] ) {
 		const theseFiles = globSync('**/*.xml', { cwd : thisPath, follow : true, mark : true, stat : true, withFileTypes : true })
 		for ( const thisFile of theseFiles ) {
-			fullFileList.push([thisFile.fullpath(), path.join(dlcBasePath, packKey)])
+			fullFileList.push([thisFile.fullpath(), path.join(dlcBasePath, packKey), packKey])
 		}
 	}
 }
@@ -122,7 +127,7 @@ const doWork = async () => {
 	for ( const thisFile of fullFileList ) {
 		const results = await new baseLooker(thisFile[0], thisFile[1]).getInfo()
 		try {
-			handleResults(results)
+			handleResults(results, thisFile)
 		} catch (err) {
 			/* eslint-disable no-console */
 			console.log(err)

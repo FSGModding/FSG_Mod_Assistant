@@ -70,10 +70,17 @@ const client_buildStore = (thisItem) => {
 		const maxSpeed   = getDefault(thisItem?.specs?.maxspeed)
 		const thePower   = getDefault(thisItem?.specs?.power)
 		const getPower   = getDefault(thisItem?.specs?.neededpower)
-		const theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
+		let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
 		const theFill    = getDefault(thisItem.fillLevel)
 		const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
 			
+		
+		if ( typeof thisItem.sprayTypes !== 'undefined' && thisItem.sprayTypes !== null && thisItem?.sprayTypes?.length !== 0 && theWidth === 0 ) {
+			for ( const thisWidth of thisItem.sprayTypes ) {
+				theWidth = Math.max(thisWidth.width, theWidth)
+			}
+		}
+
 		storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
 			brandHIDE         : shouldHide(brandImage),
 			brandIMG          : fsgUtil.iconMaker(brandImage),
@@ -116,7 +123,7 @@ const client_buildStore = (thisItem) => {
 			show_price        : shouldHide(thisItem.price),
 			show_transmission : shouldHide(thisItem.transType),
 			show_weight       : shouldHide(thisItem.weight),
-			show_workWidth    : shouldHide(thisItem?.specs?.workingwidth),
+			show_workWidth    : shouldHide(theWidth !== 0),
 			transmission      : thisItem.transType,
 			typeDesc          : thisItem.typeDesc,
 			uuid              : thisItemUUID,
@@ -377,14 +384,17 @@ function wrapItem(name, icon, type, page, noTrans = false) {
 	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100"><a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}"><img class="mb-3" style="width: 100px" src="${iconString}"><br />${nameString}</a></div></div>`
 }
 
-function wrapStoreItem(name, price, icon, brand, page) {
+function wrapStoreItem(name, price, icon, brand, page, dlc = null) {
 	const iconString  = icon.startsWith('data:') ? icon : `img/baseCategory/${icon}.webp`
 	const brandString = typeof brand === 'string' ? `<br><img class="mb-3" style="width: 100px" src="img/brand/${client_baseGameBrandIconMap[brand.toLowerCase()]}.webp"></img>` : ''
 
 	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100">
 	<a class="text-decoration-none text-white-50" href="?type=item&page=${page}">
 	<img class="mb-3" style="width: 100px" src="${iconString}"><br>${brandString}
-	<br><span class="text-white">${name}</span><br><br><img style="width:30px" src="img/look/price.webp"> ${Intl.NumberFormat(currentLocale).format(price)}</a></div></div>`
+	<br><span class="text-white">${name}</span><br><br>
+	<img style="width:30px" src="img/look/price.webp"> ${Intl.NumberFormat(currentLocale).format(price)}</a><br><br>
+	<em class="text-body-tertiary">${dlc !== null ? dlc : ''}</span>
+	</div></div>`
 }
 
 function wrapRow(rowHTMLArray) {
@@ -420,6 +430,8 @@ window.addEventListener('DOMContentLoaded', () => {
 	currentLocale = document.querySelector('body').getAttribute('data-i18n') || 'en'
 	chartUnits    = window.l10n.getText_sync(['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp'])
 
+	fsgUtil.byId('folderButton').classList.add('d-none')
+
 	if ( urlParams.size === 0 ) {
 		// Display Main Page
 		fsgUtil.byId('back_button').classList.add('d-none')
@@ -441,7 +453,8 @@ window.addEventListener('DOMContentLoaded', () => {
 			client_baseGameData.records[x].price,
 			client_baseGameData.records[x].icon,
 			client_baseGameData.records[x].brand,
-			x
+			x,
+			client_baseGameData.records[x].dlcKey
 		)))
 	} else if ( pageType === 'brand' ) {
 		// Display Brand
@@ -455,13 +468,17 @@ window.addEventListener('DOMContentLoaded', () => {
 			client_baseGameData.records[x].price,
 			client_baseGameData.records[x].icon,
 			client_baseGameData.records[x].brand,
-			x
+			x,
+			client_baseGameData.records[x].dlcKey
 		)))
 	} else if ( pageType === 'item' ) {
 		// Display Item
 		const thisItem = client_baseGameData.records[pageID]
 
-		fsgUtil.byId('title').innerHTML     = typeof thisItem.brand !== 'undefined' ? `${client_baseGameBrandMap[thisItem.brand.toLowerCase()]} ${thisItem.name}` : thisItem.name
+		console.log(thisItem)
+		fsgUtil.byId('folderButton').classList[thisItem.isBase ? 'remove' : 'add']('d-none')
+		fsgUtil.byId('title').innerHTML        = typeof thisItem.brand !== 'undefined' ? `${client_baseGameBrandMap[thisItem.brand.toLowerCase()]} ${thisItem.name}` : thisItem.name
+		fsgUtil.byId('mod_location').innerHTML = thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`
 		client_buildStore(thisItem)
 	} else {
 		fsgUtil.byId('back_button').classList.add('d-none')
@@ -472,6 +489,14 @@ window.addEventListener('DOMContentLoaded', () => {
 	clientGetL10NEntries2()
 })
 
+
+function clientOpenFolder() {
+	const urlParams     = new URLSearchParams(window.location.search)
+	const pageID        = urlParams.get('page')
+	const folder        = pageID.split('_').slice(0, -1)
+
+	window.mods.openBaseFolder(folder)
+}
 
 
 function clientGetL10NEntries2() {

@@ -32,10 +32,13 @@
 				<div class="col-5 text-center mx-auto pt-4" id="badges"></div>
 			</div>
 			<h3 class="text-center mb-1 w-100 mx-auto display-6" id="title"><l10n name="basegame_main_title"></l10n></h3>
+			<i class="text-center mt-1 w-100 mx-auto d-block small" id="mod_location"></i>
 			<div class="btn-group position-relative" style="margin-top: -66px; margin-left: 20px;" id="back_button">
 				<div class="btn btn-outline-primary" onclick="location.search = ''"><i class="h3 bi bi-house-fill"></i></div>
 				<div class="btn btn-outline-primary" onclick="history.back()"><i class="h3 bi bi-arrow-left"></i></div>
+				<div class="btn btn-outline-secondary" id="folderButton" onclick="clientOpenFolder()"><i class="h3 bi bi-folder"></i></div>
 			</div>
+			
 		</div>
 
 		<div class="mx-4 mb-3" id="bgContent"></div>

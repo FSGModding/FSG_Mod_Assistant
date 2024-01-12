@@ -41,6 +41,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		openBaseFolder : (folder) => { ipcRenderer.send('toMain_openBaseFolder', folder )},
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_placeholder',
