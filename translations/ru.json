@@ -146,6 +146,7 @@
 	"filter_only"                           : "Поиск",
 	"filter_out_badges"                     : "Скрыть с метками",
 	"filter_tag_reset"                      : "ОТМЕНИТЬ",
+	"find_basegame_match"                   : "Найти",
 	"folder_add"                            : "Добавить папку",
 	"folder_add__title"                     : "Добавить папку коллекции",
 	"folder_added"                          : "Добавлено",

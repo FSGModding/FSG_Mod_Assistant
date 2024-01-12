@@ -42,10 +42,24 @@
 		</div>
 
 		<div class="mx-4 mb-3" id="bgContent"></div>
+
+		<div class="mt-3 pt-3 border-top d-none" id="searchBox">
+			<div class="input-group input-group-sm my-2 mx-auto w-75">
+				<span class="input-group-text"><l10n name="find_basegame_match"></l10n></span>
+				<input type="text" id="mods__filter" oninput="clientFilter()" class="form-control mod-row-filter rounded-end">
+				<span id="mods__filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; "></span>
+			</div>
+			<div class="mx-4 mt-3" id="searchResults"></div>
+		</div>
 </body>
 
 <template id="vehicle_div">
 	<div class="card mb-3">
+		<h5 class="card-header">
+			{{itemName}}
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic"><l10nBase name="{{category}}"></l10nBase></small>
+		</h5>
 		<div class="card-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">

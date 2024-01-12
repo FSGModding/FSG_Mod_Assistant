@@ -146,6 +146,7 @@
 	"filter_only"                           : "Limit To",
 	"filter_out_badges"                     : "Hide Tags",
 	"filter_tag_reset"                      : "RESET",
+	"find_basegame_match"                   : "Find",
 	"folder_add"                            : "Add Folder",
 	"folder_add__title"                     : "Add Collection Folder",
 	"folder_added"                          : "Added",

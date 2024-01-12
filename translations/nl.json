@@ -146,6 +146,7 @@
 	"filter_only"                           : "Grenzen aan",
 	"filter_out_badges"                     : "Verberg Tags",
 	"filter_tag_reset"                      : "RESET",
+	"find_basegame_match"                   : "Zoek",
 	"folder_add"                            : "Map toevoegen",
 	"folder_add__title"                     : "Verzamelmap toevoegen",
 	"folder_added"                          : "Toegevoegd",

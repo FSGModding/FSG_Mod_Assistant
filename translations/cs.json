@@ -146,6 +146,7 @@
 	"filter_only"                           : "搜索",
 	"filter_out_badges"                     : "Hide Tags",
 	"filter_tag_reset"                      : "RESET",
+	"find_basegame_match"                   : "查找",
 	"folder_add"                            : "添加文件夹",
 	"folder_add__title"                     : "添加集合文件夹",
 	"folder_added"                          : "Added",

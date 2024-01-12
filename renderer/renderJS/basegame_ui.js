@@ -111,7 +111,7 @@ const client_buildStore = (thisItem) => {
 			show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
 			show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
 			show_enginePower  : shouldHide(thisItem?.specs?.power),
-			show_fillUnit     : thisItem.fillLevel > 0 ? '' : 'd-none',
+			show_fillUnit     : thisItem.fillLevel > 1 ? '' : 'd-none',
 			show_graph        : thisItem.motorInfo === null ? 'd-none' : '',
 			show_hasBeacons   : shouldHide(thisItem.hasBeacons),
 			show_hasLights    : shouldHide(thisItem.hasLights),
@@ -344,6 +344,7 @@ function wrapFunctions(funcs) {
 	}
 	return thisHTML.join('<br>')
 }
+
 function getDefault(value, float = false, safe = 0) {
 	const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
 	return !float ? parseInt(newValue) : parseFloat(newValue)
@@ -421,6 +422,50 @@ function getTopCat(cat) {
 }
 
 let chartUnits = {}
+let searchTree = {
+	// pageIdKey : searchString
+}
+
+function buildSearchTree () {
+	searchTree = {}
+
+	for ( const [thisItemKey, thisItem] of Object.entries(client_baseGameData.records) ) {
+		const brandString = (thisItem.brand ? client_baseGameBrandMap[thisItem.brand?.toLowerCase()]?.toLowerCase() : '')
+		searchTree[thisItemKey] = `${thisItem.name.toLowerCase()} ${brandString} ${thisItemKey}`
+	}
+}
+
+function client_findItems(strTerm) {
+	const foundItems = []
+	for ( const [thisItemKey, thisItem] of Object.entries(searchTree) ) {
+		if ( thisItem.includes(strTerm.toLowerCase()) ) { foundItems.push(thisItemKey) }
+	}
+	return foundItems
+}
+
+function clientFilter() {
+	const filterText = fsgUtil.byId('mods__filter').value.toLowerCase()
+
+	fsgUtil.byId('mods__filter_clear').classList[( filterText !== '' ) ? 'remove':'add']('d-none')
+
+	if ( filterText.length < 2 ) {
+		fsgUtil.byId('searchResults').innerHTML = ''
+	} else {
+		fsgUtil.byId('searchResults').innerHTML = wrapRow(client_findItems(filterText).map((x) => wrapStoreItem(
+			client_baseGameData.records[x].name,
+			client_baseGameData.records[x].price,
+			client_baseGameData.records[x].icon,
+			client_baseGameData.records[x].brand,
+			x,
+			client_baseGameData.records[x].dlcKey
+		)))
+	}
+}
+
+function clientClearInput() {
+	fsgUtil.byId('mods__filter').value = ''
+	clientFilter()
+}
 
 window.addEventListener('DOMContentLoaded', () => {
 	const urlParams     = new URLSearchParams(window.location.search)
@@ -434,9 +479,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	if ( urlParams.size === 0 ) {
 		// Display Main Page
+		buildSearchTree()
 		fsgUtil.byId('back_button').classList.add('d-none')
+		fsgUtil.byId('searchBox').classList.remove('d-none')
 		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat('top'))
 		fsgUtil.byId('title').innerHTML     = '<l10n name="basegame_main_title"></l10n>'
+		setTimeout(clientFilter, 250)
 	} else if ( pageType === 'cat' ) {
 		// Display Top-Level Category
 		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat(pageID))
@@ -475,15 +523,17 @@ window.addEventListener('DOMContentLoaded', () => {
 		// Display Item
 		const thisItem = client_baseGameData.records[pageID]
 
-		console.log(thisItem)
 		fsgUtil.byId('folderButton').classList[thisItem.isBase ? 'remove' : 'add']('d-none')
 		fsgUtil.byId('title').innerHTML        = typeof thisItem.brand !== 'undefined' ? `${client_baseGameBrandMap[thisItem.brand.toLowerCase()]} ${thisItem.name}` : thisItem.name
 		fsgUtil.byId('mod_location').innerHTML = thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`
 		client_buildStore(thisItem)
 	} else {
+		buildSearchTree()
+		fsgUtil.byId('searchBox').classList.remove('d-none')
 		fsgUtil.byId('back_button').classList.add('d-none')
 		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat('top'))
 		fsgUtil.byId('title').innerHTML     = '<l10n name="basegame_main_title"></l10n>'
+		setTimeout(clientFilter, 250)
 	}
 	processL10N()
 	clientGetL10NEntries2()
