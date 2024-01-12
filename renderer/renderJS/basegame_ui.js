@@ -67,7 +67,7 @@ const client_buildStore = (thisItem) => {
 
 	if ( thisItem.masterType === 'vehicle' ) {
 		const brandImage = fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
-		const maxSpeed   = getDefault(thisItem?.specs?.maxspeed)
+		const maxSpeed   = getDefault(thisItem?.specs?.maxspeed) || getDefault(thisItem?.speedLimit)
 		const thePower   = getDefault(thisItem?.specs?.power)
 		const getPower   = getDefault(thisItem?.specs?.neededpower)
 		let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
@@ -117,7 +117,7 @@ const client_buildStore = (thisItem) => {
 			show_hasLights    : shouldHide(thisItem.hasLights),
 			show_hasPaint     : shouldHide(thisItem.hasColor),
 			show_hasWheels    : shouldHide(thisItem.hasWheelChoice),
-			show_maxSpeed     : shouldHide(thisItem?.specs?.maxspeed),
+			show_maxSpeed     : shouldHide(maxSpeed),
 			show_methane      : shouldHide(thisItem.fuelType, 'methane'),
 			show_needPower    : shouldHide(thisItem?.specs?.neededpower),
 			show_price        : shouldHide(thisItem.price),

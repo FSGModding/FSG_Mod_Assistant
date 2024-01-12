@@ -47,7 +47,7 @@ function addItem(thisItem, source) {
 	currentLocale    = document.querySelector('body').getAttribute('data-i18n') || 'en'
 
 	const uuid       = crypto.randomUUID()
-	const maxSpeed   = getDefault(thisItem?.specs?.maxspeed)
+	const maxSpeed   = getDefault(thisItem?.specs?.maxspeed) || getDefault(thisItem?.speedLimit)
 	const thePower   = getDefault(thisItem?.specs?.power)
 	const getPower   = getDefault(thisItem?.specs?.neededpower)
 	let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)

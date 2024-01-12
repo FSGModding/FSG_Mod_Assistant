@@ -213,6 +213,7 @@ class baseLooker {
 		
 		return returnObj
 	}
+
 	#parsePlace(xml) {
 
 		const storeData = xml.storedata
@@ -457,6 +458,7 @@ class baseLooker {
 				name           : this.#parseName(storeData?.name),
 				price          : this.#util_getDefault(storeData?.price, 0),
 				specs          : this.#unwrapXML(storeData?.specs),
+				speedLimit     : this.#util_getDefault(xml?.base?.speedlimit?.$?.VALUE),
 				sprayTypes     : this.#parseSprays(xml?.sprayer?.spraytypes?.spraytype),
 				transType      : xml?.motorized?.motorconfigurations?.motorconfiguration?.[0]?.transmission?.$?.NAME || false,
 				type           : xml.$.TYPE,

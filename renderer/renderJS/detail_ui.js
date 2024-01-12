@@ -5,6 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Detail window UI
+/* eslint complexity: ["error", 17] */
 
 /* global Chart, processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
@@ -98,6 +99,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 
 		if ( thisItem.masterType === 'vehicle' ) {
 			lookItemData[thisItemUUID] = thisItem
+			console.log(thisItem)
 			lookItemData[thisItemUUID].icon = fsgUtil.iconMaker(lookRecord?.icons?.[storeitem] || null)
 
 			let brandImage = null
@@ -109,7 +111,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				}
 			}
 
-			const maxSpeed   = getDefault(thisItem?.specs?.maxspeed)
+			const maxSpeed   = getDefault(thisItem?.specs?.maxspeed) || getDefault(thisItem?.speedLimit)
 			const thePower   = getDefault(thisItem?.specs?.power)
 			const getPower   = getDefault(thisItem?.specs?.neededpower)
 			const theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
@@ -152,7 +154,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				show_hasLights    : shouldHide(thisItem.hasLights),
 				show_hasPaint     : shouldHide(thisItem.hasColor),
 				show_hasWheels    : shouldHide(thisItem.hasWheelChoice),
-				show_maxSpeed     : shouldHide(thisItem?.specs?.maxspeed),
+				show_maxSpeed     : shouldHide(maxSpeed),
 				show_methane      : shouldHide(thisItem.fuelType, 'methane'),
 				show_needPower    : shouldHide(thisItem?.specs?.neededpower),
 				show_price        : shouldHide(thisItem.price),
