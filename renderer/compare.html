@@ -14,8 +14,7 @@
 	<script src="inc/chart.min.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
 	<script src="renderJS/baseGameData.js"></script>
-	<script src="renderJS/baseGameData2.js"></script>
-	<script src="renderJS/basegame_ui.js"></script>
+	<script src="renderJS/compare_ui.js"></script>
 	<style>
 		
 		.prodIcon   { color:#28a5c8; }
@@ -31,28 +30,44 @@
 				</div>
 				<div class="col-5 text-center mx-auto pt-4" id="badges"></div>
 			</div>
-			<h3 class="text-center mb-1 w-100 mx-auto display-6" id="title"><l10n name="basegame_main_title"></l10n></h3>
-			<i class="text-center mt-1 w-100 mx-auto d-block small" id="mod_location"></i>
-			<div class="btn-group position-relative" style="margin-top: -66px; margin-left: 20px;" id="back_button">
-				<button class="btn btn-outline-primary" onclick="location.search = ''"><l10n name="basegame_button_home"></l10n></button>
-				<button class="btn btn-outline-primary" onclick="history.back()"><l10n name="basegame_button_back"></l10n></button>
-				<button class="btn btn-outline-secondary" id="folderButton" onclick="clientOpenFolder()"><l10n name="basegame_button_folder"></l10n></button>
-				<button class="btn btn-outline-warning" id="compareButton" onclick="clientOpenCompare()"><l10n name="basegame_button_comp"></l10n></div>
-			</div>
+			<h3 class="text-center mb-1 w-100 mx-auto display-6" id="title"><l10n name="compare_title"></l10n></h3>
 			
 		</div>
 
-		<div class="mx-4 mb-3" id="bgContent"></div>
-
-		<div class="mt-3 pt-3 border-top d-none" id="searchBox">
-			<div class="input-group input-group-sm my-2 mx-auto w-75">
-				<span class="input-group-text"><l10n name="find_basegame_match"></l10n></span>
-				<input type="text" id="mods__filter" oninput="clientFilter()" class="form-control mod-row-filter rounded-end">
-				<span id="mods__filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; "></span>
+		<div class="mx-4 mb-3 row g-0" id="bgContent">
+			<div class="col-auto">
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item" style="height: 100px">&nbsp;</li>
+					<li style="height: 45px;" class="list-group-item">&nbsp;</li>
+					<li style="height: 45px;" class="list-group-item">&nbsp;</li>
+					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/price.webp'></li>
+					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/engine.webp'></li>
+					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/maxspeed.webp'></li>
+					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/width.webp'></li>
+					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/weight.webp'></li>
+					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/fillunit.webp'></li>
+					<li style="height: 45px;" class="list-group-item">&nbsp;</li>
+				</ul>
 			</div>
-			<div class="mx-4 mt-3" id="searchResults"></div>
 		</div>
 </body>
+
+<template id="item_div">
+	<ul class="list-group list-group-flush border-start">
+		<li class="list-group-item text-center" style="height: 100px"><img style="width: 88px" class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}"></li>
+		<li style="height: 45px;" class="list-group-item text-center">{{source}}</li>
+		<li style="height: 45px;" class="list-group-item text-center">{{name}}</li>
+		<li style="height: 45px;" class="list-group-item text-end">{{price}}</li>
+		<li style="height: 45px;" class="list-group-item text-end">{{engine}}</li>
+		<li style="height: 45px;" class="list-group-item text-end">{{maxspeed}}</li>
+		<li style="height: 45px;" class="list-group-item text-end">{{width}}</li>
+		<li style="height: 45px;" class="list-group-item text-end">{{weight}}</li>
+		<li style="height: 45px;" class="list-group-item text-end">{{fillunit}}</li>
+		<li class="list-group-item text-center">
+			<button class="btn btn-sm btn-danger" onclick="clientRemoveItem('{{uuid}}')"><i class="bi bi-trash3"></i></button>
+		</li>
+	</ul>
+</template>
 
 <template id="vehicle_div">
 	<div class="card mb-3">
@@ -100,53 +115,6 @@
 					<div class="tab-pane fade" id="{{uuid}}_kph_graph" role="tabpanel" ><canvas id="{{uuid}}_canvas_kph" ></canvas></div>
 					<div class="tab-pane fade" id="{{uuid}}_mph_graph" role="tabpanel" ><canvas id="{{uuid}}_canvas_mph" ></canvas></div>
 				</div>
-			</div>
-		</div>
-	</div>
-</template>
-
-<template id="prod_div">
-	<div class="row border-bottom mt-1">
-		<div class="col-3 text-center align-self-center">{{prodName}}<br><br>
-			<i class="prodIcon bi bi-arrow-repeat"></i> {{prodCycles}}<br>
-			<img style="width:14px" src="img/look/price.webp"> {{prodCost}}<br>
-		</div>
-		<div class="col-9 text-center">
-			<ul class="list-group list-group-flush">
-				{{prodBoosts}}
-				<li class="list-group-item {{class_prodBoosts}}"><i class="prodIconLG bi bi-plus-circle"></i></li>
-				{{prodInputs}}
-				<li class="list-group-item"><i class="prodIconLG bi bi-box-arrow-down"></i></li>
-				<li class="list-group-item">{{prodOutput}}</li>
-			</ul>
-		</div>
-	</div>
-</template>
-
-<template id="place_div">
-	<div class="card mb-3">
-		<div class="card-body">
-			<div class="row mx-2">
-				<div class="col-5 my-auto mx-auto" id="icon_div">
-					<img class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
-				</div>
-				<div class="col-7 mx-auto">
-					<ul class="list-group list-group-flush">
-						<li class="list-group-item"><img style="width:30px" src='img/look/price.webp'> {{price}}</li>
-						<li class="list-group-item {{show_income}}"><img style="width:30px" src='img/look/income.webp'> {{income}}</li>
-						<li class="list-group-item {{show_hasPaint}}"><img style="width:30px" src='img/look/paintable.webp'> <l10n name="look_has_paint"></l10n></li>
-						<li class="list-group-item {{show_hasCow}}"><img style="width:30px" src='img/fills/cow.webp'> {{animalCount}}</li>
-						<li class="list-group-item {{show_hasPig}}"><img style="width:30px" src='img/fills/pig.webp'> {{animalCount}}</li>
-						<li class="list-group-item {{show_hasSheep}}"><img style="width:30px" src='img/fills/sheep.webp'> {{animalCount}}</li>
-						<li class="list-group-item {{show_hasChicken}}"><img style="width:30px" src='img/fills/chicken.webp'> {{animalCount}}</li>
-						<li class="list-group-item {{show_hasHorse}}"><img style="width:30px" src='img/fills/horse.webp'> {{animalCount}}</li>
-						<li class="list-group-item {{show_hasBee}}"><img style="width:30px" src='img/fills/honey.webp'> {{hasBee}}</li>
-						<li class="list-group-item {{show_objectStore}}"><img style="width:30px" src='img/look/objects.webp'> {{objectCount}}</li>
-						<li class="list-group-item {{show_fillUnit}}"><img style="width:30px" src='img/look/fillunit.webp'> {{fillUnit}}<br />{{fillImages}}</li>
-					</ul>
-					{{prodLines}}
-				</div>
-				<div class="col-12 pt-2"><p class="text-center">{{functions}}</p></div>
 			</div>
 		</div>
 	</div>

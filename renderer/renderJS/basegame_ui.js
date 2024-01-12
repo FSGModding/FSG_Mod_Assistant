@@ -476,6 +476,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	chartUnits    = window.l10n.getText_sync(['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp'])
 
 	fsgUtil.byId('folderButton').classList.add('d-none')
+	fsgUtil.byId('compareButton').classList.add('d-none')
 
 	if ( urlParams.size === 0 ) {
 		// Display Main Page
@@ -524,6 +525,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		const thisItem = client_baseGameData.records[pageID]
 
 		fsgUtil.byId('folderButton').classList[thisItem.isBase ? 'remove' : 'add']('d-none')
+
+		if ( thisItem.masterType === 'vehicle' ) {
+			fsgUtil.byId('compareButton').classList.remove('d-none')
+		}
+
 		fsgUtil.byId('title').innerHTML        = typeof thisItem.brand !== 'undefined' ? `${client_baseGameBrandMap[thisItem.brand.toLowerCase()]} ${thisItem.name}` : thisItem.name
 		fsgUtil.byId('mod_location').innerHTML = thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`
 		client_buildStore(thisItem)
@@ -548,6 +554,13 @@ function clientOpenFolder() {
 	window.mods.openBaseFolder(folder)
 }
 
+function clientOpenCompare() {
+	const urlParams     = new URLSearchParams(window.location.search)
+	const pageID        = urlParams.get('page')
+
+	window.mods.openCompareBase(pageID)
+}
+
 
 function clientGetL10NEntries2() {
 	const l10nSendArray = fsgUtil.queryA('l10nBase').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
@@ -557,4 +570,8 @@ function clientGetL10NEntries2() {
 
 window?.l10n?.receive('fromMain_getTextBase_return', (data) => {
 	for ( const item of fsgUtil.query(`l10nBase[name="${data[0]}"]`) ) { item.innerHTML = data[1] }
+})
+
+window?.l10n?.receive('fromMain_l10n_refresh', () => {
+	clientGetL10NEntries2()
 })

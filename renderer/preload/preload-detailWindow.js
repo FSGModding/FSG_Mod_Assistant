@@ -38,6 +38,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		openCompareMod : (itemDetails, source) => { ipcRenderer.send('toMain_openCompareMod', itemDetails, source )},
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_modRecord',

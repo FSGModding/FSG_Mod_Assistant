@@ -518,5 +518,11 @@
 	"version_check_window"                  : "Collection Versions",
 	"version_collections"                   : "Collections",
 	"version_diff"                          : "Version Mismatch",
-	"version_same"                          : "Version Match"
+	"version_same"                          : "Version Match",
+	"basegame_button_back__title"           : "Go Back",
+	"basegame_button_home__title"           : "Home",
+	"basegame_button_folder__title"         : "Open Folder in Explorer",
+	"basegame_button_comp__title"           : "Add to Comparison Window",
+	"compare_title"                         : "Compare Items",
+	"basegame_title"                        : "Base Game Item"
 }

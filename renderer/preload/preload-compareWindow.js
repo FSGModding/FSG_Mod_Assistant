@@ -41,11 +41,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		openBaseFolder : (folder) => { ipcRenderer.send('toMain_openBaseFolder', folder )},
-		openCompareBase : (itemID) => { ipcRenderer.send('toMain_openCompareBase', itemID )},
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
-				'fromMain_placeholder',
+				'fromMain_addBaseItem',
+				'fromMain_addModItem',
 			])
 		
 			if ( validChannels.has( channel ) ) {

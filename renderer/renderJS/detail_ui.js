@@ -8,7 +8,10 @@
 
 /* global Chart, processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
+let lookItemData = {}
+let modName      = ''
 window.mods.receive('fromMain_lookRecord', (lookRecord, chartUnits, currentLocale) => {
+	lookItemData = {}
 	try {
 		buildStore(lookRecord, chartUnits, currentLocale)
 		fsgUtil.clsHideTrue('store_process', true)
@@ -94,6 +97,9 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 		const thisItemUUID = crypto.randomUUID()
 
 		if ( thisItem.masterType === 'vehicle' ) {
+			lookItemData[thisItemUUID] = thisItem
+			lookItemData[thisItemUUID].icon = fsgUtil.iconMaker(lookRecord?.icons?.[storeitem] || null)
+
 			let brandImage = null
 			if ( typeof thisItem.brand === 'string' ) {
 				if ( typeof lookRecord?.brands?.[thisItem.brand]?.icon === 'string' ) {
@@ -389,9 +395,11 @@ const doKeyBinds = (modRecord, locale) => {
 }
 
 const buildPage = (modCollect) => {
+	
 	document.body.setAttribute('data-version', modCollect.appSettings.game_version)
 
 	const modRecord    = modCollect.opts.selected
+	modName            = modRecord.fileDetail.shortName
 	const modDate      = new Date(Date.parse(modRecord.fileDetail.fileDate)).toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'})
 	const doneKeyBinds = doKeyBinds(modRecord, modCollect.currentLocale)
 	const idMap = {
@@ -520,4 +528,9 @@ function shouldHide(item, wanted = null) {
 		return 'd-none'
 	}
 	return ''
+}
+
+
+function clientOpenCompare(uuid) {
+	window.mods.openCompareMod(lookItemData[uuid], modName)
 }

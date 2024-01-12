@@ -264,7 +264,6 @@ async function setActivity() {
 	})
 }
 
-//TODO: trap user option for discord
 if ( mcStore.get('use_discord', true ) ) {
 	log.log.notice('Discord Rich Presence Enabled', 'discord-rpc')
 	disRPC.on('ready', () => {
@@ -1085,7 +1084,26 @@ function gameLauncher() {
 ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 /** END: game launcher */
 
-
+ipcMain.on('toMain_openCompareBase', (_, baseGameItemID) => {
+	if ( win.isValid('compare') && win.isVisible('compare') ) {
+		win.sendToValidWindow('compare', 'fromMain_addBaseItem', baseGameItemID)
+		win.forceFocus('compare')
+	} else {
+		win.createNamedWindow('compare', {}, () => {
+			win.sendToValidWindow('compare', 'fromMain_addBaseItem', baseGameItemID)
+		})
+	}
+})
+ipcMain.on('toMain_openCompareMod', (_, itemContents, source) => {
+	if ( win.isValid('compare') && win.isVisible('compare') ) {
+		win.sendToValidWindow('compare', 'fromMain_addModItem', itemContents, source)
+		win.forceFocus('compare')
+	} else {
+		win.createNamedWindow('compare', {}, () => {
+			win.sendToValidWindow('compare', 'fromMain_addModItem', itemContents, source)
+		})
+	}
+})
 ipcMain.on('toMain_openBaseGame', () => {  win.createNamedWindow('basegame') })
 ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
 	shell.openPath(path.join(path.dirname(versionConfigGet('game_path', 22)), 'data', ...folderParts))
