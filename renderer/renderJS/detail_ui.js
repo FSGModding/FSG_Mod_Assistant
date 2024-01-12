@@ -99,7 +99,6 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 
 		if ( thisItem.masterType === 'vehicle' ) {
 			lookItemData[thisItemUUID] = thisItem
-			console.log(thisItem)
 			lookItemData[thisItemUUID].icon = fsgUtil.iconMaker(lookRecord?.icons?.[storeitem] || null)
 
 			let brandImage = null
