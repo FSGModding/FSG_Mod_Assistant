@@ -33,6 +33,7 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 		}
 
 		if ( element.getAttribute('type') === 'checkbox' ) {
+			if ( element.id === 'notes_websiteVALID' ) { continue }
 			thisValue       = modCollect.collectionNotes[thisCollection][element.id]
 
 			if ( element.id.startsWith('notes_unit') && thisValue === null ) {
@@ -118,9 +119,10 @@ function clientSetColor() {
 }
 
 function clientSetNote(id) {
+	const forceValid  = fsgUtil.byId('notes_websiteVALID').checked
 	const formControl = fsgUtil.byId(id)
 
-	if ( id === 'notes_website' ) {
+	if ( id === 'notes_website' && forceValid ) {
 		try {
 			const parsedURL   = new URL('', formControl.value)
 			formControl.value = new URL('/', parsedURL.origin).href

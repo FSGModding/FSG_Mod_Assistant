@@ -303,6 +303,7 @@
 	"notes_blurb_version"                   : "Která verze farmářského simulátoru je pro",
 	"notes_blurb_website"                   : "Webová adresa serveru (http://example.net:8080/)",
 	"notes_blurb_website_dl"                : "Povolit přímé stahování módu z tohoto serveru",
+	"notes_blurb_website_valid"             : "Vynucení platné webové adresy",
 	"notes_button__title"                   : "Upravit podrobnosti složky",
 	"notes_title_admin"                     : "Heslo správce webu",
 	"notes_title_color"                     : "Barva ikony",

@@ -303,6 +303,7 @@
 	"notes_blurb_version"                   : "Welke versie van de Farming Simulator deze collectie voor is",
 	"notes_blurb_website"                   : "Webadres voor de server (http://voorbeeld.net:8080/)",
 	"notes_blurb_website_dl"                : "Directe Mod Download van deze server toestaan",
+	"notes_blurb_website_valid"             : "Forceer geldig website adres",
 	"notes_button__title"                   : "Bewerk map details",
 	"notes_title_admin"                     : "Server Website Admin Wachtwoord",
 	"notes_title_color"                     : "Icoon Kleur",

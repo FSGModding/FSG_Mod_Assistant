@@ -303,6 +303,7 @@
 	"notes_blurb_version"                   : "Dla której odsłony Farming Simulator jest ten folder",
 	"notes_blurb_website"                   : "Adres internetowy serwera, wyłącznie w celach informacyjnych",
 	"notes_blurb_website_dl"                : "Pozwól na bezpośrednie pobieranie modów z tego serwera",
+	"notes_blurb_website_valid"             : "Wymuś prawidłowy adres strony internetowej",
 	"notes_button__title"                   : "Edytuj szczegóły folderu",
 	"notes_title_admin"                     : "Hasło administratora strony internetowej serwera",
 	"notes_title_color"                     : "Kolor ikony",

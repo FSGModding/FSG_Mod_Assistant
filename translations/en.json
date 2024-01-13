@@ -303,6 +303,7 @@
 	"notes_blurb_version"                   : "Which version of Farming Simulator this collection is for",
 	"notes_blurb_website"                   : "Web address for the server (http://example.net:8080/)",
 	"notes_blurb_website_dl"                : "Allow direct Mod Download from this server",
+	"notes_blurb_website_valid"             : "Force valid website address",
 	"notes_button__title"                   : "Edit Folder Details",
 	"notes_title_admin"                     : "Server Website Admin Password",
 	"notes_title_color"                     : "Icon Color",

@@ -303,6 +303,7 @@
 	"notes_blurb_version"                   : "Для какой версии Farming Simulator эта коллекция",
 	"notes_blurb_website"                   : "Веб-адрес сервера (http://example.net:8080/)",
 	"notes_blurb_website_dl"                : "Разрешить прямую загрузку модов с этого сервера",
+	"notes_blurb_website_valid"             : "Принудительно введите действительный адрес веб-сайта",
 	"notes_button__title"                   : "Редактировать информацию о папке",
 	"notes_title_admin"                     : "Пароль администратора веб-сайта сервера",
 	"notes_title_color"                     : "Цвет значка",

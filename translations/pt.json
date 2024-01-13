@@ -303,6 +303,7 @@
 	"notes_blurb_version"                   : "Para qual versão do Farming Simulator é esta coleção",
 	"notes_blurb_website"                   : "Endereço da web do servidor, apenas para fins informativos",
 	"notes_blurb_website_dl"                : "Permitir download direto de mods deste site",
+	"notes_blurb_website_valid"             : "Forçar endereço válido do sítio Web",
 	"notes_button__title"                   : "Editar detalhes da pasta",
 	"notes_title_admin"                     : "Senha do Administrador do Website do Servidor",
 	"notes_title_color"                     : "Cor do ícone",

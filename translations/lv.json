@@ -303,6 +303,7 @@
 	"notes_blurb_version"                   : "Kurai Farming Simulator versijai ir paredzēta šī kolekcija",
 	"notes_blurb_website"                   : "Servera tīmekļa adrese (http://example.net:8080/)",
 	"notes_blurb_website_dl"                : "Atļaut tiešu Mod Download no šī servera",
+	"notes_blurb_website_valid"             : "Spēkā derīgas tīmekļa vietnes adreses izspiešana",
 	"notes_button__title"                   : "Rediģēt mapes informāciju",
 	"notes_title_admin"                     : "Servera vietnes administratora parole",
 	"notes_title_color"                     : "Ikonas krāsa",

@@ -303,6 +303,7 @@
 	"notes_blurb_version"                   : "Für welche Version des Landwirtschafts-Simulators diese Sammlung ist",
 	"notes_blurb_website"                   : "Webadresse für den Server (http://example.net:8080/)",
 	"notes_blurb_website_dl"                : "Erlaube direkten Mod-Download von diesem Server",
+	"notes_blurb_website_valid"             : "Gültige Website-Adresse erzwingen",
 	"notes_button__title"                   : "Ordnerdetails bearbeiten",
 	"notes_title_admin"                     : "Server-Website-Admin-Passwort",
 	"notes_title_color"                     : "Icon-Farbe",
