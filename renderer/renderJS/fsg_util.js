@@ -259,15 +259,16 @@ const fsgUtil = {
 		for ( const thisValue of valueList ) {
 			if ( dashZeros && thisValue === 0 ) {
 				returnText.push('--')
-			} else {
-				const thisText = []
-
-				for ( const thisTrans of transArray ) {
-					const thisNumber = thisValue * thisTrans.factor
-					thisText.push(`${Intl.NumberFormat(locale, { maximumFractionDigits : thisTrans.precision }).format(thisNumber)} ${getText(thisTrans.unit)}`)
-				}
-				returnText.push(thisText.join(' / '))
+				continue
 			}
+			
+			const thisText = []
+
+			for ( const thisTrans of transArray ) {
+				const thisNumber = thisValue * thisTrans.factor
+				thisText.push(`${Intl.NumberFormat(locale, { maximumFractionDigits : thisTrans.precision }).format(thisNumber)} ${getText(thisTrans.unit)}`)
+			}
+			returnText.push(thisText.join(' / '))
 		}
 
 		return returnText.join(separator)
