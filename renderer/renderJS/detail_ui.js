@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Detail window UI
-/* eslint complexity: ["error", 17] */
+/* eslint complexity: ["error", 16] */
 
 /* global Chart, processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
@@ -17,6 +17,7 @@ window.mods.receive('fromMain_lookRecord', (lookRecord, chartUnits, currentLocal
 		buildStore(lookRecord, chartUnits, currentLocale)
 		fsgUtil.clsHideTrue('store_process', true)
 	} catch (err) {
+		console.log(err)
 		window.log.warning(`Store build failed :: ${err}`, 'detail-ui')
 	}
 	processL10N()
@@ -87,6 +88,26 @@ const buildWidth2 = (sprayTypes, defaultWidth, currentLocale) => {
 	return sprayTypesHTML.join('')
 }
 
+const getMaxSpeed = (specSpeed, limitSpeed, motorSpeed) => {
+	const specSpeed_clean = getDefault(specSpeed, false, 0)
+	const limitSpeed_clean = getDefault(limitSpeed, false, 0)
+
+	if ( specSpeed_clean > 0 ) { return specSpeed_clean }
+	if ( limitSpeed_clean > 0 ) { return limitSpeed_clean }
+
+	if ( typeof motorSpeed !== 'undefined' && motorSpeed !== null ) {
+		let thisMin = 10000
+		let thisMax = 0
+		for ( const thisSpeed of motorSpeed ) {
+			thisMin = Math.min(thisMin, thisSpeed)
+			thisMax = Math.max(thisMax, thisSpeed)
+		}
+		if ( thisMin === thisMax ) { return thisMin }
+		return [thisMin, thisMax]
+	}
+	return 0
+}
+
 const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
@@ -110,8 +131,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 					brandImage = ( fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
 				}
 			}
-
-			const maxSpeed   = getDefault(thisItem?.specs?.maxspeed) || getDefault(thisItem?.speedLimit)
+			const maxSpeed   = getMaxSpeed(thisItem?.specs?.maxspeed, thisItem?.speedLimit, thisItem?.motorInfo?.speed)
 			const thePower   = getDefault(thisItem?.specs?.power)
 			const getPower   = getDefault(thisItem?.specs?.neededpower)
 			const theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
@@ -140,7 +160,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				maxSpeed          : fsgUtil.numFmtMany(maxSpeed, currentLocale, [
 					{ factor : 1,        precision : 0, unit : 'unit_kph' },
 					{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
-				]),
+				], true),
 				needPower         : fsgUtil.numFmtMany(getPower, currentLocale, [
 					{ factor : 1,      precision : 0, unit : 'unit_hp' },
 					{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
@@ -155,7 +175,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				show_hasLights    : shouldHide(thisItem.hasLights),
 				show_hasPaint     : shouldHide(thisItem.hasColor),
 				show_hasWheels    : shouldHide(thisItem.hasWheelChoice),
-				show_maxSpeed     : shouldHide(maxSpeed),
+				show_maxSpeed     : shouldHide(maxSpeed !== 0),
 				show_methane      : shouldHide(thisItem.fuelType, 'methane'),
 				show_needPower    : shouldHide(thisItem?.specs?.neededpower),
 				show_price        : shouldHide(thisItem.price),

@@ -59,6 +59,23 @@ const buildWidth2 = (sprayTypes, defaultWidth) => {
 	return sprayTypesHTML.join('')
 }
 
+const getMaxSpeed = (specSpeed, limitSpeed, motorSpeed) => {
+	const specSpeed_clean = getDefault(specSpeed, false, 0)
+	const limitSpeed_clean = getDefault(limitSpeed, false, 0)
+
+	if ( specSpeed_clean > 0 ) { return specSpeed_clean }
+	if ( limitSpeed_clean > 0 ) { return limitSpeed_clean }
+
+	if ( typeof motorSpeed !== 'undefined' && motorSpeed !== null ) {
+		let thisMax = 0
+		for ( const thisSpeed of motorSpeed ) {
+			thisMax = Math.max(thisMax, thisSpeed)
+		}
+		return thisMax
+	}
+	return 0
+}
+
 const client_buildStore = (thisItem) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
@@ -67,7 +84,7 @@ const client_buildStore = (thisItem) => {
 
 	if ( thisItem.masterType === 'vehicle' ) {
 		const brandImage = fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
-		const maxSpeed   = getDefault(thisItem?.specs?.maxspeed) || getDefault(thisItem?.speedLimit)
+		const maxSpeed   = getMaxSpeed(thisItem?.specs?.maxspeed, thisItem?.speedLimit, thisItem?.motorInfo?.speed)
 		const thePower   = getDefault(thisItem?.specs?.power)
 		const getPower   = getDefault(thisItem?.specs?.neededpower)
 		let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)

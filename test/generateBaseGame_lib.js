@@ -325,6 +325,7 @@ class baseLooker {
 			hp    : [],
 			kph   : [],
 			mph   : [],
+			speed : [],
 		}
 
 		const last = {
@@ -337,6 +338,8 @@ class baseLooker {
 			last.torque = this.#util_getDefault(thisMotor?.motor?.torque, last.torque)
 			last.trans  = this.#util_getDefault(thisMotor?.transmission, last.trans)
 
+			motorInfo.speed.push(this.#util_getDefault(thisMotor?.motor?.$?.MAXFORWARDSPEED, 0))
+			
 			const axelRatio  = this.#util_getDefault(last.trans?.$?.AXLERATIO, 1)
 			const minFwdGear = this.#util_getDefault(last.trans?.$?.MINFORWARDGEARRATIO)
 			const motorScale = this.#util_getDefault(thisMotor?.motor?.$?.TORQUESCALE, 1)

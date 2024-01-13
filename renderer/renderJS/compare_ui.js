@@ -33,6 +33,23 @@ function getDefault(value, float = false, safe = 0) {
 	return !float ? parseInt(newValue) : parseFloat(newValue)
 }
 
+const getMaxSpeed = (specSpeed, limitSpeed, motorSpeed) => {
+	const specSpeed_clean = getDefault(specSpeed, false, 0)
+	const limitSpeed_clean = getDefault(limitSpeed, false, 0)
+
+	if ( specSpeed_clean > 0 ) { return specSpeed_clean }
+	if ( limitSpeed_clean > 0 ) { return limitSpeed_clean }
+
+	if ( typeof motorSpeed !== 'undefined' && motorSpeed !== null ) {
+		let thisMax = 0
+		for ( const thisSpeed of motorSpeed ) {
+			thisMax = Math.max(thisMax, thisSpeed)
+		}
+		return thisMax
+	}
+	return 0
+}
+
 function addItem(thisItem, source, uuid_name) {
 	if ( thisItem.masterType !== 'vehicle' ) { return }
 
@@ -44,7 +61,7 @@ function addItem(thisItem, source, uuid_name) {
 	
 	currentLocale    = document.querySelector('body').getAttribute('data-i18n') || 'en'
 	const uuid       = crypto.randomUUID()
-	const maxSpeed   = getDefault(thisItem?.specs?.maxspeed) || getDefault(thisItem?.speedLimit)
+	const maxSpeed   = getMaxSpeed(thisItem?.specs?.maxspeed, thisItem?.speedLimit, thisItem?.motorInfo?.speed)
 	const thePower   = getDefault(thisItem?.specs?.power)
 	const getPower   = getDefault(thisItem?.specs?.neededpower)
 	let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
