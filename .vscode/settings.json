@@ -134,6 +134,7 @@
 		"manurespreader",
 		"mapid",
 		"maptitle",
+		"MAXFORWARDSPEED",
 		"MAXGROWTHSTATE",
 		"MAXHARVESTINGGROWTHSTATE",
 		"maximizable",
