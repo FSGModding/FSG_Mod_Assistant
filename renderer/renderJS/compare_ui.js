@@ -8,16 +8,17 @@
 
 /* global processL10N, fsgUtil, client_baseGameData */
 
-let currentLocale = 'en'
+let   currentLocale = 'en'
+const itemList      = new Set()
 
 window.mods.receive('fromMain_addBaseItem', (itemID) => {
-	addItem(client_baseGameData.records[itemID], null)
+	addItem(client_baseGameData.records[itemID], null, itemID)
 	processL10N()
 	clientGetL10NEntries2()
 })
 
 window.mods.receive('fromMain_addModItem', (itemDetails, source) => {
-	addItem(itemDetails, source)
+	addItem(itemDetails, source, itemDetails.uuid_name)
 	processL10N()
 	clientGetL10NEntries2()
 })
@@ -32,9 +33,16 @@ function getDefault(value, float = false, safe = 0) {
 	return !float ? parseInt(newValue) : parseFloat(newValue)
 }
 
-function addItem(thisItem, source) {
-	currentLocale    = document.querySelector('body').getAttribute('data-i18n') || 'en'
+function addItem(thisItem, source, uuid_name) {
+	if ( thisItem.masterType !== 'vehicle' ) { return }
 
+	const identity   = `${source === null ? 'BASEGAME' : source }_${uuid_name.replaceAll('.', '_')}`
+	
+	if ( itemList.has(identity) ) { return }
+
+	itemList.add(identity)
+	
+	currentLocale    = document.querySelector('body').getAttribute('data-i18n') || 'en'
 	const uuid       = crypto.randomUUID()
 	const maxSpeed   = getDefault(thisItem?.specs?.maxspeed) || getDefault(thisItem?.speedLimit)
 	const thePower   = getDefault(thisItem?.specs?.power)
@@ -84,6 +92,7 @@ function addItem(thisItem, source) {
 	const appendDiv = document.createElement('tr')
 
 	appendDiv.id = uuid
+	appendDiv.setAttribute('data-identity', identity)
 	appendDiv.innerHTML = addHTML
 	fsgUtil.byId('displayTable').append(appendDiv)
 }
@@ -112,7 +121,10 @@ function clientSortBy(sortType) {
 	fsgUtil.byId('displayTable').innerHTML = sortRows.map((x) => x.row).join('')
 }
 
-function clientRemoveItem(itemID) { fsgUtil.byId(itemID).remove() }
+function clientRemoveItem(itemID) {
+	itemList.delete(fsgUtil.byId(itemID).getAttribute('data-identity'))
+	fsgUtil.byId(itemID).remove()
+}
 
 function clientOpenFolder() {
 	const urlParams     = new URLSearchParams(window.location.search)
