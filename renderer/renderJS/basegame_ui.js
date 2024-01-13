@@ -391,17 +391,19 @@ function wrapItem(name, icon, type, page, noTrans = false) {
 	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100"><a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}"><img class="mb-3" style="width: 100px" src="${iconString}"><br />${nameString}</a></div></div>`
 }
 
-function wrapStoreItem(name, price, icon, brand, page, dlc = null) {
+function wrapStoreItem(name, price, icon, brand, page, type, dlc = null) {
 	const iconString  = icon.startsWith('data:') ? icon : `img/baseCategory/${icon}.webp`
 	const brandString = typeof brand === 'string' ? `<br><img class="mb-3" style="width: 100px" src="img/brand/${client_baseGameBrandIconMap[brand.toLowerCase()]}.webp"></img>` : ''
 
-	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100">
-	<a class="text-decoration-none text-white-50" href="?type=item&page=${page}">
-	<img class="mb-3" style="width: 100px" src="${iconString}"><br>${brandString}
-	<br><span class="text-white">${name}</span><br><br>
-	<img style="width:30px" src="img/look/price.webp"> ${Intl.NumberFormat(currentLocale).format(price)}</a><br><br>
-	<em class="text-body-tertiary">${dlc !== null ? dlc : ''}</span>
-	</div></div>`
+	return fsgUtil.useTemplate('store_item', {
+		brandString    : brandString,
+		dlc            : dlc !== null ? dlc : '',
+		iconString     : iconString,
+		name           : name,
+		page           : page,
+		price          : Intl.NumberFormat(currentLocale).format(price),
+		showCompButton : type === 'vehicle' ? '' : 'd-none',
+	})
 }
 
 function wrapRow(rowHTMLArray) {
@@ -463,6 +465,7 @@ function clientFilter() {
 			client_baseGameData.records[x].icon,
 			client_baseGameData.records[x].brand,
 			x,
+			client_baseGameData.records[x].masterType,
 			client_baseGameData.records[x].dlcKey
 		)))
 	}
@@ -509,6 +512,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			client_baseGameData.records[x].icon,
 			client_baseGameData.records[x].brand,
 			x,
+			client_baseGameData.records[x].masterType,
 			client_baseGameData.records[x].dlcKey
 		)))
 	} else if ( pageType === 'brand' ) {
@@ -524,6 +528,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			client_baseGameData.records[x].icon,
 			client_baseGameData.records[x].brand,
 			x,
+			client_baseGameData.records[x].masterType,
 			client_baseGameData.records[x].dlcKey
 		)))
 	} else if ( pageType === 'item' ) {
@@ -560,11 +565,11 @@ function clientOpenFolder() {
 	window.mods.openBaseFolder(folder)
 }
 
-function clientOpenCompare() {
+function clientOpenCompare(forcePageID = null) {
 	const urlParams     = new URLSearchParams(window.location.search)
 	const pageID        = urlParams.get('page')
 
-	window.mods.openCompareBase(pageID)
+	window.mods.openCompareBase(forcePageID !== null ? forcePageID : pageID)
 }
 
 

@@ -54,6 +54,23 @@
 		</div>
 </body>
 
+<template id="store_item">
+	<div class="col-2 text-end">
+		<button onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button>
+		<div class="p-2 border rounded-3 h-100 text-center">
+			<a class="text-decoration-none text-white-50" href="?type=item&page={{page}}">
+				<img class="mb-3" style="width: 100px" src="{{iconString}}"><br>
+				{{brandString}}<br>
+				<span class="text-white">{{name}}</span><br>
+				<br>
+				<img style="width:30px" src="img/look/price.webp"> {{price}}<br>
+				<br>
+				<em class="text-body-tertiary">{{dlc}}</em>
+			</a>
+		</div>
+	</div>
+</template>
+
 <template id="vehicle_div">
 	<div class="card mb-3">
 		<h5 class="card-header">
