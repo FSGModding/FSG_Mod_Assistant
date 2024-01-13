@@ -17,7 +17,6 @@ window.mods.receive('fromMain_lookRecord', (lookRecord, chartUnits, currentLocal
 		buildStore(lookRecord, chartUnits, currentLocale)
 		fsgUtil.clsHideTrue('store_process', true)
 	} catch (err) {
-		console.log(err)
 		window.log.warning(`Store build failed :: ${err}`, 'detail-ui')
 	}
 	processL10N()
