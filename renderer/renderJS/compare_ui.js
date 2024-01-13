@@ -6,25 +6,9 @@
 
 // Base game window UI
 
-/* global processL10N, fsgUtil, getText, client_baseGameData */
+/* global processL10N, fsgUtil, client_baseGameData */
 
 let currentLocale = 'en'
-
-function getDefault(value, float = false, safe = 0) {
-	const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
-	return !float ? parseInt(newValue) : parseFloat(newValue)
-}
-
-function formatManyNumber(value, locale, transArray) {
-	const returnText = []
-
-	for ( const thisTrans of transArray ) {
-		const thisNumber = value * thisTrans.factor
-		returnText.push(`${Intl.NumberFormat(locale, { maximumFractionDigits : thisTrans.precision }).format(thisNumber)} ${getText(thisTrans.unit)}`)
-	}
-
-	return returnText.join(' / ')
-}
 
 window.mods.receive('fromMain_addBaseItem', (itemID) => {
 	addItem(client_baseGameData.records[itemID], null)
@@ -43,6 +27,11 @@ window.addEventListener('DOMContentLoaded', () => {
 	clientGetL10NEntries2()
 })
 
+function getDefault(value, float = false, safe = 0) {
+	const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
+	return !float ? parseInt(newValue) : parseFloat(newValue)
+}
+
 function addItem(thisItem, source) {
 	currentLocale    = document.querySelector('body').getAttribute('data-i18n') || 'en'
 
@@ -52,43 +41,75 @@ function addItem(thisItem, source) {
 	const getPower   = getDefault(thisItem?.specs?.neededpower)
 	let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
 	const theFill    = getDefault(thisItem.fillLevel)
+	const powerSpan  = fsgUtil.getMinMaxHP(thePower, thisItem?.motorInfo)
 	
 	if ( typeof thisItem.sprayTypes !== 'undefined' && thisItem.sprayTypes !== null && thisItem?.sprayTypes?.length !== 0 && theWidth === 0 ) {
 		for ( const thisWidth of thisItem.sprayTypes ) {
 			theWidth = Math.max(thisWidth.width, theWidth)
 		}
 	}
-	
-	const realPower = thePower || getPower || 0
 
 	const addHTML  = fsgUtil.useTemplate('item_div', {
-		engine            : realPower > 0 ? formatManyNumber(realPower, currentLocale, [
+		engineHigh        : fsgUtil.numFmtMany(powerSpan[1], currentLocale, [
 			{ factor : 1,      precision : 0, unit : 'unit_hp' },
-		]) : '--',
-		fillunit          : theFill > 0 ? formatManyNumber(theFill, currentLocale, [
+		], true),
+		engineHigh_raw    : powerSpan[1],
+		engineLow         : fsgUtil.numFmtMany(powerSpan[0] || getPower, currentLocale, [
+			{ factor : 1,      precision : 0, unit : 'unit_hp' },
+		], true),
+		engineLow_raw     : powerSpan[0],
+		fillunit          : fsgUtil.numFmtMany(theFill, currentLocale, [
 			{ factor : 1,         precision : 0, unit : 'unit_l' },
-		]) : '--',
+		], true),
+		fillunit_raw      : theFill,
 		iconIMG           : thisItem.icon,
-		maxspeed          : maxSpeed > 0 ? formatManyNumber(maxSpeed, currentLocale, [
+		maxspeed          : fsgUtil.numFmtMany(maxSpeed, currentLocale, [
 			{ factor : 1,        precision : 0, unit : 'unit_kph' },
-		]) : '--',
+		], true),
+		maxspeed_raw      : maxSpeed,
 		name              : thisItem.name,
 		price             : Intl.NumberFormat(currentLocale).format(thisItem.price),
+		price_raw         : thisItem.price,
 		source            : source || '<l10n name="basegame_title"></l10n>',
 		uuid              : uuid,
-		weight            : formatManyNumber(thisItem.weight, currentLocale, [
+		weight            : fsgUtil.numFmtMany(thisItem.weight, currentLocale, [
 			{ factor : 1,    precision : 0, unit : 'unit_kg' },
 		]),
-		width             : theWidth > 0 ? formatManyNumber(theWidth, currentLocale, [
+		weight_raw        : thisItem.weight,
+		width             : fsgUtil.numFmtMany(theWidth, currentLocale, [
 			{ factor : 1,       precision : 1, unit : 'unit_m' },
-		]) : '--',
+		], true),
+		width_raw         : theWidth,
 	})
-	const appendDiv = document.createElement('div')
+	const appendDiv = document.createElement('tr')
 
 	appendDiv.id = uuid
-	appendDiv.classList.add('col')
 	appendDiv.innerHTML = addHTML
-	fsgUtil.byId('bgContent').append(appendDiv)
+	fsgUtil.byId('displayTable').append(appendDiv)
+}
+
+function clientSortBy(sortType) {
+	const isDownNow = fsgUtil.byId(`head_${sortType}`).querySelector('.sort_icon_down') !== null
+	const shouldBeDown = !isDownNow
+
+	for ( const element of fsgUtil.query('.sort_icon') ) { element.remove() }
+
+	const currentHTML = fsgUtil.byId(`head_${sortType}`).innerHTML
+	const addHTML     = shouldBeDown ? '<i class="bi bi-chevron-double-down sort_icon sort_icon_down"></i>' : '<i class="bi bi-chevron-double-up sort_icon sort_icon_up"></i>'
+
+	fsgUtil.byId(`head_${sortType}`).innerHTML = `${addHTML} ${currentHTML}`
+	
+	const currentRows = fsgUtil.byId('displayTable').querySelectorAll('tr')
+
+	const sortRows = []
+	for ( const [thisIdx, thisRow] of currentRows.entries() ) {
+		const thisValue = thisRow.querySelector(`[data-type="${sortType}"]`).getAttribute('data-sort')
+		sortRows.push({idx : thisIdx, value : thisValue, row : thisRow.outerHTML })
+	}
+
+	sortRows.sort((a, b) => !shouldBeDown ? a.value - b.value : b.value - a.value )
+
+	fsgUtil.byId('displayTable').innerHTML = sortRows.map((x) => x.row).join('')
 }
 
 function clientRemoveItem(itemID) { fsgUtil.byId(itemID).remove() }

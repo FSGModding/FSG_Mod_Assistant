@@ -35,38 +35,37 @@
 		</div>
 
 		<div class="mx-4 mb-3 row g-0" id="bgContent">
-			<div class="col-auto">
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item" style="height: 100px">&nbsp;</li>
-					<li style="height: 45px;" class="list-group-item">&nbsp;</li>
-					<li style="height: 45px;" class="list-group-item">&nbsp;</li>
-					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/price.webp'></li>
-					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/engine.webp'></li>
-					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/maxspeed.webp'></li>
-					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/width.webp'></li>
-					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/weight.webp'></li>
-					<li style="height: 45px;" class="list-group-item"><img style="width:30px" src='img/look/fillunit.webp'></li>
-					<li style="height: 45px;" class="list-group-item">&nbsp;</li>
-				</ul>
-			</div>
+			<table class="w-100 table table-bordered table-sm"><thead>
+				<tr>
+					<th>&nbsp;</th>
+					<th class="text-center" style="width:100px" id="head_price" onclick="clientSortBy('price')"><img style="width:30px" src='img/look/price.webp'></th>
+					<th class="text-center" style="width:100px" id="head_engineLow" onclick="clientSortBy('engineLow')"><img style="width:30px" src='img/look/engine.webp'> <i style="color: #2abce6;" class="bi bi-chevron-bar-down"></i></th>
+					<th class="text-center" style="width:100px" id="head_engineHigh" onclick="clientSortBy('engineHigh')"><img style="width:30px" src='img/look/engine.webp'> <i style="color: #2abce6;" class="bi bi-chevron-bar-up"></i></th>
+					<th class="text-center" style="width:100px" id="head_maxspeed" onclick="clientSortBy('maxspeed')"><img style="width:30px" src='img/look/maxspeed.webp'></th>
+					<th class="text-center" style="width:100px" id="head_width" onclick="clientSortBy('width')"><img style="width:30px" src='img/look/width.webp'></th>
+					<th class="text-center" style="width:100px" id="head_weight" onclick="clientSortBy('weight')"><img style="width:30px" src='img/look/weight.webp'></th>
+					<th class="text-center" style="width:100px" id="head_fillunit" onclick="clientSortBy('fillunit')"><img style="width:30px" src='img/look/fillunit.webp'></th>
+					<th class="text-center">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody id="displayTable"></tbody>
+			</table>
 		</div>
 </body>
 
 <template id="item_div">
-	<ul class="list-group list-group-flush border-start">
-		<li class="list-group-item text-center" style="height: 100px"><img style="width: 88px" class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}"></li>
-		<li style="height: 45px;" class="list-group-item text-center">{{source}}</li>
-		<li style="height: 45px;" class="list-group-item text-center">{{name}}</li>
-		<li style="height: 45px;" class="list-group-item text-end">{{price}}</li>
-		<li style="height: 45px;" class="list-group-item text-end">{{engine}}</li>
-		<li style="height: 45px;" class="list-group-item text-end">{{maxspeed}}</li>
-		<li style="height: 45px;" class="list-group-item text-end">{{width}}</li>
-		<li style="height: 45px;" class="list-group-item text-end">{{weight}}</li>
-		<li style="height: 45px;" class="list-group-item text-end">{{fillunit}}</li>
-		<li class="list-group-item text-center">
-			<button class="btn btn-sm btn-danger" onclick="clientRemoveItem('{{uuid}}')"><i class="bi bi-trash3"></i></button>
-		</li>
-	</ul>
+	<td class="text-center">
+		<img style="width: 88px" class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
+		{{name}}<br><em>{{source}}</em>
+	</td>
+	<td class="text-end align-middle" data-type="price" data-sort="{{price_raw}}">{{price}}</td>
+	<td class="text-end align-middle" data-type="engineLow" data-sort="{{engineLow_raw}}">{{engineLow}}</td>
+	<td class="text-end align-middle" data-type="engineHigh" data-sort="{{engineHigh_raw}}">{{engineHigh}}</td>
+	<td class="text-end align-middle" data-type="maxspeed" data-sort="{{maxspeed_raw}}">{{maxspeed}}</td>
+	<td class="text-end align-middle" data-type="width" data-sort="{{width_raw}}">{{width}}</td>
+	<td class="text-end align-middle" data-type="weight" data-sort="{{weight_raw}}">{{weight}}</td>
+	<td class="text-end align-middle" data-type="fillunit" data-sort="{{fillunit_raw}}">{{fillunit}}</td>
+	<td class="text-center align-middle"><button class="btn btn-sm btn-danger" onclick="clientRemoveItem('{{uuid}}')"><i class="bi bi-trash3"></i></button></td>
 </template>
 
 <template id="vehicle_div">

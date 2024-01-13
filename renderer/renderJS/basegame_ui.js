@@ -6,7 +6,7 @@
 
 // Base game window UI
 
-/* global Chart, processL10N, fsgUtil, getText, client_baseGameBrandMap, client_baseGameData, client_baseGameCats, client_baseGameBrandIconMap, client_baseGameBrands, client_baseGameTopLevel, client_baseGameCatMap_vehicle, client_baseGameCatMap_place */
+/* global Chart, processL10N, fsgUtil, client_baseGameBrandMap, client_baseGameData, client_baseGameCats, client_baseGameBrandIconMap, client_baseGameBrands, client_baseGameTopLevel, client_baseGameCatMap_vehicle, client_baseGameCatMap_place */
 
 let currentLocale = 'en'
 
@@ -51,7 +51,7 @@ const buildWidth2 = (sprayTypes, defaultWidth) => {
 
 	for ( const thisType of sprayTypes ) {
 		const fillImages = thisType.fills.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
-		sprayTypesHTML.push(`<div class="ms-4">${fillImages.join(' ')} ${formatManyNumber(thisType.width !== null ? thisType.width : defaultWidth, currentLocale, [
+		sprayTypesHTML.push(`<div class="ms-4">${fillImages.join(' ')} ${fsgUtil.numFmtMany(thisType.width !== null ? thisType.width : defaultWidth, currentLocale, [
 			{ factor : 1,       precision : 1, unit : 'unit_m' },
 			{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
 		])}</div>`)
@@ -73,7 +73,7 @@ const client_buildStore = (thisItem) => {
 		let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
 		const theFill    = getDefault(thisItem.fillLevel)
 		const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
-			
+		const powerSpan  = fsgUtil.getMinMaxHP(thePower, thisItem?.motorInfo)
 		
 		if ( typeof thisItem.sprayTypes !== 'undefined' && thisItem.sprayTypes !== null && thisItem?.sprayTypes?.length !== 0 && theWidth === 0 ) {
 			for ( const thisWidth of thisItem.sprayTypes ) {
@@ -85,12 +85,12 @@ const client_buildStore = (thisItem) => {
 			brandHIDE         : shouldHide(brandImage),
 			brandIMG          : fsgUtil.iconMaker(brandImage),
 			category          : thisItem.category,
-			enginePower       : formatManyNumber(thePower, currentLocale, [
+			enginePower       : fsgUtil.numFmtMany(powerSpan, currentLocale, [
 				{ factor : 1,      precision : 0, unit : 'unit_hp' },
 				{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
 			]),
 			fillImages        : fillImages.join(' '),
-			fillUnit          : formatManyNumber(theFill, currentLocale, [
+			fillUnit          : fsgUtil.numFmtMany(theFill, currentLocale, [
 				{ factor : 1,         precision : 0, unit : 'unit_l' },
 				{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
 				{ factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
@@ -99,11 +99,11 @@ const client_buildStore = (thisItem) => {
 			iconIMG           : thisItem.icon,
 			itemName          : thisItem.name,
 			itemTitle         : thisItem.type,
-			maxSpeed          : formatManyNumber(maxSpeed, currentLocale, [
+			maxSpeed          : fsgUtil.numFmtMany(maxSpeed, currentLocale, [
 				{ factor : 1,        precision : 0, unit : 'unit_kph' },
 				{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
 			]),
-			needPower         : formatManyNumber(getPower, currentLocale, [
+			needPower         : fsgUtil.numFmtMany(getPower, currentLocale, [
 				{ factor : 1,      precision : 0, unit : 'unit_hp' },
 				{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
 			]),
@@ -127,11 +127,11 @@ const client_buildStore = (thisItem) => {
 			transmission      : thisItem.transType,
 			typeDesc          : thisItem.typeDesc,
 			uuid              : thisItemUUID,
-			weight            : formatManyNumber(thisItem.weight, currentLocale, [
+			weight            : fsgUtil.numFmtMany(thisItem.weight, currentLocale, [
 				{ factor : 1,    precision : 0, unit : 'unit_kg' },
 				{ factor : 0.01, precision : 1, unit : 'unit_t' },
 			]),
-			workWidth         : formatManyNumber(theWidth, currentLocale, [
+			workWidth         : fsgUtil.numFmtMany(theWidth, currentLocale, [
 				{ factor : 1,       precision : 1, unit : 'unit_m' },
 				{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
 			]),
@@ -303,13 +303,13 @@ const client_buildStore = (thisItem) => {
 			animalCount      : thisItem.husbandry.capacity,
 			category          : thisItem.category,
 			fillImages       : fillImages.join(' '),
-			fillUnit         : formatManyNumber(thisItem.silo.capacity, currentLocale, [
+			fillUnit         : fsgUtil.numFmtMany(thisItem.silo.capacity, currentLocale, [
 				{ factor : 1,         precision : 0, unit : 'unit_l' },
 				{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
 				{ factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
 			]),
 			functions        : wrapFunctions(thisItem.functions),
-			hasBee           : `${formatManyNumber(thisItem.beehive.radius, currentLocale, [{factor : 1, precision : 0, unit : 'unit_m'}])} / ${formatManyNumber(thisItem.beehive.liters, currentLocale, [{factor : 1, precision : 0, unit : 'unit_l'}])}`,
+			hasBee           : `${fsgUtil.numFmtMany(thisItem.beehive.radius, currentLocale, [{factor : 1, precision : 0, unit : 'unit_m'}])} / ${fsgUtil.numFmtMany(thisItem.beehive.liters, currentLocale, [{factor : 1, precision : 0, unit : 'unit_l'}])}`,
 			iconIMG          : thisItem.icon,
 			income           : thisItem.incomePerHour ?? 0,
 			itemName         : thisItem.name,
@@ -348,17 +348,6 @@ function wrapFunctions(funcs) {
 function getDefault(value, float = false, safe = 0) {
 	const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
 	return !float ? parseInt(newValue) : parseFloat(newValue)
-}
-
-function formatManyNumber(value, locale, transArray) {
-	const returnText = []
-
-	for ( const thisTrans of transArray ) {
-		const thisNumber = value * thisTrans.factor
-		returnText.push(`${Intl.NumberFormat(locale, { maximumFractionDigits : thisTrans.precision }).format(thisNumber)} ${getText(thisTrans.unit)}`)
-	}
-
-	return returnText.join(' / ')
 }
 
 function shouldHide(item, wanted = null) {

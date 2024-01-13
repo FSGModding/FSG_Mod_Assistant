@@ -251,6 +251,46 @@ const fsgUtil = {
 		return `<img title="${name}" style="height: ${height}px" src="img/fills/${fsgUtil.knownFills.has(name) ? name : 'unknown'}.webp">`
 	},
 
+	numFmtMany : (value, locale, transArray, dashZeros = false) => {
+		const valueList  = typeof value === 'number' ? [value] : value
+		const separator   = valueList.length < 3 ? ' - ' : ', '
+		const returnText = []
+
+		for ( const thisValue of valueList ) {
+			if ( dashZeros && thisValue === 0 ) {
+				returnText.push('--')
+			} else {
+				const thisText = []
+
+				for ( const thisTrans of transArray ) {
+					const thisNumber = thisValue * thisTrans.factor
+					thisText.push(`${Intl.NumberFormat(locale, { maximumFractionDigits : thisTrans.precision }).format(thisNumber)} ${getText(thisTrans.unit)}`)
+				}
+				returnText.push(thisText.join(' / '))
+			}
+		}
+
+		return returnText.join(separator)
+	},
+
+	getMinMaxHP     : (baseHP, motorInfo) => {
+		if ( !baseHP ) { return [0, 0] }
+		if ( !motorInfo ) { return [baseHP, 0] }
+
+		let trueMin = 10000
+		let trueMax = 0
+
+		for ( const thisHP of motorInfo.hp ) {
+			let thisMax = 0
+			for ( const thisHPEntry of thisHP.data ) {
+				thisMax = Math.max(thisMax, thisHPEntry.y)
+			}
+			trueMin = Math.min(trueMin, thisMax)
+			trueMax = Math.max(trueMax, thisMax)
+		}
+		return [trueMin, trueMax]
+	},
+
 	/* cSpell:disable */
 	knownFills : new Set([
 		'air', 'barley', 'boards', 'bread', 'butter', 'cake', 'canola', 'cereals', 'chaff', 'cheese', 'chicken', 'chocolate', 'clothes', 'cotton', 'cow', 'def', 'diesel', 'digestate', 'dog', 'drygrass_windrow', 'egg', 'electriccharge', 'fabric', 'fertilizer', 'flour', 'forage', 'forage_mixing', 'foragemix', 'furniture', 'grape', 'grapejuice', 'grass', 'grass_windrow', 'herbicide', 'honey', 'horse', 'lettuce', 'lime', 'liquidfertilizer', 'liquidmanure', 'maize', 'manure', 'methane', 'milk', 'mineral_feed', 'oat', 'oil_canola', 'oil_olive', 'oil_sunflower', 'oilradish', 'olive', 'pig', 'pigfood', 'poplar', 'potato', 'product', 'raisins', 'roadsalt', 'roundbalecotton', 'roundbalegrass', 'roundbalehay', 'roundbalesilage', 'roundbalestraw', 'roundbalewood', 'seeds', 'sheep', 'silage', 'silage_additive', 'snow', 'sorghum', 'soybean', 'squarebalecotton', 'squarebalegrass', 'squarebalehay', 'squarebalesilage', 'squarebalestraw', 'squarebalewood', 'stone', 'straw', 'strawberry', 'sugar', 'sugarbeet', 'sugarbeet_cut', 'sugarcane', 'sunflower', 'tarp', 'tomato', 'treesaplings', 'unknown', 'water', 'weed', 'wheat', 'woodchips', 'wool',
