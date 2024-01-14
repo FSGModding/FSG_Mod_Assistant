@@ -115,6 +115,11 @@ class baseLooker {
 		for ( const key in xml ) {
 			if ( key !== 'combination' ) {
 				returner[key] = xml[key]
+			} else {
+				for ( const thisCombo of xml.combination ) {
+					returner.combination ??= []
+					returner.combination.push(thisCombo?.$?.XMLFILENAME)
+				}
 			}
 		}
 		return returner
