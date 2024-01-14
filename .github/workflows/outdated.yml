@@ -3,7 +3,7 @@ name: Yarn Package Check
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 7 * * 0'
+    - cron:  '0 7 1-7,14-21 * 0'
   workflow_dispatch:
 
 jobs:
