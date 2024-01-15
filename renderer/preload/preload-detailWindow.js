@@ -38,7 +38,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		openCompareMod : (itemDetails, source) => { ipcRenderer.send('toMain_openCompareMod', itemDetails, source )},
+		openBaseGameDeep : ( type, page ) => { ipcRenderer.send('toMain_openBaseGameDeep', type, page) },
+		openCompareBase  : (itemID) => { ipcRenderer.send('toMain_openCompareBase', itemID )},
+		openCompareMod   : (itemDetails, source) => { ipcRenderer.send('toMain_openCompareMod', itemDetails, source )},
+		openCompareMulti : (itemIDs, source) => { ipcRenderer.send('toMain_openCompareMulti', itemIDs, source) },
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_modRecord',

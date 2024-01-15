@@ -85,6 +85,8 @@ const make_combos = (combos) => {
 
 	const comboHTML = []
 	for ( const thisCombo of combos ) {
+		if ( thisCombo === null ) { continue }
+
 		const thisComboIsBase = thisCombo.startsWith('$data')
 		const thisComboKey    = thisComboIsBase ? thisCombo.replaceAll('$data/', '').replaceAll('/', '_').replaceAll('.xml', '') : null
 
@@ -163,6 +165,7 @@ const client_buildStore = (thisItem) => {
 				{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
 			]),
 			price             : Intl.NumberFormat(currentLocale).format(thisItem.price),
+			show_combos       : shouldHide(thisItem?.specs?.combination),
 			show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
 			show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
 			show_enginePower  : shouldHide(thisItem?.specs?.power),
@@ -513,6 +516,11 @@ function clientClearInput() {
 	fsgUtil.byId('mods__filter').value = ''
 	clientFilter()
 }
+
+
+window.mods.receive('fromMain_forceNavigate', (type, page) => {
+	location.search = `?type=${type}&page=${page}`
+})
 
 window.addEventListener('DOMContentLoaded', () => {
 	const urlParams     = new URLSearchParams(window.location.search)

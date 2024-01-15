@@ -14,6 +14,7 @@
 	<script src="inc/chart.min.js"></script>
 	<script src="renderJS/key_lookup_table.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
+	<script src="renderJS/baseGameData.js"></script>
 	<script src="renderJS/cropcal.js"></script>
 	<script src="renderJS/detail_ui.js"></script>
 	<style>
@@ -120,8 +121,33 @@
 
 </body>
 
+
+
+<template id="combo_div_multi">
+	<div class="row border-bottom mb-2">
+		<div class="text-center col-2 py-2">
+			<a class="text-decoration-none" onclick="clientClickCombo('{{clickSource}}', '{{clickType}}', '{{clickPage}}')">
+				<img style="width: 100px" src="{{iconString}}">
+			</a>
+		</div>
+		<div class="text-center col-2 align-self-center">
+			<a class="text-decoration-none" onclick="clientClickCombo('{{clickSource}}', '{{clickType}}', '{{clickPage}}')">
+				<img class="img-fluid mx-auto d-block mb-2 rounded-4 {{brandHIDE}}" style="width: 50px;" src="{{brandIMG}}">
+			</a>
+		</div>
+		<div class="col-5 align-self-center">
+			<a class="text-decoration-none text-white-50" onclick="clientClickCombo('{{clickSource}}', '{{clickType}}', '{{clickPage}}')">
+				{{fullName}}<br>
+				<em>{{category}}</em>
+			</a>
+		</div>
+		<div class="text-end col-2 align-self-center"><img style="width:30px" src='img/look/price.webp'> {{price}}</div>
+		<div class="text-center col-1 align-self-center"><button onclick="clientCompareCombo('{{clickSource}}', '{{clickPage}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button></div>
+	</div>
+</template>
+
 <template id="vehicle_div">
-	<div class="card mb-3">
+	<div class="card mb-3" id="{{uuid}}">
 		<h5 class="card-header">
 			{{itemName}}
 			<span class="fw-normal" style="font-size: 50%">-</span>
@@ -158,6 +184,13 @@
 					</ul>
 				</div>
 				<div class="col-12 py-2"><p class="text-center">{{functions}}</p></div>
+				<div class="col-12 py-2 {{show_combos}}">
+					<h4 class="text-center">
+						<l10n name="combinations_title"></l10n>
+						<button onclick="clientOpenCombos('{{uuid}}')" class="btn btn-warning btn-vsm mt-2"><l10n name="basegame_compare_all"></l10n></button>
+					</h4>
+					{{combinations}}
+				</div>
 
 				<nav class="{{show_graph}}">
 					<div class="nav nav-tabs" id="{{uuid}}_nav-tab" role="tablist">

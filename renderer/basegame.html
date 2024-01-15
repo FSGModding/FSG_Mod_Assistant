@@ -127,7 +127,13 @@
 					</ul>
 				</div>
 				<div class="col-12 py-2"><p class="text-center">{{functions}}</p></div>
-				<div class="col-12 py-2"><h4 class="text-center"><l10n name="combinations_title"></l10n></h4>{{combinations}}</div>
+				<div class="col-12 py-2 {{show_combos}}">
+					<h4 class="text-center">
+						<l10n name="combinations_title"></l10n>
+						<button onclick="clientOpenCombos()" class="btn btn-warning btn-vsm mt-2"><l10n name="basegame_compare_all"></l10n></button>
+					</h4>
+					{{combinations}}
+				</div>
 				<nav class="{{show_graph}}">
 					<div class="nav nav-tabs" id="{{uuid}}_nav-tab" role="tablist">
 					  <button class="nav-link active" id="{{uuid}}_hp_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_hp_graph" type="button" role="tab" ><img style="width:30px" src='img/look/engine.webp'> <l10n name="unit_hp"></l10n></button>

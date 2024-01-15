@@ -46,7 +46,7 @@ contextBridge.exposeInMainWorld(
 		openCompareBaseMulti : (itemIDs) => { ipcRenderer.send('toMain_openCompareBaseMulti', itemIDs) },
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
-				'fromMain_placeholder',
+				'fromMain_forceNavigate',
 			])
 		
 			if ( validChannels.has( channel ) ) {

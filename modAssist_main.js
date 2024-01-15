@@ -1109,6 +1109,28 @@ ipcMain.on('toMain_openCompareBaseMulti', (_, baseGameItemIDs) => {
 		})
 	}
 })
+ipcMain.on('toMain_openCompareMulti', (_, itemMap, source) => {
+	if ( win.isValid('compare') && win.isVisible('compare') ) {
+		for ( const thisItem of itemMap ) {
+			if ( thisItem.internal ) {
+				win.sendToValidWindow('compare', 'fromMain_addBaseItem', thisItem.key)
+			} else {
+				win.sendToValidWindow('compare', 'fromMain_addModItem', thisItem.contents, source)
+			}
+		}
+		win.forceFocus('compare')
+	} else {
+		win.createNamedWindow('compare', {}, () => {
+			for ( const thisItem of itemMap ) {
+				if ( thisItem.internal ) {
+					win.sendToValidWindow('compare', 'fromMain_addBaseItem', thisItem.key)
+				} else {
+					win.sendToValidWindow('compare', 'fromMain_addModItem', thisItem.contents, source)
+				}
+			}
+		})
+	}
+})
 // TODO: openCompareMixedMulti
 ipcMain.on('toMain_openCompareMod', (_, itemContents, source) => {
 	if ( win.isValid('compare') && win.isVisible('compare') ) {
@@ -1116,11 +1138,23 @@ ipcMain.on('toMain_openCompareMod', (_, itemContents, source) => {
 		win.forceFocus('compare')
 	} else {
 		win.createNamedWindow('compare', {}, () => {
-			win.sendToValidWindow('compare', 'fromMain_addModItem', itemContents, source)
+			setTimeout(() => {
+				win.sendToValidWindow('compare', 'fromMain_addModItem', itemContents, source)
+			}, 250)
 		})
 	}
 })
 ipcMain.on('toMain_openBaseGame', () => {  win.createNamedWindow('basegame') })
+ipcMain.on('toMain_openBaseGameDeep', (_, type, page) => {
+	if ( win.isValid('basegame') && win.isVisible('basegame') ) {
+		win.sendToValidWindow('basegame', 'fromMain_forceNavigate', type, page)
+	} else {
+		win.createNamedWindow('basegame')
+		setTimeout(() => {
+			win.sendToValidWindow('basegame', 'fromMain_forceNavigate', type, page)
+		}, 500)
+	}
+})
 ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
 	shell.openPath(path.join(path.dirname(versionConfigGet('game_path', 22)), 'data', ...folderParts))
 })

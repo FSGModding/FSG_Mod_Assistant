@@ -7,12 +7,17 @@
 // Detail window UI
 /* eslint complexity: ["error", 16] */
 
-/* global Chart, processL10N, fsgUtil, getText, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
+/* global Chart, processL10N, fsgUtil, getText, client_baseGameData, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
 let lookItemData = {}
+let lookItemMap  = {}
+let comboItemMap = {}
 let modName      = ''
+
 window.mods.receive('fromMain_lookRecord', (lookRecord, chartUnits, currentLocale) => {
 	lookItemData = {}
+	lookItemMap  = {}
+	comboItemMap = {}
 	try {
 		buildStore(lookRecord, chartUnits, currentLocale)
 		fsgUtil.clsHideTrue('store_process', true)
@@ -31,6 +36,48 @@ window.mods.receive('fromMain_modRecord', (modCollect) => {
 	}
 	processL10N()
 })
+
+
+const make_combos = (combos, lookRecord, parentItem, currentLocale) => {
+	if ( typeof combos === 'undefined' || combos === null || combos.length === 0 ) { return '' }
+
+	const comboKeyList = new Set()
+	const comboHTML = []
+	for ( const thisCombo of combos ) {
+		if ( thisCombo === null ) { continue }
+
+		const thisComboIsBase = thisCombo.startsWith('$data')
+		const thisComboKey    = thisComboIsBase ? thisCombo.replaceAll('$data/', '').replaceAll('/', '_').replaceAll('.xml', '') : thisCombo
+
+		if ( thisComboKey !== null ) {
+			const thisItem = thisComboIsBase ? client_baseGameData.records[thisComboKey] : lookRecord.items[thisComboKey]
+
+			if ( typeof thisItem === 'undefined' ) { continue }
+
+			const theIcon = fsgUtil.iconMaker(thisComboIsBase ? thisItem.icon : lookRecord?.icons?.[thisComboKey] || null)
+
+			comboKeyList.add({internal : thisComboIsBase, key : thisComboKey, contents : thisComboIsBase ? null : thisItem})
+
+			const brandImage = fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
+
+			comboHTML.push(fsgUtil.useTemplate('combo_div_multi', {
+				brandHIDE      : shouldHide(brandImage),
+				brandIMG       : fsgUtil.iconMaker(brandImage),
+				category       : `<l10nBase name="${thisItem.category}"></l10nBase>`,
+				clickPage      : thisComboKey,
+				clickSource    : thisComboIsBase ? 'base' : 'internal',
+				clickType      : 'item',
+				fullName       : thisItem.name,
+				iconString     : theIcon,
+				page           : thisComboKey,
+				price          : Intl.NumberFormat(currentLocale).format(thisItem.price),
+				showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
+			}))
+		}
+	}
+	comboItemMap[parentItem] = [...comboKeyList]
+	return comboHTML.join('')
+}
 
 const doMapImage = (mapImage) => {
 	if ( mapImage === null || typeof mapImage !== 'string') { return }
@@ -118,6 +165,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 		const thisItemUUID = crypto.randomUUID()
 
 		if ( thisItem.masterType === 'vehicle' ) {
+			lookItemMap[storeitem] = thisItemUUID
 			lookItemData[thisItemUUID] = thisItem
 			lookItemData[thisItemUUID].icon = fsgUtil.iconMaker(lookRecord?.icons?.[storeitem] || null)
 			lookItemData[thisItemUUID].uuid_name = storeitem
@@ -142,6 +190,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				brandHIDE         : shouldHide(brandImage),
 				brandIMG          : fsgUtil.iconMaker(brandImage),
 				category          : thisItem.category,
+				combinations      : make_combos(thisItem?.specs?.combination, lookRecord, thisItemUUID, currentLocale),
 				enginePower       : fsgUtil.numFmtMany(powerSpan, currentLocale, [
 					{ factor : 1,      precision : 0, unit : 'unit_hp' },
 					{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
@@ -165,6 +214,7 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 					{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
 				]),
 				price             : Intl.NumberFormat(currentLocale).format(thisItem.price),
+				show_combos       : shouldHide(thisItem?.specs?.combination),
 				show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
 				show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
 				show_enginePower  : shouldHide(thisItem?.specs?.power),
@@ -544,4 +594,24 @@ function shouldHide(item, wanted = null) {
 
 function clientOpenCompare(uuid) {
 	window.mods.openCompareMod(lookItemData[uuid], modName)
+}
+
+function clientCompareCombo(source, page) {
+	if ( source === 'internal' ) {
+		window.mods.openCompareMod(lookItemData[lookItemMap[page]], modName)
+	} else {
+		window.mods.openCompareBase(page)
+	}
+}
+
+function clientOpenCombos(uuid) {
+	window.mods.openCompareMulti(comboItemMap[uuid], modName)
+}
+
+function clientClickCombo(source, type, page) {
+	if ( source === 'internal' ) {
+		location.hash = lookItemMap[page]
+	} else {
+		window.mods.openBaseGameDeep(type, page)
+	}
 }
