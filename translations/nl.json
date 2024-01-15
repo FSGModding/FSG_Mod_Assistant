@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "Huidige cache grootte:",
 	"clean_detail_cache_size"               : "Huidige detail cache grootte:",
 	"clipboard_visible"                     : "Zichtbare vermeldingen naar klembord kopiëren",
+	"combinations_title"                    : "Combinaties",
 	"compare_title"                         : "Items vergelijken",
 	"config_working_set_list"               : "Game mod folder instellen (dit duurt maar een seconde)...",
 	"config_working_status"                 : "Lezen, kopiëren, verplaatsen of testen (dit kan even duren)...",

@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "当前缓存大小：",
 	"clean_detail_cache_size"               : "Current detail cache size:",
 	"clipboard_visible"                     : "将可见条目复制到剪贴板",
+	"combinations_title"                    : "组合",
 	"compare_title"                         : "比较项目",
 	"config_working_set_list"               : "正在设置游戏模组文件夹 (这只需要几秒钟)...",
 	"config_working_status"                 : "正在读取、复制、移动或测试 (这可能需要一些时间)...",

@@ -76,6 +76,43 @@ const getMaxSpeed = (specSpeed, limitSpeed, motorSpeed) => {
 	return 0
 }
 
+const comboKeyList = new Set()
+
+const make_combos = (combos) => {
+	if ( typeof combos === 'undefined' || combos === null || combos.length === 0 ) { return '' }
+
+	comboKeyList.clear()
+
+	const comboHTML = []
+	for ( const thisCombo of combos ) {
+		const thisComboIsBase = thisCombo.startsWith('$data')
+		const thisComboKey    = thisComboIsBase ? thisCombo.replaceAll('$data/', '').replaceAll('/', '_').replaceAll('.xml', '') : null
+
+		if ( thisComboKey !== null ) {
+			const thisItem = client_baseGameData.records[thisComboKey]
+
+			if ( typeof thisItem === 'undefined' ) { continue }
+
+			comboKeyList.add(thisComboKey)
+
+			const brandImage = fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
+
+			comboHTML.push(fsgUtil.useTemplate('combo_div_basegame', {
+				brandHIDE      : shouldHide(brandImage),
+				brandIMG       : fsgUtil.iconMaker(brandImage),
+				category       : `<l10nBase name="${thisItem.category}"></l10nBase>`,
+				fullName       : thisItem.name,
+				iconString     : thisItem.icon,
+				page           : thisComboKey,
+				price          : Intl.NumberFormat(currentLocale).format(thisItem.price),
+				showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
+			}))
+		}
+	}
+	return comboHTML.join('')
+	
+}
+
 const client_buildStore = (thisItem) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
@@ -102,6 +139,7 @@ const client_buildStore = (thisItem) => {
 			brandHIDE         : shouldHide(brandImage),
 			brandIMG          : fsgUtil.iconMaker(brandImage),
 			category          : thisItem.category,
+			combinations      : make_combos(thisItem?.specs?.combination),
 			enginePower       : fsgUtil.numFmtMany(powerSpan, currentLocale, [
 				{ factor : 1,      precision : 0, unit : 'unit_hp' },
 				{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
@@ -570,6 +608,10 @@ function clientOpenCompare(forcePageID = null) {
 	const pageID        = urlParams.get('page')
 
 	window.mods.openCompareBase(forcePageID !== null ? forcePageID : pageID)
+}
+
+function clientOpenCombos() {
+	window.mods.openCompareBaseMulti([...comboKeyList])
 }
 
 

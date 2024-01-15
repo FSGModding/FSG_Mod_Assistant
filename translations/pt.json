@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "Tamanho atual do cache:",
 	"clean_detail_cache_size"               : "Tamanho atual da cache de dados:",
 	"clipboard_visible"                     : "Copiar entradas visíveis para a área de transferência",
+	"combinations_title"                    : "Combinações",
 	"compare_title"                         : "Comparar artigos",
 	"config_working_set_list"               : "Configure a pasta mods do jogo (leva apenas um segundo)...",
 	"config_working_status"                 : "Leia, copie, mova ou teste (isso pode demorar um pouco)...",

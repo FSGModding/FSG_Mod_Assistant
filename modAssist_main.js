@@ -1094,6 +1094,22 @@ ipcMain.on('toMain_openCompareBase', (_, baseGameItemID) => {
 		})
 	}
 })
+
+ipcMain.on('toMain_openCompareBaseMulti', (_, baseGameItemIDs) => {
+	if ( win.isValid('compare') && win.isVisible('compare') ) {
+		for ( const thisItemID of baseGameItemIDs ) {
+			win.sendToValidWindow('compare', 'fromMain_addBaseItem', thisItemID)
+		}
+		win.forceFocus('compare')
+	} else {
+		win.createNamedWindow('compare', {}, () => {
+			for ( const thisItemID of baseGameItemIDs ) {
+				win.sendToValidWindow('compare', 'fromMain_addBaseItem', thisItemID)
+			}
+		})
+	}
+})
+// TODO: openCompareMixedMulti
 ipcMain.on('toMain_openCompareMod', (_, itemContents, source) => {
 	if ( win.isValid('compare') && win.isVisible('compare') ) {
 		win.sendToValidWindow('compare', 'fromMain_addModItem', itemContents, source)

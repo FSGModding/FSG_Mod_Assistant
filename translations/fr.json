@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "Taille actuelle du cache :",
 	"clean_detail_cache_size"               : "Taille actuelle de la mémoire cache :",
 	"clipboard_visible"                     : "Copier les entrées visibles dans le presse-papiers",
+	"combinations_title"                    : "Combinaisons",
 	"compare_title"                         : "Comparer les articles",
 	"config_working_set_list"               : "Configuration du dossier du mod de jeu (cela ne prend qu'une seconde)...",
 	"config_working_status"                 : "Lire, copier, déplacer ou tester (cela peut prendre un certain temps)...",

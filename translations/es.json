@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "Tamaño actual de la caché:",
 	"clean_detail_cache_size"               : "Tamaño actual de la caché de detalles:",
 	"clipboard_visible"                     : "Copiar entradas visibles en el portapapeles",
+	"combinations_title"                    : "Combinaciones",
 	"compare_title"                         : "Comparar artículos",
 	"config_working_set_list"               : "Configurar la carpeta de mods del juego (esto sólo lleva un segundo)...",
 	"config_working_status"                 : "Leer, copiar, mover o probar (esto podría llevar un tiempo)...",

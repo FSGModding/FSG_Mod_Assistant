@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "Pašreizējais kešatmiņas lielums:",
 	"clean_detail_cache_size"               : "Pašreizējais detalizācijas kešatmiņas lielums:",
 	"clipboard_visible"                     : "Redzamo ierakstu kopēšana uz starpliktuvi",
+	"combinations_title"                    : "Kombinācijas",
 	"compare_title"                         : "Salīdzināt preces",
 	"config_working_set_list"               : "Setting game mod mape (tas aizņem tikai sekundi)...",
 	"config_working_status"                 : "Lasīšana, kopēšana, pārvietošana vai testēšana (tas var aizņemt kādu laiku)...",

@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "Aktualny rozmiar pamięci podręcznej:",
 	"clean_detail_cache_size"               : "Bieżący rozmiar pamięci podręcznej szczegółów:",
 	"clipboard_visible"                     : "Kopiowanie widocznych wpisów do schowka",
+	"combinations_title"                    : "Kombinacje",
 	"compare_title"                         : "Porównaj przedmioty",
 	"config_working_set_list"               : "Ustawienie folderu game mod (to zajmuje tylko sekundę)...",
 	"config_working_status"                 : "Czytanie, kopiowanie, przenoszenie lub testowanie (to może trochę potrwać)...",

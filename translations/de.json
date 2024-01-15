@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "Aktuelle Cache-Größe:",
 	"clean_detail_cache_size"               : "Aktuelle Detail-Cache-Größe:",
 	"clipboard_visible"                     : "Sichtbare Einträge in die Zwischenablage kopieren",
+	"combinations_title"                    : "Kombinationen",
 	"compare_title"                         : "Artikel vergleichen",
 	"config_working_set_list"               : "Einstellen des Spielmod-Ordners (dies dauert nur eine Sekunde)...",
 	"config_working_status"                 : "Lesen, Kopieren, Verschieben oder Testen (das kann eine Weile dauern)...",

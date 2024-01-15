@@ -41,6 +41,7 @@
 	"clean_cache_size"                      : "Current cache size:",
 	"clean_detail_cache_size"               : "Current detail cache size:",
 	"clipboard_visible"                     : "Copy visible entries to clipboard",
+	"combinations_title"                    : "Combinations",
 	"compare_title"                         : "Compare Items",
 	"config_working_set_list"               : "Setting game mod folder (this only takes a second)...",
 	"config_working_status"                 : "Reading, Copying, Moving, or Testing (this could take a while)...",
