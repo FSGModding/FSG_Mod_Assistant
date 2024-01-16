@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Abrir carpeta en el Explorador",
 	"basegame_button_home__title"           : "Inicio",
 	"basegame_compare_all__title"           : "Comparar todas las combinaciones",
+	"basegame_fills"                        : "Por tipo de relleno",
+	"basegame_fills_title"                  : "Partidas básicas - Por tipo de relleno",
 	"basegame_main_title"                   : "Objetos del juego base - Todos",
 	"basegame_object"                       : "Objetos",
 	"basegame_object_title"                 : "Objetos del juego base",

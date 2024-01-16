@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Atvērt mapi pārlūkā Explorer",
 	"basegame_button_home__title"           : "Sākums",
 	"basegame_compare_all__title"           : "Salīdziniet visas kombinācijas",
+	"basegame_fills"                        : "Pēc uzpildes veida",
+	"basegame_fills_title"                  : "Pamatspēles priekšmeti - pēc pildījuma veida",
 	"basegame_main_title"                   : "Pamatspēles priekšmeti - Visi",
 	"basegame_object"                       : "Objekti",
 	"basegame_object_title"                 : "Pamatspēles priekšmeti - Objekti",

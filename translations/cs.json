@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "在资源管理器中打开文件夹",
 	"basegame_button_home__title"           : "首页",
 	"basegame_compare_all__title"           : "比较所有组合",
+	"basegame_fills"                        : "按填充类型",
+	"basegame_fills_title"                  : "基础游戏项目 - 按填充类型分类",
 	"basegame_main_title"                   : "基础游戏项目 - 全部",
 	"basegame_object"                       : "对象",
 	"basegame_object_title"                 : "基本游戏项目 - 物体",

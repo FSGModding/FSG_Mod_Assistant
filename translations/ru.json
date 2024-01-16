@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Открыть папку в проводнике",
 	"basegame_button_home__title"           : "На главную",
 	"basegame_compare_all__title"           : "Сравнить все комбинации",
+	"basegame_fills"                        : "По типу наполнения",
+	"basegame_fills_title"                  : "Базовые игровые предметы - по типу наполнения",
 	"basegame_main_title"                   : "Объекты базовой игры — Все",
 	"basegame_object"                       : "Объекты",
 	"basegame_object_title"                 : "Объекты базовой игры — Объекты",

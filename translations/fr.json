@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Ouvrir un dossier dans l'explorateur",
 	"basegame_button_home__title"           : "Accueil",
 	"basegame_compare_all__title"           : "Comparer toutes les combinaisons",
+	"basegame_fills"                        : "Par type de remplissage",
+	"basegame_fills_title"                  : "Articles de jeu de base - par type de remplissage",
 	"basegame_main_title"                   : "Objets du jeu de base - Tous",
 	"basegame_object"                       : "Objets",
 	"basegame_object_title"                 : "Eléments du jeu de base - Objets",

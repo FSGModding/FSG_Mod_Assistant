@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Otevření složky v Průzkumníku",
 	"basegame_button_home__title"           : "Home",
 	"basegame_compare_all__title"           : "Porovnat všechny kombinace",
+	"basegame_fills"                        : "Podle typu náplně",
+	"basegame_fills_title"                  : "Položky základní hry - podle typu náplně",
 	"basegame_main_title"                   : "Předměty základní hry - všechny",
 	"basegame_object"                       : "Objekty",
 	"basegame_object_title"                 : "Předměty základní hry - Objects",

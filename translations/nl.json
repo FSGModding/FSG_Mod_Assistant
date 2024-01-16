@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Map openen in Verkenner",
 	"basegame_button_home__title"           : "Home",
 	"basegame_compare_all__title"           : "Alle combinaties vergelijken",
+	"basegame_fills"                        : "Op type vulling",
+	"basegame_fills_title"                  : "Basis spelonderdelen - Per type vulling",
 	"basegame_main_title"                   : "Basis spelonderdelen - Alle",
 	"basegame_object"                       : "Objecten",
 	"basegame_object_title"                 : "Items uit het basisspel - Voorwerpen",

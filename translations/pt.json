@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Abrir a pasta no Explorer",
 	"basegame_button_home__title"           : "Início",
 	"basegame_compare_all__title"           : "Comparar todas as combinações",
+	"basegame_fills"                        : "Por tipo de enchimento",
+	"basegame_fills_title"                  : "Itens do Jogo Base - Por Tipo de Preenchimento",
 	"basegame_main_title"                   : "Itens do Jogo Base - Todos",
 	"basegame_object"                       : "Objectos",
 	"basegame_object_title"                 : "Itens do Jogo Base - Objectos",

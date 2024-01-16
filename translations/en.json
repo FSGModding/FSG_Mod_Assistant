@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Open Folder in Explorer",
 	"basegame_button_home__title"           : "Home",
 	"basegame_compare_all__title"           : "Compare All Combinations",
+	"basegame_fills"                        : "By Fill Type",
+	"basegame_fills_title"                  : "Base Game Items - By Fill Type",
 	"basegame_main_title"                   : "Base Game Items - All",
 	"basegame_object"                       : "Objects",
 	"basegame_object_title"                 : "Base Game Items - Objects",

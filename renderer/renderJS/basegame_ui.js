@@ -8,6 +8,54 @@
 
 /* global Chart, processL10N, fsgUtil, client_BGData */
 
+
+const selectFills = [
+	{ filltype : 'barley', l10n : '$l10n_fillType_barley' },
+	{ filltype : 'canola', l10n : '$l10n_fillType_canola' },
+	{ filltype : 'chaff', l10n : '$l10n_fillType_chaff' },
+	{ filltype : 'cotton', l10n : '$l10n_fillType_cotton' },
+	{ filltype : 'diesel', l10n : '$l10n_fillType_diesel' },
+	{ filltype : 'digestate', l10n : '$l10n_fillType_digestate' },
+	{ filltype : 'drygrass_windrow', l10n : '$l10n_fillType_dryGrass' },
+	{ filltype : 'fertilizer', l10n : '$l10n_fillType_fertilizer' },
+	{ filltype : 'forage_mixing', l10n : '$l10n_fillType_forage_mixing' },
+	{ filltype : 'forage', l10n : '$l10n_fillType_forage' },
+	{ filltype : 'grape', l10n : '$l10n_fillType_grape' },
+	{ filltype : 'grass_windrow', l10n : '$l10n_fillType_grass' },
+	{ filltype : 'herbicide', l10n : '$l10n_fillType_herbicide' },
+	{ filltype : 'lime', l10n : '$l10n_fillType_lime' },
+	{ filltype : 'liquidfertilizer', l10n : '$l10n_fillType_liquidFertilizer' },
+	{ filltype : 'liquidmanure', l10n : '$l10n_fillType_liquidManure' },
+	{ filltype : 'maize', l10n : '$l10n_fillType_maize' },
+	{ filltype : 'manure', l10n : '$l10n_fillType_manure' },
+	{ filltype : 'milk', l10n : '$l10n_fillType_milk' },
+	{ filltype : 'mineral_feed', l10n : '$l10n_fillType_mineralFeed' },
+	{ filltype : 'oat', l10n : '$l10n_fillType_oat' },
+	{ filltype : 'olive', l10n : '$l10n_fillType_olive' },
+	{ filltype : 'pigfood', l10n : '$l10n_fillType_pigFood' },
+	{ filltype : 'poplar', l10n : '$l10n_fillType_poplar' },
+	{ filltype : 'potato', l10n : '$l10n_fillType_potato' },
+	{ filltype : 'roadsalt', l10n : '$l10n_fillType_roadSalt' },
+	{ filltype : 'roundbale', l10n : '$l10n_fillType_roundBale' },
+	{ filltype : 'seeds', l10n : '$l10n_fillType_seeds' },
+	{ filltype : 'silage_additive', l10n : '$l10n_fillType_silageAdditive' },
+	{ filltype : 'silage', l10n : '$l10n_fillType_silage' },
+	{ filltype : 'sorghum', l10n : '$l10n_fillType_sorghum' },
+	{ filltype : 'soybean', l10n : '$l10n_fillType_soybean' },
+	{ filltype : 'squarebale', l10n : '$l10n_fillType_squareBale' },
+	{ filltype : 'stone', l10n : '$l10n_fillType_stone' },
+	{ filltype : 'straw', l10n : '$l10n_fillType_straw' },
+	{ filltype : 'sugarbeet_cut', l10n : '$l10n_fillType_sugarBeetCut' },
+	{ filltype : 'sugarbeet', l10n : '$l10n_fillType_sugarBeet' },
+	{ filltype : 'sugarcane', l10n : '$l10n_fillType_sugarCane' },
+	{ filltype : 'sunflower', l10n : '$l10n_fillType_sunflower' },
+	{ filltype : 'treesaplings', l10n : '$l10n_fillType_treeSaplings' },
+	{ filltype : 'water', l10n : '$l10n_fillType_water' },
+	{ filltype : 'wheat', l10n : '$l10n_fillType_wheat' },
+	{ filltype : 'wood', l10n : '$l10n_fillType_wood' },
+	{ filltype : 'woodchips', l10n : '$l10n_fillType_woodChips' },
+]
+
 let currentLocale = 'en'
 
 const prodMulti = (amount, multi) => `${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount)}${multi > 1 ? ` <small>(${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount * multi)})</small>` : ''}`
@@ -431,9 +479,11 @@ function shouldHide(item, wanted = null) {
 function wrapItem(name, icon, type, page, noTrans = false) {
 	const iconString = icon.startsWith('data:') ?
 		icon :
-		icon.startsWith('brand_') ?
-			`img/brand/${icon}.webp` :
-			`img/baseCategory/${icon}.webp`
+		icon.startsWith('fill_') ?
+			`img/fills/${icon.replace('fill_', '')}.webp` :
+			icon.startsWith('brand_') ?
+				`img/brand/${icon}.webp` :
+				`img/baseCategory/${icon}.webp`
 
 	const nameString = noTrans ? name : name.startsWith('$l10n') ?
 		`<l10nBase name="${name}"></l10nBase>` :
@@ -491,6 +541,8 @@ function getTopCat(cat) {
 			return wrapRow(client_BGData.category.placeable.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
 		case 'brand' :
 			return wrapRow(client_BGData.brands.map((x) => wrapItem(x.title, x.image, 'brand', x.name, true)))
+		case 'fills' :
+			return wrapRow(selectFills.map((x) => wrapItem(x.l10n, `fill_${x.filltype}`, 'fill', x.filltype, false)))
 		case 'attach' :
 			return `
 				<h4 class="text-center"><l10n name="basegame_attach_has"></l10n></h4>
@@ -566,6 +618,23 @@ function attachProperCase(pageID) {
 	}
 }
 
+function findFill(fillType) {
+	for ( const thisFill of selectFills ) {
+		if ( thisFill.filltype === fillType ) { return thisFill.l10n }
+	}
+}
+
+function getByFill(fillType) {
+	const vehicleList = []
+
+	for ( const [thisItemID, thisItem] of Object.entries(client_BGData.records) ) {
+		if ( thisItem.masterType !== 'vehicle' ) { continue }
+		if ( thisItem.fillTypes.length === 0 ) { continue }
+		if ( thisItem.fillTypes.includes(fillType) ) { vehicleList.push(thisItemID) }
+	}
+	return vehicleList.sort()
+}
+
 window.mods.receive('fromMain_forceNavigate', (type, page) => { location.search = `?type=${type}&page=${page}` })
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -619,6 +688,13 @@ window.addEventListener('DOMContentLoaded', () => {
 			setPageInfo(
 				`<l10n name="basegame_attach_need"></l10n> : ${jointType}`,
 				wrapRow(client_BGData.joints_needs[jointType].sort().map((x) => wrapStoreItem(x)))
+			)
+			break
+		}
+		case 'fill' : {
+			setPageInfo(
+				`<l10n name="basegame_fills"></l10n> : <l10nBase name="${findFill(pageID)}"></l10nBase>`,
+				wrapRow(getByFill(pageID).map((x) => wrapStoreItem(x)))
 			)
 			break
 		}

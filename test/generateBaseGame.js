@@ -86,6 +86,7 @@ const baseData = {
 		{ icon : 'bg_object',    page : 'object',    name : 'basegame_object'},
 		{ icon : 'bg_placeable', page : 'placeable', name : 'basegame_placeable'},
 		{ icon : 'bg_connect',   page : 'attach',    name : 'basegame_attach'},
+		{ icon : 'bg_fills',     page : 'fills',     name : 'basegame_fills'},
 	],
 }
 

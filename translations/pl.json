@@ -28,6 +28,8 @@
 	"basegame_button_folder__title"         : "Otwórz folder w Eksploratorze",
 	"basegame_button_home__title"           : "Strona główna",
 	"basegame_compare_all__title"           : "Porównaj wszystkie kombinacje",
+	"basegame_fills"                        : "Według typu wypełnienia",
+	"basegame_fills_title"                  : "Przedmioty z gry podstawowej - według typu wypełnienia",
 	"basegame_main_title"                   : "Przedmioty z gry podstawowej - wszystkie",
 	"basegame_object"                       : "Obiekty",
 	"basegame_object_title"                 : "Przedmioty z gry podstawowej - obiekty",
