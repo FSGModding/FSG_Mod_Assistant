@@ -6,7 +6,7 @@
 
 // Base game window UI
 
-/* global Chart, processL10N, fsgUtil, client_baseGameBrandMap, client_baseGameData, client_baseGameCats, client_baseGameBrandIconMap, client_baseGameBrands, client_baseGameTopLevel, client_baseGameCatMap_vehicle, client_baseGameCatMap_place */
+/* global Chart, processL10N, fsgUtil, client_BGData */
 
 let currentLocale = 'en'
 
@@ -91,7 +91,7 @@ const make_combos = (combos) => {
 		const thisComboKey    = thisComboIsBase ? thisCombo.replaceAll('$data/', '').replaceAll('/', '_').replaceAll('.xml', '') : null
 
 		if ( thisComboKey !== null ) {
-			const thisItem = client_baseGameData.records[thisComboKey]
+			const thisItem = client_BGData.records[thisComboKey]
 
 			if ( typeof thisItem === 'undefined' ) { continue }
 
@@ -103,7 +103,7 @@ const make_combos = (combos) => {
 				brandHIDE      : shouldHide(brandImage),
 				brandIMG       : fsgUtil.iconMaker(brandImage),
 				category       : `<l10nBase name="${thisItem.category}"></l10nBase>`,
-				fullName       : thisItem.name,
+				fullName       : transName(thisItem.name),
 				iconString     : thisItem.icon,
 				page           : thisComboKey,
 				price          : Intl.NumberFormat(currentLocale).format(thisItem.price),
@@ -113,6 +113,12 @@ const make_combos = (combos) => {
 	}
 	return comboHTML.join('')
 	
+}
+
+const link_attach = (joints, doesHave) => {
+	if ( typeof joints === 'undefined' ) { return '' }
+
+	return joints.map((x) => `<a href="?type=${ !doesHave ? 'attach_has' : 'attach_need'}&page=${x.toLowerCase()}">${x}</a>`).join(', ')
 }
 
 const client_buildStore = (thisItem) => {
@@ -154,8 +160,10 @@ const client_buildStore = (thisItem) => {
 			]),
 			functions         : wrapFunctions(thisItem.functions),
 			iconIMG           : thisItem.icon,
-			itemName          : thisItem.name,
+			itemName          : transName(thisItem.name),
 			itemTitle         : thisItem.type,
+			joint_has         : link_attach(thisItem?.joints?.canUse, true),
+			joint_need        : link_attach(thisItem?.joints?.needs, false),
 			maxSpeed          : fsgUtil.numFmtMany(maxSpeed, currentLocale, [
 				{ factor : 1,        precision : 0, unit : 'unit_kph' },
 				{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
@@ -175,6 +183,8 @@ const client_buildStore = (thisItem) => {
 			show_hasLights    : shouldHide(thisItem.hasLights),
 			show_hasPaint     : shouldHide(thisItem.hasColor),
 			show_hasWheels    : shouldHide(thisItem.hasWheelChoice),
+			show_jointHas     : shouldHide(thisItem?.joints?.canUse?.length !== 0),
+			show_jointNeed    : shouldHide(thisItem?.joints?.needs?.length !== 0),
 			show_maxSpeed     : shouldHide(maxSpeed),
 			show_methane      : shouldHide(thisItem.fuelType, 'methane'),
 			show_needPower    : shouldHide(thisItem?.specs?.neededpower),
@@ -370,7 +380,7 @@ const client_buildStore = (thisItem) => {
 			hasBee           : `${fsgUtil.numFmtMany(thisItem.beehive.radius, currentLocale, [{factor : 1, precision : 0, unit : 'unit_m'}])} / ${fsgUtil.numFmtMany(thisItem.beehive.liters, currentLocale, [{factor : 1, precision : 0, unit : 'unit_l'}])}`,
 			iconIMG          : thisItem.icon,
 			income           : thisItem.incomePerHour ?? 0,
-			itemName         : thisItem.name,
+			itemName         : transName(thisItem.name),
 			itemTitle        : thisItem.type,
 			objectCount      : thisItem.objectStorage ?? 0,
 			price            : Intl.NumberFormat(currentLocale).format(thisItem.price),
@@ -388,11 +398,11 @@ const client_buildStore = (thisItem) => {
 		}))
 	}
 
-	fsgUtil.byId('bgContent').innerHTML = storeItemsHTML.join('')
-
 	for ( const thisJS of storeItemsJS ) {
-		setTimeout(thisJS, 25)
+		setTimeout(thisJS, 250)
 	}
+
+	return storeItemsHTML.join('')
 }
 
 function wrapFunctions(funcs) {
@@ -429,21 +439,39 @@ function wrapItem(name, icon, type, page, noTrans = false) {
 		`<l10nBase name="${name}"></l10nBase>` :
 		`<l10n name="${name}"></l10n>`
 
-	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100"><a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}"><img class="mb-3" style="width: 100px" src="${iconString}"><br />${nameString}</a></div></div>`
+	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100"><a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}"><img class="mb-3 rounded-2" style="width: 100px" src="${iconString}"><br />${nameString}</a></div></div>`
 }
 
-function wrapStoreItem(name, price, icon, brand, page, type, dlc = null) {
-	const iconString  = icon.startsWith('data:') ? icon : `img/baseCategory/${icon}.webp`
-	const brandString = typeof brand === 'string' ? `<br><img class="mb-3" style="width: 100px" src="img/brand/${client_baseGameBrandIconMap[brand.toLowerCase()]}.webp"></img>` : ''
+function transName(name) {
+	let realName = name
+
+	try {
+		if ( realName.includes('[[') ) {
+			const nameParts    = realName.match(/(.+?) \[\[(.+?)]]/)
+			const replaceParts = nameParts[2].split('|')
+			realName = nameParts[1]
+
+			for ( const thisReplacement of replaceParts ) {
+				realName = realName.replace(/%s/, thisReplacement.startsWith('$l10n') ? `<l10nBase name="${thisReplacement}"></l10nBase>` : thisReplacement)
+			}
+		}
+	} catch { /* don't care */ }
+	return realName
+}
+
+function wrapStoreItem(itemID) {
+	const thisItem    = client_BGData.records[itemID]
+	const iconString  = thisItem.icon.startsWith('data:') ? thisItem.icon : `img/baseCategory/${thisItem.icon}.webp`
+	const brandString = typeof thisItem.brand === 'string' ? `<br><img class="mb-3" style="width: 100px" src="img/brand/${client_BGData.brandMap_icon[thisItem.brand.toLowerCase()]}.webp"></img>` : ''
 
 	return fsgUtil.useTemplate('store_item', {
 		brandString    : brandString,
-		dlc            : dlc !== null ? dlc : '',
+		dlc            : thisItem.dlcKey !== null ? thisItem.dlcKey : '',
 		iconString     : iconString,
-		name           : name,
-		page           : page,
-		price          : Intl.NumberFormat(currentLocale).format(price),
-		showCompButton : type === 'vehicle' ? '' : 'd-none',
+		name           : transName(thisItem.name),
+		page           : itemID,
+		price          : Intl.NumberFormat(currentLocale).format(thisItem.price),
+		showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
 	})
 }
 
@@ -454,18 +482,24 @@ function wrapRow(rowHTMLArray) {
 function getTopCat(cat) {
 	switch ( cat ) {
 		case 'vehicle' :
-			return client_baseGameCats.vehicles.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
+			return wrapRow(client_BGData.category.vehicle.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
 		case 'tool' :
-			return client_baseGameCats.tools.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
+			return wrapRow(client_BGData.category.tool.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
 		case 'object' :
-			return client_baseGameCats.objects.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
+			return wrapRow(client_BGData.category.object.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
 		case 'placeable' :
-			return client_baseGameCats.placeables.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName))
+			return wrapRow(client_BGData.category.placeable.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
 		case 'brand' :
-			return client_baseGameBrands.map((x) => wrapItem(x.title, x.image, 'brand', x.name, true))
-		//case 'top':
+			return wrapRow(client_BGData.brands.map((x) => wrapItem(x.title, x.image, 'brand', x.name, true)))
+		case 'attach' :
+			return `
+				<h4 class="text-center"><l10n name="basegame_attach_has"></l10n></h4>
+				${wrapRow(Object.keys(client_BGData.joints_has).sort().map((x) => wrapItem(x, `attach_${x.toLowerCase()}`, 'attach_has', x.toLowerCase(), true)))}
+				<h4 class="text-center mt-3 border-top pt-3"><l10n name="basegame_attach_need"></l10n></h4>
+				${wrapRow(Object.keys(client_BGData.joints_needs).sort().map((x) => wrapItem(x, `attach_${x.toLowerCase()}`, 'attach_need', x.toLowerCase(), true)))}
+			`
 		default :
-			return client_baseGameTopLevel.map((x) => wrapItem(x.name, x.icon, 'cat', x.page))
+			return wrapRow(client_BGData.topLevel.map((x) => wrapItem(x.name, x.icon, 'cat', x.page)))
 			
 	}
 }
@@ -478,8 +512,8 @@ let searchTree = {
 function buildSearchTree () {
 	searchTree = {}
 
-	for ( const [thisItemKey, thisItem] of Object.entries(client_baseGameData.records) ) {
-		const brandString = (thisItem.brand ? client_baseGameBrandMap[thisItem.brand?.toLowerCase()]?.toLowerCase() : '')
+	for ( const [thisItemKey, thisItem] of Object.entries(client_BGData.records) ) {
+		const brandString = (thisItem.brand ? client_BGData.brandMap[thisItem.brand?.toLowerCase()]?.toLowerCase() : '')
 		searchTree[thisItemKey] = `${thisItem.name.toLowerCase()} ${brandString} ${thisItemKey}`
 	}
 }
@@ -501,13 +535,13 @@ function clientFilter() {
 		fsgUtil.byId('searchResults').innerHTML = ''
 	} else {
 		fsgUtil.byId('searchResults').innerHTML = wrapRow(client_findItems(filterText).map((x) => wrapStoreItem(
-			client_baseGameData.records[x].name,
-			client_baseGameData.records[x].price,
-			client_baseGameData.records[x].icon,
-			client_baseGameData.records[x].brand,
+			client_BGData.records[x].name,
+			client_BGData.records[x].price,
+			client_BGData.records[x].icon,
+			client_BGData.records[x].brand,
 			x,
-			client_baseGameData.records[x].masterType,
-			client_baseGameData.records[x].dlcKey
+			client_BGData.records[x].masterType,
+			client_BGData.records[x].dlcKey
 		)))
 	}
 }
@@ -517,10 +551,22 @@ function clientClearInput() {
 	clientFilter()
 }
 
+function setPageInfo(title, content, { button_comp = false, button_folder = false } = {}) {
+	fsgUtil.clsShowTrue('folderButton', button_folder)
+	fsgUtil.clsShowTrue('compareButton', button_comp)
+	fsgUtil.clsShowTrue('back_button', history.length > 1)
 
-window.mods.receive('fromMain_forceNavigate', (type, page) => {
-	location.search = `?type=${type}&page=${page}`
-})
+	fsgUtil.byId('bgContent').innerHTML = content
+	fsgUtil.byId('title').innerHTML     = title
+}
+
+function attachProperCase(pageID) {
+	for ( const thisAttach of client_BGData.joints_list ) {
+		if ( thisAttach.toLowerCase() === pageID ) { return thisAttach }
+	}
+}
+
+window.mods.receive('fromMain_forceNavigate', (type, page) => { location.search = `?type=${type}&page=${page}` })
 
 window.addEventListener('DOMContentLoaded', () => {
 	const urlParams     = new URLSearchParams(window.location.search)
@@ -530,73 +576,75 @@ window.addEventListener('DOMContentLoaded', () => {
 	currentLocale = document.querySelector('body').getAttribute('data-i18n') || 'en'
 	chartUnits    = window.l10n.getText_sync(['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp'])
 
-	fsgUtil.byId('folderButton').classList.add('d-none')
-	fsgUtil.byId('compareButton').classList.add('d-none')
+	switch (pageType) {
+		case 'cat':
+			setPageInfo(
+				`<l10n name="basegame_${pageID}_title"></l10n>`,
+				getTopCat(pageID)
+			)
+			break
+		case 'subcat' : {
+			const isVehicleCat = Object.hasOwn(client_BGData.catMap_vehicle, pageID)
+			const catL10n      = isVehicleCat ? client_BGData.catMap_vehicle[pageID] : client_BGData.catMap_place[pageID]
+			const catContent   = ((isVehicleCat ? client_BGData.byCat_vehicle[catL10n] : client_BGData.byCat_placeable[catL10n]) ?? []).sort()
 
-	if ( urlParams.size === 0 ) {
-		// Display Main Page
-		buildSearchTree()
-		fsgUtil.byId('back_button').classList.add('d-none')
-		fsgUtil.byId('searchBox').classList.remove('d-none')
-		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat('top'))
-		fsgUtil.byId('title').innerHTML     = '<l10n name="basegame_main_title"></l10n>'
-		setTimeout(clientFilter, 250)
-	} else if ( pageType === 'cat' ) {
-		// Display Top-Level Category
-		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat(pageID))
-		fsgUtil.byId('title').innerHTML     = `<l10n name="basegame_${pageID}_title"></l10n>`
-	} else if ( pageType === 'subcat' ) {
-		// Display Sub-Category
-		const isVehicleCat = Object.hasOwn(client_baseGameCatMap_vehicle, pageID)
-		const catL10n      = isVehicleCat ? client_baseGameCatMap_vehicle[pageID] : client_baseGameCatMap_place[pageID]
-		const catContent   = ((isVehicleCat ? client_baseGameData.byCat_vehicle[catL10n] : client_baseGameData.byCat_placeable[catL10n]) ?? []).sort()
-
-		fsgUtil.byId('title').innerHTML     = `<l10nBase name="${catL10n}"></l10nBase>`
-		fsgUtil.byId('bgContent').innerHTML = wrapRow(catContent.map((x) => wrapStoreItem(
-			client_baseGameData.records[x].name,
-			client_baseGameData.records[x].price,
-			client_baseGameData.records[x].icon,
-			client_baseGameData.records[x].brand,
-			x,
-			client_baseGameData.records[x].masterType,
-			client_baseGameData.records[x].dlcKey
-		)))
-	} else if ( pageType === 'brand' ) {
-		// Display Brand
-		const brandDisplay = pageID.replace('brand_', '').toUpperCase()
-		const brandContent = (client_baseGameData.byBrand_vehicle[brandDisplay] ?? []).sort()
-
-		fsgUtil.byId('title').innerHTML     = `<l10nBase name="${client_baseGameBrandMap[pageID]}"></l10nBase>`
-		
-		fsgUtil.byId('bgContent').innerHTML = wrapRow(brandContent.map((x) => wrapStoreItem(
-			client_baseGameData.records[x].name,
-			client_baseGameData.records[x].price,
-			client_baseGameData.records[x].icon,
-			client_baseGameData.records[x].brand,
-			x,
-			client_baseGameData.records[x].masterType,
-			client_baseGameData.records[x].dlcKey
-		)))
-	} else if ( pageType === 'item' ) {
-		// Display Item
-		const thisItem = client_baseGameData.records[pageID]
-
-		fsgUtil.byId('folderButton').classList[thisItem.isBase ? 'remove' : 'add']('d-none')
-
-		if ( thisItem.masterType === 'vehicle' ) {
-			fsgUtil.byId('compareButton').classList.remove('d-none')
+			setPageInfo(
+				`<l10nBase name="${catL10n}"></l10nBase>`,
+				wrapRow(catContent.sort().map((x) => wrapStoreItem(x)))
+			)
+			break
 		}
+		case 'brand' : {
+			const brandDisplay = pageID.replace('brand_', '').toUpperCase()
+			const brandContent = (client_BGData.byBrand_vehicle[brandDisplay] ?? []).sort()
 
-		fsgUtil.byId('title').innerHTML        = typeof thisItem.brand !== 'undefined' ? `${client_baseGameBrandMap[thisItem.brand.toLowerCase()]} ${thisItem.name}` : thisItem.name
-		fsgUtil.byId('mod_location').innerHTML = thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`
-		client_buildStore(thisItem)
-	} else {
-		buildSearchTree()
-		fsgUtil.byId('searchBox').classList.remove('d-none')
-		fsgUtil.byId('back_button').classList.add('d-none')
-		fsgUtil.byId('bgContent').innerHTML = wrapRow(getTopCat('top'))
-		fsgUtil.byId('title').innerHTML     = '<l10n name="basegame_main_title"></l10n>'
-		setTimeout(clientFilter, 250)
+			setPageInfo(
+				`<l10nBase name="${client_BGData.brandMap[pageID]}"></l10nBase>`,
+				wrapRow(brandContent.sort().map((x) => wrapStoreItem(x)))
+			)
+			break
+		}
+		case 'attach_has' : {
+			const jointType = attachProperCase(pageID)
+
+			setPageInfo(
+				`<l10n name="basegame_attach_has"></l10n> : ${jointType}`,
+				wrapRow(client_BGData.joints_has[jointType].sort().map((x) => wrapStoreItem(x)))
+			)
+			break
+		}
+		case 'attach_need' : {
+			const jointType = attachProperCase(pageID)
+
+			setPageInfo(
+				`<l10n name="basegame_attach_need"></l10n> : ${jointType}`,
+				wrapRow(client_BGData.joints_needs[jointType].sort().map((x) => wrapStoreItem(x)))
+			)
+			break
+		}
+		case 'item' : {
+			const thisItem = client_BGData.records[pageID]
+	
+			fsgUtil.byId('mod_location').innerHTML = thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`
+
+			setPageInfo(
+				typeof thisItem.brand !== 'undefined' ? `${client_BGData.brandMap[thisItem.brand.toLowerCase()]} ${transName(thisItem.name)}` : transName(thisItem.name),
+				client_buildStore(thisItem),
+				{
+					button_comp   : thisItem.masterType === 'vehicle',
+					button_folder : thisItem.isBase,
+				}
+			)
+			break
+		}
+		default :
+			buildSearchTree()
+			fsgUtil.byId('searchBox').classList.remove('d-none')
+			setPageInfo(
+				'<l10n name="basegame_main_title"></l10n>',
+				getTopCat('top')
+			)
+			break
 	}
 	processL10N()
 	clientGetL10NEntries2()
@@ -606,7 +654,7 @@ window.addEventListener('DOMContentLoaded', () => {
 function clientOpenFolder() {
 	const urlParams     = new URLSearchParams(window.location.search)
 	const pageID        = urlParams.get('page')
-	const folder        = pageID.split('_').slice(0, -1)
+	const folder        = client_BGData.records[pageID].diskPath.slice(0, -1)
 
 	window.mods.openBaseFolder(folder)
 }
@@ -621,7 +669,6 @@ function clientOpenCompare(forcePageID = null) {
 function clientOpenCombos() {
 	window.mods.openCompareBaseMulti([...comboKeyList])
 }
-
 
 function clientGetL10NEntries2() {
 	const l10nSendArray = fsgUtil.queryA('l10nBase').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))

@@ -15,7 +15,7 @@ const { globSync }  = require('glob')
 const c             = require('ansi-colors')
 
 const { requiredItems, ddsDecoder } = require('../lib/workerThreadLib.js')
-const { baseLooker }                = require('./generateBaseGame_lib.js')
+const { baseLooker, getParser }     = require('./generateBaseGame_lib.js')
 
 requiredItems.currentLocale = 'en'
 requiredItems.l10n_hp       = 'HP'
@@ -64,35 +64,64 @@ const dlcPaths = {
 	// ],
 }
 
-const exportData = {
-	byBrand_vehicle   : {},
-	byCat_placeable   : {},
-	byCat_vehicle     : {},
-	records           : {},
+const baseData = {
+	brandMap        : {},
+	brandMap_icon   : {},
+	brands          : [],
+	byBrand_vehicle : {},
+	byCat_placeable : {},
+	byCat_vehicle   : {},
+	category        : {},
+	catMap_place    : {},
+	catMap_vehicle  : {},
+	joints_has      : {},
+	joints_list     : [],
+	joints_needs    : {},
+	joints_set      : new Set(),
+	records         : {},
+	topLevel        : [
+		{ icon : 'bg_brand',     page : 'brand',     name : 'basegame_brand'},
+		{ icon : 'bg_vehicle',   page : 'vehicle',   name : 'basegame_vehicle'},
+		{ icon : 'bg_tool',      page : 'tool',      name : 'basegame_tool'},
+		{ icon : 'bg_object',    page : 'object',    name : 'basegame_object'},
+		{ icon : 'bg_placeable', page : 'placeable', name : 'basegame_placeable'},
+		{ icon : 'bg_connect',   page : 'attach',    name : 'basegame_attach'},
+	],
 }
 
 const handleResults = (results, fileDetails) => {
 	if ( results.record === null ) { return }
 
 	const thisName = results.shortname
-	
 
 	if ( results.record.masterType === 'vehicle' ) {
-		exportData.byBrand_vehicle[results.record.brand] ??= []
-		exportData.byBrand_vehicle[results.record.brand].push(thisName)
+		baseData.byBrand_vehicle[results.record.brand] ??= []
+		baseData.byBrand_vehicle[results.record.brand].push(thisName)
 
-		exportData.byCat_vehicle[results.record.category] ??= []
-		exportData.byCat_vehicle[results.record.category].push(thisName)
+		baseData.byCat_vehicle[results.record.category] ??= []
+		baseData.byCat_vehicle[results.record.category].push(thisName)
+
+		for ( const thisJoint of results.record.joints.canUse ) {
+			baseData.joints_set.add(thisJoint)
+			baseData.joints_has[thisJoint] ??= []
+			baseData.joints_has[thisJoint].push(thisName)
+		}
+
+		for ( const thisJoint of results.record.joints.needs ) {
+			baseData.joints_set.add(thisJoint)
+			baseData.joints_needs[thisJoint] ??= []
+			baseData.joints_needs[thisJoint].push(thisName)
+		}
 	} else {
-		exportData.byCat_placeable[results.record.category] ??= []
-		exportData.byCat_placeable[results.record.category].push(thisName)
+		baseData.byCat_placeable[results.record.category] ??= []
+		baseData.byCat_placeable[results.record.category].push(thisName)
 	}
 
-	exportData.records[thisName] = results.record
+	baseData.records[thisName] = results.record
 
-	exportData.records[thisName].dlcKey   = fileDetails[2]
-	exportData.records[thisName].isBase   = (fileDetails[2] === null)
-	exportData.records[thisName].diskPath = (fileDetails[2] !== null) ? null : path.relative(fileDetails[1], fileDetails[0]).split(path.sep)
+	baseData.records[thisName].dlcKey   = fileDetails[2]
+	baseData.records[thisName].isBase   = (fileDetails[2] === null)
+	baseData.records[thisName].diskPath = (fileDetails[2] !== null) ? null : path.relative(fileDetails[1], fileDetails[0]).split(path.sep)
 
 	/* eslint-disable no-console */
 	if ( results.log.items.length !== 0 ) {
@@ -102,6 +131,53 @@ const handleResults = (results, fileDetails) => {
 		console.log(c.greenBright(`✓ ADDED: ${c.green(thisName)}`))
 	}
 	/* eslint-enable no-console */
+}
+
+
+const thisXMLParser = getParser()
+
+const storeCats = thisXMLParser.parse(fs.readFileSync(path.join(__dirname, 'bgBuilder', 'storeCategories.xml')))
+
+const ignoreCats = new Set(['sales', 'objectanimal', 'objectmisc'])
+
+for ( const thisCat of storeCats.categories.category ) {
+	const thisType = thisCat.$.TYPE.toLowerCase()
+	const iconName = thisCat.$.NAME.toLowerCase()
+	const title    = thisCat.$.TITLE
+
+	if ( ignoreCats.has(iconName) ) { continue }
+
+	baseData.category[thisType] ??= []
+	baseData.category[thisType].push({
+		iconName : iconName,
+		title    : title,
+	})
+	baseData[ thisType === 'placeable' ? 'catMap_place' : 'catMap_vehicle'][iconName] = title
+}
+
+const brandFiles = [
+	path.join(__dirname, 'bgBuilder', 'brands.xml'),
+	...globSync('*.xml', { cwd : path.join(path.join(__dirname, 'bgBuilder', 'dlc')), stat : true, withFileTypes : true }).map((x) => x.fullpath())
+]
+
+for ( const thisBrandFile of brandFiles ) {
+	const brandContents = thisXMLParser.parse(fs.readFileSync(thisBrandFile))
+	const theseBrands   = brandContents?.brands?.brand || brandContents?.moddesc?.brands?.brand || []
+
+	for ( const thisBrand of theseBrands ) {
+		const thisName = thisBrand.$.NAME.toLowerCase()
+		const thisTitle = thisBrand.$.TITLE
+		const thisImage = path.parse(thisBrand.$.IMAGE).name.toLowerCase()
+
+		baseData.brands.push({
+			image : thisImage,
+			name  : thisName,
+			title : thisTitle,
+		})
+
+		baseData.brandMap[thisName] = thisTitle
+		baseData.brandMap_icon[thisName] = thisImage
+	}
 }
 
 const fullFileList = []
@@ -136,9 +212,12 @@ const doWork = async () => {
 	}
 	/* eslint-enable no-await-in-loop */
 	
+	baseData.joints_list = [...baseData.joints_set]
+	baseData.brands.sort((a, b) => Intl.Collator().compare(a.title, b.title))
+	
 	fs.writeFileSync(
 		path.join(__dirname, '..', 'renderer', 'renderJS', 'baseGameData.js'),
-		`/* eslint-disable indent, key-spacing, quotes, comma-dangle, sort-keys */\n/* cSpell:disable */\nconst client_baseGameData = ${JSON.stringify(exportData, null, 2)}`
+		`/* eslint-disable indent, key-spacing, quotes, comma-dangle, sort-keys */\n/* cSpell:disable */\nconst client_BGData = ${JSON.stringify(baseData, null, 2)}`
 	)
 }
 

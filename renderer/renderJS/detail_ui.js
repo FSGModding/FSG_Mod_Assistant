@@ -7,7 +7,7 @@
 // Detail window UI
 /* eslint complexity: ["error", 16] */
 
-/* global Chart, processL10N, fsgUtil, getText, client_baseGameData, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
+/* global Chart, processL10N, fsgUtil, getText, client_BGData, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
 let lookItemData = {}
 let lookItemMap  = {}
@@ -50,7 +50,7 @@ const make_combos = (combos, lookRecord, parentItem, currentLocale) => {
 		const thisComboKey    = thisComboIsBase ? thisCombo.replaceAll('$data/', '').replaceAll('/', '_').replaceAll('.xml', '') : thisCombo
 
 		if ( thisComboKey !== null ) {
-			const thisItem = thisComboIsBase ? client_baseGameData.records[thisComboKey] : lookRecord.items[thisComboKey]
+			const thisItem = thisComboIsBase ? client_BGData.records[thisComboKey] : lookRecord.items[thisComboKey]
 
 			if ( typeof thisItem === 'undefined' ) { continue }
 
@@ -154,6 +154,23 @@ const getMaxSpeed = (specSpeed, limitSpeed, motorSpeed) => {
 	return 0
 }
 
+const link_attach = (joints, doesHave) => {
+	if ( typeof joints === 'undefined' ) { return '' }
+
+	let   hasCustom = false
+	const jointHTML = []
+
+	for ( const thisJoint of joints ) {
+		if ( ! client_BGData.joints_list.includes(thisJoint) ) {
+			hasCustom = true
+			continue
+		}
+		jointHTML.push(`<a href="#" onclick="clientClickCombo('base', '${!doesHave ? 'attach_has' : 'attach_need'}', '${thisJoint.toLowerCase()}'); return false">${thisJoint}</a>`)
+	}
+	if ( hasCustom ) { jointHTML.push('<l10n name="attachment_custom"></l10n>')}
+	return jointHTML.join(', ')
+}
+
 const buildStore = (lookRecord, chartUnits, currentLocale) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
@@ -205,6 +222,8 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				iconIMG           : fsgUtil.iconMaker(lookRecord?.icons?.[storeitem] || null),
 				itemName          : thisItem.name,
 				itemTitle         : thisItem.type,
+				joint_has         : link_attach(thisItem?.joints?.canUse, true),
+				joint_need        : link_attach(thisItem?.joints?.needs, false),
 				maxSpeed          : fsgUtil.numFmtMany(maxSpeed, currentLocale, [
 					{ factor : 1,        precision : 0, unit : 'unit_kph' },
 					{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
@@ -224,6 +243,8 @@ const buildStore = (lookRecord, chartUnits, currentLocale) => {
 				show_hasLights    : shouldHide(thisItem.hasLights),
 				show_hasPaint     : shouldHide(thisItem.hasColor),
 				show_hasWheels    : shouldHide(thisItem.hasWheelChoice),
+				show_jointHas     : shouldHide(thisItem?.joints?.canUse?.length !== 0),
+				show_jointNeed    : shouldHide(thisItem?.joints?.needs?.length !== 0),
 				show_maxSpeed     : shouldHide(maxSpeed !== 0),
 				show_methane      : shouldHide(thisItem.fuelType, 'methane'),
 				show_needPower    : shouldHide(thisItem?.specs?.neededpower),

@@ -6,13 +6,13 @@
 
 // Base game window UI
 
-/* global processL10N, fsgUtil, client_baseGameData */
+/* global processL10N, fsgUtil, client_BGData */
 
 let   currentLocale = 'en'
 const itemList      = new Set()
 
 window.mods.receive('fromMain_addBaseItem', (itemID) => {
-	addItem(client_baseGameData.records[itemID], null, itemID)
+	addItem(client_BGData.records[itemID], null, itemID)
 	processL10N()
 	clientGetL10NEntries2()
 })
@@ -48,6 +48,23 @@ const getMaxSpeed = (specSpeed, limitSpeed, motorSpeed) => {
 		return thisMax
 	}
 	return 0
+}
+
+function transName(name) {
+	let realName = name
+
+	try {
+		if ( realName.includes('[[') ) {
+			const nameParts    = realName.match(/(.+?) \[\[(.+?)]]/)
+			const replaceParts = nameParts[2].split('|')
+			realName = nameParts[1]
+
+			for ( const thisReplacement of replaceParts ) {
+				realName = realName.replace(/%s/, thisReplacement.startsWith('$l10n') ? `<l10nBase name="${thisReplacement}"></l10nBase>` : thisReplacement)
+			}
+		}
+	} catch { /* don't care */ }
+	return realName
 }
 
 function addItem(thisItem, source, uuid_name) {
@@ -92,7 +109,7 @@ function addItem(thisItem, source, uuid_name) {
 			{ factor : 1,        precision : 0, unit : 'unit_kph' },
 		], true),
 		maxspeed_raw      : maxSpeed,
-		name              : thisItem.name,
+		name              : transName(thisItem.name),
 		price             : Intl.NumberFormat(currentLocale).format(thisItem.price),
 		price_raw         : thisItem.price,
 		source            : source || '<l10n name="basegame_title"></l10n>',

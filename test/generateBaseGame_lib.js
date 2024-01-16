@@ -9,6 +9,7 @@
 const { requiredItems, logCollector, fileHandler } = require('../lib/workerThreadLib.js')
 const path          = require('node:path')
 const allLang       = require('../lib/modLookerLang.json')
+const {XMLParser}   = require('fast-xml-parser')
 
 class baseLooker {
 	#iconParser     = requiredItems.iconDecoder
@@ -437,6 +438,32 @@ class baseLooker {
 		return sprayTypes.sort((a, b) => a.width - b.width)
 	}
 
+	#findAttr(xml, searchKey, maxDepth = 6, cDepth = 0 ) {
+		const finds = []
+	
+		for ( const thisKey of Object.keys(xml) ) {
+			if ( thisKey === '$' && typeof xml.$[searchKey] !== 'undefined' ) {
+				finds.push(xml.$[searchKey])
+			} else if ( typeof xml[thisKey] === 'object' && cDepth < maxDepth ) {
+				finds.push(...this.#findAttr(xml[thisKey], searchKey, maxDepth, cDepth + 1))
+			}
+		}
+		return finds
+	}
+
+	#parseJoints(canUse, needs, front) {
+		const returnCanUse = typeof canUse !== 'undefined' ? this.#findAttr(canUse, 'JOINTTYPE') : []
+		const returnNeeds  = typeof needs  !== 'undefined' ? this.#findAttr(needs, 'JOINTTYPE')  : []
+		const returnFront  = typeof front  !== 'undefined' ? this.#findAttr(front, 'JOINTTYPE')  : []
+
+		returnCanUse.push(...returnFront)
+
+		return {
+			canUse : [...new Set(returnCanUse)].filter((x) => x !== null),
+			needs  : [...new Set(returnNeeds)].filter((x) => x !== null),
+		}
+	}
+
 	#parseVehicle(xml) {
 		const storeData = xml.storedata
 
@@ -461,6 +488,11 @@ class baseLooker {
 				icon           : this.#util_getDefault(storeData?.image),
 				isEnterable    : this.#util_getDefault(xml.enterable) !== null,
 				isMotorized    : this.#util_getDefault(xml.motorized) !== null,
+				joints         : this.#parseJoints(
+					xml?.attacherjoints,
+					xml?.attachable,
+					xml?.frontloaderconfigurations
+				),
 				masterType     : 'vehicle',
 				motorInfo      : this.#parseMotor(xml?.motorized?.motorconfigurations?.motorconfiguration),
 				name           : this.#parseName(storeData?.name),
@@ -483,6 +515,9 @@ class baseLooker {
 		if ( typeof xml === 'number' ) { return xml.toString() }
 		if ( typeof xml === 'string' ) { return this.#translate(xml) }
 
+		if ( Object.hasOwn(xml, '#text') ) {
+			return `${xml['#text']} [[${xml?.$?.PARAMS}]]`
+		}
 		if ( Object.hasOwn(xml, this.#locale) ) { return xml[this.#locale] }
 		if ( Object.hasOwn(xml, 'en') ) { return xml.en }
 		if ( Object.hasOwn(xml, 'de') ) { return xml.de }
@@ -490,6 +525,28 @@ class baseLooker {
 	}
 }
 
+const alwaysXMLArray = new Set([
+	'moddesc.brands.brand',
+])
+
+const getParser = () => {
+	return new XMLParser({
+		attributeNamePrefix    : '',
+		attributesGroupName    : '$',
+		ignoreAttributes       : false,
+		ignoreDeclaration      : true,
+		ignorePiTags           : true,
+		isArray                : (_, jPath) => alwaysXMLArray.has(jPath),
+		parseAttributeValue    : true,
+		parseTagValue          : true,
+		processEntities        : false,
+		transformAttributeName : (name) => name.toUpperCase(),
+		transformTagName       : (name) => name.toLowerCase(),
+		trimValues             : true,
+	})
+}
+
 module.exports = {
 	baseLooker      : baseLooker,
+	getParser       : getParser,
 }
