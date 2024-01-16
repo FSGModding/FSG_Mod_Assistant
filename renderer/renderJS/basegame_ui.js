@@ -8,7 +8,6 @@
 
 /* global Chart, processL10N, fsgUtil, client_BGData */
 
-
 const selectFills = [
 	{ filltype : 'barley', l10n : '$l10n_fillType_barley' },
 	{ filltype : 'canola', l10n : '$l10n_fillType_canola' },
