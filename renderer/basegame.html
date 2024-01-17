@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="inc/chart.min.js"></script>
 	<script src="renderJS/fsg_util.js"></script>
@@ -18,6 +19,7 @@
 	<style>
 		.prodIcon   { color:#28a5c8; }
 		.prodIconLG { color:#28a5c8; font-size: 120%; }
+		.prodIconXL { color:#28a5c8; font-size: 180%; margin-right: 0.25em; }
 	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
@@ -61,7 +63,9 @@
 				{{brandString}}<br>
 				<span class="text-white">{{name}}</span><br>
 				<br>
-				<img style="width:30px" src="img/look/price.webp"> {{price}}<br>
+				<div class="d-flex align-items-center justify-content-center">
+					<span class="fsico-look-price prodIconXL"></span> {{price}}
+				</div>
 				<br>
 				<em class="text-body-tertiary">{{dlc}}</em>
 			</a>
@@ -87,7 +91,11 @@
 				<em>{{category}}</em>
 			</a>
 		</div>
-		<div class="text-end col-2 align-self-center"><img style="width:30px" src='img/look/price.webp'> {{price}}</div>
+		<div class="text-end col-2 align-self-center">
+			<div class="d-flex align-items-center justify-content-center">
+				<span class="fsico-look-price prodIconXL"></span> {{price}}
+			</div>
+		</div>
 		<div class="text-center col-1 align-self-center"><button onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button></div>
 	</div>
 </template>
@@ -107,23 +115,23 @@
 				</div>
 				<div class="col-7 mx-auto">
 					<ul class="list-group list-group-flush">
-						<li class="list-group-item {{show_price}}"><img style="width:30px" src='img/look/price.webp'> {{price}}</li>
-						<li class="list-group-item {{show_enginePower}}"><img style="width:30px" src='img/look/engine.webp'> {{enginePower}}</li>
-						<li class="list-group-item {{show_needPower}}"><img style="width:30px" src='img/look/engine.webp'> {{needPower}}</li>
-						<li class="list-group-item {{show_transmission}}"><img style="width:30px" src='img/look/transmission.webp'> <l10nBase name="{{transmission}}"></l10nBase></li>
-						<li class="list-group-item {{show_diesel}}"><img style="width:30px" src='img/look/diesel.webp'> <l10n name="look_diesel"></l10n></li>
-						<li class="list-group-item {{show_electric}}"><img style="width:30px" src='img/look/electric.webp'> <l10n name="look_electric"></l10n></li>
-						<li class="list-group-item {{show_methane}}"><img style="width:30px" src='img/look/methane.webp'> <l10n name="look_methane"></l10n></li>
-						<li class="list-group-item {{show_maxSpeed}}"><img style="width:30px" src='img/look/maxspeed.webp'> {{maxSpeed}}</li>
-						<li class="list-group-item {{show_hasLights}}"><img style="width:30px" src='img/look/haslights.webp'> <l10n name="look_has_lights"></l10n></li>
-						<li class="list-group-item {{show_hasBeacons}}"><img style="width:30px" src='img/look/hasbeacons.webp'> <l10n name="look_has_beacons"></l10n></li>
-						<li class="list-group-item {{show_hasPaint}}"><img style="width:30px" src='img/look/paintable.webp'> <l10n name="look_has_paint"></l10n></li>
-						<li class="list-group-item {{show_hasWheels}}"><img style="width:30px" src='img/look/haswheels.webp'> <l10n name="look_has_wheels"></l10n></li>
-						<li class="list-group-item {{show_workWidth}}"><img style="width:30px" src='img/look/width.webp'> {{workWidth}}{{workWidth2}}</l10n></li>
-						<li class="list-group-item {{show_fillUnit}}"><img style="width:30px" src='img/look/fillunit.webp'> {{fillUnit}}<div class="ms-4">{{fillImages}}</div></li>
-						<li class="list-group-item {{show_weight}}"><img style="width:30px" src='img/look/weight.webp'> {{weight}}</li>
-						<li class="list-group-item {{show_jointHas}}"><img style="width:30px" src='img/baseCategory/bg_connect.webp'> <l10n name="basegame_attach_has"></l10n> {{joint_has}}</l10n></li>
-						<li class="list-group-item {{show_jointNeed}}"><img style="width:30px" src='img/baseCategory/bg_connect.webp'> <l10n name="basegame_attach_need"></l10n> {{joint_need}}</l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_price}}"><span class="fsico-look-price prodIconXL"></span>{{price}}</li>
+						<li class="list-group-item d-flex align-items-center {{show_enginePower}}"><span class="fsico-look-engine prodIconXL"></span>{{enginePower}}</li>
+						<li class="list-group-item d-flex align-items-center {{show_needPower}}"><span class="fsico-look-engine prodIconXL"></span>{{needPower}}</li>
+						<li class="list-group-item d-flex align-items-center {{show_transmission}}"><span class="fsico-look-transmission prodIconXL"></span><l10nBase name="{{transmission}}"></l10nBase></li>
+						<li class="list-group-item d-flex align-items-center {{show_diesel}}"><span class="fsico-look-diesel prodIconXL"></span><l10n name="look_diesel"></l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_electric}}"><span class="fsico-look-electric prodIconXL"></span><l10n name="look_electric"></l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_methane}}"><span class="fsico-look-methane prodIconXL"></span><l10n name="look_methane"></l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_maxSpeed}}"><span class="fsico-look-speed prodIconXL"></span>{{maxSpeed}}</li>
+						<li class="list-group-item d-flex align-items-center {{show_hasLights}}"><span class="fsico-look-haslights prodIconXL"></span><l10n name="look_has_lights"></l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_hasBeacons}}"><span class="fsico-look-hasbeacons prodIconXL"></span><l10n name="look_has_beacons"></l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_hasPaint}}"><span class="fsico-look-paintable prodIconXL"></span><l10n name="look_has_paint"></l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_hasWheels}}"><span class="fsico-look-wheels prodIconXL"></span><l10n name="look_has_wheels"></l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_workWidth}}"><span class="fsico-look-width prodIconXL"></span>{{workWidth}}{{workWidth2}}</l10n></li>
+						<li class="list-group-item d-flex align-items-center {{show_fillUnit}}"><span class="fsico-look-fillunit prodIconXL"></span>{{fillUnit}}<div class="ms-4">{{fillImages}}</div></li>
+						<li class="list-group-item d-flex align-items-center {{show_weight}}"><span class="fsico-look-weight prodIconXL"></span>{{weight}}</li>
+						<li class="list-group-item d-flex align-items-center {{show_jointHas}}"><span class="fsico-cat-attach-has prodIconXL"></span><l10n name="basegame_attach_has"></l10n><span>: {{joint_has}}</span></li>
+						<li class="list-group-item d-flex align-items-center {{show_jointNeed}}"><span class="fsico-cat-attach-need prodIconXL"></span><l10n name="basegame_attach_need"></l10n><span>: {{joint_need}}</span></li>
 					</ul>
 				</div>
 				<div class="col-12 py-2"><p class="text-center">{{functions}}</p></div>
@@ -136,9 +144,9 @@
 				</div>
 				<nav class="{{show_graph}}">
 					<div class="nav nav-tabs" id="{{uuid}}_nav-tab" role="tablist">
-					  <button class="nav-link active" id="{{uuid}}_hp_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_hp_graph" type="button" role="tab" ><img style="width:30px" src='img/look/engine.webp'> <l10n name="unit_hp"></l10n></button>
-					  <button class="nav-link" id="{{uuid}}_kph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_kph_graph" type="button" role="tab" ><img style="width:30px" src='img/look/maxspeed.webp'> <l10n name="unit_kph"></l10n></button>
-					  <button class="nav-link" id="{{uuid}}_mph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_mph_graph" type="button" role="tab" ><img style="width:30px" src='img/look/maxspeed.webp'> <l10n name="unit_mph"></l10n></button>
+					  <button class="nav-link active" id="{{uuid}}_hp_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_hp_graph" type="button" role="tab" ><span class="prodIconLG fsico-look-engine"></span> <l10n name="unit_hp"></l10n></button>
+					  <button class="nav-link" id="{{uuid}}_kph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_kph_graph" type="button" role="tab" ><span class="prodIconLG fsico-look-speed"></span> <l10n name="unit_kph"></l10n></button>
+					  <button class="nav-link" id="{{uuid}}_mph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_mph_graph" type="button" role="tab" ><span class="prodIconLG fsico-look-speed"></span> <l10n name="unit_mph"></l10n></button>
 					</div>
 				</nav>
 				<div class="tab-content {{show_graph}}" id="{{uuid}}_nav-tabContent">
