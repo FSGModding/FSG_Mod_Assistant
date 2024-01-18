@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="look_width" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <path d="M9.33,78.81c-1.38,0-2.5-1.12-2.5-2.5V23.69c0-1.38,1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5v52.63c0,1.38-1.12,2.5-2.5,2.5Z" style="fill: #2ac1ec; stroke-width: 0px;"/>
+  <path d="M89.67,78.81c-1.38,0-2.5-1.12-2.5-2.5V23.69c0-1.38,1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5v52.63c0,1.38-1.12,2.5-2.5,2.5Z" style="fill: #2ac1ec; stroke-width: 0px;"/>
+  <g>
+    <path d="M78.58,52.5H20.42c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h58.17c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" style="fill: #2ac1ec; stroke-width: 0px;"/>
+    <polygon points="66.16 34.66 63.6 37.41 77.15 50 63.6 62.59 66.16 65.33 82.65 50 66.16 34.66" style="fill: #2ac1ec; stroke-width: 0px;"/>
+    <polygon points="32.84 34.66 35.4 37.41 21.85 50 35.4 62.59 32.84 65.33 16.35 50 32.84 34.66" style="fill: #2ac1ec; stroke-width: 0px;"/>
+  </g>
+</svg>
