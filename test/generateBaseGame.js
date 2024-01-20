@@ -80,13 +80,14 @@ const baseData = {
 	joints_set      : new Set(),
 	records         : {},
 	topLevel        : [
-		{ icon : 'bg_brand',     page : 'brand',     name : 'basegame_brand'},
-		{ icon : 'bg_vehicle',   page : 'vehicle',   name : 'basegame_vehicle'},
-		{ icon : 'bg_tool',      page : 'tool',      name : 'basegame_tool'},
-		{ icon : 'bg_object',    page : 'object',    name : 'basegame_object'},
-		{ icon : 'bg_placeable', page : 'placeable', name : 'basegame_placeable'},
-		{ icon : 'bg_connect',   page : 'attach',    name : 'basegame_attach'},
-		{ icon : 'bg_fills',     page : 'fills',     name : 'basegame_fills'},
+		{ class : 'cat-brand',       page : 'brand',       name : 'basegame_brand'},
+		{ class : 'cat-vehicle',     page : 'vehicle',     name : 'basegame_vehicle'},
+		{ class : 'cat-tool',        page : 'tool',        name : 'basegame_tool'},
+		{ class : 'cat-object',      page : 'object',      name : 'basegame_object'},
+		{ class : 'cat-placeable',   page : 'placeable',   name : 'basegame_placeable'},
+		{ class : 'cat-attach-has',  page : 'attach_has',  name : 'basegame_attach_has'},
+		{ class : 'cat-attach-need', page : 'attach_need', name : 'basegame_attach_need'},
+		{ class : 'look-fillunit',   page : 'fills',       name : 'basegame_fills'},
 	],
 }
 

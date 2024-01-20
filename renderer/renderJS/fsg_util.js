@@ -251,7 +251,13 @@ const fsgUtil = {
 		return `<img title="${name}" style="height: ${height}px" src="img/fills/${fsgUtil.knownFills.has(name) ? name : 'unknown'}.webp">`
 	},
 
+	doFillTypes      : (fillArray) => {
+		if ( typeof fillArray !== 'object' || !Array.isArray(fillArray) ) { return [] }
+		return fillArray.map((x) => `<fillType name="${x}"></fillType>`)
+	},
+
 	numFmtMany : (value, locale, transArray, dashZeros = false) => {
+		if ( typeof value === 'undefined' || value === null ) { return '' }
 		const valueList  = typeof value === 'number' ? [value] : value
 		const separator   = valueList.length < 3 ? ' - ' : ', '
 		const returnText = []

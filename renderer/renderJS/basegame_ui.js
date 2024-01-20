@@ -6,7 +6,7 @@
 
 // Base game window UI
 
-/* global Chart, processL10N, fsgUtil, client_BGData */
+/* global Chart, processL10N, fsgUtil, client_BGData, ft_doReplace */
 
 const selectFills = [
 	{ filltype : 'barley', l10n : '$l10n_fillType_barley' },
@@ -97,7 +97,7 @@ const buildWidth2 = (sprayTypes, defaultWidth) => {
 	const sprayTypesHTML = []
 
 	for ( const thisType of sprayTypes ) {
-		const fillImages = thisType.fills.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
+		const fillImages = fsgUtil.doFillTypes(thisType.fills)
 		sprayTypesHTML.push(`<div class="ms-4">${fillImages.join(' ')} ${fsgUtil.numFmtMany(thisType.width !== null ? thisType.width : defaultWidth, currentLocale, [
 			{ factor : 1,       precision : 1, unit : 'unit_m' },
 			{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
@@ -106,12 +106,10 @@ const buildWidth2 = (sprayTypes, defaultWidth) => {
 	return sprayTypesHTML.join('')
 }
 
-const getMaxSpeed = (specSpeed, limitSpeed, motorSpeed) => {
+const getMaxSpeed = (specSpeed, motorSpeed) => {
 	const specSpeed_clean = getDefault(specSpeed, false, 0)
-	const limitSpeed_clean = getDefault(limitSpeed, false, 0)
 
 	if ( specSpeed_clean > 0 ) { return specSpeed_clean }
-	if ( limitSpeed_clean > 0 ) { return limitSpeed_clean }
 
 	if ( typeof motorSpeed !== 'undefined' && motorSpeed !== null ) {
 		let thisMax = 0
@@ -176,12 +174,12 @@ const client_buildStore = (thisItem) => {
 
 	if ( thisItem.masterType === 'vehicle' ) {
 		const brandImage = fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
-		const maxSpeed   = getMaxSpeed(thisItem?.specs?.maxspeed, thisItem?.speedLimit, thisItem?.motorInfo?.speed)
+		const maxSpeed   = getMaxSpeed(thisItem?.specs?.maxspeed, thisItem?.motorInfo?.speed)
 		const thePower   = getDefault(thisItem?.specs?.power)
 		const getPower   = getDefault(thisItem?.specs?.neededpower)
 		let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
 		const theFill    = getDefault(thisItem.fillLevel)
-		const fillImages = thisItem.fillTypes.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
+		const fillImages = fsgUtil.doFillTypes(thisItem.fillTypes)
 		const powerSpan  = fsgUtil.getMinMaxHP(thePower, thisItem?.motorInfo)
 		
 		if ( typeof thisItem.sprayTypes !== 'undefined' && thisItem.sprayTypes !== null && thisItem?.sprayTypes?.length !== 0 && theWidth === 0 ) {
@@ -236,9 +234,14 @@ const client_buildStore = (thisItem) => {
 			show_methane      : shouldHide(thisItem.fuelType, 'methane'),
 			show_needPower    : shouldHide(thisItem?.specs?.neededpower),
 			show_price        : shouldHide(thisItem.price),
+			show_speedLimit   : shouldHide(thisItem?.speedLimit),
 			show_transmission : shouldHide(thisItem.transType),
 			show_weight       : shouldHide(thisItem.weight),
 			show_workWidth    : shouldHide(theWidth !== 0),
+			speedLimit        : fsgUtil.numFmtMany(thisItem?.speedLimit, currentLocale, [
+				{ factor : 1,        precision : 0, unit : 'unit_kph' },
+				{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
+			]),
 			transmission      : thisItem.transType,
 			typeDesc          : thisItem.typeDesc,
 			uuid              : thisItemUUID,
@@ -412,7 +415,7 @@ const client_buildStore = (thisItem) => {
 	}
 
 	if ( thisItem.masterType === 'placeable' ) {
-		const fillImages = thisItem.silo.types.map((thisFill) => fsgUtil.knownFills.has(thisFill) ? `<img style="height: 25px" src="img/fills/${thisFill}.webp">` : '')
+		const fillImages = fsgUtil.doFillTypes(thisItem.silo.types)
 
 		storeItemsHTML.push(fsgUtil.useTemplate('place_div', {
 			animalCount      : thisItem.husbandry.capacity,
@@ -475,20 +478,28 @@ function shouldHide(item, wanted = null) {
 	return ''
 }
 
-function wrapItem(name, icon, type, page, noTrans = false) {
-	const iconString = icon.startsWith('data:') ?
-		icon :
-		icon.startsWith('fill_') ?
-			`img/fills/${icon.replace('fill_', '')}.webp` :
-			icon.startsWith('brand_') ?
-				`img/brand/${icon}.webp` :
-				`img/baseCategory/${icon}.webp`
+function getImage(imgSrc) {
+	return imgSrc === null ? '' : `<img class="mb-3 rounded-2" style="width: 100px" src="${imgSrc}">`
+}
 
+function wrapSingle({ name = null, brand = null, icon = null, fsIcon = null, type = 'item', page = null, noTrans = false} = {}) {
 	const nameString = noTrans ? name : name.startsWith('$l10n') ?
 		`<l10nBase name="${name}"></l10nBase>` :
 		`<l10n name="${name}"></l10n>`
 
-	return `<div class="col-2 text-center"><div class="p-2 border rounded-3 h-100"><a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}"><img class="mb-3 rounded-2" style="width: 100px" src="${iconString}"><br />${nameString}</a></div></div>`
+	const iconIMG  = getImage(icon === null ? null : icon.startsWith('data:') ? icon : `img/baseCategory/${icon}.webp`)
+	const brandIMG = getImage(brand === null ? null : `img/brand/${brand}.webp`)
+	const classIMG = fsIcon === null ?
+		'' :
+		fsIcon.startsWith('fill-') ?
+			`<fillType class="h0" name="${fsIcon.substring(5)}"></fillType>` :
+			`<i class="h0 fsico-${fsIcon}"></i>`
+
+	return `<div class="col-2 text-center">
+		<div class="p-2 border rounded-3 h-100">
+		<a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}">
+		${iconIMG}${brandIMG}${classIMG}<br />
+		${nameString}</a></div></div>`
 }
 
 function transName(name) {
@@ -531,26 +542,72 @@ function wrapRow(rowHTMLArray) {
 function getTopCat(cat) {
 	switch ( cat ) {
 		case 'vehicle' :
-			return wrapRow(client_BGData.category.vehicle.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
+			return wrapRow(client_BGData.category.vehicle.map((x) => wrapSingle({
+				icon : x.iconName,
+				name : x.title,
+				page : x.iconName,
+				type : 'subcat',
+			})))
 		case 'tool' :
-			return wrapRow(client_BGData.category.tool.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
+			return wrapRow(client_BGData.category.tool.map((x) => wrapSingle({
+				icon : x.iconName,
+				name : x.title,
+				page : x.iconName,
+				type : 'subcat',
+			})))
 		case 'object' :
-			return wrapRow(client_BGData.category.object.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
+			return wrapRow(client_BGData.category.object.map((x) => wrapSingle({
+				icon : x.iconName,
+				name : x.title,
+				page : x.iconName,
+				type : 'subcat',
+			})))
 		case 'placeable' :
-			return wrapRow(client_BGData.category.placeable.map((x) => wrapItem(x.title, x.iconName, 'subcat', x.iconName)))
+			return wrapRow(client_BGData.category.placeable.map((x) => wrapSingle({
+				icon : x.iconName,
+				name : x.title,
+				page : x.iconName,
+				type : 'subcat',
+			})))
 		case 'brand' :
-			return wrapRow(client_BGData.brands.map((x) => wrapItem(x.title, x.image, 'brand', x.name, true)))
+			return wrapRow(client_BGData.brands.map((x) => wrapSingle({
+				brand   : x.image,
+				name    : x.title,
+				noTrans : true,
+				page    : x.name,
+				type    : 'brand',
+			})))
 		case 'fills' :
-			return wrapRow(selectFills.map((x) => wrapItem(x.l10n, `fill_${x.filltype}`, 'fill', x.filltype, false)))
-		case 'attach' :
-			return `
-				<h4 class="text-center"><l10n name="basegame_attach_has"></l10n></h4>
-				${wrapRow(Object.keys(client_BGData.joints_has).sort().map((x) => wrapItem(x, `attach_${x.toLowerCase()}`, 'attach_has', x.toLowerCase(), true)))}
-				<h4 class="text-center mt-3 border-top pt-3"><l10n name="basegame_attach_need"></l10n></h4>
-				${wrapRow(Object.keys(client_BGData.joints_needs).sort().map((x) => wrapItem(x, `attach_${x.toLowerCase()}`, 'attach_need', x.toLowerCase(), true)))}
-			`
+			return wrapRow(selectFills.map((x) => wrapSingle({
+				fsIcon  : `fill-${x.filltype}`,
+				name    : x.l10n,
+				noTrans : false,
+				page    : x.filltype,
+				type    : 'fill',
+			})))
+		case 'attach_need' :
+			return wrapRow(Object.keys(client_BGData.joints_needs).sort().map((x) => wrapSingle({
+				icon    : `attach_${x.toLowerCase()}`,
+				name    : x,
+				noTrans : true,
+				page    : x.toLowerCase(),
+				type    : 'attach_need',
+			})))
+		case 'attach_has' :
+			return wrapRow(Object.keys(client_BGData.joints_has).sort().map((x) => wrapSingle({
+				icon    : `attach_${x.toLowerCase()}`,
+				name    : x,
+				noTrans : true,
+				page    : x.toLowerCase(),
+				type    : 'attach_has',
+			})))
 		default :
-			return wrapRow(client_BGData.topLevel.map((x) => wrapItem(x.name, x.icon, 'cat', x.page)))
+			return wrapRow(client_BGData.topLevel.map((x) => wrapSingle({
+				fsIcon : x.class,
+				name   : x.name,
+				page   : x.page,
+				type   : 'cat',
+			})))
 			
 	}
 }
@@ -721,6 +778,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			)
 			break
 	}
+	ft_doReplace()
 	processL10N()
 	clientGetL10NEntries2()
 })
