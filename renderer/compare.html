@@ -10,16 +10,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
-	<script src="inc/chart.min.js"></script>
-	<script src="renderJS/fsg_util.js"></script>
+
+	<script src="renderJS/util/general_lib.js"></script>
+	<script src="renderJS/util/detail_lib.js"></script>
+
 	<script src="renderJS/baseGameData.js"></script>
 	<script src="renderJS/compare_ui.js"></script>
-	<style>
-		
-		.prodIcon   { color:#28a5c8; }
-		.prodIconLG { color:#28a5c8; font-size: 120%; }
-	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid px-1">
@@ -38,13 +36,13 @@
 			<table class="w-100 table table-bordered table-sm"><thead>
 				<tr>
 					<th>&nbsp;</th>
-					<th class="text-center" style="width:100px" id="head_price" onclick="clientSortBy('price')"><img style="width:30px" src='img/look/price.webp'></th>
-					<th class="text-center" style="width:100px" id="head_engineLow" onclick="clientSortBy('engineLow')"><img style="width:30px" src='img/look/engine.webp'> <i style="color: #2abce6;" class="bi bi-chevron-bar-down"></i></th>
-					<th class="text-center" style="width:100px" id="head_engineHigh" onclick="clientSortBy('engineHigh')"><img style="width:30px" src='img/look/engine.webp'> <i style="color: #2abce6;" class="bi bi-chevron-bar-up"></i></th>
-					<th class="text-center" style="width:100px" id="head_maxspeed" onclick="clientSortBy('maxspeed')"><img style="width:30px" src='img/look/maxspeed.webp'></th>
-					<th class="text-center" style="width:100px" id="head_width" onclick="clientSortBy('width')"><img style="width:30px" src='img/look/width.webp'></th>
-					<th class="text-center" style="width:100px" id="head_weight" onclick="clientSortBy('weight')"><img style="width:30px" src='img/look/weight.webp'></th>
-					<th class="text-center" style="width:100px" id="head_fillunit" onclick="clientSortBy('fillunit')"><img style="width:30px" src='img/look/fillunit.webp'></th>
+					<th class="text-center" style="width:100px" id="head_price" onclick="clientSortBy('price')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class='fsico-look-price'></i></th>
+					<th class="text-center" style="width:100px" id="head_engineLow" onclick="clientSortBy('engineLow')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class='fsico-look-engine'></i> <i style="color: #2abce6;" class="bi bi-chevron-bar-down"></i></th>
+					<th class="text-center" style="width:100px" id="head_engineHigh" onclick="clientSortBy('engineHigh')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class='fsico-look-engine'></i> <i style="color: #2abce6;" class="bi bi-chevron-bar-up"></i></th>
+					<th class="text-center" style="width:100px" id="head_maxspeed" onclick="clientSortBy('maxspeed')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class='fsico-look-speed'></i></th>
+					<th class="text-center" style="width:100px" id="head_width" onclick="clientSortBy('width')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class='fsico-look-width'></i></th>
+					<th class="text-center" style="width:100px" id="head_weight" onclick="clientSortBy('weight')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class='fsico-look-weight'></i></th>
+					<th class="text-center" style="width:100px" id="head_fillunit" onclick="clientSortBy('fillunit')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class='fsico-look-fillunit'></i></th>
 					<th class="text-center">&nbsp;</th>
 				</tr>
 			</thead>
@@ -55,7 +53,7 @@
 
 <template id="item_div">
 	<td class="text-center">
-		<img style="width: 88px" class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
+		{{iconImage}}<br>
 		{{name}}<br><em>{{source}}</em>
 	</td>
 	<td class="text-end align-middle" data-type="price" data-sort="{{price_raw}}">{{price}}</td>

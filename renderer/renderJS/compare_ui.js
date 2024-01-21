@@ -6,66 +6,19 @@
 
 // Base game window UI
 
-/* global processL10N, fsgUtil, client_BGData */
+/* global __, _l, dtLib, processL10N, fsgUtil, client_BGData */
 
-let   currentLocale = 'en'
 const itemList      = new Set()
 
 window.mods.receive('fromMain_addBaseItem', (itemID) => {
 	addItem(client_BGData.records[itemID], null, itemID)
-	processL10N()
-	clientGetL10NEntries2()
 })
 
 window.mods.receive('fromMain_addModItem', (itemDetails, source) => {
 	addItem(itemDetails, source, itemDetails.uuid_name)
-	processL10N()
-	clientGetL10NEntries2()
 })
 
-window.addEventListener('DOMContentLoaded', () => {
-	processL10N()
-	clientGetL10NEntries2()
-})
-
-function getDefault(value, float = false, safe = 0) {
-	const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
-	return !float ? parseInt(newValue) : parseFloat(newValue)
-}
-
-const getMaxSpeed = (specSpeed, limitSpeed, motorSpeed) => {
-	const specSpeed_clean = getDefault(specSpeed, false, 0)
-	const limitSpeed_clean = getDefault(limitSpeed, false, 0)
-
-	if ( specSpeed_clean > 0 ) { return specSpeed_clean }
-	if ( limitSpeed_clean > 0 ) { return limitSpeed_clean }
-
-	if ( typeof motorSpeed !== 'undefined' && motorSpeed !== null ) {
-		let thisMax = 0
-		for ( const thisSpeed of motorSpeed ) {
-			thisMax = Math.max(thisMax, thisSpeed)
-		}
-		return thisMax
-	}
-	return 0
-}
-
-function transName(name) {
-	let realName = name
-
-	try {
-		if ( realName.includes('[[') ) {
-			const nameParts    = realName.match(/(.+?) \[\[(.+?)]]/)
-			const replaceParts = nameParts[2].split('|')
-			realName = nameParts[1]
-
-			for ( const thisReplacement of replaceParts ) {
-				realName = realName.replace(/%s/, thisReplacement.startsWith('$l10n') ? `<l10nBase name="${thisReplacement}"></l10nBase>` : thisReplacement)
-			}
-		}
-	} catch { /* don't care */ }
-	return realName
-}
+window.addEventListener('DOMContentLoaded', () => { processL10N() })
 
 function addItem(thisItem, source, uuid_name) {
 	if ( thisItem.masterType !== 'vehicle' ) { return }
@@ -76,52 +29,29 @@ function addItem(thisItem, source, uuid_name) {
 
 	itemList.add(identity)
 	
-	currentLocale    = document.querySelector('body').getAttribute('data-i18n') || 'en'
-	const uuid       = crypto.randomUUID()
-	const maxSpeed   = getMaxSpeed(thisItem?.specs?.maxspeed, thisItem?.speedLimit, thisItem?.motorInfo?.speed)
-	const thePower   = getDefault(thisItem?.specs?.power)
-	const getPower   = getDefault(thisItem?.specs?.neededpower)
-	let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
-	const theFill    = getDefault(thisItem.fillLevel)
-	const powerSpan  = fsgUtil.getMinMaxHP(thePower, thisItem?.motorInfo)
-	
-	if ( typeof thisItem.sprayTypes !== 'undefined' && thisItem.sprayTypes !== null && thisItem?.sprayTypes?.length !== 0 && theWidth === 0 ) {
-		for ( const thisWidth of thisItem.sprayTypes ) {
-			theWidth = Math.max(thisWidth.width, theWidth)
-		}
-	}
+	const uuid     = crypto.randomUUID()
+	const thisData = dtLib.getInfo(thisItem)
+	const locale   = _l()
 
 	const addHTML  = fsgUtil.useTemplate('item_div', {
-		engineHigh        : fsgUtil.numFmtMany(powerSpan[1], currentLocale, [
-			{ factor : 1,      precision : 0, unit : 'unit_hp' },
-		], true),
-		engineHigh_raw    : powerSpan[1],
-		engineLow         : fsgUtil.numFmtMany(powerSpan[0] || getPower, currentLocale, [
-			{ factor : 1,      precision : 0, unit : 'unit_hp' },
-		], true),
-		engineLow_raw     : powerSpan[0],
-		fillunit          : fsgUtil.numFmtMany(theFill, currentLocale, [
-			{ factor : 1,         precision : 0, unit : 'unit_l' },
-		], true),
-		fillunit_raw      : theFill,
-		iconIMG           : thisItem.icon,
-		maxspeed          : fsgUtil.numFmtMany(maxSpeed, currentLocale, [
-			{ factor : 1,        precision : 0, unit : 'unit_kph' },
-		], true),
-		maxspeed_raw      : maxSpeed,
-		name              : transName(thisItem.name),
-		price             : Intl.NumberFormat(currentLocale).format(thisItem.price),
+		engineHigh        : dtLib.numFmtMany(thisData.powerSpan[1], locale, [dtLib.unit.hp], true),
+		engineHigh_raw    : thisData.powerSpan[1],
+		engineLow         : dtLib.numFmtMany(thisData.powerSpan[0] || thisData.needPower, locale, [dtLib.unit.hp], true),
+		engineLow_raw     : thisData.powerSpan[0] || thisData.needPower,
+		fillunit          : dtLib.numFmtMany(thisData.fillLevel, locale, [dtLib.unit.l], true),
+		fillunit_raw      : thisData.fillLevel,
+		iconImage         : dtLib.safeDataImage(thisItem.icon, { width : '50%'}),
+		maxspeed          : dtLib.numFmtMany(thisData.maxSpeed || thisData.speedLimit, locale, [dtLib.unit.kph], true),
+		maxspeed_raw      : thisData.maxSpeed || thisData.speedLimit,
+		name              : __(thisItem.name, {skipIfNotBase : true}),
+		price             : dtLib.numFmtNoFrac(thisItem.price),
 		price_raw         : thisItem.price,
-		source            : source || '<l10n name="basegame_title"></l10n>',
+		source            : source || __('basegame_title'),
 		uuid              : uuid,
-		weight            : fsgUtil.numFmtMany(thisItem.weight, currentLocale, [
-			{ factor : 1,    precision : 0, unit : 'unit_kg' },
-		]),
-		weight_raw        : thisItem.weight,
-		width             : fsgUtil.numFmtMany(theWidth, currentLocale, [
-			{ factor : 1,       precision : 1, unit : 'unit_m' },
-		], true),
-		width_raw         : theWidth,
+		weight            : dtLib.numFmtMany(thisData.weight, locale, [dtLib.unit.kg], true),
+		weight_raw        : thisData.weight,
+		width             : dtLib.numFmtMany(thisData.workWidth, locale, [dtLib.unit.m], true),
+		width_raw         : thisData.workWidth,
 	})
 	const appendDiv = document.createElement('tr')
 
@@ -129,18 +59,20 @@ function addItem(thisItem, source, uuid_name) {
 	appendDiv.setAttribute('data-identity', identity)
 	appendDiv.innerHTML = addHTML
 	fsgUtil.byId('displayTable').append(appendDiv)
+	processL10N()
 }
 
 function clientSortBy(sortType) {
-	const isDownNow = fsgUtil.byId(`head_${sortType}`).querySelector('.sort_icon_down') !== null
+	const isDownNow    = fsgUtil.byId(`head_${sortType}`).querySelector('.fsico-sort-down') !== null
 	const shouldBeDown = !isDownNow
 
-	for ( const element of fsgUtil.query('.sort_icon') ) { element.remove() }
+	for ( const element of fsgUtil.query('.sort-icon') ) {
+		element.classList.remove('fsico-sort-down', 'fsico-sort-up')
+		element.classList.add('fsico-sort-none')
+	}
 
-	const currentHTML = fsgUtil.byId(`head_${sortType}`).innerHTML
-	const addHTML     = shouldBeDown ? '<i class="bi bi-chevron-double-down sort_icon sort_icon_down"></i>' : '<i class="bi bi-chevron-double-up sort_icon sort_icon_up"></i>'
-
-	fsgUtil.byId(`head_${sortType}`).innerHTML = `${addHTML} ${currentHTML}`
+	fsgUtil.query(`#head_${sortType} .sort-icon`)[0].classList.remove('fsico-sort-none')
+	fsgUtil.query(`#head_${sortType} .sort-icon`)[0].classList.add(shouldBeDown ? 'fsico-sort-down' : 'fsico-sort-up')
 	
 	const currentRows = fsgUtil.byId('displayTable').querySelectorAll('tr')
 
@@ -167,18 +99,3 @@ function clientOpenFolder() {
 
 	window.mods.openBaseFolder(folder)
 }
-
-
-function clientGetL10NEntries2() {
-	const l10nSendArray = fsgUtil.queryA('l10nBase').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
-
-	window.l10n.getTextBase_send(new Set(l10nSendArray))
-}
-
-window?.l10n?.receive('fromMain_getTextBase_return', (data) => {
-	for ( const item of fsgUtil.query(`l10nBase[name="${data[0]}"]`) ) { item.innerHTML = data[1] }
-})
-
-window?.l10n?.receive('fromMain_l10n_refresh', () => {
-	clientGetL10NEntries2()
-})

@@ -310,7 +310,7 @@ function clientGetL10NEntries() {
 function clientGetL10NEntriesBase() {
 	const l10nSendArray = fsgUtil.queryA('l10nBase').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
 
-	window.l10n.getTextBase_send(new Set(l10nSendArray))
+	l10n.getTextBase_send(new Set(l10nSendArray))
 }
 
 window?.l10n?.receive('fromMain_getText_return', (data) => {
