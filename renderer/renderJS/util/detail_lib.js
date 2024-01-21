@@ -209,7 +209,7 @@ const dtLib = {
 		if ( typeof value === 'number' && value === 0 ) { return '' }
 		
 		if ( type === 'power' && Array.isArray(value) && value.length === 3 ) {
-			return dtLib.numFmtMany(value[3] ? value[0] : value.slice(0, 2), _l(), dtLib.unitCombo(type))
+			return dtLib.numFmtMany(value[2] ? value[0] : value.slice(0, 2), _l(), dtLib.unitCombo(type))
 		}
 		return dtLib.numFmtMany(value, _l(), dtLib.unitCombo(type))
 	},
