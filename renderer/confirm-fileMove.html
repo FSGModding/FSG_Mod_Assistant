@@ -21,7 +21,7 @@
 					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
 				</div>
 				<div class="col-5 pt-4">
-					<div class="badge bg-primary mx-auto w-100 d-block rounded-pill"><l10n class="h4" name="confirm_move_title"></l10n></div>
+					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><l10n class="h4" name="confirm_move_title"></l10n></div>
 				</div>
 			</div>
 			
@@ -44,19 +44,19 @@
 </body>
 
 <template id="no_dest">
-	<div class="row mt-0"><div class="col col-form-label"><l10n name="no_destination_selected"></l10n></div></div>
+	<div class="row mt-0"><div class="col col-form-label"><i class="bi bi-exclamation-triangle text-danger"></i> <l10n name="no_destination_selected"></l10n></div></div>
 </template>
 
 <template id="clear_dest">
 	<div class="row mt-0">
-		<div class="col col-form-label"><l10n name="destination_clear"></l10n></div>
+		<div class="col col-form-label"><i class="bi bi-check-circle text-success"></i> <l10n name="destination_clear"></l10n></div>
 	</div>
 	<input type="hidden" value="1" id="{{uuid}}" />
 </template>
 
 <template id="conflict_dest">
 	<div class="row mt-0">
-		<div class="col-8 col-form-label"><l10n name="destination_full"></l10n></div>
+		<div class="col-8 col-form-label"><i class="bi bi-question-circle text-warning"></i> <l10n name="destination_full"></l10n></div>
 		<div class="col-4 col-form-label">
 			<div class="form-check">
 				<input class="form-check-input" type="checkbox" value="" id="{{uuid}}">
@@ -75,7 +75,7 @@
 		</div>
 		<div class="col">
 			<h4 class="mb-0 mt-2">{{shortname}} <span class="ps-3 small text-muted">{{title}}</span></h4>
-			<p class="font-monospace small mb-1">{{printPath}}</p>
+			<p class="font-monospace ps-3 small mb-1 longPrintPath">{{printPath}}</p>
 			{{destHTML}}
 		</div>
 	</div>

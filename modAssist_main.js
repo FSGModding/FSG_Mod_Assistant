@@ -589,6 +589,11 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 
 	for ( const l10nEntry of l10nSet ) {
 		switch ( l10nEntry ) {
+			case 'app_name':
+				myTranslator.stringLookup(l10nEntry).then((text) => {
+					sendEntry(l10nEntry, `<i style="font-size: calc(1.6rem + .6vw); vertical-align: -0.08em; padding-right: 0.2em;" class="fsico-ma-large"></i>${text}`)
+				})
+				break
 			case 'app_version' :
 				sendEntry(l10nEntry, app.getVersion())
 				break
@@ -601,7 +606,7 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			case 'game_icon_lg' :
 				sendEntry(
 					l10nEntry,
-					`<i class="fsico-ver-${mcStore.get('game_version')}" style="font-size: 75px;"></i>`
+					`<i class="d-inline-block fsico-ver-${mcStore.get('game_version')}" style="margin: -30px 0px; font-size: 75px;"></i>`
 				)
 				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
 					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }

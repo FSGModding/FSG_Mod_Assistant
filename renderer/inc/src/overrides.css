@@ -57,7 +57,7 @@ tr.mod-list-row td:first-child input { display: none; }
 	background-color: var(--bs-tertiary-bg);
 	height: 24px;
 	width: auto;
-	right: 127px;
+	right: 125px;
 	position: relative;
 	top: 0px;
 	text-align: right;

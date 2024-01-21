@@ -288,6 +288,27 @@ const fsgUtil = {
 			fsgUtil.byId(id).innerHTML = value
 		}
 	},
+	shortLongPaths  : () => {
+		for ( const element of fsgUtil.query('.longPrintPath') ) {
+			const currentValue = element.innerHTML
+			const currentParts = currentValue.split('\\')
+
+			if (
+				element.getAttribute('title') !== null ||
+				currentValue.length < 50 ||
+				currentParts.length < 5 )
+			{
+				continue // Short or already done
+			}
+			
+			element.innerHTML = [
+				...currentParts.slice(0, 2),
+				'<span style="top: -0.2em; position: relative;">...</span>',
+				...currentParts.slice(-2),
+			].join('\\')
+			element.setAttribute('title', currentValue)
+		}
+	},
 }
 
 /*  __ ____   ______        
@@ -299,6 +320,7 @@ function processL10N() {
 	if ( typeof ft_doReplace === 'function' ) { ft_doReplace() }
 	clientGetL10NEntries()
 	clientGetL10NEntriesBase()
+	fsgUtil.shortLongPaths()
 }
 
 function clientGetL10NEntries() {
