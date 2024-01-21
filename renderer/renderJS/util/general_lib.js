@@ -254,7 +254,22 @@ const fsgUtil = {
 	},
 	bytesToMB     : (count, suffix = true) => fsgUtil.bytesToHR(count, { forceMB : true, showSuffix : suffix}),
 	escapeDesc    : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;') : text,
-	escapeSpecial : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
+	escapeSpecial : ( text ) => typeof text === 'string' ? fsgUtil.unescapeText(text).replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
+	unescapeText  : (encodedString) => {
+		const translate_re = /&(nbsp|amp|quot|lt|gt);/g
+		const translate = {
+			'amp'  : '&',
+			'gt'   : '>',
+			'lt'   : '<',
+			'nbsp' : ' ',
+			'quot' : '"',
+		}
+		return encodedString.replace(translate_re, (_, entity) => {
+			return translate[entity]
+		}).replace(/&#(\d+);/gi, (_, numStr) => {
+			return String.fromCharCode(parseInt(numStr, 10))
+		})
+	},
 
 	onlyText      : ( testString ) => typeof testString === 'string' || typeof testString === 'number',
 
