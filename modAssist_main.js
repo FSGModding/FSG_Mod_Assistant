@@ -252,7 +252,7 @@ async function setActivity() {
 		details        : custom_detail !== '' ? custom_detail : `${discord_verb} Collection: \n${gameSetOverride.folder !== null ? path.basename(gameSetOverride.folder) : '--'}`,
 		instance       : true,
 		largeImageKey  : 'fsgmaicon_large',
-		largeImageText : 'FSG Mod Assistant',
+		largeImageText : `FSG Mod Assistant v.${!app.isPackaged ? 'NEXT' : app.getVersion()}`,
 		state          : custom_state !== '' ? custom_state : `Managing ${modCollect.modFullCount} Mods`,
 
 		buttons : [
