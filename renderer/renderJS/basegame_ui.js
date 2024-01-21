@@ -262,13 +262,22 @@ function getTopCat(cat) {
 				page    : x.toLowerCase(),
 				type    : 'attach_has',
 			})))
-		default :
-			return dtLib.wrap.row(client_BGData.topLevel.map((x) => dtLib.wrap.single({
-				fsIcon : x.class,
-				name   : x.name,
-				page   : x.page,
-				type   : 'cat',
-			})))
+		default : {
+			return [
+				dtLib.wrap.row(client_BGData.topLevel.slice(0, 5).map((x) => dtLib.wrap.single({
+					fsIcon : x.class,
+					name   : x.name,
+					page   : x.page,
+					type   : 'cat',
+				})), 'g-2 justify-content-center'),
+				dtLib.wrap.row(client_BGData.topLevel.slice(5).map((x) => dtLib.wrap.single({
+					fsIcon : x.class,
+					name   : x.name,
+					page   : x.page,
+					type   : 'cat',
+				})), 'g-2 justify-content-center mt-2')
+			].join('')
+		}
 			
 	}
 }

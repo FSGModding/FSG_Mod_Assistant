@@ -314,7 +314,7 @@ const dtLib = {
 		},
 		pRow  : (content) => `<div class="d-flex flex-wrap justify-content-center align-items-center">${content}</div>`,
 		pRowS : (icon, amount = '') => dtLib.wrap.pRow(`${icon}${amount}`),
-		row : (HTMLArray, extraClass = 'g-2 justify-content-center')  =>
+		row : (HTMLArray, extraClass = 'g-2')  =>
 			`<div class="row ${extraClass}">${ typeof HTMLArray !== 'object' ? HTMLArray : HTMLArray.join('') }</div>`,
 		single : ({ name = null, brand = null, icon = null, fsIcon = null, type = 'item', page = null, noTrans = false} = {}) =>
 			[
