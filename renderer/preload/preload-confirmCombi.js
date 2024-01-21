@@ -21,10 +21,15 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'l10n', {
-		getText_send    : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
-		receive         : ( channel, func ) => {
+		getLocale        : () => { return ipcRenderer.sendSync('toMain_getText_locale') },
+		getText_send     : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
+		getText_sync     : ( items ) => { return ipcRenderer.sendSync('toMain_getText_sync', items) },
+		getTextBase_send : ( text )  => { ipcRenderer.send('toMain_getTextBase_send', text) },
+		receive          : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_getText_return',
+				'fromMain_getText_return_base',
+				'fromMain_getText_return_title',
 				'fromMain_l10n_refresh'
 			])
 		
