@@ -228,8 +228,8 @@ const fsgUtil = {
 	},
 	
 	basename  : (name, sep = '\\') => name.substr(name.lastIndexOf(sep) + 1),
-	bytesToHR : ( inBytes, locale ) => {
-		const thisLocale = ( locale !== null ) ? locale : 'en'
+	bytesToHR : ( inBytes, { forceMB = false, showSuffix = true } = {} ) => {
+		const thisLocale = _l() ?? 'en'
 		let bytes = inBytes
 
 		if (Math.abs(bytes) < 1024) { return '0 kB' }
@@ -238,17 +238,21 @@ const fsgUtil = {
 		let u = -1
 		const r = 10**2
 
-		do {
-			bytes /= 1024
-			++u
-		} while (Math.round(Math.abs(bytes) * r) / r >= 1024 && u < units.length - 1)
+		if ( !forceMB ) {
+			do {
+				bytes /= 1024
+				++u
+			} while (Math.round(Math.abs(bytes) * r) / r >= 1024 && u < units.length - 1)
+		} else {
+			bytes = Math.round((bytes / ( 1024 * 1024) * 100 )) / 100
+		}
 
 		return [
 			bytes.toLocaleString( thisLocale, { minimumFractionDigits : 2, maximumFractionDigits : 2 } ),
-			units[u]
-		].join(' ')
+			showSuffix ? (forceMB ? 'MB' : units[u]) : null
+		].filter((x) => x !== null).join(' ')
 	},
-	bytesToMB     : (count, suffix = true) => `${Math.round((count / ( 1024 * 1024)*100))/100}${suffix?' MB':''}`,
+	bytesToMB     : (count, suffix = true) => fsgUtil.bytesToHR(count, { forceMB : true, showSuffix : suffix}),
 	escapeDesc    : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;') : text,
 	escapeSpecial : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
 

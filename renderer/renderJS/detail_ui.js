@@ -222,7 +222,7 @@ const buildPage = (modCollect) => {
 		description    : fsgUtil.escapeDesc(modRecord.l10n.description),
 		extraFiles     : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.extraFiles),
 		file_date      : modDate,
-		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
+		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize),
 		has_scripts    : fsgUtil.checkX(modRecord.modDesc.scriptFiles),
 		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
 		is_multiplayer : fsgUtil.checkX(modRecord.modDesc.multiPlayer, false),

@@ -63,7 +63,6 @@ window.mods.receive('fromMain_modInfoPop', (thisMod, thisSite) => {
 })
 
 let gameRunAlert    = 'Game is currently running, updates to the active collection require a game restart'
-let lastLocale      = 'en'
 let searchStringMap = {}
 let searchTagMap    = {}
 let lastList        = null
@@ -140,7 +139,6 @@ window.mods.receive('fromMain_gameUpdate', (status) => {
 window.mods.receive('fromMain_modList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
-	lastLocale         = modCollect.opts.currentLocale
 	gameRunAlert       = modCollect.opts.l10n.runMessage
 
 	searchStringMap_empty()
@@ -219,7 +217,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		}
 		
 		const isOnline = modCollect.collectionToStatus[collectKey]
-		const fullName = `${thisCollection.name} <small>[${isOnline ? fsgUtil.bytesToHR(sizeOfFolder, lastLocale) : __('removable_offline') }]</small>`
+		const fullName = `${thisCollection.name} <small>[${isOnline ? fsgUtil.bytesToHR(sizeOfFolder) : __('removable_offline') }]</small>`
 
 		modTable.push(makeModCollection(
 			isOnline,
@@ -361,7 +359,7 @@ const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) 
 			class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
 			class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':'',
 			click_modEnabled  : ! ( thisMod.badgeArray.includes('savegame') || thisMod.badgeArray.includes('notmod') ),
-			fileSize          : ( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize, lastLocale) : '',
+			fileSize          : ( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize) : '',
 			icon              : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
 			id                : id,
 			shortname         : thisMod.fileDetail.shortName,

@@ -6,9 +6,8 @@
 
 // Save Manage window UI
 
-/* global fsgUtil, processL10N, bootstrap */
+/* global fsgUtil, processL10N, bootstrap, _l */
 
-let lastLocale = 'en'
 let uuidMap    = {}
 
 window.mods.receive('fromMain_saveImport', (savePath) => {
@@ -18,7 +17,6 @@ window.mods.receive('fromMain_saveImport', (savePath) => {
 })
 
 window.mods.receive('fromMain_saveInfo', (modCollect) => {
-	lastLocale = modCollect.currentLocale
 	uuidMap    = {}
 	const theseSaves = modCollect.opts.saveInfo
 
@@ -92,8 +90,8 @@ function doFarms(farms) {
 		returnHTML.push(`
 			<tr>
 				<td><span class="farm_${thisFarm.color.toString().padStart(2, '0')}">${thisFarm.name}</span></td>
-				<td class="text-end">${Intl.NumberFormat(lastLocale, {maximumFractionDigits : 0}).format(thisFarm.money)}</td>
-				<td class="text-end">${Intl.NumberFormat(lastLocale, {maximumFractionDigits : 0}).format(thisFarm.loan)}</td>
+				<td class="text-end">${Intl.NumberFormat(_l(), {maximumFractionDigits : 0}).format(thisFarm.money)}</td>
+				<td class="text-end">${Intl.NumberFormat(_l(), {maximumFractionDigits : 0}).format(thisFarm.loan)}</td>
 			</tr>`
 		)
 	}
