@@ -1,8 +1,8 @@
 function clientGetKeyMapSimple(keys, locale) {
-	return keys.split(' ').map((key) => { return getKeyMap(key, locale)} ).join('+')
+	return keys.split(' ').map((key) => { return getKeyMap(key, locale)} ).join('<span class="mx-1">+</span>')
 }
 function clientGetKeyMap(keys, locale) {
-	return keys.split('--')[1].split(' ').map((key) => { return getKeyMap(key, locale)}).join('+')
+	return keys.split('--')[1].split(' ').map((key) => { return getKeyMap(key, locale)}).join('<span class="mx-1">+</span>')
 }
 function getKeyMap(key, locale) {
 	let thisKey = null
@@ -11,7 +11,7 @@ function getKeyMap(key, locale) {
 	thisKey ??= localKeys?.[locale]?.[key]
 	thisKey ??= localKeys.en[key]
 
-	return `<span class="btn disabled btn-sm btn-outline-secondary small">${thisKey}</span>`
+	return `<span class="btn btn-sm btn-outline-secondary small">${thisKey}</span>`
 }
 /* cSpell: disable */
 const keyMap = {

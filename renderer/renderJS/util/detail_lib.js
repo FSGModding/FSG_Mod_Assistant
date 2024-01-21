@@ -141,6 +141,12 @@ const dtLib = {
 
 		return dtLib.brandList.has(testBrand) ? testBrand : null
 	},
+	safeBrandFromRecord : ( brand, lookRecord, { extraHTML = null, width = '12vw' } = {} ) => {
+		if ( typeof lookRecord?.brands?.[brand]?.icon !== 'undefined' ) {
+			return dtLib.safeStaticImage(lookRecord.brands[brand].icon, { extraHTML : extraHTML, width : width })
+		}
+		return dtLib.safeBrandImage(brand, { extraHTML : extraHTML, width : width })
+	},
 	safeBrandImage : ( brand, { extraHTML = null, width = '12vw' } = {} ) => {
 		const testBrand = dtLib.checkBrand(brand)
 		if ( ! testBrand && brand !== null ) { window.log.warning(`Missing Brand: ${brand}`, 'basegame_ui')}

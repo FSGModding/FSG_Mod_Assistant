@@ -103,7 +103,7 @@ const buildStore = (lookRecord, chartUnits) => {
 			lookItemData[thisItemUUID].uuid_name = storeitem
 
 			const thisItemData = dtLib.getInfo(thisItem)
-			const brandImage   = dtLib.safeBrandImage(thisItem.brand, {width : '30%'})
+			const brandImage   = dtLib.safeBrandFromRecord(thisItem.brand, lookRecord, {width : '30%'})
 			const fillImages   = dtLib.doFillTypes(thisItem.fillTypes)
 		
 			const thisItemDataHTML = dtLib.typeDataOrder.map((x) => dtLib.doDataType(x, thisItemData[x]))
@@ -204,7 +204,7 @@ const doKeyBinds = (modRecord, locale) => {
 	const keyBinds = []
 	for ( const action in modRecord.modDesc.binds ) {
 		const thisBinds = modRecord.modDesc.binds[action].map((keyCombo) => clientGetKeyMapSimple(keyCombo, locale))
-		keyBinds.push(`${action} :: ${thisBinds.join(' / ')}`)
+		keyBinds.push(`${action} :: ${thisBinds.join('<span class="mx-3">/</span>')}`)
 	}
 	return keyBinds
 }
