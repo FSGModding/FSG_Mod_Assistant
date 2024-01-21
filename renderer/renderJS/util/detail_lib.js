@@ -95,7 +95,6 @@ const dtLib = {
 
 	husbandTestTypes : ['CHICKEN', 'COW', 'HORSE', 'PIG', 'SHEEP'],
 
-
 	typeDataOrder : ['price', 'powerSpan', 'needPower', 'maxSpeed', 'speedLimit', 'weight'],
 	typeIconMap : {
 		'bees'       : ['fill-honey', 'width'],
@@ -298,7 +297,7 @@ const dtLib = {
 	},
 
 	wrap : {
-		functions : ( functions ) => functions.map((x) => __(x)).join('<br>'),
+		functions : ( functions ) => functions.map((x) => __(x, {skipIfNotBase : true})).join('<br>'),
 		item : ( itemID ) => {
 			const thisItem         = client_BGData.records[itemID]
 			const thisItemData     = dtLib.getInfo(thisItem)
@@ -313,7 +312,7 @@ const dtLib = {
 				showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
 			})
 		},
-		pRow  : (content) => `<div class="d-flex justify-content-center align-items-center">${content}</div>`,
+		pRow  : (content) => `<div class="d-flex flex-wrap justify-content-center align-items-center">${content}</div>`,
 		pRowS : (icon, amount = '') => dtLib.wrap.pRow(`${icon}${amount}`),
 		row : (HTMLArray, extraClass = 'g-2 justify-content-center')  =>
 			`<div class="row ${extraClass}">${ typeof HTMLArray !== 'object' ? HTMLArray : HTMLArray.join('') }</div>`,
@@ -341,7 +340,7 @@ const dtLib = {
 					inputHTML.push(dtLib.wrap.pRow(
 						thisProduction.inputs[inputMix].map((x) =>
 							`${dtLib.numFmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}`
-						).join('<i class="text-warning bi-distribute-horizontal mx-1"></i>')
+						).join('<i class="text-info bi-distribute-horizontal mx-1"></i>')
 					))
 				}
 			}
@@ -352,8 +351,8 @@ const dtLib = {
 	
 			if ( thisProduction.boosts.length !== 0 ) {
 				inputHTML.unshift(dtLib.wrap.pRow(thisProduction.boosts.map((x) =>
-					`${dtLib.numFmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}<span class="ms-1">(${x.boostFac * 100}%)</span>`
-				).join('<i class="text-warning bi-distribute-horizontal mx-1"></i>')))
+					`<div class="d-flex align-items-center">${dtLib.numFmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}<span class="ms-1">(${x.boostFac * 100}%)</span></div>`
+				).join('<i class="text-info bi-plus-slash-minus mx-1"></i>')))
 			}
 
 			prodHTML.push(fsgUtil.useTemplate('prod_div', {

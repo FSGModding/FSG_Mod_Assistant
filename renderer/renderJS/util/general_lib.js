@@ -12,7 +12,7 @@
 const getText     = (text, extraTitle = null) => `<l10n ${extraTitle!==null ? `data-extra-title="${extraTitle}"` : ''} name="${text}"></l10n>`
 const getTextBase = (text, extraTitle = null) => `<l10nBase ${extraTitle!==null ? `data-extra-title="${extraTitle}"` : ''} name="${text}"></l10nBase>`
 const _l = () => l10n.getLocale()
-const __ = (text, { skipIfNotBase = false, skipAlways = false, title = null } = {} ) => {
+const __ = (text, { skipIfNotBase = false, skipOnSpace = true, skipAlways = false, title = null } = {} ) => {
 	if ( skipAlways || typeof text !== 'string' || text.length === 0 ) { return text }
 
 	if ( text.includes('[[') ) {
@@ -28,7 +28,7 @@ const __ = (text, { skipIfNotBase = false, skipAlways = false, title = null } = 
 		} catch { /* Ignore Problems Here */ }
 		return newName
 	}
-	return text.startsWith('$l10n') ? getTextBase(text, title) : skipIfNotBase ? text :getText(text, title)
+	return text.startsWith('$l10n') ? getTextBase(text, title) : skipIfNotBase || (text.indexOf(' ') !== -1 && skipOnSpace) ? text :getText(text, title)
 }
 
 const fsgUtil = {

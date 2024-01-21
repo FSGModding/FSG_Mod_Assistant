@@ -218,7 +218,7 @@ const doWork = async () => {
 	baseData.brands.sort((a, b) => Intl.Collator().compare(a.title, b.title))
 	
 	fs.writeFileSync(
-		path.join(__dirname, '..', 'renderer', 'renderJS', 'baseGameData.js'),
+		path.join(__dirname, '..', 'renderer', 'renderJS', 'util', 'baseGameData.js'),
 		`/* eslint-disable indent, key-spacing, quotes, comma-dangle, sort-keys */\n/* cSpell:disable */\nconst client_BGData = ${JSON.stringify(baseData, null, 2)}`
 	)
 }
