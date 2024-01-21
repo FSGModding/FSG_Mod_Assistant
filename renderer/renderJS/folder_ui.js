@@ -6,7 +6,7 @@
 
 // Folder window UI
 
-/* global processL10N, fsgUtil, getText */
+/* global processL10N, fsgUtil, __ */
 
 let lastScroll = null
 
@@ -67,7 +67,7 @@ const makeFolderLine = (details, num, last) => fsgUtil.useTemplate('folder_line'
 	dateAdd      : details.dateAdd,
 	dateUsed     : details.dateUsed,
 	downButtons  : dnBtn(num, last, num === last),
-	name         : `${details.name}${ !details.status ? ` <small>[${getText('removable_offline')}]</small>` : ''}`,
+	name         : `${details.name}${ !details.status ? ` <small>[${__('removable_offline')}]</small>` : ''}`,
 	pathRel      : details.pathRel,
 	tagLine      : details.tag === null ? '' : details.tag,
 	upButtons    : upBtn(num, num < 1),

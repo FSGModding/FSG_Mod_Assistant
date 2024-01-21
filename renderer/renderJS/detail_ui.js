@@ -5,9 +5,8 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Detail window UI
-/* eslint complexity: ["error", 16] */
 
-/* global dtLib, __, processL10N, fsgUtil, getText, client_BGData, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
+/* global dtLib, __, processL10N, fsgUtil, client_BGData, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
 
 let lookItemData = {}
 let lookItemMap  = {}
@@ -201,17 +200,6 @@ const buildStore = (lookRecord, chartUnits) => {
 	}
 }
 
-const cleanOrJoin    = (arr, text = 'detail_extra_clean') => Array.isArray(arr) && arr.length !== 0 ? arr.join('\n') : getText(text)
-const extraInfoColor = (id, arr, badColor = 'text-danger') => {
-	const element = fsgUtil.byId(id)
-	element.classList.remove(badColor, 'text-success')
-	if ( Array.isArray(arr) && arr.length !== 0 ) {
-		element.classList.add(badColor)
-	} else {
-		element.classList.add('text-success')
-	}
-}
-
 const doKeyBinds = (modRecord, locale) => {
 	const keyBinds = []
 	for ( const action in modRecord.modDesc.binds ) {
@@ -229,33 +217,33 @@ const buildPage = (modCollect) => {
 	const modDate      = new Date(Date.parse(modRecord.fileDetail.fileDate)).toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'})
 	const doneKeyBinds = doKeyBinds(modRecord, modCollect.currentLocale)
 	const idMap = {
-		bigFiles       : cleanOrJoin(modRecord.fileDetail.tooBigFiles),
-		depends        : cleanOrJoin(modRecord.modDesc.depend, 'detail_depend_clean'),
+		bigFiles       : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.tooBigFiles),
+		depends        : fsgUtil.arrayJoinOrOther(modRecord.modDesc.depend, 'detail_depend_clean'),
 		description    : fsgUtil.escapeDesc(modRecord.l10n.description),
-		extraFiles     : cleanOrJoin(modRecord.fileDetail.extraFiles),
+		extraFiles     : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.extraFiles),
 		file_date      : modDate,
 		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize, modRecord.currentLocale),
-		has_scripts    : checkX(modRecord.modDesc.scriptFiles),
+		has_scripts    : fsgUtil.checkX(modRecord.modDesc.scriptFiles),
 		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
-		is_multiplayer : checkX(modRecord.modDesc.multiPlayer, false),
-		keyBinds       : cleanOrJoin(doneKeyBinds, 'detail_key_none'),
-		mh_version     : ( modRecord.modHub.id !== null ) ? `<a href="https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}" target="_BLANK">${modRecord.modHub.version}</a>` : `<em>${getText(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
+		is_multiplayer : fsgUtil.checkX(modRecord.modDesc.multiPlayer, false),
+		keyBinds       : fsgUtil.arrayJoinOrOther(doneKeyBinds, 'detail_key_none'),
+		mh_version     : ( modRecord.modHub.id !== null ) ? `<a href="https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}" target="_BLANK">${modRecord.modHub.version}</a>` : `<em>${__(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
 		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
 		mod_location   : modRecord.fileDetail.fullPath,
-		pngTexture     : cleanOrJoin(modRecord.fileDetail.pngTexture),
-		spaceFiles     : cleanOrJoin(modRecord.fileDetail.spaceFiles),
-		store_items    : checkX(modRecord.modDesc.storeItems),
+		pngTexture     : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.pngTexture),
+		spaceFiles     : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.spaceFiles),
+		store_items    : fsgUtil.checkX(modRecord.modDesc.storeItems),
 		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== '--' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
 		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
 	}
 
 	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
 
-	extraInfoColor('keyBinds', doneKeyBinds, 'text-info')
-	extraInfoColor('pngTexture', modRecord.fileDetail.pngTexture)
-	extraInfoColor('spaceFiles', modRecord.fileDetail.spaceFiles)
-	extraInfoColor('extraFiles', modRecord.fileDetail.extraFiles)
-	extraInfoColor('bigFiles', modRecord.fileDetail.tooBigFiles)
+	fsgUtil.clsOrGateArr('keyBinds', doneKeyBinds, 'text-info')
+	fsgUtil.clsOrGateArr('pngTexture', modRecord.fileDetail.pngTexture)
+	fsgUtil.clsOrGateArr('spaceFiles', modRecord.fileDetail.spaceFiles)
+	fsgUtil.clsOrGateArr('extraFiles', modRecord.fileDetail.extraFiles)
+	fsgUtil.clsOrGateArr('bigFiles', modRecord.fileDetail.tooBigFiles)
 
 	for ( const element of fsgUtil.query('#description a') ) { element.target = '_BLANK' }
 
@@ -267,7 +255,7 @@ const buildPage = (modCollect) => {
 		const problems = [
 			...doStep_issues(modRecord),
 			...doStep_binds(bindingIssue, modCollect.currentLocale)
-		].map((x) => `<tr class="py-2"><td class="px-2">${checkX(0, false)}</td><td>${x}</td></tr>`)
+		].map((x) => `<tr class="py-2"><td class="px-2">${fsgUtil.checkX(0, false)}</td><td>${x}</td></tr>`)
 
 		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`
 	}
@@ -296,10 +284,10 @@ const buildPage = (modCollect) => {
 function doStep_issues(modRecord) {
 	const problems = []
 	for ( const issue of modRecord.issues ) {
-		let issueText = getText(issue)
+		let issueText = __(issue)
 		
 		if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
-			issueText += ` ${getText('file_error_copy_name')} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
+			issueText += ` ${__('file_error_copy_name')} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
 		}
 		problems.push(issueText)
 	}
@@ -312,21 +300,11 @@ function doStep_binds(bindingIssue, locale) {
 		for ( const keyCombo in bindingIssue ) {
 			const actualKey = clientGetKeyMap(keyCombo, locale)
 			const confList  = bindingIssue[keyCombo].join(', ')
-			const issueText = `${getText('bind_conflict')} : ${actualKey} :: ${confList}`
+			const issueText = `${__('bind_conflict')} : ${actualKey} :: ${confList}`
 			problems.push(issueText)
 		}
 	}
 	return problems
-}
-
-function checkX(amount, showCount = true) {
-	let returner = ''
-	if ( amount > 0 ) {
-		returner += fsgUtil.getIcon('check', 'success')
-	} else {
-		returner += fsgUtil.getIcon('x', 'danger')
-	}
-	return `${(showCount)?amount:''} ${returner}`
 }
 
 

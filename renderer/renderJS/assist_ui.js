@@ -6,8 +6,7 @@
 
 // Main Window UI
 
-/* global processL10N, fsgUtil, bootstrap, select_lib, getText */
-/* eslint complexity: ["error", 17] */
+/* global processL10N, fsgUtil, bootstrap, select_lib, __ */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
@@ -120,6 +119,16 @@ const buildBadges = (thisMod) => {
 	return displayBadges.join('')
 }
 
+const checkVersion = (verFlag, verList, isFrozen, thisMod) => {
+	if ( !verFlag && !isFrozen && !thisMod.fileDetail.isFolder ) {
+		return (
+			Object.hasOwn(verList, thisMod.fileDetail.shortName) &&
+			verList[thisMod.fileDetail.shortName] !== thisMod.modDesc.version
+		) ? 1 : 2
+	}
+	return 0
+}
+
 let gameIsRunningFlag = false
 
 window.mods.receive('fromMain_gameUpdate', (status) => {
@@ -147,7 +156,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	fsgUtil.byId('farm_sim_versions').innerHTML = [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings, modCollect)).join('')
 
 	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
-	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
+	const lastOpenID  = lastOpenAcc?.id ?? null
 	const lastOpenQ   = (lastOpenAcc !== null) ? fsgUtil.byId('filter_input').value : ''
 	const scrollStart = window.scrollY
 
@@ -175,11 +184,14 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			try {
 				const thisMod       = thisCollection.mods[modKey.split('::')[1]]
 
-				if ( !verFlag && !collectFreeze ) {
-					if ( Object.hasOwn(verList, thisMod.fileDetail.shortName) && verList[thisMod.fileDetail.shortName] !== thisMod.modDesc.version ) {
-						verFlag = true
-					}
-					verList[thisMod.fileDetail.shortName] = thisMod.modDesc.version
+				switch ( checkVersion(verFlag, verList, collectFreeze, thisMod) ) {
+					case 1: // toggle flag true
+						verFlag = true; break
+					case 2: // add to list
+						verList[thisMod.fileDetail.shortName] = thisMod.modDesc.version
+						break
+					default:
+						break
 				}
 
 				searchStringMap[thisMod.colUUID] = buildSearchString(thisMod)
@@ -207,7 +219,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		}
 		
 		const isOnline = modCollect.collectionToStatus[collectKey]
-		const fullName = `${thisCollection.name} <small>[${isOnline ? fsgUtil.bytesToHR(sizeOfFolder, lastLocale) : getText('removable_offline') }]</small>`
+		const fullName = `${thisCollection.name} <small>[${isOnline ? fsgUtil.bytesToHR(sizeOfFolder, lastLocale) : __('removable_offline') }]</small>`
 
 		modTable.push(makeModCollection(
 			isOnline,
