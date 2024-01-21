@@ -5,27 +5,29 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // Crop Calendar Rendering
 
+/* global __ */
+
 /* eslint-disable sort-keys */
 const knownCrops = {
-	wheat         : {	name : 'croptype_wheat',			icon : 'wheat.webp' },
-	barley        : {	name : 'croptype_barley',			icon : 'barley.webp' },
-	canola        : {	name : 'croptype_canola',			icon : 'canola.webp' },
-	oat           : {	name : 'croptype_oat',				icon : 'oat.webp' },
-	sorghum       : {	name : 'croptype_sorghum',			icon : 'sorghum.webp' },
-	cotton        : {	name : 'croptype_cotton',			icon : 'cotton.webp' },
-	maize         : {	name : 'croptype_maize',			icon : 'maize.webp' },
-	sunflower     : {	name : 'croptype_sunflower',		icon : 'sunflower.webp' },
-	soybean       : {	name : 'croptype_soybean',			icon : 'soybean.webp' },
-	potato        : {	name : 'croptype_potato',			icon : 'potato.webp' },
-	sugarbeet     : {	name : 'croptype_sugarbeet',		icon : 'sugarbeet.webp' },
-	sugarcane     : {	name : 'croptype_sugarcane',		icon : 'sugarcane.webp' },
-	poplar        : {	name : 'croptype_poplar',			icon : 'poplar.webp' },
-	oilseedradish : {	name : 'croptype_oilseedradish',	icon : 'oilradish.webp' },
-	grass         : {	name : 'croptype_grass',			icon : 'grass.webp' },
-	grape         : {	name : 'croptype_grape',			icon : 'grape.webp' },
-	olive         : {	name : 'croptype_olive',			icon : 'olive.webp' },
-	clover        : {	name : 'croptype_clover',			icon : 'clover.webp' },
-	alfalfa       : {	name : 'croptype_alfalfa',			icon : 'alfalfa.webp' },
+	wheat         : {	name : 'croptype_wheat',			icon : 'wheat' },
+	barley        : {	name : 'croptype_barley',			icon : 'barley' },
+	canola        : {	name : 'croptype_canola',			icon : 'canola' },
+	oat           : {	name : 'croptype_oat',				icon : 'oat' },
+	sorghum       : {	name : 'croptype_sorghum',			icon : 'sorghum' },
+	cotton        : {	name : 'croptype_cotton',			icon : 'cotton' },
+	maize         : {	name : 'croptype_maize',			icon : 'maize' },
+	sunflower     : {	name : 'croptype_sunflower',		icon : 'sunflower' },
+	soybean       : {	name : 'croptype_soybean',			icon : 'soybean' },
+	potato        : {	name : 'croptype_potato',			icon : 'potato' },
+	sugarbeet     : {	name : 'croptype_sugarbeet',		icon : 'sugarbeet' },
+	sugarcane     : {	name : 'croptype_sugarcane',		icon : 'sugarcane' },
+	poplar        : {	name : 'croptype_poplar',			icon : 'poplar' },
+	oilseedradish : {	name : 'croptype_oilseedradish',	icon : 'oilradish' },
+	grass         : {	name : 'croptype_grass',			icon : 'grass' },
+	grape         : {	name : 'croptype_grape',			icon : 'grape' },
+	olive         : {	name : 'croptype_olive',			icon : 'olive' },
+	clover        : {	name : 'croptype_clover',			icon : 'clover' },
+	alfalfa       : {	name : 'croptype_alfalfa',			icon : 'alfalfa' },
 }
 /* eslint-enable sort-keys */
 
@@ -35,7 +37,7 @@ function getCropInfo(name) {
 	if ( ! Object.hasOwn(knownCrops, name) ) {
 		return `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
 	}
-	return `<img style="width: 30px; height: 30px;" src="img/fills/${knownCrops[name].icon}"> <l10n name="${knownCrops[name].name}"></l10n>`
+	return `<fillType style="font-size: calc(1.35rem + .6vw)" name="${knownCrops[name].icon}"></fillType> ${__(knownCrops[name].name)}`
 }
 
 function makeTD(classes, text = '', isHeader = false, span = 1, rows = 1) {
@@ -56,10 +58,10 @@ function clientMakeCropCalendar(elementID, theData, isSouth = false) {
 
 	tableLines.push([
 		'<tr class="crophead"><td></td>',
-		makeTD(['text-center'], '<img src="img/period_spring.webp">', false, 3),
-		makeTD(['text-center'], '<img src="img/period_summer.webp">', false, 3),
-		makeTD(['text-center'], '<img src="img/period_fall.webp">', false, 3),
-		makeTD(['text-center'], '<img src="img/period_winter.webp">', false, 3),
+		makeTD(['text-center'], '<i style="font-size: 3rem;" class="fsico-season-spring"></i>', false, 3),
+		makeTD(['text-center'], '<i style="font-size: 3rem;" class="fsico-season-summer"></i>', false, 3),
+		makeTD(['text-center'], '<i style="font-size: 3rem;" class="fsico-season-fall"></i>', false, 3),
+		makeTD(['text-center'], '<i style="font-size: 3rem;" class="fsico-season-winter"></i>', false, 3),
 		'</tr>'].join('')
 	)
 
