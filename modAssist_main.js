@@ -580,7 +580,7 @@ ipcMain.on('toMain_getText_sync', (event, l10nSet) => {
 	}
 	event.returnValue = returnValues
 })
-
+ipcMain.on('toMain_getText_locale', (event) => { event.returnValue = myTranslator.currentLocale })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return', [entry, text]) }
 	const doTitle   = mcStore.get('show_tooltips', true)
@@ -659,7 +659,7 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	}
 })
 ipcMain.on('toMain_getTextBase_send', (event, l10nSet) => {
-	const sendEntry = (entry, text) => { event.sender.send('fromMain_getTextBase_return', [entry, text]) }
+	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return_base', [entry, text]) }
 
 	for ( const l10nEntry of l10nSet ) {
 		myTranslator.baseStringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })

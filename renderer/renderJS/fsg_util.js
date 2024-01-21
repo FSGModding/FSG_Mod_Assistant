@@ -317,13 +317,27 @@ const fsgUtil = {
    |  |_|  |_|  --  ||     |
    |__|______|______||__|__| */
 
-function processL10N()          { clientGetL10NEntries() }
+function processL10N()          {
+	clientGetL10NEntries()
+	if ( typeof l10n.getTextBase_send !== 'undefined' ) { clientGetL10NEntries2() }
+}
 
 function clientGetL10NEntries() {
 	const l10nSendArray = fsgUtil.queryA('l10n').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
 
 	l10n.getText_send(new Set(l10nSendArray))
 }
+
+function clientGetL10NEntries2() {
+	const l10nSendArray = fsgUtil.queryA('l10nBase').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
+
+	window.l10n.getTextBase_send(new Set(l10nSendArray))
+}
+
+window?.l10n?.receive('fromMain_getTextBase_return', (data) => {
+	for ( const item of fsgUtil.query(`l10nBase[name="${data[0]}"]`) ) { item.innerHTML = data[1] }
+})
+
 
 window?.l10n?.receive('fromMain_getText_return', (data) => {
 	if ( data[0] === '__currentLocale__'  ) {

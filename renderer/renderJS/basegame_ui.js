@@ -6,7 +6,10 @@
 
 // Base game window UI
 
-/* global Chart, processL10N, fsgUtil, client_BGData, ft_doReplace */
+/* global __, processL10N, fsgUtil, dtLib, client_BGData */
+
+let searchTree = {}
+let chartUnits = null
 
 const selectFills = [
 	{ filltype : 'barley', l10n : '$l10n_fillType_barley' },
@@ -55,72 +58,6 @@ const selectFills = [
 	{ filltype : 'woodchips', l10n : '$l10n_fillType_woodChips' },
 ]
 
-let currentLocale = 'en'
-
-const prodMulti = (amount, multi) => `${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount)}${multi > 1 ? ` <small>(${Intl.NumberFormat(currentLocale, { maximumFractionDigits : 0 }).format(amount * multi)})</small>` : ''}`
-
-const buildProduction = (prodRecords) => {
-	if ( typeof prodRecords === 'undefined' || prodRecords === null ) { return ''}
-	const liEntry  = '<li class="list-group-item">'
-	const prodHTML = []
-
-	for ( const thisProduction of prodRecords ) {
-		const multi     = thisProduction.cycles
-		const inputHTML = []
-
-		for ( const inputMix in thisProduction.inputs ) {
-			if ( inputMix !== 'no_mix' ) {
-				inputHTML.push(`${liEntry}${thisProduction.inputs[inputMix].map((x) => `${prodMulti(x.amount, multi, currentLocale)} ${fsgUtil.getFillImage(x.filltype)}`).join(' <i class="prodIcon bi bi-distribute-horizontal"></i> ')}</li>`)
-			}
-		}
-
-		inputHTML.push(...thisProduction.inputs.no_mix.map((x) => `${liEntry}${prodMulti(x.amount, multi, currentLocale)} ${fsgUtil.getFillImage(x.filltype)}</li>`))
-
-		prodHTML.push(fsgUtil.useTemplate('prod_div', {
-			class_prodBoosts : thisProduction.boosts.length !== 0 ? ''                                                                                                                                                                                : 'd-none',
-			prodBoosts       : thisProduction.boosts.length !== 0 ? thisProduction.boosts.map((x) => `${liEntry}${prodMulti(x.amount, multi, currentLocale)} ${fsgUtil.getFillImage(x.filltype)}  <i class="prodIcon bi bi-caret-up-square"></i> ${x.boostFac * 100}%</li>`).join(' ') : '',
-			prodCost         : Intl.NumberFormat(currentLocale).format(thisProduction.cost),
-			prodCycles       : thisProduction.cycles,
-			prodInputs       : inputHTML.join('<li class="list-group-item"><i class="prodIconLG bi bi-plus-circle"></i></li>'),
-			prodName         : thisProduction.name,
-			prodOutput       : thisProduction.outputs.map((x) => `${prodMulti(x.amount, multi, currentLocale)} ${fsgUtil.getFillImage(x.filltype)}`).join(' <i class="prodIcon bi bi-plus-lg"></i> '),
-		}))
-	}
-	return prodHTML.join('')
-}
-
-const buildWidth2 = (sprayTypes, defaultWidth) => {
-	if ( typeof sprayTypes !== 'object' || sprayTypes === null || sprayTypes.length === 0 ) {
-		return ''
-	}
-
-	const sprayTypesHTML = []
-
-	for ( const thisType of sprayTypes ) {
-		const fillImages = fsgUtil.doFillTypes(thisType.fills)
-		sprayTypesHTML.push(`<div class="ms-4">${fillImages.join(' ')} ${fsgUtil.numFmtMany(thisType.width !== null ? thisType.width : defaultWidth, currentLocale, [
-			{ factor : 1,       precision : 1, unit : 'unit_m' },
-			{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
-		])}</div>`)
-	}
-	return sprayTypesHTML.join('')
-}
-
-const getMaxSpeed = (specSpeed, motorSpeed) => {
-	const specSpeed_clean = getDefault(specSpeed, false, 0)
-
-	if ( specSpeed_clean > 0 ) { return specSpeed_clean }
-
-	if ( typeof motorSpeed !== 'undefined' && motorSpeed !== null ) {
-		let thisMax = 0
-		for ( const thisSpeed of motorSpeed ) {
-			thisMax = Math.max(thisMax, thisSpeed)
-		}
-		return thisMax
-	}
-	return 0
-}
-
 const comboKeyList = new Set()
 
 const make_combos = (combos) => {
@@ -141,29 +78,24 @@ const make_combos = (combos) => {
 			if ( typeof thisItem === 'undefined' ) { continue }
 
 			comboKeyList.add(thisComboKey)
-
-			const brandImage = fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
+			const thisItemData = dtLib.getInfo(thisItem)
 
 			comboHTML.push(fsgUtil.useTemplate('combo_div_basegame', {
-				brandHIDE      : shouldHide(brandImage),
-				brandIMG       : fsgUtil.iconMaker(brandImage),
-				category       : `<l10nBase name="${thisItem.category}"></l10nBase>`,
-				fullName       : transName(thisItem.name),
-				iconString     : thisItem.icon,
+				brandIcon      : dtLib.safeBrandImage(thisItem.brand),
+				category       : __(thisItem.category, {skipIfNotBase : true}),
+				compareTerms   : [
+					dtLib.doDataType('price', thisItemData.price),
+					dtLib.doDataType('workWidth', thisItemData.workWidth),
+				].join(''),
+				fullName       : __(thisItem.name, {skipIfNotBase : true}),
+				itemIcon       : dtLib.safeDataImage(thisItem.icon),
 				page           : thisComboKey,
-				price          : Intl.NumberFormat(currentLocale).format(thisItem.price),
 				showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
 			}))
 		}
 	}
 	return comboHTML.join('')
 	
-}
-
-const link_attach = (joints, doesHave) => {
-	if ( typeof joints === 'undefined' ) { return '' }
-
-	return joints.map((x) => `<a href="?type=${ !doesHave ? 'attach_has' : 'attach_need'}&page=${x.toLowerCase()}">${x}</a>`).join(', ')
 }
 
 const client_buildStore = (thisItem) => {
@@ -173,278 +105,91 @@ const client_buildStore = (thisItem) => {
 	const thisItemUUID = crypto.randomUUID()
 
 	if ( thisItem.masterType === 'vehicle' ) {
-		const brandImage = fsgUtil.knownBrand.has(`brand_${thisItem.brand.toLowerCase()}`) ? `img/brand/brand_${thisItem.brand.toLowerCase()}.webp` : null
-		const maxSpeed   = getMaxSpeed(thisItem?.specs?.maxspeed, thisItem?.motorInfo?.speed)
-		const thePower   = getDefault(thisItem?.specs?.power)
-		const getPower   = getDefault(thisItem?.specs?.neededpower)
-		let   theWidth   = getDefault(thisItem?.specs?.workingwidth, true)
-		const theFill    = getDefault(thisItem.fillLevel)
-		const fillImages = fsgUtil.doFillTypes(thisItem.fillTypes)
-		const powerSpan  = fsgUtil.getMinMaxHP(thePower, thisItem?.motorInfo)
+		const thisItemData = dtLib.getInfo(thisItem)
+		const brandImage   = dtLib.safeBrandImage(thisItem.brand, {width : '30%'})
+		const fillImages   = dtLib.doFillTypes(thisItem.fillTypes)
 		
-		if ( typeof thisItem.sprayTypes !== 'undefined' && thisItem.sprayTypes !== null && thisItem?.sprayTypes?.length !== 0 && theWidth === 0 ) {
-			for ( const thisWidth of thisItem.sprayTypes ) {
-				theWidth = Math.max(thisWidth.width, theWidth)
+		const thisItemDataHTML = dtLib.typeDataOrder.map((x) => dtLib.doDataType(x, thisItemData[x]))
+
+		for ( const testItem of dtLib.vehTestTypes ) {
+			if ( fsgUtil.getShowBool(thisItem[testItem[0]], testItem[1]) ) {
+				thisItemDataHTML.push(dtLib.doDataRow(testItem[2], __(testItem[3] === false ? thisItem[testItem[0]]: testItem[3])))
 			}
 		}
 
-		storeItemsHTML.push(fsgUtil.useTemplate('vehicle_div', {
-			brandHIDE         : shouldHide(brandImage),
-			brandIMG          : fsgUtil.iconMaker(brandImage),
-			category          : thisItem.category,
-			combinations      : make_combos(thisItem?.specs?.combination),
-			enginePower       : fsgUtil.numFmtMany(powerSpan, currentLocale, [
-				{ factor : 1,      precision : 0, unit : 'unit_hp' },
-				{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
-			]),
-			fillImages        : fillImages.join(' '),
-			fillUnit          : fsgUtil.numFmtMany(theFill, currentLocale, [
-				{ factor : 1,         precision : 0, unit : 'unit_l' },
-				{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
-				{ factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
-			]),
-			functions         : wrapFunctions(thisItem.functions),
-			iconIMG           : thisItem.icon,
-			itemName          : transName(thisItem.name),
-			itemTitle         : thisItem.type,
-			joint_has         : link_attach(thisItem?.joints?.canUse, true),
-			joint_need        : link_attach(thisItem?.joints?.needs, false),
-			maxSpeed          : fsgUtil.numFmtMany(maxSpeed, currentLocale, [
-				{ factor : 1,        precision : 0, unit : 'unit_kph' },
-				{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
-			]),
-			needPower         : fsgUtil.numFmtMany(getPower, currentLocale, [
-				{ factor : 1,      precision : 0, unit : 'unit_hp' },
-				{ factor : 0.7457, precision : 1, unit : 'unit_kw' },
-			]),
-			price             : Intl.NumberFormat(currentLocale).format(thisItem.price),
-			show_combos       : shouldHide(thisItem?.specs?.combination),
-			show_diesel       : shouldHide(thisItem.fuelType, 'diesel'),
-			show_electric     : shouldHide(thisItem.fuelType, 'electriccharge'),
-			show_enginePower  : shouldHide(thisItem?.specs?.power),
-			show_fillUnit     : thisItem.fillLevel > 1 ? '' : 'd-none',
-			show_graph        : thisItem.motorInfo === null ? 'd-none' : '',
-			show_hasBeacons   : shouldHide(thisItem.hasBeacons),
-			show_hasLights    : shouldHide(thisItem.hasLights),
-			show_hasPaint     : shouldHide(thisItem.hasColor),
-			show_hasWheels    : shouldHide(thisItem.hasWheelChoice),
-			show_jointHas     : shouldHide(thisItem?.joints?.canUse?.length !== 0),
-			show_jointNeed    : shouldHide(thisItem?.joints?.needs?.length !== 0),
-			show_maxSpeed     : shouldHide(maxSpeed),
-			show_methane      : shouldHide(thisItem.fuelType, 'methane'),
-			show_needPower    : shouldHide(thisItem?.specs?.neededpower),
-			show_price        : shouldHide(thisItem.price),
-			show_speedLimit   : shouldHide(thisItem?.speedLimit),
-			show_transmission : shouldHide(thisItem.transType),
-			show_weight       : shouldHide(thisItem.weight),
-			show_workWidth    : shouldHide(theWidth !== 0),
-			speedLimit        : fsgUtil.numFmtMany(thisItem?.speedLimit, currentLocale, [
-				{ factor : 1,        precision : 0, unit : 'unit_kph' },
-				{ factor : 0.621371, precision : 0, unit : 'unit_mph' },
-			]),
-			transmission      : thisItem.transType,
-			typeDesc          : thisItem.typeDesc,
-			uuid              : thisItemUUID,
-			weight            : fsgUtil.numFmtMany(thisItem.weight, currentLocale, [
-				{ factor : 1,    precision : 0, unit : 'unit_kg' },
-				{ factor : 0.01, precision : 1, unit : 'unit_t' },
-			]),
-			workWidth         : fsgUtil.numFmtMany(theWidth, currentLocale, [
-				{ factor : 1,       precision : 1, unit : 'unit_m' },
-				{ factor : 3.28084, precision : 1, unit : 'unit_ft' },
-			]),
-			workWidth2        : buildWidth2(thisItem?.sprayTypes, theWidth, currentLocale),
+		thisItemDataHTML.push(
+			dtLib.doDataType(
+				'fillLevel',
+				thisItemData.fillLevel,
+				fillImages.length !== 0 ? fillImages.join('') : null
+			),
+			dtLib.doDataType(
+				'workWidth',
+				thisItemData.workWidth,
+				dtLib.doSprayTypes(thisItem?.sprayTypes, thisItemData.workWidth)
+			),
+			dtLib.doDataRowTrue(
+				'cat-attach-has',
+				fsgUtil.getShowBool(thisItem?.joints?.canUse) ? __('basegame_attach_has') : null,
+				dtLib.doJoints(thisItem?.joints?.canUse, true, true)
+			),
+			dtLib.doDataRowTrue(
+				'cat-attach-need',
+				fsgUtil.getShowBool(thisItem?.joints?.needs) ? __('basegame_attach_need') : null,
+				dtLib.doJoints(thisItem?.joints?.needs, false, true)
+			)
+		)
+
+		storeItemsHTML.push(fsgUtil.useTemplate('vehicle_info_div', {
+			brandImage   : brandImage,
+			category     : __(thisItem.category, { skipIfNotBase : true }),
+			combinations : make_combos(thisItem?.specs?.combination),
+			functions    : dtLib.wrap.functions(thisItem.functions),
+			iconImage    : dtLib.safeDataImage(thisItem.icon, { width : 'auto'}),
+			itemData     : thisItemDataHTML.join(''),
+			itemName     : __(thisItem.name, { skipIfNotBase : true }),
+			itemTitle    : thisItem.type,
+			showBrand    : fsgUtil.getHide(brandImage),
+			showCombos   : fsgUtil.getHide(thisItem?.specs?.combination),
+			showGraph    : fsgUtil.getHide(thisItem.motorInfo),
+			typeDesc     : thisItem.typeDesc,
+			uuid         : thisItemUUID,
 		}))
 
 		if ( thisItem.motorInfo !== null ) {
-			storeItemsJS.push(async () => {
-				new Chart(
-					fsgUtil.byId(`${thisItemUUID}_canvas_hp`),
-					{
-						type : 'line',
-						data : {
-							datasets : [
-								...thisItem.motorInfo.hp,
-							],
-						},
-						options : {
-							interaction : {
-								intersect : false,
-								mode      : 'dataset',
-							},
-							plugins : {
-								legend     : { display : false },
-								tooltip    : {
-									bodyAlign      : 'right',
-									bodyFontFamily : 'courier',
-									callbacks      : {
-										label : (context) => `${context.parsed.y}${chartUnits.unit_hp} @ ${context.parsed.x} ${chartUnits.unit_rpm}`,
-									},
-									mode           : 'dataset',
-									titleAlign     : 'center',
-								},
-							},
-							scales  : {
-								x : {
-									display : true,
-									title   : {
-										text    : chartUnits.unit_rpm,
-										display : true,
-									},
-									type    : 'linear',
-								},
-								y : {
-									
-									display  : true,
-									position : 'left',
-									title    : {
-										text    : chartUnits.unit_hp,
-										display : true,
-									},
-									type     : 'linear',
-								},
-							},
-							stacked : false,
-						},
-					}
-				)
-				new Chart(
-					fsgUtil.byId(`${thisItemUUID}_canvas_kph`),
-					{
-						type : 'line',
-						data : {
-							datasets : [
-								...thisItem.motorInfo.kph,
-							],
-						},
-						options : {
-							interaction : {
-								intersect : false,
-								mode      : 'index',
-							},
-							plugins : {
-								legend     : { display : false },
-								tooltip    : {
-									bodyAlign      : 'right',
-									bodyFontFamily : 'courier',
-									callbacks      : {
-										label : (context) => `${context.dataset.label} : ${context.parsed.y} ${chartUnits.unit_kph}`,
-										title : (context) => `@ ${context[0].label} ${chartUnits.unit_rpm}`,
-									},
-									mode           : 'index',
-									titleAlign     : 'center',
-								},
-							},
-							scales  : {
-								x : {
-									display : true,
-									title   : {
-										text    : chartUnits.unit_rpm,
-										display : true,
-									},
-									type    : 'linear',
-								},
-								y : {
-									
-									display  : true,
-									position : 'left',
-									title    : {
-										text    : chartUnits.unit_kph,
-										display : true,
-									},
-									type     : 'linear',
-								},
-							},
-							stacked : false,
-						},
-					}
-				)
-				new Chart(
-					fsgUtil.byId(`${thisItemUUID}_canvas_mph`),
-					{
-						type : 'line',
-						data : {
-							datasets : [
-								...thisItem.motorInfo.mph,
-							],
-						},
-						options : {
-							interaction : {
-								intersect : false,
-								mode      : 'index',
-							},
-							plugins : {
-								legend     : { display : false },
-								tooltip    : {
-									bodyAlign      : 'right',
-									bodyFontFamily : 'courier',
-									callbacks      : {
-										label : (context) => `${context.dataset.label} : ${context.parsed.y} ${chartUnits.unit_mph}`,
-										title : (context) => `@ ${context[0].label} ${chartUnits.unit_rpm}`,
-									},
-									mode           : 'index',
-									titleAlign     : 'center',
-								},
-							},
-							scales  : {
-								x : {
-									display : true,
-									title   : {
-										text    : chartUnits.unit_rpm,
-										display : true,
-									},
-									type    : 'linear',
-								},
-								y : {
-									
-									display  : true,
-									position : 'left',
-									title    : {
-										text    : chartUnits.unit_mph,
-										display : true,
-									},
-									type     : 'linear',
-								},
-							},
-							stacked : false,
-						},
-					}
-				)
-			})
+			storeItemsJS.push(dtLib.doChart(thisItem, thisItemUUID, chartUnits))
 		}
 	}
 
 	if ( thisItem.masterType === 'placeable' ) {
-		const fillImages = fsgUtil.doFillTypes(thisItem.silo.types)
+		const fillImages       = dtLib.doFillTypes(thisItem.silo.types)
+		const thisItemDataHTML = []
 
-		storeItemsHTML.push(fsgUtil.useTemplate('place_div', {
-			animalCount      : thisItem.husbandry.capacity,
-			category          : thisItem.category,
-			fillImages       : fillImages.join(' '),
-			fillUnit         : fsgUtil.numFmtMany(thisItem.silo.capacity, currentLocale, [
-				{ factor : 1,         precision : 0, unit : 'unit_l' },
-				{ factor : 0.001,     precision : 1, unit : 'unit_m3' },
-				{ factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
-			]),
-			functions        : wrapFunctions(thisItem.functions),
-			hasBee           : `${fsgUtil.numFmtMany(thisItem.beehive.radius, currentLocale, [{factor : 1, precision : 0, unit : 'unit_m'}])} / ${fsgUtil.numFmtMany(thisItem.beehive.liters, currentLocale, [{factor : 1, precision : 0, unit : 'unit_l'}])}`,
-			iconIMG          : thisItem.icon,
-			income           : thisItem.incomePerHour ?? 0,
-			itemName         : transName(thisItem.name),
-			itemTitle        : thisItem.type,
-			objectCount      : thisItem.objectStorage ?? 0,
-			price            : Intl.NumberFormat(currentLocale).format(thisItem.price),
-			prodLines        : buildProduction(thisItem?.productions, currentLocale),
-			show_fillUnit    : shouldHide(thisItem.silo.exists),
-			show_hasBee      : shouldHide(thisItem.beehive.exists),
-			show_hasChicken  : shouldHide(thisItem.husbandry.type, 'CHICKEN'),
-			show_hasCow      : shouldHide(thisItem.husbandry.type, 'COW'),
-			show_hasHorse    : shouldHide(thisItem.husbandry.type, 'HORSE'),
-			show_hasPaint    : shouldHide(thisItem.hasColor),
-			show_hasPig      : shouldHide(thisItem.husbandry.type, 'PIG'),
-			show_hasSheep    : shouldHide(thisItem.husbandry.type, 'SHEEP'),
-			show_income      : shouldHide(thisItem.incomePerHour),
-			show_objectStore : shouldHide(thisItem.objectStorage),
+		thisItemDataHTML.push(
+			dtLib.doDataType('price', dtLib.default(thisItem.price)),
+			dtLib.doDataType('income', dtLib.default(thisItem.incomePerHour)),
+			dtLib.doDataType('objects', dtLib.default(thisItem.objectStorage)),
+			dtLib.doDataType(
+				'fillLevel',
+				dtLib.default(thisItem?.silo?.capacity),
+				fillImages.length !== 0 ? fillImages.join('') : null
+			),
+			dtLib.doDataType('bees', dtLib.default(thisItem.beehive.radius))
+		)
+
+		for ( const husbandType of dtLib.husbandTestTypes ) {
+			if ( fsgUtil.getShowBool(thisItem.husbandry.type, husbandType) ) {
+				thisItemDataHTML.push(dtLib.doDataRow(`fill-${husbandType.toLowerCase()}`, thisItem.husbandry.capacity))
+			}
+		}
+
+		storeItemsHTML.push(fsgUtil.useTemplate('place_info_div', {
+			category  : __(thisItem.category, {skipIfNotBase : true}),
+			functions : dtLib.wrap.functions(thisItem.functions),
+			iconImage : dtLib.safeDataImage(thisItem.icon, { width : 'auto'}),
+			itemName  : __(thisItem.name, {skipIfNotBase : true}),
+			placeData : thisItemDataHTML.join(''),
+			prodLines : dtLib.doProductions(thisItem?.productions),
 		}))
 	}
 
@@ -455,122 +200,38 @@ const client_buildStore = (thisItem) => {
 	return storeItemsHTML.join('')
 }
 
-function wrapFunctions(funcs) {
-	const thisHTML = []
-	for ( const thisFunc of funcs ) {
-		thisHTML.push(`<l10nBase name="${thisFunc}"></l10nBase>`)
-	}
-	return thisHTML.join('<br>')
-}
-
-function getDefault(value, float = false, safe = 0) {
-	const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
-	return !float ? parseInt(newValue) : parseFloat(newValue)
-}
-
-function shouldHide(item, wanted = null) {
-	if ( typeof item === 'undefined' || item === null || item === false || item === '' ) {
-		return 'd-none'
-	}
-	if ( wanted !== null && item.toLowerCase() !== wanted.toLowerCase() ) {
-		return 'd-none'
-	}
-	return ''
-}
-
-function getImage(imgSrc) {
-	return imgSrc === null ? '' : `<img class="mb-3 rounded-2" style="width: 100px" src="${imgSrc}">`
-}
-
-function wrapSingle({ name = null, brand = null, icon = null, fsIcon = null, type = 'item', page = null, noTrans = false} = {}) {
-	const nameString = noTrans ? name : name.startsWith('$l10n') ?
-		`<l10nBase name="${name}"></l10nBase>` :
-		`<l10n name="${name}"></l10n>`
-
-	const iconIMG  = getImage(icon === null ? null : icon.startsWith('data:') ? icon : `img/baseCategory/${icon}.webp`)
-	const brandIMG = getImage(brand === null ? null : `img/brand/${brand}.webp`)
-	const classIMG = fsIcon === null ?
-		'' :
-		fsIcon.startsWith('fill-') ?
-			`<fillType class="h0" name="${fsIcon.substring(5)}"></fillType>` :
-			`<i class="h0 fsico-${fsIcon}"></i>`
-
-	return `<div class="col-2 text-center">
-		<div class="p-2 border rounded-3 h-100">
-		<a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}">
-		${iconIMG}${brandIMG}${classIMG}<br />
-		${nameString}</a></div></div>`
-}
-
-function transName(name) {
-	let realName = name
-
-	try {
-		if ( realName.includes('[[') ) {
-			const nameParts    = realName.match(/(.+?) \[\[(.+?)]]/)
-			const replaceParts = nameParts[2].split('|')
-			realName = nameParts[1]
-
-			for ( const thisReplacement of replaceParts ) {
-				realName = realName.replace(/%s/, thisReplacement.startsWith('$l10n') ? `<l10nBase name="${thisReplacement}"></l10nBase>` : thisReplacement)
-			}
-		}
-	} catch { /* don't care */ }
-	return realName
-}
-
-function wrapStoreItem(itemID) {
-	const thisItem    = client_BGData.records[itemID]
-	const iconString  = thisItem.icon.startsWith('data:') ? thisItem.icon : `img/baseCategory/${thisItem.icon}.webp`
-	const brandString = typeof thisItem.brand === 'string' ? `<br><img class="mb-3" style="width: 100px" src="img/brand/${client_BGData.brandMap_icon[thisItem.brand.toLowerCase()]}.webp"></img>` : ''
-
-	return fsgUtil.useTemplate('store_item', {
-		brandString    : brandString,
-		dlc            : thisItem.dlcKey !== null ? thisItem.dlcKey : '',
-		iconString     : iconString,
-		name           : transName(thisItem.name),
-		page           : itemID,
-		price          : Intl.NumberFormat(currentLocale).format(thisItem.price),
-		showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
-	})
-}
-
-function wrapRow(rowHTMLArray) {
-	return `<div class="row g-2 justify-content-center">${ typeof rowHTMLArray !== 'object' ? rowHTMLArray : rowHTMLArray.join('') }</div>`
-}
-
 function getTopCat(cat) {
 	switch ( cat ) {
 		case 'vehicle' :
-			return wrapRow(client_BGData.category.vehicle.map((x) => wrapSingle({
+			return dtLib.wrap.row(client_BGData.category.vehicle.map((x) => dtLib.wrap.single({
 				icon : x.iconName,
 				name : x.title,
 				page : x.iconName,
 				type : 'subcat',
 			})))
 		case 'tool' :
-			return wrapRow(client_BGData.category.tool.map((x) => wrapSingle({
+			return dtLib.wrap.row(client_BGData.category.tool.map((x) => dtLib.wrap.single({
 				icon : x.iconName,
 				name : x.title,
 				page : x.iconName,
 				type : 'subcat',
 			})))
 		case 'object' :
-			return wrapRow(client_BGData.category.object.map((x) => wrapSingle({
+			return dtLib.wrap.row(client_BGData.category.object.map((x) => dtLib.wrap.single({
 				icon : x.iconName,
 				name : x.title,
 				page : x.iconName,
 				type : 'subcat',
 			})))
 		case 'placeable' :
-			return wrapRow(client_BGData.category.placeable.map((x) => wrapSingle({
+			return dtLib.wrap.row(client_BGData.category.placeable.map((x) => dtLib.wrap.single({
 				icon : x.iconName,
 				name : x.title,
 				page : x.iconName,
 				type : 'subcat',
 			})))
 		case 'brand' :
-			return wrapRow(client_BGData.brands.map((x) => wrapSingle({
+			return dtLib.wrap.row(client_BGData.brands.map((x) => dtLib.wrap.single({
 				brand   : x.image,
 				name    : x.title,
 				noTrans : true,
@@ -578,7 +239,7 @@ function getTopCat(cat) {
 				type    : 'brand',
 			})))
 		case 'fills' :
-			return wrapRow(selectFills.map((x) => wrapSingle({
+			return dtLib.wrap.row(selectFills.map((x) => dtLib.wrap.single({
 				fsIcon  : `fill-${x.filltype}`,
 				name    : x.l10n,
 				noTrans : false,
@@ -586,7 +247,7 @@ function getTopCat(cat) {
 				type    : 'fill',
 			})))
 		case 'attach_need' :
-			return wrapRow(Object.keys(client_BGData.joints_needs).sort().map((x) => wrapSingle({
+			return dtLib.wrap.row(Object.keys(client_BGData.joints_needs).sort().map((x) => dtLib.wrap.single({
 				icon    : `attach_${x.toLowerCase()}`,
 				name    : x,
 				noTrans : true,
@@ -594,7 +255,7 @@ function getTopCat(cat) {
 				type    : 'attach_need',
 			})))
 		case 'attach_has' :
-			return wrapRow(Object.keys(client_BGData.joints_has).sort().map((x) => wrapSingle({
+			return dtLib.wrap.row(Object.keys(client_BGData.joints_has).sort().map((x) => dtLib.wrap.single({
 				icon    : `attach_${x.toLowerCase()}`,
 				name    : x,
 				noTrans : true,
@@ -602,7 +263,7 @@ function getTopCat(cat) {
 				type    : 'attach_has',
 			})))
 		default :
-			return wrapRow(client_BGData.topLevel.map((x) => wrapSingle({
+			return dtLib.wrap.row(client_BGData.topLevel.map((x) => dtLib.wrap.single({
 				fsIcon : x.class,
 				name   : x.name,
 				page   : x.page,
@@ -612,11 +273,6 @@ function getTopCat(cat) {
 	}
 }
 
-let chartUnits = {}
-let searchTree = {
-	// pageIdKey : searchString
-}
-
 function buildSearchTree () {
 	searchTree = {}
 
@@ -624,39 +280,6 @@ function buildSearchTree () {
 		const brandString = (thisItem.brand ? client_BGData.brandMap[thisItem.brand?.toLowerCase()]?.toLowerCase() : '')
 		searchTree[thisItemKey] = `${thisItem.name.toLowerCase()} ${brandString} ${thisItemKey}`
 	}
-}
-
-function client_findItems(strTerm) {
-	const foundItems = []
-	for ( const [thisItemKey, thisItem] of Object.entries(searchTree) ) {
-		if ( thisItem.includes(strTerm.toLowerCase()) ) { foundItems.push(thisItemKey) }
-	}
-	return foundItems
-}
-
-function clientFilter() {
-	const filterText = fsgUtil.byId('mods__filter').value.toLowerCase()
-
-	fsgUtil.byId('mods__filter_clear').classList[( filterText !== '' ) ? 'remove':'add']('d-none')
-
-	if ( filterText.length < 2 ) {
-		fsgUtil.byId('searchResults').innerHTML = ''
-	} else {
-		fsgUtil.byId('searchResults').innerHTML = wrapRow(client_findItems(filterText).map((x) => wrapStoreItem(
-			client_BGData.records[x].name,
-			client_BGData.records[x].price,
-			client_BGData.records[x].icon,
-			client_BGData.records[x].brand,
-			x,
-			client_BGData.records[x].masterType,
-			client_BGData.records[x].dlcKey
-		)))
-	}
-}
-
-function clientClearInput() {
-	fsgUtil.byId('mods__filter').value = ''
-	clientFilter()
 }
 
 function setPageInfo(title, content, { button_comp = false, button_folder = false } = {}) {
@@ -691,6 +314,7 @@ function getByFill(fillType) {
 	return vehicleList.sort()
 }
 
+
 window.mods.receive('fromMain_forceNavigate', (type, page) => { location.search = `?type=${type}&page=${page}` })
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -698,8 +322,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	const pageType      = urlParams.get('type')
 	const pageID        = urlParams.get('page')
 
-	currentLocale = document.querySelector('body').getAttribute('data-i18n') || 'en'
-	chartUnits    = window.l10n.getText_sync(['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp'])
+	chartUnits = window.l10n.getText_sync(['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp'])
 
 	switch (pageType) {
 		case 'cat':
@@ -715,7 +338,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 			setPageInfo(
 				`<l10nBase name="${catL10n}"></l10nBase>`,
-				wrapRow(catContent.sort().map((x) => wrapStoreItem(x)))
+				dtLib.wrap.row(catContent.sort().map((x) => dtLib.wrap.item(x)))
 			)
 			break
 		}
@@ -725,7 +348,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 			setPageInfo(
 				`<l10nBase name="${client_BGData.brandMap[pageID]}"></l10nBase>`,
-				wrapRow(brandContent.sort().map((x) => wrapStoreItem(x)))
+				dtLib.wrap.row(brandContent.sort().map((x) => dtLib.wrap.item(x)))
 			)
 			break
 		}
@@ -734,7 +357,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 			setPageInfo(
 				`<l10n name="basegame_attach_has"></l10n> : ${jointType}`,
-				wrapRow(client_BGData.joints_has[jointType].sort().map((x) => wrapStoreItem(x)))
+				dtLib.wrap.row(client_BGData.joints_has[jointType].sort().map((x) => dtLib.wrap.item(x)))
 			)
 			break
 		}
@@ -743,14 +366,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
 			setPageInfo(
 				`<l10n name="basegame_attach_need"></l10n> : ${jointType}`,
-				wrapRow(client_BGData.joints_needs[jointType].sort().map((x) => wrapStoreItem(x)))
+				dtLib.wrap.row(client_BGData.joints_needs[jointType].sort().map((x) => dtLib.wrap.item(x)))
 			)
 			break
 		}
 		case 'fill' : {
 			setPageInfo(
 				`<l10n name="basegame_fills"></l10n> : <l10nBase name="${findFill(pageID)}"></l10nBase>`,
-				wrapRow(getByFill(pageID).map((x) => wrapStoreItem(x)))
+				dtLib.wrap.row(getByFill(pageID).sort().map((x) => dtLib.wrap.item(x)))
 			)
 			break
 		}
@@ -760,7 +383,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			fsgUtil.byId('mod_location').innerHTML = thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`
 
 			setPageInfo(
-				typeof thisItem.brand !== 'undefined' ? `${client_BGData.brandMap[thisItem.brand.toLowerCase()]} ${transName(thisItem.name)}` : transName(thisItem.name),
+				typeof thisItem.brand !== 'undefined' ? `${client_BGData.brandMap[thisItem.brand.toLowerCase()]} ${__(thisItem.name, {skipIfNotBase : true})}` : __(thisItem.name, {skipIfNotBase : true}),
 				client_buildStore(thisItem),
 				{
 					button_comp   : thisItem.masterType === 'vehicle',
@@ -778,23 +401,44 @@ window.addEventListener('DOMContentLoaded', () => {
 			)
 			break
 	}
-	ft_doReplace()
 	processL10N()
-	clientGetL10NEntries2()
 })
 
+function findItemsByTerm(strTerm) {
+	const foundItems = []
+	for ( const [thisItemKey, thisItem] of Object.entries(searchTree) ) {
+		if ( thisItem.includes(strTerm.toLowerCase()) ) { foundItems.push(thisItemKey) }
+	}
+	return foundItems
+}
+
+function clientFilter() {
+	const filterText = fsgUtil.byId('mods__filter').value.toLowerCase()
+
+	fsgUtil.byId('mods__filter_clear').classList[( filterText !== '' ) ? 'remove':'add']('d-none')
+
+	if ( filterText.length < 2 ) {
+		fsgUtil.byId('searchResults').innerHTML = ''
+	} else {
+		fsgUtil.byId('searchResults').innerHTML = dtLib.wrap.row(findItemsByTerm(filterText).sort().map((x) => dtLib.wrap.item(x)))
+		processL10N()
+	}
+}
+
+function clientClearInput() {
+	fsgUtil.byId('mods__filter').value = ''
+	clientFilter()
+}
 
 function clientOpenFolder() {
-	const urlParams     = new URLSearchParams(window.location.search)
-	const pageID        = urlParams.get('page')
+	const pageID        = new URLSearchParams(window.location.search).get('page')
 	const folder        = client_BGData.records[pageID].diskPath.slice(0, -1)
 
 	window.mods.openBaseFolder(folder)
 }
 
 function clientOpenCompare(forcePageID = null) {
-	const urlParams     = new URLSearchParams(window.location.search)
-	const pageID        = urlParams.get('page')
+	const pageID        = new URLSearchParams(window.location.search).get('page')
 
 	window.mods.openCompareBase(forcePageID !== null ? forcePageID : pageID)
 }
@@ -802,17 +446,3 @@ function clientOpenCompare(forcePageID = null) {
 function clientOpenCombos() {
 	window.mods.openCompareBaseMulti([...comboKeyList])
 }
-
-function clientGetL10NEntries2() {
-	const l10nSendArray = fsgUtil.queryA('l10nBase').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
-
-	window.l10n.getTextBase_send(new Set(l10nSendArray))
-}
-
-window?.l10n?.receive('fromMain_getTextBase_return', (data) => {
-	for ( const item of fsgUtil.query(`l10nBase[name="${data[0]}"]`) ) { item.innerHTML = data[1] }
-})
-
-window?.l10n?.receive('fromMain_l10n_refresh', () => {
-	clientGetL10NEntries2()
-})

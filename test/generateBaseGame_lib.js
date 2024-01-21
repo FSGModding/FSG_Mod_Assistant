@@ -191,7 +191,7 @@ class baseLooker {
 				inputs  : {
 					no_mix : [],
 				},
-				name    : this.#translate_single(thisProd?.$?.NAME),
+				name    : this.#parseNameParams(thisProd?.$?.NAME, thisProd?.$?.PARAMS),
 				outputs : [],
 			}
 			
@@ -508,6 +508,12 @@ class baseLooker {
 		} catch (_) {
 			return null
 		}
+	}
+
+	#parseNameParams(name, params, fallback = 'unknown') {
+		if ( typeof name !== 'string' ) { return fallback }
+		if ( typeof params !== 'string' ) { return name }
+		return `${name} [[${params}]]`
 	}
 
 	#parseName(xml, fallback = 'unknown') {

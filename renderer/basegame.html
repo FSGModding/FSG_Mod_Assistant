@@ -13,8 +13,11 @@
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="inc/chart.min.js"></script>
-	<script src="renderJS/fsg_util.js"></script>
-	<script src="renderJS/fillType.js"></script>
+
+	<script src="renderJS/util/general_lib.js"></script>
+	<script src="renderJS/util/detail_lib.js"></script>
+	<script src="renderJS/util/fillType.js"></script>
+
 	<script src="renderJS/baseGameData.js"></script>
 	<script src="renderJS/basegame_ui.js"></script>
 	<style>
@@ -23,6 +26,7 @@
 		}
 		.h0 { font-size: 10vw; }
 
+		.prodIconLG { color:#28a5c8; font-size: 120%; }
 		.fsicoLI {
 			vertical-align : -0.2em;
 			font-size : calc(1.3rem + .6vw);
@@ -63,16 +67,16 @@
 </body>
 
 <template id="store_item">
-	<div class="col-2 text-end">
+	<div class="col-3 text-end">
 		<button onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button>
 		<div class="p-2 border rounded-3 h-100 text-center">
 			<a class="text-decoration-none text-white-50" href="?type=item&page={{page}}">
-				<img class="mb-3" style="width: 100px" src="{{iconString}}"><br>
+				{{iconString}}<br>
 				{{brandString}}<br>
 				<span class="text-white">{{name}}</span><br>
 				<br>
-				<div class="d-flex align-items-center justify-content-center">
-					<i class="fsicoLI fsico-look-price"></i>{{price}}
+				<div class="px-3 text-start">
+					{{dataItems}}
 				</div>
 				<br>
 				<em class="text-body-tertiary">{{dlc}}</em>
@@ -85,80 +89,59 @@
 	<div class="row border-bottom mb-2">
 		<div class="text-center col-2 py-2">
 			<a class="text-decoration-none" href="?type=item&page={{page}}">
-				<img style="width: 100px" src="{{iconString}}">
+				{{itemIcon}}
 			</a>
 		</div>
 		<div class="text-center col-2 align-self-center">
 			<a class="text-decoration-none" href="?type=item&page={{page}}">
-				<img class="img-fluid mx-auto d-block mb-2 rounded-4 {{brandHIDE}}" style="width: 50px;" src="{{brandIMG}}">
+				{{brandIcon}}
 			</a>
 		</div>
-		<div class="col-5 align-self-center">
+		<div class="col-4 align-self-center text-center">
 			<a class="text-decoration-none text-white-50" href="?type=item&page={{page}}">
 				{{fullName}}<br>
 				<em>{{category}}</em>
 			</a>
 		</div>
-		<div class="text-end col-2 align-self-center">
-			<div class="d-flex align-items-center justify-content-center">
-				<i class="fsicoLI fsico-look-price"></i>{{price}}
-			</div>
+		<div class="col-3 align-self-center">
+			{{compareTerms}}
 		</div>
 		<div class="text-center col-1 align-self-center"><button onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button></div>
 	</div>
 </template>
 
-<template id="vehicle_div">
+<template id="vehicle_info_div">
 	<div class="card mb-3">
 		<h5 class="card-header">
 			{{itemName}}
 			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fst-italic"><l10nBase name="{{category}}"></l10nBase></small>
+			<small class="fst-italic">{{category}}</small>
 		</h5>
 		<div class="card-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">
-					<img class="img-fluid mx-auto d-block mb-2 rounded-4 {{brandHIDE}}" style="height: 70px;" src="{{brandIMG}}">
-					<img class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
+					<div class="{{showBrand}} text-center">{{brandImage}}</div>
+					<div class="text-center">{{iconImage}}</div>
 				</div>
-				<div class="col-7 mx-auto">
-					<ul class="list-group list-group-flush">
-						<li class="list-group-item {{show_price}}"><i class="fsicoLI fsico-look-price"></i>{{price}}</li>
-						<li class="list-group-item {{show_enginePower}}"><i class="fsicoLI fsico-look-engine"></i>{{enginePower}}</li>
-						<li class="list-group-item {{show_needPower}}"><i class="fsicoLI fsico-look-engine"></i>{{needPower}}</li>
-						<li class="list-group-item {{show_transmission}}"><i class="fsicoLI fsico-look-transmission"></i><l10nBase name="{{transmission}}"></l10nBase></li>
-						<li class="list-group-item {{show_diesel}}"><i class="fsicoLI fsico-look-diesel"></i><l10n name="look_diesel"></l10n></li>
-						<li class="list-group-item {{show_electric}}"><i class="fsicoLI fsico-look-electric"></i><l10n name="look_electric"></l10n></li>
-						<li class="list-group-item {{show_methane}}"><i class="fsicoLI fsico-look-methane"></i><l10n name="look_methane"></l10n></li>
-						<li class="list-group-item {{show_maxSpeed}}"><i class="fsicoLI fsico-look-speed"></i>{{maxSpeed}}</li>
-						<li class="list-group-item {{show_speedLimit}}"><i class="fsicoLI fsico-look-speedlimit"></i>{{speedLimit}}</li>
-						<li class="list-group-item {{show_hasLights}}"><i class="fsicoLI fsico-look-lights"></i><l10n name="look_has_lights"></l10n></li>
-						<li class="list-group-item {{show_hasBeacons}}"><i class="fsicoLI fsico-look-beacons"></i><l10n name="look_has_beacons"></l10n></li>
-						<li class="list-group-item {{show_hasPaint}}"><i class="fsicoLI fsico-look-paintable"></i><l10n name="look_has_paint"></l10n></li>
-						<li class="list-group-item {{show_hasWheels}}"><i class="fsicoLI fsico-look-wheels"></i><l10n name="look_has_wheels"></l10n></li>
-						<li class="list-group-item {{show_workWidth}}"><i class="fsicoLI fsico-look-width"></i>{{workWidth}}{{workWidth2}}</l10n></li>
-						<li class="list-group-item {{show_fillUnit}}"><i class="fsicoLI fsico-look-fillunit"></i>{{fillUnit}}<div class="ms-4">{{fillImages}}</div></li>
-						<li class="list-group-item {{show_weight}}"><i class="fsicoLI fsico-look-weight"></i>{{weight}}</li>
-						<li class="list-group-item {{show_jointHas}}"><i class="fsicoLI fsico-cat-attach-has"></i><l10n name="basegame_attach_has"></l10n><span>: {{joint_has}}</span></li>
-						<li class="list-group-item {{show_jointNeed}}"><i class="fsicoLI fsico-cat-attach-need"></i><l10n name="basegame_attach_need"></l10n><span>: {{joint_need}}</span></li>
-					</ul>
+				<div class="col-7">
+					{{itemData}}
 				</div>
 				<div class="col-12 py-2"><p class="text-center">{{functions}}</p></div>
-				<div class="col-12 py-2 {{show_combos}}">
+				<div class="col-12 py-2 {{showCombos}}">
 					<h4 class="text-center">
 						<l10n name="combinations_title"></l10n>
 						<button onclick="clientOpenCombos()" class="btn btn-warning btn-vsm mt-2"><l10n name="basegame_compare_all"></l10n></button>
 					</h4>
 					{{combinations}}
 				</div>
-				<nav class="{{show_graph}}">
+				<nav class="{{showGraph}}">
 					<div class="nav nav-tabs" id="{{uuid}}_nav-tab" role="tablist">
 					  <button class="nav-link active" id="{{uuid}}_hp_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_hp_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-engine"></i><l10n name="unit_hp"></l10n></button>
 					  <button class="nav-link" id="{{uuid}}_kph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_kph_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-speed"></i><l10n name="unit_kph"></l10n></button>
 					  <button class="nav-link" id="{{uuid}}_mph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_mph_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-speed"></i><l10n name="unit_mph"></l10n></button>
 					</div>
 				</nav>
-				<div class="tab-content {{show_graph}}" id="{{uuid}}_nav-tabContent">
+				<div class="tab-content {{showGraph}}" id="{{uuid}}_nav-tabContent">
 					<div class="tab-pane fade show active" id="{{uuid}}_hp_graph" role="tabpanel"><canvas id="{{uuid}}_canvas_hp" ></canvas></div>
 					<div class="tab-pane fade" id="{{uuid}}_kph_graph" role="tabpanel" ><canvas id="{{uuid}}_canvas_kph" ></canvas></div>
 					<div class="tab-pane fade" id="{{uuid}}_mph_graph" role="tabpanel" ><canvas id="{{uuid}}_canvas_mph" ></canvas></div>
@@ -169,45 +152,42 @@
 </template>
 
 <template id="prod_div">
-	<div class="row border-bottom mt-1">
-		<div class="col-3 text-center align-self-center">{{prodName}}<br><br>
-			<i class="fsicoLI fsico-look-prod-cycle"></i>{{prodCycles}}<br>
-			<i class="fsicoLI fsico-look-price"></i>{{prodCost}}<br>
+	<div class="row border-top mt-2">
+		<div class="col-3 text-center align-self-top border-end">
+			<div class="row py-2"><div class="col">{{prodName}}</div></div>
+			<div class="row py-2 align-items-center"><div class="col-6"><i style="font-size: 1.5rem" class="fsico-look-prod-cycle"></i></div><div class="col-6">{{prodCycles}}</div></div>
+			<div class="row py-2 align-items-center"><div class="col-6"><i style="font-size: 1.5rem" class="fsico-look-price"></i></div><div class="col-6">{{prodCost}}</div></div>
 		</div>
-		<div class="col-9 text-center">
-			<ul class="list-group list-group-flush">
-				<li class="list-group-item"><i class="fsicoLI fsico-look-prod-input"></i></li>
-				{{prodBoosts}}
-				<li class="list-group-item {{class_prodBoosts}}"><i class="prodIconLG bi bi-plus-circle"></i></li>
-				{{prodInputs}}
-				<li class="list-group-item"><i class="fsicoLI fsico-look-prod-output"></i></li>
-				<li class="list-group-item">{{prodOutput}}</li>
-			</ul>
+		<div class="col-9 text-center align-self-center">
+			<div class="row align-items-center"><!-- inputs -->
+				<div class="col-10">
+					{{prodInputs}}
+				</div>
+				<div class="col-2">
+					<i style="font-size: 1.5rem" class="fsico-look-prod-input"></i>
+				</div>
+			</div>
+			<div class="row border-top align-items-center pt-2 mt-2"><!-- outputs -->
+				<div class="col-10">
+					{{prodOutput}}
+				</div>
+				<div class="col-2">
+					<i style="font-size: 1.5rem" class="fsico-look-prod-output"></i>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
 
-<template id="place_div">
+<template id="place_info_div">
 	<div class="card mb-3">
 		<div class="card-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">
-					<img class="img-fluid mx-auto d-block rounded-4" src="{{iconIMG}}">
+					{{iconImage}}
 				</div>
-				<div class="col-7 mx-auto">
-					<ul class="list-group list-group-flush">
-						<li class="list-group-item"><i class="fsicoLI fsico-look-price"></i>{{price}}</li>
-						<li class="list-group-item {{show_income}}"><i class="fsicoLI fsico-look-income"></i>{{income}}</li>
-						<li class="list-group-item {{show_hasPaint}}"><i class="fsicoLI fsico-look-paintable"></i><l10n name="look_has_paint"></l10n></li>
-						<li class="list-group-item {{show_hasCow}}"><i class="fsicoLI fsico-fill-cow"></i>{{animalCount}}</li>
-						<li class="list-group-item {{show_hasPig}}"><i class="fsicoLI fsico-fill-pig"></i>{{animalCount}}</li>
-						<li class="list-group-item {{show_hasSheep}}"><i class="fsicoLI fsico-fill-sheep"></i>{{animalCount}}</li>
-						<li class="list-group-item {{show_hasChicken}}"><i class="fsicoLI fsico-fill-chicken"></i>{{animalCount}}</li>
-						<li class="list-group-item {{show_hasHorse}}"><i class="fsicoLI fsico-fill-horse"></i>{{animalCount}}</li>
-						<li class="list-group-item {{show_hasBee}}"><i class="fsicoLI fsico-fill-honey"></i>{{hasBee}}</li>
-						<li class="list-group-item {{show_objectStore}}"><i class="fsicoLI fsico-look-objects"></i>{{objectCount}}</li>
-						<li class="list-group-item {{show_fillUnit}}"><i class="fsicoLI fsico-look-fillunit"></i>{{fillUnit}}<br />{{fillImages}}</li>
-					</ul>
+				<div class="col-7">
+					{{placeData}}
 					{{prodLines}}
 				</div>
 				<div class="col-12 pt-2"><p class="text-center">{{functions}}</p></div>
