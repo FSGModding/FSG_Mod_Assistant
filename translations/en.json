@@ -190,7 +190,7 @@
 	"language_code"                         : "en",
 	"language_locale"                       : "en_US",
 	"language_name"                         : "English",
-	"latest_version_link_blurb"             : "Get the latest version at:",
+	"latest_version_link_blurb"             : "Get the latest version at",
 	"launch_game"                           : "Launch Game",
 	"launch_game__title"                    : "Start the Game",
 	"launcher_error_message"                : "Please set the game path in preferences (not set, or not valid!)",

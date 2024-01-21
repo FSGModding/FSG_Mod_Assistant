@@ -595,13 +595,13 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 			case 'game_icon' :
 				sendEntry(
 					l10nEntry,
-					`<img src="img/fs${mcStore.get('game_version')}.webp" style="height: 20px; margin-right: 5px; margin-top: 1px;" class="float-start img-fluid"/>`
+					`<i class="fsico-ver-${mcStore.get('game_version')} float-start" style="font-size: 20px; margin-right: 4px; margin-top: -4px;"></i>`
 				)
 				break
 			case 'game_icon_lg' :
 				sendEntry(
 					l10nEntry,
-					`<img src="img/fs${mcStore.get('game_version')}_256.webp" class="img-fluid" style="height: 69px;"/>`
+					`<i class="fsico-ver-${mcStore.get('game_version')}" style="font-size: 75px;"></i>`
 				)
 				myTranslator.stringTitleLookup(l10nEntry).then((text) => {
 					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
