@@ -13,6 +13,7 @@ function getKeyMap(key, locale) {
 
 	return `<span class="btn disabled btn-sm btn-outline-secondary small">${thisKey}</span>`
 }
+/* cSpell: disable */
 const keyMap = {
 	'AXIS_1'                  : '⤱ 1',
 	'AXIS_2'                  : '⤱ 2',
@@ -295,6 +296,7 @@ const localKeys = {
 		'MOUSE_BUTTON_WHEEL_UP'   : 'КОЛЁСИКО МЫШИ ВВЕРХ',
 	},
 }
+/* cSpell: enable */
 
 if ( typeof module !== 'undefined' ) {
 	module.exports = {
