@@ -30,6 +30,12 @@
 			font-size : calc(1.3rem + .6vw);
 			margin-right : 0.3em;
 		}
+		
+		.notRealItem {
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-image : url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(14, 17, 19, 0.15)" class="bi bi-exclamation-triangle" viewBox="0 0 16 16"><path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/><path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/></svg>')
+		}
 	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
@@ -57,7 +63,7 @@
 		<div class="mt-3 pt-3 border-top d-none" id="searchBox">
 			<div class="input-group input-group-sm my-2 mx-auto w-75">
 				<span class="input-group-text"><l10n name="find_basegame_match"></l10n></span>
-				<input type="text" id="mods__filter" oninput="clientFilter()" class="form-control mod-row-filter rounded-end">
+				<input type="text" id="mods__filter" oninput="clientFilter()" oncontextmenu="window.mods.cutCopyPaste()" class="form-control mod-row-filter rounded-end">
 				<span id="mods__filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:5px; "></span>
 			</div>
 			<div class="mx-4 mt-3" id="searchResults"></div>
@@ -65,9 +71,9 @@
 </body>
 
 <template id="store_item">
-	<div class="col-3 text-end">
+	<div class="col-3 text-end ">
 		<button onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button>
-		<div class="p-2 border rounded-3 h-100 text-center">
+		<div class="p-2 border rounded-3 h-100 text-center {{hasParentFile}}">
 			<a class="text-decoration-none text-white-50" href="?type=item&page={{page}}">
 				{{iconString}}<br>
 				{{brandString}}<br>

@@ -117,6 +117,12 @@ const client_buildStore = (thisItem) => {
 			}
 		}
 
+		const parentID = dtLib.getCleanParentID(thisItem.parentFile)
+		if ( parentID !== null ) {
+			const parentItem = client_BGData.records[parentID]
+			thisItemDataHTML.push(dtLib.doDataRow('look-key', `<a href="?type=item&page=${parentID}">${__(parentItem.name, { skipIfNotBase : true })}</a>`))
+		}
+
 		thisItemDataHTML.push(
 			dtLib.doDataType(
 				'fillLevel',

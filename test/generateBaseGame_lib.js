@@ -53,6 +53,7 @@ class baseLooker {
 
 		if ( thisItemInfo !== null && thisItemInfo.icon !== null ) {
 			iconLoads.push(this.#loadIcon(thisItemInfo.icon, false).then((itemIcon) => {
+				thisItemInfo.iconOriginalName = thisItemInfo.icon
 				thisItemInfo.icon = itemIcon
 			}).catch((err) => {
 				this.#log.notice(`Caught image error: ${err}`)
@@ -74,7 +75,6 @@ class baseLooker {
 		
 		switch ( storeType ) {
 			case 'vehicle' :
-				if ( typeof storeItemTree.vehicle.parentfile !== 'undefined' ) { return null }
 				return this.#parseVehicle(storeItemTree.vehicle)
 			case 'placeable' :
 				return this.#parsePlace(storeItemTree.placeable)
@@ -496,6 +496,7 @@ class baseLooker {
 				masterType     : 'vehicle',
 				motorInfo      : this.#parseMotor(xml?.motorized?.motorconfigurations?.motorconfiguration),
 				name           : this.#parseName(storeData?.name),
+				parentFile     : xml?.parentfile?.$?.XMLFILENAME || null,
 				price          : this.#util_getDefault(storeData?.price, 0),
 				specs          : this.#unwrapXML(storeData?.specs),
 				speedLimit     : this.#util_getDefault(xml?.base?.speedlimit?.$?.VALUE),

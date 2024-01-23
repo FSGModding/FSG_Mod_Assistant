@@ -74,6 +74,7 @@ const baseData = {
 	category        : {},
 	catMap_place    : {},
 	catMap_vehicle  : {},
+	iconMap         : {},
 	joints_has      : {},
 	joints_list     : [],
 	joints_needs    : {},
@@ -117,6 +118,10 @@ const handleResults = (results, fileDetails) => {
 	} else {
 		baseData.byCat_placeable[results.record.category] ??= []
 		baseData.byCat_placeable[results.record.category].push(thisName)
+	}
+	
+	if ( typeof results.record.iconOriginalName === 'string' && results.record.iconOriginalName.startsWith('$data') ) {
+		baseData.iconMap[results.record.iconOriginalName.toLowerCase()] = thisName
 	}
 
 	baseData.records[thisName] = results.record

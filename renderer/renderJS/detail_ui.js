@@ -53,7 +53,10 @@ const make_combos = (combos, lookRecord, parentItem) => {
 
 			if ( typeof thisItem === 'undefined' ) { continue }
 
-			const theIcon = fsgUtil.iconMaker(thisComboIsBase ? thisItem.icon : lookRecord?.icons?.[thisComboKey] || null)
+			const theIcon = dtLib.iconChooser(
+				thisItem.icon,
+				lookRecord?.icons?.[thisComboKey]
+			)
 
 			comboKeyList.add({internal : thisComboIsBase, key : thisComboKey, contents : thisComboIsBase ? null : thisItem})
 
@@ -142,7 +145,7 @@ const buildStore = (lookRecord, chartUnits) => {
 				category     : __(thisItem.category, { skipIfNotBase : true }),
 				combinations : make_combos(thisItem?.specs?.combination, lookRecord, thisItemUUID),
 				functions    : dtLib.wrap.functions(thisItem.functions),
-				iconImage    : dtLib.safeDataImage(thisItem.icon, { width : 'auto'}),
+				iconImage    : dtLib.safeDataImage(dtLib.iconChooser(thisItem.icon), { width : 'auto'}),
 				itemData     : thisItemDataHTML.join(''),
 				itemName     : __(thisItem.name, { skipIfNotBase : true }),
 				itemTitle    : thisItem.type,

@@ -42,6 +42,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		cutCopyPaste : ()          => { ipcRenderer.send('toMain_notesContextMenu') },
 		openBaseFolder : (folder) => { ipcRenderer.send('toMain_openBaseFolder', folder )},
 		openCompareBase : (itemID) => { ipcRenderer.send('toMain_openCompareBase', itemID )},
 		openCompareBaseMulti : (itemIDs) => { ipcRenderer.send('toMain_openCompareBaseMulti', itemIDs) },

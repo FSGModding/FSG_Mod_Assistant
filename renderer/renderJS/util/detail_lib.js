@@ -302,19 +302,52 @@ const dtLib = {
 		return [trueMin, trueMax, trueMin === trueMax]
 	},
 
+	getCleanParentID  : ( parentFile ) => {
+		if ( typeof parentFile !== 'string' ) { return null }
+		const attemptKey = parentFile.replace('.xml', '').replace('$data/', '').replaceAll('/', '_')
+		return ( typeof client_BGData.records[attemptKey] !== 'undefined' ) ? attemptKey : null
+	},
+
+	iconChooser : (...iconArray) => {
+		for ( const testIcon of iconArray ) {
+			if ( typeof testIcon === 'string' ) {
+				if ( testIcon.startsWith('data:') ) { return testIcon }
+				if ( testIcon.startsWith('$data') ) {
+					const iconPointer = client_BGData.iconMap[testIcon.toLowerCase()]
+					const trueIcon    = client_BGData.records[iconPointer]?.icon
+					if ( typeof trueIcon === 'string' ) { return trueIcon }
+				}
+			}
+		}
+		return fsgUtil.iconMaker(null)
+		
+	},
+
 	wrap : {
 		functions : ( functions ) => functions.map((x) => __(x, {skipIfNotBase : true})).join('<br>'),
 		item : ( itemID ) => {
 			const thisItem         = client_BGData.records[itemID]
 			const thisItemData     = dtLib.getInfo(thisItem)
+			let   dataItems        = null
+			const attemptKey       = dtLib.getCleanParentID(thisItem.parentFile)
+
+			if ( attemptKey !== null ) {
+				const attemptItem = client_BGData.records[attemptKey]
+				const newItemData = dtLib.getInfo(attemptItem)
+				dataItems = dtLib.getDataTypes(attemptItem.type).map((x) => dtLib.doDataType(x, newItemData[x])).join('')
+			} else {
+				dataItems = dtLib.getDataTypes(thisItem.type).map((x) => dtLib.doDataType(x, thisItemData[x])).join('')
+			}
+			
 
 			return fsgUtil.useTemplate('store_item', {
 				brandString    : dtLib.safeBrandImage(thisItem.brand, { extraHTML : '<br>' }),
-				dataItems      : dtLib.getDataTypes(thisItem.type).map((x) => dtLib.doDataType(x, thisItemData[x])).join(''),
+				dataItems      : dataItems,
 				dlc            : thisItem.dlcKey !== null ? thisItem.dlcKey : '',
+				hasParentFile  : thisItem.parentFile !== null ? 'notRealItem' : '',
 				iconString     : dtLib.safeDataImage(thisItem.icon),
 				name           : __(thisItem.name, { skipIfNotBase : true }),
-				page           : itemID,
+				page           : thisItem.parentFile !== null && attemptKey !== null ? attemptKey : itemID,
 				showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
 			})
 		},
