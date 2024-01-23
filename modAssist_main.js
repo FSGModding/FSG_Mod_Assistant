@@ -215,9 +215,14 @@ if ( !updateRequired && appVerMajor === updateMajor && appVerMinor < updateMinor
 if ( updateRequired ) {
 	log.log.warning('Invalid Mod Cache (old), resetting.', 'mod-cache')
 	newMaCache.clearAll()
-	log.log.info('Mod Cache Cleared', 'mod-cache')
+	log.log.notice('Mod Cache Cleared', 'mod-cache')
 } else {
 	log.log.debug('Mod Cache Version Good', 'mod-cache')
+}
+
+if ( mcStore.get('cache_version') !== app.getVersion() ) {
+	log.log.notice('Version Changed, Mod Detail Cache Cleared', 'mod-cache')
+	mdCache.clear()
 }
 
 mcStore.set('cache_version', app.getVersion())
