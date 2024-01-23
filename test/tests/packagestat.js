@@ -85,7 +85,7 @@ const countFiles = (test) => {
 		const fileList = results.filter((x) => x.isFile())
 		test.step_fmt(makeLine('', { blank : 'Blank', code : 'Code', comment : '/* */', size : 'Size', total : 'Files' }))
 		test.step_fmt(tblHeader)
-		test.step_fmt(makeLine('javaScript', countTextFile(fileList.filter((x) => path.extname(x.name) === '.js'), true)))
+		test.step_fmt(makeLine('javaScript', countTextFile(fileList.filter((x) => path.extname(x.name) === '.js' && path.basename(x.name) !== 'baseGameData.js'), true)))
 		test.step_fmt(makeLine('JSON', countTextFile(fileList.filter((x) => path.extname(x.name) === '.json'))))
 		test.step_fmt(makeLine('XML', countTextFile(fileList.filter((x) => path.extname(x.name) === '.xml'))))
 		test.step_fmt(makeLine('HTML', countTextFile(fileList.filter((x) => path.extname(x.name) === '.html'))))
