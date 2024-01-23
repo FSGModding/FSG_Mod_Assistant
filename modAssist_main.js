@@ -1136,7 +1136,7 @@ ipcMain.on('toMain_openCompareMulti', (_, itemMap, source) => {
 		})
 	}
 })
-// TODO: openCompareMixedMulti
+
 ipcMain.on('toMain_openCompareMod', (_, itemContents, source) => {
 	if ( win.isValid('compare') && win.isVisible('compare') ) {
 		win.sendToValidWindow('compare', 'fromMain_addModItem', itemContents, source)
@@ -1219,6 +1219,11 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 		case 'show_tooltips':
 			mcStore.set(name, value)
 			win.refreshL10n()
+			break
+		case 'font_size':
+			mcStore.set(name, parseFloat(value))
+			win.fontUpdater()
+			//TODO - update all windows
 			break
 		case 'lock_lang':
 			mcStore.set('force_lang', myTranslator.currentLocale)

@@ -11,6 +11,11 @@
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+
+	<!-- <link rel="stylesheet" href="inc/src/bootstrap.css">
+	<link rel="stylesheet" href="inc/src/bootstrap-icons.css">
+	<link rel="stylesheet" href="inc/src/overrides.css"> -->
+
 	<link rel="stylesheet" href="inc/fsico.css">
 	
 	<script src="inc/bootstrap.bundle.min.js"></script>
@@ -53,8 +58,8 @@
 			line-height: 1.1em
 		}
 
-		#display_mod_container { margin-top: 135px; }
-		#moveButtons { height: calc(100vh - 188px); position: fixed; top: 150px; }
+		#display_mod_container { margin-top: 10.9rem; }
+		#moveButtons { height: calc(100vh - 13rem); position: fixed; top: 10.7rem; }
 
 		.issue_badges .badge {
 			font-weight: 400;
@@ -126,7 +131,7 @@
 				</div>
 
 				<div class="mx-0 p-0 rounded-end-0 btn-group-win_ui d-flex">
-					<div class="bg-body px-2 text-danger" style="padding-top: 0.115em; --bs-text-opacity: 0.7;" id="gameRunningBubble"><i class="bi bi-circle-fill"></i></div>
+					<div class="bg-body px-2 text-danger d-inline-flex" style="--bs-text-opacity: 0.7;" id="gameRunningBubble"><i class="align-self-center bi bi-circle-fill"></i></div>
 					<button class="btn-info btn btn-win_ui rounded-0 text-white border-0" style="-webkit-app-region: no-drag; border-bottom-left-radius: var(--bs-border-radius-sm)!important;" onclick="clientOpenFarmSim()"><l10n name="game_icon"></l10n><l10n name="launch_game" class="align-middle fw-semibold"></l10n></button>
 					<button id="update-is-ready-button" class="d-none btn-win_ui btn rounded-0 text-info" style="-webkit-app-region: no-drag;" onclick="window.mods.runUpdate()"><l10n name="update_ready"></l10n></button>
 					<button id="browse-base-game-data" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openBaseGame()"><l10n name="base_game_data"></l10n></button>
@@ -309,7 +314,7 @@
 					</a>
 				</div>
 				<div class="align-self-center">
-					<a class="py-1 fw-bold text-white btn btn-vsm btn-primary position-relative" id="debugLogButton" style="cursor: pointer" onclick="mods.debugLog()">
+					<a class="fw-bold text-white btn btn-vsm btn-primary position-relative" style="padding-top: 3px; padding-bottom: 3px;" id="debugLogButton" style="cursor: pointer" onclick="mods.debugLog()">
 						<l10n name="open_debug_log"></l10n>
 						<span id="debug_danger_bubble" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
 					</a>
@@ -356,9 +361,9 @@
 					<button id="loadOverlay_downloadCancelButton" onclick="window.mods.cancelDownload()" class="btn btn-danger text-white w-100"></button>
 				</div>
 				<div style="position: absolute; left: 310px; height: 270px; width: 280px; top: 20px;" class="bg-dark py-1 px-3">
-					<div id="loadOverlay_statusMessage" class="text-center display-6 mb-3">Status Title</div>
+					<div id="loadOverlay_statusMessage" class="text-center display-6 mb-1">Status Title</div>
 					<div id="status-icon-working" class="d-flex justify-content-center">
-						<div class="spinner-border" style="width: 6rem; height: 6rem;"role="status"></div>
+						
 						<div id="loadOverlay_speed" class="d-none position-fixed" style="text-align:center; margin-top:1.7rem; width:4rem; display:block;"><span id="loadOverlay_speed_speed" style="white-space:nowrap" class="small">SPEED</span><br><span id="loadOverlay_speed_time" style="white-space:nowrap" class="small">TIME</span></div>
 					</div>
 					<div id="loadOverlay_statusProgBar" class="progress mt-2">
@@ -369,6 +374,7 @@
 						<span id="loadOverlay_statusCurrent">0</span> / <span id="loadOverlay_statusTotal">0</span>
 					</div>
 				</div>
+				<div class="spinner-border position-absolute opacity-25" style="width: 200px; height: 200px; left:346px; top:56px;" role="status"></div>
 			</div>
 		</div>
 	</div>
@@ -392,7 +398,7 @@
 		<td>
 			<input type="checkbox" class="form-check-input mod-row-checkbox" id="{{id}}__checkbox">
 		</td>
-		<td style="width: 64px; height: 64px; white-space: nowrap">
+		<td style="width: 4.6rem; height: 4.6rem; white-space: nowrap">
 			<img class="img-fluid" src="{{icon}}" />
 			<i class="bi bi-folder2-open {{class_isAFolder}}" style="position: relative; top: -16px; left: -70px; font-size: 18px; color: rgb(175 165 141);"></i>
 		</td>
@@ -408,13 +414,13 @@
 <template id="collect_row">
 	<tr class="mod-table-folder" oncontextmenu="window.mods.openCText('{{id}}')">
 		<td class="folder-icon collapsed" {{bootstrap_data}}>
-			<div class="badge rounded-pill bg-primary bg-gradient float-start" style="width: 30px; height: 13px; margin-bottom: -15px; font-size: 0.5em; transform: translateY(-20%)!important">{{totalCount}}</div>
+			<div class="badge rounded-pill bg-primary bg-gradient float-start" style="width: 2.1rem; height: 1rem; margin-bottom: -1rem; font-size: 0.5em; transform: translateY(-20%)!important">{{totalCount}}</div>
 			{{folderSVG}}
 		</td>
 		<td class="folder-name collapsed" {{bootstrap_data}}>
 			<div class="d-inline-block align-middle {{class_status}}">{{name}}{{tagLine}}</div>
 		</td>
-		<td class="align-middle text-end">
+		<td class="align-middle text-end" style="line-height: 2rem;">
 			<button class="{{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="clientOpenMod('true', '{{mapClick}}')">
 				<img class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}"  />
 			</button>

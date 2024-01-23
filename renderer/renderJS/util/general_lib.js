@@ -174,7 +174,7 @@ const fsgUtil = {
 				return '<i class="bi bi-x-circle"></i>'
 			case 'folder':
 				return [
-					'<svg style="width: 28px; margin-left: 15px; margin-top: 4px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 990 673">',
+					'<svg style="width: 2rem; margin-left: 1rem; margin-top: 0.3rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 990 673">',
 					`<path fill="${colors[1]}" d="M833 55H295V31c0-17-14-31-31-31H87C70 0 56 14 56 31v24H46C21 55 0 76 0 102v498c0 25 21 46 46 46h787c25 0 46-21 46-46V102c0-26-21-47-46-47Z"/>`,
 					`<path fill="${colors[2]}" d="M66 100h747v502H66z"/>`,
 					`<path fill="${colors[0]}" d="M890 601c-6 25-32 45-57 45H46c-25 0-41-20-35-45l99-402c6-25 32-45 57-45h786c26 0 42 20 36 45l-99 402Z"/>`,

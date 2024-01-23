@@ -33,6 +33,8 @@ function updatePrefs(allSettings, devControls) {
 		}
 	}
 
+	fsgUtil.byId('font_size_value').innerHTML = `${Math.floor((allSettings.font_size / 14) * 100)} %`
+
 	fsgUtil.classPerTest('.multi-version-pref', allSettings.multi_version)
 	fsgUtil.classPerTest('.game_enabled_19', allSettings.game_enabled_19)
 	fsgUtil.classPerTest('.game_enabled_17', allSettings.game_enabled_17)

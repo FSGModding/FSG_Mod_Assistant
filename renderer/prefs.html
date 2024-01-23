@@ -33,6 +33,20 @@
 		</div>
 
 		<div class="row mx-4 mb-3 pb-2 border-bottom">
+			<div class="col-12">
+				<h4><l10n name="user_pref_title_font_size"></l10n></h4>
+				<p class="ps-2"><l10n name="user_pref_blurb_font_size"></l10n></p>
+			</div>
+			<div class="col-2 text-center h3" id="font_size_value">XX</div>
+			<div class="col-6">
+				<input onchange="clientSetPref('font_size')" type="range" class="form-range" min="9.8" max="21" step="0.1" id="font_size">
+			</div>
+			<div class="col-4">
+				<div class="d-block btn btn-success btn-sm w-100 mt-2 mx-auto mb-3" onclick="window.mods.setPref('font_size', 14)"><l10n name="user_pref_font_size_default"></l10n></div>
+			</div>
+		</div>
+
+		<div class="row mx-4 mb-3 pb-2 border-bottom">
 			<div class="col-8">
 				<h5><l10n name="user_pref_title_multi_version"></l10n></h5>
 				<p class="ps-2"><l10n name="user_pref_blurb_multi_version"></l10n></p>
