@@ -741,10 +741,10 @@ function openDetailWindow(thisMod) {
 				if ( thisMod.modDesc.storeItems > 0 ) {
 					if ( !thisMod.fileDetail.isFolder && mdCache.has(thisUUID) ) {
 						const currentUnits = {
-							hp  : myTranslator.syncStringLookup('unit_hp'),
-							kph : myTranslator.syncStringLookup('unit_kph'),
-							mph : myTranslator.syncStringLookup('unit_mph'),
-							rpm : myTranslator.syncStringLookup('unit_rpm'),
+							unit_hp  : myTranslator.syncStringLookup('unit_hp'),
+							unit_kph : myTranslator.syncStringLookup('unit_kph'),
+							unit_mph : myTranslator.syncStringLookup('unit_mph'),
+							unit_rpm : myTranslator.syncStringLookup('unit_rpm'),
 						}
 						const thisCache = mdCache.get(thisUUID)
 						mdCache.set(thisUUID, {
@@ -752,7 +752,7 @@ function openDetailWindow(thisMod) {
 							results : thisCache.results,
 						})
 						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisCache.results, currentUnits, myTranslator.currentLocale)
-						log.log.notice(`Loaded details from cache :: ${thisUUID}`, 'mod-look')
+						log.log.info(`Loaded details from cache :: ${thisUUID}`, 'mod-look')
 						return
 					}
 					doModLook_thread(thisMod, thisUUID)
