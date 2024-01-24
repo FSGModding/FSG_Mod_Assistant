@@ -357,7 +357,7 @@ const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) 
 			class_hasSite     : hasExtSite ? ' has-ext-site' : '',
 			class_isAFolder   : !thisMod.badgeArray.includes('folder') ? 'd-none' : '',
 			class_modColor    : thisMod.canNotUse === true ? '  bg-danger' : ( currentGameVersion !== thisMod.gameVersion ? ' bg-warning' : '' ),
-			class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-opacity-25':'',
+			class_modDisabled : ( thisMod.canNotUse===true || currentGameVersion !== thisMod.gameVersion ) ? ' mod-disabled bg-secondary-subtle bg-opacity-25':'',
 			click_modEnabled  : ! ( thisMod.badgeArray.includes('savegame') || thisMod.badgeArray.includes('notmod') ),
 			fileSize          : ( thisMod.fileDetail.fileSize > 0 ) ? fsgUtil.bytesToHR(thisMod.fileDetail.fileSize) : '',
 			icon              : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
