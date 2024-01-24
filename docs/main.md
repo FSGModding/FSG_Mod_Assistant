@@ -6,7 +6,7 @@ This is what Mod Assistant looks like.  Below, the 5 main areas are broken down 
 
 ![main](img340/main-screen.png)
 
-## Top Bar
+## Menu Bar
 
 This area contains functions that tend to apply everywhere, grouped to take up as little space as possible.
 
@@ -17,20 +17,26 @@ On the top line, you'll see the application title (drag to move the window), a g
 From left to right, those buttons are:
 
 - __Launch Game :__ Launch Farming Simulator
-- __<i class="bi-wikipedia"></i> Wiki:__ [Browse Base Game Vehicles, Implements, Objects, and Placeables](basegame.html)
-- __Calendar :__ [Savegame Mod Tracking](savetrack.html)
-- __Spyglass :__ [Search All Collections](search.html)
-- __Text File :__ [Game Log Viewer](gamelog.html)
-- __Gear :__ [User Preferences](preferences.html)
-- __Question Mark :__ Quick Link to this Help Document
-- __Down Chevron:__ Minimize app to taskbar
+- <i class="bi bi-wikipedia"></i> : [Browse Base Game Vehicles, Implements, Objects, and Placeables](basegame.html)
+- <i class="bi bi-calendar2-check"></i> : [Savegame Mod Tracking](savetrack.html)
+- <i class="bi bi-hdd"></i> : [Local Savegame Manager](savemange.html)
+- <i class="bi bi-search"></i> : [Search All Collections](search.html)
+- <i class="bi bi-file-earmark-text"></i> : [Game Log Viewer](gamelog.html)
+- <i class="bi bi-gear"></i> :  [User Preferences](preferences.html)
+- <i class="bi bi-question-circle"></i> : Quick Link to this Help Document
+- <i class="bi bi-window-stack"></i> : Toggle Mini-Mode Button
+- <i class="bi bi-chevron-bar-down"></i> : Minimize app to taskbar
 - Standard Minimize, Maximize, and Close
 
-![main](img/interfacemap_collect.webp)
+## Collection Management
+
+![main](img340/main-window-part-collect-manage.png)
 
 Next line down, you will find the 3 folder buttons and the 3 collection controls which form the [Collection Management](collections.html) section.
 
-![main](img/interfacemap_filter.webp)
+## Mod List Filtering
+
+![main](img340/main-window-part-mod-filter.png)
 
 The last line in this section contains some selection buttons and the [Filter Tools](filter.html)
 
@@ -38,7 +44,7 @@ The last line in this section contains some selection buttons and the [Filter To
 
 The collection area is the main interface of Mod Assistant.
 
-![main](img/ifacemap_collect.webp)
+![main](img340/main-window-part-mod-list.png)
 
 From here, you can easily launch or perform the functions detailed in:
 
@@ -51,24 +57,13 @@ From here, you can easily launch or perform the functions detailed in:
 
 This area contains functions for working directly with mods.
 
-![main](img/ifacemap_side.webp)
+![main](img340/main-window-part-side-bar.png)
 
 Among those functions are:
 
 - [Import and Export](importexport.html)
-- [Move and Copy and Delete and Copy Favorites](fileoper.html)
-- Find on ModHub button (opens in default browser)
-- Open in Explorer button
+- [Move, Copy, Delete, and Copy Favorites](fileoper.html)
+- Show in Explorer (System File Explorer)
+- Find on ModHub (opens in default web browser)
+- Open Source Website (opens in default web browser)
 - The [Version Check](versions.html) tool.
-
-## Footer Area
-
-Most of the footer area is just some convenience functions
-
-![main](img/ifacemap_footer.webp)
-
-- Link to [FSG Modding](https://www.farmsimgame.com/)
-- Link to [FSG's Discord](https://discord.com/invite/NxrDJYNC7Q)
-- Link to the project on [GitHub](https://github.com/FSGModding/FSG_Mod_Assistant)
-- Link to the project on [CrowdIn](https://crowdin.com/project/fsg-mod-assistant/)
-- Button to open the debug log if needed.  A red dot will appear on this button if something needs your attention.
