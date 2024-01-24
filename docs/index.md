@@ -12,7 +12,7 @@ ___This is a mod folder switcher with extra tools___
 
 At it's core functionality, this is a file manager, and it has the ability to edit FS22's `gameSettings.xml` file to set one of your mod collections as the mod location the game reads.
 
-![main](img/mainarea-999.webp)
+![main](img340/main-screen.png)
 
 ## Detailed Documentation
 

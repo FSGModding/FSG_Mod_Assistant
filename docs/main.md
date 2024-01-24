@@ -2,20 +2,22 @@
 
 [← Back to main](index.html)
 
-This is what Mod Assistant looks like.  Below, the 4 main areas are broken down with links to more information.
+This is what Mod Assistant looks like.  Below, the 5 main areas are broken down with links to more information.
 
-![main](img/mainarea-999.webp)
+![main](img340/main-screen.png)
 
 ## Top Bar
 
 This area contains functions that tend to apply everywhere, grouped to take up as little space as possible.
 
-![main](img/interfacemap_topbar.webp)
+![main](img340/main-window-part-top-bar.png)
 
 On the top line, you'll see the application title (drag to move the window), a game launch button, and the title bar buttons.
 
 From left to right, those buttons are:
 
+- __Launch Game :__ Launch Farming Simulator
+- __<i class="bi-wikipedia"></i> Wiki:__ [Browse Base Game Vehicles, Implements, Objects, and Placeables](basegame.html)
 - __Calendar :__ [Savegame Mod Tracking](savetrack.html)
 - __Spyglass :__ [Search All Collections](search.html)
 - __Text File :__ [Game Log Viewer](gamelog.html)
