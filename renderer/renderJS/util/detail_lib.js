@@ -408,7 +408,6 @@ const dtLib = {
 
 	doChart : (thisItem, thisItemUUID, chartUnits) => {
 		return async () => {
-			console.log(chartUnits)
 			new Chart(
 				fsgUtil.byId(`${thisItemUUID}_canvas_hp`),
 				{
