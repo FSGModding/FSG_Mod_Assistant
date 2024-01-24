@@ -339,15 +339,14 @@ const dtLib = {
 				dataItems = dtLib.getDataTypes(thisItem.type).map((x) => dtLib.doDataType(x, thisItemData[x])).join('')
 			}
 			
-
 			return fsgUtil.useTemplate('store_item', {
 				brandString    : dtLib.safeBrandImage(thisItem.brand, { extraHTML : '<br>' }),
 				dataItems      : dataItems,
 				dlc            : thisItem.dlcKey !== null ? thisItem.dlcKey : '',
-				hasParentFile  : thisItem.parentFile !== null ? 'notRealItem' : '',
+				hasParentFile  : attemptKey !== null ? 'notRealItem' : '',
 				iconString     : dtLib.safeDataImage(thisItem.icon),
 				name           : __(thisItem.name, { skipIfNotBase : true }),
-				page           : thisItem.parentFile !== null && attemptKey !== null ? attemptKey : itemID,
+				page           : attemptKey !== null ? attemptKey : itemID,
 				showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
 			})
 		},
