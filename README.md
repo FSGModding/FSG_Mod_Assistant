@@ -18,13 +18,12 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 
 ## At A Glance
 
-![main window](docs/img/mainarea-999.webp)
+![main window](docs/img340/main-screen.png)
 
 ## What is a Broken Mod?
 
 - If a mod file is named incorrectly and won't load in the game.
   - Suggest it might be a copy if the name looks like a copy
-    - and what the name probably should be
   - Suggest you extract it if it looks like a collection of mods
 
 - If a mod is not properly zipped.
@@ -53,7 +52,7 @@ Builds are available for the following:
 
 ### Install Video
 
-[![Install Video](https://markdown-videos.deta.dev/youtube/elzFhp2EBEs)](https://youtu.be/elzFhp2EBEs)
+[![Install Video](https://img.youtube.com/vi/elzFhp2EBEs/0.jpg)](https://youtu.be/elzFhp2EBEs)
 
 ### Updating
 

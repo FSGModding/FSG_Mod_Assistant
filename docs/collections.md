@@ -60,6 +60,18 @@ If you decide down the line to remove Mod Assistant, or wish you use the standar
 
 If the dropdown displays `--unknown--` that means that Farm Sim is set to use a folder that Mod Assistant is not tracking.
 
+## Collection Action Buttons
+
+Most of the collection buttons are covered in other sections, most notably in:
+
+- [Collection Details Window](details.html)
+- [Savegame Compare](savegame.html)
+- [Import and Export](importexport.html)
+
+Not mentioned in any of those is the first icon in this sample - this collection only contains a single map, so the map icon is shown, and clicking it will load the mod detail screen for that map.
+
+![Active collection](img340/collection-entry.png)
+
 ## Identifying the Active Collection
 
 The currently active collection will have a green folder icon with a large white checkmark on it.

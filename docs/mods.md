@@ -6,37 +6,25 @@
 
 The mod collection area is the main informational center of Mod Assistant.  Here you can view, select and process your mod collections.
 
-![multi](img/collect-001.webp)
+![multi](img340/mod-list.png)
 
-### A Valid Mod
+### Mod Status
 
-This is a valid, working mod entry
+Mods are only marked unusable when Mod Assistant is reasonably certain that they will not function in game.  They look something like this - note the darker background.  In this case, it is a FS17 mod in a FS22 collection, and will not load in-game.
 
-![valid](img/collect-002.webp)
-
-### An Invalid Mod
-
-This is a broken mod (in fact, the file name is invalid).  Note the title, author, version, and size are all omitted.
-
-![invalid](img/collect-003.webp)
-
-### An Valid Mod for a Different Version
-
-This mod is valid, however it is for FS19.  Please see the [Multiple Game Versions](multi-version.html) documentation on how to do this correctly.
-
-![invalid](img/collect-005.webp)
+![multi](img340/mod-entry-dark.png)
 
 ## Information Displayed
 
 In this section you will see several data items:
 
-- Context color - red is broken, yellow is invalid version, and green is selected.
+- Context color - dark is broken, and green is selected.
 - the "Short Name" of the mod, which is derived from the file name without the `.ZIP` extension
 - The mod title
 - The mod author
 - The mod version
 - The mod size
-- Any number of status tags or badges
+- Any number of status tags and badges
 
 ## The Tags (Badges)
 
@@ -59,7 +47,7 @@ __Special Note:__ - The Issue badge is based on all the possible issues we know 
 
 There are quick selection buttons on the right side of the interface.  The number in white is the number of mods currently selected. Not that None/All/Invert work on the mods currently in view - they will respect searches and filters.
 
-![Alt text](img/collect_sel.webp)
+![Alt text](img340/main-window-part-mod-filter.png)
 
 ### Keyboard Shortcuts
 
@@ -81,4 +69,7 @@ There are quick selection buttons on the right side of the interface.  The numbe
 
 - `RIGHT CLICK` a mod will to display a context menu where you can carry out most operations on that single mod
 
-![Alt text](img/collect-004.webp)
+![Alt text](img340/right-click-mod.png)
+
+The only feature _only_ accessible with right click is `Set Source Website` which allows you to assign a source website to a mod when it is not from ModHub.
+

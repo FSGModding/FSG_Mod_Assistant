@@ -8,22 +8,20 @@ The tool for comparing a savegame to a collection is located to the left of each
 
 Additionally, if a ZIP savegame is detected in an added collection (for instance your downloads), you can right click it and compare it against any collection.
 
-![Main Window](img/savegame-001.webp)
+![Main Window](img340/collection-entry.png)
 
-## Loading a savegame
+## Top Bar Options
 
-To load a savegame, you have 2 options
+![Alt text](img340/savecompare-top.png)
+
+#### To load a savegame, you have 2 options
 
 - Load a folder directly
 - Load a ZIP file, like you would download from a server
 
-![Alt text](img/savegame-008.webp)
-
-## Filtering Results
+#### Filtering Results
 
 You can filter the results of opening a file by the badges they are given
-
-![Alt text](img/savegame-007.webp)
 
 The badge meanings are as follows:
 
@@ -36,11 +34,9 @@ The badge meanings are as follows:
 - **In-Active** : This mod is not loaded with the savegame
 - **Non-ModHub** : This mod does not appear on the in-game modhub.
 
-## Select Mods
+### Select Mods
 
 Often, it is useful to select a subset of this collection's mods in the main window based on the results of the savegame scan
-
-![Alt text](img/savegame-006.webp)
 
 You can select:
 
@@ -51,7 +47,7 @@ You can select:
 
 ## Example Results
 
-There are multiple context colors used in the resulting display.
+There are multiple context colors used in the resulting display. Tags are displayed inline, and when applicable, the spyglass will open the modhub page for that mod.
 
 - **Green** - Used, active mods
 - **Yellow** - Active but unused mod
@@ -60,7 +56,7 @@ There are multiple context colors used in the resulting display.
   - Maybe just taking up space
 - **Red** - Used, active mods that are ***missing*** from the collection
 
-![Alt text](img/savegame-003.webp)  
-![Alt text](img/savegame-002.webp)
-![Alt text](img/savegame-004.webp)
-![Alt text](img/savegame-005.webp)
+![Alt text](img340/savecompare-green.png)
+![Alt text](img340/savecompare-yellow.png)
+![Alt text](img340/savecompare-plain.png)
+![Alt text](img340/savecompare-red.png)

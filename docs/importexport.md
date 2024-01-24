@@ -12,9 +12,9 @@ To add mods directly to Mod Assistant, you have 2 options - direct download and 
 
 ### Direct Download
 
-For collections that have an associated dedicated server website, and download enabled, you can press the download button next to the collection name.  This will download **and overwrite** the mods from the server to the collection.  It will not delete any *extra* mods that exist in the collection.
+For collections that have an associated dedicated server website, and download enabled, you can press the orange download button <i class="bi bi-cloud-download"></i> next to the collection name.  This will download **and overwrite** the mods from the server to the collection.  It will not delete any *extra* mods that exist in the collection.
 
-![direct](img/import-001.webp)
+![direct](img340/collection-entry.png)
 
 ---
 
@@ -22,11 +22,11 @@ For collections that have an associated dedicated server website, and download e
 
 You can drop files and folders to the main interface window.  If you are dragging in a single folder that is a mod, be sure to choose the `Copy files to collection folder` option.
 
-![drag in](img/import-002.webp)
+![drag in](img340/drag-drop-file.png)
 
 You will be presented with a dialog where you can choose to copy the files to one, some, or all of your collections. Note that any existing files will be overwritten.
 
-![drag in confirm](img/import-003.webp)
+![drag in confirm](img340/drag-drop-import.png)
 
 ## Export
 
@@ -38,15 +38,15 @@ Additionally, you can export a CSV list that describes your collection
 
 To export files to a ZIP, select one or more mods in the collection area and press the `Export ZIP File` button to be prompted where to save the new ZIP file.
 
-![Alt text](img/ifacemap_side.webp)
+![Alt text](img340/main-window-part-side-bar.png)
 
 ---
 
 ### CSV List
 
-Next to each collection is a small `CSV` button. You will be prompted where to save the CSV file.
+Next to each collection is a small `CSV` icon <i class="bi bi-filetype-csv"></i>. You will be prompted where to save the CSV file.
 
-![Alt text](img/export-001.webp)
+![Alt text](img340/collection-entry.png)
 
 ---
 
@@ -54,4 +54,4 @@ Next to each collection is a small `CSV` button. You will be prompted where to s
 
 You can drag single mods from the collection area to any valid target in windows.  Valid targets are the desktop, an explorer window, and any number of third party apps that support dragging a file directly to them (for example, Discord)
 
-![Alt text](img/export-002.webp)
+![Alt text](img340/drag-drop-export.png)
