@@ -6,104 +6,114 @@
 
 Mod Assistant allows you to set some extra, helpful data on each collection.
 
-![Alt text](img/detail-001.webp)
+![Alt text](img340/collection-entry.png)
 
-The highlighted blue button will open the collection details editor window.
+The dark blue button labeled with <i class="bi bi-journal-text"></i> will open the collection details screen.
 
-The highlighted `key` will copy that collection's server *website* administration password and the `globe` will open the server website
+<i class="bi bi-key"></i> will copy that collection's server **website** administration password. <i class="bi bi-globe2"></i> will open the server website. Finally, <i class="bi bi-person-lock"></i> will copy that collection's **game** administrator password.
 
 Right clicking on a collection will bring up a context menu where you can copy most of the detail data to the clipboard.
 
-![Alt text](img/detail-002.webp)
+![--](img340/right-click-collection.webp)
 
 ## Editing Collection Details
 
 Clicking on the blue edit details button will bring up the details for that collection. You will find a number of options in there.
 
-### Favorite Collection
+### Icon Color
 
-![Alt text](img/detail-003.webp)
+Choose a color for this collection, selected from the FS22 farm colors.
 
-Favorite collections are those collections that the `Copy Favorites To` button works with.  It is visually indicated with a star on top of the folder icon
+![--](img340/collect-detail-color.png)
 
-![Alt text](img/detail-fav.webp)
+### Favorite
 
----
+Favorite collections allow mods to be copied from them to *multiple* destinations at the press of a single button near the bottom of the sidebar in the main window.
 
-### Removable Store Collection
+![--](img340/collect-detail-favorite.png)
 
-![Alt text](img/detail-013.webp)
+They look like this in the mod list
 
-This option marks the collection as existing on removable storage.  Usually when a collection folder disappears (you've deleted it), Mod Assistant will automatically forget it and never try and scan it again.  This prevents that, and the folder will be re-scanned when it next appears.
+![--](img340/collection-favorite.png)
 
----
+### Holding Pen
 
-### Holding Pen Collection
+Holding Pen collections are folders that are not intended to be used in Farming Simulator, but as a place to sort mods.  Clicking copy or move in one of these collections will allow you to copy or move to *multiple* destinations, automatically overwriting any existing file.  I use it for my downloads folder to quickly sort new mods.
 
-![Alt text](img/detail-012.webp)
+![--](img340/collect-detail-holdingpen.png)
 
-This option marks the collection as a special "Holding Pen" type.  This will switch the copy and move interface from single destination with option over-writing to the multi-destination automatic over-write mode.
+They Look like this in the mod list
 
----
+![--](img340/collection-dropbox.png)
 
-### Description
+## Frozen
 
-![Alt text](img/detail-005.webp)
+Sometimes a collection is associated with a server where you do not handle mod updates, or there are custom "versions" of a mod on it - this option will exclude a collection from the Version Management tool
 
-The description displays as a sub-title to the collection in the main interface, and a number of other places.
+![--](img340/collect-detail-frozen.png)
 
----
+## Removable
 
-### Player Name
+This option marks a collection as being on removable storage.  When set as removable, if Mod Assistant can't read the folder on scan, it assumes the drive is unplugged and simply marks the collection offline.
 
-![Alt text](img/detail-006.webp)
+![--](img340/collect-detail-removable.png)
 
-This is what your display name in game will be set to when joining a server with this collection
+## Version
 
----
+This sets the game version the collection is associated with.  It will always be preset to the version you are currently working with in Mod Assistant, or, if you do not have multi-version support enabled, it will be set to 2022
 
-### Server Name
+![--](img340/collect-detail-version.png)
 
-![Alt text](img/detail-007.webp)
+## Description
 
-This is the name of the multiplayer server for this collection. It will be pre-populated in the search field in the server browser
+This sets a text description for the collection. In the above mod list samples, the description text is the second line in italics.
 
----
+![--](img340/collect-detail-description.png)
 
-### Server Password
+## Player Name
 
-![Alt text](img/detail-008.webp)
+This sets your player display name for this collection.  Only useful for multiplayer, but this allows you to have different names on different servers easily
 
-This is the server (game) password for the multiplayer server for this collection.  It will be pre-filled in the password popup when joining
+![--](img340/collect-detail-player.png)
 
----
+## Server Name
 
-### Server Web Site
+This sets the server name, or, more accurately, it pre-populates the multiplayer server search box with this value.  It is recommended to keep as simple as possible.
 
-![Alt text](img/detail-009.webp)
+![--](img340/collect-detail-servername.png)
 
-This is the address of the multiplayer server administration website, and a checkbox the indicates if the server has downloading of mods enabled.  Note that the server address *must* follow the indicated format for the download function to work.  This is the website that is opened in your default browser when clicking the `globe` button
+## Server Password
 
----
+This is the password that is required to join the server.  It is **not** your farm password, or the online web based administration tool password.  Setting this will pre-populate the server join password popup box allowing you to just click OK or press enter
 
-### Server Web Site Admin Password
+![--](img340/collect-detail-serverpass.png)
 
-![Alt text](img/detail-010.webp)
+## Website
 
-This is the server *website* admin password. It is the password that is copied via the `key` button in the main interface.
+This is the website for multiplayer game administration.  Additionally, if mod download is turned on for the server, you can toggle it on here to allow one-click mod download from that server into your collection folder (note that this cleans the collection first, then downloads the new mods).  If you need to put a non-standard style of server address in, you can toggle off the "Force Valid" option, but this will disable mod download.  It is available via collection right-click, or with the <i class="bi bi-globe2"></i> icon.
 
----
+![--](img340/collect-detail-website.png)
 
-### Notes
+## Website Admin Password
 
-![Alt text](img/detail-011.webp)
+This is the password for the website administration, available via collection right-click or with the <i class="bi bi-key"></i> icon.
 
-This allows you to set freeform notes on a collection.
+![--](img340/collect-detail-serveradminpass.png)
 
----
+## In-Game Admin Password
 
-### Game Version
+This is the password for administrator inside a multiplayer game.  It is available via collection right-click or with the <i class="bi bi-person-lock"></i> icon.
 
-![Alt text](img/detail-004.webp)
+![--](img340/collect-detail-gameadminpass.png)
 
-This sets the intended game version for this collection.  This setting will only appear if you have opted into the Multiple Version mode on the preferences screen.
+## In-Game Units
+
+These are the measurement units that are used in the game.  They are pre-populated from your current game settings, but if you have need of specific units for individual collections, you can do that here.  Note that if you change your mind on "default" units later, you will need to update each collection.
+
+![--](img340/collect-detail-units.png)
+
+## Notes
+
+This provides a text field for any notes you have. They are only visible on this screen.
+
+![--](img340/collect-detail-notes.png)
