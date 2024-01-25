@@ -131,12 +131,12 @@ const buildStore = (lookRecord, chartUnits) => {
 				dtLib.doDataRowTrue(
 					'cat-attach-has',
 					fsgUtil.getShowBool(thisItem?.joints?.canUse) ? __('basegame_attach_has') : null,
-					dtLib.doJoints(thisItem?.joints?.canUse, true, true)
+					dtLib.doJoints(thisItem?.joints?.canUse, true, false)
 				),
 				dtLib.doDataRowTrue(
 					'cat-attach-need',
 					fsgUtil.getShowBool(thisItem?.joints?.needs) ? __('basegame_attach_need') : null,
-					dtLib.doJoints(thisItem?.joints?.needs, false, true)
+					dtLib.doJoints(thisItem?.joints?.needs, false, false)
 				)
 			)
 
