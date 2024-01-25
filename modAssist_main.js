@@ -1165,9 +1165,18 @@ ipcMain.on('toMain_openBaseGameDeep', (_, type, page) => {
 		}, 500)
 	}
 })
+
 ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
-	shell.openPath(path.join(path.dirname(versionConfigGet('game_path', 22)), 'data', ...folderParts))
+	const gamePath = path.dirname(versionConfigGet('game_path', 22))
+
+	if ( typeof gamePath !== 'string') { return }
+
+	const dataPathParts = gamePath.split(path.sep)
+	const dataPath = path.join(...(dataPathParts[dataPathParts.length - 1] === 'x64' ? dataPathParts.slice(0, -1) : dataPathParts), 'data', ...folderParts)
+	
+	shell.openPath(dataPath)
 })
+
 /** Find window operation */
 ipcMain.on('toMain_openFind', () => {  win.createNamedWindow('find') })
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
@@ -1412,7 +1421,7 @@ ipcMain.on('toMain_downloadList',   (_, collection) => {
 					zipReadStream.on('error', (err) => {
 						win.loading.hide()
 						mainProcessFlags.dlProgress = false
-						modDLLog.warning(`Download unzip failed : ${err}`)
+						modDLLog.danger(`Download unzip failed : ${err}`)
 					})
 
 					zipReadStream.on('end', () => {
@@ -1422,10 +1431,17 @@ ipcMain.on('toMain_downloadList',   (_, collection) => {
 						mainProcessFlags.dlProgress = false
 						processModFolders(true)
 					})
+					const extract = unzip.Extract({ path : modCollect.mapCollectionToFolder(collection) })
 
-					zipReadStream.pipe(unzip.Extract({ path : modCollect.mapCollectionToFolder(collection) }))
+					zipReadStream.pipe(extract)
+
+					extract.on('error', (err) => {
+						win.loading.hide()
+						mainProcessFlags.dlProgress = false
+						modDLLog.danger(`Download unzip failed : ${err}`)
+					})
 				} catch (err) {
-					modDLLog.warning(`Download failed : (${response.statusCode}) ${err}`)
+					modDLLog.danger(`Download failed : (${response.statusCode}) ${err}`)
 					win.loading.hide()
 				}
 			})
@@ -2206,10 +2222,14 @@ function fileOperation_post(type, fileMap) {
 		for ( const file of fullPathMap ) {
 			const destPath = path.dirname(file.dest)
 
+			const extract = unzip.Extract({ path : destPath })
+			extract.on('error', (err) => {
+				fileLog.danger(`Import unzip failed : ${destPath} :: ${err}`)
+			})
 			fs.createReadStream(file.src)
-				.pipe(unzip.Extract({ path : destPath }))
+				.pipe(extract)
 				.on('error', (err) => {
-					fileLog.warning(`Import unzip failed : ${destPath} :: ${err}`)
+					fileLog.danger(`Import unzip failed : ${destPath} :: ${err}`)
 				})
 				.on('close', () => {
 					fileLog.info(`Import unzipping complete (${destPath})`)
