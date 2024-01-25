@@ -140,9 +140,11 @@ const updateSelectList = (thisModDetail, thisUUID) => {
 	if ( thisModDetail.isLoaded === true ) { selectList.active.push(`${thisCollection}--${thisUUID}`) }
 }
 
+
 const buildSaveInfo = () => {
 	const modCollect = cacheSaveGame
 	const savegame   = modCollect.opts.thisSaveGame
+	const isCSV      = savegame.mapMod === 'csvLoaded'
 	const {haveModSet, fullModSet} = buildSets(modCollect.modList[thisCollection].mods, Object.keys(savegame.mods))
 	const modSetHTML = []
 
@@ -168,7 +170,7 @@ const buildSaveInfo = () => {
 			thisModDetail.version  = savegame.mods[thisMod].version
 			thisModDetail.title    = savegame.mods[thisMod].title
 			thisModDetail.isLoaded = true
-			thisModDetail.isUsed   = savegame.mods[thisMod].farms.size !== 0
+			thisModDetail.isUsed   = isCSV || savegame.mods[thisMod].farms.size !== 0
 			thisModDetail.usedBy   = getFarms(savegame.mods[thisMod].farms, savegame.farms)
 		}
 
@@ -217,8 +219,6 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 	cacheSaveGame  = modCollect
 	thisCollection = modCollect.opts.collectKey
 
-	// TODO make this useful
-
 	setHeader(thisCollection)
 
 	if ( thisCollection === null ) {
@@ -252,6 +252,7 @@ function clientPickCollect() {
 	const collectKey = fsgUtil.byId('pickCollectSelect').value
 	if ( collectKey !== '--' ) {
 		thisCollection = collectKey
+		setHeader(thisCollection)
 		buildSaveInfo()
 	}
 }

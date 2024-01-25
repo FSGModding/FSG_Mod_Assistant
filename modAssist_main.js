@@ -549,7 +549,6 @@ ipcMain.on('toMain_dropFiles', (_, files) => {
 			})
 		})
 		return
-		// TODO Compare Screen
 	}
 	if ( files.length === 1 && files[0].endsWith('.zip') ) {
 		isZipImport = new modPackChecker(files[0]).getInfo()
