@@ -148,6 +148,7 @@
 	"download_title"                        : "Mod Download",
 	"drop_add_files"                        : "Bestanden kopiëren naar collectiemap",
 	"drop_add_folder"                       : "Voeg als collectie toe aan de Mod Assistant",
+	"drop_csv_compare"                      : "CSV-lijst vergelijken met collectie",
 	"drop_folder_exists"                    : "Sorry, deze map wordt al bijgehouden door Mod Assistant",
 	"empty_or_filtered"                     : "Leeg collectie of alle mods verborgen door filters",
 	"export_button__title"                  : "Exporteer lijst naar CSV",

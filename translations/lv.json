@@ -148,6 +148,7 @@
 	"download_title"                        : "Mod Download",
 	"drop_add_files"                        : "Kopēt failus uz kolekcijas mapi",
 	"drop_add_folder"                       : "Pievienot kā kolekciju pakalpojumam Mod Assistant",
+	"drop_csv_compare"                      : "CSV saraksta salīdzināšana ar kolekciju",
 	"drop_folder_exists"                    : "Atvainojiet, šo mapi jau izseko Mod Assistant",
 	"empty_or_filtered"                     : "Tukša kolekcija vai visi modi, kas paslēpti ar filtriem",
 	"export_button__title"                  : "Eksportēt sarakstu uz CSV",

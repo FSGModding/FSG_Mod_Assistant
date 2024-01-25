@@ -148,6 +148,7 @@
 	"download_title"                        : "Mod Download",
 	"drop_add_files"                        : "Copy files to collection folder",
 	"drop_add_folder"                       : "Add as collection to Mod Assistant",
+	"drop_csv_compare"                      : "Compare CSV List to Collection",
 	"drop_folder_exists"                    : "Sorry, that folder is already tracked by Mod Assistant",
 	"empty_or_filtered"                     : "Empty collection or all mods hidden by filters",
 	"export_button__title"                  : "Export List to CSV",

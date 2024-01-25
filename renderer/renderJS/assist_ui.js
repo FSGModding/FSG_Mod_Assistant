@@ -694,8 +694,15 @@ function clientDragEnter(e) {
 	if ( !dragDropOperation ) {
 		fsgUtil.byId('drag_back').classList.remove('d-none')
 	
+		const isCSV = e.dataTransfer.items[0].type === 'text/csv'
+
+		fsgUtil.clsHideTrue('csv-no', isCSV)
+		fsgUtil.clsHideTrue('csv-no-text', isCSV)
+		fsgUtil.clsHideFalse('csv-yes', isCSV)
+		fsgUtil.clsHideFalse('csv-yes-text', isCSV)
+
 		if ( e.dataTransfer.items.length > 1 || e.dataTransfer.items[0].type !== '' ) {
-			// multiple, so can't add as collection.
+			// multiple, so can't add as collection or non-empty type
 			fsgUtil.byId('drag_add_folder').classList.add('d-none')
 		}
 

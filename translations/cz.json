@@ -148,6 +148,7 @@
 	"download_title"                        : "Stahování módu",
 	"drop_add_files"                        : "Kopírovat soubory do složky kolekce",
 	"drop_add_folder"                       : "Přidat jako kolekci do asistenta modu",
+	"drop_csv_compare"                      : "Porovnání seznamu CSV se sbírkou",
 	"drop_folder_exists"                    : "Omlouváme se, ale tato složka je již sledována asistencí Mod",
 	"empty_or_filtered"                     : "Prázdná sbírka nebo všechny mody skryté filtry",
 	"export_button__title"                  : "Exportovat seznam do CSV",

@@ -174,7 +174,7 @@ function guessPath(paths, file = '') {
 mainProcessFlags.pathGameGuess = guessPath(gameGuesses, gameExeName)
 mainProcessFlags.pathBestGuess = guessPath(pathGuesses)
 
-const { modFileCollection, modPackChecker, saveFileChecker, savegameTrack, saveGameManager } = require('./lib/modCheckLib.js')
+const { modFileCollection, modPackChecker, saveFileChecker, savegameTrack, saveGameManager, csvFileChecker } = require('./lib/modCheckLib.js')
 
 const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSettings(mainProcessFlags)
 
@@ -541,9 +541,20 @@ ipcMain.on('toMain_dropFolder', (_, newFolder) => {
 })
 ipcMain.on('toMain_dropFiles', (_, files) => {
 	let isZipImport = false
+	if ( files.length === 1 && files[0].endsWith('.csv') ) {
+		new csvFileChecker(files[0]).getInfo().then((results) => {
+			win.createNamedWindow('save', {
+				collectKey   : null,
+				thisSaveGame : results,
+			})
+		})
+		return
+		// TODO Compare Screen
+	}
 	if ( files.length === 1 && files[0].endsWith('.zip') ) {
 		isZipImport = new modPackChecker(files[0]).getInfo()
 	}
+
 	win.createNamedWindow('import', { files : files, isZipImport : isZipImport })
 })
 /** END: Folder Window Operation */
@@ -1237,7 +1248,6 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 		case 'font_size':
 			mcStore.set(name, parseFloat(value))
 			win.fontUpdater()
-			//TODO - update all windows
 			break
 		case 'lock_lang':
 			mcStore.set('force_lang', myTranslator.currentLocale)

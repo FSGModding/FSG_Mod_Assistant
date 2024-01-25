@@ -148,6 +148,7 @@
 	"download_title"                        : "Menadżer pobierania",
 	"drop_add_files"                        : "Kopiowanie plików do folderu z modami",
 	"drop_add_folder"                       : "Dodaj jako folder z modami do Mod Asystent",
+	"drop_csv_compare"                      : "Porównanie listy CSV do kolekcji",
 	"drop_folder_exists"                    : "Przepraszamy, ten folder jest już dodany w Mod Asystent",
 	"empty_or_filtered"                     : "Pusta folder z modami lub wszystkie mody ukryte przez filtry",
 	"export_button__title"                  : "Eksportuj listę do CSV",

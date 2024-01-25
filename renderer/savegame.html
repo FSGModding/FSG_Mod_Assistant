@@ -28,7 +28,11 @@
 			<i class="text-center mt-1 w-100 mx-auto d-block small" id="collection_location"></i>
 		</div>
 
-		<div class="btn-group mx-auto w-75 d-flex">
+		<div class="btn-group mx-auto w-75 d-flex" id="pickCollect">
+			<select oninput="clientPickCollect()" class="form-select" id="pickCollectSelect" aria-label="Default select example"></select>
+		</div>
+
+		<div class="btn-group mx-auto w-75 d-flex" id="loadButtons">
 			<button class="btn btn-primary btn-sm border" onclick="window.mods.openFolder()"><i class="bi bi-folder"></i> <l10n name="open_save_folder"></l10n></button>
 			<button class="btn btn-primary btn-sm border" onclick="window.mods.openZIP()"><i class="bi bi-file-earmark-zip"></i> <l10n name="open_save_zip"></l10n></button>
 		</div>

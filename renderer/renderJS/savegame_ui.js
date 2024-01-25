@@ -140,19 +140,8 @@ const updateSelectList = (thisModDetail, thisUUID) => {
 	if ( thisModDetail.isLoaded === true ) { selectList.active.push(`${thisCollection}--${thisUUID}`) }
 }
 
-let selectList  = null
-let selectCount = null
-
-window.mods.receive('fromMain_collectionName', (modCollect) => {
-	thisCollection = modCollect.opts.collectKey
-
-	fsgUtil.byId('collection_name').innerHTML     = modCollect.collectionToName[thisCollection]
-	fsgUtil.byId('collection_location').innerHTML = modCollect.collectionToFolderRelative[thisCollection]
-
-	processL10N()
-})
-
-window.mods.receive('fromMain_saveInfo', (modCollect) => {
+const buildSaveInfo = () => {
+	const modCollect = cacheSaveGame
 	const savegame   = modCollect.opts.thisSaveGame
 	const {haveModSet, fullModSet} = buildSets(modCollect.modList[thisCollection].mods, Object.keys(savegame.mods))
 	const modSetHTML = []
@@ -213,7 +202,59 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	final_count()
 	updateCounts()
 	processL10N()
+}
+
+const setHeader = (collectKey) => {
+	fsgUtil.byId('collection_name').innerHTML     = collectKey === null ? '--' : cacheSaveGame.collectionToName[thisCollection]
+	fsgUtil.byId('collection_location').innerHTML = collectKey === null ? '--' : cacheSaveGame.collectionToFolderRelative[thisCollection]
+}
+
+let cacheSaveGame = null
+let selectList    = null
+let selectCount   = null
+
+window.mods.receive('fromMain_collectionName', (modCollect) => {
+	cacheSaveGame  = modCollect
+	thisCollection = modCollect.opts.collectKey
+
+	// TODO make this useful
+
+	setHeader(thisCollection)
+
+	if ( thisCollection === null ) {
+		const checkVer   = modCollect.appSettings.multi_version ? modCollect.appSettings.game_version : false
+		const selectHTML = [
+			fsgUtil.buildSelectOpt('--', '--', '--')
+		]
+
+		for ( const collectKey of modCollect.set_Collections ) {
+			if ( checkVer === false || modCollect.collectionNotes[collectKey].notes_version === checkVer ) {
+				selectHTML.push(fsgUtil.buildSelectOpt(collectKey, modCollect.collectionToFullName[collectKey]), '--')
+			}
+		}
+		fsgUtil.byId('loadButtons').classList.add('d-none')
+		fsgUtil.byId('pickCollect').classList.remove('d-none')
+		fsgUtil.byId('pickCollectSelect').innerHTML = selectHTML.join('')
+		// TODO: build select bar, hide load buttons
+	} else {
+		fsgUtil.byId('loadButtons').classList.remove('d-none')
+		fsgUtil.byId('pickCollect').classList.add('d-none')
+	}
+	processL10N()
 })
+
+window.mods.receive('fromMain_saveInfo', (modCollect) => {
+	cacheSaveGame = modCollect
+	buildSaveInfo()
+})
+
+function clientPickCollect() {
+	const collectKey = fsgUtil.byId('pickCollectSelect').value
+	if ( collectKey !== '--' ) {
+		thisCollection = collectKey
+		buildSaveInfo()
+	}
+}
 
 function updateCounts() {
 	for ( const element of fsgUtil.query('[for^="check_savegame"]') ) {

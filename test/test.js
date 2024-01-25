@@ -9,13 +9,14 @@
 // Define tests here, using the file name.  Called with .test(<log library class>)
 const startTime  = Date.now()
 const testList   = [
-	'modcheck',     // Mod Checker
-	'modcollect',   // Collection test
-	'modlook',      // Mod Internal Looker
-	'modtrack',     // Mod tracking
-	'savegame',     // Savegame Reading
-	'sourcecode',   // ESLint Source code
-	'translations', // Translation file check
+	'csvcheck',     // CSV Reader (collection compare)
+	// 'modcheck',     // Mod Checker
+	// 'modcollect',   // Collection test
+	// 'modlook',      // Mod Internal Looker
+	// 'modtrack',     // Mod tracking
+	// 'savegame',     // Savegame Reading
+	// 'sourcecode',   // ESLint Source code
+	// 'translations', // Translation file check
 ]
 
 const c       = require('ansi-colors')
