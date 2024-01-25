@@ -607,7 +607,7 @@ window.loader.receive('fromMain_loading_current', (count, inMB = false) => {
 		const endTime    = Date.now()
 		const elapsedMS  = endTime - startTime
 		const elapsedSec = elapsedMS / 1000
-		const estSpeed   = fsgUtil.bytesToMB(count, false) / elapsedSec // MB/sec
+		const estSpeed   = fsgUtil.bytesToMBCalc(count, false) / elapsedSec // MB/sec
 		const secRemain  = elapsedSec / perDone * perRem
 
 		const prettyMinRemain = Math.floor(secRemain / 60)

@@ -253,6 +253,7 @@ const fsgUtil = {
 		].filter((x) => x !== null).join(' ')
 	},
 	bytesToMB     : (count, suffix = true) => fsgUtil.bytesToHR(count, { forceMB : true, showSuffix : suffix}),
+	bytesToMBCalc : (bytes) => Math.round((bytes / ( 1024 * 1024) * 100 )) / 100,
 	escapeDesc    : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;') : text,
 	escapeSpecial : ( text ) => typeof text === 'string' ? fsgUtil.unescapeText(text).replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
 	unescapeText  : (encodedString) => {

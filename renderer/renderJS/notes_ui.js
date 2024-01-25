@@ -69,7 +69,7 @@ function clientCheckValid(id, inProgress = false) {
 		case 'notes_website' :
 			try {
 				const parsedURL   = new URL('', formValue)
-				if ( parsedURL.protocol !== 'http:' || parsedURL.pathname !== '/' ) {
+				if ( (parsedURL.protocol !== 'http:' && parsedURL.protocol !== 'https:') || parsedURL.pathname !== '/' ) {
 					validCheck = false
 				}
 			} catch {
