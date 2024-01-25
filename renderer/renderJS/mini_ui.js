@@ -8,8 +8,18 @@
 
 /* global processL10N, fsgUtil */
 
-let lastList        = null
-let fullList        = {}
+let lastList          = null
+let fullList          = {}
+
+function toggleGameStatus(status = false) {
+	fsgUtil.clsHideTrue('gameOffWayne', status)
+	fsgUtil.clsHideFalse('gameOnGarth', status)
+}
+
+window.mods.receive('fromMain_gameUpdate', (status) => {
+	toggleGameStatus(status.gameRunning)
+	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
+})
 
 window.mods.receive('fromMain_modList', (modCollect) => {
 	const isPinned = modCollect.opts.pinMini
@@ -18,6 +28,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	/* END : List selection */
 	fsgUtil.clsHideFalse('window-pin-pinned', isPinned)
 	fsgUtil.clsHideTrue('window-pin-not-pinned', isPinned)
+	toggleGameStatus(modCollect.opts.gameRunning)
 
 	processL10N()
 })

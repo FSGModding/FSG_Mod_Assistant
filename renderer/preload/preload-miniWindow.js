@@ -53,6 +53,7 @@ contextBridge.exposeInMainWorld(
 
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
+				'fromMain_gameUpdate',
 				'fromMain_modList',
 			])
 		

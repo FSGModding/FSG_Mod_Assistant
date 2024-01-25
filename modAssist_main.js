@@ -1858,6 +1858,7 @@ async function updateGameRunning() {
 		}
 		mainProcessFlags.gameRunning = gameIsRunning
 		win.sendToValidWindow('main', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, updateReady : modCollect.updateIsReady})
+		win.sendToValidWindow('mini', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning})
 	})
 }
 
