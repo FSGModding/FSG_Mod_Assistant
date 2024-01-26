@@ -1868,7 +1868,7 @@ function loadGameLog(newPath = false) {
 }
 
 function parseGameXML(version = 22, setDevMode = null) {
-	const gameEnabledValue    = version === 22 ? true : mcStore.get(`game_enabled_${version}`)
+	const gameEnabledValue    = version === 22 ? true : (mcStore.get(`game_enabled_${version}`) && mcStore.get('multi_version', false))
 	const thisGameSettingsXML = versionConfigGet('game_settings', version)
 	const gameXMLFile         = thisGameSettingsXML.replace('gameSettings.xml', 'game.xml')
 
