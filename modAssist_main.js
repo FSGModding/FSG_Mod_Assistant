@@ -27,6 +27,7 @@ const mainProcessFlags = {
 	dlRequest       : null,
 	firstMin        : true,
 	foldersDirty    : true,
+	foldersEdit     : false,
 	gameRunning     : false,
 	gameSettings    : {},
 	intervalFile    : null,
@@ -432,7 +433,10 @@ ipcMain.on('toMain_addFolder', () => {
 		log.log.danger(`Could not read specified add folder : ${err}`, 'folder-opts')
 	})
 })
-ipcMain.on('toMain_editFolders',    () => { win.createNamedWindow('folder') })
+ipcMain.on('toMain_editFolders',    () => {
+	mainProcessFlags.foldersEdit = !mainProcessFlags.foldersEdit
+	refreshClientModList(false)
+})
 ipcMain.on('toMain_refreshFolders', () => { processModFolders(true) })
 ipcMain.on('toMain_openFolder',     (_, collectKey) => { shell.openPath(modCollect.mapCollectionToFolder(collectKey)) })
 ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
@@ -443,7 +447,7 @@ ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 
 		modCollect.removeCollection(collectKey)
 		
-		win.sendModList({},	'fromMain_getFolders', 'folder', false )
+		refreshClientModList(false)
 
 		mainProcessFlags.foldersDirty = true
 		win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
@@ -464,44 +468,9 @@ ipcMain.on('toMain_reorderFolder', (_, from, to) => {
 
 	mcStore.set('modFolders', [...mainProcessFlags.modFolders])
 
-	win.sendModList({},	'fromMain_getFolders', 'folder', false )
-	mainProcessFlags.foldersDirty = true
-	win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
+	refreshClientModList(false)
 })
-ipcMain.on('toMain_reorderFolderAlpha', () => {
-	const newOrder = []
-	const collator = new Intl.Collator()
 
-	for ( const collectKey of modCollect.collections ) {
-		newOrder.push({
-			collectKey : collectKey,
-			name       : modCollect.mapCollectionToName(collectKey),
-			path       : modCollect.mapCollectionToFolder(collectKey),
-		})
-	}
-
-	newOrder.sort((a, b) =>
-		collator.compare(a.name, b.name) ||
-		collator.compare(a.collectKey, b.collectKey)
-	)
-
-	const newModFolders    = new Set()
-	const newModSetOrder   = new Set()
-
-	for ( const orderPart of newOrder ) {
-		newModFolders.add(orderPart.path)
-		newModSetOrder.add(orderPart.collectKey)
-	}
-
-	mainProcessFlags.modFolders   = newModFolders
-	modCollect.newCollectionOrder = newModSetOrder
-
-	mcStore.set('modFolders', [...mainProcessFlags.modFolders])
-
-	win.sendModList({},	'fromMain_getFolders', 'folder', false )
-	mainProcessFlags.foldersDirty = true
-	win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
-})
 ipcMain.on('toMain_dropFolder', (_, newFolder) => {
 	if ( ! mainProcessFlags.modFolders.has(newFolder) ) {
 		const thisFolderCollectKey = modCollect.getFolderHash(newFolder)
@@ -1803,6 +1772,7 @@ function refreshClientModList(closeLoader = true) {
 			activeCollection       : gameSetOverride.index,
 			currentLocale          : myTranslator.deferCurrentLocale(),
 			foldersDirty           : mainProcessFlags.foldersDirty,
+			foldersEdit            : mainProcessFlags.foldersEdit,
 			gameRunning            : mainProcessFlags.gameRunning,
 			l10n                   : {
 				disable    : __('override_disabled'),

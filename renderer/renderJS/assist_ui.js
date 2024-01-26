@@ -136,17 +136,22 @@ window.mods.receive('fromMain_gameUpdate', (status) => {
 	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
 })
 
+let collectOrder = {}
+
 window.mods.receive('fromMain_modList', (modCollect) => {
+	console.log(modCollect)
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 	gameRunAlert       = modCollect.opts.l10n.runMessage
+	collectOrder  = { map : {}, numeric : {}, max : 0 }
 
 	searchStringMap_empty()
 	searchTagMap_empty()
 
 	document.body.setAttribute('data-version', curVersion)
 
-	fsgUtil.clsOrGate('mini_button', modCollect.opts.showMini, 'btn-outline-light', 'unused-class')
+	fsgUtil.clsOrGate('folderEditButton', modCollect.opts.foldersEdit, 'btn-primary', 'btn-outline-primary')
+	fsgUtil.clsOrGate('mini_button', modCollect.opts.showMini, 'btn-outline-light', null)
 	fsgUtil.clsShowTrue('update-is-ready-button', modCollect.updateReady)
 	fsgUtil.clsShowTrue('dirty_folders', modCollect.opts.foldersDirty)
 	fsgUtil.clsShowTrue('multi_version_button', multiVersion)
@@ -167,7 +172,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	fsgUtil.byId('collectionSelect').innerHTML = buildCollectSelect(modCollect)
 	/* END : List selection */
 
-	for ( const collectKey of modCollect.set_Collections ) {
+	for ( const [folderIndex, collectKey] of Object.entries([...modCollect.set_Collections]) ) {
 		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
 		const thisCollection = modCollect.modList[collectKey]
 		const collectNotes   = modCollect.collectionNotes[collectKey]
@@ -177,6 +182,10 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		const sizeOfFolder   = thisCollection.folderSize
 		const mapIcons       = []
 		const mapNames       = []
+
+		collectOrder.map[collectKey]      = parseInt(folderIndex)
+		collectOrder.numeric[folderIndex] = collectKey
+		collectOrder.max                  = Math.max(collectOrder.max, parseInt(folderIndex))
 
 		for ( const modKey of thisCollection.alphaSort ) {
 			try {
@@ -236,7 +245,10 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			fsgUtil.firstOrNull(mapIcons),
 			mapNames[0],
 			parseInt(collectNotes.notes_color),
-			collectNotes.notes_removable
+			collectNotes.notes_removable,
+			modCollect.opts.foldersEdit,
+			collectNotes.notes_add_date,
+			collectNotes.notes_last
 		))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	}
@@ -250,6 +262,13 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	gameIsRunningFlag = modCollect.opts.gameRunning
 
 	buildDropDownFilters(modCollect.badgeL10n)
+
+	for ( const key of Object.keys(collectOrder.map) ) {
+		fsgUtil.clsOrGate(`${key}_order_up_last`, getOrderPrev(key) === null, 'disabled', null)
+		fsgUtil.clsOrGate(`${key}_order_up`, getOrderPrev(key) === null, 'disabled', null)
+		fsgUtil.clsOrGate(`${key}_order_down`, getOrderNext(key) === null, 'disabled', null)
+		fsgUtil.clsOrGate(`${key}_order_down_last`, getOrderNext(key) === null, 'disabled', null)
+	}
 
 	select_lib.clear_range()
 
@@ -268,6 +287,42 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	processL10N()
 })
 
+function clientMoveItem(collectKey, moveUpInList, forceLast = false) {
+	const curIndex = collectOrder.map[collectKey]
+	const newIndex = forceLast ?
+		moveUpInList ? 0 : collectOrder.max :
+		moveUpInList ? getOrderPrev(collectKey) : getOrderNext(collectKey)
+
+	if ( curIndex !== null && newIndex !== null ) {
+		window.mods.reorderFolder(curIndex, newIndex)
+	}
+}
+
+function getOrderPrev(key) {
+	const thisIndex = collectOrder.map[key]
+	
+	if ( typeof thisIndex === 'undefined' ) { return null }
+
+	for ( let i = thisIndex - 1; i >= 0; i-- ) {
+		if ( typeof collectOrder.numeric[i] !== 'undefined' ) { return i }
+	}
+	return null
+}
+
+function getOrderNext(key) {
+	const thisIndex = collectOrder.map[key]
+
+	if ( typeof thisIndex === 'undefined' ) { return null }
+
+	for ( let i = thisIndex + 1; i <= collectOrder.max; i++ ) {
+		if ( typeof collectOrder.numeric[i] !== 'undefined' ) { return i }
+	}
+	return null
+}
+
+function clientRemoveFolder(collectKey) {
+	window.mods.removeFolder(collectKey)
+}
 
 function toggleGameStatus(status = false) {
 	fsgUtil.clsOrGate('gameRunningBubble', status, 'text-success', 'text-danger')
@@ -323,9 +378,10 @@ const makeFilterButton = ( name, isHide = false ) => {
 	`
 }
 
-const makeModCollection = (isOnline, id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor, removable) => fsgUtil.useTemplate('collect_row', {
+const makeModCollection = (isOnline, id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor, removable, foldersEdit, dateAdd, dateUsed) => fsgUtil.useTemplate('collect_row', {
 	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
 	class_hideDownload          : dlEnabled ? '' : 'd-none',
+	class_hideFolderEdit        : foldersEdit ? '' : 'd-none',
 	class_hideGameAdminPassword : gameAdminPass !== null ? '' : 'd-none',
 	class_hidePassword          : adminPass !== null ? '' : 'd-none',
 	class_hideRemovable         : removable ? '' : 'd-none',
@@ -333,6 +389,8 @@ const makeModCollection = (isOnline, id, name, modsRows, website, dlEnabled, tag
 	class_isHolding             : isHolding ? 'is-holding-pen' : '',
 	class_mapIcon               : singleMapIcon === null ? 'd-none' : '',
 	class_status                : !isOnline ? 'text-decoration-line-through' : '',
+	dateAdd                     : getPrintDate(dateAdd),
+	dateUsed                    : getPrintDate(dateUsed),
 	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive, isHolding, folderColor),
 	game_admin_password         : gameAdminPass,
 	id                          : id,
@@ -347,6 +405,14 @@ const makeModCollection = (isOnline, id, name, modsRows, website, dlEnabled, tag
 	website                     : website,
 })
 
+function getPrintDate(textDate) {
+	const year2000 = 949381200000
+	const date = typeof textDate === 'string' ? new Date(Date.parse(textDate)) : textDate
+
+	if ( date < year2000 ) { return '<l10n name="mh_unknown"></l10n>'}
+
+	return `<span class="text-body-emphasis">${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}</span>`
+}
 
 const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) => {
 	return [

@@ -87,6 +87,9 @@ contextBridge.exposeInMainWorld(
 		makeInactive    : () => { ipcRenderer.send('toMain_makeInactive' ) },
 		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },
 
+		removeFolder  : ( collectKey ) => { ipcRenderer.send('toMain_removeFolder', collectKey) },
+		reorderFolder : ( from, to )   => { ipcRenderer.send('toMain_reorderFolder', from, to) },
+
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
 		copyMulti  : (selectedMods) => { ipcRenderer.send('toMain_copyMultiMods', selectedMods) },
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
