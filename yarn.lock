@@ -65,32 +65,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.23.7":
-  version: 7.23.7
-  resolution: "@babel/core@npm:7.23.7"
+"@babel/core@npm:^7.23.9":
+  version: 7.23.9
+  resolution: "@babel/core@npm:7.23.9"
   dependencies:
     "@ampproject/remapping": ^2.2.0
     "@babel/code-frame": ^7.23.5
     "@babel/generator": ^7.23.6
     "@babel/helper-compilation-targets": ^7.23.6
     "@babel/helper-module-transforms": ^7.23.3
-    "@babel/helpers": ^7.23.7
-    "@babel/parser": ^7.23.6
-    "@babel/template": ^7.22.15
-    "@babel/traverse": ^7.23.7
-    "@babel/types": ^7.23.6
+    "@babel/helpers": ^7.23.9
+    "@babel/parser": ^7.23.9
+    "@babel/template": ^7.23.9
+    "@babel/traverse": ^7.23.9
+    "@babel/types": ^7.23.9
     convert-source-map: ^2.0.0
     debug: ^4.1.0
     gensync: ^1.0.0-beta.2
     json5: ^2.2.3
     semver: ^6.3.1
-  checksum: 32d5bf73372a47429afaae9adb0af39e47bcea6a831c4b5dcbb4791380cda6949cb8cb1a2fea8b60bb1ebe189209c80e333903df1fa8e9dcb04798c0ce5bf59e
+  checksum: 634a511f74db52a5f5a283c1121f25e2227b006c095b84a02a40a9213842489cd82dc7d61cdc74e10b5bcd9bb0a4e28bab47635b54c7e2256d47ab57356e2a76
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:^7.23.3":
-  version: 7.23.3
-  resolution: "@babel/eslint-parser@npm:7.23.3"
+"@babel/eslint-parser@npm:^7.23.9":
+  version: 7.23.9
+  resolution: "@babel/eslint-parser@npm:7.23.9"
   dependencies:
     "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
     eslint-visitor-keys: ^2.1.0
@@ -98,7 +98,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.11.0
     eslint: ^7.5.0 || ^8.0.0
-  checksum: 9573daebe21af5123c302c307be80cacf1c2bf236a9497068a14726d3944ef55e1282519d0ccf51882dfc369359a3442299c98cb22a419e209924db39d4030fd
+  checksum: cfb87bc48d005f181807ae8f8357ba9eeb3ece38480084fb5d997bac03ebb4cf709ee197d697f506de8faa7f665fa07579b9b9c2045d86d6c17174b6c1b0c5c9
   languageName: node
   linkType: hard
 
@@ -230,14 +230,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helpers@npm:^7.23.7":
-  version: 7.23.7
-  resolution: "@babel/helpers@npm:7.23.7"
+"@babel/helpers@npm:^7.23.9":
+  version: 7.23.9
+  resolution: "@babel/helpers@npm:7.23.9"
   dependencies:
-    "@babel/template": ^7.22.15
-    "@babel/traverse": ^7.23.7
-    "@babel/types": ^7.23.6
-  checksum: 4f3bdf35fb54ff79107c6020ba1e36a38213a15b05ca0fa06c553b65f566e185fba6339fb3344be04593ebc244ed0bbb0c6087e73effe0d053a30bcd2db3a013
+    "@babel/template": ^7.23.9
+    "@babel/traverse": ^7.23.9
+    "@babel/types": ^7.23.9
+  checksum: 2678231192c0471dbc2fc403fb19456cc46b1afefcfebf6bc0f48b2e938fdb0fef2e0fe90c8c8ae1f021dae5012b700372e4b5d15867f1d7764616532e4a6324
   languageName: node
   linkType: hard
 
@@ -283,12 +283,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.23.6":
-  version: 7.23.6
-  resolution: "@babel/parser@npm:7.23.6"
+"@babel/parser@npm:^7.23.9":
+  version: 7.23.9
+  resolution: "@babel/parser@npm:7.23.9"
   bin:
     parser: ./bin/babel-parser.js
-  checksum: 140801c43731a6c41fd193f5c02bc71fd647a0360ca616b23d2db8be4b9739b9f951a03fc7c2db4f9b9214f4b27c1074db0f18bc3fa653783082d5af7c8860d5
+  checksum: e7cd4960ac8671774e13803349da88d512f9292d7baa952173260d3e8f15620a28a3701f14f709d769209022f9e7b79965256b8be204fc550cfe783cdcabe7c7
   languageName: node
   linkType: hard
 
@@ -303,9 +303,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.23.7":
-  version: 7.23.7
-  resolution: "@babel/traverse@npm:7.23.7"
+"@babel/template@npm:^7.23.9":
+  version: 7.23.9
+  resolution: "@babel/template@npm:7.23.9"
+  dependencies:
+    "@babel/code-frame": ^7.23.5
+    "@babel/parser": ^7.23.9
+    "@babel/types": ^7.23.9
+  checksum: 6e67414c0f7125d7ecaf20c11fab88085fa98a96c3ef10da0a61e962e04fdf3a18a496a66047005ddd1bb682a7cc7842d556d1db2f3f3f6ccfca97d5e445d342
+  languageName: node
+  linkType: hard
+
+"@babel/traverse@npm:^7.23.9":
+  version: 7.23.9
+  resolution: "@babel/traverse@npm:7.23.9"
   dependencies:
     "@babel/code-frame": ^7.23.5
     "@babel/generator": ^7.23.6
@@ -313,11 +324,11 @@ __metadata:
     "@babel/helper-function-name": ^7.23.0
     "@babel/helper-hoist-variables": ^7.22.5
     "@babel/helper-split-export-declaration": ^7.22.6
-    "@babel/parser": ^7.23.6
-    "@babel/types": ^7.23.6
+    "@babel/parser": ^7.23.9
+    "@babel/types": ^7.23.9
     debug: ^4.3.1
     globals: ^11.1.0
-  checksum: d4a7afb922361f710efc97b1e25ec343fab8b2a4ddc81ca84f9a153f22d4482112cba8f263774be8d297918b6c4767c7a98988ab4e53ac73686c986711dd002e
+  checksum: a932f7aa850e158c00c97aad22f639d48c72805c687290f6a73e30c5c4957c07f5d28310c9bf59648e2980fe6c9d16adeb2ff92a9ca0f97fa75739c1328fc6c3
   languageName: node
   linkType: hard
 
@@ -351,6 +362,17 @@ __metadata:
     "@babel/helper-validator-identifier": ^7.22.20
     to-fast-properties: ^2.0.0
   checksum: 68187dbec0d637f79bc96263ac95ec8b06d424396678e7e225492be866414ce28ebc918a75354d4c28659be6efe30020b4f0f6df81cc418a2d30645b690a8de0
+  languageName: node
+  linkType: hard
+
+"@babel/types@npm:^7.23.9":
+  version: 7.23.9
+  resolution: "@babel/types@npm:7.23.9"
+  dependencies:
+    "@babel/helper-string-parser": ^7.23.4
+    "@babel/helper-validator-identifier": ^7.22.20
+    to-fast-properties: ^2.0.0
+  checksum: 0a9b008e9bfc89beb8c185e620fa0f8ed6c771f1e1b2e01e1596870969096fec7793898a1d64a035176abf1dd13e2668ee30bf699f2d92c210a8128f4b151e65
   languageName: node
   linkType: hard
 
@@ -960,9 +982,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-builder-lib@npm:24.11.0":
-  version: 24.11.0
-  resolution: "app-builder-lib@npm:24.11.0"
+"app-builder-lib@npm:24.12.0":
+  version: 24.12.0
+  resolution: "app-builder-lib@npm:24.12.0"
   dependencies:
     "@develar/schema-utils": ~2.6.5
     "@electron/notarize": 2.1.0
@@ -991,7 +1013,7 @@ __metadata:
     semver: ^7.3.8
     tar: ^6.1.12
     temp-file: ^3.4.0
-  checksum: 16f0e9ecfc774cfedd9c58ac9d60fcf01bcc0823f7a093cadd7d79442cc6f7806ba4ee9930298dc5f3cc5bbe823f007dd35cd29e48d6477c4ff50b4b853ee8b2
+  checksum: 625484ef8be21a92cdd9a6317a33546f0769921a1fc0bb72cdaf4d440da303f2aa4ae1362f2657c788736f50326e556124c37403b8e5d63a947772bf359f4e51
   languageName: node
   linkType: hard
 
@@ -1757,11 +1779,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dmg-builder@npm:24.11.0":
-  version: 24.11.0
-  resolution: "dmg-builder@npm:24.11.0"
+"dmg-builder@npm:24.12.0":
+  version: 24.12.0
+  resolution: "dmg-builder@npm:24.12.0"
   dependencies:
-    app-builder-lib: 24.11.0
+    app-builder-lib: 24.12.0
     builder-util: 24.9.4
     builder-util-runtime: 9.2.3
     dmg-license: ^1.0.11
@@ -1771,7 +1793,7 @@ __metadata:
   dependenciesMeta:
     dmg-license:
       optional: true
-  checksum: 5db0601e294e2fd1936b628693b46e53762e7bfbb9a62345f33045a8c28a1d58deb33f024286b7d8f42861424873f9395c6c3230a72c0ad970ed6d762fe4860f
+  checksum: 98f851a116d558320eeec6ca94009720f628d2694926e4cf128689a63ba9b6fa87264b81f7afa511f0571198db0aea672fec840a2828447054d73906d20d2caf
   languageName: node
   linkType: hard
 
@@ -1843,15 +1865,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:^24.11.0":
-  version: 24.11.0
-  resolution: "electron-builder@npm:24.11.0"
+"electron-builder@npm:^24.12.0":
+  version: 24.12.0
+  resolution: "electron-builder@npm:24.12.0"
   dependencies:
-    app-builder-lib: 24.11.0
+    app-builder-lib: 24.12.0
     builder-util: 24.9.4
     builder-util-runtime: 9.2.3
     chalk: ^4.1.2
-    dmg-builder: 24.11.0
+    dmg-builder: 24.12.0
     fs-extra: ^10.1.0
     is-ci: ^3.0.0
     lazy-val: ^1.0.5
@@ -1861,7 +1883,7 @@ __metadata:
   bin:
     electron-builder: cli.js
     install-app-deps: install-app-deps.js
-  checksum: bb02d048f8cc09a48a4985b612a48f52c6d016f6c4caf739bda1d7109efe4527c51b15bc2671993409879212afa9a98879dbf4be43566fd2813012343a55a60c
+  checksum: 362d70095492674842b5039239435d0fce64f89350b9acf61b8e1ae4b3e83b8996d65629991674f35063a32dd028a3babb99afae925084a0b6ca34da87d464d4
   languageName: node
   linkType: hard
 
@@ -1913,16 +1935,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^28.1.4":
-  version: 28.1.4
-  resolution: "electron@npm:28.1.4"
+"electron@npm:^28.2.0":
+  version: 28.2.0
+  resolution: "electron@npm:28.2.0"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^18.11.18
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 824c306350c4f37dd68e824ba53e0a9aff89dc532d9b40c16a88e4afc5236c2cae6159f1a4ba0b43eec4446c047881478c8631c028db24fa0aa4d53b1b233100
+  checksum: fa9884b0c53a8a23b0b05976e3cf3d47a8be9e586545d1ea3e817dac1c050ddbbf6f4eb45f12855eb374388996fee9a080c4e0b84608893fb8080b8c31efddd0
   languageName: node
   linkType: hard
 
@@ -2438,16 +2460,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "fsg-mod-assistant@workspace:."
   dependencies:
-    "@babel/core": ^7.23.7
-    "@babel/eslint-parser": ^7.23.3
+    "@babel/core": ^7.23.9
+    "@babel/eslint-parser": ^7.23.9
     adm-zip: ^0.5.10
     ansi-colors: ^4.1.3
     archiver: ^6.0.1
     clean-css: ^5.3.3
     deepl-node: ^1.11.0
     discord-rpc: ^4.0.1
-    electron: ^28.1.4
-    electron-builder: ^24.11.0
+    electron: ^28.2.0
+    electron-builder: ^24.12.0
     electron-store: ^8.1.0
     electron-updater: ^6.1.8
     eslint: ^8.56.0
