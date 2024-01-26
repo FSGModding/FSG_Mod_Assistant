@@ -235,7 +235,6 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 		fsgUtil.byId('loadButtons').classList.add('d-none')
 		fsgUtil.byId('pickCollect').classList.remove('d-none')
 		fsgUtil.byId('pickCollectSelect').innerHTML = selectHTML.join('')
-		// TODO: build select bar, hide load buttons
 	} else {
 		fsgUtil.byId('loadButtons').classList.remove('d-none')
 		fsgUtil.byId('pickCollect').classList.add('d-none')
