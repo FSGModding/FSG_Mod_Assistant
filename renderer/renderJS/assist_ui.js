@@ -139,7 +139,6 @@ window.mods.receive('fromMain_gameUpdate', (status) => {
 let collectOrder = {}
 
 window.mods.receive('fromMain_modList', (modCollect) => {
-	console.log(modCollect)
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 	gameRunAlert       = modCollect.opts.l10n.runMessage
