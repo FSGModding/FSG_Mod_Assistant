@@ -403,7 +403,6 @@ ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
 
 
 /** Folder Window Operation */
-// TODO: break this out?
 ipcMain.on('toMain_addFolder', () => {
 	dialog.showOpenDialog(win.win.main, {
 		properties  : ['openDirectory'],
