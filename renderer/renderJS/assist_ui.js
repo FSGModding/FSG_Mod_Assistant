@@ -136,11 +136,13 @@ window.mods.receive('fromMain_gameUpdate', (status) => {
 	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
 })
 
-let collectOrder = {}
+let collectOrder    = {}
+let lastPreferences = null
 
 window.mods.receive('fromMain_modList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
+	lastPreferences    = modCollect.appSettings
 	gameRunAlert       = modCollect.opts.l10n.runMessage
 	collectOrder  = { map : {}, numeric : {}, max : 0 }
 
@@ -438,7 +440,6 @@ const makeModRow = (id, thisMod, badges, modId, currentGameVersion, hasExtSite) 
 	]
 }
 
-
 function makeVersionRow(version, options, modCollect) {
 	const thisVersionEnabled = version === 22 ? true : options[`game_enabled_${version}`]
 	const counts = { collect : 0, mods : 0 }
@@ -578,6 +579,73 @@ function clientOpenGame_FIX() {
 window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })
 window.addEventListener('shown.bs.collapse',  () => { select_lib.click_none() })
 
+
+function updatePreferences() {
+	// TODO finish this.
+	for ( const name in lastPreferences ) {
+		const formControl = fsgUtil.byId(`pref_${name}`)
+		if ( formControl !== null ) {
+			if ( formControl.getAttribute('type') === 'checkbox' ) {
+				formControl.checked = lastPreferences[name]
+				fsgUtil.clsOrGate(`pref_icon_${name}`, lastPreferences[name], 'bi-check2-circle', 'bi-x-circle')
+				fsgUtil.clsOrGate(`pref_label_${name}`, lastPreferences[name], 'btn-outline-success', 'btn-outline-danger')
+			} else {
+				formControl.value = lastPreferences[name]
+			}
+		}
+	}
+}
+
+// TODO: build pref page
+function buildPreferences() {
+	//bi-check2-circle
+	//bi-x-circle
+
+	const prefMap = [
+		{ id : 'changelog', type : 'button', click : 'window.mods.showChangelog()' },
+		// font size,
+		{ id : 'multi_version', type : 'checkButton' },
+
+	]
+
+	const prefHTML = []
+	for ( const thisPref of prefMap ) {
+		switch (thisPref.type) {
+			case 'button' :
+				prefHTML.push(buildPreferences_button(thisPref.id, thisPref.click))
+				break
+			case 'checkButton' :
+				prefHTML.push(buildPreferences_checkButton(thisPref.id))
+				break
+			default :
+				break
+		}
+	}
+	fsgUtil.byId('prefcanvas_content').innerHTML = prefHTML.join('')
+}
+
+function buildPreferences_checkButton(id) {
+	return [
+		'<div class="row mx-2 mb-3 pb-2 border-bottom"><div class="col-12">',
+		`<h5><l10n name="user_pref_title_${id}"></l10n></h5>`,
+		`<p class="ps-2"><l10n name="user_pref_blurb_${id}"></l10n></p>`,
+		`<input type="checkbox" class="btn-check" id="pref_${id}" onchange="clientSetPref('${id}')" autocomplete="off">`,
+		`<label class="d-block btn btn-outline-danger btn-sm w-75 mx-auto mb-3" for="pref_${id}" id="pref_label_${id}"><i class="bi-x-circle" id="pref_icon_${id}"></i> <l10n name="user_pref_title_${id}"></l10n></label>`,
+		'</div></div>',
+	].join('')
+}
+
+function buildPreferences_button(id, click) {
+	return [
+		'<div class="row mx-2 mb-3 pb-2 border-bottom"><div class="col-12">',
+		`<h5><l10n name="user_pref_title_${id}"></l10n></h5>`,
+		`<p class="ps-2"><l10n name="user_pref_blurb_${id}"></l10n></p>`,
+		`<div class="d-block btn btn-primary btn-sm w-75 mx-auto mb-3" onclick="${click}"><l10n name="user_pref_button_${id}"></l10n></div>`,
+		'</div></div>',
+	].join('')
+}
+
+
 const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
 
 async function spinLED()      { operateLED('spin') }
@@ -691,6 +759,11 @@ window.addEventListener('DOMContentLoaded', () => {
 	modInfoDialog.hide()
 	loadOverlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
 	const dragTarget = fsgUtil.byId('drag_target')
+
+	buildPreferences()
+	fsgUtil.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
+		updatePreferences()
+	})
 
 	dragTarget.addEventListener('dragenter', clientDragEnter )
 	dragTarget.addEventListener('dragleave', clientDragLeave )

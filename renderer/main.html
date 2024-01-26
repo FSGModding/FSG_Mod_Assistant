@@ -131,6 +131,7 @@
 				</div>
 
 				<div class="mx-0 p-0 rounded-end-0 btn-group-win_ui d-flex">
+					
 					<div class="bg-body px-2 text-danger d-inline-flex" style="--bs-text-opacity: 0.7;" id="gameRunningBubble"><i class="align-self-center bi bi-circle-fill"></i></div>
 					<button class="btn-info btn btn-win_ui rounded-0 text-white border-0" style="-webkit-app-region: no-drag; border-bottom-left-radius: var(--bs-border-radius-sm)!important;" onclick="clientOpenFarmSim()"><l10n name="game_icon"></l10n><l10n name="launch_game" class="align-middle fw-semibold"></l10n></button>
 					<button id="update-is-ready-button" class="d-none btn-win_ui btn rounded-0 text-info" style="-webkit-app-region: no-drag;" onclick="window.mods.runUpdate()"><l10n name="update_ready"></l10n></button>
@@ -139,7 +140,8 @@
 					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openSaveManage()"><l10n name="savegame_manage"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openGameLog()"><l10n name="button_gamelog"></l10n></button>
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openPreferences()" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+					<!-- <button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openPreferences()" id="open_prefs"><l10n name="preferences_button"></l10n></button> -->
+					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" data-bs-toggle="offcanvas" data-bs-target="#prefcanvas" id="open_prefs"><l10n name="preferences_button"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openHelp()" ><l10n name="help_button"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openMini()" id="mini_button"><l10n name="mini_mode_button"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.sendToTray()"><l10n name="min_tray_button"></l10n></button>
@@ -349,6 +351,14 @@
 		<div class="offcanvas-body">
 			<l10n name="offcanvas_blurb"></l10n>
 			<div id="farm_sim_versions" class="mt-3"></div>
+		</div>
+	</div>
+
+	<div class="offcanvas offcanvas-end" tabindex="-1" id="prefcanvas" style="-webkit-app-region: no-drag;" aria-labelledby="offcanvasLabel">
+		<div class="offcanvas-header">
+			<h5 class="offcanvas-title" id="offcanvasLabel"><l10n name="user_pref_title_main"></l10n></h5>
+		</div>
+		<div class="offcanvas-body" id="prefcanvas_content">
 		</div>
 	</div>
 
