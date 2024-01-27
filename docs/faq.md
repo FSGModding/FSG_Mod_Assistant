@@ -32,6 +32,8 @@ To fix this, the easy way:
 4. __stop__ Farming Simulator
 5. __start__ Mod Assistant and everything should be fine again!
 
+---
+
 ### What should I do if something doesn't work?
 
 Please, report it to us!
