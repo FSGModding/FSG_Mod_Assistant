@@ -146,6 +146,7 @@ const fsgUtil = {
 	},
 	query      : ( query ) => document.querySelectorAll( query ),
 	queryA     : ( query ) => [...document.querySelectorAll( query )],
+	queryF     : ( query ) => document.querySelector(query),
 
 	getIcon    : ( type, cls ) => `<span class="text-${cls}">${fsgUtil.getIconSVG(type)}</span>`,
 	getIconCLR : ( currentlyActive = false, colorIndex = 0 ) => {

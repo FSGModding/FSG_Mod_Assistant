@@ -1117,7 +1117,6 @@ const toggleMiniWindow = () => {
 	}
 }
 /** Preferences window operation */
-ipcMain.on('toMain_openPrefs',  () => { win.createNamedWindow('prefs') })
 ipcMain.on('toMain_getPref',    (event, name) => { event.returnValue = mcStore.get(name) })
 ipcMain.on('toMain_setModInfo', (_, mod, site) => {
 	modSite.set(mod, site)
@@ -1167,7 +1166,7 @@ ipcMain.on('toMain_clearCacheFile', () => {
 })
 ipcMain.on('toMain_clearDetailCacheFile', () => {
 	mdCache.clear()
-	win.sendToValidWindow('prefs', 'fromMain_l10n_refresh', myTranslator.currentLocale)
+	win.sendToValidWindow('main', 'fromMain_l10n_refresh', myTranslator.currentLocale)
 })
 ipcMain.on('toMain_cleanCacheFile', () => {
 	const md5Set     = new Set(newMaCache.keys)
@@ -1183,7 +1182,7 @@ ipcMain.on('toMain_cleanCacheFile', () => {
 	newMaCache.saveFile()
 
 	setTimeout(() => {
-		win.sendToValidWindow('prefs', 'fromMain_l10n_refresh', myTranslator.currentLocale)
+		win.sendToValidWindow('main', 'fromMain_l10n_refresh', myTranslator.currentLocale)
 	}, 1000)
 })
 ipcMain.on('toMain_setPrefFile', (event, version) => {
@@ -1771,6 +1770,7 @@ function refreshClientModList(closeLoader = true) {
 		{
 			activeCollection       : gameSetOverride.index,
 			currentLocale          : myTranslator.deferCurrentLocale(),
+			devControls            : mainProcessFlags.devControls,
 			foldersDirty           : mainProcessFlags.foldersDirty,
 			foldersEdit            : mainProcessFlags.foldersEdit,
 			gameRunning            : mainProcessFlags.gameRunning,

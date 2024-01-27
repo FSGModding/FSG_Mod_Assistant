@@ -138,11 +138,19 @@ window.mods.receive('fromMain_gameUpdate', (status) => {
 
 let collectOrder    = {}
 let lastPreferences = null
+let lastDevSettings = null
+
+window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
+	lastPreferences = allSettings
+	lastDevSettings = devControls
+	updatePreferences()
+})
 
 window.mods.receive('fromMain_modList', (modCollect) => {
 	const multiVersion = modCollect.appSettings.multi_version
 	const curVersion   = modCollect.appSettings.game_version
 	lastPreferences    = modCollect.appSettings
+	lastDevSettings    = modCollect.opts.devControls
 	gameRunAlert       = modCollect.opts.l10n.runMessage
 	collectOrder  = { map : {}, numeric : {}, max : 0 }
 
@@ -389,6 +397,7 @@ const makeModCollection = (isOnline, id, name, modsRows, website, dlEnabled, tag
 	class_hideWebsite           : website !== null ? '' : 'd-none',
 	class_isHolding             : isHolding ? 'is-holding-pen' : '',
 	class_mapIcon               : singleMapIcon === null ? 'd-none' : '',
+	class_showFolderEdit        : !foldersEdit ? '' : 'd-none',
 	class_status                : !isOnline ? 'text-decoration-line-through' : '',
 	dateAdd                     : getPrintDate(dateAdd),
 	dateUsed                    : getPrintDate(dateUsed),
@@ -579,71 +588,71 @@ function clientOpenGame_FIX() {
 window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })
 window.addEventListener('shown.bs.collapse',  () => { select_lib.click_none() })
 
+function updateCheck(name, value) {
+	const formControl  = fsgUtil.byId(`uPref_${name}`)
+	const labelControl = fsgUtil.queryF(`label[for='uPref_${name}']`)
 
+	formControl.checked = value
+
+	if ( labelControl !== null ) {
+		labelControl.innerHTML = `<i class="bi-${value ? 'check' : 'x'}-circle"></i>`
+		labelControl.classList.remove('btn-success', 'btn-secondary', 'btn-outline-danger')
+		if ( value ) {
+			labelControl.classList.add('btn-success')
+		} else {
+			labelControl.classList.add('btn-outline-danger')
+		}
+	}
+}
 function updatePreferences() {
 	// TODO finish this.
+	updateCheck('dev_mode', lastDevSettings[22])
+	updateCheck('dev_mode_19', lastDevSettings[19])
+	updateCheck('dev_mode_17', lastDevSettings[17])
+	updateCheck('dev_mode_15', lastDevSettings[15])
+	updateCheck('dev_mode_13', lastDevSettings[13])
+
 	for ( const name in lastPreferences ) {
-		const formControl = fsgUtil.byId(`pref_${name}`)
+		const formControl = fsgUtil.byId(`uPref_${name}`)
 		if ( formControl !== null ) {
 			if ( formControl.getAttribute('type') === 'checkbox' ) {
-				formControl.checked = lastPreferences[name]
-				fsgUtil.clsOrGate(`pref_icon_${name}`, lastPreferences[name], 'bi-check2-circle', 'bi-x-circle')
-				fsgUtil.clsOrGate(`pref_label_${name}`, lastPreferences[name], 'btn-outline-success', 'btn-outline-danger')
+				updateCheck(name, lastPreferences[name])
 			} else {
 				formControl.value = lastPreferences[name]
 			}
 		}
 	}
+
+	fsgUtil.byId('font_size_value').innerHTML = `${Math.floor((lastPreferences.font_size / 14) * 100)}%`
+
+	fsgUtil.classPerTest('.multi-version-pref', lastPreferences.multi_version)
+
+	fsgUtil.classPerTest('.game_enabled_19', lastPreferences.game_enabled_19)
+	fsgUtil.classPerTest('.game_enabled_17', lastPreferences.game_enabled_17)
+	fsgUtil.classPerTest('.game_enabled_15', lastPreferences.game_enabled_15)
+	fsgUtil.classPerTest('.game_enabled_13', lastPreferences.game_enabled_13)
+
+	fsgUtil.classPerTest('.game_disabled_19', !lastPreferences.game_enabled_19)
+	fsgUtil.classPerTest('.game_disabled_17', !lastPreferences.game_enabled_17)
+	fsgUtil.classPerTest('.game_disabled_15', !lastPreferences.game_enabled_15)
+	fsgUtil.classPerTest('.game_disabled_13', !lastPreferences.game_enabled_13)
+
+	processL10N()
 }
 
-// TODO: build pref page
-function buildPreferences() {
-	//bi-check2-circle
-	//bi-x-circle
+function clientSetPref(id) {
+	const formControl = fsgUtil.byId(`uPref_${id}`)
 
-	const prefMap = [
-		{ id : 'changelog', type : 'button', click : 'window.mods.showChangelog()' },
-		// font size,
-		{ id : 'multi_version', type : 'checkButton' },
-
-	]
-
-	const prefHTML = []
-	for ( const thisPref of prefMap ) {
-		switch (thisPref.type) {
-			case 'button' :
-				prefHTML.push(buildPreferences_button(thisPref.id, thisPref.click))
-				break
-			case 'checkButton' :
-				prefHTML.push(buildPreferences_checkButton(thisPref.id))
-				break
-			default :
-				break
-		}
+	if ( formControl.getAttribute('type') === 'checkbox' ) {
+		window.mods.setPref(id, formControl.checked)
+	} else {
+		window.mods.setPref(id, formControl.value)
 	}
-	fsgUtil.byId('prefcanvas_content').innerHTML = prefHTML.join('')
 }
 
-function buildPreferences_checkButton(id) {
-	return [
-		'<div class="row mx-2 mb-3 pb-2 border-bottom"><div class="col-12">',
-		`<h5><l10n name="user_pref_title_${id}"></l10n></h5>`,
-		`<p class="ps-2"><l10n name="user_pref_blurb_${id}"></l10n></p>`,
-		`<input type="checkbox" class="btn-check" id="pref_${id}" onchange="clientSetPref('${id}')" autocomplete="off">`,
-		`<label class="d-block btn btn-outline-danger btn-sm w-75 mx-auto mb-3" for="pref_${id}" id="pref_label_${id}"><i class="bi-x-circle" id="pref_icon_${id}"></i> <l10n name="user_pref_title_${id}"></l10n></label>`,
-		'</div></div>',
-	].join('')
-}
 
-function buildPreferences_button(id, click) {
-	return [
-		'<div class="row mx-2 mb-3 pb-2 border-bottom"><div class="col-12">',
-		`<h5><l10n name="user_pref_title_${id}"></l10n></h5>`,
-		`<p class="ps-2"><l10n name="user_pref_blurb_${id}"></l10n></p>`,
-		`<div class="d-block btn btn-primary btn-sm w-75 mx-auto mb-3" onclick="${click}"><l10n name="user_pref_button_${id}"></l10n></div>`,
-		'</div></div>',
-	].join('')
-}
+function clientChangeTheme()    { window.l10n.themeList_change(fsgUtil.byId('theme_select').value) }
+function clientChangeL10N()     { window.l10n.langList_change(fsgUtil.byId('language_select').value) }
 
 
 const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
@@ -760,7 +769,12 @@ window.addEventListener('DOMContentLoaded', () => {
 	loadOverlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
 	const dragTarget = fsgUtil.byId('drag_target')
 
-	buildPreferences()
+	window.l10n.langList_send()
+	window.l10n.themeList_send()
+
+	fsgUtil.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
+		fsgUtil.clearTooltips()
+	})
 	fsgUtil.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
 		updatePreferences()
 	})

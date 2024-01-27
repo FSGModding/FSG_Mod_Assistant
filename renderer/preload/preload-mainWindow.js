@@ -21,6 +21,11 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'l10n', {
+		langList_change  : ( lang )  => { ipcRenderer.send('toMain_langList_change', lang) },
+		langList_send    : ()        => { ipcRenderer.send('toMain_langList_send') },
+		themeList_change : ( theme ) => { ipcRenderer.send('toMain_themeList_change', theme) },
+		themeList_send   : ()        => { ipcRenderer.send('toMain_themeList_send') },
+
 		getLocale        : () => { return ipcRenderer.sendSync('toMain_getText_locale') },
 		getText_send     : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
 		getText_sync     : ( items ) => { return ipcRenderer.sendSync('toMain_getText_sync', items) },
@@ -30,6 +35,8 @@ contextBridge.exposeInMainWorld(
 				'fromMain_getText_return',
 				'fromMain_getText_return_base',
 				'fromMain_getText_return_title',
+				'fromMain_langList_return',
+				'fromMain_themeList_return',
 				'fromMain_l10n_refresh'
 			])
 		
@@ -113,6 +120,15 @@ contextBridge.exposeInMainWorld(
 		dropFiles  : (files)  => { ipcRenderer.send('toMain_dropFiles', files) },
 		dropFolder : (folder) => { ipcRenderer.send('toMain_dropFolder', folder) },
 
+		cleanCache    : () => { ipcRenderer.send('toMain_cleanCacheFile') },
+		clearCache    : () => { ipcRenderer.send('toMain_clearCacheFile') },
+		clearDetailCache : () => { ipcRenderer.send('toMain_clearDetailCacheFile') },
+		resetWindows  : () => { ipcRenderer.send('toMain_resetWindows') },
+		setGamePath   : (ver = 22) => { ipcRenderer.send('toMain_setGamePath', ver) },
+		setPref       : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
+		setPrefFile   : (ver = 22) => { ipcRenderer.send('toMain_setPrefFile', ver) },
+		showChangelog : () => { ipcRenderer.send('toMain_showChangelog') },
+
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_debugLogNoDanger',
@@ -126,6 +142,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_selectNoneOpen',
 				'fromMain_selectOnly',
 				'fromMain_selectOnlyFilter',
+				'fromMain_allSettings',
 			])
 		
 			if ( validChannels.has( channel ) ) {

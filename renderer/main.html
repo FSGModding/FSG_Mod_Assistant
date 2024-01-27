@@ -354,11 +354,425 @@
 		</div>
 	</div>
 
-	<div class="offcanvas offcanvas-end" tabindex="-1" id="prefcanvas" style="-webkit-app-region: no-drag;" aria-labelledby="offcanvasLabel">
-		<div class="offcanvas-header">
-			<h5 class="offcanvas-title" id="offcanvasLabel"><l10n name="user_pref_title_main"></l10n></h5>
+	<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="prefcanvas" style="-webkit-app-region: no-drag;" aria-labelledby="offcanvasLabel">
+		<div class="offcanvas-header justify-content-start">
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			<h5 class="offcanvas-title ps-3" id="offcanvasLabel"><l10n name="user_pref_title_main"></l10n></h5>
 		</div>
 		<div class="offcanvas-body" id="prefcanvas_content">
+			<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="display-pref-tab" data-bs-toggle="tab" data-bs-target="#display-pref-pane" type="button" role="tab"><l10n name="user_pref_tab_display"></l10n></button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="game-pref-tab" data-bs-toggle="tab" data-bs-target="#game-pref-pane" type="button" role="tab"><l10n name="user_pref_tab_game"></l10n></button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="advanced-pref-tab" data-bs-toggle="tab" data-bs-target="#advanced-pref-pane" type="button" role="tab"><l10n name="user_pref_tab_advanced"></l10n></button>
+				</li>
+			</ul>
+			<div class="tab-content" id="myTabContent">
+
+				<div class="tab-pane fade show active pt-4" id="display-pref-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+					<div class="row gx-3 gy-4">
+
+						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_changelog"></l10n></h5></div>
+							<div class="row"><!-- changelog -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_changelog"></l10n></div>
+								<div class="col-3">
+									<div class="btn btn-primary btn-sm w-100" onclick="window.mods.showChangelog()"><i class="bi-check2-circle"></i></div>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_led"></l10n></h5></div>
+							<div class="row"><!-- giants led -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_led"></l10n></div>
+								<div class="col-3">
+									<input type="checkbox" onchange="clientSetPref('led_active')" class="btn-check" id="uPref_led_active" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_led_active"><i class="bi-question-circle"></i></label>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_show_tooltips"></l10n></h5></div>
+							<div class="row"><!-- tooltips -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_show_tooltips"></l10n></div>
+								<div class="col-3">
+									<input type="checkbox" onchange="clientSetPref('show_tooltips')" class="btn-check" id="uPref_show_tooltips" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_show_tooltips"><i class="bi-question-circle"></i></label>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_font_size"></l10n></h5></div>
+							<div class="row"><!-- font size -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_font_size"></l10n></div>
+								<div class="col-3" id="font_size_value">XX</div>
+								
+								<div class="col-10 offset-1">
+									<input onchange="clientSetPref('font_size')" type="range" class="form-range" min="9.8" max="21" step="0.1" id="uPref_font_size">
+								</div>
+								
+								<div class="col-10 offset-1">
+									<div class="d-block btn btn-primary btn-sm w-100 mt-2 mx-auto mb-3" onclick="window.mods.setPref('font_size', 14)"><l10n name="user_pref_font_size_default"></l10n></div>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_theme_color"></l10n></h5></div>
+							<div class="row"><!-- color theme -->
+								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_theme_color"></l10n></div>
+								<div class="col-10 offset-1 mt-2">
+									<select onchange="clientChangeTheme()" class="form-select" name="theme_select" id="theme_select"></select>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_lang"></l10n></h5></div>
+							<div class="row"><!-- language -->
+								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_lang"></l10n></div>
+								<div class="col-10 offset-1 my-2">
+									<select onchange="clientChangeL10N()" class="form-select" name="language_select" id="language_select"></select>
+								</div>
+								<div class="col-9 pt-2 border-top ps-3 small fst-italic"><l10n name="user_pref_blurb2_lang"></l10n></div>
+								<div class="col-3 pt-2 border-top">
+									<input type="checkbox" onchange="clientSetPref('lock_lang')" class="btn-check" id="uPref_lock_lang" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_lock_lang"><i class="bi-question-circle"></i></label>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_reset_window"></l10n></h5></div>
+							<div class="row"><!-- reset windows -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_reset_window"></l10n></div>
+								<div class="col-3">
+									<div class="btn btn-primary btn-sm w-100" onclick="window.mods.resetWindows()"><i class="bi-check2-circle"></i></div>
+								</div>
+							</div>
+						</div></div>
+
+					</div>
+				</div>
+
+				<div class="tab-pane fade pt-4" id="game-pref-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+					<div class="row gx-3 gy-4">
+
+						<div class="col-12"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs22"></l10n></h5></div>
+							<div class="row"><!-- version 22 -->
+								<div class="col-2 text-center"><i class="fsico-ver-22" style="font-size: 75px;"></i></div>
+								<div class="col-10">
+
+									<div>
+										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+										<div class="input-group ">
+											<input type="text" class="form-control" id="uPref_game_settings" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(22)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2">
+										<label for="uPref_game_path" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
+										<div class="input-group">
+											<input type="text" class="form-control" id="uPref_game_path" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(22)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2">
+										<label for="uPref_game_args" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<input type="text" class="form-control" id="uPref_game_args" onchange="clientSetPref('game_args')" style="font-size: 70%">
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 row">
+										<div class="col-9"><label for="uPref_dev_mode2" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-3">
+											<input type="checkbox" onchange="clientSetPref('dev_mode')" class="btn-check" id="uPref_dev_mode" autocomplete="off">
+											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode"><i class="bi-question-circle"></i></label>
+										</div>
+										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
+									</div>
+
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-12"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_multi_version"></l10n></h5></div>
+							<div class="row"><!-- multi version -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_multi_version"></l10n></div>
+								<div class="col-3 pt-2">
+									<input type="checkbox" onchange="clientSetPref('multi_version')" class="btn-check" id="uPref_multi_version" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_multi_version"><i class="bi-question-circle"></i></label>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs19"></l10n></h5></div>
+							<div class="row"><!-- version 19 -->
+								<div class="col-2 text-center">
+									<i class="fsico-ver-19" style="font-size: 75px;"></i>
+
+									<input type="checkbox" onchange="clientSetPref('game_enabled_19')" class="btn-check" id="uPref_game_enabled_19" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_game_enabled_19"><i class="bi-question-circle"></i></label>
+								</div>
+								<div class="col-10">
+									<div class="form-text fst-italic text-end game_disabled_19"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
+
+									<div class="game_enabled_19">
+										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+										<div class="input-group ">
+											<input type="text" class="form-control" id="uPref_game_settings_19" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(19)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 game_enabled_19">
+										<label for="uPref_game_path_19" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
+										<div class="input-group">
+											<input type="text" class="form-control" id="uPref_game_path_19" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(19)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 game_enabled_19">
+										<label for="uPref_game_args_19" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<input type="text" class="form-control" id="uPref_game_args_19" onchange="clientSetPref('game_args_19')" style="font-size: 70%">
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 row game_enabled_19">
+										<div class="col-9"><label for="uPref_dev_mode2_19" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-3">
+											<input type="checkbox" onchange="clientSetPref('dev_mode_19')" class="btn-check" id="uPref_dev_mode_19" autocomplete="off">
+											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode_19"><i class="bi-question-circle"></i></label>
+										</div>
+										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
+									</div>
+
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs17"></l10n></h5></div>
+							<div class="row"><!-- version 17 -->
+								<div class="col-2 text-center">
+									<i class="fsico-ver-17" style="font-size: 75px;"></i>
+
+									<input type="checkbox" onchange="clientSetPref('game_enabled_17')" class="btn-check" id="uPref_game_enabled_17" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_game_enabled_17"><i class="bi-question-circle"></i></label>
+								</div>
+								<div class="col-10">
+									<div class="form-text fst-italic text-end game_disabled_17"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
+
+									<div class="game_enabled_17">
+										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+										<div class="input-group ">
+											<input type="text" class="form-control" id="uPref_game_settings_17" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(17)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 game_enabled_17">
+										<label for="uPref_game_path_17" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
+										<div class="input-group">
+											<input type="text" class="form-control" id="uPref_game_path_17" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(17)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 game_enabled_17">
+										<label for="uPref_game_args_17" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<input type="text" class="form-control" id="uPref_game_args_17" onchange="clientSetPref('game_args_17')" style="font-size: 70%">
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 row game_enabled_17">
+										<div class="col-9"><label for="uPref_dev_mode2_17" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-3">
+											<input type="checkbox" onchange="clientSetPref('dev_mode_17')" class="btn-check" id="uPref_dev_mode_17" autocomplete="off">
+											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode_17"><i class="bi-question-circle"></i></label>
+										</div>
+										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
+									</div>
+
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs15"></l10n></h5></div>
+							<div class="row"><!-- version 15 -->
+								<div class="col-2 text-center">
+									<i class="fsico-ver-15" style="font-size: 75px;"></i>
+
+									<input type="checkbox" onchange="clientSetPref('game_enabled_15')" class="btn-check" id="uPref_game_enabled_15" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_game_enabled_15"><i class="bi-question-circle"></i></label>
+								</div>
+								<div class="col-10">
+									<div class="form-text fst-italic text-end game_disabled_15"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
+
+									<div class="game_enabled_15">
+										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+										<div class="input-group ">
+											<input type="text" class="form-control" id="uPref_game_settings_15" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(15)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 game_enabled_15">
+										<label for="uPref_game_path_15" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
+										<div class="input-group">
+											<input type="text" class="form-control" id="uPref_game_path_15" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(15)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 game_enabled_15">
+										<label for="uPref_game_args_15" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<input type="text" class="form-control" id="uPref_game_args_15" onchange="clientSetPref('game_args_15')" style="font-size: 70%">
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 row game_enabled_15">
+										<div class="col-9"><label for="uPref_dev_mode2_15" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-3">
+											<input type="checkbox" onchange="clientSetPref('dev_mode_15')" class="btn-check" id="uPref_dev_mode_15" autocomplete="off">
+											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode_15"><i class="bi-question-circle"></i></label>
+										</div>
+										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
+									</div>
+
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs13"></l10n></h5></div>
+							<div class="row"><!-- version 13 -->
+								<div class="col-2 text-center">
+									<i class="fsico-ver-13" style="font-size: 75px;"></i>
+
+									<input type="checkbox" onchange="clientSetPref('game_enabled_13')" class="btn-check" id="uPref_game_enabled_13" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_game_enabled_13"><i class="bi-question-circle"></i></label>
+								</div>
+								<div class="col-10">
+									<div class="form-text fst-italic text-end game_disabled_13"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
+
+									<div class="game_enabled_13">
+										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+										<div class="input-group ">
+											<input type="text" class="form-control" id="uPref_game_settings_13" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(13)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 game_enabled_13">
+										<label for="uPref_game_path_13" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
+										<div class="input-group">
+											<input type="text" class="form-control" id="uPref_game_path_13" readonly style="font-size: 70%">
+											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(13)"><i class="bi bi-folder"></i></button>
+										</div>
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 game_enabled_13">
+										<label for="uPref_game_args_13" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<input type="text" class="form-control" id="uPref_game_args_13" onchange="clientSetPref('game_args_13')" style="font-size: 70%">
+										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
+									</div>
+
+									<div class="border-top mt-2 pt-2 row game_enabled_13">
+										<div class="col-9"><label for="uPref_dev_mode2_13" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-3">
+											<input type="checkbox" onchange="clientSetPref('dev_mode_13')" class="btn-check" id="uPref_dev_mode_13" autocomplete="off">
+											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode_13"><i class="bi-question-circle"></i></label>
+										</div>
+										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
+									</div>
+								</div>
+							</div>
+						</div></div>
+					</div>
+				</div>
+
+				<div class="tab-pane fade pt-4" id="advanced-pref-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+					<div class="row gx-3 gy-4">
+
+						<div class="col-12"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_use_one_drive"></l10n></h5></div>
+							<div class="row"><!-- one drive -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_use_one_drive"></l10n></div>
+								<div class="col-3 pt-2">
+									<input type="checkbox" onchange="clientSetPref('use_one_drive')" class="btn-check" id="uPref_use_one_drive" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_use_one_drive"><i class="bi-question-circle"></i></label>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-12"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_use_discord"></l10n></h5></div>
+							<div class="row"><!-- discord -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_use_discord"></l10n></div>
+								<div class="col-3 pt-2">
+									<input type="checkbox" onchange="clientSetPref('use_discord')" class="btn-check" id="uPref_use_discord" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_use_discord"><i class="bi-question-circle"></i></label>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<label for="uPref_use_discord_c2" class="col-sm-6 fw-bold col-form-label"><l10n name="user_pref_setting_discord_2"></l10n></label>
+								<div class="col-sm-6 mt-1">
+									<input type="text" class="form-control" id="uPref_use_discord_c2" onchange="clientSetPref('use_discord_c2')" style="font-size: 70%">
+								</div>
+							</div>
+							<div class="row mt-2">
+								<label for="uPref_use_discord_c1" class="col-sm-6 fw-bold col-form-label"><l10n name="user_pref_setting_discord_1"></l10n></label>
+								<div class="col-sm-6 mt-1">
+									<input type="text" class="form-control" id="uPref_use_discord_c1" onchange="clientSetPref('use_discord_c1')" style="font-size: 70%">
+								</div>
+							</div>
+						</div></div>
+
+
+						<div class="col-12"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_clean_cache"></l10n></h5></div>
+							<div class="row"><!-- cache -->
+								<div class="col-12 ps-3 small fst-italic"><l10n name="user_pref_blurb_clean_cache"></l10n></div>
+								<div class="col-9 ps-3 small pt-2"><l10n name="clean_cache_size"></l10n></div>
+								<div class="col-9 ps-3 small pt-2"><l10n name="clean_detail_cache_size"></l10n></div>
+							</div>
+							<div class="d-block btn btn-success btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.cleanCache()"><l10n name="user_pref_button_clean_cache"></l10n></div>
+							<div class="row"><!-- cache -->
+								<div class="col-12 ps-3 small fst-italic"><l10n name="user_pref_blurb_clear_cache"></l10n></div>
+							</div>
+							<div class="d-block btn btn-danger btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.clearCache()"><l10n name="user_pref_button_clear_cache"></l10n></div>
+							<div class="d-block btn btn-warning btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.clearDetailCache()"><l10n name="user_pref_button_clear_detail_cache"></l10n></div>
+						</div></div>
+
+					</div>
+				</div>
+
+			</div>
 		</div>
 	</div>
 
@@ -437,18 +851,18 @@
 			</div>
 		</td>
 		<td class="align-middle text-end" style="line-height: 2rem;">
-			<button class="{{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="clientOpenMod('true', '{{mapClick}}')">
+			<button class="{{class_showFolderEdit}} {{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="clientOpenMod('true', '{{mapClick}}')">
 				<img class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}"  />
 			</button>
 			
-			<button class="{{class_hideRemovable}} btn btn-outline-secondary rounded-4 btn-sm me-2" onclick="return"><l10n name="removable_button"></l10n></button>
-			<button class="{{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button"></l10n></button>
-			<button class="{{class_hideGameAdminPassword}} btn btn-outline-success btn-sm me-2" onclick="window.mods.popClipboard('{{game_admin_password}}')"><l10n name="game_admin_pass_button"></l10n></button>
-			<button class="{{class_hidePassword}} btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('{{password}}')"><l10n name="admin_pass_button"></l10n></button>
-			<a target="_blank" class="{{class_hideWebsite}} btn btn-outline-info btn-sm me-2" href="{{website}}" rel="noopener noreferrer"><l10n name="admin_button"></l10n></a>
-			<button class="btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('{{id}}')"><l10n name="export_button"></l10n></button>
-			<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('{{id}}')"><l10n name="notes_button"></l10n></button>
-			<button class="btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save"></l10n></button>
+			<button class="{{class_showFolderEdit}} {{class_hideRemovable}} btn btn-outline-secondary rounded-4 btn-sm me-2" onclick="return"><l10n name="removable_button"></l10n></button>
+			<button class="{{class_showFolderEdit}} {{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button"></l10n></button>
+			<button class="{{class_showFolderEdit}} {{class_hideGameAdminPassword}} btn btn-outline-success btn-sm me-2" onclick="window.mods.popClipboard('{{game_admin_password}}')"><l10n name="game_admin_pass_button"></l10n></button>
+			<button class="{{class_showFolderEdit}} {{class_hidePassword}} btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('{{password}}')"><l10n name="admin_pass_button"></l10n></button>
+			<a target="_blank" class="{{class_showFolderEdit}} {{class_hideWebsite}} btn btn-outline-info btn-sm me-2" href="{{website}}" rel="noopener noreferrer"><l10n name="admin_button"></l10n></a>
+			<button class="{{class_showFolderEdit}} btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('{{id}}')"><l10n name="export_button"></l10n></button>
+			<button class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('{{id}}')"><l10n name="notes_button"></l10n></button>
+			<button class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save"></l10n></button>
 			<div class="btn-group btn-group-sm {{class_hideFolderEdit}}">
 				
 				<button onclick="clientMoveItem('{{id}}', true, true)" id="{{id}}_order_up_last" class="btn btn-sm btn-secondary"><l10n name="folder_top_button"></l10n></button>
