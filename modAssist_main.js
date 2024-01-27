@@ -14,6 +14,7 @@ if ( !gotTheLock ) { app.quit() }
 
 const userHome         = app.getPath('home')
 const mainProcessFlags = {
+	// DATA STRUCT - Main process flags (passed)
 	devControls : {
 		13 : false,
 		15 : false,
@@ -22,27 +23,27 @@ const mainProcessFlags = {
 		22 : false,
 	},
 
-	bounceGameLog   : false,
-	dlProgress      : false,
-	dlRequest       : null,
-	firstMin        : true,
-	foldersDirty    : true,
-	foldersEdit     : false,
-	gameRunning     : false,
-	gameSettings    : {},
-	intervalFile    : null,
-	intervalGameRun : null,
-	intervalLoad    : null,
-	intervalModHub  : null,
-	intervalUpdate  : null,
-	lastFolderLoc   : null,
-	modFolders      : new Set(),
-	pathBestGuess   : userHome,
-	pathGameGuess   : '',
-	processRunning  : false,
-	watchGameLog    : null,
-	watchModFolder  : [],
-	
+	bounceGameLog      : false,
+	dlProgress         : false,
+	dlRequest          : null,
+	firstMin           : true,
+	foldersDirty       : true,
+	foldersEdit        : false,
+	gameRunning        : false,
+	gameRunningEnabled : true,
+	gameSettings       : {},
+	intervalFile       : null,
+	intervalGameRun    : null,
+	intervalLoad       : null,
+	intervalModHub     : null,
+	intervalUpdate     : null,
+	lastFolderLoc      : null,
+	modFolders         : new Set(),
+	pathBestGuess      : userHome,
+	pathGameGuess      : '',
+	processRunning     : false,
+	watchGameLog       : null,
+	watchModFolder     : [],
 }
 
 const { autoUpdater } = require('electron-updater')
@@ -1141,6 +1142,10 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 			mcStore.set(name, parseFloat(value))
 			win.fontUpdater()
 			break
+		case 'poll_game':
+			mcStore.set(name, value)
+			mainProcessFlags.gameRunningEnabled =  mcStore.get('game_version', 22) === 22 && value
+			break
 		case 'lock_lang':
 			mcStore.set('force_lang', myTranslator.currentLocale)
 			// falls through
@@ -1738,7 +1743,16 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
 
 async function updateGameRunning() {
-	return require('node:child_process').exec('tasklist /fo csv', (err, stdout) => {
+	if ( !mainProcessFlags.gameRunningEnabled ) {
+		log.log.debug('Polling Game Disabled', 'game-process-poll')
+		win.sendToValidWindow('main', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled, updateReady : modCollect.updateIsReady})
+		win.sendToValidWindow('mini', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled})
+		return
+	}
+
+	log.log.debug('Polling Game', 'game-process-poll')
+
+	return require('node:child_process').exec('tasklist /fi "IMAGENAME eq FarmingSimulator2022Game.exe" /fo csv /nh', (err, stdout) => {
 		if ( err ) {
 			log.log.notice('Polling failed', 'game-process-poll')
 			return
@@ -1748,24 +1762,29 @@ async function updateGameRunning() {
 
 		for ( const psLine of stdout.split('\n') ) {
 			if ( psLine.split(',')?.[0] === '"FarmingSimulator2022Game.exe"' ) {
-				log.log.debug('Game is Running', 'game-process-poll')
+				//log.log.debug('Game is Running', 'game-process-poll')
 				gameIsRunning = true
 			}
 		}
 
 		if ( gameIsRunning && !mainProcessFlags.gameRunning ) {
-			log.log.debug('Game Started since last check', 'game-process-poll')
+			// log.log.debug('Game Started since last check', 'game-process-poll')
 		} else if ( !gameIsRunning && mainProcessFlags.gameRunning ) {
-			log.log.debug('Game Stopped since last check', 'game-process-poll')
+			// log.log.debug('Game Stopped since last check', 'game-process-poll')
 		}
 		mainProcessFlags.gameRunning = gameIsRunning
-		win.sendToValidWindow('main', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, updateReady : modCollect.updateIsReady})
-		win.sendToValidWindow('mini', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning})
+		win.sendToValidWindow('main', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled, updateReady : modCollect.updateIsReady})
+		win.sendToValidWindow('mini', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled})
 	})
 }
 
 function refreshClientModList(closeLoader = true) {
-	updateGameRunning()
+	// DATA STRUCT - send mod list
+	const currentVersion = mcStore.get('game_version', 22)
+	const pollGame       = mcStore.get('poll_game', true)
+	mainProcessFlags.gameRunningEnabled = currentVersion === 22 && pollGame
+	
+	// updateGameRunning()
 	win.sendModList(
 		{
 			activeCollection       : gameSetOverride.index,
@@ -1774,6 +1793,7 @@ function refreshClientModList(closeLoader = true) {
 			foldersDirty           : mainProcessFlags.foldersDirty,
 			foldersEdit            : mainProcessFlags.foldersEdit,
 			gameRunning            : mainProcessFlags.gameRunning,
+			gameRunningEnable      : mainProcessFlags.gameRunningEnable,
 			l10n                   : {
 				disable    : __('override_disabled'),
 				unknown    : __('override_unknown'),

@@ -77,11 +77,6 @@
 		body[data-version="15"] .bdg_no_fs15 { display : none }
 		body[data-version="13"] .bdg_no_fs13 { display : none }
 
-		body[data-version="19"] #gameRunningBubble { display : none !important; }
-		body[data-version="17"] #gameRunningBubble { display : none !important; }
-		body[data-version="15"] #gameRunningBubble { display : none !important; }
-		body[data-version="13"] #gameRunningBubble { display : none !important; }
-
 		body[data-version="19"] #browse-base-game-data { display : none }
 		body[data-version="17"] #browse-base-game-data { display : none }
 		body[data-version="15"] #browse-base-game-data { display : none }
@@ -726,6 +721,17 @@
 								<div class="col-3 pt-2">
 									<input type="checkbox" onchange="clientSetPref('use_one_drive')" class="btn-check" id="uPref_use_one_drive" autocomplete="off">
 									<label class="btn btn-secondary btn-sm w-100" for="uPref_use_one_drive"><i class="bi-question-circle"></i></label>
+								</div>
+							</div>
+						</div></div>
+
+						<div class="col-12"><div class="border rounded-2 p-3 h-100">
+							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_poll_game"></l10n></h5></div>
+							<div class="row"><!-- poll game -->
+								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_poll_game"></l10n></div>
+								<div class="col-3 pt-2">
+									<input type="checkbox" onchange="clientSetPref('poll_game')" class="btn-check" id="uPref_poll_game" autocomplete="off">
+									<label class="btn btn-secondary btn-sm w-100" for="uPref_poll_game"><i class="bi-question-circle"></i></label>
 								</div>
 							</div>
 						</div></div>

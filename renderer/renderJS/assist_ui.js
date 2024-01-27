@@ -132,7 +132,7 @@ let gameIsRunningFlag = false
 
 window.mods.receive('fromMain_gameUpdate', (status) => {
 	gameIsRunningFlag = status.gameRunning
-	toggleGameStatus(status.gameRunning)
+	toggleGameStatus(status.gameRunning, status.gameRunningEnabled)
 	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
 })
 
@@ -268,6 +268,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	fsgUtil.clsOrGate('verButton', verFlag, 'btn-danger', 'btn-success')
 
 	toggleGameStatus(modCollect.opts.gameRunning)
+
 	gameIsRunningFlag = modCollect.opts.gameRunning
 
 	buildDropDownFilters(modCollect.badgeL10n)
@@ -333,7 +334,8 @@ function clientRemoveFolder(collectKey) {
 	window.mods.removeFolder(collectKey)
 }
 
-function toggleGameStatus(status = false) {
+function toggleGameStatus(status = false, show = true) {
+	fsgUtil.clsHideFalse('gameRunningBubble', show)
 	fsgUtil.clsOrGate('gameRunningBubble', status, 'text-success', 'text-danger')
 }
 
