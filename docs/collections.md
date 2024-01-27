@@ -32,15 +32,11 @@ To manage the order of collections or remove them, use the `Edit Folders` button
 
 ![Alt text](img340/collection-manage.png)
 
-The `FS##` Badge denotes which version of Farming Simulator this collection is for - if you are _not_ in multi-version mode, you can safely ignore this notation.  `Added` shows when the collection was added to Mod Assistant (if after version 2.4.0), and `Last Active` shows the last time the collection was marked active in the game
+`Added` shows when the collection was added to Mod Assistant (if after version 2.4.0), and `Last Active` shows the last time the collection was marked active in the game
 
-Use `Forget Collection` to remove the folder from Mod Assistant. This will not remove the files or folder from your hard disk.
+Use <i class="bi bi-trash3"></i> `Trash Can` to remove the folder from Mod Assistant. This will not remove the files or folder from your hard disk.
 
-Use `Open in Explorer` to open the folder in the windows file explorer.
-
-Use `Edit Folder Details` to open the collection details for this collection.  This is particularly useful if you are in multi-version mode and have a collection set to the wrong version
-
-The arrow buttons at the side will allow you to reorder your collections.  From top to bottom they are `Move to top`, `Move Up`, `Move Down`, and `Move to bottom`
+The arrow buttons at the side will allow you to reorder your collections.  From left to right they are `Move to top`, `Move Up`, `Move Down`, and `Move to bottom`
 
 ## Reloading Collections
 

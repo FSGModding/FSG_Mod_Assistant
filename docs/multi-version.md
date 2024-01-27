@@ -12,17 +12,13 @@ To turn on multiple version mode, head to the preferences editor, located on the
 
 Then, set `Multiple Game Version Mode` to on
 
-![prefs](img340/pref-multimode.png)
+![prefs](img340/pref-game-multi.png)
 
 ## Setting Game Launch and gameSettings.xml Paths
 
-For this to work, you will need to turn on the versions of the game you wish to use
-
-![prefs](img340/pref-19-off.png)
+For this to work, you will need to turn on the versions of the game you wish to use.  Use the button directly below the FS icon for that version to toggle.
 
 Then set the game launch path, gameSettings.xml path and any command line arguments for for each.
-
-![prefs](img340/pref-19-on.png)
 
 ## Interface Changes
 

@@ -10,6 +10,28 @@ Yes. Think about adding your `Downloads` folder to the program to easily move or
 
 ---
 
+### What does this mean (gameSettings)?
+
+The most common error with game settings is an invalid path - that looks like this:
+
+![invalid file](img340/invalid-game-settings.png)
+
+In this case, go into settings and set the correct path to the file.  If it has happened since MA was working correctly, the file may have been destroyed - start and stop the game and it will re-create the file for you.
+
+Another somewhat common error can occur if your gameSettings.xml file gets corrupted - most commonly this is due to MA writing to the file at the same time the game does (A good tip is to not update your active collection while the game is running)
+
+That error will look something like this:
+
+![gameSettings Error](img340/bad-game-settings.png)
+
+To fix this, the easy way:
+
+1. __stop__ Mod Assistant and Farming Simulator
+2. __navigate__ to the `gameSettings.xml` file and __delete__ it.
+3. __start__ Farming Simulator
+4. __stop__ Farming Simulator
+5. __start__ Mod Assistant and everything should be fine again!
+
 ### What should I do if something doesn't work?
 
 Please, report it to us!
@@ -24,7 +46,7 @@ If the app hard crashes (you'll get a popup message), the crash log can be found
 
 ### Does this support Linux or Mac?
 
-No, not at this time.  We lack the resources and hardware to properly test it.
+No, not at this time.  We lack the resources and hardware to properly test it. There are also a few windows-only tools that are used by Mod Assistant that would be non-trivial to port to another operating system, specifically the icon image converter.
 
 ---
 
