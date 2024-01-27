@@ -24,7 +24,7 @@
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid px-1 user-select-none">
-		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-4">
 			<div class="row g-0 w-100">
 				<div class="col-7" style="-webkit-app-region: drag;">
 					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
@@ -38,247 +38,263 @@
 			</div>
 		</div>
 		
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_color"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_color"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color0" value="0">
-					<label class="form-check-label notes-color-label" for="notes_color0">0</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color1" value="1">
-					<label class="form-check-label notes-color-label" for="notes_color1">1</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color2" value="2">
-					<label class="form-check-label notes-color-label" for="notes_color2">2</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color3" value="3">
-					<label class="form-check-label notes-color-label" for="notes_color3">3</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color4" value="4">
-					<label class="form-check-label notes-color-label" for="notes_color4">4</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color5" value="5">
-					<label class="form-check-label notes-color-label" for="notes_color5">5</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color6" value="6">
-					<label class="form-check-label notes-color-label" for="notes_color6">6</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color7" value="7">
-					<label class="form-check-label notes-color-label" for="notes_color7">7</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color8" value="8">
-					<label class="form-check-label notes-color-label" for="notes_color8">8</label>
-				</div>
-			</div>
-		</div>
 
+		<div class="row gx-3 gy-4 mx-2">
 
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_favorite"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_favorite"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input onchange="clientSetNote('notes_favorite')" type="checkbox" class="form-check-input" id="notes_favorite">
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- icon color -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_color"></l10n></h5></div>
+				<div class="row">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_color"></l10n></div>
+					<div class="col-6">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color0" value="0">
+							<label class="form-check-label notes-color-label" for="notes_color0">0</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color1" value="1">
+							<label class="form-check-label notes-color-label" for="notes_color1">1</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color2" value="2">
+							<label class="form-check-label notes-color-label" for="notes_color2">2</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color3" value="3">
+							<label class="form-check-label notes-color-label" for="notes_color3">3</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color4" value="4">
+							<label class="form-check-label notes-color-label" for="notes_color4">4</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color5" value="5">
+							<label class="form-check-label notes-color-label" for="notes_color5">5</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color6" value="6">
+							<label class="form-check-label notes-color-label" for="notes_color6">6</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color7" value="7">
+							<label class="form-check-label notes-color-label" for="notes_color7">7</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color8" value="8">
+							<label class="form-check-label notes-color-label" for="notes_color8">8</label>
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_holding"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_holding"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input onchange="clientSetNote('notes_holding')" type="checkbox" class="form-check-input" id="notes_holding">
-				</div>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_frozen"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_frozen"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input onchange="clientSetNote('notes_frozen')" type="checkbox" class="form-check-input" id="notes_frozen">
-				</div>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_removable"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_removable"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input onchange="clientSetNote('notes_removable')" type="checkbox" class="form-check-input" id="notes_removable">
-				</div>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom" id="multi_version">
-			<div class="col-6">
-				<h5><l10n name="notes_title_version"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_version"></l10n></p>
-			</div>
-			<div class="col-6">
-				<select class="form-select" id="notes_version" onchange="clientSetNote('notes_version')">
-					<option value="22">2022</option>
-					<option value="19">2019</option>
-					<option value="17">2017</option>
-					<option value="15">2015</option>
-					<option value="13">2013</option>
-					<option value="11">2011</option>
-				</select>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_tagline"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_tagline"></l10n></p>
-			</div>
-			<div class="col-6">
-				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_tagline')" onblur="clientSetNote('notes_tagline')" type="text" class="form-control form-control-sm mt-4" id="notes_tagline">
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_username"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_username"></l10n></p>
-			</div>
-			<div class="col-6">
-				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_username')" onblur="clientSetNote('notes_username')" type="text" class="form-control form-control-sm mt-4" id="notes_username">
-				<div id="notes_username_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_30"></l10n></div>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_server"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_server"></l10n></p>
-			</div>
-			<div class="col-6">
-				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_server')" onblur="clientSetNote('notes_server')" type="text" class="form-control form-control-sm mt-4" id="notes_server">
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_password"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_password"></l10n></p>
-			</div>
-			<div class="col-6">
-				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_password')" onblur="clientSetNote('notes_password')" type="text" class="form-control form-control-sm mt-4" id="notes_password">
-				<div id="notes_password_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_16"></l10n></div>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_website"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_website"></l10n></p>
-			</div>
-			<div class="col-6">
-				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_website')" onblur="clientSetNote('notes_website')" type="text" class="form-control form-control-sm mt-4" id="notes_website">
-				<div id="notes_website_feedback" class="invalid-feedback"><l10n name="pref_feedback_bad_url"></l10n></div>
-			</div>
-			<div class="col-6">
-				<p class="ps-2"><l10n name="notes_blurb_website_valid"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input type="checkbox" class="form-check-input" id="notes_websiteVALID" checked="checked">
-				</div>
-			</div>
-			<div class="col-6">
-				<p class="ps-2"><l10n name="notes_blurb_website_dl"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input onchange="clientSetNote('notes_websiteDL')" type="checkbox" class="form-check-input" id="notes_websiteDL">
-				</div>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_admin"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_admin"></l10n></p>
-			</div>
-			<div class="col-6">
-				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_admin')" onblur="clientSetNote('notes_admin')" type="text" class="form-control form-control-sm mt-4" id="notes_admin">
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_game_admin"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_game_admin"></l10n></p>
-			</div>
-			<div class="col-6">
-				<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_game_admin')" onblur="clientSetNote('notes_game_admin')" type="text" class="form-control form-control-sm mt-4" id="notes_game_admin">
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-12">
-				<h5><l10n name="notes_title_units"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_units"></l10n></p>
-			</div>
+			</div></div>
 
-			<div class="col-6">
-				<p class="ps-2"><l10n name="notes_units_money_title"></l10n></p>
-			</div>
-			<div class="col-6">
-				<select class="form-select form-select-sm" id="notes_unit_money" onchange="clientSetNote('notes_unit_money')">
-					<option value="1">€</option>
-					<option value="2">$</option>
-					<option value="3">£</option>
-				</select>
-			</div>
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- tagline -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_tagline"></l10n></h5></div>
+				<div class="row">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_tagline"></l10n></div>
+					<div class="col-6">
+						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_tagline')" onblur="clientSetNote('notes_tagline')" type="text" class="form-control form-control-sm" id="notes_tagline">
+					</div>
+				</div>
+			</div></div>
 
-			<div class="col-6">
-				<p class="ps-2"><l10n name="notes_units_use_miles"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input onchange="clientSetNote('notes_unit_mile')" type="checkbox" class="form-check-input" id="notes_unit_mile">
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- notes -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_notes"></l10n></h5></div>
+				<div class="row gy-2">
+					<div class="col-12 ps-3 small fst-italic"><l10n name="notes_blurb_notes"></l10n></div>
+					<div class="col-10 offset-1">
+						<textarea oncontextmenu="window.mods.openCText()" onblur="clientSetNote('notes_notes')" rows="4" class="form-control form-control-sm" id="notes_notes"></textarea>
+					</div>
 				</div>
-			</div>
-			<div class="col-6">
-				<p class="ps-2"><l10n name="notes_units_use_fahrenheit"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input onchange="clientSetNote('notes_unit_temp')" type="checkbox" class="form-check-input" id="notes_unit_temp">
-				</div>
-			</div>
-			<div class="col-6">
-				<p class="ps-2"><l10n name="notes_units_use_acres"></l10n></p>
-			</div>
-			<div class="col-6">
-				<div class="form-check form-switch form-control-lg pt-0">
-					<input onchange="clientSetNote('notes_unit_acre')" type="checkbox" class="form-check-input" id="notes_unit_acre">
-				</div>
-			</div>
-		</div>
-		<div class="row mx-4 mb-3 pb-2 border-bottom">
-			<div class="col-6">
-				<h5><l10n name="notes_title_notes"></l10n></h5>
-				<p class="ps-2"><l10n name="notes_blurb_notes"></l10n></p>
-			</div>
-			<div class="col-6">
-				<textarea oncontextmenu="window.mods.openCText()" onblur="clientSetNote('notes_notes')" rows="4" class="form-control form-control-sm" id="notes_notes"></textarea>
-			</div>
-		</div>
+			</div></div>
 
+			<div class="col-md-6"><div class="border rounded-2 p-3 h-100"><!-- favorite -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_favorite"></l10n></h5></div>
+				<div class="row">
+					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_favorite"></l10n></div>
+					<div class="col-3">
+						<input type="checkbox" onchange="clientSetNote('notes_favorite')" class="btn-check" id="notes_favorite" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_favorite"><i class="bi-question-circle"></i></label>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-md-6"><div class="border rounded-2 p-3 h-100"><!-- holding -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_holding"></l10n></h5></div>
+				<div class="row">
+					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_holding"></l10n></div>
+					<div class="col-3">
+						<input type="checkbox" onchange="clientSetNote('notes_holding')" class="btn-check" id="notes_holding" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_holding"><i class="bi-question-circle"></i></label>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-md-6"><div class="border rounded-2 p-3 h-100"><!-- frozen -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_frozen"></l10n></h5></div>
+				<div class="row">
+					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_frozen"></l10n></div>
+					<div class="col-3">
+						<input type="checkbox" onchange="clientSetNote('notes_frozen')" class="btn-check" id="notes_frozen" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_frozen"><i class="bi-question-circle"></i></label>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-md-6"><div class="border rounded-2 p-3 h-100"><!-- removable -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_removable"></l10n></h5></div>
+				<div class="row">
+					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_removable"></l10n></div>
+					<div class="col-3">
+						<input type="checkbox" onchange="clientSetNote('notes_removable')" class="btn-check" id="notes_removable" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_removable"><i class="bi-question-circle"></i></label>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-12"><div class="border rounded-2 p-3 h-100" id="multi_version"><!-- version -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_version"></l10n></h5></div>
+				<div class="row">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_version"></l10n></div>
+					<div class="col-6">
+						<select class="form-select" id="notes_version" onchange="clientSetNote('notes_version')">
+							<option value="22">2022</option>
+							<option value="19">2019</option>
+							<option value="17">2017</option>
+							<option value="15">2015</option>
+							<option value="13">2013</option>
+							<option value="11">2011</option>
+						</select>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- units -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_units"></l10n></h5></div>
+				<div class="row gy-2">
+					<div class="col-12 ps-3 small fst-italic"><l10n name="notes_blurb_units"></l10n></div>
+
+					<div class="col-4">
+						<l10n name="notes_units_money_title"></l10n>
+					</div>
+					<div class="col-2">
+						<select class="form-select form-select-sm" id="notes_unit_money" onchange="clientSetNote('notes_unit_money')">
+							<option value="1">€</option>
+							<option value="2">$</option>
+							<option value="3">£</option>
+						</select>
+					</div>
+
+					<div class="col-4">
+						<l10n name="notes_units_use_miles"></l10n>
+					</div>
+					<div class="col-2">
+						<input type="checkbox" onchange="clientSetNote('notes_unit_mile')" class="btn-check" id="notes_unit_mile" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_unit_mile"><i class="bi-question-circle"></i></label>
+					</div>
+
+					<div class="col-4">
+						<l10n name="notes_units_use_fahrenheit"></l10n>
+					</div>
+					<div class="col-2">
+						<input type="checkbox" onchange="clientSetNote('notes_unit_temp')" class="btn-check" id="notes_unit_temp" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_unit_temp"><i class="bi-question-circle"></i></label>
+					</div>
+
+					<div class="col-4">
+						<l10n name="notes_units_use_acres"></l10n>
+					</div>
+					<div class="col-2">
+						<input type="checkbox" onchange="clientSetNote('notes_unit_acre')" class="btn-check" id="notes_unit_acre" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_unit_acre"><i class="bi-question-circle"></i></label>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- username -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_username"></l10n></h5></div>
+				<div class="row">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_username"></l10n></div>
+					<div class="col-6">
+						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_username')" onblur="clientSetNote('notes_username')" type="text" class="form-control form-control-sm" id="notes_username">
+						<div id="notes_username_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_30"></l10n></div>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- server search -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_server"></l10n></h5></div>
+				<div class="row">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_server"></l10n></div>
+					<div class="col-6">
+						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_server')" onblur="clientSetNote('notes_server')" type="text" class="form-control form-control-sm" id="notes_server">
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- game password -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_password"></l10n></h5></div>
+				<div class="row">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_password"></l10n></div>
+					<div class="col-6">
+						<div class="input-group">
+							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_password')" onblur="clientSetNote('notes_password')" type="password" class="form-control form-control-sm" id="notes_password">
+							<span class="input-group-text" onclick="clientToggleVisible('notes_password')" id="notes_password_toggle"><i class="bi-eye"></i></span>
+						</div>
+						<div id="notes_password_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_16"></l10n></div>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- website -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_website"></l10n></h5></div>
+				<div class="row gy-2">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_website"></l10n></div>
+					<div class="col-6">
+						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_website')" onblur="clientSetNote('notes_website')" type="text" class="form-control form-control-sm" id="notes_website">
+						<div id="notes_website_feedback" class="invalid-feedback"><l10n name="pref_feedback_bad_url"></l10n></div>
+					</div>
+
+					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_website_valid"></l10n></div>
+					<div class="col-3">
+						<input type="checkbox" onchange="clientWebValid()" checked="checked" class="btn-check" id="notes_websiteVALID" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_websiteVALID"><i class="bi-question-circle"></i></label>
+					</div>
+
+					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_website_dl"></l10n></div>
+					<div class="col-3">
+						<input type="checkbox" onchange="clientSetNote('notes_websiteDL')" class="btn-check" id="notes_websiteDL" autocomplete="off">
+						<label class="btn btn-secondary btn-sm w-100" for="notes_websiteDL"><i class="bi-question-circle"></i></label>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- website admin -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_admin"></l10n></h5></div>
+				<div class="row">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_admin"></l10n></div>
+					<div class="col-6">
+						<div class="input-group">
+							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_admin')" onblur="clientSetNote('notes_admin')" type="password" class="form-control form-control-sm" id="notes_admin">
+							<span class="input-group-text" onclick="clientToggleVisible('notes_admin')" id="notes_admin_toggle"><i class="bi-eye"></i></span>
+						</div>
+					</div>
+				</div>
+			</div></div>
+
+			<div class="col-12 pb-3"><div class="border rounded-2 p-3 h-100"><!-- in-game admin -->
+				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_game_admin"></l10n></h5></div>
+				<div class="row">
+					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_game_admin"></l10n></div>
+					<div class="col-6">
+						<div class="input-group">
+							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_game_admin')" onblur="clientSetNote('notes_game_admin')" type="password" class="form-control form-control-sm" id="notes_game_admin">
+							<span class="input-group-text" onclick="clientToggleVisible('notes_game_admin')" id="notes_game_admin_toggle"><i class="bi-eye"></i></span>
+						</div>
+						
+					</div>
+				</div>
+			</div></div>
+
+		</div>
 	</div>
-
 </body>
 </html>
