@@ -40,7 +40,6 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 				thisValue = modCollect.opts.lastGameSettings?.[element.id.replace('notes_', '')]
 			}
 			element.checked = (thisValue !== '') ? thisValue : false
-			updateCheck(element.id, thisValue)
 		}
 		if ( element.getAttribute('type') === 'radio' ) {
 			thisValue       = modCollect.collectionNotes[thisCollection][element.getAttribute('name')]
@@ -55,7 +54,6 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 
 	fsgUtil.byId('notes_notes').innerHTML = modCollect.collectionNotes?.[thisCollection]?.notes_notes || ''
 
-	clientWebValid()
 	processL10N()
 })
 
@@ -66,26 +64,6 @@ function clientToggleVisible(id) {
 
 	formControl.setAttribute('type', doVisible ? 'text' : 'password')
 	eyeButton.innerHTML = `<i class="bi-${doVisible ? 'eye-slash' : 'eye'}"></i>`
-}
-
-function clientWebValid() {
-	updateCheck('notes_websiteVALID', fsgUtil.byId('notes_websiteVALID').checked)
-}
-
-function updateCheck(name, value) {
-	const labelControl = fsgUtil.queryF(`label[for='${name}']`)
-
-	// formControl.checked = value
-
-	if ( labelControl !== null ) {
-		labelControl.innerHTML = `<i class="bi-${value ? 'check' : 'x'}-circle"></i>`
-		labelControl.classList.remove('btn-success', 'btn-secondary', 'btn-outline-danger')
-		if ( value ) {
-			labelControl.classList.add('btn-success')
-		} else {
-			labelControl.classList.add('btn-outline-danger')
-		}
-	}
 }
 
 function clientCheckValid(id, inProgress = false) {
@@ -173,6 +151,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	const colorLabels = fsgUtil.query('.notes-color-label')
 	for ( const thisLabel of colorLabels ) {
 		const thisNum = parseInt(thisLabel.getAttribute('for').replace('notes_color', ''))
-		thisLabel.innerHTML = fsgUtil.getIconSVG('folder', false, false, false, thisNum)
+		thisLabel.innerHTML = fsgUtil.getIconSVG('folder', false, false, false, thisNum, true)
 	}
 })

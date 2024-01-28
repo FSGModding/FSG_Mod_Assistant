@@ -58,6 +58,26 @@
 			line-height: 1.1em
 		}
 
+		.custom-switch { 
+			padding-left: 0px !important;
+		}
+		.custom-switch .form-check-input {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 95 95'%3E%3Crect width='80' height='80' x='7.5' y='7.5' fill='rgba(255,255,255,.25)' rx='15.2' ry='15.2'/%3E%3C/svg%3E");
+			width : 100% !important;
+			margin-left: 0px !important;
+			background-color: var(--bs-danger-bg-subtle);
+			border-color: var(--bs-border-color);
+			border-radius: var(--bs-border-radius-lg)!important;
+			min-height: calc(0.7em + 1rem + calc(var(--bs-border-width) * 2));
+			padding: .5rem 1rem;
+			font-size: 1rem;
+		}
+		.custom-switch .form-check-input:checked {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 95 95'%3E%3Crect width='80' height='80' x='7.5' y='7.5' fill='rgba(255,255,255,.75)' rx='15.2' ry='15.2'/%3E%3C/svg%3E");
+			background-color: rgba(var(--bs-success-rgb), 0.6);
+			border-color: var(--bs-border-color);
+		}
+
 		#display_mod_container { margin-top: 10.9rem; }
 		#moveButtons { height: calc(100vh - 13rem); position: fixed; top: 10.7rem; }
 
@@ -386,8 +406,9 @@
 							<div class="row"><!-- giants led -->
 								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_led"></l10n></div>
 								<div class="col-3">
-									<input type="checkbox" onchange="clientSetPref('led_active')" class="btn-check" id="uPref_led_active" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_led_active"><i class="bi-question-circle"></i></label>
+									<div class="form-check form-switch custom-switch">
+										<input id="uPref_led_active" onchange="clientSetPref('led_active')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 							</div>
 						</div></div>
@@ -397,8 +418,9 @@
 							<div class="row"><!-- tooltips -->
 								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_show_tooltips"></l10n></div>
 								<div class="col-3">
-									<input type="checkbox" onchange="clientSetPref('show_tooltips')" class="btn-check" id="uPref_show_tooltips" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_show_tooltips"><i class="bi-question-circle"></i></label>
+									<div class="form-check form-switch custom-switch">
+										<input id="uPref_show_tooltips" onchange="clientSetPref('show_tooltips')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 							</div>
 						</div></div>
@@ -438,8 +460,9 @@
 								</div>
 								<div class="col-9 pt-2 border-top ps-3 small fst-italic"><l10n name="user_pref_blurb2_lang"></l10n></div>
 								<div class="col-3 pt-2 border-top">
-									<input type="checkbox" onchange="clientSetPref('lock_lang')" class="btn-check" id="uPref_lock_lang" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_lock_lang"><i class="bi-question-circle"></i></label>
+									<div class="form-check form-switch custom-switch">
+										<input id="uPref_lock_lang" onchange="clientSetPref('lock_lang')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 							</div>
 						</div></div>
@@ -491,10 +514,11 @@
 									</div>
 
 									<div class="border-top mt-2 pt-2 row">
-										<div class="col-9"><label for="uPref_dev_mode2" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-3">
-											<input type="checkbox" onchange="clientSetPref('dev_mode')" class="btn-check" id="uPref_dev_mode" autocomplete="off">
-											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode"><i class="bi-question-circle"></i></label>
+										<div class="col-10"><label for="uPref_dev_mode2" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-2">
+											<div class="form-check form-switch custom-switch">
+												<input id="uPref_dev_mode" onchange="clientSetPref('dev_mode')" class="form-check-input" type="checkbox" role="switch">
+											</div>
 										</div>
 										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
 									</div>
@@ -506,10 +530,11 @@
 						<div class="col-12"><div class="border rounded-2 p-3 h-100">
 							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_multi_version"></l10n></h5></div>
 							<div class="row"><!-- multi version -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_multi_version"></l10n></div>
-								<div class="col-3 pt-2">
-									<input type="checkbox" onchange="clientSetPref('multi_version')" class="btn-check" id="uPref_multi_version" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_multi_version"><i class="bi-question-circle"></i></label>
+								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_multi_version"></l10n></div>
+								<div class="col-2 pt-2">
+									<div class="form-check form-switch custom-switch">
+										<input id="uPref_multi_version" onchange="clientSetPref('multi_version')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 							</div>
 						</div></div>
@@ -519,9 +544,9 @@
 							<div class="row"><!-- version 19 -->
 								<div class="col-2 text-center">
 									<i class="fsico-ver-19" style="font-size: 75px;"></i>
-
-									<input type="checkbox" onchange="clientSetPref('game_enabled_19')" class="btn-check" id="uPref_game_enabled_19" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_game_enabled_19"><i class="bi-question-circle"></i></label>
+									<div class="form-check form-switch custom-switch w-75 mx-auto">
+										<input id="uPref_game_enabled_19" onchange="clientSetPref('game_enabled_19')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 								<div class="col-10">
 									<div class="form-text fst-italic text-end game_disabled_19"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
@@ -551,10 +576,11 @@
 									</div>
 
 									<div class="border-top mt-2 pt-2 row game_enabled_19">
-										<div class="col-9"><label for="uPref_dev_mode2_19" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-3">
-											<input type="checkbox" onchange="clientSetPref('dev_mode_19')" class="btn-check" id="uPref_dev_mode_19" autocomplete="off">
-											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode_19"><i class="bi-question-circle"></i></label>
+										<div class="col-10"><label for="uPref_dev_mode2_19" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-2">
+											<div class="form-check form-switch custom-switch">
+												<input id="uPref_dev_mode_19" onchange="clientSetPref('dev_mode_19')" class="form-check-input" type="checkbox" role="switch">
+											</div>
 										</div>
 										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
 									</div>
@@ -568,9 +594,9 @@
 							<div class="row"><!-- version 17 -->
 								<div class="col-2 text-center">
 									<i class="fsico-ver-17" style="font-size: 75px;"></i>
-
-									<input type="checkbox" onchange="clientSetPref('game_enabled_17')" class="btn-check" id="uPref_game_enabled_17" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_game_enabled_17"><i class="bi-question-circle"></i></label>
+									<div class="form-check form-switch custom-switch w-75 mx-auto">
+										<input id="uPref_game_enabled_17" onchange="clientSetPref('game_enabled_17')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 								<div class="col-10">
 									<div class="form-text fst-italic text-end game_disabled_17"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
@@ -600,10 +626,11 @@
 									</div>
 
 									<div class="border-top mt-2 pt-2 row game_enabled_17">
-										<div class="col-9"><label for="uPref_dev_mode2_17" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-3">
-											<input type="checkbox" onchange="clientSetPref('dev_mode_17')" class="btn-check" id="uPref_dev_mode_17" autocomplete="off">
-											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode_17"><i class="bi-question-circle"></i></label>
+										<div class="col-10"><label for="uPref_dev_mode2_17" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-2">
+											<div class="form-check form-switch custom-switch">
+												<input id="uPref_dev_mode_17" onchange="clientSetPref('dev_mode_17')" class="form-check-input" type="checkbox" role="switch">
+											</div>
 										</div>
 										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
 									</div>
@@ -617,9 +644,9 @@
 							<div class="row"><!-- version 15 -->
 								<div class="col-2 text-center">
 									<i class="fsico-ver-15" style="font-size: 75px;"></i>
-
-									<input type="checkbox" onchange="clientSetPref('game_enabled_15')" class="btn-check" id="uPref_game_enabled_15" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_game_enabled_15"><i class="bi-question-circle"></i></label>
+									<div class="form-check form-switch custom-switch w-75 mx-auto">
+										<input id="uPref_game_enabled_15" onchange="clientSetPref('game_enabled_15')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 								<div class="col-10">
 									<div class="form-text fst-italic text-end game_disabled_15"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
@@ -649,10 +676,11 @@
 									</div>
 
 									<div class="border-top mt-2 pt-2 row game_enabled_15">
-										<div class="col-9"><label for="uPref_dev_mode2_15" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-3">
-											<input type="checkbox" onchange="clientSetPref('dev_mode_15')" class="btn-check" id="uPref_dev_mode_15" autocomplete="off">
-											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode_15"><i class="bi-question-circle"></i></label>
+										<div class="col-10"><label for="uPref_dev_mode2_15" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-2">
+											<div class="form-check form-switch custom-switch">
+												<input id="uPref_dev_mode_15" onchange="clientSetPref('dev_mode_15')" class="form-check-input" type="checkbox" role="switch">
+											</div>
 										</div>
 										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
 									</div>
@@ -666,9 +694,9 @@
 							<div class="row"><!-- version 13 -->
 								<div class="col-2 text-center">
 									<i class="fsico-ver-13" style="font-size: 75px;"></i>
-
-									<input type="checkbox" onchange="clientSetPref('game_enabled_13')" class="btn-check" id="uPref_game_enabled_13" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_game_enabled_13"><i class="bi-question-circle"></i></label>
+									<div class="form-check form-switch custom-switch w-75 mx-auto">
+										<input id="uPref_game_enabled_13" onchange="clientSetPref('game_enabled_13')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 								<div class="col-10">
 									<div class="form-text fst-italic text-end game_disabled_13"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
@@ -698,10 +726,11 @@
 									</div>
 
 									<div class="border-top mt-2 pt-2 row game_enabled_13">
-										<div class="col-9"><label for="uPref_dev_mode2_13" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-3">
-											<input type="checkbox" onchange="clientSetPref('dev_mode_13')" class="btn-check" id="uPref_dev_mode_13" autocomplete="off">
-											<label class="btn btn-secondary btn-sm w-100" for="uPref_dev_mode_13"><i class="bi-question-circle"></i></label>
+										<div class="col-10"><label for="uPref_dev_mode2_13" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
+										<div class="col-2">
+											<div class="form-check form-switch custom-switch">
+												<input id="uPref_dev_mode_13" onchange="clientSetPref('dev_mode_13')" class="form-check-input" type="checkbox" role="switch">
+											</div>
 										</div>
 										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
 									</div>
@@ -717,10 +746,11 @@
 						<div class="col-12"><div class="border rounded-2 p-3 h-100">
 							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_use_one_drive"></l10n></h5></div>
 							<div class="row"><!-- one drive -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_use_one_drive"></l10n></div>
-								<div class="col-3 pt-2">
-									<input type="checkbox" onchange="clientSetPref('use_one_drive')" class="btn-check" id="uPref_use_one_drive" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_use_one_drive"><i class="bi-question-circle"></i></label>
+								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_use_one_drive"></l10n></div>
+								<div class="col-2 pt-2">
+									<div class="form-check form-switch custom-switch">
+										<input id="uPref_use_one_drive" onchange="clientSetPref('use_one_drive')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 							</div>
 						</div></div>
@@ -728,10 +758,11 @@
 						<div class="col-12"><div class="border rounded-2 p-3 h-100">
 							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_poll_game"></l10n></h5></div>
 							<div class="row"><!-- poll game -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_poll_game"></l10n></div>
-								<div class="col-3 pt-2">
-									<input type="checkbox" onchange="clientSetPref('poll_game')" class="btn-check" id="uPref_poll_game" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_poll_game"><i class="bi-question-circle"></i></label>
+								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_poll_game"></l10n></div>
+								<div class="col-2 pt-2">
+									<div class="form-check form-switch custom-switch">
+										<input id="uPref_poll_game" onchange="clientSetPref('poll_game')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 							</div>
 						</div></div>
@@ -739,10 +770,11 @@
 						<div class="col-12"><div class="border rounded-2 p-3 h-100">
 							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_use_discord"></l10n></h5></div>
 							<div class="row"><!-- discord -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_use_discord"></l10n></div>
-								<div class="col-3 pt-2">
-									<input type="checkbox" onchange="clientSetPref('use_discord')" class="btn-check" id="uPref_use_discord" autocomplete="off">
-									<label class="btn btn-secondary btn-sm w-100" for="uPref_use_discord"><i class="bi-question-circle"></i></label>
+								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_use_discord"></l10n></div>
+								<div class="col-2 pt-2">
+									<div class="form-check form-switch custom-switch">
+										<input id="uPref_use_discord" onchange="clientSetPref('use_discord')" class="form-check-input" type="checkbox" role="switch">
+									</div>
 								</div>
 							</div>
 							<div class="row mt-2">

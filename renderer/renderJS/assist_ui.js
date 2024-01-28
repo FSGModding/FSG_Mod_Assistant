@@ -590,35 +590,19 @@ function clientOpenGame_FIX() {
 window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })
 window.addEventListener('shown.bs.collapse',  () => { select_lib.click_none() })
 
-function updateCheck(name, value) {
-	const formControl  = fsgUtil.byId(`uPref_${name}`)
-	const labelControl = fsgUtil.queryF(`label[for='uPref_${name}']`)
-
-	formControl.checked = value
-
-	if ( labelControl !== null ) {
-		labelControl.innerHTML = `<i class="bi-${value ? 'check' : 'x'}-circle"></i>`
-		labelControl.classList.remove('btn-success', 'btn-secondary', 'btn-outline-danger')
-		if ( value ) {
-			labelControl.classList.add('btn-success')
-		} else {
-			labelControl.classList.add('btn-outline-danger')
-		}
-	}
-}
 function updatePreferences() {
 	// TODO finish this.
-	updateCheck('dev_mode', lastDevSettings[22])
-	updateCheck('dev_mode_19', lastDevSettings[19])
-	updateCheck('dev_mode_17', lastDevSettings[17])
-	updateCheck('dev_mode_15', lastDevSettings[15])
-	updateCheck('dev_mode_13', lastDevSettings[13])
+	fsgUtil.byId('uPref_dev_mode').checked = lastDevSettings[22]
+	fsgUtil.byId('uPref_dev_mode_19').checked = lastDevSettings[19]
+	fsgUtil.byId('uPref_dev_mode_17').checked = lastDevSettings[17]
+	fsgUtil.byId('uPref_dev_mode_15').checked = lastDevSettings[15]
+	fsgUtil.byId('uPref_dev_mode_13').checked = lastDevSettings[13]
 
 	for ( const name in lastPreferences ) {
 		const formControl = fsgUtil.byId(`uPref_${name}`)
 		if ( formControl !== null ) {
 			if ( formControl.getAttribute('type') === 'checkbox' ) {
-				updateCheck(name, lastPreferences[name])
+				formControl.checked = lastPreferences[name]
 			} else {
 				formControl.value = lastPreferences[name]
 			}

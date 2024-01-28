@@ -20,6 +20,25 @@
 			border-color: var(--bs-warning);
 			box-shadow: 0 0 0 0.25rem rgba(var(--bs-warning-rgb), 0.25);
 		}
+		.custom-switch { 
+			padding-left: 0px !important;
+		}
+		.custom-switch .form-check-input {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 95 95'%3E%3Crect width='80' height='80' x='7.5' y='7.5' fill='rgba(255,255,255,.25)' rx='15.2' ry='15.2'/%3E%3C/svg%3E");
+			width : 100% !important;
+			margin-left: 0px !important;
+			background-color: var(--bs-danger-bg-subtle);
+			border-color: var(--bs-border-color);
+			border-radius: var(--bs-border-radius-lg)!important;
+			min-height: calc(0.7em + 1rem + calc(var(--bs-border-width) * 2));
+			padding: .5rem 1rem;
+			font-size: 1rem;
+		}
+		.custom-switch .form-check-input:checked {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 95 95'%3E%3Crect width='80' height='80' x='7.5' y='7.5' fill='rgba(255,255,255,.75)' rx='15.2' ry='15.2'/%3E%3C/svg%3E");
+			background-color: rgba(var(--bs-success-rgb), 0.6);
+			border-color: var(--bs-border-color);
+		}
 	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
@@ -45,7 +64,7 @@
 				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_color"></l10n></h5></div>
 				<div class="row">
 					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_color"></l10n></div>
-					<div class="col-6">
+					<div class="col-6 d-flex flex-wrap justify-content-start">
 						<div class="form-check form-check-inline">
 							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color0" value="0">
 							<label class="form-check-label notes-color-label" for="notes_color0">0</label>
@@ -111,8 +130,9 @@
 				<div class="row">
 					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_favorite"></l10n></div>
 					<div class="col-3">
-						<input type="checkbox" onchange="clientSetNote('notes_favorite')" class="btn-check" id="notes_favorite" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_favorite"><i class="bi-question-circle"></i></label>
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_favorite" onchange="clientSetNote('notes_favorite')" class="form-check-input" type="checkbox" role="switch">
+						</div>
 					</div>
 				</div>
 			</div></div>
@@ -122,8 +142,9 @@
 				<div class="row">
 					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_holding"></l10n></div>
 					<div class="col-3">
-						<input type="checkbox" onchange="clientSetNote('notes_holding')" class="btn-check" id="notes_holding" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_holding"><i class="bi-question-circle"></i></label>
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_holding" onchange="clientSetNote('notes_holding')" class="form-check-input" type="checkbox" role="switch">
+						</div>
 					</div>
 				</div>
 			</div></div>
@@ -133,8 +154,9 @@
 				<div class="row">
 					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_frozen"></l10n></div>
 					<div class="col-3">
-						<input type="checkbox" onchange="clientSetNote('notes_frozen')" class="btn-check" id="notes_frozen" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_frozen"><i class="bi-question-circle"></i></label>
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_frozen" onchange="clientSetNote('notes_frozen')" class="form-check-input" type="checkbox" role="switch">
+						</div>
 					</div>
 				</div>
 			</div></div>
@@ -144,8 +166,9 @@
 				<div class="row">
 					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_removable"></l10n></div>
 					<div class="col-3">
-						<input type="checkbox" onchange="clientSetNote('notes_removable')" class="btn-check" id="notes_removable" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_removable"><i class="bi-question-circle"></i></label>
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_removable" onchange="clientSetNote('notes_removable')" class="form-check-input" type="checkbox" role="switch">
+						</div>
 					</div>
 				</div>
 			</div></div>
@@ -187,24 +210,27 @@
 						<l10n name="notes_units_use_miles"></l10n>
 					</div>
 					<div class="col-2">
-						<input type="checkbox" onchange="clientSetNote('notes_unit_mile')" class="btn-check" id="notes_unit_mile" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_unit_mile"><i class="bi-question-circle"></i></label>
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_unit_mile" onchange="clientSetNote('notes_unit_mile')" class="form-check-input" type="checkbox" role="switch">
+						</div>
 					</div>
 
 					<div class="col-4">
 						<l10n name="notes_units_use_fahrenheit"></l10n>
 					</div>
 					<div class="col-2">
-						<input type="checkbox" onchange="clientSetNote('notes_unit_temp')" class="btn-check" id="notes_unit_temp" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_unit_temp"><i class="bi-question-circle"></i></label>
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_unit_temp" onchange="clientSetNote('notes_unit_temp')" class="form-check-input" type="checkbox" role="switch">
+						</div>
 					</div>
 
 					<div class="col-4">
 						<l10n name="notes_units_use_acres"></l10n>
 					</div>
 					<div class="col-2">
-						<input type="checkbox" onchange="clientSetNote('notes_unit_acre')" class="btn-check" id="notes_unit_acre" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_unit_acre"><i class="bi-question-circle"></i></label>
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_unit_acre" onchange="clientSetNote('notes_unit_acre')" class="form-check-input" type="checkbox" role="switch">
+						</div>
 					</div>
 				</div>
 			</div></div>
@@ -253,16 +279,18 @@
 						<div id="notes_website_feedback" class="invalid-feedback"><l10n name="pref_feedback_bad_url"></l10n></div>
 					</div>
 
-					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_website_valid"></l10n></div>
-					<div class="col-3">
-						<input type="checkbox" onchange="clientWebValid()" checked="checked" class="btn-check" id="notes_websiteVALID" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_websiteVALID"><i class="bi-question-circle"></i></label>
+					<div class="col-10 ps-3 small fst-italic"><l10n name="notes_blurb_website_valid"></l10n></div>
+					<div class="col-2">
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_websiteVALID" onchange="clientWebValid()" class="form-check-input" type="checkbox" role="switch" checked="checked">
+						</div>
 					</div>
 
-					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_website_dl"></l10n></div>
-					<div class="col-3">
-						<input type="checkbox" onchange="clientSetNote('notes_websiteDL')" class="btn-check" id="notes_websiteDL" autocomplete="off">
-						<label class="btn btn-secondary btn-sm w-100" for="notes_websiteDL"><i class="bi-question-circle"></i></label>
+					<div class="col-10 ps-3 small fst-italic"><l10n name="notes_blurb_website_dl"></l10n></div>
+					<div class="col-2">
+						<div class="form-check form-switch custom-switch">
+							<input id="notes_websiteDL" onchange="clientSetNote('notes_websiteDL')" class="form-check-input" type="checkbox" role="switch">
+						</div>
 					</div>
 				</div>
 			</div></div>
