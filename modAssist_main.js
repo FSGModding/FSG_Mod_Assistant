@@ -1744,13 +1744,13 @@ ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(e
 
 async function updateGameRunning() {
 	if ( !mainProcessFlags.gameRunningEnabled ) {
-		log.log.debug('Polling Game Disabled', 'game-process-poll')
+		// log.log.debug('Polling Game Disabled', 'game-process-poll')
 		win.sendToValidWindow('main', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled, updateReady : modCollect.updateIsReady})
 		win.sendToValidWindow('mini', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled})
 		return
 	}
 
-	log.log.debug('Polling Game', 'game-process-poll')
+	// log.log.debug('Polling Game', 'game-process-poll')
 
 	return require('node:child_process').exec('tasklist /fi "IMAGENAME eq FarmingSimulator2022Game.exe" /fo csv /nh', (err, stdout) => {
 		if ( err ) {
