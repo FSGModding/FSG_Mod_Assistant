@@ -33,17 +33,26 @@
 					<h2 class="ps-2 mastHead mb-0"><l10n name="app_name"></l10n></h2>
 					<span class="ps-4 small fst-italic" id="gameLogPath"></span>
 				</div>
-				<div class="col-4 text-end pe-5">
-					<div class="btn-group btn-group-sm ms-auto me-1 align-items-center w-100">
-						<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Auto-Detect Log File Based on Game Version" type="button" onclick="window.gamelog.guessGameLogFile()" class="btn btn-secondary">AUTO</button>
-						<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Open new log" type="button" onclick="window.gamelog.changeGameLogFile()" class="btn btn-secondary"><i class="bi bi-folder2-open"></i></button>
-						<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="window.gamelog.openGameLogFolder()" class="btn btn-secondary"><i class="bi bi-save"></i></button>
-						<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Refresh Log" type="button" onclick="window.gamelog.getGameLogContents()" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
-						<input type="checkbox" class="btn-check" id="auto_scroll" autocomplete="off">
-						<label data-bs-placement="bottom" data-bs-toggle="tooltip" title="Auto-Scroll to Bottom on change" class="btn btn-outline-success border" for="auto_scroll"><i class="bi bi-align-bottom"></i></label>
-						<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Clear Log File" type="button" onclick="window.gamelog.clearGameLogFile()" class="btn btn-danger text-white"><i class="bi bi-trash"></i></button>
-					</div>
+				<style>
+					.btn-group-win_ui {
+						height: 23px;
+						left : 0;
+						right: auto;
+						width: calc(100vw - 137px);
+					}
+					.btn-win_ui { height: 23px; }
+				</style>
+				
+				<div class="mx-0 p-0 rounded-end-0 btn-group-win_ui d-flex justify-content-end bg-transparent" style="position:absolute">
+					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Auto-Detect Log File Based on Game Version" type="button" onclick="window.gamelog.guessGameLogFile()" class="rounded-end-0 rounded-top-0 btn-win_ui btn btn-secondary">AUTO</button>
+					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Open new log" type="button" onclick="window.gamelog.changeGameLogFile()" class="rounded-0 btn-win_ui btn btn-secondary"><i class="bi bi-folder2-open"></i></button>
+					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="window.gamelog.openGameLogFolder()" class="rounded-0 btn-win_ui btn btn-secondary"><i class="bi bi-save"></i></button>
+					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Refresh Log" type="button" onclick="window.gamelog.getGameLogContents()" class="rounded-0 btn-win_ui btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
+					<input type="checkbox" class="rounded-0 btn-win_ui btn-check" id="auto_scroll" autocomplete="off">
+					<label data-bs-placement="bottom" data-bs-toggle="tooltip" title="Auto-Scroll to Bottom on change" class="rounded-0 btn-win_ui btn btn-outline-success border" for="auto_scroll"><i class="bi bi-align-bottom"></i></label>
+					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Clear Log File" type="button" onclick="window.gamelog.clearGameLogFile()" class="rounded-0 btn-win_ui btn btn-danger text-white"><i class="bi bi-trash"></i></button>
 				</div>
+
 			</div>
 			<div class="input-group input-group-sm btn-group w-100 mt-2 mb-0 px-1">
 				<span class="input-group-text" id="basic-addon1">Show: </span>
