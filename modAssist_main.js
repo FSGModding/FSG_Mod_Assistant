@@ -726,7 +726,7 @@ ipcMain.on('toMain_dragOut', (event, modID) => {
 		icon : nativeImage.createFromDataURL(iconDataURL),
 	})
 })
-ipcMain.on('toMain_modContextMenu', async (event, modID) => {
+ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) => {
 	const thisMod   = modCollect.modColUUIDToRecord(modID)
 	const thisSite  = modSite.get(thisMod.fileDetail.shortName, '')
 	const thisPath  = modCollect.mapDashedToFullPath(modID)
@@ -838,9 +838,40 @@ ipcMain.on('toMain_modContextMenu', async (event, modID) => {
 		}
 	)
 
+	if ( modIDs.length !== 0 ) {
+		template.push(
+			menuSep,
+			{
+				label : __('copy_selected_to_list'),
+				click : () => {
+					if (isHoldingPen) {
+						handleCopyMoveDelete('confirmMultiCopy', modIDs)
+					}  else {
+						handleCopyMoveDelete('confirmCopy', modIDs)
+					}
+				},
+			},
+			{
+				label : __('move_selected_to_list'),
+				click : () => {
+					if (isHoldingPen) {
+						handleCopyMoveDelete('confirmMultiMove', modIDs)
+					}  else {
+						handleCopyMoveDelete('confirmMove', modIDs)
+					}
+				},
+			},
+			{
+				label : __('remove_selected_from_list'),
+				click : () => { handleCopyMoveDelete('confirmDelete', modIDs) },
+			}
+		)
+	}
+
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
+
 ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const subLabel  = modCollect.mapCollectionToFullName(collection)
 	const colFolder = modCollect.mapCollectionToFolder(collection)

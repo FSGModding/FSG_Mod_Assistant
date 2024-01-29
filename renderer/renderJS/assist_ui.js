@@ -536,6 +536,12 @@ function clientSetGameVersion(version) { window.mods.changeVersion(parseInt(vers
 
 function clientClearInput() { select_lib.filter_begin(null, '') }
 
+function clientModContext(id) {
+	const allModRows     = fsgUtil.queryA('.mod-row .mod-row-checkbox:checked')
+	const selectedMods   = allModRows.map((thisRow) => thisRow.id.replace('__checkbox', ''))
+	const isHoldingPen   = selectedMods.length === 0 ? false : fsgUtil.byId(`${selectedMods[0].split('--')[0]}_mods`).classList.contains('is-holding-pen')
+	window.mods.modCText(id, selectedMods, isHoldingPen)
+}
 function clientBatchOperation(mode) {
 	const allModRows     = fsgUtil.queryA('.mod-row .mod-row-checkbox:checked')
 	const selectedMods   = allModRows.map((thisRow) => thisRow.id.replace('__checkbox', ''))

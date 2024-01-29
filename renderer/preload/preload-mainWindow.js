@@ -102,7 +102,7 @@ contextBridge.exposeInMainWorld(
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
 		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
-		modCText   : (selectedMod)  => { ipcRenderer.send('toMain_modContextMenu', selectedMod ) },
+		modCText   : (selectedMod, selectedMods, isHoldingPen )  => { ipcRenderer.send('toMain_modContextMenu', selectedMod, selectedMods, isHoldingPen ) },
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		moveMulti  : (selectedMods) => { ipcRenderer.send('toMain_moveMultiMods', selectedMods) },
 		openCText  : (collection)   => { ipcRenderer.send('toMain_mainContextMenu', collection ) },
