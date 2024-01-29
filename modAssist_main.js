@@ -764,7 +764,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 			}))
 
 		template.push({
-			label   : __('check_save'),
+			label   : __('check_save_text'),
 			submenu : subMenu,
 		})
 	}
