@@ -236,7 +236,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		
 		const isOnline = modCollect.collectionToStatus[collectKey]
 		const fullName = `${thisCollection.name} <small>[${isOnline ? fsgUtil.bytesToHR(sizeOfFolder) : __('removable_offline') }]</small>`
-
+		
 		modTable.push(makeModCollection(
 			isOnline,
 			collectKey,
@@ -882,3 +882,14 @@ function clientDragOver(e) {
 	e.dataTransfer.dropEffect = (dragDropInFolder ? 'link' : 'copy')
 }
 
+
+window?.l10n?.receive('fromMain_getText_return', (data) => {
+	if ( data[0] === '__currentLocale__'  ) {
+		setTimeout(() => {
+			const topperHeight = fsgUtil.byId('main-header').offsetHeight
+			const bottomHeight = fsgUtil.byId('main-footer').offsetHeight
+			fsgUtil.byId('moveButtons').style.height = `calc(100vh - ${topperHeight + bottomHeight + 10}px)`
+			fsgUtil.byId('moveButtons').style.top = `${topperHeight + 5}px`
+		}, 250)
+	}
+})

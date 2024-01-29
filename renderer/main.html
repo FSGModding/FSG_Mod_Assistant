@@ -49,15 +49,6 @@
 
 		.scroll_col, .scroll_mod { width: 6px; }
 
-		.operation_button {
-			height: 11.6%;
-			line-height: 1.1em
-		}
-		.operation_button_sm {
-			height: 9%;
-			line-height: 1.1em
-		}
-
 		.custom-switch { 
 			padding-left: 0px !important;
 		}
@@ -79,7 +70,42 @@
 		}
 
 		#display_mod_container { margin-top: 10.9rem; }
-		#moveButtons { height: calc(100vh - 13rem); position: fixed; top: 10.7rem; }
+		#moveButtons {
+			position: fixed;
+		}
+		#moveButtons .btn {
+			background-position: 5% 50%;
+			background-repeat: no-repeat;
+			background-size: contain;
+		}
+
+		#moveButton_move {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-file-earmark-arrow-down' viewBox='0 0 16 16'%3E%3Cpath d='M8.5 6.5a.5.5 0 0 0-1 0v3.8L6.4 9a.5.5 0 1 0-.8.8l2 2a.5.5 0 0 0 .8 0l2-2a.5.5 0 0 0-.8-.8l-1.1 1.2z'/%3E%3Cpath d='M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z'/%3E%3C/svg%3E");
+		}
+		#moveButton_copy {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-file-earmark-plus' viewBox='0 0 16 16'%3E%3Cpath d='M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5'/%3E%3Cpath d='M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z'/%3E%3C/svg%3E");
+		}
+		#moveButton_delete {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-file-earmark-x' viewBox='0 0 16 16'%3E%3Cpath d='M6.9 7.1A.5.5 0 1 0 6 8l1.3 1L6 10.1a.5.5 0 0 0 .8.8L8 9.7 9.1 11a.5.5 0 0 0 .8-.8L8.7 9 10 7.9A.5.5 0 0 0 9 7L8 8.3z'/%3E%3Cpath d='M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z'/%3E%3C/svg%3E");
+		}
+		#moveButton_zip {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-file-earmark-zip' viewBox='0 0 16 16'%3E%3Cpath d='M5 7.5a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1l.4 1.5a1 1 0 0 1-.4 1.1l-1 .6a1 1 0 0 1-1 0l-1-.6a1 1 0 0 1-.4-1L5 8.3zm2 0H6v1a1 1 0 0 1 0 .2l-.4 1.6.9.6 1-.6L7 8.7a1 1 0 0 1 0-.3z'/%3E%3Cpath d='M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1h-2v1h-1v1h1v1h-1v1h1v1H6V5H5V4h1V3H5V2h1V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z'/%3E%3C/svg%3E");
+		}
+		#moveButton_open {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-folder-symlink' viewBox='0 0 16 16'%3E%3Cpath d='m11.8 8.3-3.2 2c-.3.1-.6 0-.6-.4V9s-2.6-.3-4 2.4c.6-4.8 3.1-4.8 4-4.8v-.8c0-.3.3-.5.6-.3l3.2 2c.3.1.3.5 0 .7'/%3E%3Cpath d='M.5 3v.9a2 2 0 0 0-.3 1.3l.6 7a2 2 0 0 0 2 1.8h10.4a2 2 0 0 0 2-1.8l.6-7a2 2 0 0 0-2-2.2h-4a2 2 0 0 1-1.4-.6l-.8-.8A2 2 0 0 0 6.2 1H2.5a2 2 0 0 0-2 2m.7 2a1 1 0 0 1 1-1h11.6a1 1 0 0 1 1 1l-.6 7a1 1 0 0 1-1 1H2.8a1 1 0 0 1-1-1zm5-3a1 1 0 0 1 .7.3l.7.7H2.2l-.7.1V3a1 1 0 0 1 1-1z'/%3E%3C/svg%3E");
+		}
+		#moveButton_hub {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-search-heart' viewBox='0 0 16 16'%3E%3Cpath d='M6.5 4.5c1.7-1.7 5.8 1.2 0 5-5.8-3.8-1.7-6.7 0-5'/%3E%3Cpath d='M13 6.5a6.5 6.5 0 0 1-1.3 3.8l.2.1 3.8 3.9a1 1 0 0 1-1.4 1.4L10.4 12a1 1 0 0 1 0-.2A6.5 6.5 0 1 1 13 6.5M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11'/%3E%3C/svg%3E");
+		}
+		#moveButton_site {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.7 10.3a6.5 6.5 0 1 0-1.4 1.4l.1.2 3.9 3.8a1 1 0 0 0 1.4-1.4L12 10.4a1 1 0 0 0-.2 0zm.3-3.8a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E");
+		}
+		#moveButton_fav {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-building-add' viewBox='0 0 16 16'%3E%3Cpath d='M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0'/%3E%3Cpath d='M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6.5a.5.5 0 0 1-1 0V1H3v14h3v-2.5a.5.5 0 0 1 .5-.5H8v4H3a1 1 0 0 1-1-1z'/%3E%3Cpath d='M4.5 2a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-6 3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-6 3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z'/%3E%3C/svg%3E");
+		}
+		#verButton {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(0,0,0,0.15)' class='bi bi-git' viewBox='0 0 16 16'%3E%3Cpath d='m15.7 7.3-7-7a1 1 0 0 0-1.4 0L5.8 1.8l1.8 1.8a1.2 1.2 0 0 1 1.6 1.6L11 6.9a1.2 1.2 0 0 1 1.2 2 1.2 1.2 0 0 1-2-1.3L8.6 6v4.3a1.2 1.2 0 1 1-1 0V5.9a1.2 1.2 0 0 1-.7-1.6L5.1 2.5.3 7.3a1 1 0 0 0 0 1.4l7 7a1 1 0 0 0 1.4 0l7-7a1 1 0 0 0 0-1.4'/%3E%3C/svg%3E");
+		}
 
 		.issue_badges .badge {
 			font-weight: 400;
@@ -112,19 +138,16 @@
 			body[data-i18n="fr"] .ex-small_fr { font-size: .75em; }
 
 			body[data-i18n="nl"] [name="app_name"] { font-size: calc(1.325rem + .55vw); }
-			body[data-i18n="nl"] #display_mod_container { margin-top: 145px; }
-			body[data-i18n="nl"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
+			body[data-i18n="nl"] #display_mod_container { margin-top: 145px; }			
 			body[data-i18n="nl"] .ex-small_nl { font-size: .75em; }
 
 			body[data-i18n="pl"] .ex-small_pl { font-size: .75em; }
 			body[data-i18n="pl"] .ex-small_pl2 { font-size: .55em; }
 
 			body[data-i18n="pt"] #display_mod_container { margin-top: 145px; }
-			body[data-i18n="pt"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
 			body[data-i18n="pt"] .ex-small_pt { font-size: .75em; }
 
 			body[data-i18n="ru"] #display_mod_container { margin-top: 145px; }
-			body[data-i18n="ru"] #moveButtons { height: calc(100vh - 198px); top: 160px; }
 			body[data-i18n="ru"] .ex-small_ru { font-size: .75em; }
 			body[data-i18n="ru"] .ex-small_ru2 { font-size: .7em; }
 		}
@@ -235,20 +258,20 @@
 				<table id="mod-collections" class="w-100 table accordion border-top mt-0"></table><br />
 			</div>
 			<div class="col-2 p-0"><!-- buttons -->
-				<div id="moveButtons" class="px-2" style="width:16.5%">
-					<div id="moveButtonsInt" style="height: calc(100% - 0px);">
-						<button onclick="clientBatchOperation('move')" type="button" class="operation_button w-100 mb-1 btn btn-success text-white rounded-3 disabled"><i class="bi bi-file-earmark-arrow-down"></i><br /><l10n class="small" name="move_to_list"></l10n></button>
-						<button onclick="clientBatchOperation('copy')" type="button" class="operation_button w-100 mb-1 btn btn-success text-white rounded-3 disabled"><i class="bi bi-file-earmark-plus"></i><br /><l10n class="small" name="copy_to_list"></l10n></button>
-						<button onclick="clientBatchOperation('delete')" type="button" class="operation_button w-100 mb-1 btn btn-danger text-white rounded-3 disabled"><i class="bi bi-file-earmark-x"></i><br /><l10n class="small" name="remove_from_list"></l10n></button>
-						<button onclick="clientBatchOperation('zip')" type="button" class="operation_button w-100 mb-1 btn btn-primary rounded-3 disabled"><i class="bi bi-file-earmark-zip"></i><br /><l10n class="small" name="make_zip"></l10n></button>
+				<div id="moveButtons" class="px-2 d-flex flex-column justify-content-around" style="width:16.5%">
+					<!-- <div id="moveButtonsInt" class="flex flex-column justify-content-around"> -->
+						<button id="moveButton_move" onclick="clientBatchOperation('move')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-success text-white rounded-3 disabled"><l10n class="small" name="move_to_list"></l10n></button>
+						<button id="moveButton_copy" onclick="clientBatchOperation('copy')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-success text-white rounded-3 disabled"><l10n class="small" name="copy_to_list"></l10n></button>
+						<button id="moveButton_delete" onclick="clientBatchOperation('delete')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-danger text-white rounded-3 disabled"><l10n class="small" name="remove_from_list"></l10n></button>
+						<button id="moveButton_zip" onclick="clientBatchOperation('zip')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-primary rounded-3 disabled"><l10n class="small" name="make_zip"></l10n></button>
 
-						<button onclick="clientBatchOperation('open')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-3 disabled"><i class="bi bi-folder-symlink"></i><br /><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_from_list"></l10n></button>
-						<button onclick="clientBatchOperation('hub')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-3 disabled"><i class="bi bi-search-heart"></i><br /><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_hub"></l10n></button>
-						<button onclick="clientBatchOperation('site')" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-secondary rounded-3 disabled"><i class="bi bi-search"></i><br /><l10n class="small ex-small_es ex-small_fr ex-small_pl2 ex-small_pt ex-small_ru2" name="context_open_website"></l10n></button>
+						<button id="moveButton_open" onclick="clientBatchOperation('open')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_from_list"></l10n></button>
+						<button id="moveButton_hub" onclick="clientBatchOperation('hub')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_hub"></l10n></button>
+						<button id="moveButton_site" onclick="clientBatchOperation('site')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl2 ex-small_pt ex-small_ru2" name="context_open_website"></l10n></button>
 						
-						<button onclick="mods.copyFavorites()" type="button" class="operation_button operation_button_sm w-100 mb-1 btn btn-warning text-white rounded-3"><i class="bi bi-building-add"></i><br /><l10n class="ex-small" name="copy_fav_to"></l10n></button>
-						<button onclick="mods.versionCheck()" id="verButton" type="button" class="operation_button w-100 btn btn-success text-white rounded-3 "><i class="bi bi-git"></i><br /><l10n class="small" name="version_check"></l10n></button>
-					</div>
+						<button id="moveButton_fav" onclick="mods.copyFavorites()" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-warning text-white rounded-3"><l10n class="small" name="copy_fav_to"></l10n></button>
+						<button onclick="mods.versionCheck()" id="verButton" type="button" class="flex-fill w-100 btn btn-sm btn-success text-white rounded-3 "><l10n class="small" name="version_check"></l10n></button>
+					<!-- </div> -->
 				</div>
 			</div><!-- end: buttons-->
 		</div>
