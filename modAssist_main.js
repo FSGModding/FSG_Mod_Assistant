@@ -735,22 +735,27 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 	const isLog     = thisMod.badgeArray.includes('log')
 
 	const template = [
-		{ label : thisMod.fileDetail.shortName},
+		{
+			label : thisMod.fileDetail.shortName,
+			icon  : win.contextIcons.mod,
+		},
 		menuSep,
 	]
 
 	if ( !isSave && !notMod && !isLog ) {
 		template.push({
-			label : __('context_mod_detail'),
 			click : () => { openDetailWindow(thisMod) },
+			icon  : win.contextIcons.modDetail,
+			label : __('context_mod_detail'),
 		})
 	} else if ( isLog ) {
 		template.push({
-			label : __('button_gamelog__title'),
 			click : () => {
 				loadGameLog(thisPath)
 				win.createNamedWindow('gamelog')
 			},
+			icon  : win.contextIcons.log,
+			label : __('button_gamelog__title'),
 		})
 	} else if ( isSave ) {
 		const subMenu = [...modCollect.collections]
@@ -764,6 +769,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 			}))
 
 		template.push({
+			icon    : win.contextIcons.save,
 			label   : __('check_save_text'),
 			submenu : subMenu,
 		})
@@ -772,15 +778,17 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 	template.push(
 		menuSep,
 		{
-			label : __('open_folder'),
 			click : () => { shell.showItemInFolder(thisPath) },
+			icon  : win.contextIcons.openExplorer,
+			label : __('open_folder'),
 		}
 	)
 	
 	if ( thisMod.modHub.id !== null ) {
 		template.push({
-			label : __('open_hub'),
 			click : () => { shell.openExternal(`${modHubURL}${thisMod.modHub.id}`) },
+			icon  : win.contextIcons.modhub,
+			label : __('open_hub'),
 		})
 	}
 
@@ -789,6 +797,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 		template.push(
 			menuSep,
 			{
+				icon    : win.contextIcons.depend,
 				label   : __('menu_depend_on'),
 				submenu : thisMod.modDesc.depend.map((x) => ( { label : x } )),
 			}
@@ -801,6 +810,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 
 		template.push(
 			{
+				icon    : win.contextIcons.required,
 				label   : __('menu_require_by'),
 				submenu : requireBy[thisMod.fileDetail.shortName].map((x) => ({ label : x })),
 			}
@@ -810,31 +820,36 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 	template.push(
 		menuSep,
 		{
-			label : __('context_set_website'),
 			click : () => { win.sendToWindow('main', 'fromMain_modInfoPop', thisMod, thisSite) },
+			icon  : win.contextIcons.externalSiteSet,
+			label : __('context_set_website'),
 		}
 	)
 
 	if ( thisSite !== '' ) {
 		template.push({
-			label : __('context_open_website'),
 			click : () => { shell.openExternal(thisSite) },
+			icon  : win.contextIcons.externalSite,
+			label : __('context_open_website'),
 		})
 	}
 
 	template.push(
 		menuSep,
 		{
-			label : __('copy_to_list'),
 			click : () => { handleCopyMoveDelete('confirmCopy', [modID], [thisMod]) },
+			icon  : win.contextIcons.fileCopy,
+			label : __('copy_to_list'),
 		},
 		{
-			label : __('move_to_list'),
 			click : () => { handleCopyMoveDelete('confirmMove', [modID], [thisMod]) },
+			icon  : win.contextIcons.fileMove,
+			label : __('move_to_list'),
 		},
 		{
-			label : __('remove_from_list'),
 			click : () => { handleCopyMoveDelete('confirmDelete', [modID], [thisMod]) },
+			icon  : win.contextIcons.fileDelete,
+			label : __('remove_from_list'),
 		}
 	)
 
@@ -842,7 +857,6 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 		template.push(
 			menuSep,
 			{
-				label : __('copy_selected_to_list'),
 				click : () => {
 					if (isHoldingPen) {
 						handleCopyMoveDelete('confirmMultiCopy', modIDs)
@@ -850,9 +864,10 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 						handleCopyMoveDelete('confirmCopy', modIDs)
 					}
 				},
+				icon  : win.contextIcons.fileCopy,
+				label : __('copy_selected_to_list'),
 			},
 			{
-				label : __('move_selected_to_list'),
 				click : () => {
 					if (isHoldingPen) {
 						handleCopyMoveDelete('confirmMultiMove', modIDs)
@@ -860,10 +875,13 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 						handleCopyMoveDelete('confirmMove', modIDs)
 					}
 				},
+				icon  : win.contextIcons.fileMove,
+				label : __('move_selected_to_list'),
 			},
 			{
-				label : __('remove_selected_from_list'),
 				click : () => { handleCopyMoveDelete('confirmDelete', modIDs) },
+				icon  : win.contextIcons.fileDelete,
+				label : __('remove_selected_from_list'),
 			}
 		)
 	}
@@ -876,11 +894,24 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const subLabel  = modCollect.mapCollectionToFullName(collection)
 	const colFolder = modCollect.mapCollectionToFolder(collection)
 	const template  = [
-		{ label : __('context_main_title').padEnd(subLabel.length, ' '), sublabel : subLabel },
+		{
+			icon     : win.contextIcons.collection,
+			label    : __('context_main_title').padEnd(subLabel.length, ' '),
+			sublabel : subLabel,
+		},
 		menuSep,
-		{ label : __('list-active'), enabled : (colFolder !== gameSetOverride.folder), click : () => { newSettingsFile(collection) } },
+		{
+			click   : () => { newSettingsFile(collection) },
+			enabled : (colFolder !== gameSetOverride.folder),
+			icon    : win.contextIcons.active,
+			label   : __('list-active'),
+		},
 		menuSep,
-		{ label : __('open_folder'), click : () => { shell.openPath(modCollect.mapCollectionToFolder(collection)) }}
+		{
+			click : () => { shell.openPath(modCollect.mapCollectionToFolder(collection))},
+			icon  : win.contextIcons.openExplorer,
+			label : __('open_folder'),
+		}
 	]
 
 	const noteMenu = ['username', 'password', 'website', 'admin', 'server']
@@ -888,6 +919,7 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 		.filter((x) => x[1] !== null )
 		.map((x) => ({
 			label : `${__('context_main_copy')} : ${__(`notes_title_${x[0]}`)}`,
+			icon  : win.contextIcons.copy,
 			click : () => { clipboard.writeText(x[1], 'selection') },
 		}))
 
@@ -900,9 +932,9 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 })
 ipcMain.on('toMain_notesContextMenu', async (event) => {
 	const template  = [
-		{ role : 'cut',   label : __('context_cut') },
-		{ role : 'copy',  label : __('context_copy') },
-		{ role : 'paste', label : __('context_paste') },
+		{ role : 'cut',   label : __('context_cut'), icon : win.contextIcons.cut },
+		{ role : 'copy',  label : __('context_copy'), icon : win.contextIcons.copy },
+		{ role : 'paste', label : __('context_paste'), icon : win.contextIcons.paste },
 	]
 
 	const menu = Menu.buildFromTemplate(template)
@@ -910,7 +942,7 @@ ipcMain.on('toMain_notesContextMenu', async (event) => {
 })
 ipcMain.on('toMain_logContextMenu', async (event) => {
 	const template  = [
-		{ role : 'copy', label : __('context_copy') },
+		{ role : 'copy', label : __('context_copy'), icon : win.contextIcons.copy },
 	]
 
 	const menu = Menu.buildFromTemplate(template)
@@ -1117,12 +1149,13 @@ ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
 ipcMain.on('toMain_openFind', () => {  win.createNamedWindow('find') })
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 	const template = [
-		{ label : __('select_in_main'), sublabel : thisMod.name },
+		{ label : __('select_in_main'), sublabel : thisMod.name, icon : win.contextIcons.mod },
 		menuSep,
 	]
 	for ( const instance of thisMod.collect ) {
 		template.push({
 			label : `${instance.name} :: ${instance.version}`,
+			icon  : win.contextIcons.sendCheck,
 			click : () => {
 				if ( win.isValid('main') ) {
 					win.win.main.focus()
