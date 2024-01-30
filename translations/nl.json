@@ -79,6 +79,7 @@
 	"context_paste"                         : "Plakken",
 	"context_set_website"                   : "Bronwebsite instellen",
 	"copy"                                  : "Ja, Copy Mod(s)",
+	"copy_cropcal"                          : "Kopieer Crop Calender JSON naar Klembord",
 	"copy_fav_to"                           : "Favorieten kopiëren naar...",
 	"copy_fav_to__title"                    : "Favoriete map(pen) kopiëren naar één of meer collecties",
 	"copy_selected_to_list"                 : "Alle geselecteerde mods kopiëren naar...",

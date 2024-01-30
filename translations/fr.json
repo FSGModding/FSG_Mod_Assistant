@@ -79,6 +79,7 @@
 	"context_paste"                         : "Coller",
 	"context_set_website"                   : "Set Source Website",
 	"copy"                                  : "Oui, copier le(s) mod(s)",
+	"copy_cropcal"                          : "Copier le JSON du calendrier des récoltes dans le presse-papiers",
 	"copy_fav_to"                           : "Copier les Favoris vers...",
 	"copy_fav_to__title"                    : "Copiez en masse le(s) dossier(s) favori(s) vers une ou plusieurs collections",
 	"copy_selected_to_list"                 : "Copier tous les mods sélectionnés vers...",

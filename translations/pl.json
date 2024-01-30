@@ -79,6 +79,7 @@
 	"context_paste"                         : "Wklej",
 	"context_set_website"                   : "Ustaw stronę źródłową",
 	"copy"                                  : "Tak, skopiuj",
+	"copy_cropcal"                          : "Kopiowanie Crop Calender JSON do schowka",
 	"copy_fav_to"                           : "Kopiuj ulubione do...",
 	"copy_fav_to__title"                    : "Masowe kopiowanie ulubionego folderu (folderów) do innego lub innych",
 	"copy_selected_to_list"                 : "Kopiuj wszystkie wybrane mody do...",

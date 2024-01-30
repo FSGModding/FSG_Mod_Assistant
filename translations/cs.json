@@ -79,6 +79,7 @@
 	"context_paste"                         : "Paste",
 	"context_set_website"                   : "Set Source Website",
 	"copy"                                  : "是的，复制模组",
+	"copy_cropcal"                          : "将作物日历 JSON 复制到剪贴板",
 	"copy_fav_to"                           : "Copy Favorites To...",
 	"copy_fav_to__title"                    : "Mass copy favorite folder(s) to one or more collections",
 	"copy_selected_to_list"                 : "将所有选定的修改复制到...",

@@ -79,6 +79,7 @@
 	"context_paste"                         : "Colar",
 	"context_set_website"                   : "Definir Website de Origem",
 	"copy"                                  : "Sim, Copiar Mod(s)",
+	"copy_cropcal"                          : "Copiar JSON do calendário de corte para a área de transferência",
 	"copy_fav_to"                           : "Copiar favoritos para...",
 	"copy_fav_to__title"                    : "Copie em massa a(s) pasta(s) favorita(s) para uma ou mais coleções",
 	"copy_selected_to_list"                 : "Copiar todos os mods seleccionados para...",

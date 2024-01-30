@@ -79,6 +79,7 @@
 	"context_paste"                         : "Pegar",
 	"context_set_website"                   : "Establecer sitio web de origen",
 	"copy"                                  : "Sí, Copiar Mod(s)",
+	"copy_cropcal"                          : "Copiar JSON de Calendario de Recortes al Portapapeles",
 	"copy_fav_to"                           : "Copiar favoritos a...",
 	"copy_fav_to__title"                    : "Copiar en masa la(s) carpeta(s) favorita(s) a una o más colecciones",
 	"copy_selected_to_list"                 : "Copiar todos los mods seleccionados a...",

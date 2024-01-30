@@ -79,6 +79,7 @@
 	"context_paste"                         : "Paste",
 	"context_set_website"                   : "Set Source Website",
 	"copy"                                  : "Yes, Copy Mod(s)",
+	"copy_cropcal"                          : "Copy Crop Calender JSON to Clipboard",
 	"copy_fav_to"                           : "Copy Favorites To...",
 	"copy_fav_to__title"                    : "Mass copy favorite folder(s) to one or more collections",
 	"copy_selected_to_list"                 : "Copy All Selected Mods To...",

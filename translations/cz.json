@@ -79,6 +79,7 @@
 	"context_paste"                         : "Vložit",
 	"context_set_website"                   : "Nastavit zdrojový web",
 	"copy"                                  : "Ano, kopírovat režimy",
+	"copy_cropcal"                          : "Kopírování JSON kalendáře oříznutí do schránky",
 	"copy_fav_to"                           : "Kopírovat Oblíbené do...",
 	"copy_fav_to__title"                    : "Hromadné kopírování oblíbených složek do jedné nebo více kolekcí",
 	"copy_selected_to_list"                 : "Zkopírovat všechny vybrané mody do...",

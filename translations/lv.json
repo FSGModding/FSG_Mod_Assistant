@@ -79,6 +79,7 @@
 	"context_paste"                         : "Ielīmēt",
 	"context_set_website"                   : "Iestatīt avota vietni",
 	"copy"                                  : "Jā, kopēt Mod(s)",
+	"copy_cropcal"                          : "Apcirpšanas kalendāra JSON kopēšana uz starpliktuvi",
 	"copy_fav_to"                           : "Kopēt izlasi uz...",
 	"copy_fav_to__title"                    : "Masu kopēšana no iecienītākās mapes(-ēm) uz vienu vai vairākām kolekcijām",
 	"copy_selected_to_list"                 : "Kopēt visus atlasītos Mods uz...",
