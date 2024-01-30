@@ -46,6 +46,7 @@ contextBridge.exposeInMainWorld(
 		openCompareBase  : (itemID) => { ipcRenderer.send('toMain_openCompareBase', itemID )},
 		openCompareMod   : (itemDetails, source) => { ipcRenderer.send('toMain_openCompareMod', itemDetails, source )},
 		openCompareMulti : (itemIDs, source) => { ipcRenderer.send('toMain_openCompareMulti', itemIDs, source) },
+		popClipboard     : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_modRecord',

@@ -280,7 +280,10 @@ const buildPage = (modCollect) => {
 	if ( Array.isArray(modRecord.modDesc.cropInfo) ) {
 		fsgUtil.byId('cropcal_div').classList.remove('d-none')
 		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false)
-		fsgUtil.byId('cropjson').innerHTML = JSON.stringify(modRecord.modDesc.cropInfo)
+		fsgUtil.byId('detail_crop_json').classList.remove('d-none')
+		fsgUtil.byId('cropcal_button').addEventListener('click', () => {
+			window.mods.popClipboard(JSON.stringify(modRecord.modDesc.cropInfo))
+		})
 	}
 }
 
