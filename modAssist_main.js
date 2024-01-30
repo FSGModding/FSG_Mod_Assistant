@@ -963,7 +963,7 @@ ipcMain.on('toMain_openGameLog',       () => {
 
 	win.createNamedWindow('gamelog')
 })
-ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(mcStore.get('game_log_file')) })
+ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(gameLogFilename()) })
 ipcMain.on('toMain_getGameLog',        () => { readGameLog() })
 ipcMain.on('toMain_guessGameLog',      () => {
 	mcStore.set('game_log_auto', true)
