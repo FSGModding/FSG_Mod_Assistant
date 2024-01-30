@@ -787,7 +787,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 	if ( thisMod.modHub.id !== null ) {
 		template.push({
 			click : () => { shell.openExternal(`${modHubURL}${thisMod.modHub.id}`) },
-			icon  : win.contextIcons.modhub,
+			icon  : win.contextIcons.externalSite,
 			label : __('open_hub'),
 		})
 	}
@@ -1809,8 +1809,7 @@ ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(e
 async function updateGameRunning() {
 	if ( !mainProcessFlags.gameRunningEnabled ) {
 		// log.log.debug('Polling Game Disabled', 'game-process-poll')
-		win.sendToValidWindow('main', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled, updateReady : modCollect.updateIsReady})
-		win.sendToValidWindow('mini', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled})
+		refreshTransientStatus()
 		return
 	}
 
@@ -1837,8 +1836,20 @@ async function updateGameRunning() {
 			// log.log.debug('Game Stopped since last check', 'game-process-poll')
 		}
 		mainProcessFlags.gameRunning = gameIsRunning
-		win.sendToValidWindow('main', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled, updateReady : modCollect.updateIsReady})
-		win.sendToValidWindow('mini', 'fromMain_gameUpdate', {gameRunning : mainProcessFlags.gameRunning, gameRunningEnabled : mainProcessFlags.gameRunningEnabled})
+		refreshTransientStatus()
+	})
+}
+
+function refreshTransientStatus() {
+	win.sendToValidWindow('main', 'fromMain_gameUpdate', {
+		botStatus          : modCollect.botDetails,
+		gameRunning        : mainProcessFlags.gameRunning,
+		gameRunningEnabled : mainProcessFlags.gameRunningEnabled,
+		updateReady        : modCollect.updateIsReady,
+	})
+	win.sendToValidWindow('mini', 'fromMain_gameUpdate', {
+		gameRunning        : mainProcessFlags.gameRunning,
+		gameRunningEnabled : mainProcessFlags.gameRunningEnabled,
 	})
 }
 

@@ -140,6 +140,10 @@ function clientSetNote(id) {
 		}
 	}
 	
+	if ( id === 'notes_fsg_bot' ) {
+		formControl.value = formControl.value.split(/\D+/).filter((x) => x.length !== 0 ).join('-')
+	}
+	
 	if ( formControl.getAttribute('type') === 'checkbox' ) {
 		window.mods.setNote(id, formControl.checked, thisCollection)
 	} else {

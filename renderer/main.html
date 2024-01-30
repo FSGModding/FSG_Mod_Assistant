@@ -112,6 +112,33 @@
 			padding-bottom: 0.35em;
 		}
 
+		.bot-status {
+			font-size: .7rem!important;
+			background-repeat: no-repeat;
+			background-position: 50% 50%;
+			background-size: contain;
+			width : 1.5rem;
+			height : 1.5rem;
+			display: inline-block;
+			text-align: center;
+			vertical-align: middle;
+			padding-top: 0.2rem;
+			margin-left: 3px;
+		}
+
+		.bot-broken {
+			color : black;
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23888888' class='bi bi-circle-fill' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8'/%3E%3C/svg%3E");
+		}
+		.bot-online {
+			color : white;
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23229B69' class='bi bi-circle-fill' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8'/%3E%3C/svg%3E");
+		}
+		.bot-offline {
+			color : black;
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23E74C3C' class='bi bi-circle-fill' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8'/%3E%3C/svg%3E");
+		}
+
 		.ex-small { font-size: .75em }
 
 		body[data-version="22"] .bdg_no_fs22 { display : none }
@@ -903,15 +930,18 @@
 			<div class="badge rounded-pill bg-primary bg-gradient float-start" style="width: 2.1rem; height: 1rem; margin-bottom: -1rem; font-size: 0.5em; transform: translateY(-20%)!important">{{totalCount}}</div>
 			{{folderSVG}}
 		</td>
-		<td class="folder-name collapsed" {{bootstrap_data}}>
-			<div class="d-inline-block align-middle {{class_status}}">{{name}}{{tagLine}}
+		<td style="width: 50%" class="folder-name collapsed" {{bootstrap_data}}>
+			<div class="row g-0">
+			<div class="col align-middle align-self-center {{class_status}}">{{name}}{{tagLine}}
 				<span class="ps-3 small fst-italic {{class_hideFolderEdit}}"><br>
 					<l10n name="folder_added"></l10n>: {{dateAdd}}
 					<l10n name="folder_used"></l10n>: {{dateUsed}}
 				</span>
 			</div>
+			<div id="{{id}}__bot" class="col-3 align-self-end text-end"></div>
+		</div>
 		</td>
-		<td class="align-middle text-end" style="line-height: 2rem;">
+		<td class="align-middle text-end" style="line-height: 2.6rem;">
 			<button class="{{class_showFolderEdit}} {{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="clientOpenMod('true', '{{mapClick}}')">
 				<img class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}"  />
 			</button>

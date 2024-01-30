@@ -268,6 +268,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	fsgUtil.clsOrGate('verButton', verFlag, 'btn-danger', 'btn-success')
 
 	toggleGameStatus(modCollect.opts.gameRunning)
+	updateBotStatus(modCollect.bot)
 
 	gameIsRunningFlag = modCollect.opts.gameRunning
 
@@ -387,6 +388,35 @@ const makeFilterButton = ( name, isHide = false ) => {
 		<input type="checkbox" id="${id}" onchange="select_lib.filter_begin()" class="btn-check ${cls}" autocomplete="off">
 		<label class="btn btn-outline-${color}" for="${id}"><l10n name="${l10n}"></l10n>${qty !== null ? ` [${qty}]` : ''}</label>
 	`
+}
+
+const updateBotStatus = (botObject) => {
+	if ( Object.keys(botObject.response).length === 0 ) { return }
+
+	for ( const [collectKey, IDs] of Object.entries(botObject.requestMap) ) {
+		const thisBotDiv = fsgUtil.byId(`${collectKey}__bot`)
+		if ( thisBotDiv === null ) { continue }
+		if ( IDs.length === 0 ) {
+			thisBotDiv.innerHTML = ''
+			thisBotDiv.classList.add('d-none')
+			continue
+		}
+
+		const thisCollectHTML = []
+
+		for ( const thisID of IDs ) {
+			const thisIDResponse = botObject.response[thisID]
+			if ( typeof thisIDResponse === 'undefined' || thisIDResponse.status !== 'Good' ) {
+				thisCollectHTML.push(`<span class="bot-status bot-broken" title="${thisID} ${botObject.l10nMap.unknown}"></span>`)
+			} else if ( thisIDResponse.online === true ) {
+				thisCollectHTML.push(`<span class="bot-status bot-online" title="${thisIDResponse.name} :: ${thisIDResponse.playersOnline} / ${thisIDResponse.slotCount} ${botObject.l10nMap.online}">${thisIDResponse.playersOnline}</span>`)
+			} else {
+				thisCollectHTML.push(`<span class="bot-status bot-offline" title="${thisIDResponse.name} ${botObject.l10nMap.offline}"></span>`)
+			}
+		}
+		thisBotDiv.classList.remove('d-none')
+		thisBotDiv.innerHTML = thisCollectHTML.join('')
+	}
 }
 
 const makeModCollection = (isOnline, id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor, removable, foldersEdit, dateAdd, dateUsed) => fsgUtil.useTemplate('collect_row', {
