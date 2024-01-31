@@ -391,6 +391,23 @@ const makeFilterButton = ( name, isHide = false ) => {
 	`
 }
 
+
+const botStatusLine = (id, response, isGood,  l10n) => {
+	const thisStatus = !isGood ? 'broken' : response.online ? 'online' : 'offline'
+	const thisTitle  = !isGood ?
+		`${id} ${l10n.unknown}` :
+		response.online ?
+			`${response.name} :: ${response.playersOnline} / ${response.slotCount} ${l10n.online}` :
+			`${response.name} ${l10n.offline}`
+	const thisText = isGood && response.online ? response.playersOnline : ''
+
+	return [
+		`<a title="${thisTitle}" target="_blank" href="https://www.farmsimgame.com/Server/${id}">`,
+		`<span class="bot-status bot-${thisStatus}">${thisText}</span>`,
+		'</a>'
+	].join('')
+}
+
 const updateBotStatus = (botObject) => {
 	if ( Object.keys(botObject.response).length === 0 ) { return }
 
@@ -406,14 +423,12 @@ const updateBotStatus = (botObject) => {
 		const thisCollectHTML = []
 
 		for ( const thisID of IDs ) {
-			const thisIDResponse = botObject.response[thisID]
-			if ( typeof thisIDResponse === 'undefined' || thisIDResponse.status !== 'Good' ) {
-				thisCollectHTML.push(`<span class="bot-status bot-broken" title="${thisID} ${botObject.l10nMap.unknown}"></span>`)
-			} else if ( thisIDResponse.online === true ) {
-				thisCollectHTML.push(`<span class="bot-status bot-online" title="${thisIDResponse.name} :: ${thisIDResponse.playersOnline} / ${thisIDResponse.slotCount} ${botObject.l10nMap.online}">${thisIDResponse.playersOnline}</span>`)
-			} else {
-				thisCollectHTML.push(`<span class="bot-status bot-offline" title="${thisIDResponse.name} ${botObject.l10nMap.offline}"></span>`)
-			}
+			thisCollectHTML.push(botStatusLine(
+				thisID,
+				botObject.response[thisID],
+				botObject.response[thisID].status === 'Good',
+				botObject.l10nMap
+			))
 		}
 		thisBotDiv.classList.remove('d-none')
 		thisBotDiv.innerHTML = thisCollectHTML.join('')
