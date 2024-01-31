@@ -134,6 +134,7 @@ window.mods.receive('fromMain_gameUpdate', (status) => {
 	gameIsRunningFlag = status.gameRunning
 	toggleGameStatus(status.gameRunning, status.gameRunningEnabled)
 	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
+	updateBotStatus(status.botStatus)
 })
 
 let collectOrder    = {}
