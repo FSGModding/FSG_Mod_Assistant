@@ -36,6 +36,7 @@ Please note that this documentation is auto-generated, and may refer to a newer 
 - [User Preferences](preferences.html)
 - [Game Log Viewer](gamelog.html)
 - [Multiple Game Version Mode](multi-version.html)
+- [FSG Bot Integration HowTo](fsgbot.html)
 - [Frequently Asked Questions](faq.html)
 
 ## What is a Broken Mod?

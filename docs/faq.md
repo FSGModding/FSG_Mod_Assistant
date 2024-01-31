@@ -68,6 +68,14 @@ Due to how windows handles the permission for creating symlinks, it is not curre
 
 ---
 
+### Can I launch the game if I have the XBox Store version of Farming Simulator?
+
+Yes, you can! In this situation, you need to set the launch path __and__ name to something different.  After opening settings, and pressing the folder icon next to the game path entry, make sure you set the file type filter (bottom right of the popup) to "all files".  Then select `gamelaunchhelper.exe` in the folder shown below.  Note that if you have installed XBox store items to a different folder or drive, the path may be different.
+
+![--](img340/gamepass-version-location.png)
+
+---
+
 ### How does the mod cache work?
 
 This app uses a mod cache based on mod file name, size, and date. As such, it only needs to scan a mod once. Unzipped mods, broken mods, and files that don't appear to be mods are not added to the cache.  The `broken mods` item is important as if you have a _lot_ of broken mods in your mod folder, it can slow down the startup of the app.

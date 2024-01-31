@@ -80,6 +80,10 @@ This sets your player display name for this collection.  Only useful for multipl
 
 This sets the server name, or, more accurately, it pre-populates the multiplayer server search box with this value.  It is recommended to keep as simple as possible.
 
+#### FSG Bot ID(s)
+
+This allows you to provide one or more FarmSimGame bot ID's to track the status of on this collection. Please see [FSG Bot Integration HowTo](fsgbot.html) for more details.
+
 #### Server Password
 
 This is the password that is required to join the server.  It is **not** your farm password, or the online web based administration tool password.  Setting this will pre-populate the server join password popup box allowing you to just click OK or press enter

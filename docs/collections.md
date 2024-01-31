@@ -50,7 +50,7 @@ To use a collection in the game, select it from the dropdown list at the center 
 
 Alternatively, you can right click on a collection and click `Set Active`
 
-![Right click menu](img340/right-click-collection.webp)
+![Right click menu](img340/context-collection.png)
 
 If you decide down the line to remove Mod Assistant, or wish you use the standard mod location for whatever reason, you can use the `Deactivate` button.
 
