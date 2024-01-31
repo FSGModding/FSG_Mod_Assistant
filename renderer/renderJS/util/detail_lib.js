@@ -91,6 +91,7 @@ const dtLib = {
 		['hasBeacons',     null,             'look-beacons',      'look_has_beacons'],
 		['hasColor',       null,             'look-paintable',    'look_has_paint'],
 		['hasWheelChoice', null,             'look-wheels',       'look_has_wheels'],
+		['year',           null,             'look-year',         false],
 	],
 
 	husbandTestTypes : ['CHICKEN', 'COW', 'HORSE', 'PIG', 'SHEEP'],
