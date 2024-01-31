@@ -10,13 +10,13 @@
 const startTime  = Date.now()
 const testList   = [
 	'csvcheck',     // CSV Reader (collection compare)
-	// 'modcheck',     // Mod Checker
-	// 'modcollect',   // Collection test
-	// 'modlook',      // Mod Internal Looker
-	// 'modtrack',     // Mod tracking
-	// 'savegame',     // Savegame Reading
-	// 'sourcecode',   // ESLint Source code
-	// 'translations', // Translation file check
+	'modcheck',     // Mod Checker
+	'modcollect',   // Collection test
+	'modlook',      // Mod Internal Looker
+	'modtrack',     // Mod tracking
+	'savegame',     // Savegame Reading
+	'sourcecode',   // ESLint Source code
+	'translations', // Translation file check
 ]
 
 const c       = require('ansi-colors')
@@ -28,8 +28,8 @@ const { ma_logger, maIPC } = require('../lib/modUtilLib.js')
 maIPC.log = new ma_logger('multi-test')
 maIPC.log.forceNoConsole()
 
-maIPC.notes    = { store : {}, get : () => null }
-maIPC.settings = { store : {}, get : () => null }
+maIPC.notes    = { store : {}, get : (defValue) => typeof defValue !== 'undefined' ? defValue : null }
+maIPC.settings = { store : {}, get : (defValue) => typeof defValue !== 'undefined' ? defValue : null }
 maIPC.modCache = { getMod : () => false, setMod : () => null, saveFile : () => null }
 maIPC.sites    = { store : {}, get : () => null }
 

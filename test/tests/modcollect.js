@@ -19,7 +19,7 @@ const { maIPC, getDeferPromise } = require('../../lib/modUtilLib.js')
 class queueEmitter extends EventEmitter {}
 const queueDoneEmit = new queueEmitter()
 
-const modCollect = new modFileCollection( require('node:os').homedir, queueDoneEmit, true )
+const modCollect = new modFileCollection( require('node:os').homedir, queueDoneEmit, true, true )
 
 maIPC.decodePath = path.join(__dirname, '..', '..', 'texconv.exe')
 
