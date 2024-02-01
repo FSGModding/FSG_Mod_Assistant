@@ -174,10 +174,28 @@
 			body[data-i18n="ru"] .ex-small_ru { font-size: .75em; }
 			body[data-i18n="ru"] .ex-small_ru2 { font-size: .7em; }
 		}
+
+		.fsg-back-1 {
+			background-image: url(img/fsg_back_1.svg);
+			background-repeat: no-repeat;
+			background-size: 100vh;
+			background-attachment: fixed;
+			background-position: bottom 30px left 10px;
+			background-blend-mode: luminosity;
+		}
+		.fsg-back-1[data-bs-theme="light"] {
+			background-image: url(img/fsg_back_1_l.svg);
+		}
+		.fsg-back-2 {
+			background-image: url(img/fsg_back_2.svg);
+			background-size: 90vh !important;
+			background-position: bottom 0px left 30px !important;
+			background-blend-mode: multiply !important;
+		}
 	</style>
 	
 </head>
-<body class="d-flex flex-column h-100 overflow-custom2" id="drag_target" data-bs-theme="dark">
+<body class="d-flex flex-column h-100 overflow-custom2 fsg-back-1" id="drag_target" data-bs-theme="dark">
 	<div id="scroll-bar-fake" class="position-fixed d-flex flex-column">
 	</div>
 	<div id="lang-style-div">
@@ -353,7 +371,7 @@
 
 	</main>
 
-	<footer class="footer fixed-bottom mt-auto bg-dark small border-top" id="main-footer">
+	<footer class="footer fixed-bottom mt-auto bg-body small border-top" id="main-footer">
 		<div class="container-fluid text-center">
 			<div class="d-flex justify-content-around opacity-75" style="height:35px">
 				<div class="align-self-center">
@@ -866,7 +884,7 @@
 
 	<div id="loadOverlay" class="modal" tabindex="-1">
 		<div class="modal-dialog modal-lg modal-dialog-centered" style="width:600px; height:300px;">
-			<div class="modal-content p-0 m-0">
+			<div class="modal-content p-0 m-0 bg-dark">
 				<img style="margin:0; padding:0; width:600px; height:300px; opacity: 0.4;" src="img/splash.webp">
 				<div style="position: absolute; left: 311px; height: 270px; width: 270px; top: 20px; opacity: 7%; z-index:2; ">
 					<img src="img/wait_ani.webp" class="w-100">
@@ -874,7 +892,7 @@
 				<div id="loadOverlay_downloadCancel" style="position: absolute; left: 10px; width: 280px; top: 250px;" class="py-1 px-3">
 					<button id="loadOverlay_downloadCancelButton" onclick="window.mods.cancelDownload()" class="btn btn-danger text-white w-100"></button>
 				</div>
-				<div style="position: absolute; left: 310px; height: 270px; width: 280px; top: 20px;" class="bg-dark py-1 px-3">
+				<div style="position: absolute; left: 310px; height: 270px; width: 280px; top: 20px;" class="bg-dark py-1 px-3 text-white">
 					<div id="loadOverlay_statusMessage" class="text-center display-6 mb-1">Status Title</div>
 					<div id="status-icon-working" class="d-flex justify-content-center">
 						<div id="loadOverlay_speed" class="d-none" style="text-align:center; margin-top:1.7rem; width:4rem; display:block;"><span id="loadOverlay_speed_speed" style="white-space:nowrap" class="small">SPEED</span><br><span id="loadOverlay_speed_time" style="white-space:nowrap" class="small">TIME</span></div>

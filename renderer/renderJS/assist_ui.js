@@ -817,6 +817,11 @@ window.addEventListener('DOMContentLoaded', () => {
 	modInfoDialog.hide()
 	loadOverlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
 
+	const todayIs = new Date()
+	if ( todayIs.getMonth() === 3 && todayIs.getDate() === 1 ) {
+		fsgUtil.clsAddId('drag_target', 'fsg-back-2')
+	}
+
 	const dragTarget = fsgUtil.byId('drag_target')
 
 	window.l10n.langList_send()
