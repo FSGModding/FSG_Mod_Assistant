@@ -85,7 +85,7 @@ const make_combos = (combos, lookRecord, parentItem) => {
 
 const doMapImage = (mapImage) => {
 	if ( mapImage === null || typeof mapImage !== 'string') { return }
-	fsgUtil.byId('map_image_div').classList.remove('d-none')
+	fsgUtil.clsShow('map_image_div')
 	fsgUtil.byId('map_image').src = mapImage
 }
 
@@ -195,8 +195,8 @@ const buildStore = (lookRecord, chartUnits) => {
 		}
 	}
 
-	fsgUtil.byId('storeitems').innerHTML = storeItemsHTML.join('')
-	fsgUtil.byId('store_div').classList.remove('d-none')
+	fsgUtil.setById('storeitems', storeItemsHTML)
+	fsgUtil.clsShow('store_div')
 
 	for ( const thisJS of storeItemsJS ) {
 		setTimeout(thisJS, 25)
@@ -240,7 +240,7 @@ const buildPage = (modCollect) => {
 		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
 	}
 
-	for ( const key in idMap ) { fsgUtil.byId(key).innerHTML = idMap[key] }
+	fsgUtil.setContent(idMap)
 
 	fsgUtil.clsOrGateArr('keyBinds', doneKeyBinds, 'text-info')
 	fsgUtil.clsOrGateArr('pngTexture', modRecord.fileDetail.pngTexture)
@@ -253,14 +253,14 @@ const buildPage = (modCollect) => {
 	const bindingIssue     = modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] ?? null
 
 	if ( modRecord.issues.length === 0 && bindingIssue === null ) {
-		fsgUtil.byId('problem_div').classList.add('d-none')
+		fsgUtil.clsHide('problem_div')
 	} else {
 		const problems = [
 			...doStep_issues(modRecord),
 			...doStep_binds(bindingIssue, modCollect.currentLocale)
 		].map((x) => `<tr class="py-2"><td class="px-2">${fsgUtil.checkX(0, false)}</td><td>${x}</td></tr>`)
 
-		fsgUtil.byId('problems').innerHTML = `<table class="table table-borderless">${problems.join('')}</table>`
+		fsgUtil.setById('problems', `<table class="table table-borderless">${problems.join('')}</table>`)
 	}
 
 	const theseBadges = Array.isArray(modRecord.displayBadges) ? modRecord.displayBadges.map((badge) => fsgUtil.badge_main(badge)).join(' ') : false
@@ -278,9 +278,11 @@ const buildPage = (modCollect) => {
 	)
 
 	if ( Array.isArray(modRecord.modDesc.cropInfo) ) {
-		fsgUtil.byId('cropcal_div').classList.remove('d-none')
+		fsgUtil.clsShow('cropcal_div')
+		fsgUtil.clsShow('detail_crop_json')
+		
 		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false)
-		fsgUtil.byId('detail_crop_json').classList.remove('d-none')
+		
 		fsgUtil.byId('cropcal_button').addEventListener('click', () => {
 			window.mods.popClipboard(JSON.stringify(modRecord.modDesc.cropInfo))
 		})

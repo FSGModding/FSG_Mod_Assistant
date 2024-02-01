@@ -104,13 +104,13 @@ let collectDialog = null
 let importDialog  = null
 
 window.addEventListener('DOMContentLoaded', () => {
-	deleteDialog = new bootstrap.Modal(document.getElementById('delete_savegame_modal'), {backdrop : 'static', keyboard : false})
+	deleteDialog = new bootstrap.Modal('#delete_savegame_modal', {backdrop : 'static', keyboard : false})
 	deleteDialog.hide()
-	restoreDialog = new bootstrap.Modal(document.getElementById('restore_savegame_modal'), {backdrop : 'static', keyboard : false})
+	restoreDialog = new bootstrap.Modal('#restore_savegame_modal', {backdrop : 'static', keyboard : false})
 	restoreDialog.hide()
-	collectDialog = new bootstrap.Modal(document.getElementById('collect_savegame_modal'), {backdrop : 'static', keyboard : false})
+	collectDialog = new bootstrap.Modal('#collect_savegame_modal', {backdrop : 'static', keyboard : false})
 	collectDialog.hide()
-	importDialog = new bootstrap.Modal(document.getElementById('import_savegame_modal'), {backdrop : 'static', keyboard : false})
+	importDialog = new bootstrap.Modal('#import_savegame_modal', {backdrop : 'static', keyboard : false})
 	importDialog.hide()
 })
 
@@ -123,8 +123,8 @@ function clientImportSave_load() {
 }
 
 function clientImportSave_go() {
-	const destSlot = fsgUtil.byId('save_import_choice').value
-	const srcFile  = fsgUtil.byId('save_import_path').innerHTML
+	const destSlot = fsgUtil.valueById('save_import_choice')
+	const srcFile  = fsgUtil.htmlById('save_import_path')
 	if ( destSlot !== '--' && srcFile !== '' ) {
 		window.mods.doImportSave(srcFile, destSlot)
 		importDialog.hide()
@@ -160,22 +160,22 @@ function clientCompareSave(uuid) {
 }
 
 function clientDeleteSave_go() {
-	window.mods.doDeleteSave(fsgUtil.byId('save_delete_path').innerHTML)
+	window.mods.doDeleteSave(fsgUtil.htmlById('save_delete_path'))
 	deleteDialog.hide()
 }
 
 function clientRestoreSave_go() {
-	const destSlot = fsgUtil.byId('save_restore_choice').value
+	const destSlot = fsgUtil.valueById('save_restore_choice')
 	if ( destSlot !== '--') {
-		window.mods.doRestoreSave(fsgUtil.byId('save_restore_path').innerHTML, destSlot)
+		window.mods.doRestoreSave(fsgUtil.htmlById('save_restore_path'), destSlot)
 		restoreDialog.hide()
 	}
 }
 
 function clientCompareSave_go() {
-	const collectKey = fsgUtil.byId('save_collect_choice').value
+	const collectKey = fsgUtil.valueById('save_collect_choice')
 	if ( collectKey !== '--') {
-		window.mods.doCompareSave(fsgUtil.byId('save_collect_path').innerHTML, collectKey)
+		window.mods.doCompareSave(fsgUtil.htmlById('save_collect_path'), collectKey)
 		collectDialog.hide()
 	}
 }

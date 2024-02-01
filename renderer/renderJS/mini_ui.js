@@ -29,7 +29,7 @@ window.mods.receive('fromMain_gameUpdate', (status) => {
 window.mods.receive('fromMain_modList', (modCollect) => {
 	const isPinned = modCollect.opts.pinMini
 	/* List selection */
-	fsgUtil.byId('collectionSelect').innerHTML = buildCollectSelect(modCollect)
+	fsgUtil.setById('collectionSelect', buildCollectSelect(modCollect))
 	/* END : List selection */
 	fsgUtil.clsHideFalse('window-pin-pinned', isPinned)
 	fsgUtil.clsHideTrue('window-pin-not-pinned', isPinned)
@@ -40,7 +40,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 function clientMakeListActive() {
 	fsgUtil.byId('launch_button').disabled = true
-	const activePick = fsgUtil.byId('collectionSelect').value.replace('collection--', '')
+	const activePick = fsgUtil.valueById('collectionSelect').replace('collection--', '')
 
 	if ( activePick !== '0' && activePick !== '999' ) {
 		blinkLED()
@@ -114,7 +114,7 @@ let flasherInterval = null
 let flasherCounter  = 0
 
 function clientOpenFarmSim() {
-	const currentList = fsgUtil.byId('collectionSelect').value
+	const currentList = fsgUtil.valueById('collectionSelect')
 	if ( currentList === lastList ) {
 		// Selected is active, no confirm
 		spinLED()

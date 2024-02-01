@@ -20,18 +20,18 @@ window.mods.receive('fromMain_subWindowSelectInvert', fsgUtil.windowCheckInv)
 window.mods.receive('fromMain_modSet', (modSet, shortName) => {
 	let latestVersion = { vString : null, vParts : [], collectKey : null }
 
-	fsgUtil.byId('modName').innerHTML = shortName
+	fsgUtil.setById('modName', shortName)
 	cacheShortName = shortName
 
 	for ( const mod of modSet ) {
 		latestVersion = compareVersion(latestVersion, mod.version, mod.collectKey)
 	}
 
-	fsgUtil.byId('newVersion').innerHTML = latestVersion.vString
-	fsgUtil.byId('copyButton').classList.remove('disabled')
+	fsgUtil.setById('newVersion', latestVersion.vString)
+	fsgUtil.clsEnable('copyButton')
 	cacheCollection = latestVersion.collectKey
 
-	fsgUtil.byId('modSet').innerHTML = modSet.map((mod) => makeLine(mod, latestVersion)).join('')
+	fsgUtil.setById('modSet', modSet.map((mod) => makeLine(mod, latestVersion)))
 	processL10N()
 })
 

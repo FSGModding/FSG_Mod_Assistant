@@ -302,8 +302,8 @@ function setPageInfo(title, content, { button_comp = false, button_folder = fals
 	fsgUtil.clsShowTrue('compareButton', button_comp)
 	fsgUtil.clsShowTrue('back_button', history.length > 1)
 
-	fsgUtil.byId('bgContent').innerHTML = content
-	fsgUtil.byId('title').innerHTML     = title
+	fsgUtil.setById('bgContent', content)
+	fsgUtil.setById('title', title)
 }
 
 function attachProperCase(pageID) {
@@ -395,7 +395,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		case 'item' : {
 			const thisItem = client_BGData.records[pageID]
 	
-			fsgUtil.byId('mod_location').innerHTML = thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`
+			fsgUtil.setById('mod_location', thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`)
 
 			setPageInfo(
 				typeof thisItem.brand !== 'undefined' ? `${client_BGData.brandMap[thisItem.brand.toLowerCase()]} ${__(thisItem.name, {skipIfNotBase : true})}` : __(thisItem.name, {skipIfNotBase : true}),
@@ -409,7 +409,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 		default :
 			buildSearchTree()
-			fsgUtil.byId('searchBox').classList.remove('d-none')
+			fsgUtil.clsShow('searchBox')
 			setPageInfo(
 				'<l10n name="basegame_main_title"></l10n>',
 				getTopCat('top')
@@ -428,20 +428,20 @@ function findItemsByTerm(strTerm) {
 }
 
 function clientFilter() {
-	const filterText = fsgUtil.byId('mods__filter').value.toLowerCase()
+	const filterText = fsgUtil.valueByIdLC('mods__filter')
 
-	fsgUtil.byId('mods__filter_clear').classList[( filterText !== '' ) ? 'remove':'add']('d-none')
+	fsgUtil.clsShowTrue('mods__filter_clear', filterText !== '' )
 
 	if ( filterText.length < 2 ) {
-		fsgUtil.byId('searchResults').innerHTML = ''
+		fsgUtil.setById('searchResults', '')
 	} else {
-		fsgUtil.byId('searchResults').innerHTML = dtLib.wrap.row(findItemsByTerm(filterText).sort().map((x) => dtLib.wrap.item(x)))
+		fsgUtil.setById('searchResults', dtLib.wrap.row(findItemsByTerm(filterText).sort().map((x) => dtLib.wrap.item(x))))
 		processL10N()
 	}
 }
 
 function clientClearInput() {
-	fsgUtil.byId('mods__filter').value = ''
+	fsgUtil.valueById('mods__filter', '')
 	clientFilter()
 }
 

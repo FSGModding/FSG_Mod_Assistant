@@ -66,10 +66,8 @@ function clientSortBy(sortType) {
 	const isDownNow    = fsgUtil.byId(`head_${sortType}`).querySelector('.fsico-sort-down') !== null
 	const shouldBeDown = !isDownNow
 
-	for ( const element of fsgUtil.query('.sort-icon') ) {
-		element.classList.remove('fsico-sort-down', 'fsico-sort-up')
-		element.classList.add('fsico-sort-none')
-	}
+	fsgUtil.clsRemoveFromAll('.sort-icon', ['fsico-sort-down', 'fsico-sort-up'])
+	fsgUtil.clsAddToAll('.sort-icon', 'fsico-sort-none')
 
 	fsgUtil.query(`#head_${sortType} .sort-icon`)[0].classList.remove('fsico-sort-none')
 	fsgUtil.query(`#head_${sortType} .sort-icon`)[0].classList.add(shouldBeDown ? 'fsico-sort-down' : 'fsico-sort-up')
@@ -84,7 +82,7 @@ function clientSortBy(sortType) {
 
 	sortRows.sort((a, b) => !shouldBeDown ? a.value - b.value : b.value - a.value )
 
-	fsgUtil.byId('displayTable').innerHTML = sortRows.map((x) => x.row).join('')
+	fsgUtil.setById('displayTable', sortRows.map((x) => x.row))
 }
 
 function clientRemoveItem(itemID) {

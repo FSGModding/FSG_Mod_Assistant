@@ -42,13 +42,9 @@ window.mods.receive('fromMain_modRecords', (modCollect) => {
 		window.log.warning(`Failed to build search data :: ${err}`, 'find-ui')
 	}
 	
-	fullListSort = Object.keys(fullList).sort( (a, b) => {
-		if (a.toLowerCase() < b.toLowerCase()) return -1
-		if (a.toLowerCase() > b.toLowerCase()) return 1
-		return 0
-	})
+	fullListSort = Object.keys(fullList).sort((a, b) => a.localeCompare(b))
 
-	fsgUtil.byId('full_table').innerHTML = fullListSort.map((key) => makeModRow(fullList[key])).join('')
+	fsgUtil.setById('full_table', fullListSort.map((key) => makeModRow(fullList[key])))
 })
 
 const makeModRow = (thisMod) => fsgUtil.useTemplate('mod_entry', {
@@ -65,24 +61,20 @@ const makeModRow = (thisMod) => fsgUtil.useTemplate('mod_entry', {
 })
 
 function clientClearInput() {
-	fsgUtil.byId('mods__filter').value = ''
+	fsgUtil.valueById('mods__filter', '')
 	clientFilter()
 }
 
 function clientFilter() {
-	const filterText = fsgUtil.byId('mods__filter').value.toLowerCase()
+	const filterText = fsgUtil.valueByIdLC('mods__filter')
 
-	fsgUtil.byId('mods__filter_clear').classList[( filterText !== '' ) ? 'remove':'add']('d-none')
+	fsgUtil.clsShowTrue('mods__filter_clear', filterText !== '' )
 
-	for ( const element of fsgUtil.queryA('#full_table tr.d-none') ){
-		element.classList.remove('d-none')
-	}
+	fsgUtil.clsRemoveFromAll('#full_table tr.d-none', 'd-none')
 
-	for ( const element of fsgUtil.queryA('#full_table tr') ){
-		if ( filterText.length > 1 && !element.querySelector('.search-string').getAttribute('data-search').includes(filterText) ) {
-			element.classList.add('d-none')
-		}
-	}
+	fsgUtil.clsAddToAll('#full_table tr', 'd-none', (element) => {
+		return filterText.length > 1 && !element.querySelector('.search-string').getAttribute('data-search').includes(filterText)
+	})
 }
 
 function clientRightClick(id) {

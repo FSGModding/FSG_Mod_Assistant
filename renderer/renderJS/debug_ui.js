@@ -17,7 +17,7 @@ window.debug.receive('fromMain_debugLog', (data) => {
 		if ( showThese.has(line.match(levelInfo)[1].trim()) ) { showData.push(line) }
 	}
 
-	fsgUtil.byId('debug_log').innerHTML = showData.join('\n')
+	fsgUtil.setById('debug_log', showData, '\n')
 })
 
 function clientResetButtons() {

@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // Crop Calendar Rendering
 
-/* global __ */
+/* global __, fsgUtil */
 
 /* eslint-disable sort-keys */
 const knownCrops = {
@@ -52,7 +52,7 @@ function orderLine(lineArray, isSouth) {
 }
 
 function clientMakeCropCalendar(elementID, theData, isSouth = false) {
-	const theTable      = document.getElementById(elementID)
+	const theTable      = fsgUtil.byId(elementID)
 	const tableLines    = []
 	let   evenRow       = false
 

@@ -86,7 +86,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		listHTML.push(makeLine('same', nameTitleMap[key], key, theseCollections, nameIconMap[key], modVer))
 	}
 
-	fsgUtil.byId('modList').innerHTML = listHTML.join('')
+	fsgUtil.setById('modList', listHTML)
 	processL10N()
 })
 

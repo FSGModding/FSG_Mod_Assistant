@@ -14,10 +14,10 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 	thisCollection = modCollect.opts.collectKey
 
 	if ( !modCollect.appSettings.multi_version ) {
-		fsgUtil.byId('multi_version').classList.add('d-none')
+		fsgUtil.clsHide('multi_version')
 	}
 	
-	fsgUtil.byId('collection_name').innerHTML = modCollect.collectionToName[thisCollection]
+	fsgUtil.setById('collection_name', modCollect.collectionToName[thisCollection])
 
 	for ( const element of fsgUtil.query('input') ) {
 		let thisValue = ''
@@ -52,7 +52,7 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 	fsgUtil.byId('notes_unit_money').value = modCollect.collectionNotes[thisCollection].notes_unit_money ?? modCollect.opts.lastGameSettings.unit_money
 	fsgUtil.byId('notes_version').value    = modCollect.collectionNotes[thisCollection].notes_version
 
-	fsgUtil.byId('notes_notes').innerHTML = modCollect.collectionNotes?.[thisCollection]?.notes_notes || ''
+	fsgUtil.setById('notes_notes', modCollect.collectionNotes?.[thisCollection]?.notes_notes || '')
 
 	processL10N()
 })

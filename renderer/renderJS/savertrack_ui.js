@@ -12,13 +12,13 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	const saveInfo = modCollect.opts.saveInfo
 
 	if ( saveInfo === null || !Array.isArray(saveInfo.current) || saveInfo.current.length === 0 ) {
-		fsgUtil.byId('no_list_yet').classList.remove('d-none')
+		fsgUtil.clsShow('no_list_yet')
 		return
 	}
 
 	const newHTML  = []
 
-	fsgUtil.byId('no_list_yet').classList.add('d-none')
+	fsgUtil.clsHide('no_list_yet')
 
 	saveInfo.current.sort(Intl.Collator().compare)
 	
@@ -42,7 +42,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 		}))
 	}
 
-	fsgUtil.byId('modList').innerHTML = newHTML.join('')
+	fsgUtil.setById('modList', newHTML)
 	processL10N()
 })
 

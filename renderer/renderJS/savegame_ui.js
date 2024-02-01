@@ -199,7 +199,7 @@ const buildSaveInfo = () => {
 		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm, modCollect.modHub.list.mods[thisMod]))
 	}
 
-	fsgUtil.byId('modList').innerHTML = modSetHTML.join('')
+	fsgUtil.setById('modList', modSetHTML)
 
 	final_count()
 	updateCounts()
@@ -207,8 +207,8 @@ const buildSaveInfo = () => {
 }
 
 const setHeader = (collectKey) => {
-	fsgUtil.byId('collection_name').innerHTML     = collectKey === null ? '--' : cacheSaveGame.collectionToName[thisCollection]
-	fsgUtil.byId('collection_location').innerHTML = collectKey === null ? '--' : cacheSaveGame.collectionToFolderRelative[thisCollection]
+	fsgUtil.setById('collection_name',  collectKey === null ? '--' : cacheSaveGame.collectionToName[thisCollection])
+	fsgUtil.setById('collection_location',  collectKey === null ? '--' : cacheSaveGame.collectionToFolderRelative[thisCollection])
 }
 
 let cacheSaveGame = null
@@ -232,12 +232,12 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 				selectHTML.push(fsgUtil.buildSelectOpt(collectKey, modCollect.collectionToFullName[collectKey]), '--')
 			}
 		}
-		fsgUtil.byId('loadButtons').classList.add('d-none')
-		fsgUtil.byId('pickCollect').classList.remove('d-none')
-		fsgUtil.byId('pickCollectSelect').innerHTML = selectHTML.join('')
+		fsgUtil.clsHide('loadButtons')
+		fsgUtil.clsShow('pickCollect')
+		fsgUtil.setById('pickCollectSelect', selectHTML)
 	} else {
-		fsgUtil.byId('loadButtons').classList.remove('d-none')
-		fsgUtil.byId('pickCollect').classList.add('d-none')
+		fsgUtil.clsShow('loadButtons')
+		fsgUtil.clsHide('pickCollect')
 	}
 	processL10N()
 })
@@ -248,7 +248,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 })
 
 function clientPickCollect() {
-	const collectKey = fsgUtil.byId('pickCollectSelect').value
+	const collectKey = fsgUtil.valueById('pickCollectSelect')
 	if ( collectKey !== '--' ) {
 		thisCollection = collectKey
 		setHeader(thisCollection)
@@ -388,11 +388,10 @@ function clientDragDrop(e) {
 		}
 	}
 
-	fsgUtil.byId('drag_back').classList.add('d-none')
-
-	fsgUtil.byId('drop_file').classList.add('d-none')
-	fsgUtil.byId('drop_folder').classList.add('d-none')
-	fsgUtil.byId('drop_bad').classList.add('d-none')
+	fsgUtil.clsHide('drag_back')
+	fsgUtil.clsHide('drop_file')
+	fsgUtil.clsHide('drop_folder')
+	fsgUtil.clsHide('drop_bad')
 
 	dragDropIsFolder    = false
 	dragDropIsBad       = false
@@ -406,11 +405,10 @@ function clientDragLeave(e) {
 		dragDropOperation   = false
 		dragDropIsFolder    = false
 		dragDropIsBad       = false
-		fsgUtil.byId('drag_back').classList.add('d-none')
-
-		fsgUtil.byId('drop_file').classList.add('d-none')
-		fsgUtil.byId('drop_folder').classList.add('d-none')
-		fsgUtil.byId('drop_bad').classList.add('d-none')
+		fsgUtil.clsHide('drag_back')
+		fsgUtil.clsHide('drop_file')
+		fsgUtil.clsHide('drop_folder')
+		fsgUtil.clsHide('drop_bad')
 	}
 }
 
@@ -420,15 +418,15 @@ function clientDragEnter(e) {
 
 	
 	if ( !dragDropOperation ) {
-		fsgUtil.byId('drag_back').classList.remove('d-none')
+		fsgUtil.clsShow('drag_back')
 	
 		if ( e.dataTransfer.items.length === 1 && e.dataTransfer.items[0].type === '' ) {
-			fsgUtil.byId('drop_folder').classList.remove('d-none')
+			fsgUtil.clsShow('drop_folder')
 			dragDropIsFolder = true
 		} else if ( e.dataTransfer.items.length === 1 && e.dataTransfer.items[0].type === 'application/x-zip-compressed' ) {
-			fsgUtil.byId('drop_file').classList.remove('d-none')
+			fsgUtil.clsShow('drop_file')
 		} else {
-			fsgUtil.byId('drop_bad').classList.remove('d-none')
+			fsgUtil.clsShow('drop_bad')
 			dragDropIsBad = true
 		}
 	}

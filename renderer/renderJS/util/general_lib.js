@@ -79,6 +79,7 @@ const fsgUtil = {
 			return fsgUtil.byId(id).value
 		}
 	},
+	valueByIdLC : (id) => fsgUtil.byId(id).value.toLowerCase(),
 
 	arrayJoinOrOther : (arr, l10nKey = 'detail_extra_clean') => Array.isArray(arr) && arr.length !== 0 ? arr.join('\n') : __(l10nKey),
 	checkChangeAll : ( elements, newValue ) => {

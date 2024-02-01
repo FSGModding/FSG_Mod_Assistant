@@ -37,8 +37,8 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 
 	const confRows   = modCollect.opts.files.map((source) => fsgUtil.arrayToTableRow(source))
 
-	fsgUtil.byId('dest_list').innerHTML    = destChecks.join('')
-	fsgUtil.byId('confirm_list').innerHTML = confRows.join('')
+	fsgUtil.setById('dest_list', destChecks)
+	fsgUtil.setById('confirm_list', confRows)
 
 	processL10N()
 })

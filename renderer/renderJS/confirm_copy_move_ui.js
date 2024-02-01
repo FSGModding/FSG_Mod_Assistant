@@ -33,14 +33,14 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 		}
 	}
 
-	fsgUtil.byId('select_destination').innerHTML = selectHTML.join('')
+	fsgUtil.setById('select_destination', selectHTML)
 
 	updateConfirmList()
 })
 
 function updateConfirmList() {
 	const confirmHTML  = []
-	const selectedDest = fsgUtil.byId('select_destination').value
+	const selectedDest = fsgUtil.valueById('select_destination')
 
 	for ( const thisMod of lastModCollect.opts.records ) {
 		let destHTML = ''
@@ -66,7 +66,7 @@ function updateConfirmList() {
 		}))
 	}
 
-	fsgUtil.byId('confirm_list').innerHTML = confirmHTML.join('')
+	fsgUtil.setById('confirm_list', confirmHTML)
 	processL10N()
 }
 
@@ -82,7 +82,7 @@ function findConflict(collectKey, shortName, folder) {
 }
 
 function getSelectedMods() {
-	const destination = fsgUtil.byId('select_destination').value
+	const destination = fsgUtil.valueById('select_destination')
 
 	if ( destination === '0' ) { return false }
 

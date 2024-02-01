@@ -24,7 +24,7 @@ window.mods.receive('fromMain_confirmList', (modCollect) => {
 		}))
 	}
 
-	fsgUtil.byId('confirm_list').innerHTML = confirmHTML.join('')
+	fsgUtil.setById('confirm_list', confirmHTML)
 
 	processL10N()
 })

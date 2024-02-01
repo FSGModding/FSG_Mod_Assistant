@@ -17,7 +17,7 @@ let   showData      = []
 window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 	const autoScroll = fsgUtil.byId('auto_scroll').checked || false
 	
-	fsgUtil.byId('gameLogPath').innerHTML = fileName
+	fsgUtil.setById('gameLogPath', fileName)
 	
 	dataCacheGood = false
 	showData      = []
@@ -199,7 +199,7 @@ function clientResetButtons() {
 }
 
 function highLightFinds() {
-	const thisFind = fsgUtil.byId('gamelog_find').value.toLowerCase()
+	const thisFind = fsgUtil.valueByIdLC('gamelog_find')
 	const allLines = fsgUtil.query('.logLine')
 
 	/* too short, clear input and reset display */
@@ -226,14 +226,14 @@ let findIdx  = 0
 let finds    = []
 function clientFind(doForward = false, isReload = false) {
 	finds    = []
-	const thisFind = fsgUtil.byId('gamelog_find').value.toLowerCase()
+	const thisFind = fsgUtil.valueByIdLC('gamelog_find')
 
 	/* too short, clear input and reset display */
 	if ( thisFind.length < 2 ) {
-		fsgUtil.byId('currentFindIndex').innerHTML = '0'
-		fsgUtil.byId('currentFindTotal').innerHTML = '0'
+		fsgUtil.setById('currentFindIndex', '0')
+		fsgUtil.setById('currentFindTotal', '0')
 		if ( thisFind.length !== 0 ) {
-			fsgUtil.byId('gamelog_find').value = ''
+			fsgUtil.valueById('gamelog_find', '')
 		}
 		lastFind = null
 		findIdx  = 0
@@ -260,11 +260,11 @@ function clientFind(doForward = false, isReload = false) {
 	if ( finds.length !== 0 ) {
 		findIdx = findIdx % (finds.length)
 		findIdx = findIdx < 0 ? findIdx + finds.length : findIdx
-		fsgUtil.byId('currentFindIndex').innerHTML = findIdx + 1
-		fsgUtil.byId('currentFindTotal').innerHTML = finds.length
+		fsgUtil.setById('currentFindIndex', findIdx + 1)
+		fsgUtil.setById('currentFindTotal', finds.length)
 	} else {
-		fsgUtil.byId('currentFindIndex').innerHTML = '0'
-		fsgUtil.byId('currentFindTotal').innerHTML = '0'
+		fsgUtil.setById('currentFindIndex', '0')
+		fsgUtil.setById('currentFindTotal', '0')
 	}
 	
 	if ( finds.length !== 0 && !isReload ) {
@@ -273,7 +273,7 @@ function clientFind(doForward = false, isReload = false) {
 }
 
 function clientClearInput() {
-	fsgUtil.byId('gamelog_find').value = ''
+	fsgUtil.valueById('gamelog_find', '')
 	clientFind(true)
 }
 

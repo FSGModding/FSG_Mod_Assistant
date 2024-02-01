@@ -35,9 +35,7 @@ const select_lib = {
 		for ( const tableID of select_lib.get_open_tables() ) {
 			const modsClass = tableID.id
 
-			for ( const element of fsgUtil.query(`.${modsClass}`) ) {
-				element.classList.remove('d-none')
-			}
+			fsgUtil.clsRemoveFromAll(`.${modsClass}`, 'd-none')
 		}
 	},
 
@@ -48,7 +46,7 @@ const select_lib = {
 		if ( openTable !== false ) { select_lib.open_table(openTable) }
 	},
 	open_table        : (tableID) => {
-		fsgUtil.byId(tableID).classList.add('show')
+		fsgUtil.clsAddId(tableID, 'show')
 		fsgUtil.clsRemoveFromAll(`[data-bs-target="#${tableID}"]`, 'collapsed')
 	},
 	
@@ -95,18 +93,18 @@ const select_lib = {
 	},
 	click_alt         : (modID) => {
 		select_lib.last_alt_select = modID
-		const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
 
-		if ( fsgUtil.byId(modID).classList.contains('has-hash') ) {
+		if ( fsgUtil.clsIdHas(modID, 'has-hash') ) {
 			select_lib.last_alt_hash = true
-			moveButtons[5].classList.remove('disabled')
+			fsgUtil.clsEnable('moveButton_hub')
 		}
-		if ( fsgUtil.byId(modID).classList.contains('has-ext-site') ) {
+		if ( fsgUtil.clsIdHas(modID, 'has-ext-site') ) {
 			select_lib.last_alt_hash = true
-			moveButtons[6].classList.remove('disabled')
+			fsgUtil.clsEnable('moveButton_site')
 		}
 		
-		moveButtons[4].classList.remove('disabled')
+		fsgUtil.clsEnable('moveButton_open')
+		
 	},
 	click_invert      : () => {
 		for ( const tableID of select_lib.get_open_tables() ) {
@@ -125,7 +123,7 @@ const select_lib = {
 	},
 	click_only        : (tableID, checkList) => {
 		const checkListSet = new Set(checkList)
-		fsgUtil.byId('filter_input').value = ''
+		fsgUtil.valueById('filter_input', '')
 		for ( const element of select_lib.get_checks(tableID) ) {
 			const modRow = element.parentElement.parentElement
 			element.checked = checkListSet.has(element.id)
@@ -145,18 +143,18 @@ const select_lib = {
 		select_lib.last_alt_select = null
 		select_lib.last_alt_hash   = false
 		const isShift   = window.event.shiftKey
-		const thisTable = document.getElementById(modID).closest('table').closest('tr').id
+		const thisTable = fsgUtil.byId(modID).closest('table').closest('tr').id
 
 		if ( !isShift || select_lib.last_select_mod === null || select_lib.last_select_table !== thisTable ) {
 			// Non shifted, or not in the same table as the last selection
-			const thisCheck = document.getElementById(`${modID}__checkbox`)
+			const thisCheck = fsgUtil.byId(`${modID}__checkbox`)
 
 			thisCheck.checked = !thisCheck.checked
 			select_lib.last_select_mod   = modID
-			select_lib.last_select_table = document.getElementById(modID).closest('table').closest('tr').id
+			select_lib.last_select_table = fsgUtil.byId(modID).closest('table').closest('tr').id
 		} else {
 			// shifted range
-			const tableRows = document.getElementById(thisTable).querySelectorAll('.mod-row')
+			const tableRows = fsgUtil.byId(thisTable).querySelectorAll('.mod-row')
 			let thisPosition = null
 			let lastPosition = null
 
@@ -171,7 +169,7 @@ const select_lib = {
 
 			const selectionStart = Math.min(thisPosition, lastPosition)
 			const selectionEnd   = Math.max(thisPosition, lastPosition)
-			const checkValue     = document.getElementById(`${select_lib.last_select_mod}__checkbox`).checked
+			const checkValue     = fsgUtil.byId(`${select_lib.last_select_mod}__checkbox`).checked
 
 			for ( let i=selectionStart; i<=selectionEnd; i++) {
 				if ( ! tableRows[i].classList.contains('d-none') ) {
@@ -207,7 +205,7 @@ const select_lib = {
 				hasHash    = ( countSelected === 1 ) && thisRow.classList.contains('has-hash')
 				hasExtSite = ( countSelected === 1 ) && thisRow.classList.contains('has-ext-site')
 
-				const thisScroller = document.querySelector(`.${thisRow.id}`)
+				const thisScroller = fsgUtil.queryF(`.${thisRow.id}`)
 				wasLast = thisScroller
 				thisScroller.classList.add('bg-success')
 				if ( isFirst ) {
@@ -228,19 +226,17 @@ const select_lib = {
 		
 		wasLast = select_lib.update_do_last(wasLast)
 
-		const moveButtons = fsgUtil.byId('moveButtons').querySelectorAll('button')
+		fsgUtil.clsDisableFalse('moveButton_move', countSelected > 0)
+		fsgUtil.clsDisableFalse('moveButton_copy', countSelected > 0)
+		fsgUtil.clsDisableFalse('moveButton_delete', countSelected > 0)
+		fsgUtil.clsDisableFalse('moveButton_zip', countSelected > 0)
 
-		moveButtons[0].classList[(countSelected > 0)?'remove':'add']('disabled') // move
-		moveButtons[1].classList[(countSelected > 0)?'remove':'add']('disabled') // copy
-		moveButtons[2].classList[(countSelected > 0)?'remove':'add']('disabled') // delete
-		moveButtons[3].classList[(countSelected > 0)?'remove':'add']('disabled') //zip
+		fsgUtil.clsDisableFalse('moveButton_open', countSelected === 1)
+		fsgUtil.clsDisableFalse('moveButton_hub', hasHash)
+		fsgUtil.clsDisableFalse('moveButton_site', hasExtSite)
 
-		moveButtons[4].classList[(countSelected === 1)?'remove':'add']('disabled') // open
-		moveButtons[5].classList[(hasHash)?'remove':'add']('disabled') // modhub
-		moveButtons[6].classList[(hasExtSite)?'remove':'add']('disabled') // ext site
-
-		moveButtons[7].classList.remove('disabled') //favorites
-		moveButtons[8].classList.remove('disabled') //versions
+		fsgUtil.clsEnable('moveButton_fav')
+		fsgUtil.clsEnable('verButton')
 		
 		select_lib.change_count(countSelected)
 	},
@@ -292,19 +288,19 @@ const select_lib = {
 		select_lib.update_scroll()
 
 		if ( forceValue !== false ) {
-			fsgUtil.byId('filter_input').value = forceValue
+			fsgUtil.valueById('filter_input', forceValue)
 		}
 
 		const tagHiders     = fsgUtil.query('[id*="tag_filter_out__"]:checked')
 		const tagLimit      = fsgUtil.query('[id*="tag_filter__"]:checked')
 		const theseMods     = select_lib.get_visible_mods()
-		const rawSearchTerm = fsgUtil.byId('filter_input').value.toLowerCase()
+		const rawSearchTerm = fsgUtil.valueByIdLC('filter_input')
 		const inverseSearch = rawSearchTerm.startsWith('!')
 		const searchTerm    = ( inverseSearch ) ? rawSearchTerm.substring(1) : rawSearchTerm
 
-		fsgUtil.byId('tag_filter_count').innerHTML     = tagLimit.length
-		fsgUtil.byId('tag_filter_out_count').innerHTML = tagHiders.length
-		fsgUtil.byId('filter_clear').classList[(rawSearchTerm === '') ? 'add' : 'remove']('d-none')
+		fsgUtil.setById('tag_filter_count', tagLimit.length)
+		fsgUtil.setById('tag_filter_out_count', tagHiders.length)
+		fsgUtil.clsHideTrue('filter_clear', rawSearchTerm === '')
 
 		const hideUUIDByTags = select_lib.filter_getFilterHides(tagHiders)
 		const showUUIDByTags = select_lib.filter_getFilterShows(tagLimit)
@@ -362,10 +358,10 @@ const select_lib = {
 	
 
 	change_count      : ( newCount ) => {
-		fsgUtil.byId('select_quantity').innerHTML = newCount
+		fsgUtil.setById('select_quantity', newCount)
 	},
 	get_checks        : (tableID) => {
-		return document.getElementById(tableID).querySelectorAll('.mod-row-checkbox')
+		return fsgUtil.byId(tableID).querySelectorAll('.mod-row-checkbox')
 	},
 	get_open_tables   : () => {
 		return fsgUtil.byId('mod-collections').querySelectorAll('.collapse.show')

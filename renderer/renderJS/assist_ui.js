@@ -9,21 +9,21 @@
 /* global processL10N, fsgUtil, bootstrap, select_lib, __ */
 
 window.mods.receive('fromMain_selectInvertOpen', () => {
-	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
+	const lastOpenAcc = fsgUtil.queryF('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 
 	if ( lastOpenID !== null ) { select_lib.click_invert(lastOpenID) }
 })
 
 window.mods.receive('fromMain_selectNoneOpen', () => {
-	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
+	const lastOpenAcc = fsgUtil.queryF('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 
 	if ( lastOpenID !== null ) { select_lib.click_none(lastOpenID) }
 })
 
 window.mods.receive('fromMain_selectAllOpen', () => {
-	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
+	const lastOpenAcc = fsgUtil.queryF('.accordion-collapse.show')
 	const lastOpenID  = (lastOpenAcc !== null) ? lastOpenAcc.id : null
 
 	if ( lastOpenID !== null ) { select_lib.click_all(lastOpenID) }
@@ -47,18 +47,15 @@ window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 })
 
 window.mods.receive('fromMain_dirtyUpdate', (dirtyFlag) => {
-	fsgUtil.byId('dirty_folders').classList[(dirtyFlag)?'remove':'add']('d-none')
+	fsgUtil.clsHideFalse('dirty_folders', dirtyFlag)
 })
-window.mods.receive('fromMain_debugLogDanger', () => {
-	fsgUtil.byId('debug_danger_bubble').classList.remove('d-none')
-})
-window.mods.receive('fromMain_debugLogNoDanger', () => {
-	fsgUtil.byId('debug_danger_bubble').classList.add('d-none')
+window.mods.receive('fromMain_debugLogDangerFlag', (status) => {
+	fsgUtil.clsShowTrue('debug_danger_bubble', status)
 })
 
 window.mods.receive('fromMain_modInfoPop', (thisMod, thisSite) => {
-	fsgUtil.byId('mod_info_mod_name').innerHTML = thisMod.fileDetail.shortName
-	fsgUtil.byId('mod_info_input').value = thisSite
+	fsgUtil.setById('mod_info_mod_name', thisMod.fileDetail.shortName)
+	fsgUtil.setById('mod_info_input', thisSite)
 	modInfoDialog.show()
 })
 
@@ -131,7 +128,6 @@ const checkVersion = (verFlag, verList, isFrozen, thisMod) => {
 let gameIsRunningFlag = false
 
 window.mods.receive('fromMain_gameUpdate', (status) => {
-	gameIsRunningFlag = status.gameRunning
 	toggleGameStatus(status.gameRunning, status.gameRunningEnabled)
 	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
 	updateBotStatus(status.botStatus)
@@ -166,11 +162,11 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	fsgUtil.clsShowTrue('dirty_folders', modCollect.opts.foldersDirty)
 	fsgUtil.clsShowTrue('multi_version_button', multiVersion)
 
-	fsgUtil.byId('farm_sim_versions').innerHTML = [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings, modCollect)).join('')
+	fsgUtil.setById('farm_sim_versions', [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings, modCollect)))
 
-	const lastOpenAcc = document.querySelector('.accordion-collapse.show')
+	const lastOpenAcc = fsgUtil.queryF('.accordion-collapse.show')
 	const lastOpenID  = lastOpenAcc?.id ?? null
-	const lastOpenQ   = (lastOpenAcc !== null) ? fsgUtil.byId('filter_input').value : ''
+	const lastOpenQ   = (lastOpenAcc !== null) ? fsgUtil.valueById('filter_input') : ''
 	const scrollStart = window.scrollY
 
 	const modTable     = []
@@ -179,7 +175,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	let   verFlag      = false
 
 	/* List selection */
-	fsgUtil.byId('collectionSelect').innerHTML = buildCollectSelect(modCollect)
+	fsgUtil.setById('collectionSelect', buildCollectSelect(modCollect))
 	/* END : List selection */
 
 	for ( const [folderIndex, collectKey] of Object.entries([...modCollect.set_Collections]) ) {
@@ -197,90 +193,83 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		collectOrder.numeric[folderIndex] = collectKey
 		collectOrder.max                  = Math.max(collectOrder.max, parseInt(folderIndex))
 
-		for ( const modKey of thisCollection.alphaSort ) {
-			try {
-				const thisMod       = thisCollection.mods[modKey.split('::')[1]]
+		if ( !modCollect.opts.foldersEdit ) {
+			for ( const modKey of thisCollection.alphaSort ) {
+				try {
+					const thisMod       = thisCollection.mods[modKey.split('::')[1]]
 
-				switch ( checkVersion(verFlag, verList, collectFreeze, thisMod) ) {
-					case 1: // toggle flag true
-						verFlag = true; break
-					case 2: // add to list
-						verList[thisMod.fileDetail.shortName] = thisMod.modDesc.version
-						break
-					default:
-						break
+					switch ( checkVersion(verFlag, verList, collectFreeze, thisMod) ) {
+						case 1: // toggle flag true
+							verFlag = true; break
+						case 2: // add to list
+							verList[thisMod.fileDetail.shortName] = thisMod.modDesc.version
+							break
+						default:
+							break
+					}
+
+					searchStringMap[thisMod.colUUID] = buildSearchString(thisMod)
+
+					scrollRows.push(fsgUtil.buildScrollMod(collectKey, thisMod.colUUID))
+					
+					const thisModEntry = makeModRow(
+						thisMod.colUUID,
+						thisMod,
+						buildBadges(thisMod),
+						thisMod.modHub.id,
+						modCollect.appSettings.game_version,
+						Object.hasOwn(modCollect.opts.modSites, thisMod.fileDetail.shortName)
+					)
+					
+					modRows.push(thisModEntry[0])
+
+					if ( thisModEntry[1] !== null ) {
+						mapIcons.push(thisModEntry[1])
+						mapNames.push(thisModEntry.slice(2))
+					}
+				} catch (err) {
+					window.log.notice(`Error building mod row: ${modKey} :: ${err}`, 'main')
 				}
-
-				searchStringMap[thisMod.colUUID] = buildSearchString(thisMod)
-
-				scrollRows.push(fsgUtil.buildScrollMod(collectKey, thisMod.colUUID))
-				
-				const thisModEntry = makeModRow(
-					thisMod.colUUID,
-					thisMod,
-					buildBadges(thisMod),
-					thisMod.modHub.id,
-					modCollect.appSettings.game_version,
-					Object.hasOwn(modCollect.opts.modSites, thisMod.fileDetail.shortName)
-				)
-				
-				modRows.push(thisModEntry[0])
-
-				if ( thisModEntry[1] !== null ) {
-					mapIcons.push(thisModEntry[1])
-					mapNames.push(thisModEntry.slice(2))
-				}
-			} catch (err) {
-				window.log.notice(`Error building mod row: ${modKey} :: ${err}`, 'main')
 			}
 		}
 		
 		const isOnline = modCollect.collectionToStatus[collectKey]
 		const fullName = `${thisCollection.name} <small>[${isOnline ? fsgUtil.bytesToHR(sizeOfFolder) : __('removable_offline') }]</small>`
 		
-		modTable.push(makeModCollection(
-			isOnline,
-			collectKey,
-			fullName,
-			modRows,
-			collectNotes.notes_website,
-			collectNotes.notes_websiteDL,
-			[collectNotes.notes_tagline, (mapIcons.length === 1 ? mapNames[0][0] : null)].filter((x) => x !== null).join(' - '),
-			collectNotes.notes_admin,
-			modRows.length, //thisCollection.dependSet.size,
-			collectNotes.notes_favorite,
-			modCollect.opts.activeCollection === collectKey,
-			collectNotes.notes_game_admin,
-			collectNotes.notes_holding,
-			fsgUtil.firstOrNull(mapIcons),
-			mapNames[0],
-			parseInt(collectNotes.notes_color),
-			collectNotes.notes_removable,
-			modCollect.opts.foldersEdit,
-			collectNotes.notes_add_date,
-			collectNotes.notes_last
-		))
+		modTable.push(makeModCollection({
+			adminPass     : collectNotes.notes_admin,
+			dateAdd       : collectNotes.notes_add_date,
+			dateUsed      : collectNotes.notes_last,
+			dlEnabled     : collectNotes.notes_websiteDL,
+			favorite      : collectNotes.notes_favorite,
+			folderColor   : parseInt(collectNotes.notes_color),
+			foldersEdit   : modCollect.opts.foldersEdit,
+			gameAdminPass : collectNotes.notes_game_admin,
+			id            : collectKey,
+			isActive      : modCollect.opts.activeCollection === collectKey,
+			isHolding     : collectNotes.notes_holding,
+			isOnline      : isOnline,
+			mapNames      : mapNames[0],
+			modCount      : modRows.length,
+			modsRows      : modRows,
+			name          : fullName,
+			removable     : collectNotes.notes_removable,
+			singleMapIcon : fsgUtil.firstOrNull(mapIcons),
+			tagLine       : [collectNotes.notes_tagline, (mapIcons.length === 1 ? mapNames[0][0] : null)].filter((x) => x !== null).join(' - '),
+			website       : collectNotes.notes_website,
+		}))
 		scrollTable.push(fsgUtil.buildScrollCollect(collectKey, scrollRows))
 	}
 	
-	fsgUtil.byId('mod-collections').innerHTML  = modTable.join('')
-	fsgUtil.byId('scroll-bar-fake').innerHTML  = scrollTable.join('')
+	fsgUtil.setById('mod-collections', modTable)
+	fsgUtil.setById('scroll-bar-fake', scrollTable)
 
 	fsgUtil.clsOrGate('verButton', verFlag, 'btn-danger', 'btn-success')
 
 	toggleGameStatus(modCollect.opts.gameRunning)
 	updateBotStatus(modCollect.bot)
-
-	gameIsRunningFlag = modCollect.opts.gameRunning
-
 	buildDropDownFilters(modCollect.badgeL10n)
-
-	for ( const key of Object.keys(collectOrder.map) ) {
-		fsgUtil.clsOrGate(`${key}_order_up_last`, getOrderPrev(key) === null, 'disabled', null)
-		fsgUtil.clsOrGate(`${key}_order_up`, getOrderPrev(key) === null, 'disabled', null)
-		fsgUtil.clsOrGate(`${key}_order_down`, getOrderNext(key) === null, 'disabled', null)
-		fsgUtil.clsOrGate(`${key}_order_down_last`, getOrderNext(key) === null, 'disabled', null)
-	}
+	setOrderButtons(Object.keys(collectOrder.map), modCollect.opts.foldersEdit)
 
 	select_lib.clear_range()
 
@@ -291,13 +280,21 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 			select_lib.filter_begin(lastOpenID, lastOpenQ)
 		}
 		window.scrollTo(0, scrollStart)
-	} catch {
-		// Don't Care
-	}
+	} catch { /* Don't Care */ }
 
 	select_lib.filter_begin()
 	processL10N()
 })
+
+function setOrderButtons(keys, doSomething) {
+	if ( !doSomething ) { return }
+	for ( const key of keys ) {
+		fsgUtil.clsDisableTrue(`${key}_order_up_last`, getOrderPrev(key) === null)
+		fsgUtil.clsDisableTrue(`${key}_order_up`, getOrderPrev(key) === null)
+		fsgUtil.clsDisableTrue(`${key}_order_down`, getOrderNext(key) === null)
+		fsgUtil.clsDisableTrue(`${key}_order_down_last`, getOrderNext(key) === null)
+	}
+}
 
 function clientMoveItem(collectKey, moveUpInList, forceLast = false) {
 	const curIndex = collectOrder.map[collectKey]
@@ -337,17 +334,18 @@ function clientRemoveFolder(collectKey) {
 }
 
 function toggleGameStatus(status = false, show = true) {
+	gameIsRunningFlag = status.gameRunning
 	fsgUtil.clsHideFalse('gameRunningBubble', show)
 	fsgUtil.clsOrGate('gameRunningBubble', status, 'text-success', 'text-danger')
 }
 
 function clientMakeListInactive() {
-	fsgUtil.byId('collectionSelect').value = 0
+	fsgUtil.valueById('collectionSelect', 0)
 	window.mods.makeInactive()
 }
 
 function clientMakeListActive() {
-	const activePick = fsgUtil.byId('collectionSelect').value.replace('collection--', '')
+	const activePick = fsgUtil.valueById('collectionSelect').replace('collection--', '')
 
 	if ( activePick !== '0' && activePick !== '999' ) {
 		blinkLED()
@@ -368,8 +366,8 @@ const buildDropDownFilters = ( l10n ) => {
 	hideTags.unshift(makeFilterReset(true))
 	limitTags.unshift(makeFilterReset(false))
 
-	fsgUtil.byId('filter_out__tags').innerHTML = hideTags.join('')
-	fsgUtil.byId('filter__tags').innerHTML     = limitTags.join('')
+	fsgUtil.setById('filter_out__tags', hideTags)
+	fsgUtil.setById('filter__tags', limitTags)
 }
 
 const makeFilterReset  = (isHide = false) => {
@@ -435,32 +433,32 @@ const updateBotStatus = (botObject) => {
 	}
 }
 
-const makeModCollection = (isOnline, id, name, modsRows, website, dlEnabled, tagLine, adminPass, modCount, favorite, isActive, gameAdminPass, isHolding, singleMapIcon, mapNames, folderColor, removable, foldersEdit, dateAdd, dateUsed) => fsgUtil.useTemplate('collect_row', {
-	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${id}_mods"`,
-	class_hideDownload          : dlEnabled ? '' : 'd-none',
-	class_hideFolderEdit        : foldersEdit ? '' : 'd-none',
-	class_hideGameAdminPassword : gameAdminPass !== null ? '' : 'd-none',
-	class_hidePassword          : adminPass !== null ? '' : 'd-none',
-	class_hideRemovable         : removable ? '' : 'd-none',
-	class_hideWebsite           : website !== null ? '' : 'd-none',
-	class_isHolding             : isHolding ? 'is-holding-pen' : '',
-	class_mapIcon               : singleMapIcon === null ? 'd-none' : '',
-	class_showFolderEdit        : !foldersEdit ? '' : 'd-none',
-	class_status                : !isOnline ? 'text-decoration-line-through' : '',
-	dateAdd                     : getPrintDate(dateAdd),
-	dateUsed                    : getPrintDate(dateUsed),
-	folderSVG                   : fsgUtil.getIconSVG('folder', favorite, isActive, isHolding, folderColor),
-	game_admin_password         : gameAdminPass,
-	id                          : id,
-	mapClick                    : mapNames?.[2],
-	mapIcon                     : fsgUtil.iconMaker(singleMapIcon),
-	mapTitle                    : mapNames?.[1],
-	mod_rows                    : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${modsRows.join('')}</table>`,
-	name                        : name,
-	password                    : adminPass,
-	tagLine                     : tagLine !== '' ? `<br><span class="ps-3 small fst-italic">${tagLine}</span>` : '',
-	totalCount                  : modCount > 999 ? '999+' : modCount,
-	website                     : website,
+const makeModCollection = (data) => fsgUtil.useTemplate('collect_row', {
+	bootstrap_data              : `data-bs-toggle="collapse" data-bs-target="#${data.id}_mods"`,
+	class_hideDownload          : data.dlEnabled ? '' : 'd-none',
+	class_hideFolderEdit        : data.foldersEdit ? '' : 'd-none',
+	class_hideGameAdminPassword : data.gameAdminPass !== null ? '' : 'd-none',
+	class_hidePassword          : data.adminPass !== null ? '' : 'd-none',
+	class_hideRemovable         : data.removable ? '' : 'd-none',
+	class_hideWebsite           : data.website !== null ? '' : 'd-none',
+	class_isHolding             : data.isHolding ? 'is-holding-pen' : '',
+	class_mapIcon               : data.singleMapIcon === null ? 'd-none' : '',
+	class_showFolderEdit        : !data.foldersEdit ? '' : 'd-none',
+	class_status                : !data.isOnline ? 'text-decoration-line-through' : '',
+	dateAdd                     : getPrintDate(data.dateAdd),
+	dateUsed                    : getPrintDate(data.dateUsed),
+	folderSVG                   : fsgUtil.getIconSVG('folder', data.favorite, data.isActive, data.isHolding, data.folderColor),
+	game_admin_password         : data.gameAdminPass,
+	id                          : data.id,
+	mapClick                    : data.mapNames?.[2],
+	mapIcon                     : fsgUtil.iconMaker(data.singleMapIcon),
+	mapTitle                    : data.mapNames?.[1],
+	mod_rows                    : `<table class="w-100 py-0 my-0 table table-sm table-hover table-striped">${data.modsRows.join('')}</table>`,
+	name                        : data.name,
+	password                    : data.adminPass,
+	tagLine                     : data.tagLine !== '' ? `${!data.foldersEdit ? '<br>' : ''}<span class="ps-3 small fst-italic">${data.tagLine}</span>` : '',
+	totalCount                  : data.modCount > 999 ? '999+' : data.modCount,
+	website                     : data.website,
 })
 
 function getPrintDate(textDate) {
@@ -573,8 +571,8 @@ function clientOpenMod(enabled, modID) {
 }
 
 function clientSetModInfo() {
-	const modName = fsgUtil.byId('mod_info_mod_name').innerHTML
-	const newSite = fsgUtil.byId('mod_info_input').value
+	const modName = fsgUtil.htmlById('mod_info_mod_name')
+	const newSite = fsgUtil.valueById('mod_info_input')
 	window.mods.setModInfo(modName, newSite)
 	modInfoDialog.hide()
 }
@@ -613,15 +611,15 @@ function clientBatchOperation(mode) {
 }
 
 function clientOpenFarmSim() {
-	const currentList = fsgUtil.byId('collectionSelect').value
+	const currentList = fsgUtil.valueById('collectionSelect')
 	if ( currentList === lastList ) {
 		// Selected is active, no confirm
 		spinLED()
 		window.mods.startFarmSim()
 	} else {
 		// Different, ask confirmation
-		fsgUtil.byId('no_match_game_list').innerHTML = fullList[lastList]
-		fsgUtil.byId('no_match_ma_list').innerHTML = fullList[currentList]
+		fsgUtil.setById('no_match_game_list', fullList[lastList])
+		fsgUtil.setById('no_match_ma_list', fullList[currentList])
 		fastBlinkLED()
 		mismatchDialog.show()
 	}
@@ -630,7 +628,7 @@ function clientOpenFarmSim() {
 function clientOpenGame_IGNORE() {
 	mismatchDialog.hide()
 	spinLED()
-	fsgUtil.byId('collectionSelect').value = lastList
+	fsgUtil.valueById('collectionSelect', lastList)
 	window.mods.startFarmSim()
 }
 
@@ -661,7 +659,7 @@ function updatePreferences() {
 		}
 	}
 
-	fsgUtil.byId('font_size_value').innerHTML = `${Math.floor((lastPreferences.font_size / 14) * 100)}%`
+	fsgUtil.setById('font_size_value', `${Math.floor((lastPreferences.font_size / 14) * 100)}%`)
 
 	fsgUtil.classPerTest('.multi-version-pref', lastPreferences.multi_version)
 
@@ -689,8 +687,8 @@ function clientSetPref(id) {
 }
 
 
-function clientChangeTheme()    { window.l10n.themeList_change(fsgUtil.byId('theme_select').value) }
-function clientChangeL10N()     { window.l10n.langList_change(fsgUtil.byId('language_select').value) }
+function clientChangeTheme()    { window.l10n.themeList_change(fsgUtil.valueById('theme_select')) }
+function clientChangeL10N()     { window.l10n.langList_change(fsgUtil.valueById('language_select')) }
 
 
 const giantsLED = {	filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] }
@@ -737,11 +735,11 @@ window.loader.receive('formMain_loading_hide', () => {
 })
 
 window.loader.receive('formMain_loadingTitles', (mainTitle, subTitle, dlCancel) => {
-	fsgUtil.byId('loadOverlay_statusMessage').innerHTML        = mainTitle
-	fsgUtil.byId('loadOverlay_statusDetail').innerHTML         = subTitle
-	fsgUtil.byId('loadOverlay_statusTotal').innerHTML          = '0'
-	fsgUtil.byId('loadOverlay_statusCurrent').innerHTML        = '0'
-	fsgUtil.byId('loadOverlay_downloadCancelButton').innerHTML = dlCancel
+	fsgUtil.setById('loadOverlay_statusMessage', mainTitle)
+	fsgUtil.setById('loadOverlay_statusDetail', subTitle)
+	fsgUtil.setById('loadOverlay_statusTotal', '0')
+	fsgUtil.setById('loadOverlay_statusCurrent', '0')
+	fsgUtil.setById('loadOverlay_downloadCancelButton', dlCancel)
 
 	fsgUtil.clsShow('loadOverlay_statusCount')
 	fsgUtil.clsShow('loadOverlay_statusProgBar')
@@ -765,7 +763,7 @@ window.loader.receive('fromMain_loadingNoCount', () => {
 window.loader.receive('fromMain_loading_total', (count, inMB = false) => {
 	if ( inMB ) { startTime = Date.now() }
 	const thisCount   = inMB ? fsgUtil.bytesToMB(count) : count
-	const thisElement = document.getElementById('loadOverlay_statusTotal')
+	const thisElement = fsgUtil.byId('loadOverlay_statusTotal')
 	lastTotal = ( count < 1 ) ? 1 : count
 
 	if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
@@ -773,8 +771,8 @@ window.loader.receive('fromMain_loading_total', (count, inMB = false) => {
 
 window.loader.receive('fromMain_loading_current', (count, inMB = false) => {
 	const thisCount   = inMB ? fsgUtil.bytesToMB(count, false) : count
-	const thisElement = document.getElementById('loadOverlay_statusCurrent')
-	const thisProg    = document.getElementById('loadOverlay_statusProgBarInner')
+	const thisElement = fsgUtil.byId('loadOverlay_statusCurrent')
+	const thisProg    = fsgUtil.byId('loadOverlay_statusProgBarInner')
 	const thisPercent = `${Math.ceil((count / lastTotal) * 100)}%` || '0%'
 
 	if ( thisProg !== null ) { thisProg.style.width = thisPercent }
@@ -784,27 +782,26 @@ window.loader.receive('fromMain_loading_current', (count, inMB = false) => {
 	if ( inMB ) {
 		const perDone    = Math.max(1, Math.ceil((count / lastTotal) * 100))
 		const perRem     = 100 - perDone
-		const endTime    = Date.now()
-		const elapsedMS  = endTime - startTime
-		const elapsedSec = elapsedMS / 1000
+		const elapsedSec = (Date.now() - startTime) / 1000
 		const estSpeed   = fsgUtil.bytesToMBCalc(count, false) / elapsedSec // MB/sec
 		const secRemain  = elapsedSec / perDone * perRem
 
 		const prettyMinRemain = Math.floor(secRemain / 60)
 		const prettySecRemain = secRemain % 60
 
-		document.getElementById('loadOverlay_speed_speed').innerHTML = `${estSpeed.toFixed(1)} MB/s`
-		document.getElementById('loadOverlay_speed_time').innerHTML = `~ ${prettyMinRemain.toFixed(0).padStart(2, '0')}:${prettySecRemain.toFixed(0).padStart(2, '0')}`
+		fsgUtil.setById('loadOverlay_speed_speed', `${estSpeed.toFixed(1)} MB/s`)
+		fsgUtil.setById('loadOverlay_speed_time', `~ ${prettyMinRemain.toFixed(0).padStart(2, '0')}:${prettySecRemain.toFixed(0).padStart(2, '0')}`)
 	}
 })
 
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
-	mismatchDialog = new bootstrap.Modal(document.getElementById('open_game_modal'), {backdrop : 'static'})
+	mismatchDialog = new bootstrap.Modal('#open_game_modal', {backdrop : 'static'})
 	mismatchDialog.hide()
-	modInfoDialog = new bootstrap.Modal(document.getElementById('open_mod_info_modal'), {backdrop : 'static'})
+	modInfoDialog = new bootstrap.Modal('#open_mod_info_modal', {backdrop : 'static'})
 	modInfoDialog.hide()
 	loadOverlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
+
 	const dragTarget = fsgUtil.byId('drag_target')
 
 	window.l10n.langList_send()
@@ -843,9 +840,9 @@ function clientDragDrop(e) {
 
 	dragDropOperation = false
 
-	fsgUtil.byId('drag_back').classList.add('d-none')
-	fsgUtil.byId('drag_add_file').classList.remove('bg-primary')
-	fsgUtil.byId('drag_add_folder').classList.remove('d-none', 'bg-primary')
+	fsgUtil.clsHide('drag_back')
+	fsgUtil.clsDelId('drag_add_file', 'bg-primary')
+	fsgUtil.clsDelId('drag_add_folder', 'd-none', 'bg-primary')
 
 	const dt    = e.dataTransfer
 	const files = dt.files
@@ -870,10 +867,10 @@ function clientDragLeave(e) {
 	if ( e.x <= 0 && e.y <= 0 ) {
 		dragDropOperation   = false
 		dragDropInFolder    = false
-		fsgUtil.byId('drag_back').classList.add('d-none')
+		fsgUtil.clsHide('drag_back')
 
-		fsgUtil.byId('drag_add_file').classList.remove('bg-primary')
-		fsgUtil.byId('drag_add_folder').classList.remove('d-none', 'bg-primary')
+		fsgUtil.clsDelId('drag_add_file', 'bg-primary')
+		fsgUtil.clsDelId('drag_add_folder', 'd-none', 'bg-primary')
 	}
 }
 
@@ -882,7 +879,7 @@ function clientDragEnter(e) {
 	e.stopPropagation()
 
 	if ( !dragDropOperation ) {
-		fsgUtil.byId('drag_back').classList.remove('d-none')
+		fsgUtil.clsShow('drag_back')
 	
 		const isCSV = e.dataTransfer.items[0].type === 'text/csv'
 
@@ -893,7 +890,7 @@ function clientDragEnter(e) {
 
 		if ( e.dataTransfer.items.length > 1 || e.dataTransfer.items[0].type !== '' ) {
 			// multiple, so can't add as collection or non-empty type
-			fsgUtil.byId('drag_add_folder').classList.add('d-none')
+			fsgUtil.clsHide('drag_add_folder')
 		}
 
 	} else {
