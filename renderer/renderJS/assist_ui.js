@@ -685,6 +685,10 @@ function updatePreferences() {
 	processL10N()
 }
 
+function clientDragFontSize() {
+	fsgUtil.setById('font_size_value', `${fsgUtil.valueById('uPref_font_size')}%`)
+}
+
 function clientSetPref(id) {
 	const formControl = fsgUtil.byId(`uPref_${id}`)
 

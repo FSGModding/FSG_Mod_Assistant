@@ -10,8 +10,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="renderJS/util/general_lib.js"></script>
 	<script src="renderJS/confirm_copy_move_ui.js"></script>
+	<style>
+		#confirm_list>.row:last-child { border-bottom: 0px !important; }
+	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid px-1 user-select-none">
@@ -29,7 +33,7 @@
 			<span class="text-center small w-100 px-5 d-block"><l10n name="confirm_key_shortcuts"></span>
 		</div>
 
-		<div class="row mx-2">
+		<div class="row border-bottom pb-3 mx-1">
 			<div class="col-4 col-form-label"><l10n name="destination"></l10n></div>
 			<div class="col-8">
 				<select onchange="updateConfirmList()" id="select_destination" class="form-select"></select>
@@ -37,9 +41,11 @@
 		</div>
 		
 
-		<div class="mx-4 my-3 border-top" id="confirm_list"></div>
+		<div class="mx-4 my-3" id="confirm_list"></div>
 
-		<div class="btn btn-danger w-75 mx-auto d-block mb-4 text-white" onclick="clientDoMove()"><i class="bi bi-check2-circle"></i> <l10n name="move"></l10n></div>
+		<div class="row border-top pt-3 mx-1">
+			<div class="btn btn-danger w-75 mx-auto d-block mb-4 text-white" onclick="clientDoMove()"><i class="bi bi-check2-circle"></i> <l10n name="move"></l10n></div>
+		</div>
 	</div>
 </body>
 

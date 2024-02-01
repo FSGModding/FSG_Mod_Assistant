@@ -10,8 +10,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="renderJS/util/general_lib.js"></script>
 	<script src="renderJS/confirm_delete_ui.js"></script>
+	<style>
+		#confirm_list>.row:last-child { border-bottom: 0px !important; }
+	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid user-select-none">
@@ -27,9 +31,11 @@
 			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="confirm_delete_blurb"></l10n></span>
 		</div>
 
-		<div class="mx-4 my-3 border-top" id="confirm_list"></div>
+		<div class="mx-4 my-3" id="confirm_list"></div>
 
-		<div class="btn btn-danger w-75 mx-auto text-white d-block mb-4" onclick="clientDeleteButton()"><i class="bi bi-check2-circle"></i> <l10n name="delete"></l10n></div>
+		<div class="row border-top pt-3 mx-1">
+			<div class="btn btn-danger w-75 mx-auto text-white d-block mb-4" onclick="clientDeleteButton()"><i class="bi bi-check2-circle"></i> <l10n name="delete"></l10n></div>
+		</div>
 	</div>
 </body>
 

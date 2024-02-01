@@ -478,10 +478,10 @@
 							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_font_size"></l10n></h5></div>
 							<div class="row"><!-- font size -->
 								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_font_size"></l10n></div>
-								<div class="col-3" id="font_size_value">XX</div>
+								<div class="col-3 text-center" id="font_size_value">XX</div>
 								
 								<div class="col-10 offset-1">
-									<input onchange="clientSetPref('font_size')" type="range" class="form-range" min="70" max="150" step="1" id="uPref_font_size">
+									<input oninput="clientDragFontSize()" onchange="clientSetPref('font_size')" type="range" class="form-range" min="70" max="150" step="1" id="uPref_font_size">
 									<div class="p-0" style="margin-top: -0.7rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>
 								</div>
 								
@@ -495,7 +495,7 @@
 							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_theme_color"></l10n></h5></div>
 							<div class="row"><!-- color theme -->
 								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_theme_color"></l10n></div>
-								<div class="col-10 offset-1 mt-2">
+								<div class="col-12 px-4 mt-2">
 									<select onchange="clientChangeTheme()" class="form-select" name="theme_select" id="theme_select"></select>
 								</div>
 							</div>
@@ -505,7 +505,7 @@
 							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_lang"></l10n></h5></div>
 							<div class="row"><!-- language -->
 								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_lang"></l10n></div>
-								<div class="col-10 offset-1 my-2">
+								<div class="col-12 px-4 my-2">
 									<select onchange="clientChangeL10N()" class="form-select" name="language_select" id="language_select"></select>
 								</div>
 								<div class="col-9 pt-2 border-top ps-3 small fst-italic"><l10n name="user_pref_blurb2_lang"></l10n></div>
