@@ -931,15 +931,15 @@
 			{{folderSVG}}
 		</td>
 		<td style="width: 50%" class="folder-name collapsed" {{bootstrap_data}}>
-			<div class="row g-0">
-			<div class="col align-middle align-self-center {{class_status}}">{{name}}{{tagLine}}
-				<span class="ps-3 small fst-italic {{class_hideFolderEdit}}"><br>
-					<l10n name="folder_added"></l10n>: {{dateAdd}}
-					<l10n name="folder_used"></l10n>: {{dateUsed}}
-				</span>
+			<div class="d-flex">
+				<div class="flex-shrink-0 align-middle align-self-center {{class_status}}">{{name}}{{tagLine}}
+					<span class="ps-3 small fst-italic {{class_hideFolderEdit}}"><br>
+						<l10n name="folder_added"></l10n>: {{dateAdd}}
+						<l10n name="folder_used"></l10n>: {{dateUsed}}
+					</span>
+				</div>
+				<div id="{{id}}__bot" class="align-self-end text-end"></div>
 			</div>
-			<div id="{{id}}__bot" class="col-3 align-self-end text-end"></div>
-		</div>
 		</td>
 		<td class="align-middle text-end" style="line-height: 2.6rem;">
 			<button class="{{class_showFolderEdit}} {{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="clientOpenMod('true', '{{mapClick}}')">
