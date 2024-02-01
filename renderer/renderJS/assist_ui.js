@@ -586,27 +586,34 @@ function clientModContext(id) {
 	const isHoldingPen   = selectedMods.length === 0 ? false : fsgUtil.byId(`${selectedMods[0].split('--')[0]}_mods`).classList.contains('is-holding-pen')
 	window.mods.modCText(id, selectedMods, isHoldingPen)
 }
+
 function clientBatchOperation(mode) {
 	const allModRows     = fsgUtil.queryA('.mod-row .mod-row-checkbox:checked')
 	const selectedMods   = allModRows.map((thisRow) => thisRow.id.replace('__checkbox', ''))
+	const alternateMod   = select_lib.last_alt_select !== null ? [select_lib.last_alt_select] : selectedMods
 
 	if ( selectedMods.length === 0 ) { return }
 
-	const isHoldingPen   = fsgUtil.byId(`${selectedMods[0].split('--')[0]}_mods`).classList.contains('is-holding-pen')
+	const isHoldingPen   = fsgUtil.clsIdHas(`${selectedMods[0].split('--')[0]}_mods`, 'is-holding-pen')
 
-	if ( mode === 'copy' || mode ==='move' ) {
-		window.mods[`${mode}${isHoldingPen ? 'Multi' : 'Mods'}`](selectedMods)
-	} else if ( mode === 'delete' || mode === 'zip' ) {
-		window.mods[`${mode}Mods`](selectedMods)
-	} else {
-		if ( select_lib.last_alt_select !== null ) {
-			selectedMods.length = 0
-			selectedMods.push(select_lib.last_alt_select)
-		}
-		if ( selectedMods.length !== 1 ) { return }
-		if ( mode === 'open' ) { window.mods.openMods(selectedMods) }
-		if ( mode === 'hub' )  { window.mods.openHub(selectedMods) }
-		if ( mode === 'site' ) { window.mods.openExt(selectedMods) }
+	switch ( mode ) {
+		case 'copy' :
+		case 'move' :
+			window.mods[`${mode}${isHoldingPen ? 'Multi' : 'Mods'}`](selectedMods)
+			break
+		case 'delete' :
+		case 'zip' :
+			window.mods[`${mode}Mods`](selectedMods)
+			break
+		case 'openMods' :
+		case 'openHub' :
+		case 'openExt' :
+			if ( alternateMod.length === 1 ) {
+				window.mods[mode](alternateMod)
+			}
+			break
+		default :
+			break
 	}
 }
 
@@ -653,6 +660,8 @@ function updatePreferences() {
 		if ( formControl !== null ) {
 			if ( formControl.getAttribute('type') === 'checkbox' ) {
 				formControl.checked = lastPreferences[name]
+			} else if ( name === 'font_size' ) {
+				formControl.value = (lastPreferences[name] / 14) * 100
 			} else {
 				formControl.value = lastPreferences[name]
 			}
@@ -681,6 +690,8 @@ function clientSetPref(id) {
 
 	if ( formControl.getAttribute('type') === 'checkbox' ) {
 		window.mods.setPref(id, formControl.checked)
+	} else if ( id === 'font_size' ) {
+		window.mods.setPref(id, (formControl.value / 100) * 14)
 	} else {
 		window.mods.setPref(id, formControl.value)
 	}

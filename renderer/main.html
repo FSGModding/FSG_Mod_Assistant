@@ -288,9 +288,9 @@
 						<button id="moveButton_delete" onclick="clientBatchOperation('delete')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-danger text-white rounded-3 disabled"><l10n class="small" name="remove_from_list"></l10n></button>
 						<button id="moveButton_zip" onclick="clientBatchOperation('zip')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-primary rounded-3 disabled"><l10n class="small" name="make_zip"></l10n></button>
 
-						<button id="moveButton_open" onclick="clientBatchOperation('open')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_from_list"></l10n></button>
-						<button id="moveButton_hub" onclick="clientBatchOperation('hub')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_hub"></l10n></button>
-						<button id="moveButton_site" onclick="clientBatchOperation('site')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl2 ex-small_pt ex-small_ru2" name="context_open_website"></l10n></button>
+						<button id="moveButton_open" onclick="clientBatchOperation('openMods')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_from_list"></l10n></button>
+						<button id="moveButton_hub" onclick="clientBatchOperation('openHub')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_hub"></l10n></button>
+						<button id="moveButton_site" onclick="clientBatchOperation('openExt')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl2 ex-small_pt ex-small_ru2" name="context_open_website"></l10n></button>
 						
 						<button id="moveButton_fav" onclick="mods.copyFavorites()" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-warning text-white rounded-3"><l10n class="small" name="copy_fav_to"></l10n></button>
 						<button id="verButton" onclick="mods.versionCheck()" type="button" class="flex-fill w-100 btn btn-sm btn-success text-white rounded-3 "><l10n class="small" name="version_check"></l10n></button>
@@ -481,7 +481,8 @@
 								<div class="col-3" id="font_size_value">XX</div>
 								
 								<div class="col-10 offset-1">
-									<input onchange="clientSetPref('font_size')" type="range" class="form-range" min="9.8" max="21" step="0.1" id="uPref_font_size">
+									<input onchange="clientSetPref('font_size')" type="range" class="form-range" min="70" max="150" step="1" id="uPref_font_size">
+									<div class="p-0" style="margin-top: -0.7rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>
 								</div>
 								
 								<div class="col-10 offset-1">
