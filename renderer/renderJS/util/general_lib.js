@@ -70,20 +70,54 @@ const fsgUtil = {
 		spin       : new Uint8Array([0xFF, 0x01, 0x66, 0xC8, 0xFF, 0xAD, 0x52, 0x81, 0xD6]),
 	},
 
+	byId      : ( id ) => document.getElementById( id ),
+	htmlById  : (id) => fsgUtil.byId(id).innerHTML,
+	valueById : (id, newValue) => {
+		if ( typeof newValue !== 'undefined') {
+			fsgUtil.byId(id).value = newValue
+		} else {
+			return fsgUtil.byId(id).value
+		}
+	},
+
 	arrayJoinOrOther : (arr, l10nKey = 'detail_extra_clean') => Array.isArray(arr) && arr.length !== 0 ? arr.join('\n') : __(l10nKey),
-	byId       : ( id )    => document.getElementById( id ),
 	checkChangeAll : ( elements, newValue ) => {
 		for ( const element of elements ) { element.checked = newValue}
 	},
 	checkX : (amount, showCount = true) =>
 		`${(showCount)?`${amount} `:''}${(amount>0)?fsgUtil.getIcon('check', 'success'):fsgUtil.getIcon('x', 'danger')}`,
-	clsAddToAll : ( queryOrNodes, classList ) => {
+
+	clsAddId : (id, ...classes) => {
+		const thisElement = fsgUtil.byId(id)
+		if ( thisElement !== null ) { thisElement.classList.add(...classes) }
+	},
+	clsDelId : (id, ...classes) => {
+		const thisElement = fsgUtil.byId(id)
+		if ( thisElement !== null ) { thisElement.classList.remove(...classes) }
+	},
+
+
+	clsAddToAll : ( queryOrNodes, classList, callbackIsTrue = null ) => {
 		const classArray = ( typeof classList === 'string' ) ? [classList] : classList
 		const iterArray  = ( typeof queryOrNodes === 'string' ) ? fsgUtil.query(queryOrNodes) : queryOrNodes
 		for ( const element of iterArray ) {
-			element.classList.add(...classArray)
+			if ( typeof callbackIsTrue !== 'function' || callbackIsTrue(element) ) {
+				element.classList.add(...classArray)
+			}
 		}
 	},
+	clsDisable      : ( id ) => { fsgUtil.clsDisableTrue(id, true) },
+	clsDisableFalse : ( id, test ) => { fsgUtil.clsDisableTrue(id, !test) },
+	clsDisableTrue  : ( id, test ) => {
+		const element = fsgUtil.byId(id)
+		if ( test ) {
+			element.classList.add('disabled')
+		} else {
+			element.classList.remove('disabled')
+		}
+	},
+	clsEnable       : ( id ) => { fsgUtil.clsDisableTrue(id, false) },
+	
 	clsHide : ( id ) => { fsgUtil.clsHideTrue(id, true) },
 	clsHideFalse : ( id, test ) => { fsgUtil.clsHideTrue(id, !test) },
 	clsHideTrue  : ( id, test ) => {
@@ -94,6 +128,7 @@ const fsgUtil = {
 			element.classList.remove('d-none')
 		}
 	},
+	clsIdHas : (id, cls) => fsgUtil.byId(id).classList.contains(cls),
 	clsOrGate   : ( id, test, ifTrue, ifFalse ) => {
 		const element = fsgUtil.byId(id)
 		if ( test ) {
@@ -107,11 +142,13 @@ const fsgUtil = {
 	clsOrGateArr : (id, arr, ifTrue = 'text-danger', ifFalse = 'text-success') => {
 		fsgUtil.clsOrGate(id, (Array.isArray(arr) && arr.length !== 0), ifTrue, ifFalse )
 	},
-	clsRemoveFromAll : ( queryOrNodes, classList ) => {
+	clsRemoveFromAll : ( queryOrNodes, classList, callbackIsTrue = null ) => {
 		const classArray = ( typeof classList === 'string' ) ? [classList] : classList
 		const iterArray  = ( typeof queryOrNodes === 'string' ) ? fsgUtil.query(queryOrNodes) : queryOrNodes
 		for ( const element of iterArray ) {
-			element.classList.remove(...classArray)
+			if ( typeof callbackIsTrue !== 'function' || callbackIsTrue(element) ) {
+				element.classList.remove(...classArray)
+			}
 		}
 	},
 	clsShow : ( id ) => { fsgUtil.clsShowTrue(id, true) },
@@ -290,7 +327,7 @@ const fsgUtil = {
 		if ( test === null || test === '' ) {
 			fsgUtil.byId(id).classList.add('d-none')
 		} else {
-			fsgUtil.byId(id).innerHTML = content
+			fsgUtil.setById(id, content)
 		}
 	},
 
@@ -305,11 +342,19 @@ const fsgUtil = {
 		for ( const element of fsgUtil.query('[type="checkbox"]') ) { element.checked = newChecked }
 	},
 
-	setContent      : (kvPair) => {
-		for ( const [id, value] of Object.entries(kvPair) ) {
-			fsgUtil.byId(id).innerHTML = value
+	setById         : (id, textOrArray, joinString = '') => {
+		if ( Array.isArray(textOrArray) ) {
+			fsgUtil.byId(id).innerHTML = textOrArray.join(joinString)
+		} else {
+			fsgUtil.byId(id).innerHTML = textOrArray
 		}
 	},
+	setContent      : (kvPair) => {
+		for ( const [id, value] of Object.entries(kvPair) ) {
+			fsgUtil.setById(id, value)
+		}
+	},
+	
 	shortLongPaths  : () => {
 		for ( const element of fsgUtil.query('.longPrintPath') ) {
 			const currentValue = element.innerHTML
