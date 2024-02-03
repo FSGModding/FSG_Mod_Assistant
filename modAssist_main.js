@@ -1300,7 +1300,157 @@ ipcMain.on('toMain_setGameVersion', (_, newVersion) => {
 	readGameLog()
 	refreshClientModList()
 })
+
 /** END: Preferences window operation */
+
+/** START: Setup Wizard Functions */
+function getWizardSettings_game() {
+	let steamPath2VDF = null
+	let steamFolders = []
+	try {
+		const steamPathRaw = require('node:child_process').spawnSync('reg query HKLM\\SOFTWARE\\Wow6432Node\\Valve\\Steam /v InstallPath', { shell : true })
+		if ( steamPathRaw.error ) {
+			steamPath2VDF = false
+		} else {
+			steamPath2VDF = [...steamPathRaw.stdout.toString().matchAll(/REG_SZ\s*(.+?)$/gm)][0][1]
+		}
+	} catch (err) {
+		steamPath2VDF = false
+	}
+
+	if ( steamPath2VDF !== false && steamPath2VDF !== null ){
+		const steamVDFFullPath = path.join(steamPath2VDF, 'steamapps', 'libraryfolders.vdf')
+		if ( fs.existsSync(steamVDFFullPath) ) {
+			const steamVDFFile = fs.readFileSync(steamVDFFullPath, {encoding : 'utf8'})
+			steamFolders = [...steamVDFFile.matchAll(/^\s+"path"\s+"(.+?)"/gm)].map((x) => x[1])
+		}
+	}
+	
+	const allGameGuesses = {
+		13 : {
+			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator13\\FarmingSimulator2013.exe',
+			eShop : 'C:\\Program Files (x86)\\Farming Simulator 2013\\FarmingSimulator2013.exe',
+			steam : 'steamapps\\common\\Farming Simulator 13\\FarmingSimulator2013.exe',
+		},
+		15 : {
+			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator15\\FarmingSimulator2015Game.exe',
+			eShop : 'C:\\Program Files (x86)\\Farming Simulator 15\\FarmingSimulator2015Game.exe',
+			steam : 'steamapps\\common\\Farming Simulator 15\\FarmingSimulator2015Game.exe',
+		},
+		17 : {
+			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator17\\FarmingSimulator2017.exe',
+			eShop : 'C:\\Program Files (x86)\\Farming Simulator 2017\\FarmingSimulator2017.exe',
+			steam : 'steamapps\\common\\Farming Simulator 17\\FarmingSimulator2017.exe',
+		},
+		19 : {
+			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator19\\FarmingSimulator2019.exe',
+			eShop : 'C:\\Program Files (x86)\\Farming Simulator 2019\\FarmingSimulator2019.exe',
+			steam : 'steamapps\\common\\Farming Simulator 19\\FarmingSimulator2019.exe',
+			xbox  : 'C:\\XboxGames\\Farming Simulator 19 - Window 10 Edition\\Content\\gamelaunchhelper.exe',
+		},
+		22 : {
+			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator22\\FarmingSimulator2022.exe',
+			eShop : 'C:\\Program Files (x86)\\Farming Simulator 2022\\FarmingSimulator2022.exe',
+			steam : 'steamapps\\common\\Farming Simulator 22\\FarmingSimulator2022.exe',
+			xbox  : 'C:\\XboxGames\\Farming Simulator 22 - Window 10 Edition\\Content\\gamelaunchhelper.exe',
+		},
+	}
+
+	const foundGames = {}
+	for ( const [versionKey, gameTypes] of Object.entries(allGameGuesses) ) {
+		foundGames[versionKey] = []
+		for ( const [typeKey, typePath] of Object.entries(gameTypes) ) {
+			if ( typeKey !== 'steam' ) {
+				if ( fs.existsSync(typePath) ) {
+					foundGames[versionKey].push(typeKey, typePath)
+				}
+			} else {
+				for ( const thisSteam of steamFolders ) {
+					if ( fs.existsSync(path.join(thisSteam, typePath)) ) {
+						foundGames[versionKey].push(typeKey, path.join(thisSteam, typePath))
+					}
+				}
+			}
+		}
+	}
+	return foundGames
+}
+
+function getWizardSettings_settings() {
+	const settingsPaths = {
+		base : new Set([
+			path.join(app.getPath('documents'), 'My Games'),
+			path.join(app.getPath('home'), 'OneDrive', 'Documents', 'My Games'),
+			path.join(app.getPath('home'), 'Documents', 'My Games')
+		]),
+		ver : [
+			[22, 'FarmingSimulator2022'],
+			[19, 'FarmingSimulator2019'],
+			[17, 'FarmingSimulator2017'],
+			[15, 'FarmingSimulator2015'],
+			[13, 'FarmingSimulator2013'],
+		],
+	}
+
+	const foundSettings = {}
+	for ( const version of settingsPaths.ver ) {
+		const thesePaths = [...settingsPaths.base].map((basePath) => {
+			const fullPath = path.join(basePath, version[1], 'gameSettings.xml')
+			return fs.existsSync(fullPath) ? fullPath : null
+		}).filter((x) => x !== null)
+		foundSettings[version[0]] = thesePaths
+	}
+
+	return foundSettings
+}
+
+function getWizardSettings_mods(settingsPaths) {
+	const returnObj = {
+		isModFolder : false,
+		hasCollections : [
+
+		],
+	}
+	// console.log(foundSettings)
+	for ( const modFolder of settingsPaths ) {
+		const thisModFolder = path.join(path.dirname(modFolder), 'mods')
+		if ( fs.existsSync(thisModFolder) ) {
+			const folderContents = fs.readdirSync(thisModFolder, { withFileTypes : true })
+			for ( const thisEntry of folderContents ) {
+				if ( thisEntry.isDirectory() && ! thisEntry.name.startsWith('FS22')) {
+					returnObj.hasCollections.push(path.join(thisModFolder, thisEntry.name))
+				}
+				if ( !returnObj.isModFolder && thisEntry.name.endsWith('.zip') ) {
+					returnObj.isModFolder = true
+				}
+			}
+		}
+	}
+	return returnObj
+}
+
+function getWizardSettings() {
+	const settings     = getWizardSettings_settings()
+	const games        = getWizardSettings_game()
+	const useMulti     = { 13 : false, 15 : false, 17 : false, 19 : false }
+	let   multiVersion = false
+
+	for ( const versionKey of [19, 17, 15, 13] ) {
+		if ( games[versionKey].length !== 0 && settings[versionKey].length !== 0) {
+			useMulti[versionKey] = true
+			multiVersion         = true
+		}
+	}
+
+	return {
+		games        : games,
+		mods         : getWizardSettings_mods(settings[22]),
+		multiVersion : multiVersion,
+		settings     : settings,
+		useMulti     : useMulti,
+	}
+}
+/** END : Setup Wizard Functions */
 
 
 /** Notes Operation */
