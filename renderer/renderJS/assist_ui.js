@@ -648,7 +648,6 @@ window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })
 window.addEventListener('shown.bs.collapse',  () => { select_lib.click_none() })
 
 function updatePreferences() {
-	// TODO finish this.
 	fsgUtil.byId('uPref_dev_mode').checked = lastDevSettings[22]
 	fsgUtil.byId('uPref_dev_mode_19').checked = lastDevSettings[19]
 	fsgUtil.byId('uPref_dev_mode_17').checked = lastDevSettings[17]
