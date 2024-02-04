@@ -186,6 +186,8 @@ const Store   = require('electron-store')
 const unzip   = require('unzip-stream')
 const makeZip = require('archiver')
 
+const firstTimeRun = !fs.existsSync(path.join(app.getPath('userData'), 'config.json'))
+
 const mcStore = new Store({schema : settingDefault.defaults, clearInvalidConfig : true })
 const mdCache = new Store({name : 'mod_detail_cache', clearInvalidConfig : true})
 const modNote = new Store({name : 'col_notes', clearInvalidConfig : true})
@@ -1345,7 +1347,7 @@ ipcMain.on('toMain_setGameVersion', (_, newVersion) => {
 
 /** START: Setup Wizard Functions */
 
-ipcMain.on('toMain_showSetupWizard', () => {
+function openWizard() {
 	win.createNamedWindow('setup', {}, () => {
 		win.sendModList(
 			{
@@ -1359,7 +1361,9 @@ ipcMain.on('toMain_showSetupWizard', () => {
 			false
 		)
 	})
-})
+}
+
+ipcMain.on('toMain_showSetupWizard', () => { openWizard() })
 
 function getWizardSettings_game() {
 	let steamPath2VDF = null
@@ -2484,7 +2488,9 @@ modQueueRunner.on('process-mods-done', () => {
 	if ( mcStore.get('rel_notes') !== app.getVersion() ) {
 		mcStore.set('rel_notes', app.getVersion() )
 		log.log.info('New version detected, show changelog')
-		win.createNamedWindow('change')
+		if ( !firstTimeRun ) {
+			win.createNamedWindow('change')
+		}
 	}
 	mainProcessFlags.processRunning = false
 	maIPC.processing = false
@@ -2746,7 +2752,10 @@ app.whenReady().then(() => {
 			if ( mcStore.has('modFolders') ) {
 				mainProcessFlags.modFolders   = new Set(mcStore.get('modFolders'))
 				mainProcessFlags.foldersDirty = true
-				setTimeout(() => { processModFolders() }, 1500)
+				setTimeout(() => {
+					if ( firstTimeRun ) { openWizard() }
+					processModFolders()
+				}, 1500)
 			}
 			mainProcessFlags.intervalGameRun = setInterval(() => {
 				updateGameRunning()
