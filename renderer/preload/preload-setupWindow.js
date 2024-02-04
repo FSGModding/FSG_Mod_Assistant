@@ -49,10 +49,8 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		resetWindows  : () => { ipcRenderer.send('toMain_resetWindows') },
-		setGamePath   : (ver = 22) => { ipcRenderer.send('toMain_setGamePath', ver) },
+		addFolder     : ( folder ) => { ipcRenderer.send('toMain_addFolder_direct', folder) },
 		setPref       : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
-		setPrefFile   : (ver = 22) => { ipcRenderer.send('toMain_setPrefFile', ver) },
 
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([

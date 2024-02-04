@@ -405,6 +405,24 @@ ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
 
 
 /** Folder Window Operation */
+ipcMain.on('toMain_addFolder_direct', (event, potentialFolder) => {
+	for ( const thisPath of mainProcessFlags.modFolders ) {
+		if ( path.relative(thisPath, potentialFolder) === '' ) {
+			log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
+			return
+		}
+	}
+	const thisFolderCollectKey = modCollect.getFolderHash(potentialFolder)
+
+	mainProcessFlags.modFolders.add(potentialFolder)
+	mainProcessFlags.foldersDirty = true
+
+	mcStore.set('modFolders', [...mainProcessFlags.modFolders])
+	modNote.set(`${thisFolderCollectKey}.notes_version`, 22)
+	modNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
+	event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls, [...mainProcessFlags.modFolders] )
+})
+
 ipcMain.on('toMain_addFolder', () => {
 	dialog.showOpenDialog(win.win.main, {
 		properties  : ['openDirectory'],
@@ -1246,7 +1264,7 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 		parseGameXML(13, null)
 	}
 
-	event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
+	event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls, [...mainProcessFlags.modFolders] )
 })
 /* eslint-enable complexity */
 ipcMain.on('toMain_resetWindows',   () => { win.resetPositions() })
@@ -1290,7 +1308,7 @@ ipcMain.on('toMain_setPrefFile', (event, version) => {
 			versionConfigSet('game_settings', result.filePaths[0], version)
 			parseSettings()
 			refreshClientModList()
-			event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
+			event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls, [...mainProcessFlags.modFolders] )
 		}
 	}).catch((err) => {
 		log.log.danger(`Could not read specified gamesettings : ${err}`, 'game-settings')
@@ -1309,7 +1327,7 @@ ipcMain.on('toMain_setGamePath', (event, version) => {
 			versionConfigSet('game_path', result.filePaths[0], version)
 			parseSettings()
 			refreshClientModList()
-			event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
+			event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls, [...mainProcessFlags.modFolders] )
 		}
 	}).catch((err) => {
 		log.log.danger(`Could not read specified game EXE : ${err}`, 'game-path')
@@ -1333,6 +1351,7 @@ ipcMain.on('toMain_showSetupWizard', () => {
 			{
 				currentLocale          : myTranslator.deferCurrentLocale(),
 				devControls            : mainProcessFlags.devControls,
+				folders                : [...mainProcessFlags.modFolders],
 				wizardSettings         : getWizardSettings(),
 			},
 			'fromMain_modList',
@@ -1371,26 +1390,26 @@ function getWizardSettings_game() {
 			steam : 'steamapps\\common\\Farming Simulator 13\\FarmingSimulator2013.exe',
 		},
 		15 : {
-			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator15\\FarmingSimulator2015Game.exe',
+			Epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator15\\FarmingSimulator2015Game.exe',
 			eShop : 'C:\\Program Files (x86)\\Farming Simulator 15\\FarmingSimulator2015Game.exe',
-			steam : 'steamapps\\common\\Farming Simulator 15\\FarmingSimulator2015Game.exe',
+			Steam : 'steamapps\\common\\Farming Simulator 15\\FarmingSimulator2015Game.exe',
 		},
 		17 : {
-			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator17\\FarmingSimulator2017.exe',
+			Epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator17\\FarmingSimulator2017.exe',
 			eShop : 'C:\\Program Files (x86)\\Farming Simulator 2017\\FarmingSimulator2017.exe',
-			steam : 'steamapps\\common\\Farming Simulator 17\\FarmingSimulator2017.exe',
+			Steam : 'steamapps\\common\\Farming Simulator 17\\FarmingSimulator2017.exe',
 		},
 		19 : {
-			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator19\\FarmingSimulator2019.exe',
+			Epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator19\\FarmingSimulator2019.exe',
 			eShop : 'C:\\Program Files (x86)\\Farming Simulator 2019\\FarmingSimulator2019.exe',
-			steam : 'steamapps\\common\\Farming Simulator 19\\FarmingSimulator2019.exe',
-			xbox  : 'C:\\XboxGames\\Farming Simulator 19 - Window 10 Edition\\Content\\gamelaunchhelper.exe',
+			Steam : 'steamapps\\common\\Farming Simulator 19\\FarmingSimulator2019.exe',
+			XBox  : 'C:\\XboxGames\\Farming Simulator 19 - Window 10 Edition\\Content\\gamelaunchhelper.exe',
 		},
 		22 : {
-			epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator22\\FarmingSimulator2022.exe',
+			Epic  : 'C:\\Program Files\\Epic Games\\FarmingSimulator22\\FarmingSimulator2022.exe',
 			eShop : 'C:\\Program Files (x86)\\Farming Simulator 2022\\FarmingSimulator2022.exe',
-			steam : 'steamapps\\common\\Farming Simulator 22\\FarmingSimulator2022.exe',
-			xbox  : 'C:\\XboxGames\\Farming Simulator 22 - Window 10 Edition\\Content\\gamelaunchhelper.exe',
+			Steam : 'steamapps\\common\\Farming Simulator 22\\FarmingSimulator2022.exe',
+			XBox  : 'C:\\XboxGames\\Farming Simulator 22 - Window 10 Edition\\Content\\gamelaunchhelper.exe',
 		},
 	}
 
@@ -1398,7 +1417,7 @@ function getWizardSettings_game() {
 	for ( const [versionKey, gameTypes] of Object.entries(allGameGuesses) ) {
 		foundGames[versionKey] = []
 		for ( const [typeKey, typePath] of Object.entries(gameTypes) ) {
-			if ( typeKey !== 'steam' ) {
+			if ( typeKey !== 'Steam' ) {
 				if ( fs.existsSync(typePath) ) {
 					foundGames[versionKey].push([typeKey, typePath])
 				}

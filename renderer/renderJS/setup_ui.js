@@ -9,14 +9,13 @@
 /* global processL10N, fsgUtil, __ */
 
 function makeGameButton(setting, value, extraText = '') {
-	const buttonColor = value === lastPreferences[setting] ? 'success'           : 'outline-secondary'
-	const buttonIcon  = value === lastPreferences[setting] ? 'bi-check2-circle'  : 'bi-check-all'
-	const buttonText  = value === lastPreferences[setting] ? 'wizard_using_this' : 'wizard_use_this'
+	const buttonColor = value === lastPreferences[setting] ? 'success btn-thumb-up' : 'outline-secondary btn-check-mark'
+	const buttonText  = value === lastPreferences[setting] ? 'wizard_using_this'    : 'wizard_use_this'
 
 	return [
 		extraText !== '' ? `<div class="col-1 align-self-center">${extraText}</div>` : '',
-		`<div class="col-${extraText !== '' ? '8' : '9'} align-self-center">${value}</div>`,
-		`<div class="col-3"><button onclick="window.mods.setPref('${setting}', '${value.replaceAll('\\', '\\\\')}')" class="btn btn-${buttonColor} w-100"><i class="${buttonIcon}"></i> <l10n name="${buttonText}"></l10n></button></div>`,
+		`<div class="col-${extraText !== '' ? '8' : '9'} align-self-center small">${value}</div>`,
+		`<div class="col-3"><button onclick="window.mods.setPref('${setting}', '${value.replaceAll('\\', '\\\\')}')" class="btn btn-${buttonColor} w-100"><l10n name="${buttonText}"></l10n></button></div>`,
 	].join('')
 }
 
@@ -28,7 +27,7 @@ function doSettingStep (step = 2, version = 22) {
 	const divPath      = `found_${version}_game`
 
 	if ( lastWizard.settings[version].length === 0 ) {
-		fsgUtil.setById(divSettings, `<div class="text-center fw-bold fst-italic">${__(`wizard_step_${step}_fail_settings`)}</div>`)
+		fsgUtil.setById(divSettings, `<div class="text-center fw-bold text-warning">${__(`wizard_step_${step}_fail_settings`)}</div>`)
 	} else {
 		fsgUtil.setById(divSettings, [
 			'<div class="row my-2 gy-2">',
@@ -38,7 +37,7 @@ function doSettingStep (step = 2, version = 22) {
 	}
 
 	if ( lastWizard.games[version].length === 0 ) {
-		fsgUtil.setById(divPath, `<div class="text-center fw-bold fst-italic">${__(`wizard_step_${step}_fail_exe`)}</div>`)
+		fsgUtil.setById(divPath, `<div class="text-center fw-bold text-warning">${__(`wizard_step_${step}_fail_exe`)}</div>`)
 	} else {
 		fsgUtil.setById(divPath, [
 			'<div class="row my-2 gy-2">',
@@ -49,14 +48,13 @@ function doSettingStep (step = 2, version = 22) {
 }
 
 function folderAddLine(folder, alreadyExists) {
-	//TODO: write button click method
 	const buttonClass = alreadyExists ? 'secondary disabled' : 'info'
 	return [
-		`<div class="row border-bottom pb-2 mb-2"><div class="col-9 align-self-center">${folder}</div>`,
+		`<div class="row border-bottom pb-2 mb-2"><div class="col-9 align-self-center ${alreadyExists ? 'text-decoration-line-through' : ''}">${folder}</div>`,
 		'<div class="col-3 align-self-center">',
 		alreadyExists ?
 			`<div class="small text-center fst-italic">${__('wizard_mods_exists')}</div>` :
-			`<button class="btn btn-sm w-100 btn-outline-${buttonClass}">${__('folder_add')}</button>`,
+			`<button onclick="window.mods.addFolder('${folder.replaceAll('\\', '\\\\')}')"class="btn btn-sm btn-check-mark w-100 btn-outline-${buttonClass}">${__('folder_add')}</button>`,
 		'</div></div>',
 	].join('')
 }
@@ -64,7 +62,7 @@ function folderAddLine(folder, alreadyExists) {
 function doCollectionStep() {
 	if ( lastWizard.mods.isModFolder ) {
 		fsgUtil.setById('step_3_base', [
-			'<div class="col-12 mb-2 pb-2 border-bottom"><l10n name="wizard_mods_files"></l10n></div>',
+			'<div class="row border-bottom pb-2 mb-2"><l10n class="col-12"name="wizard_mods_files"></l10n></div>',
 			folderAddLine(
 				lastWizard.mods.baseModFolder,
 				lastFolder.includes(lastWizard.mods.baseModFolder)
@@ -74,7 +72,7 @@ function doCollectionStep() {
 
 	if ( lastWizard.mods.hasCollections.length !== 0 ) {
 		fsgUtil.setById('step_3_folder', [
-			'<div class="col-12 mb-2 pb-2 border-bottom"><l10n name="wizard_mods_folders"></l10n></div>',
+			`<div class="row border-bottom pb-2 mb-2 ${lastWizard.mods.isModFolder ? 'mt-5' : ''}"><l10n class="col-12"name="wizard_mods_folders"></l10n></div>`,
 			...lastWizard.mods.hasCollections.map((x) => folderAddLine(
 				x,
 				lastFolder.includes(x)
@@ -90,7 +88,7 @@ let lastFolder      = null
 window.mods.receive('fromMain_modList', (modCollect) => {
 	lastPreferences = modCollect.appSettings
 	lastWizard      = modCollect.opts.wizardSettings
-	lastFolder      = Object.keys(modCollect.folderToCollection)
+	lastFolder      = modCollect.opts.folders
 
 	doSettingStep(2, 22)
 	doSettingStep(4, 19)
@@ -101,13 +99,15 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	updatePreferences()
 })
 
-window.mods.receive('fromMain_allSettings', (allSettings) => {
+window.mods.receive('fromMain_allSettings', (allSettings, _, folders) => {
+	lastFolder      = folders
 	lastPreferences = allSettings
 	doSettingStep(2, 22)
 	doSettingStep(4, 19)
 	doSettingStep(4, 17)
 	doSettingStep(4, 15)
 	doSettingStep(4, 13)
+	doCollectionStep()
 	updatePreferences()
 })
 
