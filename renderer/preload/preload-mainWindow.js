@@ -128,6 +128,7 @@ contextBridge.exposeInMainWorld(
 		setPref       : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
 		setPrefFile   : (ver = 22) => { ipcRenderer.send('toMain_setPrefFile', ver) },
 		showChangelog : () => { ipcRenderer.send('toMain_showChangelog') },
+		showWizard    : () => { ipcRenderer.send('toMain_showSetupWizard') },
 
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
