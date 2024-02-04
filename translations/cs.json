@@ -231,6 +231,7 @@
 	"look_methane"                          : "Item is Methane Powered",
 	"make_zip"                              : "Export ZIP File",
 	"make_zip__title"                       : "Make a ZIP file of selected mods for sharing or distribution",
+	"map_image_title"                       : "地图概览图片",
 	"menu_depend_on"                        : "取决于",
 	"menu_require_by"                       : "要求",
 	"mh_norecord"                           : "--不在 Modhub 上--",

@@ -90,52 +90,61 @@
 			</div>
 		</div>
 
-		<div class="px-3 border-bottom mb-2" id="problem_div">
-			<h4><l10n name="detail_problems"></l10n></h4>
-			<div id="problems" class="w-100 mx-auto ps-5"></div>
-		</div>
-		<div class="px-3 border-bottom mb-2" id="desc_div">
-			<h4><l10n name="detail_description"></l10n></h4>
-			<div style="white-space: pre-wrap" class="ps-5 font-monospace mb-3" id="description"></div>
-		</div>
-		<div class="px-3 border-bottom mb-2 d-none" id="map_image_div">
-			<img id="map_image" class="img-fluid w-100">
-		</div>
-		<div class="px-3 border-bottom mb-2 d-none" id="cropcal_div">
-			<h4><l10n name="cropcal_title"></l10n></h4>
-			<div class="table-responsive" id="crop-cal">
-				<table id="crop-table" class="table table-sm table-borderless"></table>
-			</div>
-		</div>
-		<div class="px-3 border-bottom mb-2 d-none" id="store_div">
-			<h4><l10n name="detail_mod_store_items"></l10n></h4>
-			<div id="storeitems" class="px-2"></div>
-		</div>
-		<div class="px-3 border-bottom mb-2" id="depend_div">
-			<h4><l10n name="detail_depend"></l10n></h4>
-			<div id="depends" style="white-space: pre-wrap" class="w-100 mx-auto ps-5 mb-3"></div>
-		</div>
-		<div class="px-3 border-bottom mb-2">
-			<h4><l10n name="detail_dev_info"></l10n></h4>
-			<h6 class="i18n mt-4 ms-4"><l10n name="detail_key_binds"></l10n></h6>
-			<div style="white-space: pre-wrap; line-height: 2.2em" class="px-5 font-monospace" id="keyBinds"></div>
-			<h6 class="i18n mt-4 ms-4"><l10n name="detail_extra_files"></l10n></h6>
-			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="extraFiles"></div>
-			<h6 class="i18n mt-4 ms-4"><l10n name="detail_big_files"></l10n></h6>
-			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="bigFiles"></div>
-			<h6 class="i18n mt-4 ms-4"><l10n name="detail_space_files"></l10n></h6>
-			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="spaceFiles"></div>
-			<h6 class="i18n mt-4 ms-4"><l10n name="detail_png_textures"></l10n></h6>
-			<div style="white-space: pre-wrap" class="px-5 font-monospace" id="pngTexture"></div>
-			<h6 class="i18n mt-4 ms-4"><l10n name="detail_i3d_files"></l10n></h6>
-			<div style="white-space: pre-wrap" class="px-5 text-info font-monospace" id="i3dFiles"></div>
-			<div class="d-none" id="detail_crop_json">
-				<h6 class="i18n mt-4 ms-4"><l10n name="detail_crop_json"></l10n></h6>
-				<button id="cropcal_button" class="btn btn-primary my-2 ms-5 w-50"><l10n name="copy_cropcal"></l10n></button>
-			</div>
+		<div class="row gy-4 mt-4 mb-3 px-2">
+			<div class="col-12 inset-block" id="problem_div"><div>
+				<l10n class="inset-block-header" name="detail_problems"></l10n>
+				<div id="problems" class="w-100"></div>
+			</div></div>
+
+			<div class="col-12 inset-block" id="desc_div"><div>
+				<l10n class="inset-block-header" name="detail_description"></l10n>
+				<div style="white-space: pre-wrap" id="description" class="w-100 font-monospace"></div>
+			</div></div>
+
+			<div class="col-12 inset-block d-none" id="map_image_div"><div>
+				<l10n class="inset-block-header" name="map_image_title"></l10n>
+				<img id="map_image" class="img-fluid w-100">
+			</div></div>
+
+			<div class="col-12 inset-block d-none" id="cropcal_div"><div>
+				<l10n class="inset-block-header" name="cropcal_title"></l10n>
+				<div class="table-responsive" id="crop-cal">
+					<table id="crop-table" class="table table-sm table-borderless"></table>
+				</div>
+			</div></div>
+
+			<div class="col-12 inset-block d-none" id="store_div"><div>
+				<l10n class="inset-block-header" name="detail_mod_store_items"></l10n>
+				<div id="storeitems" class="row gy-5 pt-4"></div>
+			</div></div>
+
+			<div class="col-12 inset-block" id="depend_div"><div>
+				<l10n class="inset-block-header" name="detail_depend"></l10n>
+				<div id="depends" style="white-space: pre-wrap" class="w-100"></div>
+			</div></div>
+
+			<div class="col-12 inset-block"><div>
+				<l10n class="inset-block-header" name="detail_dev_info"></l10n>
+				<h4><l10n name="detail_dev_info"></l10n></h4>
+				<h6 class="i18n mt-4 ms-4"><l10n name="detail_key_binds"></l10n></h6>
+				<div style="white-space: pre-wrap; line-height: 2.2em" class="px-5 font-monospace" id="keyBinds"></div>
+				<h6 class="i18n mt-4 ms-4"><l10n name="detail_extra_files"></l10n></h6>
+				<div style="white-space: pre-wrap" class="px-5 font-monospace" id="extraFiles"></div>
+				<h6 class="i18n mt-4 ms-4"><l10n name="detail_big_files"></l10n></h6>
+				<div style="white-space: pre-wrap" class="px-5 font-monospace" id="bigFiles"></div>
+				<h6 class="i18n mt-4 ms-4"><l10n name="detail_space_files"></l10n></h6>
+				<div style="white-space: pre-wrap" class="px-5 font-monospace" id="spaceFiles"></div>
+				<h6 class="i18n mt-4 ms-4"><l10n name="detail_png_textures"></l10n></h6>
+				<div style="white-space: pre-wrap" class="px-5 font-monospace" id="pngTexture"></div>
+				<h6 class="i18n mt-4 ms-4"><l10n name="detail_i3d_files"></l10n></h6>
+				<div style="white-space: pre-wrap" class="px-5 text-info font-monospace" id="i3dFiles"></div>
+				<div class="d-none" id="detail_crop_json">
+					<h6 class="i18n mt-4 ms-4"><l10n name="detail_crop_json"></l10n></h6>
+					<button id="cropcal_button" class="btn btn-primary my-2 ms-5 w-50"><l10n name="copy_cropcal"></l10n></button>
+				</div>
+			</div></div>
 		</div>
 	</div>
-
 </body>
 
 <template id="combo_div_source">
@@ -164,18 +173,17 @@
 </template>
 
 <template id="vehicle_info_div">
-	<div class="card mb-3" id="{{uuid}}">
-		<h5 class="card-header">
-			{{itemName}}
-			<span class="fw-normal" style="font-size: 50%">-</span>
+	<div class="col-12 inset-block" id="{{uuid}}"><div>
+		<span class="inset-block-header" name="detail_dev_info">{{itemName}} <button class="btn btn-sm btn-warning" onclick="clientOpenCompare('{{uuid}}')"><l10n name="basegame_button_comp"></l10n></button></span>
+		<span class="inset-block-blurb-detail">
 			<small class="fst-italic">{{typeDesc}}</small>
 			<span class="fw-normal" style="font-size: 50%">-</span>
 			<small class="fst-italic fw-normal">{{itemTitle}}</small>
 			<span class="fw-normal" style="font-size: 50%">-</span>
 			<small class="fw-bold">{{category}}</small>
-			<button class="btn btn-sm btn-warning float-end" onclick="clientOpenCompare('{{uuid}}')"><l10n name="basegame_button_comp"></l10n></button>
-		</h5>
-		<div class="card-body">
+		</span>
+
+		<div class="inset-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">
 					<div class="{{showBrand}} text-center">{{brandImage}}</div>
@@ -207,7 +215,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div></div>
 </template>
 
 <template id="prod_div">
@@ -239,15 +247,14 @@
 </template>
 
 <template id="place_div">
-	<div class="card mb-3">
-		<h5 class="card-header">
-			{{itemName}}
-			<span class="fw-normal" style="font-size: 50%">-</span>
+	<div class="col-12 inset-block" id="{{uuid}}"><div>
+		<span class="inset-block-header" name="detail_dev_info">{{itemName}}</span>
+		<span class="inset-block-blurb-detail">
 			<small class="fst-italic fw-normal">{{itemTitle}}</small>
 			<span class="fw-normal" style="font-size: 50%">-</span>
 			<small class="fw-bold">{{category}}</small>
-		</h5>
-		<div class="card-body">
+		</span>
+		<div class="inset-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">
 					{{iconImage}}
@@ -259,7 +266,7 @@
 				<div class="col-12 pt-2"><p class="text-center">{{functions}}</p></div>
 			</div>
 		</div>
-	</div>
+	</div></div>
 </template>
 
 </html>

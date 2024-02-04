@@ -231,6 +231,7 @@
 	"look_methane"                          : "L'objet est alimenté au méthane",
 	"make_zip"                              : "Exporter un fichier ZIP",
 	"make_zip__title"                       : "Créer un fichier ZIP des mods sélectionnés pour le partage ou la distribution",
+	"map_image_title"                       : "Vue d'ensemble de la carte",
 	"menu_depend_on"                        : "Dépend de",
 	"menu_require_by"                       : "Exigée par",
 	"mh_norecord"                           : "--pas sur modhub--",

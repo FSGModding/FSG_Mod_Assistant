@@ -231,6 +231,7 @@
 	"look_methane"                          : "Položka je poháněná plynem",
 	"make_zip"                              : "Exportovat soubor ZIP",
 	"make_zip__title"                       : "Vytvořit soubor ZIP pro vybrané mody pro sdílení nebo distribuci",
+	"map_image_title"                       : "Přehledný obrázek mapy",
 	"menu_depend_on"                        : "Záleží na",
 	"menu_require_by"                       : "Vyžadováno podle",
 	"mh_norecord"                           : "--not on modhub--",
