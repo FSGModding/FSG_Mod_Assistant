@@ -34,7 +34,7 @@
 		</div>
 		
 		<div class="mx-2 my-3 text-center" id="no_list_yet"><l10n name="save_track_none"></l10n></div>
-		<div class="mx-2 my-3" id="modList"></div>
+		<div class="mx-2 my-3 row gy-4" id="modList"></div>
 
 	</div>
 
@@ -42,27 +42,23 @@
 
 
 <template id="savetrack_current">
-	<div class="card">
-		<div class="card-header"><l10n name="save_track_current"></l10n> <em class="small">({{savegameID}})</em></div>
-		<div class="card-body">
-			<div class="row row-cols-3">{{modList}}</div>
-		</div>
-	</div>
+	<div class="col-12 inset-block"><div>
+		<span class="inset-block-header"><l10n name="save_track_current"></l10n> <em class="small">({{savegameID}})</em></span>
+		<div class="row row-cols-3 g-2">{{modList}}</div>
+	</div></div>
 </template>
 
 <template id="savetrack_backup">
-	<div class="card mt-2">
-		<div class="card-header"><l10n name="save_track_backup"></l10n>: <em>{{backupDate}}</em></div>
-		<div class="card-body">
-			<em class="h6 {{class_isDupe}}"><l10n name="save_track_duplicate"></l10n></em>
-			<div class="{{class_notDupe}}">
-				<h6><l10n name="save_track_only_current"></l10n></h6>
-				<div class="row row-cols-3 mb-4">{{onlyCurrent}}</div>
-				<h6><l10n name="save_track_only_backup"></l10n></h6>
-				<div class="row row-cols-3">{{onlyBackup}}</div>
-			</div>
+	<div class="col-12 inset-block"><div>
+		<span class="inset-block-header"><l10n name="save_track_backup"></l10n>: <em>{{backupDate}}</em></span>
+		<em class="h6 {{class_isDupe}} text-body-emphasis"><l10n name="save_track_duplicate"></l10n></em>
+		<div class="{{class_notDupe}}">
+			<h6 class="text-primary-subtle"><l10n name="save_track_only_current"></l10n></h6>
+			<div class="row row-cols-3 g-2 mb-4">{{onlyCurrent}}</div>
+			<h6 class="text-primary-subtle"><l10n name="save_track_only_backup"></l10n></h6>
+			<div class="row row-cols-3 g-2">{{onlyBackup}}</div>
 		</div>
-	</div>
+	</div></div>
 </template>
 
 </html>

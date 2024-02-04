@@ -24,7 +24,7 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	
 	newHTML.push(fsgUtil.useTemplate('savetrack_current', {
 		savegameID : saveInfo.saveID,
-		modList    : saveInfo.current.map((x) => `<div class="col border p-2">${x}</div>`).join(''),
+		modList    : saveInfo.current.map((x) => `<div class="col"><div class="border p-1">${x}</div></div>`).join(''),
 	}))
 
 	for ( const thisBack of saveInfo.byDate ) {
@@ -37,8 +37,8 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 			backupDate    : `${dateParts[0]} ${dateParts[1].replace(/-/, ':')}`,
 			class_isDupe  : thisBack.duplicate ? '' : 'd-none',
 			class_notDupe : thisBack.duplicate ? 'd-none' : '',
-			onlyBackup    : thisBack.onlyBackup.map((x) => `<div class="col border p-2">${x}</div>`).join(''),
-			onlyCurrent   : thisBack.onlyOriginal.map((x) => `<div class="col border p-2">${x}</div>`).join(''),
+			onlyBackup    : thisBack.onlyBackup.map((x) => `<div class="col"><div class="border p-1">${x}</div></div>`).join(''),
+			onlyCurrent   : thisBack.onlyOriginal.map((x) => `<div class="col"><div class="border p-1">${x}</div></div>`).join(''),
 		}))
 	}
 
