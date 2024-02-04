@@ -95,7 +95,7 @@ function doFarms(farms) {
 			</tr>`
 		)
 	}
-	return `<table class="table table-sm table-borderless">${returnHTML.join('')}</table>`
+	return `<table class="table table-sm table-borderless table-striped">${returnHTML.join('')}</table>`
 }
 
 let deleteDialog  = null

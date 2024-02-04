@@ -142,6 +142,12 @@ tr.mod-list-row td:first-child input { display: none; }
 	line-height: 1.2;
 	text-align: justify;
 }
+.display-8 {
+	font-size: calc(1.0375rem + 1.25vw);
+	font-weight: 300;
+	line-height: 1.2;
+	text-align: justify;
+}
 .inset-block-header {
 	--bs-bg-opacity: 1;
 	--bs-text-opacity: 1;
