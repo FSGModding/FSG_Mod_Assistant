@@ -30,8 +30,11 @@
 		}
 	</script>
 	<style>
-		::-webkit-scrollbar-track-piece:start { margin-top: 122px; }
-		::-webkit-scrollbar-track-piece:end { margin-bottom: 35px; }
+		.std-scroll::-webkit-scrollbar-track-piece:start { margin-top: 122px; }
+		.std-scroll::-webkit-scrollbar-track-piece:end { margin-bottom: 35px; }
+
+		.full-scroll::-webkit-scrollbar-track-piece:start { margin-top: 0px !important; }
+		.full-scroll::-webkit-scrollbar-track-piece:end { margin-bottom: 0px !important; }
 
 		#scroll-bar-fake {
 			z-index: -1;
@@ -145,7 +148,7 @@
 	</style>
 	
 </head>
-<body class="d-flex flex-column h-100 overflow-custom2 fsg-back-1" id="drag_target" data-bs-theme="dark">
+<body class="d-flex flex-column h-100 overflow-custom2 fsg-back-1 std-scroll" id="drag_target" data-bs-theme="dark">
 	<div id="scroll-bar-fake" class="position-fixed d-flex flex-column">
 	</div>
 	<div id="lang-style-div">
@@ -357,6 +360,7 @@
 		</div>
 	</footer>
 	</div>
+
 	<div id="drag_back" class="d-none position-absolute w-100 h-100 text-center" style="z-index: 10000; background-color: #00000066">
 		<div class="row h-100">
 			<div id="drag_add_file" class="bg-opacity-50 col">
@@ -375,6 +379,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" style="-webkit-app-region: no-drag;" aria-labelledby="offcanvasLabel">
 		<div class="offcanvas-header">
 			<h5 class="offcanvas-title" id="offcanvasLabel"><l10n name="notes_title_version"></l10n></h5>
@@ -407,362 +412,320 @@
 
 				<div class="tab-pane fade show active pt-4" id="display-pref-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
 					<div class="row gx-3 gy-4">
+						<div class="col-md-6 inset-block"><div>  <!-- changelog -->
+							<l10n class="inset-block-header" name="user_pref_title_changelog"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_changelog"></l10n>
+								<div class="btn btn-primary btn-sm col-3 align-self-start" onclick="window.mods.showChangelog()"><i class="bi-check2-circle"></i></div>
+							</div>
+						</div></div>
 
-						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_changelog"></l10n></h5></div>
-							<div class="row"><!-- changelog -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_changelog"></l10n></div>
-								<div class="col-3">
-									<div class="btn btn-primary btn-sm w-100" onclick="window.mods.showChangelog()"><i class="bi-check2-circle"></i></div>
+						<div class="col-md-6 inset-block"><div>  <!-- wizard -->
+							<l10n class="inset-block-header" name="user_pref_title_wizard"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_wizard"></l10n>
+								<div class="btn btn-primary btn-sm col-3 align-self-start" onclick="window.mods.showWizard()"><i class="bi-check2-circle"></i></div>
+							</div>
+						</div></div>
+
+						<div class="col-md-6 inset-block"><div>  <!-- led -->
+							<l10n class="inset-block-header" name="user_pref_title_led"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_led"></l10n>
+								<div class="col-3 form-switch custom-switch">
+									<input id="uPref_led_active" onchange="clientSetPref('led_active')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
 
-						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_wizard"></l10n></h5></div>
-							<div class="row"><!-- wizard -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_wizard"></l10n></div>
-								<div class="col-3">
-									<div class="btn btn-primary btn-sm w-100" onclick="window.mods.showWizard()"><i class="bi-check2-circle"></i></div>
+						<div class="col-md-6 inset-block"><div>  <!-- tooltips -->
+							<l10n class="inset-block-header" name="user_pref_title_show_tooltips"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_show_tooltips"></l10n>
+								<div class="col-3 form-switch custom-switch">
+									<input id="uPref_show_tooltips" onchange="clientSetPref('show_tooltips')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
 
-						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_led"></l10n></h5></div>
-							<div class="row"><!-- giants led -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_led"></l10n></div>
-								<div class="col-3">
-									<div class="form-check form-switch custom-switch">
-										<input id="uPref_led_active" onchange="clientSetPref('led_active')" class="form-check-input" type="checkbox" role="switch">
-									</div>
+						<div class="col-md-6 inset-block"><div> <!-- font size -->
+							<l10n class="inset-block-header" name="user_pref_title_font_size"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_font_size"></l10n>
+								<div class="col-2 text-center small text-body-emphasis" id="font_size_value">XX</div>
+								<div class="col-12 mt-2">
+									<input oninput="clientDragFontSize()" onchange="clientSetPref('font_size')" id="uPref_font_size" type="range" class="form-range" min="70" max="150" step="1" >
+									<div class="p-0" style="margin-top: -0.95rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>
+								</div>
+								<div class="col-10 offset-1 mt-2">
+									<div class="d-block btn btn-outline-primary btn-sm w-100 mx-auto" onclick="window.mods.setPref('font_size', 14)"><l10n name="user_pref_font_size_default"></l10n></div>
 								</div>
 							</div>
 						</div></div>
 
-						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_show_tooltips"></l10n></h5></div>
-							<div class="row"><!-- tooltips -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_show_tooltips"></l10n></div>
-								<div class="col-3">
-									<div class="form-check form-switch custom-switch">
-										<input id="uPref_show_tooltips" onchange="clientSetPref('show_tooltips')" class="form-check-input" type="checkbox" role="switch">
-									</div>
+						<div class="col-md-6 inset-block"><div> <!-- theme -->
+							<l10n class="inset-block-header" name="user_pref_title_theme_color"></l10n>
+							<l10n class="inset-block-blurb-option" name="user_pref_blurb_theme_color"></l10n>
+							<select onchange="clientChangeTheme()" class="form-select mt-3 px-4" name="theme_select" id="theme_select"></select>
+						</div></div>
+
+						<div class="col-md-6 inset-block"><div> <!-- language -->
+							<l10n class="inset-block-header" name="user_pref_title_lang"></l10n>
+							<l10n class="inset-block-blurb-option" name="user_pref_blurb_lang"></l10n>
+							<select onchange="clientChangeL10N()" class="form-select mt-3 px-4" name="language_select" id="language_select"></select>
+							<div class="row mt-2">
+								<l10n class="inset-block-blurb-option col-9 fst-italic" name="user_pref_blurb2_lang"></l10n>
+								<div class="col-3 form-check form-switch custom-switch">
+									<input id="uPref_lock_lang" onchange="clientSetPref('lock_lang')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
 
-						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_font_size"></l10n></h5></div>
-							<div class="row"><!-- font size -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_font_size"></l10n></div>
-								<div class="col-3 text-center" id="font_size_value">XX</div>
-								
-								<div class="col-10 offset-1">
-									<input oninput="clientDragFontSize()" onchange="clientSetPref('font_size')" type="range" class="form-range" min="70" max="150" step="1" id="uPref_font_size">
-									<div class="p-0" style="margin-top: -0.7rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>
-								</div>
-								
-								<div class="col-10 offset-1">
-									<div class="d-block btn btn-primary btn-sm w-100 mt-2 mx-auto mb-3" onclick="window.mods.setPref('font_size', 14)"><l10n name="user_pref_font_size_default"></l10n></div>
-								</div>
+						<div class="col-md-6 inset-block"><div>  <!-- reset windows -->
+							<l10n class="inset-block-header" name="user_pref_title_reset_window"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_reset_window"></l10n>
+								<div class="btn btn-primary btn-sm col-3 align-self-start" onclick="window.mods.resetWindows()"><i class="bi-check2-circle"></i></div>
 							</div>
 						</div></div>
-
-						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_theme_color"></l10n></h5></div>
-							<div class="row"><!-- color theme -->
-								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_theme_color"></l10n></div>
-								<div class="col-12 px-4 mt-2">
-									<select onchange="clientChangeTheme()" class="form-select" name="theme_select" id="theme_select"></select>
-								</div>
-							</div>
-						</div></div>
-
-						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_lang"></l10n></h5></div>
-							<div class="row"><!-- language -->
-								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_lang"></l10n></div>
-								<div class="col-12 px-4 my-2">
-									<select onchange="clientChangeL10N()" class="form-select" name="language_select" id="language_select"></select>
-								</div>
-								<div class="col-9 pt-2 border-top ps-3 small fst-italic"><l10n name="user_pref_blurb2_lang"></l10n></div>
-								<div class="col-3 pt-2 border-top">
-									<div class="form-check form-switch custom-switch">
-										<input id="uPref_lock_lang" onchange="clientSetPref('lock_lang')" class="form-check-input" type="checkbox" role="switch">
-									</div>
-								</div>
-							</div>
-						</div></div>
-
-						<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_reset_window"></l10n></h5></div>
-							<div class="row"><!-- reset windows -->
-								<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_reset_window"></l10n></div>
-								<div class="col-3">
-									<div class="btn btn-primary btn-sm w-100" onclick="window.mods.resetWindows()"><i class="bi-check2-circle"></i></div>
-								</div>
-							</div>
-						</div></div>
-
 					</div>
 				</div>
 
 				<div class="tab-pane fade pt-4" id="game-pref-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
 					<div class="row gx-3 gy-4">
-
-						<div class="col-12"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs22"></l10n></h5></div>
-							<div class="row"><!-- version 22 -->
-								<div class="col-2 text-center"><i class="fsico-ver-22" style="font-size: 75px;"></i></div>
-								<div class="col-10">
-
-									<div>
-										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+						<div class="col-12 inset-block mt-5"><div><!-- version 22 -->
+							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-22" style="font-size: 75px;"></i></div>
+							<div class="row" style="margin-top: -2.5rem;">
+								<div class="col-10 offset-2"><div class="row gy-4">
+									<div class="col-12 inset-block"><div><!-- game settings -->
+										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
 										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_settings" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(22)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2">
-										<label for="uPref_game_path" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
-										<div class="input-group">
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
+									</div></div>
+									<div class="col-12 inset-block"><div><!-- game path -->
+										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_path" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(22)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2">
-										<label for="uPref_game_args" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
+									</div></div>
+									<div class="col-12 inset-block"><div><!-- game args -->
+										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
 										<input type="text" class="form-control" id="uPref_game_args" onchange="clientSetPref('game_args')" style="font-size: 70%">
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 row">
-										<div class="col-10"><label for="uPref_dev_mode2" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-2">
-											<div class="form-check form-switch custom-switch">
+										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
+									</div></div>
+									<div class="col-12 inset-block"><div><!-- dev mode -->
+										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
 												<input id="uPref_dev_mode" onchange="clientSetPref('dev_mode')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
-										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
-									</div>
+									</div></div>
+								</div></div>
+							</div>
+						</div></div>
 
+						<div class="col-12 inset-block"><div>  <!-- multi -->
+							<l10n class="inset-block-header" name="user_pref_title_multi_version"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_multi_version"></l10n>
+								<div class="col-2 form-switch custom-switch">
+									<input id="uPref_multi_version" onchange="clientSetPref('multi_version')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
 
-						<div class="col-12"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_multi_version"></l10n></h5></div>
-							<div class="row"><!-- multi version -->
-								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_multi_version"></l10n></div>
-								<div class="col-2 pt-2">
-									<div class="form-check form-switch custom-switch">
-										<input id="uPref_multi_version" onchange="clientSetPref('multi_version')" class="form-check-input" type="checkbox" role="switch">
-									</div>
-								</div>
-							</div>
-						</div></div>
+						<div class="col-12 inset-block mt-5 multi-version-pref"><div><!-- version 19 -->
+							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-19" style="font-size: 75px;"></i></div>
+							<div class="row" style="margin-top: -3rem;">
+								<div class="col-10 offset-2"><div class="row gy-4">
+									<div class="col-12 inset-block"><div><!-- enable -->
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
+												<input id="uPref_game_enabled_19" onchange="clientSetPref('game_enabled_19')" class="form-check-input" type="checkbox" role="switch">
+											</div>
+										</div>
+									</div></div>
 
-						<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs19"></l10n></h5></div>
-							<div class="row"><!-- version 19 -->
-								<div class="col-2 text-center">
-									<i class="fsico-ver-19" style="font-size: 75px;"></i>
-									<div class="form-check form-switch custom-switch w-75 mx-auto">
-										<input id="uPref_game_enabled_19" onchange="clientSetPref('game_enabled_19')" class="form-check-input" type="checkbox" role="switch">
-									</div>
-								</div>
-								<div class="col-10">
-									<div class="form-text fst-italic text-end game_disabled_19"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
-
-									<div class="game_enabled_19">
-										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+									<div class="col-12 inset-block game_enabled_19"><div><!-- game settings -->
+										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
 										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_settings_19" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(19)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 game_enabled_19">
-										<label for="uPref_game_path_19" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
-										<div class="input-group">
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_19"><div><!-- game path -->
+										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_path_19" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(19)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 game_enabled_19">
-										<label for="uPref_game_args_19" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_19"><div><!-- game args -->
+										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
 										<input type="text" class="form-control" id="uPref_game_args_19" onchange="clientSetPref('game_args_19')" style="font-size: 70%">
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 row game_enabled_19">
-										<div class="col-10"><label for="uPref_dev_mode2_19" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-2">
-											<div class="form-check form-switch custom-switch">
+										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_19"><div><!-- dev mode -->
+										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
 												<input id="uPref_dev_mode_19" onchange="clientSetPref('dev_mode_19')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
-										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
-									</div>
-
-								</div>
+									</div></div>
+								</div></div>
 							</div>
 						</div></div>
 
-						<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs17"></l10n></h5></div>
-							<div class="row"><!-- version 17 -->
-								<div class="col-2 text-center">
-									<i class="fsico-ver-17" style="font-size: 75px;"></i>
-									<div class="form-check form-switch custom-switch w-75 mx-auto">
-										<input id="uPref_game_enabled_17" onchange="clientSetPref('game_enabled_17')" class="form-check-input" type="checkbox" role="switch">
-									</div>
-								</div>
-								<div class="col-10">
-									<div class="form-text fst-italic text-end game_disabled_17"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
+						<div class="col-12 inset-block mt-5 multi-version-pref"><div><!-- version 17 -->
+							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-17" style="font-size: 75px;"></i></div>
+							<div class="row" style="margin-top: -3rem;">
+								<div class="col-10 offset-2"><div class="row gy-4">
+									<div class="col-12 inset-block"><div><!-- enable -->
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
+												<input id="uPref_game_enabled_17" onchange="clientSetPref('game_enabled_17')" class="form-check-input" type="checkbox" role="switch">
+											</div>
+										</div>
+									</div></div>
 
-									<div class="game_enabled_17">
-										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+									<div class="col-12 inset-block game_enabled_17"><div><!-- game settings -->
+										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
 										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_settings_17" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(17)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 game_enabled_17">
-										<label for="uPref_game_path_17" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
-										<div class="input-group">
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_17"><div><!-- game path -->
+										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_path_17" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(17)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 game_enabled_17">
-										<label for="uPref_game_args_17" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_17"><div><!-- game args -->
+										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
 										<input type="text" class="form-control" id="uPref_game_args_17" onchange="clientSetPref('game_args_17')" style="font-size: 70%">
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 row game_enabled_17">
-										<div class="col-10"><label for="uPref_dev_mode2_17" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-2">
-											<div class="form-check form-switch custom-switch">
+										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_17"><div><!-- dev mode -->
+										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
 												<input id="uPref_dev_mode_17" onchange="clientSetPref('dev_mode_17')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
-										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
-									</div>
-
-								</div>
+									</div></div>
+								</div></div>
 							</div>
 						</div></div>
 
-						<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs15"></l10n></h5></div>
-							<div class="row"><!-- version 15 -->
-								<div class="col-2 text-center">
-									<i class="fsico-ver-15" style="font-size: 75px;"></i>
-									<div class="form-check form-switch custom-switch w-75 mx-auto">
-										<input id="uPref_game_enabled_15" onchange="clientSetPref('game_enabled_15')" class="form-check-input" type="checkbox" role="switch">
-									</div>
-								</div>
-								<div class="col-10">
-									<div class="form-text fst-italic text-end game_disabled_15"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
+						<div class="col-12 inset-block mt-5 multi-version-pref"><div><!-- version 15 -->
+							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-15" style="font-size: 75px;"></i></div>
+							<div class="row" style="margin-top: -3rem;">
+								<div class="col-10 offset-2"><div class="row gy-4">
+									<div class="col-12 inset-block"><div><!-- enable -->
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
+												<input id="uPref_game_enabled_15" onchange="clientSetPref('game_enabled_15')" class="form-check-input" type="checkbox" role="switch">
+											</div>
+										</div>
+									</div></div>
 
-									<div class="game_enabled_15">
-										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+									<div class="col-12 inset-block game_enabled_15"><div><!-- game settings -->
+										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
 										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_settings_15" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(15)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 game_enabled_15">
-										<label for="uPref_game_path_15" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
-										<div class="input-group">
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_15"><div><!-- game path -->
+										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_path_15" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(15)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 game_enabled_15">
-										<label for="uPref_game_args_15" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_15"><div><!-- game args -->
+										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
 										<input type="text" class="form-control" id="uPref_game_args_15" onchange="clientSetPref('game_args_15')" style="font-size: 70%">
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 row game_enabled_15">
-										<div class="col-10"><label for="uPref_dev_mode2_15" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-2">
-											<div class="form-check form-switch custom-switch">
+										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_15"><div><!-- dev mode -->
+										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
 												<input id="uPref_dev_mode_15" onchange="clientSetPref('dev_mode_15')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
-										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
-									</div>
-
-								</div>
+									</div></div>
+								</div></div>
 							</div>
 						</div></div>
 
-						<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="mod_badge_fs13"></l10n></h5></div>
-							<div class="row"><!-- version 13 -->
-								<div class="col-2 text-center">
-									<i class="fsico-ver-13" style="font-size: 75px;"></i>
-									<div class="form-check form-switch custom-switch w-75 mx-auto">
-										<input id="uPref_game_enabled_13" onchange="clientSetPref('game_enabled_13')" class="form-check-input" type="checkbox" role="switch">
-									</div>
-								</div>
-								<div class="col-10">
-									<div class="form-text fst-italic text-end game_disabled_13"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
+						<div class="col-12 inset-block mt-5 multi-version-pref"><div><!-- version 13 -->
+							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-13" style="font-size: 75px;"></i></div>
+							<div class="row" style="margin-top: -3rem;">
+								<div class="col-10 offset-2"><div class="row gy-4">
+									<div class="col-12 inset-block"><div><!-- enable -->
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
+												<input id="uPref_game_enabled_13" onchange="clientSetPref('game_enabled_13')" class="form-check-input" type="checkbox" role="switch">
+											</div>
+										</div>
+									</div></div>
 
-									<div class="game_enabled_13">
-										<label for="uPref_game_settings" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_settings"></l10n></label>
+									<div class="col-12 inset-block game_enabled_13"><div><!-- game settings -->
+										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
 										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_settings_13" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(13)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_settings"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 game_enabled_13">
-										<label for="uPref_game_path_13" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_title_game_path"></l10n></label>
-										<div class="input-group">
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_13"><div><!-- game path -->
+										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+										<div class="input-group ">
 											<input type="text" class="form-control" id="uPref_game_path_13" readonly style="font-size: 70%">
 											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(13)"><i class="bi bi-folder"></i></button>
 										</div>
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_blurb_game_path"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 game_enabled_13">
-										<label for="uPref_game_args_13" class="col-sm-3 fw-bold col-form-label"><l10n name="user_pref_setting_game_args"></l10n></label>
+										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_13"><div><!-- game args -->
+										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
 										<input type="text" class="form-control" id="uPref_game_args_13" onchange="clientSetPref('game_args_13')" style="font-size: 70%">
-										<div class="form-text fst-italic text-end"><l10n name="user_pref_setting_game_args_example"></l10n></div>
-									</div>
-
-									<div class="border-top mt-2 pt-2 row game_enabled_13">
-										<div class="col-10"><label for="uPref_dev_mode2_13" class="fw-bold col-form-label"><l10n name="user_pref_title_dev"></l10n></label></div>
-										<div class="col-2">
-											<div class="form-check form-switch custom-switch">
+										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
+									</div></div>
+									<div class="col-12 inset-block game_enabled_13"><div><!-- dev mode -->
+										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
+										<div class="row">
+											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
+											<div class="form-check form-switch custom-switch col-2">
 												<input id="uPref_dev_mode_13" onchange="clientSetPref('dev_mode_13')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
-										<div class="col-12 form-text fst-italic text-end"><l10n name="user_pref_blurb_dev"></l10n></div>
-									</div>
-								</div>
+									</div></div>
+								</div></div>
 							</div>
 						</div></div>
 					</div>
@@ -771,68 +734,49 @@
 				<div class="tab-pane fade pt-4" id="advanced-pref-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
 					<div class="row gx-3 gy-4">
 
-						<div class="col-12"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_use_one_drive"></l10n></h5></div>
-							<div class="row"><!-- one drive -->
-								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_use_one_drive"></l10n></div>
-								<div class="col-2 pt-2">
-									<div class="form-check form-switch custom-switch">
-										<input id="uPref_use_one_drive" onchange="clientSetPref('use_one_drive')" class="form-check-input" type="checkbox" role="switch">
-									</div>
+						<div class="col-12 inset-block"><div>  <!-- one drive -->
+							<l10n class="inset-block-header" name="user_pref_title_use_one_drive"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_use_one_drive"></l10n>
+								<div class="form-check form-switch custom-switch col-2">
+									<input id="uPref_use_one_drive" onchange="clientSetPref('use_one_drive')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
 
-						<div class="col-12"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_poll_game"></l10n></h5></div>
-							<div class="row"><!-- poll game -->
-								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_poll_game"></l10n></div>
-								<div class="col-2 pt-2">
-									<div class="form-check form-switch custom-switch">
-										<input id="uPref_poll_game" onchange="clientSetPref('poll_game')" class="form-check-input" type="checkbox" role="switch">
-									</div>
+						<div class="col-12 inset-block"><div>  <!-- poll game -->
+							<l10n class="inset-block-header" name="user_pref_title_poll_game"></l10n>
+							<div class="row">
+								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_poll_game"></l10n>
+								<div class="form-check form-switch custom-switch col-2">
+									<input id="uPref_poll_game" onchange="clientSetPref('poll_game')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
 
-						<div class="col-12"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_use_discord"></l10n></h5></div>
-							<div class="row"><!-- discord -->
-								<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_use_discord"></l10n></div>
-								<div class="col-2 pt-2">
-									<div class="form-check form-switch custom-switch">
-										<input id="uPref_use_discord" onchange="clientSetPref('use_discord')" class="form-check-input" type="checkbox" role="switch">
-									</div>
+						<div class="col-12 inset-block"><div>  <!-- discord -->
+							<l10n class="inset-block-header" name="user_pref_title_use_discord"></l10n>
+							<div class="row gy-2">
+								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_use_discord"></l10n>
+								<div class="form-check form-switch custom-switch col-2">
+									<input id="uPref_use_discord" onchange="clientSetPref('use_discord')" class="form-check-input" type="checkbox" role="switch">
 								</div>
-							</div>
-							<div class="row mt-2">
-								<label for="uPref_use_discord_c2" class="col-sm-6 fw-bold col-form-label"><l10n name="user_pref_setting_discord_2"></l10n></label>
-								<div class="col-sm-6 mt-1">
-									<input type="text" class="form-control" id="uPref_use_discord_c2" onchange="clientSetPref('use_discord_c2')" style="font-size: 70%">
-								</div>
-							</div>
-							<div class="row mt-2">
-								<label for="uPref_use_discord_c1" class="col-sm-6 fw-bold col-form-label"><l10n name="user_pref_setting_discord_1"></l10n></label>
-								<div class="col-sm-6 mt-1">
-									<input type="text" class="form-control" id="uPref_use_discord_c1" onchange="clientSetPref('use_discord_c1')" style="font-size: 70%">
-								</div>
+								<l10n class="col-6" name="user_pref_setting_discord_2"></l10n>
+								<div class="col-6 px-0"><input type="text" class="form-control" id="uPref_use_discord_c2" onchange="clientSetPref('use_discord_c2')" style="font-size: 70%"></div>
+								<l10n class="col-6" name="user_pref_setting_discord_1"></l10n>
+								<div class="col-6 px-0"><input type="text" class="form-control" id="uPref_use_discord_c1" onchange="clientSetPref('use_discord_c1')" style="font-size: 70%"></div>
 							</div>
 						</div></div>
 
-
-						<div class="col-12"><div class="border rounded-2 p-3 h-100">
-							<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_clean_cache"></l10n></h5></div>
-							<div class="row"><!-- cache -->
-								<div class="col-12 ps-3 small fst-italic"><l10n name="user_pref_blurb_clean_cache"></l10n></div>
-								<div class="col-9 ps-3 small pt-2"><l10n name="clean_cache_size"></l10n></div>
-								<div class="col-9 ps-3 small pt-2"><l10n name="clean_detail_cache_size"></l10n></div>
-							</div>
+						<div class="col-12 inset-block"><div>  <!-- cache -->
+							<l10n class="inset-block-header" name="user_pref_title_clean_cache"></l10n>
+							<l10n class="inset-block-blurb-option" name="user_pref_blurb_clean_cache"></l10n>
+							<l10n class="inset-block-blurb-option text-body-emphasis py-1" name="clean_cache_size"></l10n>
+							<l10n class="inset-block-blurb-option text-body-emphasis py-1" name="clean_detail_cache_size"></l10n>
 							<div class="d-block btn btn-success btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.cleanCache()"><l10n name="user_pref_button_clean_cache"></l10n></div>
-							<div class="row"><!-- cache -->
-								<div class="col-12 ps-3 small fst-italic"><l10n name="user_pref_blurb_clear_cache"></l10n></div>
-							</div>
-							<div class="d-block btn btn-danger btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.clearCache()"><l10n name="user_pref_button_clear_cache"></l10n></div>
 							<div class="d-block btn btn-warning btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.clearDetailCache()"><l10n name="user_pref_button_clear_detail_cache"></l10n></div>
+							<l10n class="inset-block-blurb-option" name="user_pref_blurb_clear_cache"></l10n>
+							<div class="d-block btn btn-danger btn-sm w-75 mt-2 mx-auto" onclick="window.mods.clearCache()"><l10n name="user_pref_button_clear_cache"></l10n></div>
 						</div></div>
 
 					</div>
