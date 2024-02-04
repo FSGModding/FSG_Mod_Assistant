@@ -827,9 +827,11 @@ window.addEventListener('DOMContentLoaded', () => {
 	window.l10n.themeList_send()
 
 	fsgUtil.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
+		fsgUtil.queryF('body').classList.remove('full-scroll')
 		fsgUtil.clearTooltips()
 	})
 	fsgUtil.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
+		fsgUtil.queryF('body').classList.add('full-scroll')
 		updatePreferences()
 	})
 

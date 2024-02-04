@@ -157,6 +157,14 @@ tr.mod-list-row td:first-child input { display: none; }
 	padding-right: 1rem!important;
 	width: fit-content;
 }
+.inset-block-subtext {
+	color: var(--bs-primary-text-emphasis)!important;
+	font-style: italic!important;
+	text-align: right!important;
+	display: block!important;
+	font-size: .85em;
+	margin-top: 0.15em!important;
+}
 .inset-block-blurb-section {
 	color: var(--bs-emphasis-color)!important;
 	padding-bottom: 2rem!important;
@@ -214,6 +222,8 @@ tr.mod-list-row td:first-child input { display: none; }
 
 .custom-switch { 
 	padding-left: 0px !important;
+	padding-right: 0px !important;
+	align-self: start !important;
 }
 .custom-switch .form-check-input {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 95 95'%3E%3Crect width='80' height='80' x='7.5' y='7.5' fill='rgba(255,255,255,.25)' rx='15.2' ry='15.2'/%3E%3C/svg%3E");
