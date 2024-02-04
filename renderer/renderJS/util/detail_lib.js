@@ -150,7 +150,7 @@ const dtLib = {
 	},
 	safeBrandImage : ( brand, { extraHTML = null, width = '12vw' } = {} ) => {
 		const testBrand = dtLib.checkBrand(brand)
-		if ( ! testBrand && brand !== null ) { window.log.warning(`Missing Brand: ${brand}`, 'basegame_ui')}
+		if ( ! testBrand && brand !== null && typeof brand !== 'undefined' ) { window.log.warning(`Missing Brand: ${brand}`, 'basegame_ui')}
 		return dtLib.safeStaticImage(testBrand ? `img/brand/brand_${testBrand}.webp` : null, { width : width, extraHTML : extraHTML })
 	},
 	safeDataImage : (imgData, { extraHTML = null, width = '12vw' } = {}) => {

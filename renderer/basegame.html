@@ -115,13 +115,13 @@
 </template>
 
 <template id="vehicle_info_div">
-	<div class="card mb-3">
-		<h5 class="card-header">
+	<div class="col-12 inset-block mt-4"><div>
+		<span class="inset-block-header">
 			{{itemName}}
 			<span class="fw-normal" style="font-size: 50%">-</span>
 			<small class="fst-italic">{{category}}</small>
-		</h5>
-		<div class="card-body">
+		</span>
+		<div class="inset-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto" id="icon_div">
 					<div class="{{showBrand}} text-center">{{brandImage}}</div>
@@ -152,7 +152,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div></div>
 </template>
 
 <template id="prod_div">
