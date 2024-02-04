@@ -11,27 +11,7 @@
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
-	<style>
-		.custom-switch { 
-			padding-left: 0px !important;
-		}
-		.custom-switch .form-check-input {
-			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 95 95'%3E%3Crect width='80' height='80' x='7.5' y='7.5' fill='rgba(255,255,255,.25)' rx='15.2' ry='15.2'/%3E%3C/svg%3E");
-			width : 100% !important;
-			margin-left: 0px !important;
-			background-color: var(--bs-danger-bg-subtle);
-			border-color: var(--bs-border-color);
-			border-radius: var(--bs-border-radius-lg)!important;
-			min-height: calc(0.7em + 1rem + calc(var(--bs-border-width) * 2));
-			padding: .5rem 1rem;
-			font-size: 1rem;
-		}
-		.custom-switch .form-check-input:checked {
-			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 95 95'%3E%3Crect width='80' height='80' x='7.5' y='7.5' fill='rgba(255,255,255,.75)' rx='15.2' ry='15.2'/%3E%3C/svg%3E");
-			background-color: rgba(var(--bs-success-rgb), 0.6);
-			border-color: var(--bs-border-color);
-		}
-	</style>
+
 	<script src="inc/bootstrap.bundle.min.js"></script>
 
 	<script src="renderJS/util/general_lib.js"></script>
@@ -52,75 +32,65 @@
 		</div>
 
 		<div class="row gx-3 gy-5 mx-3 mb-3">
-			<div class="col-12 px-3 h5"><l10n name="wizard_overview"></l10n></div>
+			<div class="col-12 px-3 display-7"><l10n name="wizard_overview"></l10n></div>
 
-			<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 1 -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="wizard_step_1"></l10n></h5></div>
+			<div class="col-12 inset-block"><div>  <!-- step 1 -->
+				<l10n class="inset-block-header" name="wizard_step_1"></l10n>
+				<l10n class="inset-block-blurb-section" name="wizard_step_1_blurb"></l10n>
 				<div class="row gx-3 gy-4">
-					<div class="col-12 ps-3 small fst-italic pb-3"><l10n name="wizard_step_1_blurb"></l10n></div>
+					<div class="col-md-6 inset-block"><div> <!-- font size -->
+						<l10n class="inset-block-header" name="user_pref_title_font_size"></l10n>
+						<div class="row">
+							<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_font_size"></l10n>
+							<div class="col-2 text-center small text-body-emphasis" id="font_size_value">XX</div>
+							<div class="col-12 mt-2">
+								<input oninput="clientDragFontSize()" onchange="clientSetPref('font_size')" id="uPref_font_size" type="range" class="form-range" min="70" max="150" step="1" >
+								<div class="p-0" style="margin-top: -0.95rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>
+							</div>
+							<div class="col-10 offset-1 mt-2">
+								<div class="d-block btn btn-outline-primary btn-sm w-100  mx-auto" onclick="window.mods.setPref('font_size', 14)"><l10n name="user_pref_font_size_default"></l10n></div>
+							</div>
+						</div>
+					</div></div>
 
-					<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-						<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_font_size"></l10n></h5></div>
-						<div class="row"><!-- font size -->
-							<div class="col-9 ps-3 small fst-italic"><l10n name="user_pref_blurb_font_size"></l10n></div>
-							<div class="col-3 text-center" id="font_size_value">XX</div>
-							
-							<div class="col-10 offset-1">
-								<input oninput="clientDragFontSize()" onchange="clientSetPref('font_size')" type="range" class="form-range" min="70" max="150" step="1" id="uPref_font_size">
-								<div class="p-0" style="margin-top: -0.7rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>
-							</div>
-							
-							<div class="col-10 offset-1">
-								<div class="d-block btn btn-primary btn-sm w-100 mt-2 mx-auto mb-3" onclick="window.mods.setPref('font_size', 14)"><l10n name="user_pref_font_size_default"></l10n></div>
-							</div>
-						</div>
+					<div class="col-md-6 inset-block"><div> <!-- theme -->
+						<l10n class="inset-block-header" name="user_pref_title_theme_color"></l10n>
+						<l10n class="inset-block-blurb-option" name="user_pref_blurb_theme_color"></l10n>
+						<select onchange="clientChangeTheme()" class="form-select mt-3 px-4" name="theme_select" id="theme_select"></select>
 					</div></div>
-		
-					<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-						<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_theme_color"></l10n></h5></div>
-						<div class="row"><!-- color theme -->
-							<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_theme_color"></l10n></div>
-							<div class="col-12 px-4 mt-2">
-								<select onchange="clientChangeTheme()" class="form-select" name="theme_select" id="theme_select"></select>
-							</div>
-						</div>
-					</div></div>
-		
-					<div class="col-md-6"><div class="border rounded-2 p-3 h-100">
-						<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_lang"></l10n></h5></div>
-						<div class="row"><!-- language -->
-							<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_lang"></l10n></div>
-							<div class="col-12 px-4 my-2">
-								<select onchange="clientChangeL10N()" class="form-select" name="language_select" id="language_select"></select>
-							</div>
-							<div class="col-9 pt-2 border-top ps-3 small fst-italic"><l10n name="user_pref_blurb2_lang"></l10n></div>
-							<div class="col-3 pt-2 border-top">
-								<div class="form-check form-switch custom-switch">
-									<input id="uPref_lock_lang" onchange="clientSetPref('lock_lang')" class="form-check-input" type="checkbox" role="switch">
-								</div>
+
+					<div class="col-md-6 inset-block"><div> <!-- language -->
+						<l10n class="inset-block-header" name="user_pref_title_lang"></l10n>
+						<l10n class="inset-block-blurb-option" name="user_pref_blurb_lang"></l10n>
+						<select onchange="clientChangeL10N()" class="form-select mt-3 px-4" name="language_select" id="language_select"></select>
+						<div class="row mt-2">
+							<l10n class="inset-block-blurb-option col-9 fst-italic" name="user_pref_blurb2_lang"></l10n>
+							<div class="col-3 form-check form-switch custom-switch align-self-center">
+								<input id="uPref_lock_lang" onchange="clientSetPref('lock_lang')" class="form-check-input" type="checkbox" role="switch">
 							</div>
 						</div>
 					</div></div>
 				</div>
 			</div></div>
 
-			<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 2 -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="wizard_step_2"></l10n></h5></div>
+			<div class="col-12 inset-block"><div>  <!-- step 2 -->
+				<l10n class="inset-block-header" name="wizard_step_2"></l10n>
+				<l10n class="inset-block-blurb-section" name="wizard_step_2_blurb"></l10n>
 				<div class="row gx-3 gy-4">
-					<div class="col-12 ps-3 small fst-italic pb-3"><l10n name="wizard_step_2_blurb"></l10n></div>
-
-					<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 2 - settings -->
-						<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_settings"></l10n></h5></div>
-						<div class="row my-1 border-bottom pb-1">
+					<div class="col-12 inset-block"><div> <!-- game settings - 22 -->
+						<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
+						<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_settings"></l10n>
+						<div class="row inset-block-lined-row">
 							<div class="col"><l10n name="wizard_current"></l10n></div>
 							<div class="col-auto fst-italic small" id="uPref_game_settings"></div>
 						</div>
 						<div id="found_22_settings"></div>
 					</div></div>
 
-					<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 2 - path -->
-						<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_path"></l10n></h5></div>
-						<div class="row my-1 border-bottom pb-1">
+					<div class="col-12 inset-block mt-5"><div> <!-- game path - 22 -->
+						<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+						<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_path"></l10n>
+						<div class="row inset-block-lined-row">
 							<div class="col"><l10n name="wizard_current"></l10n></div>
 							<div class="col-auto fst-italic small" id="uPref_game_path"></div>
 						</div>
@@ -129,54 +99,48 @@
 				</div>
 			</div></div>
 
-			<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 3 -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="wizard_step_3"></l10n></h5></div>
-				<div class="row gx-3 gy-3">
-					<div class="col-12 ps-3 small fst-italic pb-2"><l10n name="wizard_step_3_blurb"></l10n></div>
-					<div class="col-12"><div class="row" id="step_3_base"></div></div>
-					<div class="col-12"><div class="row" id="step_3_folder"></div></div>
-				</div>
+			<div class="col-12 inset-block"><div>  <!-- step 3 -->
+				<l10n class="inset-block-header" name="wizard_step_3"></l10n>
+				<l10n class="inset-block-blurb-section" name="wizard_step_3_blurb"></l10n>
+				<div id="step_3_base"></div>
+				<div id="step_3_folder"></div>
 			</div></div>
 
-			<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 4-->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="wizard_step_4"></l10n></h5></div>
-				<div class="row gx-3 gy-4">
-					<div class="col-12 ps-3 small fst-italic pb-3"><l10n name="wizard_step_4_blurb"></l10n></div>
+			<div class="col-12 inset-block"><div>  <!-- step 4 -->
+				<l10n class="inset-block-header" name="wizard_step_4"></l10n>
+				<l10n class="inset-block-blurb-section" name="wizard_step_4_blurb"></l10n>
+				<div class="row gx-3 gy-5">
 
-					<div class="col-12"><div class="border rounded-2 p-3 h-100">
-						<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_multi_version"></l10n></h5></div>
-						<div class="row"><!-- multi version -->
-							<div class="col-10 ps-3 small fst-italic"><l10n name="user_pref_blurb_multi_version"></l10n></div>
-							<div class="col-2 pt-2">
-								<div class="form-check form-switch custom-switch">
-									<input id="uPref_multi_version" onchange="clientSetPref('multi_version')" class="form-check-input" type="checkbox" role="switch">
-								</div>
+					<div class="col-12 inset-block"><div> <!-- multi-version flag -->
+						<l10n class="inset-block-header" name="user_pref_title_multi_version"></l10n>
+						<div class="row">
+							<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_multi_version"></l10n>
+							<div class="form-check form-switch custom-switch col-2">
+								<input id="uPref_multi_version" onchange="clientSetPref('multi_version')" class="form-check-input" type="checkbox" role="switch">
 							</div>
 						</div>
 					</div></div>
 
-					<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
-						<div style="margin-top: -2rem;"><h5><span class="px-3 bg-body text-info">FS19</span></h5></div>
-
-						<div class="row mt-2 mb-2">
-							<div class="col-10"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
-							<div class="col-2"><div class="form-check form-switch custom-switch">
+					<div class="col-12 multi-version-pref inset-block"><div> <!-- FS19 -->
+						<div class="inset-block-header">FS19</div>
+						<div class="row gx-3 gy-4">
+							<l10n class="inset-block-blurb-option col-10"name="user_pref_blurb_game_enabled"></l10n>
+							<div class="form-check form-switch custom-switch col-2">
 								<input id="uPref_game_enabled_19" onchange="clientSetPref('game_enabled_19')" class="form-check-input" type="checkbox" role="switch">
-							</div></div>
-						</div>
-
-						<div class="row gx-3 gy-4 mt-1">
-							<div class="col-md-12"><div class="border rounded-2 p-3 h-100">
-								<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_settings"></l10n></h5></div>
-								<div class="row my-1 border-bottom pb-1">
+							</div>
+							<div class="col-12 inset-block"><div> <!-- game settings - 19 -->
+								<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
+								<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_settings"></l10n>
+								<div class="row inset-block-lined-row">
 									<div class="col"><l10n name="wizard_current"></l10n></div>
 									<div class="col-auto fst-italic small" id="uPref_game_settings_19"></div>
 								</div>
 								<div id="found_19_settings"></div>
 							</div></div>
-							<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 2 - path -->
-								<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_path"></l10n></h5></div>
-								<div class="row my-1 border-bottom pb-1">
+							<div class="col-12 inset-block mt-5"><div> <!-- game path - 19 -->
+								<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+								<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_path"></l10n>
+								<div class="row inset-block-lined-row">
 									<div class="col"><l10n name="wizard_current"></l10n></div>
 									<div class="col-auto fst-italic small" id="uPref_game_path_19"></div>
 								</div>
@@ -185,28 +149,26 @@
 						</div>
 					</div></div>
 
-					<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
-						<div style="margin-top: -2rem;"><h5><span class="px-3 bg-body text-info">FS17</span></h5></div>
-
-						<div class="row mt-2 mb-2">
-							<div class="col-10"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
-							<div class="col-2"><div class="form-check form-switch custom-switch">
+					<div class="col-12 multi-version-pref inset-block"><div> <!-- FS17 -->
+						<div class="inset-block-header">FS17</div>
+						<div class="row gx-3 gy-4">
+							<l10n class="inset-block-blurb-option col-10"name="user_pref_blurb_game_enabled"></l10n>
+							<div class="form-check form-switch custom-switch col-2">
 								<input id="uPref_game_enabled_17" onchange="clientSetPref('game_enabled_17')" class="form-check-input" type="checkbox" role="switch">
-							</div></div>
-						</div>
-
-						<div class="row gx-3 gy-4 mt-1">
-							<div class="col-md-12"><div class="border rounded-2 p-3 h-100">
-								<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_settings"></l10n></h5></div>
-								<div class="row my-1 border-bottom pb-1">
+							</div>
+							<div class="col-12 inset-block"><div> <!-- game settings - 17 -->
+								<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
+								<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_settings"></l10n>
+								<div class="row inset-block-lined-row">
 									<div class="col"><l10n name="wizard_current"></l10n></div>
 									<div class="col-auto fst-italic small" id="uPref_game_settings_17"></div>
 								</div>
 								<div id="found_17_settings"></div>
 							</div></div>
-							<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 2 - path -->
-								<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_path"></l10n></h5></div>
-								<div class="row my-1 border-bottom pb-1">
+							<div class="col-12 inset-block mt-5"><div> <!-- game path - 17 -->
+								<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+								<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_path"></l10n>
+								<div class="row inset-block-lined-row">
 									<div class="col"><l10n name="wizard_current"></l10n></div>
 									<div class="col-auto fst-italic small" id="uPref_game_path_17"></div>
 								</div>
@@ -214,29 +176,27 @@
 							</div></div>
 						</div>
 					</div></div>
-					
-					<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
-						<div style="margin-top: -2rem;"><h5><span class="px-3 bg-body text-info">FS15</span></h5></div>
 
-						<div class="row mt-2 mb-2">
-							<div class="col-10"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
-							<div class="col-2"><div class="form-check form-switch custom-switch">
+					<div class="col-12 multi-version-pref inset-block"><div> <!-- FS15 -->
+						<div class="inset-block-header">FS15</div>
+						<div class="row gx-3 gy-4">
+							<l10n class="inset-block-blurb-option col-10"name="user_pref_blurb_game_enabled"></l10n>
+							<div class="form-check form-switch custom-switch col-2">
 								<input id="uPref_game_enabled_15" onchange="clientSetPref('game_enabled_15')" class="form-check-input" type="checkbox" role="switch">
-							</div></div>
-						</div>
-
-						<div class="row gx-3 gy-4 mt-1">
-							<div class="col-md-12"><div class="border rounded-2 p-3 h-100">
-								<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_settings"></l10n></h5></div>
-								<div class="row my-1 border-bottom pb-1">
+							</div>
+							<div class="col-12 inset-block"><div> <!-- game settings - 15 -->
+								<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
+								<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_settings"></l10n>
+								<div class="row inset-block-lined-row">
 									<div class="col"><l10n name="wizard_current"></l10n></div>
 									<div class="col-auto fst-italic small" id="uPref_game_settings_15"></div>
 								</div>
 								<div id="found_15_settings"></div>
 							</div></div>
-							<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 2 - path -->
-								<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_path"></l10n></h5></div>
-								<div class="row my-1 border-bottom pb-1">
+							<div class="col-12 inset-block mt-5"><div> <!-- game path - 15 -->
+								<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+								<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_path"></l10n>
+								<div class="row inset-block-lined-row">
 									<div class="col"><l10n name="wizard_current"></l10n></div>
 									<div class="col-auto fst-italic small" id="uPref_game_path_15"></div>
 								</div>
@@ -245,28 +205,26 @@
 						</div>
 					</div></div>
 
-					<div class="col-12 multi-version-pref"><div class="border rounded-2 p-3 h-100">
-						<div style="margin-top: -2rem;"><h5><span class="px-3 bg-body text-info">FS13</span></h5></div>
-
-						<div class="row mt-2 mb-2">
-							<div class="col-10"><l10n name="user_pref_blurb_game_enabled"></l10n></div>
-							<div class="col-2"><div class="form-check form-switch custom-switch">
+					<div class="col-12 multi-version-pref inset-block"><div> <!-- FS13 -->
+						<div class="inset-block-header">FS13</div>
+						<div class="row gx-3 gy-4">
+							<l10n class="inset-block-blurb-option col-10"name="user_pref_blurb_game_enabled"></l10n>
+							<div class="form-check form-switch custom-switch col-2">
 								<input id="uPref_game_enabled_13" onchange="clientSetPref('game_enabled_13')" class="form-check-input" type="checkbox" role="switch">
-							</div></div>
-						</div>
-
-						<div class="row gx-3 gy-4 mt-1">
-							<div class="col-md-12"><div class="border rounded-2 p-3 h-100">
-								<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_settings"></l10n></h5></div>
-								<div class="row my-1 border-bottom pb-1">
+							</div>
+							<div class="col-12 inset-block"><div> <!-- game settings - 13 -->
+								<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
+								<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_settings"></l10n>
+								<div class="row inset-block-lined-row">
 									<div class="col"><l10n name="wizard_current"></l10n></div>
 									<div class="col-auto fst-italic small" id="uPref_game_settings_13"></div>
 								</div>
 								<div id="found_13_settings"></div>
 							</div></div>
-							<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 2 - path -->
-								<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="user_pref_title_game_path"></l10n></h5></div>
-								<div class="row my-1 border-bottom pb-1">
+							<div class="col-12 inset-block mt-5"><div> <!-- game path - 13 -->
+								<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
+								<l10n class="inset-block-blurb-option mb-3" name="user_pref_blurb_game_path"></l10n>
+								<div class="row inset-block-lined-row">
 									<div class="col"><l10n name="wizard_current"></l10n></div>
 									<div class="col-auto fst-italic small" id="uPref_game_path_13"></div>
 								</div>
@@ -277,11 +235,10 @@
 				</div>
 			</div></div>
 
-			<div class="col-md-12"><div class="border rounded-2 p-3 h-100"> <!-- step 5 -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="wizard_step_5"></l10n></h5></div>
-				<div class="row gx-3 gy-4">
-					<div class="col-12 ps-3 small fst-italic pb-3"><l10n name="wizard_step_5_blurb"></l10n> <a href="https://fsgmodding.github.io/FSG_Mod_Assistant/" target="_blank"><l10n name="help_button__title"></l10n></a></div>
-				</div>
+			<div class="col-12 inset-block"><div>  <!-- step 5 -->
+				<l10n class="inset-block-header" name="wizard_step_5"></l10n>
+				<l10n class="inset-block-blurb-section" name="wizard_step_5_blurb"></l10n>
+				<a class="btn btn-primary btn-sm w-75 mx-auto d-block btn-thumb-up" href="https://fsgmodding.github.io/FSG_Mod_Assistant/" target="_blank"><l10n name="help_button__title"></l10n></a>
 			</div></div>
 		</div>
 
