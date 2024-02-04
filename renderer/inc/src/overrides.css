@@ -184,6 +184,15 @@ tr.mod-list-row td:first-child input { display: none; }
 	text-align: left;
 	font-size: .875em;
 }
+.inset-block-blurb-detail {
+	color: var(--bs-primary-text-emphasis)!important;
+	display: block;
+	text-align: end;
+	font-size: .875em;
+	margin-top: -1.3rem;
+	margin-bottom: 1.5rem;
+}
+
 .inset-block-lined-row {
 	padding-bottom: .25rem!important;
 	margin-bottom: .25rem!important;

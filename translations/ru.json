@@ -231,6 +231,7 @@
 	"look_methane"                          : "Работает на метане",
 	"make_zip"                              : "Экспорт в ZIP-файл",
 	"make_zip__title"                       : "Создать ZIP-файл выбранных модов для обмена или распространения",
+	"map_image_title"                       : "Обзор карты Изображение",
 	"menu_depend_on"                        : "Зависит от",
 	"menu_require_by"                       : "Требуется для",
 	"mh_norecord"                           : "--нет на ModHub--",

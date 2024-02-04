@@ -260,7 +260,7 @@ const buildPage = (modCollect) => {
 			...doStep_binds(bindingIssue, modCollect.currentLocale)
 		].map((x) => `<tr class="py-2"><td class="px-2">${fsgUtil.checkX(0, false)}</td><td>${x}</td></tr>`)
 
-		fsgUtil.setById('problems', `<table class="table table-borderless">${problems.join('')}</table>`)
+		fsgUtil.setById('problems', `<table class="table table-borderless mb-0">${problems.join('')}</table>`)
 	}
 
 	const theseBadges = Array.isArray(modRecord.displayBadges) ? modRecord.displayBadges.map((badge) => fsgUtil.badge_main(badge)).join(' ') : false

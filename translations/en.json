@@ -231,6 +231,7 @@
 	"look_methane"                          : "Item is Methane Powered",
 	"make_zip"                              : "Export ZIP File",
 	"make_zip__title"                       : "Make a ZIP file of selected mods for sharing or distribution",
+	"map_image_title"                       : "Map Overview Image",
 	"menu_depend_on"                        : "Depends On",
 	"menu_require_by"                       : "Required By",
 	"mh_norecord"                           : "--not on modhub--",

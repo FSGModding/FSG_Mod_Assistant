@@ -231,6 +231,7 @@
 	"look_methane"                          : "El artículo funciona con metano",
 	"make_zip"                              : "Exportar archivo ZIP",
 	"make_zip__title"                       : "Crea un archivo ZIP con los mods seleccionados para compartirlos o distribuirlos",
+	"map_image_title"                       : "Imagen general del mapa",
 	"menu_depend_on"                        : "Depende de",
 	"menu_require_by"                       : "Requerido por",
 	"mh_norecord"                           : "--no en modhub--",

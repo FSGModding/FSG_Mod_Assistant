@@ -231,6 +231,7 @@
 	"look_methane"                          : "Item ist Methan betrieben",
 	"make_zip"                              : "ZIP-Datei exportieren",
 	"make_zip__title"                       : "Erstelle eine ZIP-Datei der ausgewählten Mods zum Teilen oder Verteilen",
+	"map_image_title"                       : "Kartenübersichtsbild",
 	"menu_depend_on"                        : "Abhängig von",
 	"menu_require_by"                       : "Benötigt von",
 	"mh_norecord"                           : "--nicht auf Modhub--",
