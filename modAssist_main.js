@@ -1187,7 +1187,10 @@ ipcMain.on('toMain_setModInfo', (_, mod, site) => {
 	modSite.set(mod, site)
 	refreshClientModList()
 })
+
+/* eslint-disable complexity */
 ipcMain.on('toMain_setPref', (event, name, value) => {
+	
 	switch ( name ) {
 		case 'dev_mode' :
 			parseGameXML(22, value)
@@ -1210,6 +1213,24 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 			mcStore.set(name, value)
 			mainProcessFlags.gameRunningEnabled =  mcStore.get('game_version', 22) === 22 && value
 			break
+		case 'game_path' :
+			versionConfigSet('game_path', value, 22)
+			break
+		case 'game_path_19' :
+		case 'game_path_17' :
+		case 'game_path_15' :
+		case 'game_path_13' :
+			versionConfigSet('game_path', value, parseInt(name.slice(-2), 10))
+			break
+		case 'game_settings':
+			versionConfigSet('game_settings', value, 22)
+			break
+		case 'game_settings_19':
+		case 'game_settings_17':
+		case 'game_settings_15':
+		case 'game_settings_13':
+			versionConfigSet('game_settings', value, parseInt(name.slice(-2), 10))
+			break
 		case 'lock_lang':
 			mcStore.set('force_lang', myTranslator.currentLocale)
 			// falls through
@@ -1227,6 +1248,7 @@ ipcMain.on('toMain_setPref', (event, name, value) => {
 
 	event.sender.send( 'fromMain_allSettings', mcStore.store, mainProcessFlags.devControls )
 })
+/* eslint-enable complexity */
 ipcMain.on('toMain_resetWindows',   () => { win.resetPositions() })
 ipcMain.on('toMain_clearCacheFile', () => {
 	newMaCache.clearAll()
@@ -1304,6 +1326,22 @@ ipcMain.on('toMain_setGameVersion', (_, newVersion) => {
 /** END: Preferences window operation */
 
 /** START: Setup Wizard Functions */
+
+ipcMain.on('toMain_showSetupWizard', () => {
+	win.createNamedWindow('setup', {}, () => {
+		win.sendModList(
+			{
+				currentLocale          : myTranslator.deferCurrentLocale(),
+				devControls            : mainProcessFlags.devControls,
+				wizardSettings         : getWizardSettings(),
+			},
+			'fromMain_modList',
+			'setup',
+			false
+		)
+	})
+})
+
 function getWizardSettings_game() {
 	let steamPath2VDF = null
 	let steamFolders = []
@@ -1362,12 +1400,12 @@ function getWizardSettings_game() {
 		for ( const [typeKey, typePath] of Object.entries(gameTypes) ) {
 			if ( typeKey !== 'steam' ) {
 				if ( fs.existsSync(typePath) ) {
-					foundGames[versionKey].push(typeKey, typePath)
+					foundGames[versionKey].push([typeKey, typePath])
 				}
 			} else {
 				for ( const thisSteam of steamFolders ) {
 					if ( fs.existsSync(path.join(thisSteam, typePath)) ) {
-						foundGames[versionKey].push(typeKey, path.join(thisSteam, typePath))
+						foundGames[versionKey].push([typeKey, path.join(thisSteam, typePath)])
 					}
 				}
 			}
@@ -1407,6 +1445,7 @@ function getWizardSettings_settings() {
 function getWizardSettings_mods(settingsPaths) {
 	const returnObj = {
 		isModFolder : false,
+		baseModFolder : null,
 		hasCollections : [
 
 		],
@@ -1415,6 +1454,7 @@ function getWizardSettings_mods(settingsPaths) {
 	for ( const modFolder of settingsPaths ) {
 		const thisModFolder = path.join(path.dirname(modFolder), 'mods')
 		if ( fs.existsSync(thisModFolder) ) {
+			returnObj.baseModFolder = thisModFolder
 			const folderContents = fs.readdirSync(thisModFolder, { withFileTypes : true })
 			for ( const thisEntry of folderContents ) {
 				if ( thisEntry.isDirectory() && ! thisEntry.name.startsWith('FS22')) {
