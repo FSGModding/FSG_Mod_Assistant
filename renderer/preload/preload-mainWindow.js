@@ -132,8 +132,10 @@ contextBridge.exposeInMainWorld(
 
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
+				'fromMain_allSettings',
 				'fromMain_debugLogDangerFlag',
 				'fromMain_dirtyUpdate',
+				'fromMain_fileOperation',
 				'fromMain_gameUpdate',
 				'fromMain_modInfoPop',
 				'fromMain_modList',
@@ -142,7 +144,6 @@ contextBridge.exposeInMainWorld(
 				'fromMain_selectNoneOpen',
 				'fromMain_selectOnly',
 				'fromMain_selectOnlyFilter',
-				'fromMain_allSettings',
 			])
 		
 			if ( validChannels.has( channel ) ) {

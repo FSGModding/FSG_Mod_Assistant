@@ -387,8 +387,20 @@ function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
 	}
 }
 
+function sendCopyMoveDelete(operation, modIDS, modRecords = null) {
+	if ( modIDS.length !== 0 ) {
+		win.sendToValidWindow('main', 'fromMain_fileOperation', {
+			operation        : operation,
+			records          : ( modRecords === null ) ?
+				modCollect.modColUUIDsToRecords(modIDS) :
+				modRecords,
+			originCollectKey : modIDS[0].split('--')[0],
+		})
+	}
+}
+
 ipcMain.on('toMain_deleteMods',     (_, mods) => { handleCopyMoveDelete('confirmDelete', mods) })
-ipcMain.on('toMain_moveMods',       (_, mods) => { handleCopyMoveDelete('confirmMove', mods) })
+ipcMain.on('toMain_moveMods',       (_, mods) => { sendCopyMoveDelete('move', mods) })
 ipcMain.on('toMain_copyMods',       (_, mods) => { handleCopyMoveDelete('confirmCopy', mods) })
 ipcMain.on('toMain_moveMultiMods',  (_, mods) => { handleCopyMoveDelete('confirmMultiMove', mods) })
 ipcMain.on('toMain_copyMultiMods',  (_, mods) => { handleCopyMoveDelete('confirmMultiCopy', mods) })

@@ -121,7 +121,7 @@
 	"croptype_sunflower"                    : "Sunflower",
 	"croptype_wheat"                        : "Wheat",
 	"delete"                                : "Yes, Delete Mods",
-	"destination"                           : "Destination Collection:",
+	"destination"                           : "Destination Collection",
 	"destination_clear"                     : "Destination file does not exist, good to go",
 	"destination_full"                      : "Destination file exists, overwrite is possible",
 	"detail_big_files"                      : "Oversized files",
@@ -580,5 +580,10 @@
 	"wizard_step_5"                         : "Step 5 - All Done",
 	"wizard_step_5_blurb"                   : "That is all the basic settings.  For more configuration, see user preferences.  It might be a good idea to read the documentation as well.",
 	"wizard_use_this"                       : "Use this one",
-	"wizard_using_this"                     : "In Use"
+	"wizard_using_this"                     : "In Use",
+	"file_op_key_ctrl_a"                    : "Toggle All On",
+	"file_op_key_ctrl_shift_a"              : "Toggle All Off",
+	"file_op_key_esc"                       : "Cancel",
+	"file_op_key_ctrl_i"                    : "Invert Selection",
+	"file_op_mod_selected"                  : "Selected"
 }

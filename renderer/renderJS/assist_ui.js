@@ -136,6 +136,7 @@ window.mods.receive('fromMain_gameUpdate', (status) => {
 let collectOrder    = {}
 let lastPreferences = null
 let lastDevSettings = null
+const curVerCollect = []
 
 window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
 	lastPreferences = allSettings
@@ -149,6 +150,8 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	lastPreferences    = modCollect.appSettings
 	lastDevSettings    = modCollect.opts.devControls
 	gameRunAlert       = modCollect.opts.l10n.runMessage
+
+	curVerCollect.length = 0
 	collectOrder  = { map : {}, numeric : {}, max : 0 }
 
 	searchStringMap_empty()
@@ -180,6 +183,9 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 
 	for ( const [folderIndex, collectKey] of Object.entries([...modCollect.set_Collections]) ) {
 		if ( multiVersion && modCollect.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
+
+		curVerCollect.push([collectKey, modCollect.collectionToFullName[collectKey]])
+
 		const thisCollection = modCollect.modList[collectKey]
 		const collectNotes   = modCollect.collectionNotes[collectKey]
 		const collectFreeze  = collectNotes.notes_frozen
@@ -235,7 +241,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 		
 		const isOnline = modCollect.collectionToStatus[collectKey]
 		const fullName = `${thisCollection.name} <small>[${isOnline ? fsgUtil.bytesToHR(sizeOfFolder) : __('removable_offline') }]</small>`
-		
+
 		modTable.push(makeModCollection({
 			adminPass     : collectNotes.notes_admin,
 			dateAdd       : collectNotes.notes_add_date,
@@ -731,6 +737,7 @@ async function operateLED(type = 'spin', time = 2500) {
 	}
 }
 
+let fileOpOffcanvas     = null
 let mismatchDialog      = null
 let modInfoDialog       = null
 let dragDropOperation   = false
@@ -808,6 +815,31 @@ window.loader.receive('fromMain_loading_current', (count, inMB = false) => {
 	}
 })
 
+window.mods.receive('fromMain_fileOperation', (opPayload) => {
+	const dest_single = new Set(['copy', 'move'])
+	const dest_multi  = new Set(['import', 'copyMulti', 'moveMulti', 'copyFavs'])
+	const l10n_title = {
+		move : 'confirm_move_title',
+	}
+	const l10n_info = {
+		move : 'confirm_move_blurb',
+	}
+	fsgUtil.setById('fileOpCanvas-title', __(l10n_title[opPayload.operation]))
+	fsgUtil.setById('fileOpCanvas-info', __(l10n_info[opPayload.operation]))
+
+	if ( dest_single.has(opPayload.operation) ) {
+		fsgUtil.setById('fileOpCanvas-destination', [
+			'<select onchange="updateConfirmList()" id="select_destination" class="form-select">',
+			fsgUtil.buildSelectOpt(0, '...', 0),
+			curVerCollect.filter((x) => x[0] !== opPayload.originCollectKey).map((x) => fsgUtil.buildSelectOpt(x[0], x[1], 0)).join(''),
+			'</select>'
+		])
+	}
+	fileOpOffcanvas.show()
+	processL10N()
+	console.log(opPayload)
+})
+
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 	mismatchDialog = new bootstrap.Modal('#open_game_modal', {backdrop : 'static'})
@@ -815,6 +847,8 @@ window.addEventListener('DOMContentLoaded', () => {
 	modInfoDialog = new bootstrap.Modal('#open_mod_info_modal', {backdrop : 'static'})
 	modInfoDialog.hide()
 	loadOverlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
+
+	fileOpOffcanvas = new bootstrap.Offcanvas('#fileOpCanvas')
 
 	const todayIs = new Date()
 	if ( todayIs.getMonth() === 3 && todayIs.getDate() === 1 ) {
