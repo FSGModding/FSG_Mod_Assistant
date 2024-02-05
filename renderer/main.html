@@ -380,7 +380,7 @@
 		</div>
 	</div>
 
-	<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" style="-webkit-app-region: no-drag;" aria-labelledby="offcanvasLabel">
+	<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel">
 		<div class="offcanvas-header">
 			<h5 class="offcanvas-title" id="offcanvasLabel"><l10n name="notes_title_version"></l10n></h5>
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -391,7 +391,7 @@
 		</div>
 	</div>
 
-	<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="prefcanvas" style="-webkit-app-region: no-drag;" aria-labelledby="offcanvasLabel">
+	<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="prefcanvas" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel">
 		<div class="offcanvas-header justify-content-start">
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 			<h5 class="offcanvas-title ps-3" id="offcanvasLabel"><l10n name="user_pref_title_main"></l10n></h5>
@@ -783,6 +783,37 @@
 				</div>
 
 			</div>
+		</div>
+	</div>
+
+	<div class="offcanvas offcanvas-bottom h-100" tabindex="-1" id="fileOpCanvas" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel">
+		<div class="offcanvas-header justify-content-start">
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			<h5 class="offcanvas-title ps-3"><l10n name="app_name"></l10n></h5>
+		</div>
+		<div class="offcanvas-body">
+			<div class="col-12 inset-block"><div>
+				<span class="inset-block-header" id="fileOpCanvas-title">TITLE</span>
+				<span class="inset-block-blurb-section text-center" id="fileOpCanvas-info">INFO</span>
+				
+				<div class="row justify-content-around small">
+					<div class="col-auto" id="fileOpCanvas-key-exit"><kbd>ESC</kbd> : <l10n name="file_op_key_esc"></l10n></div>
+					<div class="col-auto" id="fileOpCanvas-key-all"><kbd>CTRL</kbd> + <kbd>A</kbd> : <l10n name="file_op_key_ctrl_a"></l10n></div>
+					<div class="col-auto" id="fileOpCanvas-key-none"><kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>A</kbd> : <l10n name="file_op_key_ctrl_shift_a"></l10n></div>
+					<div class="col-auto" id="fileOpCanvas-key-invert"><kbd>CTRL</kbd> + <kbd>I</kbd> : <l10n name="file_op_key_ctrl_i"></l10n></div>
+				</div>
+				<div class="row gy-4 mt-3">
+					<div class="col-12 inset-block"><div>
+						<l10n class="inset-block-header" name="destination"></l10n>
+						<div id="fileOpCanvas-destination"></div>
+					</div></div>
+
+					<div class="col-12 inset-block"><div>
+						<l10n class="inset-block-header" name="file_op_mod_selected"></l10n>
+						<div id="fileOpCanvas-source"></div>
+					</div></div>
+				</div>
+			</div></div>
 		</div>
 	</div>
 
