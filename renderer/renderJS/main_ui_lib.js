@@ -502,6 +502,7 @@ const fileOpLib = {
 		copy      : 'copy',
 		copyFavs  : 'copy',
 		delete    : 'delete',
+		import    : 'copy',
 		move      : 'move',
 		multiCopy : 'copy',
 		multiMove : 'move',
@@ -510,6 +511,7 @@ const fileOpLib = {
 		copy      : 'confirm_copy_blurb',
 		copyFavs  : 'confirm_copy_multi_blurb',
 		delete    : 'confirm_delete_blurb',
+		import    : 'confirm_import_blurb',
 		move      : 'confirm_move_blurb',
 		multiCopy : 'confirm_copy_multi_blurb',
 		multiMove : 'confirm_move_multi_blurb',
@@ -518,6 +520,7 @@ const fileOpLib = {
 		copy      : 'confirm_copy_title',
 		copyFavs  : 'confirm_multi_copy_title',
 		delete    : 'confirm_delete_title',
+		import    : 'confirm_import_title',
 		move      : 'confirm_move_title',
 		multiCopy : 'confirm_multi_copy_title',
 		multiMove : 'confirm_move_title',
@@ -554,7 +557,20 @@ const fileOpLib = {
 		const realDestinations = fsgUtil.query('#fileOpCanvas-destination :checked')
 		const fileMap          = []
 
-		if ( fileOpLib.operation === 'import' ) { return }
+		if ( fileOpLib.operation === 'import' ) {
+			for ( const rawFile of fileOpLib.rawFiles ) {
+				for ( const realDest of realDestinations ) {
+					fileMap.push([
+						realDest.id.replace('file_dest__', ''),
+						'',
+						rawFile
+					])
+				}
+			}
+
+			window.mods.realImportFile(fileMap, fileOpLib.isZipImport)
+			return
+		}
 
 		for ( const mod of fileOpLib.mods ) {
 			for ( const realDest of realDestinations ) {
@@ -637,27 +653,28 @@ const fileOpLib = {
 		const multiDest    = fsgUtil.query('#fileOpCanvas-destination :checked')
 		let   enableButton = false
 
+		if ( noConflict ) {
+			if ( fileOpLib.operation === 'delete' ) { enableButton = true }
+			if ( multiDest.length !== 0 ) { enableButton = true }
+		}
+
 		for ( const thisMod of fileOpLib.mods ) {
 			let destHTML = ''
 
-			switch ( true ) {
-				case noConflict && fileOpLib.operation === 'delete':
-					enableButton = true
-					break
-				case noConflict:
-					if ( multiDest.length !== 0 ) { enableButton = true }
-					break
-				case selectedDest === '0':
-					destHTML = fsgUtil.useTemplate('file_op_no_dest', {})
-					break
-				case fileOpLib.findConflict(selectedDest, thisMod.fileDetail.shortName, thisMod.fileDetail.isFolder) :
-					enableButton = true
-					destHTML = fsgUtil.useTemplate('file_op_conflict_dest', { uuid : thisMod.uuid })
-					break
-				default :
-					enableButton = true
-					destHTML = fsgUtil.useTemplate('file_op_clear_dest', { uuid : thisMod.uuid })
-					break
+			if ( !noConflict )	{
+				switch ( true ) {
+					case selectedDest === '0':
+						destHTML = fsgUtil.useTemplate('file_op_no_dest', {})
+						break
+					case fileOpLib.findConflict(selectedDest, thisMod.fileDetail.shortName, thisMod.fileDetail.isFolder) :
+						enableButton = true
+						destHTML = fsgUtil.useTemplate('file_op_conflict_dest', { uuid : thisMod.uuid })
+						break
+					default :
+						enableButton = true
+						destHTML = fsgUtil.useTemplate('file_op_clear_dest', { uuid : thisMod.uuid })
+						break
+				}
 			}
 
 			confirmHTML.push(fsgUtil.useTemplate('file_op_mod_row', {
@@ -667,6 +684,12 @@ const fileOpLib = {
 				printPath : `${fileOpLib.thisFolder}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`,
 				shortname : thisMod.fileDetail.shortName,
 				title     : fsgUtil.escapeSpecial(thisMod.l10n.title),
+			}))
+		}
+
+		for ( const rawFile of fileOpLib.rawFiles || [] ) {
+			confirmHTML.push(fsgUtil.useTemplate('file_op_file_row', {
+				printPath : rawFile,
 			}))
 		}
 
@@ -683,7 +706,6 @@ const fileOpLib = {
 	},
 	noConflict   : () => fileOpLib.dest_multi.has(fileOpLib.operation) || fileOpLib.dest_none.has(fileOpLib.operation),
 	startOverlay : (opPayload) => {
-		console.log(opPayload)
 		fileOpLib.isZipImport = opPayload.isZipImport
 		fileOpLib.isRunning   = true
 		fileOpLib.operation   = opPayload.operation
@@ -692,6 +714,8 @@ const fileOpLib = {
 		fileOpLib.thisLimit   = opPayload.multiSource
 		fileOpLib.rawFiles    = opPayload.rawFileList
 		fileOpLib.thisFolder  = mainState.modCollect.collectionToFolderRelative[fileOpLib.thisCollect]
+
+		fsgUtil.clsShowTrue('fileOpCanvas-zipImport', fileOpLib.isZipImport)
 
 		fsgUtil.setById('fileOpCanvas-title', __(fileOpLib.l10n_title[fileOpLib.operation]))
 		fsgUtil.setById('fileOpCanvas-info', __(fileOpLib.l10n_info[fileOpLib.operation]))

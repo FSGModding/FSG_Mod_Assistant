@@ -384,13 +384,15 @@ function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
 	}
 }
 
-function sendCopyMoveDelete(operation, modIDS, multiSource = null) {
-	if ( modIDS.length !== 0 ) {
+function sendCopyMoveDelete(operation, modIDS, multiSource = null, fileList = null, isZipImport = false) {
+	if ( modIDS === null || modIDS.length !== 0 ) {
 		win.sendToValidWindow('main', 'fromMain_fileOperation', {
+			isZipImport      : isZipImport,
 			multiSource      : multiSource,
 			operation        : operation,
-			originCollectKey : modIDS[0].split('--')[0],
-			records          : modCollect.modColUUIDsToRecords(modIDS),
+			originCollectKey : modIDS !== null ? modIDS[0].split('--')[0] : '',
+			rawFileList      : fileList,
+			records          : modIDS !== null ? modCollect.modColUUIDsToRecords(modIDS) : [],
 		})
 	}
 }
@@ -407,7 +409,7 @@ ipcMain.on('toMain_realFileCopy',      (_, fileMap) => { doFileOperation('copy',
 ipcMain.on('toMain_realMultiFileMove', (_, fileMap) => { doFileOperation('move_multi', fileMap) })
 ipcMain.on('toMain_realMultiFileCopy', (_, fileMap) => { doFileOperation('copy_multi', fileMap) })
 
-ipcMain.on('toMain_realFileImport',    (_, fileMap, unzipMe) => { fileOperation(unzipMe ? 'importZIP' : 'import', fileMap, 'import') })
+ipcMain.on('toMain_realFileImport',    (_, fileMap, unzipMe) => { doFileOperation(unzipMe ? 'importZIP' : 'import', fileMap) })
 ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
 	fileOperation('copy', fileMap, 'resolve')
 	setTimeout(() => { win.sendModList({}, 'fromMain_modList', 'version', false ) }, 1500)
@@ -531,7 +533,7 @@ ipcMain.on('toMain_dropFiles', (_, files) => {
 		isZipImport = new modPackChecker(files[0]).getInfo()
 	}
 
-	win.createNamedWindow('import', { files : files, isZipImport : isZipImport })
+	sendCopyMoveDelete('import', null, null, files, isZipImport)
 })
 /** END: Folder Window Operation */
 

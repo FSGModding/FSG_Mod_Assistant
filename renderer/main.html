@@ -797,6 +797,17 @@
 				<span class="inset-block-header" id="fileOpCanvas-title">TITLE</span>
 				<span class="inset-block-blurb-section text-center" id="fileOpCanvas-info">INFO</span>
 				
+				<div class="alert alert-warning w-50 mx-auto" id="fileOpCanvas-zipImport">
+					<div class="row">
+						<div class="col-2">
+							<img src="img/info_warn.webp" class="w-100">
+						</div>
+						<div class="col-10">
+							<l10n name="mod_pack_import"></l10n>
+						</div>
+					</div>
+				</div>
+
 				<div class="row justify-content-around small">
 					<div class="col-auto" id="fileOpCanvas-key-exit"><kbd>ESC</kbd> : <l10n name="file_op_key_esc"></l10n></div>
 					<div class="col-auto" id="fileOpCanvas-key-all"><kbd>CTRL</kbd> + <kbd>A</kbd> : <l10n name="file_op_key_ctrl_a"></l10n></div>
@@ -954,6 +965,12 @@
 	</div>
 </template>
 
+<template id="file_op_file_row">
+	<div class="col-md-6 inset-block"><div>
+		<div class="text-end font-monospace ps-3 small mt-1 overflow-hidden longPrintPath">{{printPath}}</div>
+	</div></div>
+</template>
+
 <template id="file_op_mod_row">
 	<div class="col-md-6 inset-block"><div>
 		<span class="inset-block-header">{{shortname}}</span>
@@ -968,6 +985,7 @@
 			</div>
 			<div class="text-end font-monospace ps-3 small mt-1 overflow-hidden longPrintPath">{{printPath}}</div>
 		</div>
+	</div></div>
 </template>
 
 <template id="file_op_collect_box">
