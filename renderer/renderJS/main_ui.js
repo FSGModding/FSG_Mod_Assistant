@@ -325,10 +325,14 @@ window.addEventListener('DOMContentLoaded', () => {
 	fsgUtil.byId('fileOpCanvas').addEventListener('hide.bs.offcanvas', () => {
 		fileOpLib.stop()
 	})
+	fsgUtil.byId('fileOpCanvas').addEventListener('show.bs.offcanvas', () => {
+		fsgUtil.byId('fileOpCanvas').querySelector('.offcanvas-body').scrollTop = 0
+	})
 	fsgUtil.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
 		fsgUtil.clearTooltips()
 	})
 	fsgUtil.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
+		fsgUtil.byId('prefcanvas').querySelector('.offcanvas-body').scrollTop = 0
 		prefLib.update()
 	})
 	window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })
