@@ -14,14 +14,12 @@ const fs                         = require('node:fs')
 const { EventEmitter }           = require('node:events')
 const { modFileCollection }      = require('../../lib/modCheckLib.js')
 const { testLib }                = require('../test.js')
-const { maIPC, getDeferPromise } = require('../../lib/modUtilLib.js')
+const { serveIPC, getDeferPromise } = require('../../lib/modUtilLib.js')
 
 class queueEmitter extends EventEmitter {}
 const queueDoneEmit = new queueEmitter()
 
-const modCollect = new modFileCollection( require('node:os').homedir, queueDoneEmit, true, true )
-
-maIPC.decodePath = path.join(__dirname, '..', '..', 'texconv.exe')
+const modCollect = new modFileCollection( require('node:os').homedir, queueDoneEmit )
 
 module.exports.test = () => {
 	return Promise.allSettled([
@@ -46,7 +44,7 @@ const testGood = (test) => {
 
 	queueDoneEmit.on('process-mods-done', () => { defer.resolve_ex() })
 
-	maIPC.IPCEmit    = queueDoneEmit
+	serveIPC.IPCEmit    = queueDoneEmit
 
 	modCollect.addCollection(modPath)
 	modCollect.processMods()

@@ -23,15 +23,21 @@ const c       = require('ansi-colors')
 const path    = require('node:path')
 const fs      = require('node:fs')
 
-const { ma_logger, maIPC } = require('../lib/modUtilLib.js')
+const { ma_logger, serveIPC } = require('../lib/modUtilLib.js')
 
-maIPC.log = new ma_logger('multi-test')
-maIPC.log.forceNoConsole()
+const fakeStore = { store : {}, get : (defValue) => typeof defValue !== 'undefined' ? defValue : null }
 
-maIPC.notes    = { store : {}, get : (defValue) => typeof defValue !== 'undefined' ? defValue : null }
-maIPC.settings = { store : {}, get : (defValue) => typeof defValue !== 'undefined' ? defValue : null }
-maIPC.modCache = { getMod : () => false, setMod : () => null, saveFile : () => null }
-maIPC.sites    = { store : {}, get : () => null }
+serveIPC.log = new ma_logger('multi-test')
+serveIPC.log.forceNoConsole()
+serveIPC.isBotDisabled      = true
+serveIPC.isModCacheDisabled = true
+
+serveIPC.storeCacheDetail = fakeStore
+serveIPC.storeNote        = fakeStore
+serveIPC.storeSet         = fakeStore
+serveIPC.storeSites       = fakeStore
+serveIPC.storeCache       = { getMod : () => false, setMod : () => null, saveFile : () => null }
+serveIPC.decodePath       = path.join(__dirname, '..', 'texconv.exe')
 
 const L_LOG  = 0
 const L_NORM = 1
@@ -154,6 +160,6 @@ if (require.main === module) {
 			rootTest.end(true)
 		})
 		
-		// console.log(maIPC.log.textLog)
+		// console.log(serveIPC.log.textLog)
 	})
 }
