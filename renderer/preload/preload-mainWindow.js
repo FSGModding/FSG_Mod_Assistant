@@ -130,6 +130,13 @@ contextBridge.exposeInMainWorld(
 		showChangelog : () => { ipcRenderer.send('toMain_showChangelog') },
 		showWizard    : () => { ipcRenderer.send('toMain_showSetupWizard') },
 
+		realCopyFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileCopy', fileMap) },
+		realCopyMultiFile : ( fileMap )          => { ipcRenderer.send('toMain_realMultiFileCopy', fileMap) },
+		realDeleteFile    : ( fileMap )          => { ipcRenderer.send('toMain_realFileDelete', fileMap) },
+		realImportFile    : ( fileMap, unzipMe ) => { ipcRenderer.send('toMain_realFileImport', fileMap, unzipMe) },
+		realMoveFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileMove', fileMap) },
+		realMoveMultiFile : ( fileMap )          => { ipcRenderer.send('toMain_realMultiFileMove', fileMap) },
+
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_allSettings',

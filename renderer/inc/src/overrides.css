@@ -121,8 +121,6 @@ tr.mod-list-row td:first-child input { display: none; }
 ::-webkit-scrollbar-thumb:hover {
 	background: #c0c0c065; 
 }
-
-
 ::-webkit-scrollbar-track-piece:start { margin-top: 26px; }
 
 .overflow-custom2 {

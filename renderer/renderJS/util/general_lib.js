@@ -76,7 +76,7 @@ const fsgUtil = {
 		if ( typeof newValue !== 'undefined') {
 			fsgUtil.byId(id).value = newValue
 		} else {
-			return fsgUtil.byId(id).value
+			return fsgUtil.byId(id)?.value || null
 		}
 	},
 	valueByIdLC : (id) => fsgUtil.byId(id).value.toLowerCase(),
