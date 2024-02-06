@@ -67,7 +67,7 @@
 	"confirm_import_title"                  : "Import Files",
 	"confirm_key_shortcuts"                 : "To quickly toggle file overwriting :: <em>CTRL+A</em> : toggle all on | <em>CTRL+SHIFT+A</em> : toggle all off",
 	"confirm_move_blurb"                    : "To move mods, select the destination collection below, and choose to overwrite or not for each mod (where applicable)",
-	"confirm_move_multi_blurb"              : "Copy files to multiple destinations - existing files will be overwritten, original source files will be removed.",
+	"confirm_move_multi_blurb"              : "Move files to multiple destinations - existing files will be overwritten, original source files will be removed.",
 	"confirm_move_title"                    : "Move Mod File(s)",
 	"confirm_multi_copy_blurb"              : "To copy mods, select the destination collection(s) below - existing files will be overwritten",
 	"confirm_multi_copy_title"              : "Copy and Overwrite Mod File(s)",

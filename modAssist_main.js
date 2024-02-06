@@ -363,17 +363,27 @@ ipcMain.on('toMain_copyFavorites',  () => {
 		fav[modNote.get(`${collectKey}.notes_favorite`, false) ? 'sources' : 'destinations' ].push(collectKey)
 	}
 
+	// for ( const collectKey of fav.sources ) {
+	// 	const thisCollection = modCollect.getModCollection(collectKey)
+	// 	fav.sourceFiles.push(...[...thisCollection.modSet].map((key) => { return {
+	// 		collectKey : collectKey,
+	// 		fullPath   : thisCollection.mods[key].fileDetail.fullPath,
+	// 		shortName  : thisCollection.mods[key].fileDetail.shortName,
+	// 		title      : thisCollection.mods[key].l10n.title,
+	// 	}}))
+	// }
+
 	for ( const collectKey of fav.sources ) {
 		const thisCollection = modCollect.getModCollection(collectKey)
-		fav.sourceFiles.push(...[...thisCollection.modSet].map((key) => { return {
-			collectKey : collectKey,
-			fullPath   : thisCollection.mods[key].fileDetail.fullPath,
-			shortName  : thisCollection.mods[key].fileDetail.shortName,
-			title      : thisCollection.mods[key].l10n.title,
-		}}))
+		fav.sourceFiles.push(...[...thisCollection.modSet].map((x) => `${collectKey}--${x}`))
+	}
+	console.log(fav)
+	
+	if ( fav.sourceFiles.length !== 0 ) {
+		sendCopyMoveDelete('copyFavs', fav.sourceFiles, fav.sources)
 	}
 
-	if ( fav.sourceFiles.length !== 0 ) { win.createNamedWindow( 'confirmFav', fav ) }
+	//if ( fav.sourceFiles.length !== 0 ) { win.createNamedWindow( 'confirmFav', fav ) }
 })
 
 function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
@@ -387,29 +397,29 @@ function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
 	}
 }
 
-function sendCopyMoveDelete(operation, modIDS, modRecords = null) {
+function sendCopyMoveDelete(operation, modIDS, multiSource = null) {
 	if ( modIDS.length !== 0 ) {
 		win.sendToValidWindow('main', 'fromMain_fileOperation', {
+			multiSource      : multiSource,
 			operation        : operation,
-			records          : ( modRecords === null ) ?
-				modCollect.modColUUIDsToRecords(modIDS) :
-				modRecords,
 			originCollectKey : modIDS[0].split('--')[0],
+			records          : modCollect.modColUUIDsToRecords(modIDS),
 		})
 	}
 }
 
-ipcMain.on('toMain_deleteMods',     (_, mods) => { handleCopyMoveDelete('confirmDelete', mods) })
+ipcMain.on('toMain_deleteMods',     (_, mods) => { sendCopyMoveDelete('delete', mods) })
 ipcMain.on('toMain_moveMods',       (_, mods) => { sendCopyMoveDelete('move', mods) })
-ipcMain.on('toMain_copyMods',       (_, mods) => { handleCopyMoveDelete('confirmCopy', mods) })
-ipcMain.on('toMain_moveMultiMods',  (_, mods) => { handleCopyMoveDelete('confirmMultiMove', mods) })
-ipcMain.on('toMain_copyMultiMods',  (_, mods) => { handleCopyMoveDelete('confirmMultiCopy', mods) })
+ipcMain.on('toMain_copyMods',       (_, mods) => { sendCopyMoveDelete('copy', mods) })
+ipcMain.on('toMain_moveMultiMods',  (_, mods) => { sendCopyMoveDelete('multiMove', mods) })
+ipcMain.on('toMain_copyMultiMods',  (_, mods) => { sendCopyMoveDelete('multiCopy', mods) })
 
-ipcMain.on('toMain_realFileDelete',    (_, fileMap) => { fileOperation('delete', fileMap) })
-ipcMain.on('toMain_realFileMove',      (_, fileMap) => { fileOperation('move', fileMap) })
-ipcMain.on('toMain_realFileCopy',      (_, fileMap) => { fileOperation('copy', fileMap) })
-ipcMain.on('toMain_realMultiFileMove', (_, fileMap) => { fileOperation('move_multi', fileMap) })
-ipcMain.on('toMain_realMultiFileCopy', (_, fileMap) => { fileOperation('copy_multi', fileMap) })
+ipcMain.on('toMain_realFileDelete',    (_, fileMap) => { doFileOperation('delete', fileMap) })
+ipcMain.on('toMain_realFileMove',      (_, fileMap) => { doFileOperation('move', fileMap) })
+ipcMain.on('toMain_realFileCopy',      (_, fileMap) => { doFileOperation('copy', fileMap) })
+ipcMain.on('toMain_realMultiFileMove', (_, fileMap) => { doFileOperation('move_multi', fileMap) })
+ipcMain.on('toMain_realMultiFileCopy', (_, fileMap) => { doFileOperation('copy_multi', fileMap) })
+
 ipcMain.on('toMain_realFileImport',    (_, fileMap, unzipMe) => { fileOperation(unzipMe ? 'importZIP' : 'import', fileMap, 'import') })
 ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
 	fileOperation('copy', fileMap, 'resolve')
@@ -2097,7 +2107,6 @@ function refreshClientModList(closeLoader = true) {
 			l10n                   : {
 				disable    : __('override_disabled'),
 				unknown    : __('override_unknown'),
-				runMessage : __('game_running_warning'),
 			},
 			modSites               : modSite.store,
 			pinMini                : win.isAlwaysOnTop('mini'),
@@ -2356,6 +2365,21 @@ function writeGameSettings(gameSettingsFileName, gameSettingsXML, opts) {
 	refreshClientModList()
 }
 /* eslint-enable complexity */
+
+function doFileOperation(type, fileMap) {
+	if ( typeof fileMap !== 'object' ) { return }
+
+	win.loading.open('files')
+	win.loading.total(fileMap.length, true)
+	win.loading.current(0, true)
+
+	mainProcessFlags.intervalFile = setInterval(() => {
+		if ( win.loading.isReady ) {
+			clearInterval(mainProcessFlags.intervalFile)
+			fileOperation_post(type, fileMap)
+		}
+	}, 250)
+}
 
 function fileOperation(type, fileMap, srcWindow = 'confirm') {
 	if ( typeof fileMap !== 'object' ) { return }

@@ -21,7 +21,8 @@
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/util/general_lib.js"></script>
 	<script src="renderJS/util/select_lib_ui.js"></script>
-	<script src="renderJS/assist_ui.js"></script>
+	<script src="renderJS/main_ui.js"></script>
+	<script src="renderJS/main_ui_lib.js"></script>
 	<script type="text/javascript">
 		document.onkeydown = function(event) {
 			const evt = event || window.event
@@ -165,7 +166,7 @@
 				<div class="mx-0 p-0 rounded-end-0 btn-group-win_ui d-flex">
 					
 					<div class="bg-body px-2 text-danger d-inline-flex" style="--bs-text-opacity: 0.7;" id="gameRunningBubble"><i class="align-self-center bi bi-circle-fill"></i></div>
-					<button class="btn-info btn btn-win_ui rounded-0 text-white border-0" style="-webkit-app-region: no-drag; border-bottom-left-radius: var(--bs-border-radius-sm)!important;" onclick="clientOpenFarmSim()"><l10n name="game_icon"></l10n><l10n name="launch_game" class="align-middle fw-semibold"></l10n></button>
+					<button class="btn-info btn btn-win_ui rounded-0 text-white border-0" style="-webkit-app-region: no-drag; border-bottom-left-radius: var(--bs-border-radius-sm)!important;" onclick="mainLib.launchGame()"><l10n name="game_icon"></l10n><l10n name="launch_game" class="align-middle fw-semibold"></l10n></button>
 					<button id="update-is-ready-button" class="d-none btn-win_ui btn rounded-0 text-info" style="-webkit-app-region: no-drag;" onclick="window.mods.runUpdate()"><l10n name="update_ready"></l10n></button>
 					<button id="browse-base-game-data" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openBaseGame()"><l10n name="base_game_data"></l10n></button>
 					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openTrack()"><l10n name="savegame_track"></l10n></button>
@@ -196,8 +197,8 @@
 						<div class="col">
 							<div class="input-group w-100 h-100">
 								<select class="form-select" id="collectionSelect"></select>
-								<button class="text-white btn btn-warning" type="button" data-bs-placement="bottom" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
-								<button class="text-white btn btn-danger" type="button" data-bs-placement="bottom" onclick="clientMakeListInactive()"><l10n name="list-none"></l10n></button>
+								<button class="text-white btn btn-warning" type="button" data-bs-placement="bottom" onclick="actionLib.setCollectionActive()"><l10n name="list-active"></l10n></button>
+								<button class="text-white btn btn-danger" type="button" data-bs-placement="bottom" onclick="actionLib.setCollectionInactive()"><l10n name="list-none"></l10n></button>
 							</div>
 						</div>
 					</div><!-- end: collection management-->
@@ -207,7 +208,7 @@
 							<div class="input-group input-group-sm mb-0">
 								<span class="input-group-text"><l10n name="filter_only"></l10n></span>
 								<input oncontextmenu="window.mods.cutCopyPaste()" type="text" id="filter_input" oninput="select_lib.filter_begin()" class="form-control mod-row-filter rounded-end">
-								<span id="filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:calc( 50% - 10px);"></span>
+								<span id="filter_clear" onclick="actionLib.clearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:calc( 50% - 10px);"></span>
 							</div>
 						</div>
 						<div class="col col-auto">
@@ -254,14 +255,14 @@
 			<div class="col-2 p-0"><!-- buttons -->
 				<div id="moveButtons" class="px-2 d-flex flex-column justify-content-around" style="width:16.5%">
 					<!-- <div id="moveButtonsInt" class="flex flex-column justify-content-around"> -->
-						<button id="moveButton_move" onclick="clientBatchOperation('move')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-success text-white rounded-3 disabled"><l10n class="small" name="move_to_list"></l10n></button>
-						<button id="moveButton_copy" onclick="clientBatchOperation('copy')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-success text-white rounded-3 disabled"><l10n class="small" name="copy_to_list"></l10n></button>
-						<button id="moveButton_delete" onclick="clientBatchOperation('delete')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-danger text-white rounded-3 disabled"><l10n class="small" name="remove_from_list"></l10n></button>
-						<button id="moveButton_zip" onclick="clientBatchOperation('zip')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-primary rounded-3 disabled"><l10n class="small" name="make_zip"></l10n></button>
+						<button id="moveButton_move" onclick="fileOpLib.initBatchOp('move')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-success text-white rounded-3 disabled"><l10n class="small" name="move_to_list"></l10n></button>
+						<button id="moveButton_copy" onclick="fileOpLib.initBatchOp('copy')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-success text-white rounded-3 disabled"><l10n class="small" name="copy_to_list"></l10n></button>
+						<button id="moveButton_delete" onclick="fileOpLib.initBatchOp('delete')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-danger text-white rounded-3 disabled"><l10n class="small" name="remove_from_list"></l10n></button>
+						<button id="moveButton_zip" onclick="fileOpLib.initBatchOp('zip')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-primary rounded-3 disabled"><l10n class="small" name="make_zip"></l10n></button>
 
-						<button id="moveButton_open" onclick="clientBatchOperation('openMods')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_from_list"></l10n></button>
-						<button id="moveButton_hub" onclick="clientBatchOperation('openHub')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_hub"></l10n></button>
-						<button id="moveButton_site" onclick="clientBatchOperation('openExt')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl2 ex-small_pt ex-small_ru2" name="context_open_website"></l10n></button>
+						<button id="moveButton_open" onclick="fileOpLib.initBatchOp('openMods')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_from_list"></l10n></button>
+						<button id="moveButton_hub" onclick="fileOpLib.initBatchOp('openHub')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl ex-small_pt ex-small_ru" name="open_hub"></l10n></button>
+						<button id="moveButton_site" onclick="fileOpLib.initBatchOp('openExt')" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-secondary rounded-3 disabled"><l10n class="small ex-small_es ex-small_fr ex-small_pl2 ex-small_pt ex-small_ru2" name="context_open_website"></l10n></button>
 						
 						<button id="moveButton_fav" onclick="mods.copyFavorites()" type="button" class="flex-fill mb-1 w-100 btn btn-sm btn-warning text-white rounded-3"><l10n class="small" name="copy_fav_to"></l10n></button>
 						<button id="verButton" onclick="mods.versionCheck()" type="button" class="flex-fill w-100 btn btn-sm btn-success text-white rounded-3 "><l10n class="small" name="version_check"></l10n></button>
@@ -291,8 +292,8 @@
 							<img src="img/facepalm.webp" class="w-100">
 						</div>
 						<div class="col-9">
-							<button type="button" class="w-100 mb-2 btn btn-warning" onclick="clientOpenGame_IGNORE()"><l10n name="active_no_match_ignore"></l10n></button>
-							<button type="button" class="w-100 btn btn-success" onclick="clientOpenGame_FIX()"><l10n name="active_no_match_fix"></l10n></button>
+							<button type="button" class="w-100 mb-2 btn btn-warning" onclick="mainLib.launchGame_IGNORE()"><l10n name="active_no_match_ignore"></l10n></button>
+							<button type="button" class="w-100 btn btn-success" onclick="mainLib.launchGame_FIX()"><l10n name="active_no_match_fix"></l10n></button>
 						</div>
 					</div>
 				</div>
@@ -314,7 +315,7 @@
 							<input oncontextmenu="window.mods.cutCopyPaste()" placeholder="http://example.net" type="text" id="mod_info_input" class="form-control">
 						</div>
 						<div class="col-3">
-							<button type="button" onclick="clientSetModInfo()" class="btn btn-success w-100"><l10n name="button_save"></l10n></button>
+							<button type="button" onclick="actionLib.setModInfo()" class="btn btn-success w-100"><l10n name="button_save"></l10n></button>
 						</div>
 					</div>
 				</div>
@@ -396,7 +397,7 @@
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 			<h5 class="offcanvas-title ps-3" id="offcanvasLabel"><l10n name="user_pref_title_main"></l10n></h5>
 		</div>
-		<div class="offcanvas-body" id="prefcanvas_content">
+		<div class="offcanvas-body full-scroll" id="prefcanvas_content">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item" role="presentation">
 					<button class="nav-link active" id="display-pref-tab" data-bs-toggle="tab" data-bs-target="#display-pref-pane" type="button" role="tab"><l10n name="user_pref_tab_display"></l10n></button>
@@ -433,7 +434,7 @@
 							<div class="row">
 								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_led"></l10n>
 								<div class="col-3 form-switch custom-switch">
-									<input id="uPref_led_active" onchange="clientSetPref('led_active')" class="form-check-input" type="checkbox" role="switch">
+									<input id="uPref_led_active" onchange="prefLib.setPref('led_active')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
@@ -443,7 +444,7 @@
 							<div class="row">
 								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_show_tooltips"></l10n>
 								<div class="col-3 form-switch custom-switch">
-									<input id="uPref_show_tooltips" onchange="clientSetPref('show_tooltips')" class="form-check-input" type="checkbox" role="switch">
+									<input id="uPref_show_tooltips" onchange="prefLib.setPref('show_tooltips')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
@@ -454,7 +455,7 @@
 								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_font_size"></l10n>
 								<div class="col-2 text-center small text-body-emphasis" id="font_size_value">XX</div>
 								<div class="col-12 mt-2">
-									<input oninput="clientDragFontSize()" onchange="clientSetPref('font_size')" id="uPref_font_size" type="range" class="form-range" min="70" max="150" step="1" >
+									<input oninput="prefLib.dragFontSize()" onchange="prefLib.setPref('font_size')" id="uPref_font_size" type="range" class="form-range" min="70" max="150" step="1" >
 									<div class="p-0" style="margin-top: -0.95rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>
 								</div>
 								<div class="col-10 offset-1 mt-2">
@@ -466,17 +467,17 @@
 						<div class="col-md-6 inset-block"><div> <!-- theme -->
 							<l10n class="inset-block-header" name="user_pref_title_theme_color"></l10n>
 							<l10n class="inset-block-blurb-option" name="user_pref_blurb_theme_color"></l10n>
-							<select onchange="clientChangeTheme()" class="form-select mt-3 px-4" name="theme_select" id="theme_select"></select>
+							<select onchange="prefLib.setTheme()" class="form-select mt-3 px-4" name="theme_select" id="theme_select"></select>
 						</div></div>
 
 						<div class="col-md-6 inset-block"><div> <!-- language -->
 							<l10n class="inset-block-header" name="user_pref_title_lang"></l10n>
 							<l10n class="inset-block-blurb-option" name="user_pref_blurb_lang"></l10n>
-							<select onchange="clientChangeL10N()" class="form-select mt-3 px-4" name="language_select" id="language_select"></select>
+							<select onchange="prefLib.setL10n()" class="form-select mt-3 px-4" name="language_select" id="language_select"></select>
 							<div class="row mt-2">
 								<l10n class="inset-block-blurb-option col-9 fst-italic" name="user_pref_blurb2_lang"></l10n>
 								<div class="col-3 form-check form-switch custom-switch">
-									<input id="uPref_lock_lang" onchange="clientSetPref('lock_lang')" class="form-check-input" type="checkbox" role="switch">
+									<input id="uPref_lock_lang" onchange="prefLib.setPref('lock_lang')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
@@ -515,7 +516,7 @@
 									</div></div>
 									<div class="col-12 inset-block"><div><!-- game args -->
 										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args" onchange="clientSetPref('game_args')" style="font-size: 70%">
+										<input type="text" class="form-control" id="uPref_game_args" onchange="prefLib.setPref('game_args')" style="font-size: 70%">
 										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
 									</div></div>
 									<div class="col-12 inset-block"><div><!-- dev mode -->
@@ -523,7 +524,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode" onchange="clientSetPref('dev_mode')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_dev_mode" onchange="prefLib.setPref('dev_mode')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -536,7 +537,7 @@
 							<div class="row">
 								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_multi_version"></l10n>
 								<div class="col-2 form-switch custom-switch">
-									<input id="uPref_multi_version" onchange="clientSetPref('multi_version')" class="form-check-input" type="checkbox" role="switch">
+									<input id="uPref_multi_version" onchange="prefLib.setPref('multi_version')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
@@ -549,7 +550,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_game_enabled_19" onchange="clientSetPref('game_enabled_19')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_game_enabled_19" onchange="prefLib.setPref('game_enabled_19')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -572,7 +573,7 @@
 									</div></div>
 									<div class="col-12 inset-block game_enabled_19"><div><!-- game args -->
 										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args_19" onchange="clientSetPref('game_args_19')" style="font-size: 70%">
+										<input type="text" class="form-control" id="uPref_game_args_19" onchange="prefLib.setPref('game_args_19')" style="font-size: 70%">
 										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
 									</div></div>
 									<div class="col-12 inset-block game_enabled_19"><div><!-- dev mode -->
@@ -580,7 +581,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode_19" onchange="clientSetPref('dev_mode_19')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_dev_mode_19" onchange="prefLib.setPref('dev_mode_19')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -596,7 +597,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_game_enabled_17" onchange="clientSetPref('game_enabled_17')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_game_enabled_17" onchange="prefLib.setPref('game_enabled_17')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -619,7 +620,7 @@
 									</div></div>
 									<div class="col-12 inset-block game_enabled_17"><div><!-- game args -->
 										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args_17" onchange="clientSetPref('game_args_17')" style="font-size: 70%">
+										<input type="text" class="form-control" id="uPref_game_args_17" onchange="prefLib.setPref('game_args_17')" style="font-size: 70%">
 										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
 									</div></div>
 									<div class="col-12 inset-block game_enabled_17"><div><!-- dev mode -->
@@ -627,7 +628,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode_17" onchange="clientSetPref('dev_mode_17')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_dev_mode_17" onchange="prefLib.setPref('dev_mode_17')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -643,7 +644,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_game_enabled_15" onchange="clientSetPref('game_enabled_15')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_game_enabled_15" onchange="prefLib.setPref('game_enabled_15')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -666,7 +667,7 @@
 									</div></div>
 									<div class="col-12 inset-block game_enabled_15"><div><!-- game args -->
 										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args_15" onchange="clientSetPref('game_args_15')" style="font-size: 70%">
+										<input type="text" class="form-control" id="uPref_game_args_15" onchange="prefLib.setPref('game_args_15')" style="font-size: 70%">
 										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
 									</div></div>
 									<div class="col-12 inset-block game_enabled_15"><div><!-- dev mode -->
@@ -674,7 +675,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode_15" onchange="clientSetPref('dev_mode_15')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_dev_mode_15" onchange="prefLib.setPref('dev_mode_15')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -690,7 +691,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_game_enabled_13" onchange="clientSetPref('game_enabled_13')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_game_enabled_13" onchange="prefLib.setPref('game_enabled_13')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -713,7 +714,7 @@
 									</div></div>
 									<div class="col-12 inset-block game_enabled_13"><div><!-- game args -->
 										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args_13" onchange="clientSetPref('game_args_13')" style="font-size: 70%">
+										<input type="text" class="form-control" id="uPref_game_args_13" onchange="prefLib.setPref('game_args_13')" style="font-size: 70%">
 										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
 									</div></div>
 									<div class="col-12 inset-block game_enabled_13"><div><!-- dev mode -->
@@ -721,7 +722,7 @@
 										<div class="row">
 											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
 											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode_13" onchange="clientSetPref('dev_mode_13')" class="form-check-input" type="checkbox" role="switch">
+												<input id="uPref_dev_mode_13" onchange="prefLib.setPref('dev_mode_13')" class="form-check-input" type="checkbox" role="switch">
 											</div>
 										</div>
 									</div></div>
@@ -739,7 +740,7 @@
 							<div class="row">
 								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_use_one_drive"></l10n>
 								<div class="form-check form-switch custom-switch col-2">
-									<input id="uPref_use_one_drive" onchange="clientSetPref('use_one_drive')" class="form-check-input" type="checkbox" role="switch">
+									<input id="uPref_use_one_drive" onchange="prefLib.setPref('use_one_drive')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
@@ -749,7 +750,7 @@
 							<div class="row">
 								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_poll_game"></l10n>
 								<div class="form-check form-switch custom-switch col-2">
-									<input id="uPref_poll_game" onchange="clientSetPref('poll_game')" class="form-check-input" type="checkbox" role="switch">
+									<input id="uPref_poll_game" onchange="prefLib.setPref('poll_game')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 							</div>
 						</div></div>
@@ -759,12 +760,12 @@
 							<div class="row gy-2">
 								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_use_discord"></l10n>
 								<div class="form-check form-switch custom-switch col-2">
-									<input id="uPref_use_discord" onchange="clientSetPref('use_discord')" class="form-check-input" type="checkbox" role="switch">
+									<input id="uPref_use_discord" onchange="prefLib.setPref('use_discord')" class="form-check-input" type="checkbox" role="switch">
 								</div>
 								<l10n class="col-6" name="user_pref_setting_discord_2"></l10n>
-								<div class="col-6 px-0"><input type="text" class="form-control" id="uPref_use_discord_c2" onchange="clientSetPref('use_discord_c2')" style="font-size: 70%"></div>
+								<div class="col-6 px-0"><input type="text" class="form-control" id="uPref_use_discord_c2" onchange="prefLib.setPref('use_discord_c2')" style="font-size: 70%"></div>
 								<l10n class="col-6" name="user_pref_setting_discord_1"></l10n>
-								<div class="col-6 px-0"><input type="text" class="form-control" id="uPref_use_discord_c1" onchange="clientSetPref('use_discord_c1')" style="font-size: 70%"></div>
+								<div class="col-6 px-0"><input type="text" class="form-control" id="uPref_use_discord_c1" onchange="prefLib.setPref('use_discord_c1')" style="font-size: 70%"></div>
 							</div>
 						</div></div>
 
@@ -791,7 +792,7 @@
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 			<h5 class="offcanvas-title ps-3"><l10n name="app_name"></l10n></h5>
 		</div>
-		<div class="offcanvas-body">
+		<div class="offcanvas-body full-scroll">
 			<div class="col-12 inset-block"><div>
 				<span class="inset-block-header" id="fileOpCanvas-title">TITLE</span>
 				<span class="inset-block-blurb-section text-center" id="fileOpCanvas-info">INFO</span>
@@ -803,14 +804,18 @@
 					<div class="col-auto" id="fileOpCanvas-key-invert"><kbd>CTRL</kbd> + <kbd>I</kbd> : <l10n name="file_op_key_ctrl_i"></l10n></div>
 				</div>
 				<div class="row gy-4 mt-3">
-					<div class="col-12 inset-block"><div>
+					<div class="col-12 inset-block" id="fileOpCanvas-destination-block"><div>
 						<l10n class="inset-block-header" name="destination"></l10n>
 						<div id="fileOpCanvas-destination"></div>
 					</div></div>
 
+					<div class="col-12">
+						<div id="fileOpCanvas-button" class="btn btn-warning btn-check-mark w-75 mx-auto d-block mb-4 text-white disabled" onclick="fileOpLib.goButton()"></div>
+					</div>
+
 					<div class="col-12 inset-block"><div>
 						<l10n class="inset-block-header" name="file_op_mod_selected"></l10n>
-						<div id="fileOpCanvas-source"></div>
+						<div id="fileOpCanvas-source" class="row gx-2 gy-4 mt-3"></div>
 					</div></div>
 				</div>
 			</div></div>
@@ -848,7 +853,7 @@
 
 
 <template id="version_row">
-	<div data-bs-dismiss="offcanvas" class="row {{backgroundClass}} mb-3 mx-2 py-2 rounded-2 d-flex align-items-center" style="cursor: pointer;" onclick="clientSetGameVersion('{{version}}')">
+	<div data-bs-dismiss="offcanvas" class="row {{backgroundClass}} mb-3 mx-2 py-2 rounded-2 d-flex align-items-center" style="cursor: pointer;" onclick="actionLib.setGameVersion('{{version}}')">
 		<div class="col-3">
 			<i class="fsico-ver-{{version}}" style="font-size: 75px;"></i>
 		</div>
@@ -860,7 +865,7 @@
 </template>
 
 <template id="mod_row">
-	<tr draggable="true" ondragstart="clientDragOut(event)" onclick="select_lib.click_row('{{id}}')" ondblclick="clientOpenMod('{{click_modEnabled}}', '{{id}}')" oncontextmenu="clientModContext('{{id}}')" class="mod-row {{class_hasHash}} {{class_modDisabled}} {{class_hasSite}}" id="{{id}}">
+	<tr draggable="true" ondragstart="dragLib.dragOut(event)" onclick="select_lib.click_row('{{id}}')" ondblclick="actionLib.openMod('{{click_modEnabled}}', '{{id}}')" oncontextmenu="actionLib.openModContext('{{id}}')" class="mod-row {{class_hasHash}} {{class_modDisabled}} {{class_hasSite}}" id="{{id}}">
 		<td>
 			<input type="checkbox" class="form-check-input mod-row-checkbox" id="{{id}}__checkbox">
 		</td>
@@ -898,7 +903,7 @@
 			</div>
 		</td>
 		<td class="align-middle text-end" style="line-height: 2.6rem;">
-			<button class="{{class_showFolderEdit}} {{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="clientOpenMod('true', '{{mapClick}}')">
+			<button class="{{class_showFolderEdit}} {{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="actionLib.openMod('true', '{{mapClick}}')">
 				<img class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}"  />
 			</button>
 			
@@ -911,12 +916,11 @@
 			<button class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('{{id}}')"><l10n name="notes_button"></l10n></button>
 			<button class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save"></l10n></button>
 			<div class="btn-group btn-group-sm {{class_hideFolderEdit}}">
-				
-				<button onclick="clientMoveItem('{{id}}', true, true)" id="{{id}}_order_up_last" class="btn btn-sm btn-secondary"><l10n name="folder_top_button"></l10n></button>
-				<button onclick="clientMoveItem('{{id}}', true)" id="{{id}}_order_up" class="btn btn-sm btn-secondary"><l10n name="folder_up_button"></l10n></button>
-				<button onclick="clientMoveItem('{{id}}', false)" id="{{id}}_order_down" class="btn btn-sm btn-secondary"><l10n name="folder_down_button"></l10n></button>
-				<button onclick="clientMoveItem('{{id}}', false, true)" id="{{id}}_order_down_last" class="btn btn-sm btn-secondary"><l10n name="folder_bot_button"></l10n></button>
-				<button class="btn btn-danger text-white" onclick="clientRemoveFolder('{{id}}')"><l10n name="remove_folder"></l10n></button>
+				<button onclick="mainLib.setItemOrder('{{id}}', true, true)" id="{{id}}_order_up_last" class="btn btn-sm btn-secondary"><l10n name="folder_top_button"></l10n></button>
+				<button onclick="mainLib.setItemOrder('{{id}}', true)" id="{{id}}_order_up" class="btn btn-sm btn-secondary"><l10n name="folder_up_button"></l10n></button>
+				<button onclick="mainLib.setItemOrder('{{id}}', false)" id="{{id}}_order_down" class="btn btn-sm btn-secondary"><l10n name="folder_down_button"></l10n></button>
+				<button onclick="mainLib.setItemOrder('{{id}}', false, true)" id="{{id}}_order_down_last" class="btn btn-sm btn-secondary"><l10n name="folder_bot_button"></l10n></button>
+				<button class="btn btn-danger text-white" onclick="window.mods.removeFolder('{{id}}')"><l10n name="remove_folder"></l10n></button>
 			</div>
 		</td>
 	</tr>
@@ -926,6 +930,52 @@
 			<span class="no-mods-found d-block fst-italic small text-center d-none"><l10n name="empty_or_filtered"></l10n></span>
 		</td>
 	</tr>
+</template>
+
+
+<template id="file_op_no_dest">
+	<div class="row mt-0"><div class="col col-form-label"><i class="bi bi-exclamation-triangle text-danger"></i> <l10n name="no_destination_selected"></l10n></div></div>
+</template>
+
+<template id="file_op_clear_dest">
+	<div class="row mt-0">
+		<div class="col col-form-label"><i class="bi bi-check-circle text-success"></i> <l10n name="destination_clear"></l10n></div>
+	</div>
+	<input type="hidden" value="1" id="file_op__{{uuid}}" />
+</template>
+
+<template id="file_op_conflict_dest">
+	<div class="row mt-0 align-items-center">
+		<div class="col-12 col-form-label"><i class="bi bi-question-circle text-warning"></i> <l10n name="destination_full"></l10n></div>
+		<div class="col-2 offset-1 form-check form-switch custom-switch">
+			<input id="file_op__{{uuid}}" class="form-check-input fileOpCanvas-check" type="checkbox" role="switch">
+		</div>
+		<l10n class="col-9" name="overwrite"></l10n>
+	</div>
+</template>
+
+<template id="file_op_mod_row">
+	<div class="col-md-6 inset-block"><div>
+		<span class="inset-block-header">{{shortname}}</span>
+		<div class="row">
+			<div class="col-2">
+				<img class="img-fluid" src="{{icon}}" />
+				<div class="bi bi-folder2-open {{isAFolder}}" style="margin-top: -16px; margin-left: -5px; margin-bottom: -5px; font-size: 18px; color: rgb(175 165 141);"></div>
+			</div>
+			<div class="col-10 align-self-center">
+				<h5>{{title}}</h5>
+				{{destHTML}}
+			</div>
+			<div class="text-end font-monospace ps-3 small mt-1 overflow-hidden longPrintPath">{{printPath}}</div>
+		</div>
+</template>
+
+<template id="file_op_collect_box">
+	<div class="col-1 offset-1 form-check form-switch custom-switch">
+		<input id="file_dest__{{id}}" oninput="fileOpLib.listMods()" class="form-check-input fileOpCanvas-check" type="checkbox" role="switch">
+	</div>
+	<div class="col-5">{{name}}</div>
+	<div class="col-5 small longPrintPath">{{folder}}</div>
 </template>
 
 </html>
