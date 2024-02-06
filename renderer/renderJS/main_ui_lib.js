@@ -484,9 +484,11 @@ const loaderLib = {
 
 const fileOpLib = {
 	isRunning    : false,
+	isZipImport  : false,
 	mods         : null,
 	operation    : null,
 	overlay      : null,
+	rawFiles     : null,
 	thisCollect  : null,
 	thisFolder   : null,
 	thisLimit    : null,
@@ -639,7 +641,7 @@ const fileOpLib = {
 			let destHTML = ''
 
 			switch ( true ) {
-				case noConflict && fileOpLib === 'delete':
+				case noConflict && fileOpLib.operation === 'delete':
 					enableButton = true
 					break
 				case noConflict:
@@ -681,11 +683,14 @@ const fileOpLib = {
 	},
 	noConflict   : () => fileOpLib.dest_multi.has(fileOpLib.operation) || fileOpLib.dest_none.has(fileOpLib.operation),
 	startOverlay : (opPayload) => {
+		console.log(opPayload)
+		fileOpLib.isZipImport = opPayload.isZipImport
 		fileOpLib.isRunning   = true
 		fileOpLib.operation   = opPayload.operation
 		fileOpLib.mods        = opPayload.records
 		fileOpLib.thisCollect = opPayload.originCollectKey
 		fileOpLib.thisLimit   = opPayload.multiSource
+		fileOpLib.rawFiles    = opPayload.rawFileList
 		fileOpLib.thisFolder  = mainState.modCollect.collectionToFolderRelative[fileOpLib.thisCollect]
 
 		fsgUtil.setById('fileOpCanvas-title', __(fileOpLib.l10n_title[fileOpLib.operation]))
