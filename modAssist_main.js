@@ -363,27 +363,14 @@ ipcMain.on('toMain_copyFavorites',  () => {
 		fav[modNote.get(`${collectKey}.notes_favorite`, false) ? 'sources' : 'destinations' ].push(collectKey)
 	}
 
-	// for ( const collectKey of fav.sources ) {
-	// 	const thisCollection = modCollect.getModCollection(collectKey)
-	// 	fav.sourceFiles.push(...[...thisCollection.modSet].map((key) => { return {
-	// 		collectKey : collectKey,
-	// 		fullPath   : thisCollection.mods[key].fileDetail.fullPath,
-	// 		shortName  : thisCollection.mods[key].fileDetail.shortName,
-	// 		title      : thisCollection.mods[key].l10n.title,
-	// 	}}))
-	// }
-
 	for ( const collectKey of fav.sources ) {
 		const thisCollection = modCollect.getModCollection(collectKey)
 		fav.sourceFiles.push(...[...thisCollection.modSet].map((x) => `${collectKey}--${x}`))
 	}
-	console.log(fav)
 	
 	if ( fav.sourceFiles.length !== 0 ) {
 		sendCopyMoveDelete('copyFavs', fav.sourceFiles, fav.sources)
 	}
-
-	//if ( fav.sourceFiles.length !== 0 ) { win.createNamedWindow( 'confirmFav', fav ) }
 })
 
 function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
