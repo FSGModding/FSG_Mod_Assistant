@@ -769,6 +769,8 @@ const dragLib = {
 		e.preventDefault()
 		e.stopPropagation()
 	
+		if ( fileOpLib.isRunning ) { return }
+		
 		dragLib.isRunning = false
 	
 		fsgUtil.clsHide('drag_back')
@@ -794,6 +796,8 @@ const dragLib = {
 		e.preventDefault()
 		e.stopPropagation()
 	
+		if ( fileOpLib.isRunning ) { return }
+
 		if ( !dragLib.isRunning ) {
 			fsgUtil.clsShow('drag_back')
 		
