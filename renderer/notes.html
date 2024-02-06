@@ -61,10 +61,10 @@
 
 		<div class="row gx-3 gy-4 mx-2">
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- icon color -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_color"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- icon color -->
+				<l10n class="inset-block-header" name="notes_title_color"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_color"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_color"></l10n>
 					<div class="col-6 d-flex flex-wrap justify-content-start">
 						<div class="form-check form-check-inline">
 							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color0" value="0">
@@ -106,78 +106,70 @@
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- tagline -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_tagline"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- description -->
+				<l10n class="inset-block-header" name="notes_title_tagline"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_tagline"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_tagline"></l10n>
 					<div class="col-6">
 						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_tagline')" onblur="clientSetNote('notes_tagline')" type="text" class="form-control form-control-sm" id="notes_tagline">
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- notes -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_notes"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- notes -->
+				<l10n class="inset-block-header" name="notes_title_notes"></l10n>
 				<div class="row gy-2">
-					<div class="col-12 ps-3 small fst-italic"><l10n name="notes_blurb_notes"></l10n></div>
+					<l10n class="inset-block-blurb-option col-12" name="notes_blurb_notes"></l10n>
 					<div class="col-10 offset-1">
 						<textarea oncontextmenu="window.mods.openCText()" onblur="clientSetNote('notes_notes')" rows="4" class="form-control form-control-sm" id="notes_notes"></textarea>
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-md-6"><div class="border rounded-2 p-3 h-100"><!-- favorite -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_favorite"></l10n></h5></div>
+			<div class="col-md-6 inset-block"><div><!-- favorite -->
+				<l10n class="inset-block-header" name="notes_title_favorite"></l10n>
 				<div class="row">
-					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_favorite"></l10n></div>
-					<div class="col-3">
-						<div class="form-check form-switch custom-switch">
-							<input id="notes_favorite" onchange="clientSetNote('notes_favorite')" class="form-check-input" type="checkbox" role="switch">
-						</div>
+					<l10n class="inset-block-blurb-option col-9" name="notes_blurb_favorite"></l10n>
+					<div class="col-3 px-2 form-check form-switch custom-switch">
+						<input id="notes_favorite" onchange="clientSetNote('notes_favorite')" class="form-check-input" type="checkbox" role="switch">
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-md-6"><div class="border rounded-2 p-3 h-100"><!-- holding -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_holding"></l10n></h5></div>
+			<div class="col-md-6 inset-block"><div><!-- holding -->
+				<l10n class="inset-block-header" name="notes_title_holding"></l10n>
 				<div class="row">
-					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_holding"></l10n></div>
-					<div class="col-3">
-						<div class="form-check form-switch custom-switch">
-							<input id="notes_holding" onchange="clientSetNote('notes_holding')" class="form-check-input" type="checkbox" role="switch">
-						</div>
+					<l10n class="inset-block-blurb-option col-9" name="notes_blurb_holding"></l10n>
+					<div class="col-3 form-check form-switch custom-switch">
+						<input id="notes_holding" onchange="clientSetNote('notes_holding')" class="form-check-input" type="checkbox" role="switch">
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-md-6"><div class="border rounded-2 p-3 h-100"><!-- frozen -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_frozen"></l10n></h5></div>
+			<div class="col-md-6 inset-block"><div><!-- frozen -->
+				<l10n class="inset-block-header" name="notes_title_frozen"></l10n>
 				<div class="row">
-					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_frozen"></l10n></div>
-					<div class="col-3">
-						<div class="form-check form-switch custom-switch">
-							<input id="notes_frozen" onchange="clientSetNote('notes_frozen')" class="form-check-input" type="checkbox" role="switch">
-						</div>
+					<l10n class="inset-block-blurb-option col-9" name="notes_blurb_frozen"></l10n>
+					<div class="col-3 form-check form-switch custom-switch">
+						<input id="notes_frozen" onchange="clientSetNote('notes_frozen')" class="form-check-input" type="checkbox" role="switch">
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-md-6"><div class="border rounded-2 p-3 h-100"><!-- removable -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_removable"></l10n></h5></div>
+			<div class="col-md-6 inset-block"><div><!-- removable -->
+				<l10n class="inset-block-header" name="notes_title_removable"></l10n>
 				<div class="row">
-					<div class="col-9 ps-3 small fst-italic"><l10n name="notes_blurb_removable"></l10n></div>
-					<div class="col-3">
-						<div class="form-check form-switch custom-switch">
-							<input id="notes_removable" onchange="clientSetNote('notes_removable')" class="form-check-input" type="checkbox" role="switch">
-						</div>
+					<l10n class="inset-block-blurb-option col-9" name="notes_blurb_removable"></l10n>
+					<div class="col-3 form-check form-switch custom-switch">
+						<input id="notes_removable" onchange="clientSetNote('notes_removable')" class="form-check-input" type="checkbox" role="switch">
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100" id="multi_version"><!-- version -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_version"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- version -->
+				<l10n class="inset-block-header" name="notes_title_version"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_version"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_version"></l10n>
 					<div class="col-6">
 						<select class="form-select" id="notes_version" onchange="clientSetNote('notes_version')">
 							<option value="22">2022</option>
@@ -191,10 +183,10 @@
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- units -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_units"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- units -->
+				<l10n class="inset-block-header" name="notes_title_units"></l10n>
 				<div class="row gy-2">
-					<div class="col-12 ps-3 small fst-italic"><l10n name="notes_blurb_units"></l10n></div>
+					<l10n class="inset-block-blurb-option col-12 pb-3" name="notes_blurb_units"></l10n>
 
 					<div class="col-4">
 						<l10n name="notes_units_money_title"></l10n>
@@ -236,10 +228,10 @@
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- username -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_username"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- username -->
+				<l10n class="inset-block-header" name="notes_title_username"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_username"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_username"></l10n>
 					<div class="col-6">
 						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_username')" onblur="clientSetNote('notes_username')" type="text" class="form-control form-control-sm" id="notes_username">
 						<div id="notes_username_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_30"></l10n></div>
@@ -247,20 +239,20 @@
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- server search -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_server"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- server search -->
+				<l10n class="inset-block-header" name="notes_title_server"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_server"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_server"></l10n>
 					<div class="col-6">
 						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_server')" onblur="clientSetNote('notes_server')" type="text" class="form-control form-control-sm" id="notes_server">
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- fsg bot -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_fsg_bot"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- fsg bot -->
+				<l10n class="inset-block-header" name="notes_title_fsg_bot"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic">
+					<div class="col-6 inset-block-blurb-option">
 						<l10n name="notes_blurb_fsg_bot"></l10n>
 						<a href="https://fsgmodding.github.io/FSG_Mod_Assistant/fsgbot.html" target="_blank"><l10n name="notes_link_fsg_bot"></l10n></a>
 					</div>
@@ -270,10 +262,10 @@
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- game password -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_password"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- game password -->
+				<l10n class="inset-block-header" name="notes_title_password"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_password"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_password"></l10n>
 					<div class="col-6">
 						<div class="input-group">
 							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_password')" onblur="clientSetNote('notes_password')" type="password" class="form-control form-control-sm" id="notes_password">
@@ -284,23 +276,23 @@
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- website -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_website"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- website -->
+				<l10n class="inset-block-header" name="notes_title_website"></l10n>
 				<div class="row gy-2">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_website"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_website"></l10n>
 					<div class="col-6">
 						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_website')" onblur="clientSetNote('notes_website')" type="text" class="form-control form-control-sm" id="notes_website">
 						<div id="notes_website_feedback" class="invalid-feedback"><l10n name="pref_feedback_bad_url"></l10n></div>
 					</div>
 
-					<div class="col-10 ps-3 small fst-italic"><l10n name="notes_blurb_website_valid"></l10n></div>
+					<l10n class="inset-block-blurb-option col-10" name="notes_blurb_website_valid"></l10n>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
 							<input id="notes_websiteVALID" onchange="clientWebValid()" class="form-check-input" type="checkbox" role="switch" checked="checked">
 						</div>
 					</div>
 
-					<div class="col-10 ps-3 small fst-italic"><l10n name="notes_blurb_website_dl"></l10n></div>
+					<l10n class="inset-block-blurb-option col-10" name="notes_blurb_website_dl"></l10n>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
 							<input id="notes_websiteDL" onchange="clientSetNote('notes_websiteDL')" class="form-check-input" type="checkbox" role="switch">
@@ -309,10 +301,10 @@
 				</div>
 			</div></div>
 
-			<div class="col-12"><div class="border rounded-2 p-3 h-100"><!-- website admin -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_admin"></l10n></h5></div>
+			<div class="col-12 inset-block"><div><!-- website admin -->
+				<l10n class="inset-block-header" name="notes_title_admin"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_admin"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_admin"></l10n>
 					<div class="col-6">
 						<div class="input-group">
 							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_admin')" onblur="clientSetNote('notes_admin')" type="password" class="form-control form-control-sm" id="notes_admin">
@@ -322,10 +314,10 @@
 				</div>
 			</div></div>
 
-			<div class="col-12 pb-3"><div class="border rounded-2 p-3 h-100"><!-- in-game admin -->
-				<div style="margin-top: -2rem;"><h5><l10n class="px-3 bg-body text-info" name="notes_title_game_admin"></l10n></h5></div>
+			<div class="col-12 inset-block mb-3"><div><!-- in-game admin -->
+				<l10n class="inset-block-header" name="notes_title_game_admin"></l10n>
 				<div class="row">
-					<div class="col-6 ps-3 small fst-italic"><l10n name="notes_blurb_game_admin"></l10n></div>
+					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_game_admin"></l10n>
 					<div class="col-6">
 						<div class="input-group">
 							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_game_admin')" onblur="clientSetNote('notes_game_admin')" type="password" class="form-control form-control-sm" id="notes_game_admin">
