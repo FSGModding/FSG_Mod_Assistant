@@ -40,9 +40,7 @@ serveIPC.refFunc = {
 	refreshTransientStatus : refreshTransientStatus,
 }
 
-const win = new (require('./lib/modAssist_window_lib.js')).windowLib( serveIPC.refFunc )
-
-serveIPC.windowLib = win
+serveIPC.windowLib = new (require('./lib/modAssist_window_lib.js')).windowLib()
 serveIPC.log.dangerCallBack = () => { serveIPC.windowLib.toggleMainDangerFlag() }
 
 serveIPC.isModCacheDisabled = false && !(app.isPackaged)
@@ -68,7 +66,7 @@ serveIPC.storeSites       = new Store({name : 'mod_source_site', migrations : se
 serveIPC.storeNote        = new Store({name : 'col_notes', clearInvalidConfig : true})
 serveIPC.storeCacheDetail = new Store({name : 'mod_detail_cache', clearInvalidConfig : true})
 
-win.loadSettings()
+serveIPC.windowLib.loadSettings()
 
 funcLib.general.doModCacheCheck() // Check and upgrade Mod Cache & Mod Detail Cache
 
@@ -79,82 +77,20 @@ serveIPC.modCollect = new modFileCollection( app.getPath('home'), modQueueRunner
     _)(_  )___/( (__ 
    (____)(__)   \___) */
 
-ipcMain.on('toMain_sendMainToTray',   () => { win.sendToTray() })
-ipcMain.on('toMain_runUpdateInstall', () => {
-	if ( serveIPC.modCollect.updateIsReady ) {
-		serveIPC.autoUpdater.quitAndInstall()
-	} else {
-		serveIPC.log.debug('auto-update', 'Auto-Update Called Before Ready.')
-	}
-})
-ipcMain.on('toMain_populateClipboard', (_, text) => { clipboard.writeText(text, 'selection') })
-
-/** File operation buttons */
+// Collection Buttons
 ipcMain.on('toMain_makeInactive', () => { funcLib.gameSet.disable() })
 ipcMain.on('toMain_makeActive',   (_, newList) => { funcLib.gameSet.change(newList) })
 ipcMain.on('toMain_openMods',     (_, mods)    => {
-	const thisFolderAndMod     = serveIPC.modCollect.modColUUIDToFolderAndRecord(mods[0])
+	const thisMod = serveIPC.modCollect.modColUUIDToFolderAndRecord(mods[0])
 
-	if ( thisFolderAndMod.mod !== null ) {
-		shell.showItemInFolder(path.join(thisFolderAndMod.folder, path.basename(thisFolderAndMod.mod.fileDetail.fullPath)))
+	if ( thisMod.mod !== null ) {
+		shell.showItemInFolder(path.join(thisMod.folder, path.basename(thisMod.mod.fileDetail.fullPath)))
 	}
 })
-ipcMain.on('toMain_openHelpSite', () => { shell.openExternal('https://fsgmodding.github.io/FSG_Mod_Assistant/') })
-ipcMain.on('toMain_openHub',      (_, mods) => {
-	const thisMod   = serveIPC.modCollect.modColUUIDToRecord(mods[0])
+// END : Collection Buttons
 
-	if ( thisMod.modHub.id !== null ) {
-		shell.openExternal(funcLib.general.doModHub(thisMod.modHub.id))
-	}
-})
-ipcMain.on('toMain_openExt',      (_, mods) => {
-	const thisMod     = serveIPC.modCollect.modColUUIDToRecord(mods[0])
-	const thisModSite = serveIPC.storeSites.get(thisMod.fileDetail.shortName, null)
-
-	if ( thisModSite !== null ) { shell.openExternal(thisModSite) }
-})
-
-ipcMain.on('toMain_copyFavorites',  () => {
-	const fav = {
-		destinations : [],
-		sourceFiles  : [],
-		sources      : [],
-	}
-
-	const multi_version   = serveIPC.storeSet.get('multi_version')
-	const current_version = serveIPC.storeSet.get('game_version')
-
-	for ( const collectKey of serveIPC.modCollect.collections ) {
-		if ( multi_version && serveIPC.modCollect.versionNotSame(collectKey, current_version) ) { continue }
-
-		fav[serveIPC.storeNote.get(`${collectKey}.notes_favorite`, false) ? 'sources' : 'destinations' ].push(collectKey)
-	}
-
-	for ( const collectKey of fav.sources ) {
-		const thisCollection = serveIPC.modCollect.getModCollection(collectKey)
-		fav.sourceFiles.push(...[...thisCollection.modSet].map((x) => `${collectKey}--${x}`))
-	}
-	
-	if ( fav.sourceFiles.length !== 0 ) {
-		sendCopyMoveDelete('copyFavs', fav.sourceFiles, fav.sources)
-	}
-})
-
-
-
-function sendCopyMoveDelete(operation, modIDS, multiSource = null, fileList = null, isZipImport = false) {
-	if ( modIDS === null || modIDS.length !== 0 ) {
-		win.sendToValidWindow('main', 'fromMain_fileOperation', {
-			isZipImport      : isZipImport,
-			multiSource      : multiSource,
-			operation        : operation,
-			originCollectKey : modIDS !== null ? modIDS[0].split('--')[0] : '',
-			rawFileList      : fileList,
-			records          : modIDS !== null ? serveIPC.modCollect.modColUUIDsToRecords(modIDS) : [],
-		})
-	}
-}
-
+// File & Collection Operations
+ipcMain.on('toMain_copyFavorites',  () => { sendCopyMoveDelete('copyFavs', ...serveIPC.modCollect.getFavoriteCollectionFiles()) })
 ipcMain.on('toMain_deleteMods',     (_, mods) => { sendCopyMoveDelete('delete', mods) })
 ipcMain.on('toMain_moveMods',       (_, mods) => { sendCopyMoveDelete('move', mods) })
 ipcMain.on('toMain_copyMods',       (_, mods) => { sendCopyMoveDelete('copy', mods) })
@@ -170,57 +106,24 @@ ipcMain.on('toMain_realMultiFileCopy', (_, fileMap) => { doFileOperation('copy_m
 ipcMain.on('toMain_realFileImport',    (_, fileMap, unzipMe) => { doFileOperation(unzipMe ? 'importZIP' : 'import', fileMap) })
 ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
 	doFileOperation('copy', fileMap, 'resolve')
-	setTimeout(() => { win.sendModList({}, 'fromMain_modList', 'version', false ) }, 1500)
+	setTimeout(() => { serveIPC.windowLib.sendModList({}, 'fromMain_modList', 'version', false ) }, 1500)
 })
-/** END: File operation buttons */
-
-
-/** Folder Window Operation */
 ipcMain.on('toMain_addFolder_direct', (event, potentialFolder) => {
-	for ( const thisPath of serveIPC.modFolders ) {
-		if ( path.relative(thisPath, potentialFolder) === '' ) {
-			serveIPC.log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
-			return
-		}
-	}
-	const thisFolderCollectKey = serveIPC.modCollect.getFolderHash(potentialFolder)
-
-	serveIPC.modFolders.add(potentialFolder)
-	funcLib.general.toggleFolderDirty()
-
-	funcLib.prefs.saveFolders()
-	serveIPC.storeNote.set(`${thisFolderCollectKey}.notes_version`, 22)
-	serveIPC.storeNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
+	funcLib.processor.addFolderTracking(potentialFolder)
 	event.sender.send( 'fromMain_allSettings', ...funcLib.commonSend.settings() )
 })
-
 ipcMain.on('toMain_addFolder', () => {
-	dialog.showOpenDialog(win.win.main, {
-		properties  : ['openDirectory'],
+	funcLib.general.showFileDialog({
 		defaultPath : serveIPC.path.last ?? app.getPath('home'),
-	}).then((result) => { if ( !result.canceled ) {
-		const potentialFolder = result.filePaths[0]
+		filterAll   : false,
+		
+		callback    : (result) => {
+			const potentialFolder = result.filePaths[0]
 
-		serveIPC.path.last = path.resolve(path.join(potentialFolder, '..'))
-
-		for ( const thisPath of serveIPC.modFolders ) {
-			if ( path.relative(thisPath, potentialFolder) === '' ) {
-				serveIPC.log.log.notice('Add folder :: canceled, already exists in list', 'folder-opts')
-				return
-			}
-		}
-
-		const thisFolderCollectKey = serveIPC.modCollect.getFolderHash(potentialFolder)
-
-		serveIPC.modFolders.add(potentialFolder)
-		funcLib.general.toggleFolderDirty()
-
-		funcLib.prefs.saveFolders()
-		serveIPC.storeNote.set(`${thisFolderCollectKey}.notes_version`, serveIPC.storeSet.get('game_version'))
-		serveIPC.storeNote.set(`${thisFolderCollectKey}.notes_add_date`, new Date())
-		processModFolders()
-	}}).catch((err) => {
-		serveIPC.log.log.danger(`Could not read specified add folder : ${err}`, 'folder-opts')
+			serveIPC.path.last = path.resolve(path.join(potentialFolder, '..'))
+			funcLib.processor.addFolderTracking(potentialFolder)
+			processModFolders()
+		},
 	})
 })
 ipcMain.on('toMain_editFolders',    () => {
@@ -232,16 +135,13 @@ ipcMain.on('toMain_openFolder',     (_, collectKey) => { shell.openPath(serveIPC
 ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	const folder = serveIPC.modCollect.mapCollectionToFolder(collectKey)
 	if ( serveIPC.modFolders.delete(folder) ) {
-		serveIPC.log.log.notice(`Folder removed from tracking ${folder}`, 'folder-opts')
+		serveIPC.log.notice('folder-opts', 'Folder removed from tracking', folder)
 		funcLib.prefs.saveFolders()
-
 		serveIPC.modCollect.removeCollection(collectKey)
-		
-		refreshClientModList(false)
-
 		funcLib.general.toggleFolderDirty()
+		refreshClientModList(false)
 	} else {
-		serveIPC.log.log.warning(`Folder NOT removed from tracking ${folder}`, 'folder-opts')
+		serveIPC.log.warning('folder-opts', 'Folder NOT removed from tracking', folder)
 	}
 })
 ipcMain.on('toMain_reorderFolder', (_, from, to) => {
@@ -259,41 +159,38 @@ ipcMain.on('toMain_reorderFolder', (_, from, to) => {
 
 	refreshClientModList(false)
 })
-
 ipcMain.on('toMain_dropFolder', (_, newFolder) => {
-	if ( ! serveIPC.modFolders.has(newFolder) ) {
-		const thisFolderCollectKey = serveIPC.modCollect.getFolderHash(newFolder)
-
-		serveIPC.modFolders.add(newFolder)
-		funcLib.prefs.saveFolders()
-		serveIPC.storeNote.set(`${thisFolderCollectKey}.notes_version`, serveIPC.storeSet.get('game_version'))
-		processModFolders(true)
-	} else {
-		win.doDialogBox('main', {
-			type        : 'error',
-			messageL10n : 'drop_folder_exists',
-		})
-	}
+	funcLib.processor.addFolderTracking(newFolder)
+	processModFolders()
 })
 ipcMain.on('toMain_dropFiles', (_, files) => {
-	let isZipImport = false
 	if ( files.length === 1 && files[0].endsWith('.csv') ) {
 		new csvFileChecker(files[0]).getInfo().then((results) => {
-			win.createNamedWindow('save', {
+			serveIPC.windowLib.createNamedWindow('save', {
 				collectKey   : null,
 				thisSaveGame : results,
 			})
 		})
 		return
+	} else if ( files.length === 1 && files[0].endsWith('.zip') ) {
+		sendCopyMoveDelete('import', null, null, files, new modPackChecker(files[0]).getInfo())
+	} else {
+		sendCopyMoveDelete('import', null, null, files, false)
 	}
-	if ( files.length === 1 && files[0].endsWith('.zip') ) {
-		isZipImport = new modPackChecker(files[0]).getInfo()
-	}
-
-	sendCopyMoveDelete('import', null, null, files, isZipImport)
 })
-/** END: Folder Window Operation */
-// TODO start here
+function sendCopyMoveDelete(operation, modIDS, multiSource = null, fileList = null, isZipImport = false) {
+	if ( modIDS === null || modIDS.length !== 0 ) {
+		serveIPC.windowLib.sendToValidWindow('main', 'fromMain_fileOperation', {
+			isZipImport      : isZipImport,
+			multiSource      : multiSource,
+			operation        : operation,
+			originCollectKey : modIDS !== null ? modIDS[0].split('--')[0] : '',
+			rawFileList      : fileList,
+			records          : modIDS !== null ? serveIPC.modCollect.modColUUIDsToRecords(modIDS) : [],
+		})
+	}
+}
+// END: File & Collection Operations
 
 // l10n Operations
 ipcMain.on('toMain_langList_change', (_, lang) => {
@@ -493,7 +390,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 		template.push(
 			funcLib.menu.sep,
 			{
-				icon    : win.contextIcons.depend,
+				icon    : serveIPC.windowLib.contextIcons.depend,
 				label   : __('menu_depend_on'),
 				submenu : thisMod.modDesc.depend.map((x) => ( { label : x } )),
 			}
@@ -507,7 +404,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 
 		template.push(
 			{
-				icon    : win.contextIcons.required,
+				icon    : serveIPC.windowLib.contextIcons.required,
 				label   : __('menu_require_by'),
 				submenu : requireBy[thisMod.fileDetail.shortName].map((x) => ({ label : x })),
 			}
@@ -518,7 +415,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 		funcLib.menu.sep,
 		funcLib.menu.iconL10n(
 			'context_set_website',
-			() => { win.sendToWindow('main', 'fromMain_modInfoPop', thisMod, thisSite) },
+			() => { serveIPC.windowLib.sendToWindow('main', 'fromMain_modInfoPop', thisMod, thisSite) },
 			'externalSiteSet'
 		)
 	)
@@ -897,12 +794,34 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 })
 // END: Version window operation */
 
-
 // Common Handlers
 ipcMain.on('toMain_log', (_, level, process, text) => { serveIPC.log[level](text, process) })
 ipcMain.on('toMain_startFarmSim', () => { funcLib.gameLauncher() })
 ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
 ipcMain.on('toMain_openHubByID',    (_, hubID) => { shell.openExternal(funcLib.general.doModHub(hubID)) })
+ipcMain.on('toMain_openHelpSite', () => { shell.openExternal('https://fsgmodding.github.io/FSG_Mod_Assistant/') })
+ipcMain.on('toMain_openHub',      (_, mods) => {
+	const thisMod   = serveIPC.modCollect.modColUUIDToRecord(mods[0])
+
+	if ( thisMod.modHub.id !== null ) {
+		shell.openExternal(funcLib.general.doModHub(thisMod.modHub.id))
+	}
+})
+ipcMain.on('toMain_openExt',      (_, mods) => {
+	const thisMod     = serveIPC.modCollect.modColUUIDToRecord(mods[0])
+	const thisModSite = serveIPC.storeSites.get(thisMod.fileDetail.shortName, null)
+
+	if ( thisModSite !== null ) { shell.openExternal(thisModSite) }
+})
+ipcMain.on('toMain_sendMainToTray',   () => { serveIPC.windowLib.sendToTray() })
+ipcMain.on('toMain_runUpdateInstall', () => {
+	if ( serveIPC.modCollect.updateIsReady ) {
+		serveIPC.autoUpdater.quitAndInstall()
+	} else {
+		serveIPC.log.debug('auto-update', 'Auto-Update Called Before Ready.')
+	}
+})
+ipcMain.on('toMain_populateClipboard', (_, text) => { clipboard.writeText(text, 'selection') })
 
 
 // send status flags to main and mini
@@ -1062,16 +981,6 @@ app.whenReady().then(() => {
 	}
 })
 
-// About panel
-app.setAboutPanelOptions({
-	applicationName    : 'FS Mod Assist',
-	applicationVersion : app.getVersion(),
-	copyright          : '(c) 2022-present FSG Modding',
-	credits            : 'J.T.Sage <jtsage+datebox@gmail.com>',
-	iconPath           : serveIPC.icon.tray,
-	website            : 'https://github.com/FSGModding/FSG_Mod_Assistant',
-})
-
 app.on('window-all-closed', () => {	if (process.platform !== 'darwin') { app.quit() } })
 
 // THREADS
@@ -1094,7 +1003,7 @@ function doModLook_response(m, thisMod, thisUUID) {
 						results : m.modLook,
 					})
 				}
-				win.sendToValidWindow('detail', 'fromMain_lookRecord', m.modLook, serveIPC.l10n.currentUnits, serveIPC.l10n.currentLocale)
+				serveIPC.windowLib.sendToValidWindow('detail', 'fromMain_lookRecord', m.modLook, serveIPC.l10n.currentUnits, serveIPC.l10n.currentLocale)
 
 				serveIPC.log.debug(`worker-thread-${m.pid}`, `To main - modLook :: ${Object.keys(m.modLook.items).length} items`)
 				break
