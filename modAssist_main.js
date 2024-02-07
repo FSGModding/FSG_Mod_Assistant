@@ -839,77 +839,39 @@ function gameLauncher() {
 ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
 /** END: game launcher */
 
-ipcMain.on('toMain_openCompareBase', (_, baseGameItemID) => {
-	if ( win.isValid('compare') && win.isVisible('compare') ) {
-		win.sendToValidWindow('compare', 'fromMain_addBaseItem', baseGameItemID)
-		win.forceFocus('compare')
-	} else {
-		win.createNamedWindow('compare', {}, () => {
-			win.sendToValidWindow('compare', 'fromMain_addBaseItem', baseGameItemID)
-		})
-	}
-})
 
+// Compare window operation
+function compare_base(id) { serveIPC.windowLib.sendToValidWindow('compare', 'fromMain_addBaseItem', id) }
+function compare_mod(content, source) { serveIPC.windowLib.sendToValidWindow('compare', 'fromMain_addModItem', content, source) }
+
+ipcMain.on('toMain_openCompareBase', (_, baseGameItemID) => {
+	serveIPC.windowLib.raiseOrOpen('compare', () => { compare_base(baseGameItemID) })
+})
 ipcMain.on('toMain_openCompareBaseMulti', (_, baseGameItemIDs) => {
-	if ( win.isValid('compare') && win.isVisible('compare') ) {
-		for ( const thisItemID of baseGameItemIDs ) {
-			win.sendToValidWindow('compare', 'fromMain_addBaseItem', thisItemID)
-		}
-		win.forceFocus('compare')
-	} else {
-		win.createNamedWindow('compare', {}, () => {
-			for ( const thisItemID of baseGameItemIDs ) {
-				win.sendToValidWindow('compare', 'fromMain_addBaseItem', thisItemID)
-			}
-		})
-	}
+	serveIPC.windowLib.raiseOrOpen('compare', () => {
+		for ( const thisItemID of baseGameItemIDs ) { compare_base(thisItemID) }
+	})
 })
 ipcMain.on('toMain_openCompareMulti', (_, itemMap, source) => {
-	if ( win.isValid('compare') && win.isVisible('compare') ) {
+	serveIPC.windowLib.raiseOrOpen('compare', () => {
 		for ( const thisItem of itemMap ) {
 			if ( thisItem.internal ) {
-				win.sendToValidWindow('compare', 'fromMain_addBaseItem', thisItem.key)
+				compare_base(thisItem.key)
 			} else {
-				win.sendToValidWindow('compare', 'fromMain_addModItem', thisItem.contents, source)
+				compare_mod(thisItem.contents, source)
 			}
 		}
-		win.forceFocus('compare')
-	} else {
-		win.createNamedWindow('compare', {}, () => {
-			for ( const thisItem of itemMap ) {
-				if ( thisItem.internal ) {
-					win.sendToValidWindow('compare', 'fromMain_addBaseItem', thisItem.key)
-				} else {
-					win.sendToValidWindow('compare', 'fromMain_addModItem', thisItem.contents, source)
-				}
-			}
-		})
-	}
+	})
 })
 ipcMain.on('toMain_openCompareMod', (_, itemContents, source) => {
-	if ( win.isValid('compare') && win.isVisible('compare') ) {
-		win.sendToValidWindow('compare', 'fromMain_addModItem', itemContents, source)
-		win.forceFocus('compare')
-	} else {
-		win.createNamedWindow('compare', {}, () => {
-			setTimeout(() => {
-				win.sendToValidWindow('compare', 'fromMain_addModItem', itemContents, source)
-			}, 250)
-		})
-	}
+	serveIPC.windowLib.raiseOrOpen('compare', () => { compare_mod(itemContents, source) })
 })
-ipcMain.on('toMain_openBaseGame', () => {  win.createNamedWindow('basegame') })
+ipcMain.on('toMain_openBaseGame', () => {  serveIPC.windowLib.createNamedWindow('basegame') })
 ipcMain.on('toMain_openBaseGameDeep', (_, type, page) => {
-	if ( win.isValid('basegame') && win.isVisible('basegame') ) {
-		win.sendToValidWindow('basegame', 'fromMain_forceNavigate', type, page)
-	} else {
-		win.createNamedWindow('basegame')
-		setTimeout(() => {
-			win.sendToValidWindow('basegame', 'fromMain_forceNavigate', type, page)
-		}, 500)
-	}
+	serveIPC.windowLib.raiseOrOpen('basegame', () => {
+		serveIPC.windowLib.sendToValidWindow('basegame', 'fromMain_forceNavigate', type, page)
+	})
 })
-
 ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
 	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', 22))
 
@@ -920,21 +882,12 @@ ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
 	
 	shell.openPath(dataPath)
 })
+// END : Compare window operation
 
 // Find-All window operation
 ipcMain.on('toMain_openFind', () => {  serveIPC.windowLib.createNamedWindow('find') })
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
-	const menu = Menu.buildFromTemplate([
-		funcLib.menu.iconL10n('select_in_main', null, 'mod', {sublabel : thisMod.name} ),
-		funcLib.menu.sep,
-		...thisMod.collect.map((instance) => funcLib.menu.icon(
-			`${instance.name} :: ${instance.version}`,
-			() => {
-				serveIPC.windowLib.sendAndFocusValid('main', 'fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
-			},
-			'sendCheck'
-		))
-	])
+	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 // END : Find-All window operation
