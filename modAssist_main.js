@@ -72,11 +72,6 @@ funcLib.general.doModCacheCheck() // Check and upgrade Mod Cache & Mod Detail Ca
 
 serveIPC.modCollect = new modFileCollection( app.getPath('home'), modQueueRunner )
 
-/*  ____  ____   ___ 
-   (_  _)(  _ \ / __)
-    _)(_  )___/( (__ 
-   (____)(__)   \___) */
-
 // Collection Buttons
 ipcMain.on('toMain_makeInactive', () => { funcLib.gameSet.disable() })
 ipcMain.on('toMain_makeActive',   (_, newList) => { funcLib.gameSet.change(newList) })
@@ -384,7 +379,6 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 		))
 	}
 
-	// TODO - Make the submenu useful
 	const didDepend = Array.isArray(thisMod.modDesc.depend) && thisMod.modDesc.depend.length !== 0
 	if ( didDepend ) {
 		template.push(
@@ -392,12 +386,14 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 			{
 				icon    : serveIPC.windowLib.contextIcons.depend,
 				label   : __('menu_depend_on'),
-				submenu : thisMod.modDesc.depend.map((x) => ( { label : x } )),
+				submenu : thisMod.modDesc.depend.map((x) => ( {
+					click : () => { serveIPC.windowLib.sendToValidWindow('main', 'fromMain_filterOnly', x)},
+					label : x,
+				} )),
 			}
 		)
 	}
 
-	// TODO - Make the submenu useful
 	const requireBy = serveIPC.modCollect.getModCollectionFromDashed(modID).requireBy
 	if ( Object.hasOwn(requireBy, thisMod.fileDetail.shortName) ) {
 		if ( ! didDepend ) { template.push(funcLib.menu.sep) }
@@ -406,7 +402,10 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 			{
 				icon    : serveIPC.windowLib.contextIcons.required,
 				label   : __('menu_require_by'),
-				submenu : requireBy[thisMod.fileDetail.shortName].map((x) => ({ label : x })),
+				submenu : requireBy[thisMod.fileDetail.shortName].map((x) => ({
+					click : () => { serveIPC.windowLib.sendToValidWindow('main', 'fromMain_filterOnly', x)},
+					label : x,
+				})),
 			}
 		)
 	}
