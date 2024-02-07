@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // Main Program
 
-const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, clipboard, nativeImage } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, clipboard } = require('electron')
 
 const isPortable = Object.hasOwn(process.env, 'PORTABLE_EXECUTABLE_DIR')
 const gotTheLock = app.requestSingleInstanceLock()
@@ -33,7 +33,7 @@ class queueEmitter extends EventEmitter {}
 const modQueueRunner = new queueEmitter()
 
 serveIPC.refFunc = {
-	gameLauncher           : gameLauncher,
+	gameLauncher           : funcLib.gameLauncher,
 	processModFolders      : processModFolders,
 	readGameLog            : funcLib.gameSet.readGameLog,
 	refreshClientModList   : refreshClientModList,
@@ -55,8 +55,6 @@ if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable
 }
 
 funcLib.wizard.initMain()
-
-const menuSep       = { type : 'separator' }
 
 const { modFileCollection, modPackChecker, saveFileChecker, savegameTrack, csvFileChecker } = require('./lib/modCheckLib.js')
 
@@ -142,16 +140,7 @@ ipcMain.on('toMain_copyFavorites',  () => {
 	}
 })
 
-function handleCopyMoveDelete(windowName, modIDS, modRecords = null) {
-	if ( modIDS.length !== 0 ) {
-		win.createNamedWindow(windowName, {
-			records          : ( modRecords === null ) ?
-				serveIPC.modCollect.modColUUIDsToRecords(modIDS) :
-				modRecords,
-			originCollectKey : modIDS[0].split('--')[0],
-		})
-	}
-}
+
 
 function sendCopyMoveDelete(operation, modIDS, multiSource = null, fileList = null, isZipImport = false) {
 	if ( modIDS === null || modIDS.length !== 0 ) {
@@ -477,11 +466,12 @@ function doModLook_thread(thisMod, thisUUID) {
 	lookThread.send({ type : 'exit' })
 }
 
-/** Detail window operation */
+
+// Detail window operation
 function openDetailWindow(thisMod) {
 	const thisUUID  = thisMod.uuid
 	const slowStore = thisMod.modDesc.storeItems > 0 && (thisMod.fileDetail.isFolder || !serveIPC.storeCacheDetail.has(thisUUID))
-	win.createNamedWindow(
+	serveIPC.windowLib.createNamedWindow(
 		'detail',
 		{ selected : thisMod, hasStore : slowStore },
 		async () => {
@@ -489,40 +479,34 @@ function openDetailWindow(thisMod) {
 				if ( thisMod.modDesc.storeItems > 0 ) {
 					if ( !thisMod.fileDetail.isFolder && serveIPC.storeCacheDetail.has(thisUUID) ) {
 						const thisCache = serveIPC.storeCacheDetail.get(thisUUID)
-						serveIPC.storeCacheDetail.set(thisUUID, { // refresh data and details
+						serveIPC.storeCacheDetail.set(thisUUID, { // refresh date
 							date    : new Date(),
 							results : thisCache.results,
 						})
-						win.sendToValidWindow('detail', 'fromMain_lookRecord', thisCache.results, serveIPC.l10n.currentUnits, serveIPC.l10n.currentLocale)
-						serveIPC.log.log.info(`Loaded details from cache :: ${thisUUID}`, 'mod-look')
+						serveIPC.windowLib.sendToValidWindow('detail', 'fromMain_lookRecord', thisCache.results, serveIPC.l10n.currentUnits, serveIPC.l10n.currentLocale)
+						serveIPC.log.info('mod-look', 'Loaded details from cache', thisUUID)
 						return
 					}
 					doModLook_thread(thisMod, thisUUID)
 				}
 			} catch (err) {
-				serveIPC.log.log.notice(`Failed to load store items :: ${err}`, 'mod-look')
+				serveIPC.log.notice('mod-look', 'Failed to load store items', err)
 			}
 		}
 	)
 }
-
 ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(serveIPC.modCollect.modColUUIDToRecord(thisMod)) })
-/** END: Detail window operation */
-
-/** Changelog window operation */
-ipcMain.on('toMain_showChangelog', () => { win.createNamedWindow('change') } )
-/** END: Changelog window operation */
+// END : Detail window operation
 
 
-/** Main window context menus */
+// All Context menus
 ipcMain.on('toMain_dragOut', (event, modID) => {
 	const thisMod     = serveIPC.modCollect.modColUUIDToRecord(modID)
 	const thisFolder  = serveIPC.modCollect.modColUUIDToFolder(modID)
-	const iconDataURL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAQAAAD2e2DtAAAOmklEQVR42u3de5AcRRkA8AbyICSHlqRU5KkRKvIyCEJRCmUsAhergoBGy0qE8NKEUqsSCJCExwa0kEcSSAFaWIUQojwDgrwiClYBxVPhzOXgLo/b25nZee3uPHd2Z2d3270jhCQze8zN3s5Od3/fV/xLbqd/09PT/U03wllstphF7GA5vW11/6RnUR8qIJOSzKOeyU/e0adswwouY7vl65TEzCI8DvFWeX55AkaU5hR8mfNRBVMaqKGgtTCu45GOMN05oXA3hy0K299sEUBd7RZRjfbmH0l3Qbblm4U6ANr3RCYa/+OsXyBhHQB8Gs5CgaHmH8nzaSPQAoD6CwIqsQZghIAGAEa6/8Pz7DU/db1AZAD1pxRUYRMAVQQiA3DOk5pcHhtpyKAgtdEecNQQiAqgbE8tBlyYyo/VTeKHg1u4HsKzl+sbfFg8W0X1ZgQoeSOICqCfa9zp+14Ub7FA2RhZWyQij2oCUQE8xzU6yX0uyDS7RttbMsbFRVmqCUQFsFH29wAn5nCZwsnSUQkQPxaICuDhAACnSFTOlg8TEEYloEEPMJKzZGxjDAQAABAAAEAAAAABAEBduIvl5lNDRBLoGIAaNhpJWgWdg6X526jqBToAoIqNt/iUcSX3g8yZwneFM4nKeeLJmeYACJwaih2Aci/3DQWZzTtS0pMwArECcF/mZ8mj3T9QMkIzgNLaIWRBvQCrAJxb0iwVkBFDICYAtSc55EDVELMAcrn9DSgcYxdA6WKRveYnhEAcADgVGWwCIIBADADc25u/+hUb7wU24WmN/m6TcAIxALBmBz8Adi7jUkoqm5IITzEl3SB86SNCy0fbD6DoTnH9F2X6zr4eiuqHHHPw3O2oSiCB9gMQpYn+F8D8hh7qVgoL3SQSaD+Abdx+viHgQVo5gzEQYAJAf0ABeZdbNDFmjUAi1wjaD2Ag6AuCkl7AGAgAACAAAIAAAAACAAAIAADawp47REDVEDEADKw0UiUoNTww/43mVRAJIZB4AJrJ3fefVHEFt6T3F1sX95GUq7d1v4bMhJePJhqA/eLAeT1dPMrSWkiaAALJBZDeeU4vEqBegFEALwwcuJWNkpEO9wLJBPD8YKPbh6ohVgF8MIAG2Soc62AvkDwAdeX4XvZqBztGIHEAvNt6WdyBuGMEEgdAPHiI1QrijhBIGoBNaXZLyDtCIGEArMWZwOpab46Qkq4vrMyTm6n8ldJ+XuIIJAuAyx/6nv+iHOD8TcAatnAJO0Tnzskhvo6+MF4CyQKgOxMKvktSWy7TsQOppEy2wzwIYiWQLABmvct/QYx3snSsD4tSOACxEkgYgGqXfwSg92VYAxDjYnHiAPiPoDM+4NgDEBsBAJBUADGtEQCADgNQ0DsdfSkEAB0GoKFp6J4OEgAAHX8ETEMIPd4xAgCgwwDqaCZCHSQAADoO4OsIdZAAAEgMgM4QAAAJAtAJAgAgUQDiJwAAEgYgbgIAIHEA4iUAABIIIE4CACCRAOIjAAASCiAuAgAgsQDiIQAAEgwgDgIAIL7IBgP4GkIdJAAA4gtJDKwKPhKhDhIAAPFFXptcDmjG2eiz4olRy0cNAEBIOJWuIABvo8+O9U0J1H8i4iIAICOMOcE7nryNFqBvozPQd5rkyWgmav7FtLeCwyUAQEK4v1Oa7x04anqjnkpit/DlBACIM3Yoo+0aFj1PUCOPBABAvMOAH0pt+a649K8cACAiBuX29AELpIhDQQAQc1TWc6g8/gAOMT0AQMpj4GI+4lBwtHQGswCAlLAv4ce9F9A3ZwAAOWH9MTMxP64A7L9IAICkqH6kXC5MKiB3vABskAEAaVHKinfmLh06Ot9Vn+ZOLU91w2SXO83dz7+Lgr0RABAaetUxq7qpGboZJk3TkI9XAQDL4ZwqAgCWw54lAwAAAAAAAAAAAAAAAAAAAAAAAAAA+CTqWMfGOKXe+L8BAJIA1HLrlIuG5mS6+bktZjc/h7toaI3i5QAAMQA46TgBVcZ1la0yMzskAwAyAOiz2lJxd6KcgCNeAcBnx4tKm46bKv1dBQDJB1C52m5L8zdymYldAJB0AMWlersALM0H/TIAkCwAtVv0Np0y7q3WcQ0AJH4MsENC7ekDjH4RxgAkvAVUrh3vl8CR+/+qbKJGAABglHBS/NRC498rI3ccsoyMKdp1PHZgHoCcqWAvp2zi1hjrrLvN1nKdtcZ4glMVXIGZQLLWAugPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFfUXk9vFDfKf5VIyY3yRvGNdEnDVQDQ8mLQ2sz0AtKR1fjrSEoL6V8srM+EXHYCAM3u/t/y7diCLbYs/Z7HHgCIDCDTroKQ+FLPSgAgcknYrVqbSsLiy8qdWohvkQBAYLSxKDS+XGaH2PodAASGu8wiH8ByO8QoAAAEx9Mq0UPAkWHg8wqMAaK/BWjHyGQDOC7cR2gAoFn0y4dJqE5o89eOEreHa0QA0DwKudVSd/pY9Zj8TGLymPyx6tz0LZIR9kN0ADD6dFCjGy1ih6gsNv5mL/QvBACwGAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACYAHBSAIANCgD4NFxcbvxHSpbHuAWNdZJ/Q0xrgwgAhqP0Xz7l3Ghdb9xgkpLXGzdaKecDoQEhXOjn8n4Ar8PJocP3xoIsIrMy0EP6wiy2Qv3Kyu3qvoveU0xXBwDOQpHsgpBFYoiKwOEfqs3Y+5c6D3ChPyuhF8D7EjIJLwkzt4Z8kvPyHLHxa4f7Omt67r6hyDuZUQSguspqw7Hs8Wb1JjP0nqTF94SUk6o+JFlyxLufMgD2VRojZeF7Rqtb2NLUA1xrEVsPuLsucKXVwt3M+hjg9YC/ibC035UwBgBR3wLsuRLZAOZJuAgAWpgHKKvfF1CR0OYvzhEq8R9QRd1MoL5JWVVYkrmC+yVPSl7BLcmsKjytYKMD6wpUrgWUxu3cwPiyhDsTsBrIeAAAAAAAAAAAIC5qtdxTQqq2Ps+1dqANACAy3Je4GSoyUR05Ewu/EqK1IQAg9u7/d3av2Y76/Gzkcw0BAIFhHFbYd2eRF3MAgJl4M2C282IlYh8AAMiLeyX/tZ87iDUAwEi8wPuv/c+kiANB6gBUZPlRfo25zrybmBw+ofAxTgl9QmEpN3nfHRGrD+ZDbDDJAABnJX/g8MmhLmFZRsaB2qqwZ5RW7+eQs+c1OkXEBRgENu7+qwWiN4utrBBC9gLOTRwq7Kp/Kp6VzcuRnyc0Adgm+f8l0jaLHsyGbIDqFvGG/JXp5cpjOay3MKCgabPomw3iN4v2btXH8CyvjuyHBmsBu4KdzaLHMygCULma/M2i69fYY9gvEADsHS+pqEQ4AOcVGWMAEPUtwPgW4ZtFny61sK4HADAWpBOyqELqS+AsQYr7/qdwJjB3l7ooc06mm59LTHbz52QuyaxXcfxF4ZSuBRhEZmcCFoMYDwBAcFieY3qNvqMKANiLymvyEv6ofJdzNrc+i/MAgK0o/4FDn+6G4J0u2AoAYCjezaF9Zj0vkEPvMQYAiA/7Uv9n8DYPO4UyE8YZ/n0Czadgn0B2eoATAraKfRC2imUHwDdhs2i2AcBu4c2j6pm9mc2Zl/l/EpMv85szWzOeGXpCBwA0DeeBzBHDVcEE5lGFB8Pu9wkAmoS3jt+7XJq0cpB7wu34CwCCIysj0qsCdUUCAFEB1O/QiC0G+STduwoAICoAZynpXwV8XBVcBgDRAJSXmeQDWF4M8W0QAAiOJ1RUJhxA6RkFHgHR3wK0IxSyAXxVCfWVPwBoFv+TDyGYwHSlL1wjJgHAhgAAp4qdnwnkc9cKp/FfMQ83jyQmDzcPNU/nr8sKYauCkwDgEdEPYIYeNIKNfS2gjA3XrbgeMVlxXRcbYyjoSAKAV4f8zbp/aSBgGmM7D4tBFC4GiUHf4dWPk3eIDcvOnlkZ8M/PAQDiAdScowtBA5lJ5mV8Krcqv3JXpvKXSv6v9gEA8QCw85sWDmkEAOQDwL1q9COaAAAFAHBxnggAWAaARSXqpkwAgAoAuPp4xAIMAEAHgMZQ8LZ0FAIAgBYADQJ/zoy9DgcA0AOg8SB4U5wtj20hFgDQBGA4jGfEedJBFjIBAJsARv6svPKokHJX5pZL1+zOlPTzLKoCABYAfBw1XMQWtnenVe6HxSCWAPhiuwCLQUwDgG8DAQAAAAAAAAAAADYB9AcA6HKLJgBg5S2A298HYIpWygAARgBIykT/clH+/h4AwAiAojvF9U8GT935bk/QBsmfAwC0AcDW2cGVQ+lfZ1JmqpDSd6e2QptcBwC0AXDXSE1P83JRaa8MWlMEAIQDwFm1pfP8AADpALB7uQgAWAaADXWCDgAYBoDrz/KRj3QDABQAwNi5YzDiFm4AgAoADQL3pZEJANgFgHHlVeE0ecxbuQEAagAMh/on/uThL4o8AMAmgOGqQbOHv9lYmv1R+ty9DlCcl5kjHAAzgdQD+CQsrPsOT9QPhrUAZgAEzRjhLugBWAZg1gAAAAAAAAAAAAAAAAAAAAAYAbAFAOzzAn1KwMmhD1MBoD7VPxOobc1Am+8V5RNzAT2ARAGAsvcF/6Kx+5AEbb5nVPWpRX8/+RxHAQBsnMH5VwOOLlgCrkHD7wp9sRCwkmIP8DQAsJeoQQtCx+bukd4f7Mv0cCznFu7DwSfFC9Wg9dRptmvTAAA/km+y25CHNDIPhBzX1Jrtznq+hItUAPDUaQXyj36KPStPq7hOBQDs3SiiGjTp2PKIXKizhogAgN3C5/PQpGM7a2wzH/H+TyIAXH9FiFxBzGQuFEIeOk0IAIxLd6WJPgQ61pwtRe7+EwsAY2dtOvppBAxlbW4Wq61NviYTQGMo8A9uhgrDwdHPGl8hBH1iP1YAiY2St9r+sgcNHZQT8U/L77jjcZURzjb6gCTm8Dna+fLOR3ac9SZ6FcnIhGxkAfVOeubm/sw2LOMSLrZ8lbP/B+Ro6OtM+T86AAAAAElFTkSuQmCC'
 
 	event.sender.startDrag({
 		file : path.join(thisFolder, path.basename(thisMod.fileDetail.fullPath)),
-		icon : nativeImage.createFromDataURL(iconDataURL),
+		icon : serveIPC.windowLib.contextIcons.fileCopy,
 	})
 })
 ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) => {
@@ -534,67 +518,61 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 	const isLog     = thisMod.badgeArray.includes('log')
 
 	const template = [
-		{
-			label : thisMod.fileDetail.shortName,
-			icon  : win.contextIcons.mod,
-		},
-		menuSep,
+		funcLib.menu.icon(thisMod.fileDetail.shortName, null, 'mod'),
+		funcLib.menu.sep,
 	]
 
 	if ( !isSave && !notMod && !isLog ) {
-		template.push({
-			click : () => { openDetailWindow(thisMod) },
-			icon  : win.contextIcons.modDetail,
-			label : __('context_mod_detail'),
-		})
+		template.push(funcLib.menu.iconL10n(
+			'context_mod_detail',
+			() => { openDetailWindow(thisMod) },
+			'modDetail'
+		))
 	} else if ( isLog ) {
-		template.push({
-			click : () => {
+		template.push(funcLib.menu.iconL10n(
+			'button_gamelog__title',
+			() => {
 				funcLib.gameSet.loadGameLog(thisPath)
-				win.createNamedWindow('gamelog')
+				serveIPC.windowLib.createNamedWindow('gamelog')
 			},
-			icon  : win.contextIcons.log,
-			label : __('button_gamelog__title'),
-		})
+			'log'
+		))
 	} else if ( isSave ) {
 		const subMenu = [...serveIPC.modCollect.collections]
 			.filter((x) => serveIPC.modCollect.versionSame(x, 22))
-			.map((collectKey) => ({
+			.map(   (collectKey) => ({
 				label : serveIPC.modCollect.mapCollectionToName(collectKey),
 				click : () => {
-					win.createNamedWindow('save', { collectKey : collectKey })
+					serveIPC.windowLib.createNamedWindow('save', { collectKey : collectKey })
 					setTimeout(() => { saveCompare_read(thisPath, thisMod.fileDetail.isFolder) }, 250)
 				},
 			}))
 
-		template.push({
-			icon    : win.contextIcons.save,
-			label   : __('check_save_text'),
-			submenu : subMenu,
-		})
+		template.push(funcLib.menu.iconL10n('check_save_text', null, 'save', { submenu : subMenu }))
 	}
 
 	template.push(
-		menuSep,
-		{
-			click : () => { shell.showItemInFolder(thisPath) },
-			icon  : win.contextIcons.openExplorer,
-			label : __('open_folder'),
-		}
+		funcLib.menu.sep,
+		funcLib.menu.iconL10n(
+			'open_folder',
+			() => { shell.showItemInFolder(thisPath) },
+			'openExplorer'
+		)
 	)
 	
 	if ( thisMod.modHub.id !== null ) {
-		template.push({
-			click : () => { shell.openExternal(funcLib.general.doModHub(thisMod.modHub.id)) },
-			icon  : win.contextIcons.externalSite,
-			label : __('open_hub'),
-		})
+		template.push(funcLib.menu.iconL10n(
+			'open_hub',
+			() => { shell.openExternal(funcLib.general.doModHub(thisMod.modHub.id)) },
+			'externalSite'
+		))
 	}
 
+	// TODO - Make the submenu useful
 	const didDepend = Array.isArray(thisMod.modDesc.depend) && thisMod.modDesc.depend.length !== 0
 	if ( didDepend ) {
 		template.push(
-			menuSep,
+			funcLib.menu.sep,
 			{
 				icon    : win.contextIcons.depend,
 				label   : __('menu_depend_on'),
@@ -603,9 +581,10 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 		)
 	}
 
+	// TODO - Make the submenu useful
 	const requireBy = serveIPC.modCollect.getModCollectionFromDashed(modID).requireBy
 	if ( Object.hasOwn(requireBy, thisMod.fileDetail.shortName) ) {
-		if ( ! didDepend ) { template.push(menuSep) }
+		if ( ! didDepend ) { template.push(funcLib.menu.sep) }
 
 		template.push(
 			{
@@ -617,150 +596,91 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 	}
 
 	template.push(
-		menuSep,
-		{
-			click : () => { win.sendToWindow('main', 'fromMain_modInfoPop', thisMod, thisSite) },
-			icon  : win.contextIcons.externalSiteSet,
-			label : __('context_set_website'),
-		}
+		funcLib.menu.sep,
+		funcLib.menu.iconL10n(
+			'context_set_website',
+			() => { win.sendToWindow('main', 'fromMain_modInfoPop', thisMod, thisSite) },
+			'externalSiteSet'
+		)
 	)
 
 	if ( thisSite !== '' ) {
-		template.push({
-			click : () => { shell.openExternal(thisSite) },
-			icon  : win.contextIcons.externalSite,
-			label : __('context_open_website'),
-		})
+		template.push(funcLib.menu.iconL10n(
+			'context_open_website',
+			() => { shell.openExternal(thisSite) },
+			'externalSite'
+		))
 	}
 
 	template.push(
-		menuSep,
-		{
-			click : () => { handleCopyMoveDelete('confirmCopy', [modID], [thisMod]) },
-			icon  : win.contextIcons.fileCopy,
-			label : __('copy_to_list'),
-		},
-		{
-			click : () => { handleCopyMoveDelete('confirmMove', [modID], [thisMod]) },
-			icon  : win.contextIcons.fileMove,
-			label : __('move_to_list'),
-		},
-		{
-			click : () => { handleCopyMoveDelete('confirmDelete', [modID], [thisMod]) },
-			icon  : win.contextIcons.fileDelete,
-			label : __('remove_from_list'),
-		}
+		funcLib.menu.sep,
+		funcLib.menu.iconL10n('copy_to_list', () => { sendCopyMoveDelete('copy', [modID]) }, 'fileCopy'),
+		funcLib.menu.iconL10n('move_to_list', () => { sendCopyMoveDelete('move', [modID]) }, 'fileMove'),
+		funcLib.menu.iconL10n('remove_from_list', () => { sendCopyMoveDelete('delete', [modID]) }, 'fileDelete')
 	)
 
 	if ( modIDs.length !== 0 ) {
 		template.push(
-			menuSep,
-			{
-				click : () => {
-					if (isHoldingPen) {
-						handleCopyMoveDelete('confirmMultiCopy', modIDs)
-					}  else {
-						handleCopyMoveDelete('confirmCopy', modIDs)
-					}
-				},
-				icon  : win.contextIcons.fileCopy,
-				label : __('copy_selected_to_list'),
-			},
-			{
-				click : () => {
-					if (isHoldingPen) {
-						handleCopyMoveDelete('confirmMultiMove', modIDs)
-					}  else {
-						handleCopyMoveDelete('confirmMove', modIDs)
-					}
-				},
-				icon  : win.contextIcons.fileMove,
-				label : __('move_selected_to_list'),
-			},
-			{
-				click : () => { handleCopyMoveDelete('confirmDelete', modIDs) },
-				icon  : win.contextIcons.fileDelete,
-				label : __('remove_selected_from_list'),
-			}
+			funcLib.menu.sep,
+			funcLib.menu.iconL10n(
+				'copy_selected_to_list',
+				() => { sendCopyMoveDelete(isHoldingPen ? 'multiCopy' : 'copy', modIDs) },
+				'fileCopy'
+			),
+			funcLib.menu.iconL10n(
+				'move_selected_to_list',
+				() => { sendCopyMoveDelete(isHoldingPen ? 'multiMove' : 'move', modIDs) },
+				'fileMove'
+			),
+			funcLib.menu.iconL10n(
+				'remove_selected_from_list',
+				() => { sendCopyMoveDelete('delete', modIDs) },
+				'fileDelete'
+			)
 		)
 	}
 
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-
 ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
-	const subLabel  = serveIPC.modCollect.mapCollectionToFullName(collection)
-	const colFolder = serveIPC.modCollect.mapCollectionToFolder(collection)
-	const template  = [
-		{
-			icon     : win.contextIcons.collection,
-			label    : __('context_main_title').padEnd(subLabel.length, ' '),
-			sublabel : subLabel,
-		},
-		menuSep,
-		{
-			click   : () => { funcLib.gameSet.change(collection) },
-			enabled : (colFolder !== serveIPC.gameSetOverride.folder),
-			icon    : win.contextIcons.active,
-			label   : __('list-active'),
-		},
-		menuSep,
-		{
-			click : () => { shell.openPath(serveIPC.modCollect.mapCollectionToFolder(collection))},
-			icon  : win.contextIcons.openExplorer,
-			label : __('open_folder'),
-		}
-	]
+	const template  = funcLib.menu.page_main_col(collection)
 
-	const noteMenu = ['username', 'password', 'website', 'admin', 'server']
-		.map((x) => [x, serveIPC.storeNote.get(`${collection}.notes_${x}`, null)])
+	const noteMenu = ['username', 'password', 'game_admin', 'website', 'admin', 'server']
+		.map(   (x) => [x, serveIPC.storeNote.get(`${collection}.notes_${x}`, null)])
 		.filter((x) => x[1] !== null )
-		.map((x) => ({
-			label : `${__('context_main_copy')} : ${__(`notes_title_${x[0]}`)}`,
-			icon  : win.contextIcons.copy,
-			click : () => { clipboard.writeText(x[1], 'selection') },
-		}))
+		.map(   (x) => (funcLib.menu.icon(
+			`${__('context_main_copy')} : ${__(`notes_title_${x[0]}`)}`,
+			() => { clipboard.writeText(x[1], 'selection') },
+			'copy'
+		)))
 
 	if ( noteMenu.length !== 0 ) {
-		template.push(menuSep, ...noteMenu)
+		template.push(funcLib.menu.sep, ...noteMenu)
 	}
 	
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 ipcMain.on('toMain_notesContextMenu', async (event) => {
-	const template  = [
-		{ role : 'cut',   label : __('context_cut'), icon : win.contextIcons.cut },
-		{ role : 'copy',  label : __('context_copy'), icon : win.contextIcons.copy },
-		{ role : 'paste', label : __('context_paste'), icon : win.contextIcons.paste },
-	]
-
-	const menu = Menu.buildFromTemplate(template)
+	const menu = Menu.buildFromTemplate(funcLib.menu.snip_cut_copy_paste())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
 ipcMain.on('toMain_logContextMenu', async (event) => {
-	const template  = [
-		{ role : 'copy', label : __('context_copy'), icon : win.contextIcons.copy },
-	]
-
-	const menu = Menu.buildFromTemplate(template)
+	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-/** END: Main window context menus */
+ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
+	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
+// END : Context Menus
 
 
-/** Game log window operation */
+// Game log window operation
 ipcMain.on('toMain_openGameLog',       () => {
-	if ( serveIPC.watch.log === null ) {
-		if ( serveIPC.storeSet.get('game_log_file') === null ) {
-			const gameSettingsFileName = funcLib.prefs.verGet('game_settings', serveIPC.storeSet.get('game_version'))
-			serveIPC.storeSet.set('game_log_file', path.join(path.dirname(gameSettingsFileName), 'log.txt'))
-		}
-		funcLib.gameSet.loadGameLog()
-	}
-
-	win.createNamedWindow('gamelog')
+	serveIPC.windowLib.createNamedWindow('gamelog')
+	if ( serveIPC.watch.log === null ) { funcLib.gameSet.loadGameLog() }
 })
 ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(funcLib.prefs.gameLogFile()) })
 ipcMain.on('toMain_getGameLog',        () => { funcLib.gameSet.readGameLog() })
@@ -777,68 +697,30 @@ ipcMain.on('toMain_clearGameLog',      () => {
 	try {
 		fs.writeFileSync(thisGameLog, '')
 	} catch (err)  {
-		serveIPC.log.log.danger(`Could not clear specified log : ${err}`, 'game-log')
+		serveIPC.log.danger('game-log', 'Could not clear specified log', err)
 	}
 	funcLib.gameSet.readGameLog()
 })
 ipcMain.on('toMain_changeGameLog',     () => {
-	dialog.showOpenDialog(win.win.prefs, {
-		properties  : ['openFile'],
+	funcLib.general.showFileDialog({
 		defaultPath : path.join(serveIPC.path.setFolder, 'log.txt'),
-		filters     : [
-			{ name : 'Log Files', extensions : ['txt'] },
-			{ name : 'All', extensions : ['*'] },
-		],
-	}).then((result) => {
-		if ( ! result.canceled ) {
+		extraFilter : { name : 'Log Files', extensions : ['txt'] },
+		isFolder    : false,
+		parent      : 'gamelog',
+
+		callback : (result) => {
 			funcLib.gameSet.loadGameLog(result.filePaths[0])
 			funcLib.gameSet.readGameLog()
-		}
-	}).catch((err) => {
-		serveIPC.log.log.danger(`Could not read specified log : ${err}`, 'game-log')
+		},
 	})
 })
+// END : Game log window operation
 
-/** END: Game log window operation */
-
-/** Debug window operation */
-ipcMain.on('toMain_openDebugLog',    () => { win.createNamedWindow('debug') })
+// Debug window operation
+ipcMain.on('toMain_openDebugLog',    () => { serveIPC.windowLib.createNamedWindow('debug') })
 ipcMain.on('toMain_openDebugFolder', () => { shell.showItemInFolder(serveIPC.log.pathToLog) })
 ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_debugLog', serveIPC.log.htmlLog) })
-/** END: Debug window operation */
-
-/** Game launcher */
-function gameLauncher() {
-	const launchLog      = serveIPC.log.group('game-launcher')
-	const currentVersion = serveIPC.storeSet.get('game_version')
-	const gameArgs       = funcLib.prefs.verGet('game_args', currentVersion)
-	const progPath       = funcLib.prefs.verGet('game_path', currentVersion)
-	if ( progPath !== '' && fs.existsSync(progPath) ) {
-		win.loading.open('launch')
-		win.loading.noCount()
-		win.loading.hide(3500)
-
-		try {
-			const child = require('node:child_process').spawn(progPath, gameArgs.split(' '), { detached : true, stdio : ['ignore', 'ignore', 'ignore'] })
-
-			child.on('error', (err) => { launchLog.danger(`Game launch failed ${err}!`) })
-			child.unref()
-		} catch (err) {
-			launchLog.danger(`Game launch failed: ${err}`)
-		}
-	} else {
-		const dialogOpts = {
-			type    : 'info',
-			title   : __('launcher_error_title'),
-			message : __('launcher_error_message'),
-		}
-		dialog.showMessageBox(null, dialogOpts)
-		launchLog.warning('Game path not set or invalid!')
-	}
-}
-ipcMain.on('toMain_startFarmSim', () => { gameLauncher() })
-/** END: game launcher */
-
+// END : Debug window operation
 
 // Compare window operation
 function compare_base(id) { serveIPC.windowLib.sendToValidWindow('compare', 'fromMain_addBaseItem', id) }
@@ -884,13 +766,10 @@ ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
 })
 // END : Compare window operation
 
-// Find-All window operation
-ipcMain.on('toMain_openFind', () => {  serveIPC.windowLib.createNamedWindow('find') })
-ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
-	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
-	menu.popup(BrowserWindow.fromWebContents(event.sender))
-})
-// END : Find-All window operation
+// One-off window types.
+ipcMain.on('toMain_showChangelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
+ipcMain.on('toMain_openFind',      () => { serveIPC.windowLib.createNamedWindow('find') })
+// END : One-off window types.
 
 // Mini-mode operation
 ipcMain.on('toMain_toggleMiniPin', () => { serveIPC.windowLib.toggleAlwaysOnTop('mini'); refreshClientModList() })
@@ -1072,8 +951,6 @@ function saveCompare_open(zipMode = false) {
 }
 // END: Savegame compare window operation
 
-
-
 // Version window operation
 ipcMain.on('toMain_versionCheck',    () => { serveIPC.windowLib.createNamedWindow('version') })
 ipcMain.on('toMain_refreshVersions', () => { serveIPC.windowLib.sendModList({}, 'fromMain_modList', 'version', false ) } )
@@ -1103,6 +980,7 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 
 
 // Common Handlers
+ipcMain.on('toMain_startFarmSim', () => { funcLib.gameLauncher() })
 ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
 ipcMain.on('toMain_openHubByID',    (_, hubID) => { shell.openExternal(funcLib.general.doModHub(hubID)) })
 
@@ -1213,19 +1091,18 @@ app.whenReady().then(() => {
 			funcLib.menu.textL10n('app_name', () => { serveIPC.windowLib.win.main.show() }),
 			funcLib.menu.sep,
 			funcLib.menu.textL10n('mini_mode_button__title', () => { toggleMiniWindow() }),
-			funcLib.menu.textL10n('launch_game', () => { gameLauncher() }),
+			funcLib.menu.textL10n('launch_game', () => { funcLib.gameLauncher() }),
 			funcLib.menu.textL10n('tray_quit', () => { serveIPC.windowLib.win.main.close() }),
 		]))
 
 		funcLib.modHub.refresh()
 
-		serveIPC.interval.modHub = setInterval(() => {
-			funcLib.modHub.refresh()
-		}, (6 * 60 * 60 * 1000))
+		// 6 hour timer on refresh
+		serveIPC.interval.modHub = setInterval(() => { funcLib.modHub.refresh() }, (216e5))
 
 		app.on('second-instance', (_, argv) => {
 			// Someone tried to run a second instance, we should focus our window.
-			if ( argv.includes('--start-game') ) { gameLauncher() }
+			if ( argv.includes('--start-game') ) { funcLib.gameLauncher() }
 			if ( serveIPC.windowLib.isValid('main') ) {
 				if ( serveIPC.windowLib.win.main.isMinimized() || !serveIPC.windowLib.win.main.isVisible() ) { serveIPC.windowLib.win.main.show() }
 				serveIPC.windowLib.win.main.focus()
