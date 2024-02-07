@@ -254,3 +254,22 @@ tr.mod-list-row td:first-child input { display: none; }
 	background-color: rgba(var(--bs-success-rgb), 0.6);
 	border-color: var(--bs-border-color);
 }
+
+l10n[name="app_name"] i {
+	font-size: calc(1.6rem + .6vw);
+	vertical-align: -0.08em;
+	padding-right: 0.2em;
+}
+
+l10n[name="game_icon"] i {
+	float: left!important;
+	font-size: 20px;
+	margin-right: 4px;
+	margin-top: -4px;
+}
+
+l10n[name="game_icon_lg"] i {
+	display: inline-block!important;
+	margin: -30px 0px;
+	font-size: 75px;
+}

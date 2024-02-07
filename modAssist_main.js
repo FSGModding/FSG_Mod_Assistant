@@ -293,21 +293,15 @@ ipcMain.on('toMain_dropFiles', (_, files) => {
 	sendCopyMoveDelete('import', null, null, files, isZipImport)
 })
 /** END: Folder Window Operation */
+// TODO start here
 
-/** Logging Operation */
-ipcMain.on('toMain_log', (_, level, process, text) => { serveIPC.log.log[level](text, process) })
-/** END: Logging Operation */
-
-/** l10n Operation */
+// l10n Operations
 ipcMain.on('toMain_langList_change', (_, lang) => {
 	serveIPC.l10n.currentLocale = lang
 	serveIPC.storeSet.set('force_lang', serveIPC.l10n.currentLocale)
-	win.refreshL10n(serveIPC.l10n.currentLocale)
+	serveIPC.windowLib.refreshL10n(serveIPC.l10n.currentLocale)
 })
-
-ipcMain.on('toMain_themeList_change', (_, theme) => { win.changeTheme(theme) })
-
-
+ipcMain.on('toMain_themeList_change', (_, theme) => { serveIPC.windowLib.changeTheme(theme) })
 ipcMain.on('toMain_langList_send',   (event) => {
 	serveIPC.l10n.getLangList().then((langList) => {
 		event.sender.send('fromMain_langList_return', langList, serveIPC.l10n.currentLocale)
@@ -321,17 +315,15 @@ ipcMain.on('toMain_themeList_send',   (event) => {
 			['light',  __('theme_name_light')],
 			['dark',   __('theme_name_dark')],
 		],
-		win.themeCurrentColor
+		serveIPC.windowLib.themeCurrentColor
 	)
 })
-
-ipcMain.on('toMain_getText_sync', (event, l10nSet) => {
-	event.returnValue = l10nSet.map((x) => ({ x : __(x) }))
-})
+ipcMain.on('toMain_getText_sync',   (event, l10nSet) => { event.returnValue = l10nSet.map((x) => ({ x : __(x) })) })
 ipcMain.on('toMain_getText_locale', (event) => { event.returnValue = serveIPC.l10n.currentLocale })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
-	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return', [entry, text]) }
-	const doTitle   = serveIPC.storeSet.get('show_tooltips', true)
+	const sendEntry  = (entry, text) => { returnL10n(event, entry, text) }
+	const doTitle    = serveIPC.storeSet.get('show_tooltips', true)
+	const curVersion = serveIPC.storeSet.get('game_version')
 
 	sendEntry('__currentLocale__', serveIPC.l10n.currentLocale)
 
@@ -339,64 +331,33 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 		switch ( l10nEntry ) {
 			case 'app_name':
 				serveIPC.l10n.stringLookup(l10nEntry).then((text) => {
-					sendEntry(l10nEntry, `<i style="font-size: calc(1.6rem + .6vw); vertical-align: -0.08em; padding-right: 0.2em;" class="fsico-ma-large"></i>${text}`)
+					sendEntry(l10nEntry, `<i class="fsico-ma-large"></i>${text}`)
 				})
 				break
 			case 'app_version' :
-				sendEntry(l10nEntry, app.getVersion())
-				break
+				sendEntry(l10nEntry, app.getVersion()); break
 			case 'game_icon' :
-				sendEntry(
-					l10nEntry,
-					`<i class="fsico-ver-${serveIPC.storeSet.get('game_version')} float-start" style="font-size: 20px; margin-right: 4px; margin-top: -4px;"></i>`
-				)
-				break
+				sendEntry(l10nEntry, `<i class="fsico-ver-${curVersion}"></i>`); break
 			case 'game_icon_lg' :
-				sendEntry(
-					l10nEntry,
-					`<i class="d-inline-block fsico-ver-${serveIPC.storeSet.get('game_version')}" style="margin: -30px 0px; font-size: 75px;"></i>`
-				)
-				serveIPC.l10n.stringTitleLookup(l10nEntry).then((text) => {
-					if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
-				})
-				break
-			case 'game_version' :
-				if ( serveIPC.storeSet.get('multi_version') || serveIPC.storeSet.get('game_version') !== 22 ) {
-					serveIPC.l10n.stringLookup(`mod_badge_fs${serveIPC.storeSet.get('game_version')}`).then((text) => {
-						sendEntry(l10nEntry, text)
-					})
-				} else {
-					sendEntry(l10nEntry, '')
-				}
+				sendEntry(l10nEntry, `<i class="fsico-ver-${curVersion}"></i>`)
+				serveIPC.l10n.stringTitleLookup(l10nEntry).then((text) => { returnL10n(event, l10nEntry, text, 'title') })
 				break
 			case 'clean_cache_size' : {
 				try {
 					const cacheSize = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json')).size/(1024*1024)
 					const iconSize  = fs.statSync(path.join(app.getPath('userData'), 'mod_icons.json')).size/(1024*1024)
-					sendEntry(
-						l10nEntry,
-						`${__(l10nEntry)} ${cacheSize.toFixed(2)}MB / ${iconSize.toFixed(2)}MB`
-					)
+					sendEntry(l10nEntry, `${__(l10nEntry)} ${cacheSize.toFixed(2)}MB / ${iconSize.toFixed(2)}MB` )
 				} catch {
-					sendEntry(
-						l10nEntry,
-						`${__(l10nEntry)} 0.00MB`
-					)
+					sendEntry(l10nEntry, `${__(l10nEntry)} 0.00MB`)
 				}
 				break
 			}
 			case 'clean_detail_cache_size' : {
 				try {
 					const cacheSize = fs.statSync(path.join(app.getPath('userData'), 'mod_detail_cache.json')).size/(1024*1024)
-					sendEntry(
-						l10nEntry,
-						`${__(l10nEntry)} ${cacheSize.toFixed(2)}MB`
-					)
+					sendEntry(l10nEntry, `${__(l10nEntry)} ${cacheSize.toFixed(2)}MB` )
 				} catch {
-					sendEntry(
-						l10nEntry,
-						`${__(l10nEntry)} 0.00MB`
-					)
+					sendEntry( l10nEntry, `${__(l10nEntry)} 0.00MB`)
 				}
 				break
 			}
@@ -404,7 +365,7 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 				serveIPC.l10n.stringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
 				if ( doTitle ) {
 					serveIPC.l10n.stringTitleLookup(l10nEntry).then((text) => {
-						if ( text !== null ) { event.sender.send('fromMain_getText_return_title', [l10nEntry, text]) }
+						returnL10n(event, l10nEntry, text, 'title')
 					})
 				}
 				break
@@ -412,59 +373,17 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	}
 })
 ipcMain.on('toMain_getTextBase_send', (event, l10nSet) => {
-	const sendEntry = (entry, text) => { event.sender.send('fromMain_getText_return_base', [entry, text]) }
-
-	for ( const l10nEntry of l10nSet ) {
-		serveIPC.l10n.baseStringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
-	}
-})
-/** END: l10n Operation */
-
-function doModLook_response(m, thisMod, thisUUID) {
-	if ( Object.hasOwn(m, 'type') ) {
-		switch (m.type) {
-			case 'log' :
-				serveIPC.log.log[m.level](m.data.join(' '), `worker-thread-${m.pid}`)
-				break
-			case 'modLook' : {
-				for ( const logLine of m.logLines.items ) {
-					serveIPC.log.log[logLine[0]](logLine[1], m.logLines.group)
-				}
-
-				if ( ! thisMod.isFolder ) {
-					serveIPC.storeCacheDetail.set(thisUUID, {
-						date    : new Date(),
-						results : m.modLook,
-					})
-				}
-				win.sendToValidWindow('detail', 'fromMain_lookRecord', m.modLook, serveIPC.l10n.currentUnits, serveIPC.l10n.currentLocale)
-
-				serveIPC.log.log.debug(`Sent(got) modLook :: ${Object.keys(m.modLook.items).length} items`, `worker-thread-${m.pid}`)
-				break
-			}
-			default :
-				break
+	serveIPC.l10n.baseStringGroup(l10nSet).then((returnGroup) => {
+		for ( const thisReturn of returnGroup ) {
+			returnL10n(event, thisReturn[0], thisReturn[1], 'base')
 		}
-	}
-}
-
-function doModLook_thread(thisMod, thisUUID) {
-	const lookThread = require('node:child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
-		23,
-		serveIPC.decodePath,
-		serveIPC.l10n.deferCurrentLocale(),
-		serveIPC.__('unit_hp')
-	])
-	lookThread.on('message', (m) => { doModLook_response(m, thisMod, thisUUID) })
-	lookThread.send({
-		type : 'look',
-		data : {
-			modRecord  : thisMod,
-			searchPath : serveIPC.modCollect.modColUUIDToFolder(thisMod.colUUID),
-		},
 	})
-	lookThread.send({ type : 'exit' })
+})
+function returnL10n(event, key, value, extra = null) {
+	if ( value === null ) { return }
+	event.sender.send(`fromMain_getText_return${extra !== null ? `_${extra}` : ''}`, [key, value])
 }
+// END: l10n Operations
 
 
 // Detail window operation
@@ -980,6 +899,7 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 
 
 // Common Handlers
+ipcMain.on('toMain_log', (_, level, process, text) => { serveIPC.log[level](text, process) })
 ipcMain.on('toMain_startFarmSim', () => { funcLib.gameLauncher() })
 ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
 ipcMain.on('toMain_openHubByID',    (_, hubID) => { shell.openExternal(funcLib.general.doModHub(hubID)) })
@@ -1153,3 +1073,52 @@ app.setAboutPanelOptions({
 })
 
 app.on('window-all-closed', () => {	if (process.platform !== 'darwin') { app.quit() } })
+
+// THREADS
+
+// ModLook Threading
+function doModLook_response(m, thisMod, thisUUID) {
+	if ( Object.hasOwn(m, 'type') ) {
+		switch (m.type) {
+			case 'log' :
+				serveIPC.log[m.level](`worker-thread-${m.pid}`, m.data.join(' '))
+				break
+			case 'modLook' : {
+				for ( const logLine of m.logLines.items ) {
+					serveIPC.log[logLine[0]](m.logLines.group, logLine[1])
+				}
+
+				if ( ! thisMod.isFolder ) {
+					serveIPC.storeCacheDetail.set(thisUUID, {
+						date    : new Date(),
+						results : m.modLook,
+					})
+				}
+				win.sendToValidWindow('detail', 'fromMain_lookRecord', m.modLook, serveIPC.l10n.currentUnits, serveIPC.l10n.currentLocale)
+
+				serveIPC.log.debug(`worker-thread-${m.pid}`, `To main - modLook :: ${Object.keys(m.modLook.items).length} items`)
+				break
+			}
+			default :
+				break
+		}
+	}
+}
+function doModLook_thread(thisMod, thisUUID) {
+	const lookThread = require('node:child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
+		23,
+		serveIPC.decodePath,
+		serveIPC.l10n.deferCurrentLocale(),
+		serveIPC.__('unit_hp')
+	])
+	lookThread.on('message', (m) => { doModLook_response(m, thisMod, thisUUID) })
+	lookThread.send({
+		type : 'look',
+		data : {
+			modRecord  : thisMod,
+			searchPath : serveIPC.modCollect.modColUUIDToFolder(thisMod.colUUID),
+		},
+	})
+	lookThread.send({ type : 'exit' })
+}
+// END : ModLook Threading
