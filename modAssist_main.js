@@ -921,31 +921,23 @@ ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
 	shell.openPath(dataPath)
 })
 
-/** Find window operation */
-ipcMain.on('toMain_openFind', () => {  win.createNamedWindow('find') })
+// Find-All window operation
+ipcMain.on('toMain_openFind', () => {  serveIPC.windowLib.createNamedWindow('find') })
 ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
-	const template = [
-		{ label : __('select_in_main'), sublabel : thisMod.name, icon : win.contextIcons.mod },
-		menuSep,
-	]
-	for ( const instance of thisMod.collect ) {
-		template.push({
-			label : `${instance.name} :: ${instance.version}`,
-			icon  : win.contextIcons.sendCheck,
-			click : () => {
-				if ( serveIPC.windowLib.isValid('main') ) {
-					serveIPC.windowLib.win.main.focus()
-					serveIPC.windowLib.sendToValidWindow('main', 'fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
-				}
+	const menu = Menu.buildFromTemplate([
+		funcLib.menu.iconL10n('select_in_main', null, 'mod', {sublabel : thisMod.name} ),
+		funcLib.menu.sep,
+		...thisMod.collect.map((instance) => funcLib.menu.icon(
+			`${instance.name} :: ${instance.version}`,
+			() => {
+				serveIPC.windowLib.sendAndFocusValid('main', 'fromMain_selectOnlyFilter', instance.fullId, thisMod.name)
 			},
-		})
-	}
-	
-	const menu = Menu.buildFromTemplate(template)
+			'sendCheck'
+		))
+	])
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-/** END : Find window operation*/
-// TODO - finished after here
+// END : Find-All window operation
 
 // Mini-mode operation
 ipcMain.on('toMain_toggleMiniPin', () => { serveIPC.windowLib.toggleAlwaysOnTop('mini'); refreshClientModList() })
@@ -1004,7 +996,7 @@ function openWizard() {
 				currentLocale          : serveIPC.l10n.currentLocale,
 				devControls            : serveIPC.devControls,
 				folders                : [...serveIPC.modFolders],
-				wizardSettings         : serveIPC.wizard.getSettings(),
+				wizardSettings         : funcLib.wizard.getSettings(),
 			},
 			'fromMain_modList',
 			'setup',
@@ -1265,11 +1257,11 @@ app.whenReady().then(() => {
 		serveIPC.windowLib.tray.setToolTip('FSG Mod Assist')
 		serveIPC.windowLib.tray.on('click', () => { serveIPC.windowLib.win.main.show() })
 		serveIPC.windowLib.tray.setContextMenu(Menu.buildFromTemplate([
-			funcLib.menu.build('app_name', () => { serveIPC.windowLib.win.main.show() }),
+			funcLib.menu.textL10n('app_name', () => { serveIPC.windowLib.win.main.show() }),
 			funcLib.menu.sep,
-			funcLib.menu.build('mini_mode_button__title', () => { toggleMiniWindow() }),
-			funcLib.menu.build('launch_game', () => { gameLauncher() }),
-			funcLib.menu.build('tray_quit', () => { serveIPC.windowLib.win.main.close() }),
+			funcLib.menu.textL10n('mini_mode_button__title', () => { toggleMiniWindow() }),
+			funcLib.menu.textL10n('launch_game', () => { gameLauncher() }),
+			funcLib.menu.textL10n('tray_quit', () => { serveIPC.windowLib.win.main.close() }),
 		]))
 
 		funcLib.modHub.refresh()
