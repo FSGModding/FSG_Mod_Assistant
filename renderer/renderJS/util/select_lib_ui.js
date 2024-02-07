@@ -8,7 +8,7 @@
 
 /* es lint complexity: ["warn", 20]*/
 /* exported select_lib */
-/* global fsgUtil searchStringMap searchTagMap */
+/* global fsgUtil mainState */
 
 const select_lib = {
 	last_alt_hash     : false,
@@ -257,7 +257,7 @@ const select_lib = {
 		const returnArray = []
 		for ( const thisElement of tags ) {
 			const thisTag = thisElement.id.split('__')[1]
-			returnArray.push(...searchTagMap[thisTag])
+			returnArray.push(...mainState.searchTagMap[thisTag])
 		}
 		return new Set(returnArray)
 	},
@@ -271,8 +271,8 @@ const select_lib = {
 			if ( thisTag === 'selected' ) {
 				// Shortcut when filter on selected
 				return selectList
-			} else if ( Object.hasOwn(searchTagMap, thisTag) ) {
-				fullArrays.push(searchTagMap[thisTag])
+			} else if ( Object.hasOwn(mainState.searchTagMap, thisTag) ) {
+				fullArrays.push(mainState.searchTagMap[thisTag])
 			}
 		}
 
@@ -326,7 +326,7 @@ const select_lib = {
 
 			if ( searchTerm.length < 2 ) { continue }
 
-			const modText = searchStringMap[modRowUUID]
+			const modText = mainState.searchStringMap[modRowUUID]
 			const showMe  = ( inverseSearch ) ? !modText.match(searchTerm) : modText.match(searchTerm)
 
 			if ( !showMe ) {
