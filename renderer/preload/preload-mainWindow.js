@@ -143,6 +143,7 @@ contextBridge.exposeInMainWorld(
 				'fromMain_debugLogDangerFlag',
 				'fromMain_dirtyUpdate',
 				'fromMain_fileOperation',
+				'fromMain_filterOnly',
 				'fromMain_gameUpdate',
 				'fromMain_modInfoPop',
 				'fromMain_modList',

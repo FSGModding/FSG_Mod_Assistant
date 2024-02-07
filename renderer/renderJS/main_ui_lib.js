@@ -189,11 +189,11 @@ const mainLib = {
 
 		return `<span class="text-body-emphasis">${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}</span>`
 	},
-	getSearchString : (thisMod) => {([
+	getSearchString : (thisMod) => ([
 		thisMod.fileDetail.shortName,
 		thisMod.l10n.title,
 		thisMod.modDesc.author
-	].join(' ').toLowerCase())},
+	].join(' ').toLowerCase()),
 
 	getFilterButton : ( name, isHide = false ) => {
 		const id     = `${isHide ? 'tag_filter_out__' : 'tag_filter__'}${name}`

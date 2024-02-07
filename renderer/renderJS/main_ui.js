@@ -31,13 +31,20 @@ window.mods.receive('fromMain_selectOnly', (selectList) => {
 	select_lib.click_only(tableID, checkList)
 })
 
+window.mods.receive('fromMain_filterOnly', (filterText) => {
+	select_lib.out_tag_reset()
+	select_lib.tag_reset()
+	select_lib.filter_post(filterText)
+	select_lib.click_all()
+})
+
 window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
 	const tableID = `${selectMod.split('--')[0]}_mods`
 	const checkList = [`${selectMod}__checkbox`]
 	
 	select_lib.close_all(tableID)
 	select_lib.click_only(tableID, checkList)
-	select_lib.filter_begin(tableID, filterText)
+	select_lib.filter_post(filterText)
 })
 
 window.mods.receive('fromMain_dirtyUpdate', (status) => { mainState.toggleDirtyUpdate(status) })
