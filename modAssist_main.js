@@ -124,6 +124,7 @@ ipcMain.on('toMain_addFolder', () => {
 ipcMain.on('toMain_editFolders',    () => {
 	serveIPC.isFoldersEdit = ! serveIPC.isFoldersEdit
 	refreshClientModList(false)
+	if ( ! serveIPC.isFoldersEdit ) { processModFolders() }
 })
 ipcMain.on('toMain_refreshFolders', () => { processModFolders(true) })
 ipcMain.on('toMain_openFolder',     (_, collectKey) => { shell.openPath(serveIPC.modCollect.mapCollectionToFolder(collectKey)) })

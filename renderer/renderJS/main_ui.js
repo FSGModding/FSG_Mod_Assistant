@@ -29,6 +29,8 @@ window.mods.receive('fromMain_selectOnly', (selectList) => {
 
 	select_lib.close_all(tableID)
 	select_lib.click_only(tableID, checkList)
+	fsgUtil.byId('tag_filter__selected').checked = true
+	
 })
 
 window.mods.receive('fromMain_filterOnly', (filterText) => {
@@ -346,10 +348,12 @@ window.addEventListener('DOMContentLoaded', () => {
 		fsgUtil.byId('fileOpCanvas').querySelector('.offcanvas-body').scrollTop = 0
 	})
 	fsgUtil.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
+		dragLib.preventRun = false
 		fsgUtil.clearTooltips()
 	})
 	fsgUtil.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
 		fsgUtil.byId('prefcanvas').querySelector('.offcanvas-body').scrollTop = 0
+		dragLib.preventRun = true
 		prefLib.update()
 	})
 	window.addEventListener('hidden.bs.collapse', () => { select_lib.click_none() })

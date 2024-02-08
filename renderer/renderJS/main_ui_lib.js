@@ -799,12 +799,14 @@ const fileOpLib = {
 const dragLib = {
 	isFolder  : false,
 	isRunning : false,
+	preventRun : false,
 
 	dragDrop : (e) => {
 		e.preventDefault()
 		e.stopPropagation()
 	
 		if ( fileOpLib.isRunning ) { return }
+		if ( dragLib.preventRun ) { return }
 		
 		dragLib.isRunning = false
 	
@@ -832,6 +834,7 @@ const dragLib = {
 		e.stopPropagation()
 	
 		if ( fileOpLib.isRunning ) { return }
+		if ( dragLib.preventRun ) { return }
 
 		if ( !dragLib.isRunning ) {
 			fsgUtil.clsShow('drag_back')
@@ -888,6 +891,8 @@ const dragLib = {
 	dragOut : (e) => {
 		e.preventDefault()
 		e.stopPropagation()
+
+		if ( dragLib.preventRun ) { return }
 	
 		const thePath = e.composedPath()
 	
