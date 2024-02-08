@@ -49,6 +49,9 @@
 			background-color:rgba(66, 66, 66, 0.273);
 		}
 
+		.border-savegame { border-color: rgba(0,0,0,0.5) !important; }
+		[data-bs-theme=dark] .border-savegame { border-color: rgba(255,255,255,0.5) !important; }
+
 		.scroll_col, .scroll_mod { width: 6px; }
 
 		#display_mod_container { margin-top: 10.9rem; }
@@ -885,7 +888,7 @@
 </template>
 
 <template id="collect_row">
-	<tr class="mod-table-folder" oncontextmenu="window.mods.openCText('{{id}}')">
+	<tr class="mod-table-folder" id="{{id}}__parent" oncontextmenu="window.mods.openCText('{{id}}')">
 		<td class="folder-icon collapsed" {{bootstrap_data}}>
 			<div class="badge rounded-pill bg-primary bg-gradient float-start" style="width: 2.1rem; height: 1rem; margin-bottom: -1rem; font-size: 0.5em; transform: translateY(-20%)!important">{{totalCount}}</div>
 			{{folderSVG}}

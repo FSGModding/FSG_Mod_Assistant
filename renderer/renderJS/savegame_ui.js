@@ -141,7 +141,9 @@ const updateSelectList = (thisModDetail, thisUUID) => {
 }
 
 
+
 const buildSaveInfo = () => {
+	const detailSend = { collectKey : thisCollection, modList : {} }
 	const modCollect = cacheSaveGame
 	const savegame   = modCollect.opts.thisSaveGame
 	const isCSV      = savegame.mapMod === 'csvLoaded'
@@ -196,9 +198,11 @@ const buildSaveInfo = () => {
 
 		updateSelectList(thisModDetail, haveModSet?.[thisMod]?.uuid ?? null)
 
+		detailSend.modList[thisMod] = thisModDetail
 		modSetHTML.push(makeLine(thisMod, thisModDetail, savegame.singleFarm, modCollect.modHub.list.mods[thisMod]))
 	}
 
+	window.mods.cacheDetails(detailSend)
 	fsgUtil.setById('modList', modSetHTML)
 
 	final_count()

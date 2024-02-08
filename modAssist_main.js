@@ -749,6 +749,10 @@ ipcMain.on('toMain_openSaveDrop',   (_, type, thisPath) => {
 	if ( type !== 'zip' && !fs.statSync(thisPath).isDirectory() ) { return }
 	saveCompare_read(thisPath, type !== 'zip')
 })
+ipcMain.on('toMain_saveCompareCacheSet', (_, payload) => {
+	serveIPC.cacheGameSave = payload
+	refreshClientModList()
+})
 
 function saveCompare_read(thisPath, isFolder) {
 	try {
@@ -858,6 +862,7 @@ function refreshClientModList(closeLoader = true) {
 	serveIPC.windowLib.sendModList(
 		{
 			activeCollection       : serveIPC.gameSetOverride.index,
+			cacheGameSave          : serveIPC.cacheGameSave,
 			currentLocale          : serveIPC.l10n.currentLocale,
 			devControls            : serveIPC.devControls,
 			foldersDirty           : serveIPC.isFoldersDirty,
