@@ -144,7 +144,11 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					const thisModEntry = makeModRow(
 						thisMod.colUUID,
 						thisMod,
-						mainLib.getBadgeHTML(thisMod),
+						mainLib.getBadgeHTML(
+							thisMod,
+							modCollect.opts.cacheGameSave?.modList?.[thisMod.fileDetail.shortName],
+							modCollect.opts.cacheGameSave?.collectKey === collectKey
+						),
 						thisMod.modHub.id,
 						modCollect.appSettings.game_version,
 						Object.hasOwn(modCollect.opts.modSites, thisMod.fileDetail.shortName)
@@ -203,19 +207,24 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	select_lib.new_tag_reset()
 	select_lib.clear_range()
 
-	try {
-		select_lib.open_table(lastOpenID)
-
-		if ( lastOpenQ !== '' ) {
-			select_lib.filter_begin(lastOpenID, lastOpenQ)
-		}
-		window.scrollTo(0, scrollStart)
-	} catch { /* Don't Care */ }
+	openCurrentTable(lastOpenID, lastOpenQ, scrollStart, modCollect.opts.cacheGameSave?.collectKey)
 
 	select_lib.filter_begin()
 	processL10N()
 })
 
+function openCurrentTable(lastOpenID, lastOpenQ, scrollStart, cacheKey) {
+	try {
+		const thisTable = typeof cacheKey !== 'undefined' ? `${cacheKey}_mods` : lastOpenID
+		const thisScroll = typeof cacheKey !== 'undefined' ? fsgUtil.byId(`${cacheKey}__parent`).offsetTop : scrollStart
+		select_lib.open_table(thisTable)
+
+		if ( lastOpenQ !== '' ) {
+			select_lib.filter_begin(thisTable, lastOpenQ)
+		}
+		document.querySelector('body').scrollTo(0, thisScroll)
+	} catch { /* Don't Care */ }
+}
 // Main Interface builders
 
 const makeModCollection = (data) => fsgUtil.useTemplate('collect_row', {

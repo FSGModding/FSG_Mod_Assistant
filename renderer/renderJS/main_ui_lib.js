@@ -107,14 +107,28 @@ const mainLib = {
 		return 0
 	},
 
-	getBadgeHTML    : (thisMod) => {
+	getBadgeHTML    : (thisMod, extraBadge = null, showExtras = false) => {
 		const displayBadges = []
 		
-		if ( !Array.isArray(thisMod.displayBadges ) ) { return '' }
-	
-		for ( const badge of thisMod.displayBadges ) {
-			displayBadges.push(fsgUtil.badge_main(badge))
-			mainState.add_searchTagMap(badge[0], thisMod.colUUID)
+		if ( showExtras ) {
+			if ( extraBadge?.isUsed ) {
+				displayBadges.push(fsgUtil.badge('success bg-gradient border-savegame', 'savegame_isused', true ))
+			} else {
+				displayBadges.push(fsgUtil.badge('danger bg-gradient border-savegame', 'savegame_unused', true ))
+			}
+
+			if ( extraBadge?.isLoaded ) {
+				displayBadges.push(fsgUtil.badge('success bg-gradient border-savegame', 'savegame_isloaded', true ))
+			} else {
+				displayBadges.push(fsgUtil.badge('danger bg-gradient border-savegame', 'savegame_inactive', true ))
+			}
+		}
+		
+		if ( Array.isArray(thisMod.displayBadges ) ) {
+			for ( const badge of thisMod.displayBadges ) {
+				displayBadges.push(fsgUtil.badge_main(badge))
+				mainState.add_searchTagMap(badge[0], thisMod.colUUID)
+			}
 		}
 		return displayBadges.join('')
 	},

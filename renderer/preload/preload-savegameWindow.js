@@ -50,6 +50,8 @@ contextBridge.exposeInMainWorld(
 		popClipboard   : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
 		selectInMain   : (list)  => { ipcRenderer.send('toMain_selectInMain', list)},
 
+		cacheDetails   : (content) => ipcRenderer.send('toMain_saveCompareCacheSet', content),
+
 		receive      : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_collectionName',
