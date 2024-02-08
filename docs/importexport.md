@@ -28,6 +28,12 @@ You will be presented with a dialog where you can choose to copy the files to on
 
 ![drag in confirm](img340/drag-drop-import.png)
 
+### Drag-and-Drop Import Package
+
+If you have exported a mod collection (or part of one), those ZIP files are specially detected by Mod Assistant and will unzip their contents on import.
+
+![drag in confirm](img340/drag-drop-import-zip.png)
+
 ## Export
 
 To copy mods out of a collection, you also have 2 options - export as a ZIPped archive, or drag-and-drop

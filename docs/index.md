@@ -18,6 +18,7 @@ At it's core functionality, this is a file manager, and it has the ability to ed
 
 Please note that this documentation is auto-generated, and may refer to a newer version than you currently have.  If things look a little different, rest assured that you will soon have the features mentioned
 
+- [First Time Setup](wizard.html)
 - [Main Interface Overview](main.html)
 - [Filter Tools](filter.html)
 - [Collection Area](mods.html)

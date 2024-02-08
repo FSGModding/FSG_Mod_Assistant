@@ -14,7 +14,7 @@ The dark blue button labeled with <i class="bi bi-journal-text"></i> will open t
 
 Right clicking on a collection will bring up a context menu where you can copy most of the detail data to the clipboard.
 
-![--](img340/right-click-collection.webp)
+![--](img340/context-collection.png)
 
 ## Editing Collection Details
 
