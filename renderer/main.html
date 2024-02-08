@@ -146,6 +146,7 @@
 			background-position: bottom 0px left 30px !important;
 			background-blend-mode: multiply !important;
 		}
+		.fake-disable { opacity: .65;}
 	</style>
 	
 </head>
@@ -211,25 +212,15 @@
 								<span id="filter_clear" onclick="actionLib.clearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:calc( 50% - 10px);"></span>
 							</div>
 						</div>
+
 						<div class="col col-auto">
 							<div class="dropdown">
 								<button type="button" class="btn btn-sm btn-primary pe-3 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-									<l10n name="filter_out_badges"></l10n>
-									<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-body-secondary shadow text-body" id="tag_filter_out_count">0</span>
+									<l10n name="tag_filter_button"></l10n>
+									<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-body-secondary shadow text-body" id="tag_filter_full_count">&nbsp;</span>
 								</button>
-								<div class="dropdown-menu px-0 py-0 mt-1">
-									<div id="filter_out__tags" class="btn-group-vertical btn-group-sm w-100"></div>
-								</div>
-							</div>
-						</div>
-						<div class="col col-auto">
-							<div class="dropdown">
-								<button type="button" class="btn btn-sm btn-primary pe-3 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-									<l10n name="filter_badges"></l10n>
-									<span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-body-secondary shadow text-body" id="tag_filter_count">0</span>
-								</button>
-								<div class="dropdown-menu px-0 py-0 mt-1">
-									<div id="filter__tags" class="btn-group-vertical btn-group-sm w-100"></div>
+								<div class="dropdown-menu dropdown-menu-end" style="min-width: 25vw">
+									<div id="filter_new_style" class="px-2 py-0"></div>
 								</div>
 							</div>
 						</div>

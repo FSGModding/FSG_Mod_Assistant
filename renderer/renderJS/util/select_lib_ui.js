@@ -255,23 +255,17 @@ const select_lib = {
 	},
 	filter_getFilterHides : (tags) => {
 		const returnArray = []
-		for ( const thisElement of tags ) {
-			const thisTag = thisElement.id.split('__')[1]
+		for ( const thisTag of tags ) {
 			returnArray.push(...mainState.searchTagMap[thisTag])
 		}
 		return new Set(returnArray)
 	},
 	filter_getFilterShows : (tags) => {
 		const fullArrays  = []
-		const selectList  = new Set(fsgUtil.queryA('.mod-row-checkbox:checked').map((x) => x.id))
 		let   finalArray  = []
 
-		for ( const thisElement of tags ) {
-			const thisTag = thisElement.id.split('__')[1]
-			if ( thisTag === 'selected' ) {
-				// Shortcut when filter on selected
-				return selectList
-			} else if ( Object.hasOwn(mainState.searchTagMap, thisTag) ) {
+		for ( const thisTag of tags ) {
+			if ( Object.hasOwn(mainState.searchTagMap, thisTag) ) {
 				fullArrays.push(mainState.searchTagMap[thisTag])
 			}
 		}
@@ -284,6 +278,7 @@ const select_lib = {
 
 		return new Set(finalArray)
 	},
+	filter_parse : (element) => element.id.split('__')[2],
 	filter_post : (forceValue = false) => {
 		select_lib.update_scroll()
 
@@ -291,19 +286,18 @@ const select_lib = {
 			fsgUtil.valueById('filter_input', forceValue)
 		}
 
-		const tagHiders     = fsgUtil.query('[id*="tag_filter_out__"]:checked')
-		const tagLimit      = fsgUtil.query('[id*="tag_filter__"]:checked')
+		const onlySelected  = fsgUtil.byId('tag_filter__selected').checked
+		const tagHidden     = fsgUtil.queryA('.tag_filter__hide:checked').map((x) => select_lib.filter_parse(x))
+		const tagOnly       = fsgUtil.queryA('.tag_filter__exclusive:checked').map((x) => select_lib.filter_parse(x))
 		const theseMods     = select_lib.get_visible_mods()
 		const rawSearchTerm = fsgUtil.valueByIdLC('filter_input')
 		const inverseSearch = rawSearchTerm.startsWith('!')
 		const searchTerm    = ( inverseSearch ) ? rawSearchTerm.substring(1) : rawSearchTerm
 
-		fsgUtil.setById('tag_filter_count', tagLimit.length)
-		fsgUtil.setById('tag_filter_out_count', tagHiders.length)
 		fsgUtil.clsHideTrue('filter_clear', rawSearchTerm === '')
 
-		const hideUUIDByTags = select_lib.filter_getFilterHides(tagHiders)
-		const showUUIDByTags = select_lib.filter_getFilterShows(tagLimit)
+		const hideUUIDByTags = select_lib.filter_getFilterHides(tagHidden)
+		const showUUIDByTags = select_lib.filter_getFilterShows(tagOnly)
 
 		for ( const modRow of theseMods ) {
 			const modRowUUID = modRow.id
@@ -312,13 +306,19 @@ const select_lib = {
 
 			if ( modRow.querySelector('.mod-row-checkbox').checked ) { continue }
 
-			if ( tagHiders.length !== 0 && hideUUIDByTags.has(modRowUUID) ) {
+			if ( onlySelected ) {
 				select_lib.scroll_hide(modRowUUID)
 				modRow.classList.add('d-none')
 				continue
 			}
 
-			if ( tagLimit.length !== 0 && ! showUUIDByTags.has(modRowUUID) ) {
+			if ( tagHidden.length !== 0 && hideUUIDByTags.has(modRowUUID) ) {
+				select_lib.scroll_hide(modRowUUID)
+				modRow.classList.add('d-none')
+				continue
+			}
+
+			if ( tagOnly.length !== 0 && ! showUUIDByTags.has(modRowUUID) ) {
 				select_lib.scroll_hide(modRowUUID)
 				modRow.classList.add('d-none')
 				continue
@@ -345,17 +345,6 @@ const select_lib = {
 		}
 	},
 	
-	out_tag_reset : () => {
-		fsgUtil.checkChangeAll(fsgUtil.query('.filter_out_tag_buttons:checked', false))
-		
-		select_lib.filter_begin()
-	},
-	tag_reset : () => {
-		fsgUtil.checkChangeAll(fsgUtil.query('.filter_tag_buttons:checked', false))
-
-		select_lib.filter_begin()
-	},
-	
 
 	change_count      : ( newCount ) => {
 		fsgUtil.setById('select_quantity', newCount)
@@ -368,5 +357,66 @@ const select_lib = {
 	},
 	get_visible_mods  : () => {
 		return fsgUtil.byId('mod-collections').querySelectorAll('.collapse.show .mod-row')
+	},
+
+	new_tag_fake_disable : (id) => {
+		fsgUtil.queryF(`label[for="tag_filter__show__${id}"]`).classList.remove('fake-disable')
+		fsgUtil.queryF(`label[for="tag_filter__hide__${id}"]`).classList.remove('fake-disable')
+	},
+
+	new_tag : (action, id) => {
+		const newValue    = fsgUtil.byId(`tag_filter__${action}__${id}`).checked
+		const wasDisabled = fsgUtil.queryF(`label[for="tag_filter__show__${id}"]`).classList.contains('fake-disable')
+		
+		if ( action === 'hide' ) {
+			select_lib.new_tag_fake_disable(id)
+			fsgUtil.byId(`tag_filter__show__${id}`).checked = !newValue
+			fsgUtil.byId(`tag_filter__exclusive__${id}`).checked = false
+		} else if ( action === 'show' ) {
+			select_lib.new_tag_fake_disable(id)
+			fsgUtil.byId(`tag_filter__exclusive__${id}`).checked = false
+			if ( wasDisabled ) {
+				fsgUtil.byId(`tag_filter__hide__${id}`).checked = false
+				fsgUtil.byId(`tag_filter__show__${id}`).checked = true
+			} else {
+				fsgUtil.byId(`tag_filter__hide__${id}`).checked = !newValue
+			}
+		} else if ( newValue ) {
+			fsgUtil.queryF(`label[for="tag_filter__show__${id}"]`).classList.add('fake-disable')
+			fsgUtil.queryF(`label[for="tag_filter__hide__${id}"]`).classList.add('fake-disable')
+			fsgUtil.byId(`tag_filter__show__${id}`).checked = true
+			fsgUtil.byId(`tag_filter__hide__${id}`).checked = false
+		} else {
+			select_lib.new_tag_fake_disable(id)
+			fsgUtil.byId(`tag_filter__show__${id}`).checked = true
+			fsgUtil.byId(`tag_filter__hide__${id}`).checked = false
+		}
+
+		const countOnly = fsgUtil.query('.tag_filter__exclusive:checked').length
+		const countHide = fsgUtil.query('.tag_filter__hide:checked').length
+
+		fsgUtil.clsOrGate(
+			'tag_filter_full_count',
+			countHide === 0 && countOnly === 0,
+			'bg-body-secondary',
+			'bg-danger'
+		)
+		select_lib.filter_begin()
+	},
+	new_tag_reset : () => {
+		const allHide = fsgUtil.query('.tag_filter__hide')
+		const allShow = fsgUtil.query('.tag_filter__show')
+		const allOnly = fsgUtil.query('.tag_filter__exclusive')
+		fsgUtil.clsRemoveFromAll('.fake-disable', 'fake-disable')
+		for ( const element of allHide ) { element.checked = false }
+		for ( const element of allShow ) { element.checked = true }
+		for ( const element of allOnly ) { element.checked = false }
+		fsgUtil.clsOrGate(
+			'tag_filter_full_count',
+			true,
+			'bg-body-secondary',
+			'bg-danger'
+		)
+		select_lib.filter_begin()
 	},
 }
