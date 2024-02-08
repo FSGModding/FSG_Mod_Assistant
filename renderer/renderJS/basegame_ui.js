@@ -297,9 +297,10 @@ function buildSearchTree () {
 	}
 }
 
-function setPageInfo(title, content, { button_comp = false, button_folder = false } = {}) {
+function setPageInfo(title, content, { button_comp = false, button_folder = false, button_comp_all = false } = {}) {
 	fsgUtil.clsShowTrue('folderButton', button_folder)
 	fsgUtil.clsShowTrue('compareButton', button_comp)
+	fsgUtil.clsShowTrue('compareAllButton', button_comp_all)
 	fsgUtil.clsShowTrue('back_button', history.length > 1)
 
 	fsgUtil.setById('bgContent', content)
@@ -337,6 +338,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	const pageType      = urlParams.get('type')
 	const pageID        = urlParams.get('page')
 
+	window.comp_all_list = []
 	chartUnits = window.l10n.getText_sync(['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp'])
 
 	switch (pageType) {
@@ -351,9 +353,16 @@ window.addEventListener('DOMContentLoaded', () => {
 			const catL10n      = isVehicleCat ? client_BGData.catMap_vehicle[pageID] : client_BGData.catMap_place[pageID]
 			const catContent   = ((isVehicleCat ? client_BGData.byCat_vehicle[catL10n] : client_BGData.byCat_placeable[catL10n]) ?? []).sort()
 
+			if ( isVehicleCat ) {
+				window.comp_all_list = catContent
+			}
+
 			setPageInfo(
 				`<l10nBase name="${catL10n}"></l10nBase>`,
-				dtLib.wrap.row(catContent.sort().map((x) => dtLib.wrap.item(x)))
+				dtLib.wrap.row(catContent.sort().map((x) => dtLib.wrap.item(x))),
+				{
+					button_comp_all : isVehicleCat,
+				}
 			)
 			break
 		}
@@ -456,6 +465,12 @@ function clientOpenCompare(forcePageID = null) {
 	const pageID        = new URLSearchParams(window.location.search).get('page')
 
 	window.mods.openCompareBase(forcePageID !== null ? forcePageID : pageID)
+}
+
+function clientOpenCompareAll() {
+	if ( typeof window.comp_all_list !== 'undefined' && window.comp_all_list !== 0) {
+		window.mods.openCompareBaseMulti([...window.comp_all_list])
+	}
 }
 
 function clientOpenCombos() {
