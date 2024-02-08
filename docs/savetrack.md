@@ -12,4 +12,4 @@ The tool for comparing a savegame to a collection is located in the top set of b
 
 Load a savegame using the button.  Only local save folders are supported for this tool.  If backup saves exist, and they use the same map, you will be shown the differences in the mod sets
 
-![Alt text](img340/savetrack-002.webp)
+![Alt text](img340/save-tracker.png)

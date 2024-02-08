@@ -16,6 +16,10 @@ To edit your user preferences, click on the  <i class="bi bi-gear"></i> icon loc
 
 The changelog window is the popup when first starting a new version of Mod Assistant.  Hit this button to read it again.
 
+### Setup Wizard
+
+Re-open and re-run all or part of the [setup wizard](wizard.html)
+
 ### Giants LED
 
 If you purchased the collectors edition, or the Giants LED beacon light separately, this will enable Mod Assistant to use it for some visual feedback.

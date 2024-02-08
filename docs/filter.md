@@ -18,14 +18,12 @@ These dropdowns allow you to filter mods by tag
 
 ![Alt text](img340/hide-limit-tags.png)
 
-For more information about what the tags mean, see the [Collection Area](mods.html) section.
+For more information about what the tags mean, see the [Collection Area](mods.html) section, or hover over them.
 
-Of note, the red `keys` entry is mods that have conflicting key binds, while the green `keys` entry is non-conflicting key binds.  Mods can not have both of these tags.
+This list is built dynamically from your mod set, so only those tags that exist in your collections will be provided.
 
-### Hide Tags
+The green open eye __shows__ mods with that tag in the list, while the orange closed eye __hides__ mods with that tag from the list.
 
-This will hide mods that have **any** of the selected tags.
+The red pin is special, it will show the mod __only__ if the mod has that tag.
 
-### Limit to Tags
-
-This will hide mods that do not have **all** of the selected tags.
+For instance, you could use the red pin on "map" and "recent", then the orange closed eye on "issue" to show only map type mods that have been recently updated, but not any that have detected issues.
