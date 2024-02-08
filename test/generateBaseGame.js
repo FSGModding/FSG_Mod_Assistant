@@ -59,9 +59,9 @@ const dlcPaths = {
 	'kubotaPack' : [
 		path.join(dlcBasePath, 'kubotaPack', 'vehicles'),
 	],
-	// 'vermeerPack' : [
-	// 	path.join(dlcBasePath, 'vermeerPack', 'vehicles'),
-	// ],
+	'vermeerPack' : [
+		path.join(dlcBasePath, 'vermeerPack', 'vehicles'),
+	],
 }
 
 const baseData = {
