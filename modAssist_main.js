@@ -227,7 +227,7 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 				})
 				break
 			case 'app_version' :
-				sendEntry(l10nEntry, app.getVersion()); break
+				sendEntry(l10nEntry, app.isPackaged ? app.getVersion() : ''); break
 			case 'game_icon' :
 				sendEntry(l10nEntry, `<i class="fsico-ver-${curVersion}"></i>`); break
 			case 'game_icon_lg' :
@@ -370,6 +370,16 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 			'openExplorer'
 		)
 	)
+
+	if ( thisPath.endsWith('.zip') ) {
+		template.push(
+			funcLib.menu.iconL10n(
+				'open_zip',
+				() => { shell.openPath(thisPath) },
+				'openZip'
+			)
+		)
+	}
 	
 	if ( thisMod.modHub.id !== null ) {
 		template.push(funcLib.menu.iconL10n(
