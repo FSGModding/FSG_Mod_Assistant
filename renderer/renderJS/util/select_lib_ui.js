@@ -408,6 +408,7 @@ const select_lib = {
 		const allShow = fsgUtil.query('.tag_filter__show')
 		const allOnly = fsgUtil.query('.tag_filter__exclusive')
 		fsgUtil.clsRemoveFromAll('.fake-disable', 'fake-disable')
+		fsgUtil.byId('tag_filter__selected').checked = false
 		for ( const element of allHide ) { element.checked = false }
 		for ( const element of allShow ) { element.checked = true }
 		for ( const element of allOnly ) { element.checked = false }
