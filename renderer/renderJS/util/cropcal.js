@@ -58,7 +58,6 @@ function clientMakeCropCalendar(elementID, theData, isSouth = false, weather = n
 	const tableLines    = []
 	let   evenRow       = false
 
-	console.log(weather)
 	tableLines.push([
 		'<tr class="crophead"><td></td>',
 		makeTD(['text-center'], '<i style="font-size: 3rem;" class="fsico-season-spring"></i>', false, 3),
@@ -68,14 +67,13 @@ function clientMakeCropCalendar(elementID, theData, isSouth = false, weather = n
 		'</tr>'].join('')
 	)
 	if ( weather !== null ) {
-		console.log(weather)
 		tableLines.push([
 			'<tr class="crophead"><td></td>',
 			makeTD(['text-center small'], `${weather.spring.min}°C ⟶ ${weather.spring.max}°C`, false, 3),
 			makeTD(['text-center small'], `${weather.summer.min}°C ⟶ ${weather.summer.max}°C`, false, 3),
 			makeTD(['text-center small'], `${weather.autumn.min}°C ⟶ ${weather.autumn.max}°C`, false, 3),
 			makeTD(['text-center small'], `${weather.winter.min}°C ⟶ ${weather.winter.max}°C`, false, 3),
-			'</tr>'].join(''),[
+			'</tr>'].join(''), [
 			'<tr class="crophead"><td></td>',
 			makeTD(['text-center small'], `${c2f(weather.spring.min)}°F ⟶ ${c2f(weather.spring.max)}°F`, false, 3),
 			makeTD(['text-center small'], `${c2f(weather.summer.min)}°F ⟶ ${c2f(weather.summer.max)}°F`, false, 3),
