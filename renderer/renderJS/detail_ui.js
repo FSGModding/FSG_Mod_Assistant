@@ -281,7 +281,7 @@ const buildPage = (modCollect) => {
 		fsgUtil.clsShow('cropcal_div')
 		fsgUtil.clsShow('detail_crop_json')
 		
-		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false)
+		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false, modRecord.modDesc?.cropWeather || null)
 		
 		fsgUtil.byId('cropcal_button').addEventListener('click', () => {
 			window.mods.popClipboard(JSON.stringify(modRecord.modDesc.cropInfo))

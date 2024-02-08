@@ -200,6 +200,7 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	mainLib.setDropDownFilters(modCollect.badgeL10n)
 	mainLib.setOrderButtons(Object.keys(mainState.collectOrder.map), modCollect.opts.foldersEdit)
 
+	select_lib.new_tag_reset()
 	select_lib.clear_range()
 
 	try {
