@@ -355,6 +355,7 @@
 	"offcanvas_blurb"                       : "Select which version of Farming Simulator you wish to be active",
 	"open_debug_log"                        : "View Debug Log",
 	"open_folder"                           : "Open in Explorer",
+	"open_zip"                              : "Open in Unzipper",
 	"open_folder__title"                    : "Open this folder in windows explorer",
 	"open_from_list"                        : "Show in Explorer",
 	"open_from_list__title"                 : "Open Selected Mod in File Explorer",
