@@ -211,7 +211,7 @@ ipcMain.on('toMain_themeList_send',   (event) => {
 		serveIPC.windowLib.themeCurrentColor
 	)
 })
-ipcMain.on('toMain_getText_sync',   (event, l10nSet) => { event.returnValue = l10nSet.map((x) => ({ x : __(x) })) })
+ipcMain.on('toMain_getText_sync',   (event, l10nItem) => { event.returnValue = __(l10nItem) })
 ipcMain.on('toMain_getText_locale', (event) => { event.returnValue = serveIPC.l10n.currentLocale })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 	const sendEntry  = (entry, text) => { returnL10n(event, entry, text) }

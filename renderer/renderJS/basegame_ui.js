@@ -9,7 +9,7 @@
 /* global __, processL10N, fsgUtil, dtLib, client_BGData */
 
 let searchTree = {}
-let chartUnits = null
+const chartUnits = {}
 
 const selectFills = [
 	{ filltype : 'barley', l10n : '$l10n_fillType_barley' },
@@ -339,7 +339,10 @@ window.addEventListener('DOMContentLoaded', () => {
 	const pageID        = urlParams.get('page')
 
 	window.comp_all_list = []
-	chartUnits = window.l10n.getText_sync(['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp'])
+
+	for ( const thisUnit of ['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp']) {
+		chartUnits[thisUnit] = window.l10n.getText_sync(thisUnit)
+	}
 
 	switch (pageType) {
 		case 'cat':
