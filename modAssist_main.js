@@ -1012,6 +1012,11 @@ function doModLook_response(m, thisMod, thisUUID) {
 					serveIPC.log[logLine[0]](m.logLines.group, logLine[1])
 				}
 
+				if ( typeof m.modlook === 'undefined' ) {
+					serveIPC.log.danger(`worker-thread-${m.pid}`, 'Unable to read mod file/folder!')
+					break
+				}
+
 				if ( ! thisMod.isFolder ) {
 					serveIPC.storeCacheDetail.set(thisUUID, {
 						date    : new Date(),
