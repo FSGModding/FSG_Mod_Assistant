@@ -16,8 +16,15 @@ const testList   = [
 	'modtrack',     // Mod tracking
 	'savegame',     // Savegame Reading
 	'sourcecode',   // ESLint Source code
+	'sourcehtml',   // HTML Source
 	'translations', // Translation file check
 ]
+const args = process.argv.slice(2)
+
+if ( args.length !== 0 ) {
+	testList.length = 0
+	testList.push(...args)
+}
 
 const c       = require('ansi-colors')
 const path    = require('node:path')
@@ -156,9 +163,14 @@ if (require.main === module) {
 		}
 		
 		rootTest.step(`Tests took ${Date.now() - startTime}ms to complete`)
-		require('./tests/packagestat.js').test().then(() => {
+
+		if ( args.length === 0 ) {
+			require('./tests/packagestat.js').test().then(() => {
+				rootTest.end(true)
+			})
+		} else {
 			rootTest.end(true)
-		})
+		}
 		
 		// console.log(serveIPC.log.textLog)
 	})
