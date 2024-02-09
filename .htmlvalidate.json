@@ -1,0 +1,21 @@
+{
+  "elements": [
+    "html5"
+  ],
+  "extends": [
+    "html-validate:recommended"
+  ],
+  "rules"   : {
+    "element-name"                : ["error", { "whitelist" : ["l10n"] }],
+    "element-required-ancestor"   : "off",
+    "element-required-attributes" : "off",
+    "empty-heading"               : "off",
+    "no-dup-id"                   : "off",
+    "no-inline-style"             : "off",
+    "no-trailing-whitespace"      : "off",
+    "prefer-native-element"       : ["error", { "exclude" : ["progressbar"]}],
+    "prefer-tbody"                : "off",
+    "text-content"                : "off",
+    "valid-id"                    : ["error", {"relaxed" : true}]
+  }
+}
