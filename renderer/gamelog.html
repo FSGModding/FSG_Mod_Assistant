@@ -8,7 +8,7 @@
 		(c) 2022-present FSG Modding.  MIT License. -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
@@ -24,6 +24,14 @@
 		}
 		::-webkit-scrollbar-track-piece:start { margin-top: 0px; }
 		::-webkit-scrollbar { height: 10px; }
+
+		.btn-group-win_ui {
+			height: 23px;
+			left : 0;
+			right: auto;
+			width: calc(100vw - 137px);
+		}
+		.btn-win_ui { height: 23px; }
 	</style>
 </head>
 <body data-bs-theme="dark">
@@ -34,22 +42,12 @@
 					<h2 class="ps-2 mastHead mb-0"><l10n name="app_name"></l10n></h2>
 					<span class="ps-4 small fst-italic" id="gameLogPath"></span>
 				</div>
-				<style>
-					.btn-group-win_ui {
-						height: 23px;
-						left : 0;
-						right: auto;
-						width: calc(100vw - 137px);
-					}
-					.btn-win_ui { height: 23px; }
-				</style>
-				
 				<div class="mx-0 p-0 rounded-end-0 btn-group-win_ui d-flex justify-content-end bg-transparent" style="position:absolute">
 					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Auto-Detect Log File Based on Game Version" type="button" onclick="window.gamelog.guessGameLogFile()" class="rounded-end-0 rounded-top-0 btn-win_ui btn btn-secondary">AUTO</button>
 					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Open new log" type="button" onclick="window.gamelog.changeGameLogFile()" class="rounded-0 btn-win_ui btn btn-secondary"><i class="bi bi-folder2-open"></i></button>
 					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="window.gamelog.openGameLogFolder()" class="rounded-0 btn-win_ui btn btn-secondary"><i class="bi bi-save"></i></button>
 					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Refresh Log" type="button" onclick="window.gamelog.getGameLogContents()" class="rounded-0 btn-win_ui btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
-					<input type="checkbox" class="rounded-0 btn-win_ui btn-check" id="auto_scroll" autocomplete="off">
+					<input type="checkbox" class="rounded-0 btn-win_ui btn-check" id="auto_scroll">
 					<label data-bs-placement="bottom" data-bs-toggle="tooltip" title="Auto-Scroll to Bottom on change" class="rounded-0 btn-win_ui btn btn-outline-success border" for="auto_scroll"><i class="bi bi-align-bottom"></i></label>
 					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Clear Log File" type="button" onclick="window.gamelog.clearGameLogFile()" class="rounded-0 btn-win_ui btn btn-danger text-white"><i class="bi bi-trash"></i></button>
 				</div>
@@ -58,25 +56,25 @@
 			<div class="input-group input-group-sm btn-group w-100 mt-2 mb-0 px-1">
 				<span class="input-group-text" id="basic-addon1">Show: </span>
 				<button class="btn btn-outline-light border" onclick="clientResetButtons()">RESET</button>
-				<input type="checkbox" class="btn-check filter_only" id="debug_dupes" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" class="btn-check filter_only" id="debug_dupes" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="Show Duplicate Entries" class="btn btn-outline-success btn-sm border" for="debug_dupes">DUPLICATES</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_other" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_other" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="Everything Else" class="btn btn-outline-success btn-sm border" for="debug_other">OTHER</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_cpad" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_cpad" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="CoursePlay / AutoDrive" class="btn btn-outline-success btn-sm border" for="debug_cpad">CP / AD</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_mod_loading" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_mod_loading" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="Mod Loading" class="btn btn-outline-success btn-sm border" for="debug_mod_loading">MOD LOAD</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="Info: messages" class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="Warning: messages" class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_error" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_error" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="Error: messages" class="btn btn-outline-success btn-sm border" for="debug_error">ERROR</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_lua_error" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_lua_error" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="Lua Errors" class="btn btn-outline-success btn-sm border" for="debug_lua_error">LUA ERROR</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_info" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_info" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="DEV Info" class="btn btn-outline-success btn-sm border" for="debug_dev_info">DEV INFO</label>
-				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_warning" onchange="clientChangeFilter()" autocomplete="off">
+				<input type="checkbox" checked class="btn-check filter_only" id="debug_dev_warning" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="DEV Warning" class="btn btn-outline-success btn-sm border" for="debug_dev_warning">DEV WARN</label>
 			</div>
 			<div class="input-group input-group-sm mb-2 mt-1 px-1">

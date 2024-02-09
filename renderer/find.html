@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="renderJS/util/general_lib.js"></script>
@@ -40,10 +40,10 @@
 <template id="mod_entry">
 	<tr id="{{id}}" oncontextmenu="clientRightClick('{{name}}')">
 		<td style="width: 64px; height: 64px">
-			<img class="img-fluid" src="{{icon}}" />
+			<img class="img-fluid" src="{{icon}}">
 		</td>
 		<td>
-			<div class="search-string" data-search="{{search}}">{{name}}<br /><small>{{title}} - <em>{{author}}</em></small></div>
+			<div class="search-string" data-search="{{search}}">{{name}}<br><small>{{title}} - <em>{{author}}</em></small></div>
 		</td>
 		<td class="text-end pe-4">
 			<small><dl class="row g-0">{{versions}}</dl></small>

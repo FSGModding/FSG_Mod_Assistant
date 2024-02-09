@@ -261,8 +261,8 @@ function clientPickCollect() {
 }
 
 function updateCounts() {
-	for ( const element of fsgUtil.query('[for^="check_savegame"]') ) {
-		const labelName = element.getAttribute('for').replace('check_savegame_', '')
+	for ( const element of fsgUtil.query('[data-for^="check_savegame"]') ) {
+		const labelName = element.getAttribute('data-for').replace('check_savegame_', '')
 		const quantity  = element.querySelector('.quantity')
 		quantity.innerHTML = selectCount[labelName]
 	}

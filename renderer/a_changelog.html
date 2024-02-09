@@ -8,12 +8,12 @@
 		(c) 2022-present FSG Modding.  MIT License. -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/util/general_lib.js"></script>
-	<script type="text/javascript">
+	<script>
 		window.addEventListener('DOMContentLoaded', () => {
 			processL10N()
 		})
@@ -27,7 +27,7 @@
 					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
 				</div>
 				<div class="col-5 pt-4">
-					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><l10n name="user_pref_title_changelog" class="h4"></span></div>
+					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><l10n name="user_pref_title_changelog" class="h4"></l10n></div>
 				</div>
 			</div>
 		</div>
@@ -46,7 +46,7 @@
 					</ul>
 				</div>
 
-				<h4>GitHub Known Issues &amp Changes</h4>
+				<h4>GitHub Known Issues &amp; Changes</h4>
 				<p class="ps-3">For per version detailed change sets, please see this GitHub <a href="https://github.com/FSGModding/FSG_Mod_Assistant/issues?q=label%3Aversion-track" target="_blank">version-track</a> list</p>
 
 				<h4>Added Features by Major Version</h4>
