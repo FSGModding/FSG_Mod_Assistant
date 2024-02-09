@@ -6,6 +6,7 @@
 		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
 		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
 		(c) 2022-present FSG Modding.  MIT License. -->
+	<title>FSG MA</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
@@ -55,7 +56,7 @@
 			</div>
 			<div class="input-group input-group-sm btn-group w-100 mt-2 mb-0 px-1">
 				<span class="input-group-text" id="basic-addon1">Show: </span>
-				<button class="btn btn-outline-light border" onclick="clientResetButtons()">RESET</button>
+				<button type="button" class="btn btn-outline-light border" onclick="clientResetButtons()">RESET</button>
 				<input type="checkbox" class="btn-check filter_only" id="debug_dupes" onchange="clientChangeFilter()">
 				<label data-bs-toggle="tooltip" title="Show Duplicate Entries" class="btn btn-outline-success btn-sm border" for="debug_dupes">DUPLICATES</label>
 				<input type="checkbox" checked class="btn-check filter_only" id="debug_other" onchange="clientChangeFilter()">

@@ -6,6 +6,7 @@
 		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
 		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
 		(c) 2022-present FSG Modding.  MIT License. -->
+	<title>FSG MA</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
@@ -50,11 +51,11 @@
 			<h3 class="text-center mb-1 w-100 mx-auto h3" id="title"><l10n name="basegame_main_title"></l10n></h3>
 			<i class="text-center mt-1 w-100 mx-auto d-block small" id="mod_location"></i>
 			<div class="btn-group position-relative" style="margin-top: -3.4rem; margin-left: 20px;" id="back_button">
-				<button class="rounded-0 btn btn-outline-primary" onclick="location.search = ''"><l10n name="basegame_button_home"></l10n></button>
-				<button class="rounded-0 btn btn-outline-primary" onclick="history.back()"><l10n name="basegame_button_back"></l10n></button>
-				<button class="rounded-0 btn btn-outline-warning" id="compareAllButton" onclick="clientOpenCompareAll()"><l10n name="basegame_compare_all"></l10n></button>
-				<button class="rounded-0 btn btn-outline-secondary" id="folderButton" onclick="clientOpenFolder()"><l10n name="basegame_button_folder"></l10n></button>
-				<button class="rounded-0 btn btn-outline-warning" id="compareButton" onclick="clientOpenCompare()"><l10n name="basegame_button_comp"></l10n></button>
+				<button type="button" class="rounded-0 btn btn-outline-primary" onclick="location.search = ''"><l10n name="basegame_button_home"></l10n></button>
+				<button type="button" class="rounded-0 btn btn-outline-primary" onclick="history.back()"><l10n name="basegame_button_back"></l10n></button>
+				<button type="button" class="rounded-0 btn btn-outline-warning" id="compareAllButton" onclick="clientOpenCompareAll()"><l10n name="basegame_compare_all"></l10n></button>
+				<button type="button" class="rounded-0 btn btn-outline-secondary" id="folderButton" onclick="clientOpenFolder()"><l10n name="basegame_button_folder"></l10n></button>
+				<button type="button" class="rounded-0 btn btn-outline-warning" id="compareButton" onclick="clientOpenCompare()"><l10n name="basegame_button_comp"></l10n></button>
 			</div>
 			
 		</div>
@@ -70,11 +71,11 @@
 			<div class="mx-4 mt-3" id="searchResults"></div>
 		</div>
 	</div>
-</body>
+
 
 <template id="store_item">
 	<div class="col-3 text-end ">
-		<button onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button>
+		<button type="button" onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button>
 		<div class="p-2 border rounded-3 h-100 text-center {{hasParentFile}}">
 			<a class="text-decoration-none text-white-50" href="?type=item&page={{page}}">
 				{{iconString}}<br>
@@ -112,7 +113,7 @@
 		<div class="col-3 align-self-center">
 			{{compareTerms}}
 		</div>
-		<div class="text-center col-1 align-self-center"><button onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button></div>
+		<div class="text-center col-1 align-self-center"><button type="button" onclick="clientOpenCompare('{{page}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button></div>
 	</div>
 </template>
 
@@ -125,7 +126,7 @@
 		</span>
 		<div class="inset-body">
 			<div class="row mx-2">
-				<div class="col-5 my-auto mx-auto" id="icon_div">
+				<div class="col-5 my-auto mx-auto">
 					<div class="{{showBrand}} text-center">{{brandImage}}</div>
 					<div class="text-center">{{iconImage}}</div>
 				</div>
@@ -136,15 +137,15 @@
 				<div class="col-12 py-2 {{showCombos}}">
 					<h4 class="text-center">
 						<l10n name="combinations_title"></l10n>
-						<button onclick="clientOpenCombos()" class="btn btn-warning btn-vsm mt-2"><l10n name="basegame_compare_all"></l10n></button>
+						<button type="button" onclick="clientOpenCombos()" class="btn btn-warning btn-vsm mt-2"><l10n name="basegame_compare_all"></l10n></button>
 					</h4>
 					{{combinations}}
 				</div>
 				<nav class="{{showGraph}}">
 					<div class="nav nav-tabs" id="{{uuid}}_nav-tab" role="tablist">
-					  <button class="nav-link active" id="{{uuid}}_hp_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_hp_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-engine"></i><l10n name="unit_hp"></l10n></button>
-					  <button class="nav-link" id="{{uuid}}_kph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_kph_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-speed"></i><l10n name="unit_kph"></l10n></button>
-					  <button class="nav-link" id="{{uuid}}_mph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_mph_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-speed"></i><l10n name="unit_mph"></l10n></button>
+						<button class="nav-link active" id="{{uuid}}_hp_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_hp_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-engine"></i><l10n name="unit_hp"></l10n></button>
+						<button class="nav-link" id="{{uuid}}_kph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_kph_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-speed"></i><l10n name="unit_kph"></l10n></button>
+						<button class="nav-link" id="{{uuid}}_mph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_mph_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-speed"></i><l10n name="unit_mph"></l10n></button>
 					</div>
 				</nav>
 				<div class="tab-content {{showGraph}}" id="{{uuid}}_nav-tabContent">
@@ -189,7 +190,7 @@
 	<div class="card mb-3">
 		<div class="card-body">
 			<div class="row mx-2">
-				<div class="col-5 my-auto mx-auto" id="icon_div">
+				<div class="col-5 my-auto mx-auto">
 					{{iconImage}}
 				</div>
 				<div class="col-7">
@@ -202,4 +203,5 @@
 	</div>
 </template>
 
+</body>
 </html>

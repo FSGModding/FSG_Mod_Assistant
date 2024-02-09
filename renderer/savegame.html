@@ -6,6 +6,7 @@
 		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
 		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
 		(c) 2022-present FSG Modding.  MIT License. -->
+	<title>FSG MA</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
@@ -34,11 +35,11 @@
 		</div>
 
 		<div class="btn-group mx-auto w-75 d-flex" id="loadButtons">
-			<button class="btn btn-primary btn-sm border" onclick="window.mods.openFolder()"><i class="bi bi-folder"></i> <l10n name="open_save_folder"></l10n></button>
-			<button class="btn btn-primary btn-sm border" onclick="window.mods.openZIP()"><i class="bi bi-file-earmark-zip"></i> <l10n name="open_save_zip"></l10n></button>
+			<button type="button" class="btn btn-primary btn-sm border" onclick="window.mods.openFolder()"><i class="bi bi-folder"></i> <l10n name="open_save_folder"></l10n></button>
+			<button type="button" class="btn btn-primary btn-sm border" onclick="window.mods.openZIP()"><i class="bi bi-file-earmark-zip"></i> <l10n name="open_save_zip"></l10n></button>
 		</div>
 
-		<button class="btn btn-info btn-sm border w-75 mx-auto d-block mt-2" onclick="clientCopyVisible()"><i class="bi bi-clipboard-check"></i> <l10n name="clipboard_visible"></l10n></button>
+		<button type="button" class="btn btn-info btn-sm border w-75 mx-auto d-block mt-2" onclick="clientCopyVisible()"><i class="bi bi-clipboard-check"></i> <l10n name="clipboard_visible"></l10n></button>
 
 		<div class="input-group input-group-sm btn-group w-100 mt-2 px-1">
 			<span class="input-group-text" id="basic-addon1"><l10n name="savegame_filter_only"></l10n></span>
@@ -61,10 +62,10 @@
 		</div>
 		<div class="input-group input-group-sm btn-group w-100 mt-2 px-1">
 			<span class="input-group-text" id="basic-addon2"><l10n name="select_main"></l10n></span>
-			<button class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('unused')" data-for="check_savegame_unused"><l10n name="savegame_unused"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
-			<button class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('inactive')" data-for="check_savegame_inactive"><l10n name="savegame_inactive"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
-			<button class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('active')" data-for="check_savegame_active"><l10n name="savegame_isloaded"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
-			<button class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('nohub')" data-for="check_savegame_nohub"><l10n name="savegame_nohub"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
+			<button type="button" class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('unused')" data-for="check_savegame_unused"><l10n name="savegame_unused"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
+			<button type="button" class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('inactive')" data-for="check_savegame_inactive"><l10n name="savegame_inactive"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
+			<button type="button" class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('active')" data-for="check_savegame_active"><l10n name="savegame_isloaded"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
+			<button type="button" class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('nohub')" data-for="check_savegame_nohub"><l10n name="savegame_nohub"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
 		</div>
 
 		<div class="list-group mx-2 my-3" id="modList"></div>
@@ -86,7 +87,6 @@
 		</div>
 	</div>
 
-</body>
 
 <template id="savegame_error">
 	<li class="mod-item list-group-item text-center justify-content-between list-group-item-danger">
@@ -100,7 +100,7 @@
 <template id="savegame_mod">
 	<li class="mod-item list-group-item d-flex justify-content-between align-items-start {{colorClass}}">
 		<div class="h-100 mt-1" style="width: 30px;">
-			<button onclick="window.mods.openHUB('{{hubID}}')" class="{{hubIDHide}} btn btn-sm btn-secondary"><i class="bi bi-search-heart"></i><l10n class="d-none" name="open_hub"></l10n></button>
+			<button type="button" onclick="window.mods.openHUB('{{hubID}}')" class="{{hubIDHide}} btn btn-sm btn-secondary"><i class="bi bi-search-heart"></i><l10n class="d-none" name="open_hub"></l10n></button>
 		</div>
 		<div class="ms-2 me-auto">
 			<div class="fw-bold">{{name}}</div>
@@ -110,4 +110,6 @@
 		{{badges}}
 	</li>
 </template>
+
+</body>
 </html>

@@ -6,6 +6,7 @@
 		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
 		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
 		(c) 2022-present FSG Modding.  MIT License. -->
+	<title>FSG MA</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
@@ -44,7 +45,7 @@
 
 		<div class="border-bottom pb-2">
 			<div class="btn-group mx-auto w-75 d-flex">
-				<button class="btn btn-primary btn-sm border" onclick="clientImportSave()"><i class="bi bi-folder"></i> <l10n name="save_manage_import"></l10n></button>
+				<button type="button" class="btn btn-primary btn-sm border" onclick="clientImportSave()"><i class="bi bi-folder"></i> <l10n name="save_manage_import"></l10n></button>
 			</div>
 		</div>
 
@@ -77,7 +78,7 @@
 				<div class="modal-footer">
 					<div class="row w-100">
 						<div class="col-3">
-							<img src="img/info_ask.webp" class="w-100">
+							<img src="img/info_ask.webp" alt="" class="w-100">
 						</div>
 						<div class="col-9">
 							<button type="button" class="w-100 mb-2 btn btn-warning" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
@@ -102,7 +103,7 @@
 				<div class="modal-footer">
 					<div class="row w-100">
 						<div class="col-3">
-							<img src="img/info_warn.webp" class="w-100">
+							<img alt="" src="img/info_warn.webp" class="w-100">
 						</div>
 						<div class="col-9">
 							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
@@ -157,7 +158,7 @@
 				<div class="modal-footer">
 					<div class="row w-100">
 						<div class="col-3">
-							<img src="img/info_warn.webp" class="w-100">
+							<img alt="" src="img/info_warn.webp" class="w-100">
 						</div>
 						<div class="col-9">
 							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
@@ -214,7 +215,7 @@
 				<div class="modal-footer">
 					<div class="row w-100">
 						<div class="col-3">
-							<img src="img/info_ask.webp" class="w-100">
+							<img alt="" src="img/info_ask.webp" class="w-100">
 						</div>
 						<div class="col-9">
 							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
@@ -227,7 +228,7 @@
 	</div>
 
 
-</body>
+
 
 <template id="savegame_record">
 	<div class="col-12 inset-block"><div>
@@ -249,21 +250,21 @@
 
 <template id="savegame_active_buttons">
 	<div class="d-flex flex-column justify-content-around h-100">
-		<button onclick="clientCompareSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
-		<button onclick="clientExportSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
-		<button onclick="clientRestoreSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-warning"><l10n name="save_manage_duplicate"></l10n></button>
-		<button onclick="clientDeleteSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
+		<button type="button" onclick="clientCompareSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
+		<button type="button" onclick="clientExportSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
+		<button type="button" onclick="clientRestoreSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-warning"><l10n name="save_manage_duplicate"></l10n></button>
+		<button type="button" onclick="clientDeleteSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
 	</div>
 </template>
 
 <template id="savegame_backup_buttons">
 	<div class="d-flex flex-column justify-content-around h-100">
-		<button onclick="clientCompareSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
-		<button onclick="clientExportSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
-		<button onclick="clientRestoreSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-warning"><l10n name="save_manage_restore"></l10n></button>
-		<button onclick="clientDeleteSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
+		<button type="button" onclick="clientCompareSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
+		<button type="button" onclick="clientExportSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
+		<button type="button" onclick="clientRestoreSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-warning"><l10n name="save_manage_restore"></l10n></button>
+		<button type="button" onclick="clientDeleteSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
 	</div>
 </template>
 
-
+</body>
 </html>

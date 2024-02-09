@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+	<title>FSG MA</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
@@ -31,7 +37,7 @@
 		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped" id="full_table"></table>
 
 	</div>
-</body>
+
 
 <template id="version_entry">
 	<dt class="col-9 mb-1 overflow-hidden">{{name}}</dt><dd class="col-3 mb-1 ps-1">{{version}}</dd>
@@ -40,14 +46,15 @@
 <template id="mod_entry">
 	<tr id="{{id}}" oncontextmenu="clientRightClick('{{name}}')">
 		<td style="width: 64px; height: 64px">
-			<img class="img-fluid" src="{{icon}}">
+			<img class="img-fluid" alt="" src="{{icon}}">
 		</td>
 		<td>
 			<div class="search-string" data-search="{{search}}">{{name}}<br><small>{{title}} - <em>{{author}}</em></small></div>
 		</td>
 		<td class="text-end pe-4">
-			<small><dl class="row g-0">{{versions}}</dl></small>
+			<dl class="small row g-0">{{versions}}</dl>
 		</td>
 	</tr>
 </template>
+</body>
 </html>

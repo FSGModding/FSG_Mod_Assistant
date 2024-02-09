@@ -6,6 +6,7 @@
 		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
 		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
 		(c) 2022-present FSG Modding.  MIT License. -->
+	<title>FSG MA</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
@@ -26,18 +27,18 @@
 					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><l10n class="h4" name="version_check_window"></l10n></div>
 				</div>
 			</div>
-			<button onclick="window.mods.refreshList()" class="btn btn-sm btn-primary d-block w-50 mx-auto mt-3"><l10n name="refresh_version"></l10n></button>
+			<button type="button" onclick="window.mods.refreshList()" class="btn btn-sm btn-primary d-block w-50 mx-auto mt-3"><l10n name="refresh_version"></l10n></button>
 		</div>
 
 		<div class="list-group mx-2 my-3" id="modList"></div>
 	</div>
-</body>
+
 
 <template id="version_line">
 	<li oncontextmenu="{{clickCallback}}" ondblclick="{{clickCallback}}" class="list-group-item d-flex justify-content-between align-items-start {{color}}">
 		<div class="row w-100">
 			<div class="col-2 p-0 mx-3" style="width:64px; height:64px;">
-				<img class="img-fluid" src="{{icon}}">
+				<img class="img-fluid" alt="" src="{{icon}}">
 			</div>
 			<div class="col-6">
 				<div class="fw-bold">{{shortName}}</div>
@@ -45,10 +46,11 @@
 				<div class="{{collectClass}} small ps-3">{{joinedCollections}}</div>
 			</div>
 			<div class="col-4 text-end">{{modHubVersion}} {{badge}}
-				<button class="btn btn-primary w-100 btn-sm mt-4 {{showButton}}" onclick="{{clickCallback}}"><l10n name="resolve_version_window"></l10n></button>
+				<button type="button" class="btn btn-primary w-100 btn-sm mt-4 {{showButton}}" onclick="{{clickCallback}}"><l10n name="resolve_version_window"></l10n></button>
 			</div>
 		</div>
 	</li>
 </template>
 
+</body>
 </html>

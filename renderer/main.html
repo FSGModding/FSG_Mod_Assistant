@@ -6,18 +6,18 @@
 		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
 		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
 		(c) 2022-present FSG Modding.  MIT License. -->
+	<title>FSG MA</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
 
 	<!-- <link rel="stylesheet" href="inc/src/bootstrap.css">
 	<link rel="stylesheet" href="inc/src/bootstrap-icons.css">
 	<link rel="stylesheet" href="inc/src/overrides.css"> -->
 
-	<link rel="stylesheet" href="inc/fsico.css">
-	
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/util/general_lib.js"></script>
 	<script src="renderJS/util/select_lib_ui.js"></script>
@@ -170,18 +170,17 @@
 				<div class="mx-0 p-0 rounded-end-0 btn-group-win_ui d-flex">
 					
 					<div class="bg-body px-2 text-danger d-inline-flex" style="--bs-text-opacity: 0.7;" id="gameRunningBubble"><i class="align-self-center bi bi-circle-fill"></i></div>
-					<button class="btn-info btn btn-win_ui rounded-0 text-white border-0" style="-webkit-app-region: no-drag; border-bottom-left-radius: var(--bs-border-radius-sm)!important;" onclick="mainLib.launchGame()"><l10n name="game_icon"></l10n><l10n name="launch_game" class="align-middle fw-semibold"></l10n></button>
-					<button id="update-is-ready-button" class="d-none btn-win_ui btn rounded-0 text-info" style="-webkit-app-region: no-drag;" onclick="window.mods.runUpdate()"><l10n name="update_ready"></l10n></button>
-					<button id="browse-base-game-data" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openBaseGame()"><l10n name="base_game_data"></l10n></button>
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openTrack()"><l10n name="savegame_track"></l10n></button>
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openSaveManage()"><l10n name="savegame_manage"></l10n></button>
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openGameLog()"><l10n name="button_gamelog"></l10n></button>
-					<!-- <button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openPreferences()" id="open_prefs"><l10n name="preferences_button"></l10n></button> -->
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" data-bs-toggle="offcanvas" data-bs-target="#prefcanvas" id="open_prefs"><l10n name="preferences_button"></l10n></button>
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openHelp()" ><l10n name="help_button"></l10n></button>
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openMini()" id="mini_button"><l10n name="mini_mode_button"></l10n></button>
-					<button class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.sendToTray()"><l10n name="min_tray_button"></l10n></button>
+					<button type="button" class="btn-info btn btn-win_ui rounded-0 text-white border-0" style="-webkit-app-region: no-drag; border-bottom-left-radius: var(--bs-border-radius-sm)!important;" onclick="mainLib.launchGame()"><l10n name="game_icon"></l10n><l10n name="launch_game" class="align-middle fw-semibold"></l10n></button>
+					<button type="button" id="update-is-ready-button" class="d-none btn-win_ui btn rounded-0 text-info" style="-webkit-app-region: no-drag;" onclick="window.mods.runUpdate()"><l10n name="update_ready"></l10n></button>
+					<button type="button" id="browse-base-game-data" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openBaseGame()"><l10n name="base_game_data"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openTrack()"><l10n name="savegame_track"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openSaveManage()"><l10n name="savegame_manage"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openGameLog()"><l10n name="button_gamelog"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" data-bs-toggle="offcanvas" data-bs-target="#prefcanvas" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openHelp()" ><l10n name="help_button"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openMini()" id="mini_button"><l10n name="mini_mode_button"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.sendToTray()"><l10n name="min_tray_button"></l10n></button>
 				</div>
 			</div>
 
@@ -230,9 +229,9 @@
 						<div class="col col-auto">
 							<div class="btn-group btn-group-sm input-group input-group-sm">
 								<span class="input-group-text bg-secondary text-light border-secondary border-opacity-25"><l10n name="select_pick"></l10n></span>
-								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
-								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
-								<button class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
+								<button type="button" class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_none()"><l10n name="select_none"></l10n></button>
+								<button type="button" class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_all()"><l10n name="select_all"></l10n></button>
+								<button type="button" class="btn btn-btn btn-outline-secondary border-opacity-25" onclick="select_lib.click_invert()"><l10n name="select_invert"></l10n></button>
 								<input type="checkbox" id="tag_filter__selected" onchange="select_lib.filter_begin()" class="btn-check filter_tag_buttons">
 								<label class="btn btn-secondary btn-selected-mods" for="tag_filter__selected"><l10n name="select_only"></l10n> : <span id="select_quantity">0</span></label>
 							</div>
@@ -283,7 +282,7 @@
 				<div class="modal-footer">
 					<div class="row">
 						<div class="col-3">
-							<img src="img/facepalm.webp" class="w-100">
+							<img src="img/facepalm.webp" alt="" class="w-100">
 						</div>
 						<div class="col-9">
 							<button type="button" class="w-100 mb-2 btn btn-warning" onclick="mainLib.launchGame_IGNORE()"><l10n name="active_no_match_ignore"></l10n></button>
@@ -324,11 +323,13 @@
 			<div class="d-flex justify-content-around opacity-75" style="height:35px">
 				<div class="align-self-center">
 					<a target="_blank" class="text-white-50 btn btn-vsm btn-primary" href="https://crowdin.com/project/fsg-mod-assistant/">
+						<span class="visually-hidden">CrowdIN</span>
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" style="height:20px" viewBox="0 0 180 37"><path fill="#fff" d="M46.55 19.84c0 2.73.83 4.92 2.5 6.57 1.66 1.64 3.91 2.47 6.75 2.47s4.74-.7 6.16-2.09a6.66 6.66 0 0 0 2.13-4.88v-.16h-4.1v.15c0 .74-.33 1.38-.98 1.92-.64.53-1.73.8-3.25.8-1.7 0-2.95-.42-3.75-1.25a4.65 4.65 0 0 1-1.19-3.35v-.9c0-1.39.4-2.5 1.2-3.34.81-.83 2.06-1.25 3.74-1.25 1.48 0 2.55.26 3.22.77A2.33 2.33 0 0 1 60 17.23v.17h4.1l-.01-.22a6.96 6.96 0 0 0-2.18-4.84c-1.38-1.38-3.42-2.07-6.11-2.07-2.84 0-5.09.82-6.75 2.47-1.67 1.64-2.5 3.83-2.5 6.57v.53Zm20.99 8.54h4.19V19.7c0-1.9.91-2.88 1.67-3.42a4.34 4.34 0 0 1 2.6-.81 6.07 6.07 0 0 1 1.54.16v-5.1a3.9 3.9 0 0 0-.59-.16 4.61 4.61 0 0 0-3.45.72 6.23 6.23 0 0 0-1.7 1.7.09.09 0 0 1-.16-.04l-.36-1.98h-3.74v17.6Zm11.71-8.54c0 2.73.87 4.92 2.6 6.57 1.73 1.64 4 2.47 6.83 2.47s5.09-.83 6.82-2.47c1.74-1.65 2.61-3.84 2.61-6.57v-.53c0-2.74-.87-4.93-2.61-6.57-1.73-1.65-4-2.47-6.82-2.47-2.81 0-5.1.82-6.83 2.47-1.73 1.64-2.6 3.83-2.6 6.57v.53Zm4.27-.72c0-1.52.45-2.64 1.34-3.34.9-.7 2.17-1.05 3.82-1.05s2.91.35 3.8 1.05c.9.7 1.36 1.82 1.36 3.34v.9c0 1.59-.44 2.72-1.34 3.4-.88.66-2.15 1-3.82 1-1.66 0-2.94-.34-3.83-1-.88-.68-1.33-1.81-1.33-3.4v-.9Zm16.5-8.35 5.26 17.6h4.76l3.74-12.78a.14.14 0 0 1 .27 0l4.03 12.79h4.76l5.3-17.6h-5.18l-2.62 9.8-.31 1.32-.22.98c-.01.06-.1.06-.11 0a47.89 47.89 0 0 0-.61-2.3l-2.92-9.8h-4.96s-2.92 10-3.46 11.99c-.03.08-.15.08-.17 0l-3.03-12h-4.53Zm29.48 9.07c0 2.6.72 4.74 2.13 6.4 1.43 1.65 3.41 2.47 5.95 2.47 1.32 0 2.46-.24 3.42-.72.66-.33 1.52-1.1 2-1.53l.44 1.92h4.15V2.78h-4.37v10.11a5.5 5.5 0 0 0-2.2-1.8 7.73 7.73 0 0 0-3.34-.65 7.6 7.6 0 0 0-5.93 2.49c-1.5 1.64-2.25 3.77-2.25 6.38v.53Zm4.28.17-.02-.87c0-1.27.4-2.3 1.17-3.07.78-.8 2-1.19 3.64-1.19a5.2 5.2 0 0 1 2.93.8l.02.02a3.9 3.9 0 0 1 1.7 3.24v1.2a3.9 3.9 0 0 1-1.78 3.31l-.02.02a5.6 5.6 0 0 1-2.99.8c-1.65 0-2.84-.4-3.56-1.19a4.36 4.36 0 0 1-1.1-3.07Zm18.78 8.37h4.17v-17.6h-4.17v17.6Zm-.9-22.42c0 .76.27 1.38.78 1.87.52.48 1.26.72 2.2.72.96 0 1.67-.25 2.19-.74.52-.48.78-1.1.78-1.85a2.4 2.4 0 0 0-.77-1.84c-.51-.49-1.25-.73-2.2-.73-.97 0-1.68.24-2.2.73-.51.5-.77 1.1-.77 1.84Zm10.13 22.42h4.17v-7.15c0-4.04 1.43-6.6 4.55-6.6 3.13 0 3.79 1.81 3.79 4.35v9.4h4.17V17.94c0-3-.61-5-1.84-6a7.15 7.15 0 0 0-4.71-1.52c-1.26 0-2.43.23-3.5.7-.97.42-1.75 1-2.35 1.77a85.6 85.6 0 0 1-.33-2.12h-3.95v17.6ZM25.72 37h-14.2C4.15 37 0 32.8 0 25.56V11.44C0 4.2 4.15 0 11.52 0h14.2c7.53 0 11.52 4.05 11.52 11.44v14.12c0 7.4-4 11.44-11.52 11.44Z"/><path fill="#263238" d="M23.93 25.2c-.7 0-1.32-.2-1.84-.63a2.82 2.82 0 0 1-1.11-2.1c-.01-.44.45-.44.45-.44h1.12c.37 0 .47.53.49.66.14 1.17.79 1.69 1.28 1.92.3.14.23.58-.4.6Zm-6.26-5.97c-.62-.08-1.53-.14-2.11-.3-.96-.23-.93-1.12-.89-1.4a5.9 5.9 0 0 1 .9-2.4 7.45 7.45 0 0 1 2.51-2.37c2.04-1.21 4.9-1.9 8.03-1.9 2.3 0 4.69.32 4.71.32.22.02.37.24.37.48-.01.24-.18.43-.4.44h-1c-3.2 0-5.47.44-7.16 1.4a8.07 8.07 0 0 0-3.61 4.55c-.08.18-.36 1.29-1.35 1.18Zm2.78 8.85a5.46 5.46 0 0 1-4.2-2 5.91 5.91 0 0 1-1.64-3.59c-.07-.91.33-1.23.86-1.18.37.04 1.53.1 2.19.24.5.1.82.38.9.96.44 3.1 2.34 4.32 3.47 4.58.2.05.32.18.31.41 0 .23-.13.54-1.89.58Zm-4.51 2.75c-1.12.05-2.22-.19-2.53-.24a9.03 9.03 0 0 1-3.38-1.28c-2.27-1.48-3.64-4.1-3.8-7.2-.05-.73-.14-2.14 1.56-2.03.7.04 1.82.39 2.6.62a1.88 1.88 0 0 1 1.45 1.82c0 4.37 3.84 7.25 5.52 7.25.4 0 .5.25.44.48-.03.19-.14.5-1.86.58Z"/><path fill="#263238" d="M10.08 18c-.66-.13-1.3-.41-1.94-.57-1.95-.5-1.62-2.53-1.44-3.08 1.78-5.39 7.42-7.19 11.97-7.67 4.29-.45 8.77-.1 12.95 1.1.3.07 1.12.28.94.78-.18.5-.67.15-5.23.04-1.5-.03-3 .07-4.5.3-2.59.41-5.25 1.25-7.38 3.02a9.5 9.5 0 0 0-2.93 4.27c-.11.35-.52 2.15-2.44 1.8ZM21 19.03c.38-1.68 2-4.35 7.03-4.17 1.15.04.63.85.06.83-2.85-.1-4.2 1.79-4.9 3.7-.23.62-.75.71-1.4.6-.46-.08-.95-.14-.78-.96Z"/></svg>
 					</a>
 				</div>
 				<div class="align-self-center">
 					<a target="_blank" class="text-white-50 btn btn-vsm btn-primary" href="https://github.com/FSGModding/FSG_Mod_Assistant/releases">
+						<span class="visually-hidden">GitHub</span>
 						<svg xmlns="http://www.w3.org/2000/svg" style="height: 20px;" viewBox="0 0 406.4 96.1">
 							<path fill="#fff" fill-rule="evenodd" d="M49.4 0A49.2 49.2 0 0 0 34 96c2.3.4 3.2-1.2 3.2-2.5v-9c-13.6 2.9-16.5-6-16.5-6-2.2-5.7-5.4-7.1-5.4-7.1-4.4-3 .3-3 .3-3 5 .3 7.5 5 7.5 5 4.4 7.5 11.5 5.4 14.3 4a11 11 0 0 1 3-6.5c-10.8-1.1-22.2-5.4-22.2-24.3 0-5.4 2-9.8 5-13.2-.5-1.2-2.2-6.3.5-13 0 0 4.1-1.3 13.4 5a47.1 47.1 0 0 1 24.6 0c9.3-6.3 13.4-5 13.4-5 2.7 6.7 1 11.8.5 13a19 19 0 0 1 5 13.2c0 19-11.4 23-22.3 24.3 1.7 1.5 3.3 4.5 3.3 9.1v13.5c0 1.3.8 2.9 3.2 2.4A49.2 49.2 0 0 0 49.5 0Z"/>
 							<path fill="#fff" d="M167.9 43H143c-.7 0-1.2.4-1.2 1v12.2c0 .7.5 1.2 1.2 1.2h9.6v15s-2.1.8-8.1.8c-7.1 0-17-2.6-17-24.4s10.3-24.6 20-24.6c8.3 0 12 1.5 14.3 2.2.7.2 1.3-.5 1.3-1.2l2.8-11.7a1 1 0 0 0-.4-.9c-1-.6-6.7-3.8-21-3.8-16.6 0-33.6 7-33.6 40.9s19.5 39 35.9 39c13.5 0 21.8-5.9 21.8-5.9.3-.2.4-.6.4-.9V44.1c0-.6-.5-1.2-1.2-1.2Zm127.9-30.2c0-.6-.5-1.1-1.1-1.1h-14c-.7 0-1.2.5-1.2 1.1v27h-21.8v-27c0-.6-.5-1.1-1.1-1.1h-14c-.6 0-1.2.5-1.2 1.1V86c0 .7.6 1.2 1.2 1.2h14c.6 0 1.1-.5 1.1-1.2V54.7h21.8v31.2c0 .7.5 1.2 1.1 1.2h14c.7 0 1.2-.5 1.2-1.2V13Zm-101.5 9.6c0-5-4-9-9-9s-9 4-9 9 4 9.1 9 9.1 9-4 9-9Zm-1 48.1V36.8c0-.7-.6-1.2-1.2-1.2h-14c-.6 0-1.1.7-1.1 1.3v48.4c0 1.4.8 1.8 2 1.8h12.5c1.4 0 1.7-.7 1.7-1.9V70.5Zm155.6-34.8H335c-.6 0-1.1.5-1.1 1.2v35.8s-3.5 2.6-8.5 2.6-6.4-2.3-6.4-7.2V37c0-.7-.5-1.2-1.1-1.2h-14.1c-.6 0-1.2.5-1.2 1.2v33.6c0 14.6 8.1 18.1 19.3 18.1 9.1 0 16.5-5 16.5-5l.5 3c.1.3.6.6 1 .6h9c.6 0 1.1-.6 1.1-1.2V36.9c0-.7-.5-1.2-1.1-1.2Zm38-1.6c-8 0-13.3 3.5-13.3 3.5V12.8c0-.6-.5-1.1-1.2-1.1h-14c-.6 0-1.1.5-1.1 1.1V86c0 .7.5 1.2 1.1 1.2h9.7c.5 0 .8-.2 1-.6.3-.4.7-3.4.7-3.4s5.7 5.5 16.5 5.5c12.8 0 20-6.5 20-29S394.8 34 386.9 34Zm-5.5 41.2c-4.9-.2-8.1-2.4-8.1-2.4V49.8s3.2-2 7.2-2.3c5-.5 9.8 1 9.8 13 0 12.5-2.2 15-9 14.8Zm-148-39.7H223V21.7c0-.5-.3-.7-1-.7h-14.2c-.6 0-.9.2-.9.7V36l-7.6 2c-.5.1-.9.5-.9 1v9c0 .7.6 1.2 1.2 1.2h7.3v21.6c0 16 11.3 17.7 18.9 17.7 2.8-.1 5.6-.6 8.3-1.4.4-.2.7-.6.7-1V76c0-.6-.6-1.1-1.2-1.1s-2.1.3-3.7.3c-5.2 0-7-2.4-7-5.5V49.2h10.5c.7 0 1.2-.5 1.2-1.2V36.8c0-.7-.5-1.2-1.2-1.2Z"/>
@@ -337,17 +338,19 @@
 				</div>
 				<div class="align-self-center">
 					<a target="_blank" href="https://www.farmsimgame.com/" class="text-white-50 btn btn-vsm btn-primary" >
+						<span class="visually-hidden">FSG Website</span>
 						<svg style="height: 20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 79"><path fill="#292929" d="M650 79H0l39-39.5L0 0h650l-39 39.5L650 79z"/><path fill="#0aa0df" d="m576.5 27.3 4.2 8.5 9.3 1.3-6.7 6.6 1.5 9.3-8.3-4.4-8.3 4.4 1.6-9.3-6.8-6.6 9.3-1.3 4.2-8.5zm-505 0 4.2 8.5 9.3 1.3-6.7 6.6 1.5 9.3-8.3-4.4-8.3 4.4 1.6-9.3-6.8-6.6 9.3-1.3 4.2-8.5z"/><path fill="#fff" d="M112.6 67V12.2h26.5v8.3h-13.7v12h13.2v8.3h-13.2V67h-12.8ZM167 31.8v-7.7c0-1.4-.3-2.5-.8-3.2-.5-.7-1.4-1-2.6-1s-2.2.3-2.7 1-.7 1.8-.7 3.2a7 7 0 0 0 1.8 4.7c1.2 1.3 3.1 3 5.8 5.2 1.9 1.4 3.4 2.7 4.6 3.8 1.3 1 2.4 2.4 3.6 3.8a18.6 18.6 0 0 1 3.7 11.4c0 5.1-1.3 9-4 11.4a18.1 18.1 0 0 1-12.2 3.7c-2.2 0-4.2-.2-6.1-.6-1.9-.4-3.6-1.1-5.1-2-1.5-1-2.7-2.3-3.6-3.9-.9-1.6-1.3-3.5-1.3-5.8V45.7h12.8v9.5c0 1.5.2 2.6.7 3.2.5.6 1.4 1 2.7 1 1 0 2-.4 2.5-1 .6-.6.8-1.7.8-3.2 0-2.5-.6-4.7-2-6.3a40.1 40.1 0 0 0-6.4-5.9 71.3 71.3 0 0 1-4.4-3.5c-1.1-1-2.2-2.3-3.3-3.7a17.2 17.2 0 0 1-3.4-11c0-4.7 1.4-8.2 4.3-10.4 2.9-2.2 7-3.3 12.1-3.3 2.3 0 4.3.2 6.2.7 2 .4 3.6 1 5 2a10 10 0 0 1 3.5 3.8 12 12 0 0 1 1.2 5.6v8.6H167Zm46.5 32.4a10.2 10.2 0 0 1-5.3 3.1c-1.6.5-3.5.8-5.8.8-4.5 0-7.8-1.2-10-3.5-2-2.4-3.1-6.5-3.1-12.5V27c0-3 .4-5.6 1.3-7.6a12.4 12.4 0 0 1 8.6-7.6c2-.5 4-.8 6.3-.8 5.3 0 9.3 1.2 12 3.5 2.8 2.4 4.2 6.2 4.2 11.4v5.8h-12.8v-7.6c0-1.3-.3-2.3-.8-3.1-.5-.8-1.4-1.2-2.6-1.2s-2.1.4-2.7 1.2c-.5.8-.7 1.8-.7 3v31a6 6 0 0 0 .7 3.1c.5.8 1.4 1.2 2.7 1.2s2-.4 2.6-1.2c.5-.8.7-1.8.7-3.1v-7.3H204v-8.3h17.6V67h-7.4l-.7-2.8Zm51.9 2.8H255V12.2h19l5.4 39h.1l5.4-39h18.4V67h-11.5V20.2h-.2L284.1 67H273l-7.4-46.8h-.1V67ZM345 52c0 3-.4 5.6-1.2 7.7a12.4 12.4 0 0 1-8.6 7.6 24.4 24.4 0 0 1-12.6 0 12.2 12.2 0 0 1-8.6-7.6c-.8-2-1.3-4.6-1.3-7.6V27c0-3 .4-5.6 1.3-7.6s2-3.8 3.5-5c1.5-1.2 3.2-2.1 5.1-2.6a24.3 24.3 0 0 1 12.6 0 12.2 12.2 0 0 1 8.6 7.6c.8 2 1.3 4.6 1.3 7.6v25Zm-19.5 3c0 1.3.3 2.3.8 3.1.5.8 1.4 1.2 2.6 1.2s2-.4 2.6-1.2c.5-.8.8-1.8.8-3.1V24.2c0-1.3-.3-2.3-.8-3.1-.5-.8-1.4-1.2-2.6-1.2s-2.1.4-2.6 1.2c-.5.8-.8 1.8-.8 3V55Zm29.1-42.8h13.2c3.8 0 7 .2 9.3.6 2.3.5 4.2 1.3 5.7 2.6 1.4 1.3 2.5 3.2 3.2 5.6.6 2.5 1 5.8 1 9.9v19.6c0 2.7-.3 5.1-.8 7.1s-1.5 3.7-2.9 5-3.3 2.5-5.8 3.3a37 37 0 0 1-9.7 1.1h-13.2V12.2Zm12.8 47c3 0 4.8-.6 5.6-1.7.8-1.1 1.2-3.1 1.2-6V29c0-2.1 0-3.7-.2-4.8a5 5 0 0 0-.8-2.5c-.4-.6-1-1-2-1.3-.8-.2-2.1-.4-3.8-.4v39.1Zm29.1-47h13.2c3.8 0 6.9.2 9.2.6 2.4.5 4.3 1.3 5.7 2.6 1.5 1.3 2.6 3.2 3.2 5.6.7 2.5 1 5.8 1 9.9v19.6a30 30 0 0 1-.7 7.1 10 10 0 0 1-2.9 5 13.6 13.6 0 0 1-5.8 3.3c-2.6.7-5.8 1.1-9.7 1.1h-13.2V12.2Zm12.8 47c3 0 4.8-.6 5.6-1.7.8-1.1 1.1-3.1 1.1-6V29l-.1-4.8a5 5 0 0 0-.8-2.5c-.5-.6-1.1-1-2-1.3-.8-.2-2.1-.4-3.8-.4v39.1Zm28.8 7.8V12.2H451V67h-12.8Zm21.7-54.8h17.7l8.2 39.9h.1V12h10v55h-16.4L470 21.2h-.2V67h-10V12.2Zm69.2 52a9.2 9.2 0 0 1-5.1 3.1 20 20 0 0 1-5.9.8c-4.5 0-7.8-1.2-9.9-3.5C506 62.2 505 58 505 52V27c0-3 .4-5.6 1.3-7.6a12.4 12.4 0 0 1 8.6-7.6c2-.5 4-.8 6.3-.8 5.3 0 9.3 1.2 12 3.5 2.8 2.4 4.2 6.2 4.2 11.4v5.8h-12.8v-7.6c0-1.3-.3-2.3-.8-3.1-.5-.8-1.4-1.2-2.6-1.2s-2.1.4-2.6 1.2c-.6.8-.8 1.8-.8 3v31a6 6 0 0 0 .7 3.1c.5.8 1.4 1.2 2.7 1.2s2-.4 2.6-1.2c.5-.8.8-1.8.8-3.1v-7.3h-4.9v-8.3h17.6V67h-7.4l-.7-2.8Z"/></svg>
 					</a>
 				</div>
 				<div class="align-self-center">
 					<a target="_blank" class="text-white-50 btn btn-vsm btn-primary" href="https://discord.gg/NxrDJYNC7Q">
+						<span class="visually-hidden">Discord</span>
 						<svg style="height: 20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 508.67 96.36"><g fill="#fff"><path d="M170.85 20.2h27.3q9.87 0 16.7 3.08a22.5 22.5 0 0 1 10.21 8.58 23.34 23.34 0 0 1 3.4 12.56A23.24 23.24 0 0 1 224.93 57a23.94 23.94 0 0 1-10.79 8.92q-7.24 3.3-17.95 3.29h-25.34Zm25.06 36.54q6.65 0 10.22-3.32a11.8 11.8 0 0 0 3.57-9.07 11.5 11.5 0 0 0-3.18-8.5q-3.2-3.18-9.63-3.19h-8.54v24.08Zm73.43 12.39a37 37 0 0 1-10.22-4.27V53.24a27.77 27.77 0 0 0 9.2 4.38 39.31 39.31 0 0 0 11.17 1.71 8.71 8.71 0 0 0 3.82-.66c.86-.44 1.29-1 1.29-1.58a2.37 2.37 0 0 0-.7-1.75 6.15 6.15 0 0 0-2.73-1.19l-8.4-1.89q-7.22-1.68-10.25-4.65a10.39 10.39 0 0 1-3-7.81 10.37 10.37 0 0 1 2.66-7.07 17.13 17.13 0 0 1 7.56-4.65 36 36 0 0 1 11.48-1.65A43.27 43.27 0 0 1 292 27.69a30.25 30.25 0 0 1 8.12 3.22v11a30 30 0 0 0-7.6-3.11 34 34 0 0 0-8.85-1.16q-6.58 0-6.58 2.24a1.69 1.69 0 0 0 1 1.58 16.14 16.14 0 0 0 3.74 1.08l7 1.26Q295.65 45 299 48t3.36 8.78a11.61 11.61 0 0 1-5.57 10.12q-5.53 3.71-15.79 3.7a46.41 46.41 0 0 1-11.66-1.47Zm49.56-1.47a21 21 0 0 1-9.07-8 21.59 21.59 0 0 1-3-11.34 20.62 20.62 0 0 1 3.15-11.27 21.16 21.16 0 0 1 9.24-7.8 34.25 34.25 0 0 1 14.56-2.84q10.5 0 17.43 4.41v12.83a21.84 21.84 0 0 0-5.7-2.73 22.65 22.65 0 0 0-7-1.05q-6.51 0-10.19 2.38a7.15 7.15 0 0 0-.1 12.43q3.57 2.41 10.36 2.41a23.91 23.91 0 0 0 6.9-1 25.71 25.71 0 0 0 5.84-2.49V66a34 34 0 0 1-17.85 4.62 32.93 32.93 0 0 1-14.57-2.96Zm49.74 0a21.77 21.77 0 0 1-9.25-8 21.14 21.14 0 0 1-3.18-11.41A20.27 20.27 0 0 1 359.39 37a21.42 21.42 0 0 1 9.21-7.74 38.17 38.17 0 0 1 28.7 0 21.25 21.25 0 0 1 9.17 7.7 20.41 20.41 0 0 1 3.15 11.27 21.29 21.29 0 0 1-3.15 11.41 21.51 21.51 0 0 1-9.2 8 36.32 36.32 0 0 1-28.63 0Zm21.27-12.42a9.12 9.12 0 0 0 2.56-6.76 8.87 8.87 0 0 0-2.56-6.68 9.53 9.53 0 0 0-7-2.49 9.67 9.67 0 0 0-7 2.49 8.9 8.9 0 0 0-2.55 6.68 9.15 9.15 0 0 0 2.55 6.76 9.53 9.53 0 0 0 7 2.55 9.4 9.4 0 0 0 7-2.55ZM451.69 29v15.14a12.47 12.47 0 0 0-6.93-1.75c-3.73 0-6.61 1.14-8.61 3.4s-3 5.77-3 10.53V69.2H416V28.25h16.8v13q1.4-7.14 4.52-10.53a10.38 10.38 0 0 1 8-3.4 11.71 11.71 0 0 1 6.37 1.68Zm56.98-10.2v50.4h-17.15V60a16.23 16.23 0 0 1-6.62 7.88A20.81 20.81 0 0 1 474 70.6a18.11 18.11 0 0 1-10.15-2.83 18.6 18.6 0 0 1-6.74-7.77 25.75 25.75 0 0 1-2.34-11.17 24.87 24.87 0 0 1 2.48-11.55 19.43 19.43 0 0 1 7.21-8 19.85 19.85 0 0 1 10.61-2.87q12.24 0 16.45 10.64V18.8ZM489 55a8.83 8.83 0 0 0 2.63-6.62A8.42 8.42 0 0 0 489 42a11 11 0 0 0-13.89 0 8.55 8.55 0 0 0-2.59 6.47 8.67 8.67 0 0 0 2.62 6.53 9.42 9.42 0 0 0 6.86 2.51 9.56 9.56 0 0 0 7-2.51ZM107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0 37.7 37.7 0 0 0 2.66 2 68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/><ellipse cx="242.92" cy="24.93" rx="8.55" ry="7.68"/><path d="M234.36 37.9a22.08 22.08 0 0 0 17.11 0v31.52h-17.11Z"/></g></svg>
 					</a>
 				</div>
 				<div class="align-self-center">
 					<a class="fw-bold text-white btn btn-vsm btn-primary position-relative" style="padding-top: 3px; padding-bottom: 3px;" id="debugLogButton" onclick="mods.debugLog()">
-						<l10n name="open_debug_log"></l10n>
+						<l10n name="open_debug_log">Debug Log</l10n>
 						<span id="debug_danger_bubble" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
 					</a>
 				</div>
@@ -794,7 +797,7 @@
 				<div class="alert alert-warning w-50 mx-auto" id="fileOpCanvas-zipImport">
 					<div class="row">
 						<div class="col-2">
-							<img src="img/info_warn.webp" class="w-100">
+							<img src="img/info_warn.webp" alt="" class="w-100">
 						</div>
 						<div class="col-10">
 							<l10n name="mod_pack_import"></l10n>
@@ -830,12 +833,12 @@
 	<div id="loadOverlay" class="modal" tabindex="-1">
 		<div class="modal-dialog modal-lg modal-dialog-centered" style="width:600px; height:300px;">
 			<div class="modal-content p-0 m-0 bg-dark">
-				<img style="margin:0; padding:0; width:600px; height:300px; opacity: 0.4;" src="img/splash.webp">
+				<img alt="" style="margin:0; padding:0; width:600px; height:300px; opacity: 0.4;" src="img/splash.webp">
 				<div style="position: absolute; left: 311px; height: 270px; width: 270px; top: 20px; opacity: 7%; z-index:2; ">
-					<img src="img/wait_ani.webp" class="w-100">
+					<img alt="" src="img/wait_ani.webp" class="w-100">
 				</div>
 				<div id="loadOverlay_downloadCancel" style="position: absolute; left: 10px; width: 280px; top: 250px;" class="py-1 px-3">
-					<button id="loadOverlay_downloadCancelButton" onclick="window.mods.cancelDownload()" class="btn btn-danger text-white w-100"></button>
+					<button type="button" id="loadOverlay_downloadCancelButton" onclick="window.mods.cancelDownload()" class="btn btn-danger text-white w-100"></button>
 				</div>
 				<div style="position: absolute; left: 310px; height: 270px; width: 280px; top: 20px;" class="bg-dark py-1 px-3 text-white">
 					<div id="loadOverlay_statusMessage" class="text-center display-6 mb-1">Status Title</div>
@@ -854,7 +857,7 @@
 			</div>
 		</div>
 	</div>
-</body>
+
 
 
 <template id="version_row">
@@ -875,7 +878,7 @@
 			<input type="checkbox" class="form-check-input mod-row-checkbox" id="{{id}}__checkbox">
 		</td>
 		<td style="width: 4.6rem; height: 4.6rem; white-space: nowrap">
-			<img class="img-fluid" src="{{icon}}">
+			<img alt="" class="img-fluid" src="{{icon}}">
 			<i class="bi bi-folder2-open {{class_isAFolder}}" style="position: relative; top: -16px; left: -70px; font-size: 18px; color: rgb(175 165 141);"></i>
 		</td>
 		<td>
@@ -908,24 +911,24 @@
 			</div>
 		</td>
 		<td class="align-middle text-end" style="line-height: 2.6rem;">
-			<button class="{{class_showFolderEdit}} {{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="actionLib.openMod('true', '{{mapClick}}')">
-				<img class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}">
+			<button type="button" class="{{class_showFolderEdit}} {{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="actionLib.openMod('true', '{{mapClick}}')">
+				<img alt="" class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}">
 			</button>
 			
-			<button class="{{class_showFolderEdit}} {{class_hideRemovable}} btn btn-outline-secondary rounded-4 btn-sm me-2" onclick="return"><l10n name="removable_button"></l10n></button>
-			<button class="{{class_showFolderEdit}} {{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button"></l10n></button>
-			<button class="{{class_showFolderEdit}} {{class_hideGameAdminPassword}} btn btn-outline-success btn-sm me-2" onclick="window.mods.popClipboard('{{game_admin_password}}')"><l10n name="game_admin_pass_button"></l10n></button>
-			<button class="{{class_showFolderEdit}} {{class_hidePassword}} btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('{{password}}')"><l10n name="admin_pass_button"></l10n></button>
-			<a target="_blank" class="{{class_showFolderEdit}} {{class_hideWebsite}} btn btn-outline-info btn-sm me-2" href="{{website}}" rel="noopener noreferrer"><l10n name="admin_button"></l10n></a>
-			<button class="{{class_showFolderEdit}} btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('{{id}}')"><l10n name="export_button"></l10n></button>
-			<button class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('{{id}}')"><l10n name="notes_button"></l10n></button>
-			<button class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save"></l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} {{class_hideRemovable}} btn btn-outline-secondary rounded-4 btn-sm me-2" onclick="return"><l10n name="removable_button"></l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} {{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button"></l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} {{class_hideGameAdminPassword}} btn btn-outline-success btn-sm me-2" onclick="window.mods.popClipboard('{{game_admin_password}}')"><l10n name="game_admin_pass_button"></l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} {{class_hidePassword}} btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('{{password}}')"><l10n name="admin_pass_button"></l10n></button>
+			<a target="_blank" class="{{class_showFolderEdit}} {{class_hideWebsite}} btn btn-outline-info btn-sm me-2" href="{{website}}" rel="noopener noreferrer"><l10n name="admin_button">open admin</l10n></a>
+			<button type="button" class="{{class_showFolderEdit}} btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('{{id}}')"><l10n name="export_button"></l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('{{id}}')"><l10n name="notes_button"></l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save"></l10n></button>
 			<div class="btn-group btn-group-sm {{class_hideFolderEdit}}">
-				<button onclick="mainLib.setItemOrder('{{id}}', true, true)" id="{{id}}_order_up_last" class="btn btn-sm btn-secondary"><l10n name="folder_top_button"></l10n></button>
-				<button onclick="mainLib.setItemOrder('{{id}}', true)" id="{{id}}_order_up" class="btn btn-sm btn-secondary"><l10n name="folder_up_button"></l10n></button>
-				<button onclick="mainLib.setItemOrder('{{id}}', false)" id="{{id}}_order_down" class="btn btn-sm btn-secondary"><l10n name="folder_down_button"></l10n></button>
-				<button onclick="mainLib.setItemOrder('{{id}}', false, true)" id="{{id}}_order_down_last" class="btn btn-sm btn-secondary"><l10n name="folder_bot_button"></l10n></button>
-				<button class="btn btn-danger text-white" onclick="window.mods.removeFolder('{{id}}')"><l10n name="remove_folder"></l10n></button>
+				<button type="button" onclick="mainLib.setItemOrder('{{id}}', true, true)" id="{{id}}_order_up_last" class="btn btn-sm btn-secondary"><l10n name="folder_top_button"></l10n></button>
+				<button type="button" onclick="mainLib.setItemOrder('{{id}}', true)" id="{{id}}_order_up" class="btn btn-sm btn-secondary"><l10n name="folder_up_button"></l10n></button>
+				<button type="button" onclick="mainLib.setItemOrder('{{id}}', false)" id="{{id}}_order_down" class="btn btn-sm btn-secondary"><l10n name="folder_down_button"></l10n></button>
+				<button type="button" onclick="mainLib.setItemOrder('{{id}}', false, true)" id="{{id}}_order_down_last" class="btn btn-sm btn-secondary"><l10n name="folder_bot_button"></l10n></button>
+				<button type="button" class="btn btn-danger text-white" onclick="window.mods.removeFolder('{{id}}')"><l10n name="remove_folder"></l10n></button>
 			</div>
 		</td>
 	</tr>
@@ -970,7 +973,7 @@
 		<span class="inset-block-header">{{shortname}}</span>
 		<div class="row">
 			<div class="col-2">
-				<img class="img-fluid" src="{{icon}}">
+				<img class="img-fluid" alt="" src="{{icon}}">
 				<div class="bi bi-folder2-open {{isAFolder}}" style="margin-top: -16px; margin-left: -5px; margin-bottom: -5px; font-size: 18px; color: rgb(175 165 141);"></div>
 			</div>
 			<div class="col-10 align-self-center">
@@ -990,4 +993,5 @@
 	<div class="col-5 small longPrintPath">{{folder}}</div>
 </template>
 
+</body>
 </html>

@@ -6,6 +6,7 @@
 		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
 		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
 		(c) 2022-present FSG Modding.  MIT License. -->
+	<title>FSG MA</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
@@ -78,14 +79,14 @@
 			<div class="col-4 my-auto mx-auto" id="icon_div"></div>
 			<div class="col-8 mx-auto">
 				<table class="table table-sm table-striped mb-0">
-					<tr><th><l10n name="detail_mod_author"></l10n></th><td class="text-end" id="mod_author"></td></tr>
-					<tr><th><l10n name="detail_mod_version"></l10n></th><td class="text-end" id="version"></td></tr>
-					<tr><th><l10n name="detail_mod_mh_version"></l10n></th><td class="text-end" id="mh_version"></td></tr>
-					<tr><th><l10n name="detail_mod_size"></l10n></th><td class="text-end" id="filesize"></td></tr>
-					<tr><th><l10n name="detail_mod_date"></l10n></th><td class="text-end" id="file_date"></td></tr>
-					<tr><th><l10n name="detail_mod_has_scripts"></l10n></th><td class="text-end" id="has_scripts"></td></tr>
-					<tr><th><l10n name="detail_mod_store_items"></l10n></th><td class="text-end" id="store_items"></td></tr>
-					<tr><th><l10n name="detail_mod_multiplayer"></l10n></th><td class="text-end" id="is_multiplayer"></td></tr>
+					<tr><th scope="col"><l10n name="detail_mod_author"></l10n></th><td class="text-end" id="mod_author"></td></tr>
+					<tr><th scope="col"><l10n name="detail_mod_version"></l10n></th><td class="text-end" id="version"></td></tr>
+					<tr><th scope="col"><l10n name="detail_mod_mh_version"></l10n></th><td class="text-end" id="mh_version"></td></tr>
+					<tr><th scope="col"><l10n name="detail_mod_size"></l10n></th><td class="text-end" id="filesize"></td></tr>
+					<tr><th scope="col"><l10n name="detail_mod_date"></l10n></th><td class="text-end" id="file_date"></td></tr>
+					<tr><th scope="col"><l10n name="detail_mod_has_scripts"></l10n></th><td class="text-end" id="has_scripts"></td></tr>
+					<tr><th scope="col"><l10n name="detail_mod_store_items"></l10n></th><td class="text-end" id="store_items"></td></tr>
+					<tr><th scope="col"><l10n name="detail_mod_multiplayer"></l10n></th><td class="text-end" id="is_multiplayer"></td></tr>
 				</table>				
 			</div>
 		</div>
@@ -103,7 +104,7 @@
 
 			<div class="col-12 inset-block d-none" id="map_image_div"><div>
 				<l10n class="inset-block-header" name="map_image_title"></l10n>
-				<img id="map_image" class="img-fluid w-100">
+				<img alt="" id="map_image" class="img-fluid w-100">
 			</div></div>
 
 			<div class="col-12 inset-block d-none" id="cropcal_div"><div>
@@ -140,12 +141,12 @@
 				<div style="white-space: pre-wrap" class="px-5 text-info font-monospace" id="i3dFiles"></div>
 				<div class="d-none" id="detail_crop_json">
 					<h6 class="i18n mt-4 ms-4"><l10n name="detail_crop_json"></l10n></h6>
-					<button id="cropcal_button" class="btn btn-primary my-2 ms-5 w-50"><l10n name="copy_cropcal"></l10n></button>
+					<button type="button" id="cropcal_button" class="btn btn-primary my-2 ms-5 w-50"><l10n name="copy_cropcal"></l10n></button>
 				</div>
 			</div></div>
 		</div>
 	</div>
-</body>
+
 
 <template id="combo_div_source">
 	<div class="row border-bottom mb-2">
@@ -168,13 +169,13 @@
 		<div class="col-3 align-self-center">
 			{{compareTerms}}
 		</div>
-		<div class="text-center col-1 align-self-center"><button onclick="clientCompareCombo('{{clickSource}}', '{{clickPage}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button></div>
+		<div class="text-center col-1 align-self-center"><button type="button" onclick="clientCompareCombo('{{clickSource}}', '{{clickPage}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button></div>
 	</div>
 </template>
 
 <template id="vehicle_info_div">
 	<div class="col-12 inset-block" id="{{uuid}}"><div>
-		<span class="inset-block-header" name="detail_dev_info">{{itemName}} <button class="btn btn-sm btn-warning" onclick="clientOpenCompare('{{uuid}}')"><l10n name="basegame_button_comp"></l10n></button></span>
+		<span class="inset-block-header" name="detail_dev_info">{{itemName}} <button type="button" class="btn btn-sm btn-warning" onclick="clientOpenCompare('{{uuid}}')"><l10n name="basegame_button_comp"></l10n></button></span>
 		<span class="inset-block-blurb-detail">
 			<small class="fst-italic">{{typeDesc}}</small>
 			<span class="fw-normal" style="font-size: 50%">-</span>
@@ -185,7 +186,7 @@
 
 		<div class="inset-body">
 			<div class="row mx-2">
-				<div class="col-5 my-auto mx-auto" id="icon_div">
+				<div class="col-5 my-auto mx-auto">
 					<div class="{{showBrand}} text-center">{{brandImage}}</div>
 					<div class="text-center">{{iconImage}}</div>
 				</div>
@@ -196,7 +197,7 @@
 				<div class="col-12 py-2 {{showCombos}}">
 					<h4 class="text-center">
 						<l10n name="combinations_title"></l10n>
-						<button onclick="clientOpenCombos('{{uuid}}')" class="btn btn-warning btn-vsm mt-2"><l10n name="basegame_compare_all"></l10n></button>
+						<button type="button" onclick="clientOpenCombos('{{uuid}}')" class="btn btn-warning btn-vsm mt-2"><l10n name="basegame_compare_all"></l10n></button>
 					</h4>
 					{{combinations}}
 				</div>
@@ -256,7 +257,7 @@
 		</span>
 		<div class="inset-body">
 			<div class="row mx-2">
-				<div class="col-5 my-auto mx-auto" id="icon_div">
+				<div class="col-5 my-auto mx-auto">
 					{{iconImage}}
 				</div>
 				<div class="col-7">
@@ -269,4 +270,5 @@
 	</div></div>
 </template>
 
+</body>
 </html>
