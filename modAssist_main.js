@@ -38,6 +38,7 @@ serveIPC.refFunc = {
 	readGameLog            : funcLib.gameSet.readGameLog,
 	refreshClientModList   : refreshClientModList,
 	refreshTransientStatus : refreshTransientStatus,
+	toggleMiniWindow       : toggleMiniWindow,
 }
 
 serveIPC.windowLib = new (require('./lib/modAssist_window_lib.js')).windowLib()
@@ -596,7 +597,7 @@ ipcMain.on('toMain_openFind',      () => { serveIPC.windowLib.createNamedWindow(
 // Mini-mode operation
 ipcMain.on('toMain_toggleMiniPin', () => { serveIPC.windowLib.toggleAlwaysOnTop('mini'); refreshClientModList() })
 ipcMain.on('toMain_openMiniMode',  () => { toggleMiniWindow() })
-const toggleMiniWindow = () => {
+function toggleMiniWindow () {
 	if ( serveIPC.windowLib.isValid('mini') && serveIPC.windowLib.isVisible('mini') ) {
 		serveIPC.windowLib.safeClose('mini')
 	} else {
@@ -937,13 +938,14 @@ app.whenReady().then(() => {
 		serveIPC.windowLib.tray = new Tray(serveIPC.icon.tray)
 		serveIPC.windowLib.tray.setToolTip('FSG Mod Assist')
 		serveIPC.windowLib.tray.on('click', () => { serveIPC.windowLib.win.main.show() })
-		serveIPC.windowLib.tray.setContextMenu(Menu.buildFromTemplate([
-			funcLib.menu.textL10n('app_name', () => { serveIPC.windowLib.win.main.show() }),
-			funcLib.menu.sep,
-			funcLib.menu.textL10n('mini_mode_button__title', () => { toggleMiniWindow() }),
-			funcLib.menu.textL10n('launch_game', () => { funcLib.gameLauncher() }),
-			funcLib.menu.textL10n('tray_quit', () => { serveIPC.windowLib.win.main.close() }),
-		]))
+		serveIPC.windowLib.trayContextMenu()
+		// serveIPC.windowLib.tray.setContextMenu(Menu.buildFromTemplate([
+		// 	funcLib.menu.iconL10n('app_name', () => { serveIPC.windowLib.win.main.show() }, 'fsgMA'),
+		// 	funcLib.menu.sep,
+		// 	funcLib.menu.iconL10n('mini_mode_button__title', () => { toggleMiniWindow() }, 'mini'),
+		// 	funcLib.menu.iconL10n('launch_game', () => { funcLib.gameLauncher() }, 'launch'),
+		// 	funcLib.menu.iconL10n('tray_quit', () => { serveIPC.windowLib.win.main.close() }, 'quit'),
+		// ]))
 
 		funcLib.modHub.refresh()
 
