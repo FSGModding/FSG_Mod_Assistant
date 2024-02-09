@@ -47,6 +47,7 @@ contextBridge.exposeInMainWorld(
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
 				'fromMain_modRecords',
+				'fromMain_forceFilter',
 			])
 		
 			if ( validChannels.has( channel ) ) {

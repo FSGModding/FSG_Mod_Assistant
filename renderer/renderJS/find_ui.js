@@ -60,6 +60,11 @@ const makeModRow = (thisMod) => fsgUtil.useTemplate('mod_entry', {
 	})).join(''),
 })
 
+window.mods.receive('fromMain_forceFilter', (text) => {
+	fsgUtil.valueById('mods__filter', text)
+	clientFilter()
+})
+
 function clientClearInput() {
 	fsgUtil.valueById('mods__filter', '')
 	clientFilter()

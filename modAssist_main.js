@@ -322,12 +322,13 @@ ipcMain.on('toMain_dragOut', (event, modID) => {
 	})
 })
 ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) => {
-	const thisMod   = serveIPC.modCollect.modColUUIDToRecord(modID)
-	const thisSite  = serveIPC.storeSites.get(thisMod.fileDetail.shortName, '')
-	const thisPath  = serveIPC.modCollect.mapDashedToFullPath(modID)
-	const isSave    = thisMod.badgeArray.includes('savegame')
-	const notMod    = thisMod.badgeArray.includes('notmod')
-	const isLog     = thisMod.badgeArray.includes('log')
+	const thisCollect = modID.split('--')[0]
+	const thisMod     = serveIPC.modCollect.modColUUIDToRecord(modID)
+	const thisSite    = serveIPC.storeSites.get(thisMod.fileDetail.shortName, '')
+	const thisPath    = serveIPC.modCollect.mapDashedToFullPath(modID)
+	const isSave      = thisMod.badgeArray.includes('savegame')
+	const notMod      = thisMod.badgeArray.includes('notmod')
+	const isLog       = thisMod.badgeArray.includes('log')
 
 	const template = [
 		funcLib.menu.icon(thisMod.fileDetail.shortName, null, 'mod'),
@@ -358,6 +359,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 					serveIPC.windowLib.createNamedWindow('save', { collectKey : collectKey })
 					setTimeout(() => { saveCompare_read(thisPath, thisMod.fileDetail.isFolder) }, 250)
 				},
+				icon  : serveIPC.modCollect.contextIcons.collection,
 			}))
 
 		template.push(funcLib.menu.iconL10n('check_save_text', null, 'save', { submenu : subMenu }))
@@ -397,10 +399,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 			{
 				icon    : serveIPC.windowLib.contextIcons.depend,
 				label   : __('menu_depend_on'),
-				submenu : thisMod.modDesc.depend.map((x) => ( {
-					click : () => { serveIPC.windowLib.sendToValidWindow('main', 'fromMain_filterOnly', x)},
-					label : x,
-				} )),
+				submenu : thisMod.modDesc.depend.map((x) => funcLib.menu.doDepReq(x, thisCollect)),
 			}
 		)
 	}
@@ -413,10 +412,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 			{
 				icon    : serveIPC.windowLib.contextIcons.required,
 				label   : __('menu_require_by'),
-				submenu : requireBy[thisMod.fileDetail.shortName].map((x) => ({
-					click : () => { serveIPC.windowLib.sendToValidWindow('main', 'fromMain_filterOnly', x)},
-					label : x,
-				})),
+				submenu : requireBy[thisMod.fileDetail.shortName].map((x) => funcLib.menu.doDepReq(x, thisCollect)),
 			}
 		)
 	}
