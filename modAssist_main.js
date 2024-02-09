@@ -939,13 +939,6 @@ app.whenReady().then(() => {
 		serveIPC.windowLib.tray.setToolTip('FSG Mod Assist')
 		serveIPC.windowLib.tray.on('click', () => { serveIPC.windowLib.win.main.show() })
 		serveIPC.windowLib.trayContextMenu()
-		// serveIPC.windowLib.tray.setContextMenu(Menu.buildFromTemplate([
-		// 	funcLib.menu.iconL10n('app_name', () => { serveIPC.windowLib.win.main.show() }, 'fsgMA'),
-		// 	funcLib.menu.sep,
-		// 	funcLib.menu.iconL10n('mini_mode_button__title', () => { toggleMiniWindow() }, 'mini'),
-		// 	funcLib.menu.iconL10n('launch_game', () => { funcLib.gameLauncher() }, 'launch'),
-		// 	funcLib.menu.iconL10n('tray_quit', () => { serveIPC.windowLib.win.main.close() }, 'quit'),
-		// ]))
 
 		funcLib.modHub.refresh()
 
