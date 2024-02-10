@@ -419,14 +419,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/notarize@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@electron/notarize@npm:2.1.0"
+"@electron/notarize@npm:2.2.1":
+  version: 2.2.1
+  resolution: "@electron/notarize@npm:2.2.1"
   dependencies:
     debug: ^4.1.1
     fs-extra: ^9.0.1
     promise-retry: ^2.0.1
-  checksum: ac58f39f4b2370ea929837cef50ebeedb4108ed9bd2a3fef0b89254891014a745da2db703b18b8e0d097a17000cc8fa984bcff3f087368986cb4a59753365a2f
+  checksum: c791a631acb397ec7ad6fa7966e878bbf147c29afae29844276bfcde36509fcd326ac0ad0a3e477ed2aa01abcb3001816311a2d002f6e7e7b81e4fe678915a8b
   languageName: node
   linkType: hard
 
@@ -447,9 +447,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/universal@npm:1.4.1":
-  version: 1.4.1
-  resolution: "@electron/universal@npm:1.4.1"
+"@electron/universal@npm:1.5.1":
+  version: 1.5.1
+  resolution: "@electron/universal@npm:1.5.1"
   dependencies:
     "@electron/asar": ^3.2.1
     "@malept/cross-spawn-promise": ^1.1.0
@@ -458,7 +458,7 @@ __metadata:
     fs-extra: ^9.0.1
     minimatch: ^3.0.4
     plist: ^3.0.4
-  checksum: 257f3a25a4f940ccbe601a0f3a2a925a28657bc3c5fc46018980b771825834665d184e5ce75cfa0b8639525a0bdbb7f0bc02e69e2d4fb044add64638db4d48a4
+  checksum: 55eb09dce1f870efaf0bfd98b65042ff3dd5d868deeede2e5266ed5d041b75d9c5108050de6ebfda299d756f31ce66633a0d7585fdcad849337d8c2925709154
   languageName: node
   linkType: hard
 
@@ -1003,14 +1003,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-builder-lib@npm:24.12.0":
-  version: 24.12.0
-  resolution: "app-builder-lib@npm:24.12.0"
+"app-builder-lib@npm:24.13.0":
+  version: 24.13.0
+  resolution: "app-builder-lib@npm:24.13.0"
   dependencies:
     "@develar/schema-utils": ~2.6.5
-    "@electron/notarize": 2.1.0
+    "@electron/notarize": 2.2.1
     "@electron/osx-sign": 1.0.5
-    "@electron/universal": 1.4.1
+    "@electron/universal": 1.5.1
     "@malept/flatpak-bundler": ^0.4.0
     "@types/fs-extra": 9.0.13
     async-exit-hook: ^2.0.1
@@ -1020,7 +1020,7 @@ __metadata:
     chromium-pickle-js: ^0.2.0
     debug: ^4.3.4
     ejs: ^3.1.8
-    electron-publish: 24.9.4
+    electron-publish: 24.13.0
     form-data: ^4.0.0
     fs-extra: ^10.1.0
     hosted-git-info: ^4.1.0
@@ -1034,7 +1034,7 @@ __metadata:
     semver: ^7.3.8
     tar: ^6.1.12
     temp-file: ^3.4.0
-  checksum: 625484ef8be21a92cdd9a6317a33546f0769921a1fc0bb72cdaf4d440da303f2aa4ae1362f2657c788736f50326e556124c37403b8e5d63a947772bf359f4e51
+  checksum: 7e9baa688103731e0eb13d4b38ae16ea5ddcd9b2a4176b7398c6ad7dc8144eb2e13fcb3c4306542bb956eff8cf9a42b8395cd8a04788f9221a65227cbce29883
   languageName: node
   linkType: hard
 
@@ -1807,11 +1807,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dmg-builder@npm:24.12.0":
-  version: 24.12.0
-  resolution: "dmg-builder@npm:24.12.0"
+"dmg-builder@npm:24.13.0":
+  version: 24.13.0
+  resolution: "dmg-builder@npm:24.13.0"
   dependencies:
-    app-builder-lib: 24.12.0
+    app-builder-lib: 24.13.0
     builder-util: 24.9.4
     builder-util-runtime: 9.2.3
     dmg-license: ^1.0.11
@@ -1821,7 +1821,7 @@ __metadata:
   dependenciesMeta:
     dmg-license:
       optional: true
-  checksum: 98f851a116d558320eeec6ca94009720f628d2694926e4cf128689a63ba9b6fa87264b81f7afa511f0571198db0aea672fec840a2828447054d73906d20d2caf
+  checksum: 725e22042e7102a6a4b22bce4c11107220c521f746a336ff153fba70e2851aa085d294109c1a4c6650836344767f78239b0059d6f0189fa204af7c4cb7949284
   languageName: node
   linkType: hard
 
@@ -1893,15 +1893,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:^24.12.0":
-  version: 24.12.0
-  resolution: "electron-builder@npm:24.12.0"
+"electron-builder@npm:^24.13.0":
+  version: 24.13.0
+  resolution: "electron-builder@npm:24.13.0"
   dependencies:
-    app-builder-lib: 24.12.0
+    app-builder-lib: 24.13.0
     builder-util: 24.9.4
     builder-util-runtime: 9.2.3
     chalk: ^4.1.2
-    dmg-builder: 24.12.0
+    dmg-builder: 24.13.0
     fs-extra: ^10.1.0
     is-ci: ^3.0.0
     lazy-val: ^1.0.5
@@ -1911,13 +1911,13 @@ __metadata:
   bin:
     electron-builder: cli.js
     install-app-deps: install-app-deps.js
-  checksum: 362d70095492674842b5039239435d0fce64f89350b9acf61b8e1ae4b3e83b8996d65629991674f35063a32dd028a3babb99afae925084a0b6ca34da87d464d4
+  checksum: de371c1187855c3d77a010c36681286901ca09d6c8888c004357573e079c0ed685e28bdc722ee0685b6f38a73b734b42889107ce6e8d80e66cdf5328c2124c68
   languageName: node
   linkType: hard
 
-"electron-publish@npm:24.9.4":
-  version: 24.9.4
-  resolution: "electron-publish@npm:24.9.4"
+"electron-publish@npm:24.13.0":
+  version: 24.13.0
+  resolution: "electron-publish@npm:24.13.0"
   dependencies:
     "@types/fs-extra": ^9.0.11
     builder-util: 24.9.4
@@ -1926,7 +1926,7 @@ __metadata:
     fs-extra: ^10.1.0
     lazy-val: ^1.0.5
     mime: ^2.5.2
-  checksum: c16cf7d1f00abce0c5021f22dcafcc83da5c8bb3d2b054f1527c84a0e416c770c519d23f8a4806084ea5ecd418adb5d16b61933c9133a252311612ad54b1eaaa
+  checksum: fa8d27e56ac786c0391473712b566b870ccd90396f3255dcfea28f6bf785b6f107085667d3db02c08d805b4255c6f62643d65d6251849b36180397a42a4c4db3
   languageName: node
   linkType: hard
 
@@ -1963,16 +1963,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^28.2.1":
-  version: 28.2.1
-  resolution: "electron@npm:28.2.1"
+"electron@npm:^28.2.2":
+  version: 28.2.2
+  resolution: "electron@npm:28.2.2"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^18.11.18
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 50926b0b4e31b3cedc829566478966248c41d7cdd32c8b42f14572372e5e50cf4ad23d6186d98ef986f59bdc694935a48089ec5d997e5c739d7c13282a97fecb
+  checksum: 0e44bf2dd0ad14ee16ed9696f9b4959b48c3db9b5e0b48f1b7aa0d8be80ae58663ccad692560721b22c787d24e784cdb36d60311f302e6552653dc446d89c3f1
   languageName: node
   linkType: hard
 
@@ -2059,9 +2059,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-unicorn@npm:^50.0.1":
-  version: 50.0.1
-  resolution: "eslint-plugin-unicorn@npm:50.0.1"
+"eslint-plugin-unicorn@npm:^51.0.1":
+  version: 51.0.1
+  resolution: "eslint-plugin-unicorn@npm:51.0.1"
   dependencies:
     "@babel/helper-validator-identifier": ^7.22.20
     "@eslint-community/eslint-utils": ^4.4.0
@@ -2081,7 +2081,7 @@ __metadata:
     strip-indent: ^3.0.0
   peerDependencies:
     eslint: ">=8.56.0"
-  checksum: 6d3d2057e65b696e4897bff142437cbea76f3a86c18253cebdec40a9fb69061f698e22a9d0795244f21173f2389e38e9b41ca10afae9de91632682c104dcee2b
+  checksum: 1ab19ed95444f69220e385eb6292f4eadf1886a68fb775de7513e5e4a7aa667142200adda0212dea850d61ebf433c16b6a7163b8b032eeec25029ba0ab41c4ea
   languageName: node
   linkType: hard
 
@@ -2496,12 +2496,12 @@ __metadata:
     clean-css: ^5.3.3
     deepl-node: ^1.11.1
     discord-rpc: ^4.0.1
-    electron: ^28.2.1
-    electron-builder: ^24.12.0
+    electron: ^28.2.2
+    electron-builder: ^24.13.0
     electron-store: ^8.1.0
     electron-updater: ^6.1.8
     eslint: ^8.56.0
-    eslint-plugin-unicorn: ^50.0.1
+    eslint-plugin-unicorn: ^51.0.1
     fast-xml-parser: ^4.3.4
     glob: ^10.3.10
     html-validate: ^8.9.1
