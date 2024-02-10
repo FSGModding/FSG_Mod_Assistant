@@ -1003,7 +1003,7 @@ function doModLook_response(m, thisMod, thisUUID) {
 					serveIPC.log[logLine[0]](m.logLines.group, logLine[1])
 				}
 
-				if ( typeof m.modlook === 'undefined' ) {
+				if ( typeof m.modLook === 'undefined' ) {
 					serveIPC.log.danger(`worker-thread-${m.pid}`, 'Unable to read mod file/folder!')
 					break
 				}
