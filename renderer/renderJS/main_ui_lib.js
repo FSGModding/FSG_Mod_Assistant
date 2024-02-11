@@ -209,18 +209,6 @@ const mainLib = {
 		thisMod.modDesc.author
 	].join(' ').toLowerCase()),
 
-	getFilterButton : ( name, isHide = false ) => {
-		const id     = `${isHide ? 'tag_filter_out__' : 'tag_filter__'}${name}`
-		const cls    = isHide ? 'filter_out_tag_buttons' : 'filter_tag_buttons'
-		const l10n   = `mod_badge_${name}`
-		const qty    = mainState.searchTagMap?.[name]?.length ?? null
-		const color  = name === 'keys_bad' || name === 'depend' ? 'danger' : 'success'
-	
-		return `
-			<input type="checkbox" id="${id}" onchange="select_lib.filter_begin()" class="btn-check ${cls}" autocomplete="off">
-			<label class="btn btn-outline-${color}" for="${id}"><l10n name="${l10n}"></l10n>${qty !== null ? ` [${qty}]` : ''}</label>
-		`
-	},
 	getFilterButton2 : ( name ) => [
 		'<div class="row border-bottom gx-1 gy-0 mt-1 pb-1"><div class="col-2">',
 		mainLib.getFilterButton3(name, 'show', 'success', true),
@@ -228,7 +216,6 @@ const mainLib = {
 		mainLib.getFilterButton3(name, 'hide', 'warning'),
 		'</div><div class="col-6 align-self-center text-center">',
 		fsgUtil.badge(false, name),
-		// `<l10n name="mod_badge_${name}" ${name === 'keys_bad' || name === 'depend' ? 'class="text-danger"' : ''}></l10n>`,
 		'</div><div class="col-2">',
 		mainLib.getFilterButton3(name, 'exclusive', 'danger'),
 		'</div></div>'
@@ -237,8 +224,6 @@ const mainLib = {
 		`<input type="checkbox" id="tag_filter__${action}__${id}" onchange="select_lib.new_tag('${action}', '${id}')" class="btn-check tag_filter__${action}" autocomplete="off" ${checked ? 'checked' : ''}>`,
 		`<label class="btn w-100 btn-sm btn-outline-${color}" for="tag_filter__${action}__${id}"><l10n name="tag_filter__${action}"></l10n></label>`
 	].join(''),
-	getFilterReset : (isHide = false) =>
-		`<button class="btn btn-outline-warning text-center" onclick="select_lib.${isHide ? 'out_tag_reset' : 'tag_reset'}()"><l10n name="filter_tag_reset"></l10n></button>`,
 	getFilterReset2 : () =>
 		'<button class="btn btn-primary btn-sm w-100 text-center mt-1" onclick="select_lib.new_tag_reset()"><l10n name="filter_tag_reset"></l10n></button>',
 	setDropDownFilters : ( l10n ) => {
@@ -247,17 +232,11 @@ const mainLib = {
 			.sort((a, b) => new Intl.Collator().compare(l10n[a], l10n[b]))
 			.filter((x) => Object.hasOwn(mainState.searchTagMap, x) && mainState.searchTagMap[x].length !== 0)
 	
-		const hiderTags = tagOrder.map((x) => mainLib.getFilterButton(x, true))
-		const limitTags = tagOrder.map((x) => mainLib.getFilterButton(x, false))
 		const newTags   = tagOrder.map((x) => mainLib.getFilterButton2(x))
 	
-		hiderTags.unshift(mainLib.getFilterReset(true))
-		limitTags.unshift(mainLib.getFilterReset(false))
 		newTags.push(mainLib.getFilterReset2())
 	
 		fsgUtil.setById('filter_new_style', newTags)
-		//fsgUtil.setById('filter_out__tags', hiderTags)
-		//fsgUtil.setById('filter__tags',     limitTags)
 	},
 
 	// Order Buttons
