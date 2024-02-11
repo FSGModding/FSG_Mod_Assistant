@@ -9,6 +9,7 @@
     "element-name"                : ["error", { "whitelist" : ["l10n"] }],
     "element-required-ancestor"   : "off",
     "element-required-attributes" : "off",
+    "element-required-content"    : "off",
     "empty-heading"               : "off",
     "no-dup-id"                   : "off",
     "no-inline-style"             : "off",

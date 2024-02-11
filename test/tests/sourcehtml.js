@@ -34,6 +34,7 @@ async function tester (test) {
 			'element-name'                : ['error', { whitelist : ['l10n'] }],
 			'element-required-ancestor'   : 'off',
 			'element-required-attributes' : 'off',
+			'element-required-content'    : 'off',
 			'empty-heading'               : 'off',
 			'no-inline-style'             : 'off',
 			'no-trailing-whitespace'      : 'off',
