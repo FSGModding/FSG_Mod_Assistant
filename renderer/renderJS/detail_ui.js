@@ -213,7 +213,6 @@ const doKeyBinds = (modRecord, locale) => {
 }
 
 const buildPage = (modCollect) => {
-	console.log(modCollect)
 	document.body.setAttribute('data-version', modCollect.appSettings.game_version)
 
 	const modRecord    = modCollect.opts.selected
