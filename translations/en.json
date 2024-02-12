@@ -237,7 +237,7 @@
 	"make_zip"                              : "Export ZIP File",
 	"make_zip__title"                       : "Make a ZIP file of selected mods for sharing or distribution",
 	"malicious_code"                        : "This mod may contain malicious LUA scripting - you should delete it now!",
-	"malware_button_delete"                 : "I do not trust it, delete it right now",
+	"malware_button_delete"                 : "I do not trust it, move it to recycle bin right now",
 	"malware_button_false"                  : "I am sure it is fine, keep it, and never ask me about this mod again",
 	"malware_button_keep"                   : "I would like to investigate, keep it for now",
 	"malware_detail_blurb"                  : "This mod appears to have a lua script in it that is capable of deleting folder or files from your game directory such as mods, savegames, and more.  Starting the game with this mod enabled may cause loss of game files.  We strongly suggest deleting this file and reporting it to us via our GitHub or email at report@farmsimgame.com",

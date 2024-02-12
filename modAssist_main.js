@@ -923,6 +923,7 @@ modQueueRunner.on('process-mods-done', () => {
 	serveIPC.isProcessing = false
 
 	if ( serveIPC.modCollect.isDangerMods ) {
+		const trashPromises = []
 		const currentSavedIgnoreList = new Set(serveIPC.storeSet.get('suppress_malware', []))
 
 		for (const thisBadMod of serveIPC.modCollect.dangerMods ) {
@@ -932,6 +933,10 @@ modQueueRunner.on('process-mods-done', () => {
 			if ( serveIPC.ignoreMalwareList.has(thisBadMod) ) { continue }
 
 			const thisMod = serveIPC.modCollect.modColUUIDToRecord(thisBadMod)
+
+			// Always ignore, file added to master whitelist
+			if ( serveIPC.whiteMalwareList.has(thisMod.fileDetail.shortName) ) { continue }
+
 			const thisMessage = [
 				__('malware_dialog_intro'),
 				'\n\n',
@@ -958,13 +963,14 @@ modQueueRunner.on('process-mods-done', () => {
 					const fileName = path.basename(thisMod.fileDetail.fullPath)
 					const pathName = serveIPC.modCollect.modColUUIDToFolder(thisBadMod)
 
-					try {
-						fs.rmSync(path.join(pathName, fileName), { recursive : true })
-						serveIPC.log.warning('malware-detector', 'Forcibly removed', thisMod.fileDetail.fullPath)
-						funcLib.general.toggleFolderDirty(true)
-					} catch (err) {
-						serveIPC.log.danger('malware-detector', 'Unable to remove', thisMod.fileDetail.fullPath, err)
-					}
+					trashPromises.push(
+						shell.trashItem(path.join(pathName, fileName)).then(() => {
+							serveIPC.log.warning('malware-detector', 'Sent to trash', thisMod.fileDetail.fullPath)
+							funcLib.general.toggleFolderDirty(true)
+						}).catch((err) => {
+							serveIPC.log.danger('malware-detector', 'Unable to remove', thisMod.fileDetail.fullPath, err)
+						})
+					)
 					break
 				}
 				case 2:
@@ -980,7 +986,7 @@ modQueueRunner.on('process-mods-done', () => {
 					break
 			}
 		}
-		processModFolders()
+		Promise.allSettled(trashPromises).then(() => { processModFolders() })
 	}
 })
 

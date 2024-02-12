@@ -67,12 +67,24 @@
 				<div class="col-7" style="-webkit-app-region: drag;">
 					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
 				</div>
-				<div class="col-5 text-end mx-auto pt-4" id="badges"></div>
+				<div style="line-height: 2em;" class="col-5 text-end mx-auto pt-4" id="badges"></div>
 			</div>
 			<h3 class="text-center mb-1 w-100 mx-auto display-6" id="title"></h3>
 			<i class="text-center mt-1 w-100 mx-auto d-block small" id="mod_location"></i>
 			<i class="text-center mt-1 w-100 mx-auto d-block small" id="modhub_link"></i>
 			<i id="store_process" class="d-none text-center mt-1 w-100 mx-auto d-block bg-warning text-white"><l10n name="loading_look_title"></l10n> - <l10n name="loading_look_subtitle"></l10n></i>
+		</div>
+
+		<div class="alert alert-warning w-75 mx-auto d-none" id="malware-found">
+			<div class="row">
+				<div class="col-2">
+					<img src="img/info_warn.webp" alt="" class="w-100">
+				</div>
+				<div class="col-10">
+					<h3><l10n name="malware_detail_title"></l10n></h3>
+					<l10n name="malware_detail_blurb"></l10n>
+				</div>
+			</div>
 		</div>
 
 		<div class="row mx-4 mb-3">

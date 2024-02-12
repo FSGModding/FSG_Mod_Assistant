@@ -213,6 +213,7 @@ const doKeyBinds = (modRecord, locale) => {
 }
 
 const buildPage = (modCollect) => {
+	console.log(modCollect)
 	document.body.setAttribute('data-version', modCollect.appSettings.game_version)
 
 	const modRecord    = modCollect.opts.selected
@@ -263,8 +264,18 @@ const buildPage = (modCollect) => {
 		fsgUtil.setById('problems', `<table class="table table-borderless mb-0">${problems.join('')}</table>`)
 	}
 
-	const theseBadges = Array.isArray(modRecord.displayBadges) ? modRecord.displayBadges.map((badge) => fsgUtil.badge_main(badge)).join(' ') : false
+	let foundMalware = false
 
+	const theseBadges = Array.isArray(modRecord.displayBadges) ? modRecord.displayBadges.filter((badge) => {
+		if ( badge[0] === 'malware' ) {
+			if ( modCollect.dangerModsSkip.has(modRecord.fileDetail.shortName) ) { return false }
+			if ( modCollect.appSettings.suppress_malware.includes(modRecord.colUUID)) { return false }
+			foundMalware = true
+		}
+		return true
+	}).map((badge) => fsgUtil.badge_main(badge)).join(' ') : false
+
+	fsgUtil.clsShowTrue('malware-found', foundMalware)
 	fsgUtil.setTextOrHide(
 		'badges',
 		theseBadges,
