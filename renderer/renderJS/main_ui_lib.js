@@ -38,6 +38,7 @@ const mainState = {
 		keys_bad    : [],
 		keys_ok     : [],
 		log         : [],
+		malware     : [],
 		map         : [],
 		new         : [],
 		nomp        : [],
@@ -237,6 +238,30 @@ const mainLib = {
 		newTags.push(mainLib.getFilterReset2())
 	
 		fsgUtil.setById('filter_new_style', newTags)
+	},
+
+	getMapDrop : (icons, names) => {
+		// icons is array of images
+		// names is array of [shortName, title, modCollectKey]
+		if ( icons.length < 2 ) { return '' }
+
+		const eachMapHTML = [...icons.entries(icons)].map(([idx, icon]) => [
+			`<li><a class="dropdown-item" onclick="actionLib.openMod('true', '${names[idx][2]}')" title="${names[idx][0]}">`,
+			`<img alt="" class="img-fluid rounded me-2" style="width: 27px; height: 27px;" src="${icon}">`,
+			names[idx][1],
+			'</a></li>'
+		].join(''))
+
+		return [
+			'<div class="dropdown d-inline-block">',
+			'<button class="btn btn-outline-primary btn-sm dropdown-toggle me-2 rounded-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">',
+			'<l10n name="map_multi_button"></l10n>',
+			'</button>',
+			'<ul class="dropdown-menu dropdown-menu-end" style="min-width: 25vw; max-width: 50vw;">',
+			eachMapHTML.join(''),
+			'</ul></div>',
+		].join('')
+		
 	},
 
 	// Order Buttons

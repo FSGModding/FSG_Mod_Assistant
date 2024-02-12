@@ -914,7 +914,7 @@
 			<button type="button" class="{{class_showFolderEdit}} {{class_mapIcon}} btn btn-outline-primary p-0 btn-sm me-2" title="{{mapTitle}}" onclick="actionLib.openMod('true', '{{mapClick}}')">
 				<img alt="" class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}">
 			</button>
-			
+			{{mapMultiButton}}
 			<button type="button" class="{{class_showFolderEdit}} {{class_hideRemovable}} btn btn-outline-secondary rounded-4 btn-sm me-2" onclick="return"><l10n name="removable_button"></l10n></button>
 			<button type="button" class="{{class_showFolderEdit}} {{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button"></l10n></button>
 			<button type="button" class="{{class_showFolderEdit}} {{class_hideGameAdminPassword}} btn btn-outline-success btn-sm me-2" onclick="window.mods.popClipboard('{{game_admin_password}}')"><l10n name="game_admin_pass_button"></l10n></button>
