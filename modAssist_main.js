@@ -918,8 +918,6 @@ modQueueRunner.on('process-mods-done', () => {
 	funcLib.gameSet.gameXML(13)
 	refreshClientModList()
 
-	funcLib.general.doChangelog()
-
 	serveIPC.isProcessing = false
 
 	if ( serveIPC.modCollect.isDangerMods ) {
@@ -947,6 +945,8 @@ modQueueRunner.on('process-mods-done', () => {
 			].join('')
 
 			const userChoice = dialog.showMessageBoxSync(serveIPC.windowLib.win.main, {
+				cancelId  : 1,
+				defaultId : 0,
 				message   : thisMessage,
 				title     : __('malware_dialog_title'),
 				type      : 'question',
@@ -986,7 +986,9 @@ modQueueRunner.on('process-mods-done', () => {
 					break
 			}
 		}
-		Promise.allSettled(trashPromises).then(() => { processModFolders() })
+		Promise.allSettled(trashPromises).then(() => { funcLib.general.doChangelog(); processModFolders() })
+	} else {
+		funcLib.general.doChangelog()
 	}
 })
 
