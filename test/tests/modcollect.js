@@ -59,8 +59,8 @@ const testGood = (test) => {
 		}
 		const testSet = modCollect.getModCollection(folderID)
 
-		if ( testSet.modSet.size === 12 ) {
-			test.step('Found expected (12) mods in test collection')
+		if ( testSet.modSet.size === 13 ) {
+			test.step('Found expected (13) mods in test collection')
 		} else {
 			test.error(`Found unexpected count of mods (${testSet.modSet.size})`)
 		}
