@@ -48,6 +48,7 @@ const fsgUtil = {
 		keys_bad    : 'danger',
 		keys_ok     : 'success',
 		log         : 'info fw-bold fst-italic',
+		malware     : 'danger border-info',
 		map         : 'primary fst-italic',
 		new         : 'success',
 		nomp        : 'secondary',

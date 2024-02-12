@@ -921,6 +921,67 @@ modQueueRunner.on('process-mods-done', () => {
 	funcLib.general.doChangelog()
 
 	serveIPC.isProcessing = false
+
+	if ( serveIPC.modCollect.isDangerMods ) {
+		const currentSavedIgnoreList = new Set(serveIPC.storeSet.get('suppress_malware', []))
+
+		for (const thisBadMod of serveIPC.modCollect.dangerMods ) {
+			// Always ignore, user has whitelisted file
+			if ( currentSavedIgnoreList.has(thisBadMod) ) { continue }
+			// Ignore during run, we answered once.
+			if ( serveIPC.ignoreMalwareList.has(thisBadMod) ) { continue }
+
+			const thisMod = serveIPC.modCollect.modColUUIDToRecord(thisBadMod)
+			const thisMessage = [
+				__('malware_dialog_intro'),
+				'\n\n',
+				__('malware_dialog_shortname'), ' : ', thisMod.fileDetail.shortName, '\n',
+				__('malware_dialog_path'), ' : ', thisMod.fileDetail.fullPath, '\n',
+				'\n',
+				__('malware_dialog_outro'),
+			].join('')
+
+			const userChoice = dialog.showMessageBoxSync(serveIPC.windowLib.win.main, {
+				message   : thisMessage,
+				title     : __('malware_dialog_title'),
+				type      : 'question',
+		
+				buttons : [
+					serveIPC.__('malware_button_delete'),
+					serveIPC.__('malware_button_keep'),
+					serveIPC.__('malware_button_false'),
+				],
+			})
+			switch (userChoice) {
+				case 0: {
+					// delete the file.
+					const fileName = path.basename(thisMod.fileDetail.fullPath)
+					const pathName = serveIPC.modCollect.modColUUIDToFolder(thisBadMod)
+
+					try {
+						fs.rmSync(path.join(pathName, fileName), { recursive : true })
+						serveIPC.log.warning('malware-detector', 'Forcibly removed', thisMod.fileDetail.fullPath)
+						funcLib.general.toggleFolderDirty(true)
+					} catch (err) {
+						serveIPC.log.danger('malware-detector', 'Unable to remove', thisMod.fileDetail.fullPath, err)
+					}
+					break
+				}
+				case 2:
+					// whitelist the file, forever
+					currentSavedIgnoreList.add(thisBadMod)
+					serveIPC.storeSet.set('suppress_malware', [...currentSavedIgnoreList])
+					serveIPC.log.warning('malware-detector', 'Whitelisted forever', thisMod.fileDetail.shortName)
+					break
+				default:
+					// keep the file for this session only
+					serveIPC.ignoreMalwareList.add(thisBadMod)
+					serveIPC.log.warning('malware-detector', 'Ignoring for this session', thisMod.fileDetail.shortName)
+					break
+			}
+		}
+		processModFolders()
+	}
 })
 
 // Application boot up

@@ -78,6 +78,12 @@ module.exports.test = async () => { return Promise.allSettled([
 		new testLib('Mod Checker - Missing modDesc')
 	),
 
+	testSingleFlag(
+		'EXAMPLE_Malicious_Code.zip',
+		['MALICIOUS_CODE', 'PERF_SPACE_IN_FILE', 'MOD_ERROR_NO_MOD_ICON'],
+		new testLib('Mod Checker - Malicious Script Code')
+	),
+
 	testSingleGood(
 		'EXAMPLE_Good_Mod.zip',
 		new testLib('Mod Checker - Good Mod')
