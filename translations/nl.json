@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "Ik vertrouw het niet, verwijder het nu meteen",
 	"malware_button_false"                  : "Ik weet zeker dat het goed is, hou het en vraag me nooit meer naar deze mod.",
 	"malware_button_keep"                   : "Ik wil het onderzoeken, voorlopig houden",
+	"malware_detail_blurb"                  : "Deze mod lijkt een lua-script te bevatten dat in staat is om mappen of bestanden uit je gamedirectory te verwijderen, zoals mods, savegames en meer.  Het starten van het spel met deze mod ingeschakeld kan leiden tot verlies van spelbestanden.  We raden je aan om dit bestand te verwijderen en het aan ons te melden via GitHub of per e-mail op report@farmsimgame.com.",
+	"malware_detail_title"                  : "Waarschuwing voor malware",
 	"malware_dialog_intro"                  : "Mod Assistant heeft ontdekt dat deze mod mogelijk onveilige bestandsbewerkingen gebruikt in een LUA-script.  Het is in staat om bestanden of mappen te verwijderen. Dit kan de bedoeling zijn van deze mod, of het kan gedownload zijn van een verdachte site en het zal slechte dingen doen met je systeem.  Als je er zeker van bent dat dit vals positief is, neem dan contact met ons op via github en laat ons weten wat de mod is en waar we deze kunnen krijgen, zodat we deze vraag over deze mod nooit meer kunnen stellen.",
 	"malware_dialog_outro"                  : "Wat wil je met dit bestand doen?",
 	"malware_dialog_path"                   : "Bestandspad",

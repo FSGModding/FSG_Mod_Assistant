@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "Je ne lui fais pas confiance, supprimez-le immédiatement.",
 	"malware_button_false"                  : "Je suis sûr qu'il est très bien, gardez-le, et ne me posez plus jamais de questions sur ce mod.",
 	"malware_button_keep"                   : "J'aimerais enquêter, mais je le garde pour l'instant.",
+	"malware_detail_blurb"                  : "Ce mod semble contenir un script lua capable de supprimer des dossiers ou des fichiers de votre répertoire de jeu, tels que des mods, des sauvegardes, etc.  Démarrer le jeu avec ce mod activé peut entraîner la perte de fichiers de jeu.  Nous vous conseillons vivement de supprimer ce fichier et de nous le signaler via notre GitHub ou par email à report@farmsimgame.com.",
+	"malware_detail_title"                  : "Avertissement sur les logiciels malveillants",
 	"malware_dialog_intro"                  : "Mod Assistant a détecté que ce mod utilise des opérations de fichiers potentiellement dangereuses dans un script LUA.  Il est capable de supprimer des fichiers ou des dossiers. Il se peut que ce soit le comportement prévu de ce mod, ou qu'il ait été téléchargé à partir d'un site suspect et qu'il ait des effets néfastes sur votre système.  Si vous êtes certain qu'il s'agit d'un faux positif, merci de nous contacter sur github et de nous indiquer quel est ce mod, et où nous pouvons l'obtenir afin que nous ne puissions plus jamais poser cette question à propos de ce mod.",
 	"malware_dialog_outro"                  : "Que voulez-vous faire de ce fichier ?",
 	"malware_dialog_path"                   : "Chemin d'accès au fichier",

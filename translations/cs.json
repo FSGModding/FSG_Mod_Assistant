@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "我不相信它，马上删除它",
 	"malware_button_false"                  : "我相信它没问题，你留着吧，以后别再问我这个改装的事了",
 	"malware_button_keep"                   : "我想调查一下，先留着吧",
+	"malware_detail_blurb"                  : "该修改器中似乎有一个 lua 脚本，可以删除游戏目录中的文件夹或文件，如修改器、保存游戏等。  启用此 MOD 后启动游戏可能会导致游戏文件丢失。  我们强烈建议您删除该文件，并通过 GitHub 或发送电子邮件至 report@farmsimgame.com 向我们报告。",
+	"malware_detail_title"                  : "恶意软件警告",
 	"malware_dialog_intro"                  : "修改助手检测到此修改器在 LUA 脚本中使用了可能不安全的文件操作。  它可以删除文件或文件夹。这可能是此 MOD 的预期行为，也可能是从可疑网站下载的，会对您的系统造成不良影响。  如果您确定这是误报，请在 github 上联系我们，并告诉我们该修改程序是什么，以及我们可以从哪里获得它，这样我们就不会再问关于该修改程序的问题了",
 	"malware_dialog_outro"                  : "您想如何处理这个文件？",
 	"malware_dialog_path"                   : "文件路径",

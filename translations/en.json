@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "I do not trust it, delete it right now",
 	"malware_button_false"                  : "I am sure it is fine, keep it, and never ask me about this mod again",
 	"malware_button_keep"                   : "I would like to investigate, keep it for now",
+	"malware_detail_blurb"                  : "This mod appears to have a lua script in it that is capable of deleting folder or files from your game directory such as mods, savegames, and more.  Starting the game with this mod enabled may cause loss of game files.  We strongly suggest deleting this file and reporting it to us via our GitHub or email at report@farmsimgame.com",
+	"malware_detail_title"                  : "Malware Warning",
 	"malware_dialog_intro"                  : "Mod Assistant has detected that this mod uses possibly unsafe file operations in a LUA script.  It is capable of deleting either files or folders. This may be the intended behavior of this mod, or it may be downloaded from a suspect site and it will do bad things to your system.  If you are confident this is in error, please contact us on github and let us know what the mod is, and where we can get it so we can never ask this question about this mod again",
 	"malware_dialog_outro"                  : "What would you like to do with this file?",
 	"malware_dialog_path"                   : "File Path",

@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "Não confio nele, apague-o agora mesmo",
 	"malware_button_false"                  : "Tenho a certeza de que está bem, fiquem com ele e nunca mais me perguntem sobre esta modificação",
 	"malware_button_keep"                   : "Gostaria de investigar, mas por enquanto não o faço",
+	"malware_detail_blurb"                  : "Este mod parece ter um script lua que é capaz de apagar pastas ou ficheiros do teu diretório de jogo, tais como mods, savegames e outros.  Iniciar o jogo com este mod ativado pode causar a perda de ficheiros do jogo.  Sugerimos vivamente que elimines este ficheiro e nos comuniques o problema através do nosso GitHub ou por e-mail para report@farmsimgame.com",
+	"malware_detail_title"                  : "Aviso de malware",
 	"malware_dialog_intro"                  : "O Mod Assistant detectou que este mod utiliza operações de ficheiros possivelmente inseguras num script LUA.  É capaz de apagar ficheiros ou pastas. Este pode ser o comportamento pretendido deste mod, ou pode ter sido descarregado de um site suspeito e fazer coisas más ao seu sistema.  Se tiveres a certeza que isto é um falso positivo, por favor contacta-nos no github e diz-nos qual é o mod, e onde o podemos obter para que nunca mais possamos fazer esta pergunta sobre este mod",
 	"malware_dialog_outro"                  : "O que gostaria de fazer com este ficheiro?",
 	"malware_dialog_path"                   : "Caminho do ficheiro",

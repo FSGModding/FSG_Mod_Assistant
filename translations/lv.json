@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "Es tam neuzticos, izdzēst to tieši tagad",
 	"malware_button_false"                  : "Es esmu pārliecināts, ka tas ir labi, paturiet to, un nekad vairs neprasiet man par šo modi",
 	"malware_button_keep"                   : "Es gribētu izpētīt, pagaidām saglabāt to",
+	"malware_detail_blurb"                  : "Šis mod šķiet, ka ir lua skriptu tajā, kas spēj dzēst mapi vai failus no jūsu spēles direktoriju, piemēram, mods, saveegames, un vairāk.  Sākot spēli ar ieslēgtu šo moduli, var tikt zaudēti spēles faili.  Mēs iesakām izdzēst šo failu un ziņot par to mums, izmantojot mūsu GitHub vai e-pastu report@farmsimgame.com.",
+	"malware_detail_title"                  : "Brīdinājums par ļaunprātīgu programmatūru",
 	"malware_dialog_intro"                  : "Mod asistents ir atklājis, ka šis mods izmanto, iespējams, nedrošas failu operācijas LUA skriptu.  Tas var dzēst failus vai mapes. Iespējams, ka tā ir šī moda iecerētā uzvedība, vai arī tas var būt lejupielādēts no aizdomīgas vietnes, un tas jūsu sistēmai nodarīs ļaunumu.  Ja esat pārliecināts, ka tas ir viltus pozitīvs rezultāts, lūdzu, sazinieties ar mums github tīklā un paziņojiet, kas ir šis mods un kur mēs to varam iegūt, lai mēs nekad vairs nevarētu uzdot šo jautājumu par šo modu.",
 	"malware_dialog_outro"                  : "Ko vēlaties darīt ar šo failu?",
 	"malware_dialog_path"                   : "Faila ceļš",

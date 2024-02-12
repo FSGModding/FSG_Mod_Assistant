@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "Nie ufam temu, usuń to natychmiast",
 	"malware_button_false"                  : "Jestem pewien, że jest w porządku, zatrzymaj go i nigdy więcej nie pytaj mnie o ten mod",
 	"malware_button_keep"                   : "Chciałbym to zbadać, na razie zachowaj to",
+	"malware_detail_blurb"                  : "Ten mod wydaje się mieć w sobie skrypt lua, który jest w stanie usunąć folder lub pliki z katalogu gry, takie jak mody, zapisane gry i inne.  Uruchomienie gry z włączonym tym modem może spowodować utratę plików gry.  Zdecydowanie zalecamy usunięcie tego pliku i zgłoszenie go nam za pośrednictwem naszego GitHub lub e-maila na adres report@farmsimgame.com.",
+	"malware_detail_title"                  : "Ostrzeżenie przed złośliwym oprogramowaniem",
 	"malware_dialog_intro"                  : "Mod Assistant wykrył, że ten mod używa potencjalnie niebezpiecznych operacji na plikach w skrypcie LUA.  Może on usuwać pliki lub foldery. Może to być zamierzone zachowanie tego moda lub może on zostać pobrany z podejrzanej witryny i wyrządzi złe rzeczy w systemie.  Jeśli masz pewność, że jest to fałszywy wynik pozytywny, skontaktuj się z nami na githubie i daj nam znać, czym jest mod i gdzie możemy go pobrać, abyśmy nigdy więcej nie zadawali tego pytania o ten mod",
 	"malware_dialog_outro"                  : "Co chcesz zrobić z tym plikiem?",
 	"malware_dialog_path"                   : "Ścieżka pliku",

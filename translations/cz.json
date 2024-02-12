@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "Nevěřím tomu, hned to vymažte.",
 	"malware_button_false"                  : "Jsem si jistý, že je to v pořádku, nechte si to a už se mě nikdy neptejte na tuto úpravu.",
 	"malware_button_keep"                   : "Chtěl bych to prozkoumat, zatím si to nechte.",
+	"malware_detail_blurb"                  : "Zdá se, že tento mod má v sobě skript lua, který je schopen odstranit složku nebo soubory z adresáře hry, jako jsou mody, uložené hry a další.  Spuštění hry s tímto modem může způsobit ztrátu herních souborů.  Důrazně doporučujeme tento soubor smazat a nahlásit nám to prostřednictvím našeho GitHubu nebo na e-mail report@farmsimgame.com.",
+	"malware_detail_title"                  : "Varování před malwarem",
 	"malware_dialog_intro"                  : "Mod Assistant zjistil, že tento mod používá pravděpodobně nebezpečné operace se soubory ve skriptu LUA.  Může mazat soubory nebo složky. Může se jednat o zamýšlené chování tohoto módu, nebo může být stažen z podezřelé stránky a způsobí vašemu systému neplechu.  Pokud jste si jisti, že se jedná o falešný poplach, kontaktujte nás prosím na githubu a dejte nám vědět, o jaký mod se jedná a kde ho můžeme získat, abychom se už nikdy nemohli na tento mod zeptat",
 	"malware_dialog_outro"                  : "Co byste chtěli s tímto souborem dělat?",
 	"malware_dialog_path"                   : "Cesta k souboru",

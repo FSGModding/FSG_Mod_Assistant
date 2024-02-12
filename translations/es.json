@@ -240,6 +240,8 @@
 	"malware_button_delete"                 : "No me fio, borralo ahora mismo",
 	"malware_button_false"                  : "Seguro que está bien, quédatelo y no vuelvas a preguntarme por este mod.",
 	"malware_button_keep"                   : "Me gustaría investigar, mantenerlo por ahora",
+	"malware_detail_blurb"                  : "Este mod parece tener un script lua capaz de borrar carpetas o archivos del directorio del juego, como mods, partidas guardadas y más.  Iniciar el juego con este mod activado puede causar la pérdida de archivos del juego.  Te recomendamos encarecidamente que borres este archivo y nos lo comuniques a través de GitHub o por correo electrónico a report@farmsimgame.com.",
+	"malware_detail_title"                  : "Advertencia de malware",
 	"malware_dialog_intro"                  : "Mod Assistant ha detectado que este mod utiliza operaciones de archivo posiblemente inseguras en un script LUA.  Es capaz de borrar archivos o carpetas. Este puede ser el comportamiento previsto de este mod, o puede ser descargado de un sitio sospechoso y hacer cosas malas a su sistema.  Si está seguro de que se trata de un falso positivo, por favor póngase en contacto con nosotros en github y háganos saber cuál es el mod, y donde podemos conseguirlo para que nunca podamos hacer esta pregunta acerca de este mod de nuevo",
 	"malware_dialog_outro"                  : "¿Qué le gustaría hacer con este archivo?",
 	"malware_dialog_path"                   : "Ruta del archivo",
