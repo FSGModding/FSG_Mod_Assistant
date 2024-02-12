@@ -268,7 +268,7 @@ const buildPage = (modCollect) => {
 	const theseBadges = Array.isArray(modRecord.displayBadges) ? modRecord.displayBadges.filter((badge) => {
 		if ( badge[0] === 'malware' ) {
 			if ( modCollect.dangerModsSkip.has(modRecord.fileDetail.shortName) ) { return false }
-			if ( modCollect.appSettings.suppress_malware.includes(modRecord.colUUID)) { return false }
+			if ( modCollect.appSettings.suppress_malware.includes(modRecord.fileDetail.shortName)) { return false }
 			foundMalware = true
 		}
 		return true

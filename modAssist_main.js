@@ -255,6 +255,9 @@ ipcMain.on('toMain_getText_send', (event, l10nSet) => {
 				}
 				break
 			}
+			case 'clear_malware_size' :
+				sendEntry(l10nEntry, `[ ${serveIPC.storeSet.get('suppress_malware', []).join(', ')} ]`)
+				break
 			default :
 				serveIPC.l10n.stringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
 				if ( doTitle ) {
@@ -616,6 +619,10 @@ ipcMain.on('toMain_clearCacheFile', () => {
 	serveIPC.windowLib.forceFocus('main')
 	processModFolders(true)
 })
+ipcMain.on('toMain_clearCacheMalware', () => {
+	serveIPC.storeSet.set('suppress_malware', [])
+	processModFolders(true)
+})
 ipcMain.on('toMain_clearDetailCacheFile', () => {
 	serveIPC.storeCacheDetail.clear()
 	serveIPC.windowLib.sendToValidWindow('main', 'fromMain_l10n_refresh', serveIPC.l10n.currentLocale)
@@ -925,13 +932,13 @@ modQueueRunner.on('process-mods-done', () => {
 		const currentSavedIgnoreList = new Set(serveIPC.storeSet.get('suppress_malware', []))
 
 		for (const thisBadMod of serveIPC.modCollect.dangerMods ) {
-			// Always ignore, user has whitelisted file
-			if ( currentSavedIgnoreList.has(thisBadMod) ) { continue }
 			// Ignore during run, we answered once.
 			if ( serveIPC.ignoreMalwareList.has(thisBadMod) ) { continue }
 
 			const thisMod = serveIPC.modCollect.modColUUIDToRecord(thisBadMod)
 
+			// Always ignore, user has whitelisted file
+			if ( currentSavedIgnoreList.has(thisMod.fileDetail.shortName) ) { continue }
 			// Always ignore, file added to master whitelist
 			if ( serveIPC.whiteMalwareList.has(thisMod.fileDetail.shortName) ) { continue }
 
@@ -975,7 +982,7 @@ modQueueRunner.on('process-mods-done', () => {
 				}
 				case 2:
 					// whitelist the file, forever
-					currentSavedIgnoreList.add(thisBadMod)
+					currentSavedIgnoreList.add(thisMod.fileDetail.shortName)
 					serveIPC.storeSet.set('suppress_malware', [...currentSavedIgnoreList])
 					serveIPC.log.warning('malware-detector', 'Whitelisted forever', thisMod.fileDetail.shortName)
 					break

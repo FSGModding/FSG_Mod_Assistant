@@ -129,7 +129,7 @@ const mainLib = {
 			for ( const badge of thisMod.displayBadges ) {
 				if ( badge[0] === 'malware' ) {
 					if ( mainState.modCollect.dangerModsSkip.has(thisMod.fileDetail.shortName) ) { continue }
-					if ( mainState.modCollect.appSettings.suppress_malware.includes(thisMod.colUUID)) { continue }
+					if ( mainState.modCollect.appSettings.suppress_malware.includes(thisMod.fileDetail.shortName)) { continue }
 				}
 
 				displayBadges.push(fsgUtil.badge_main(badge))
