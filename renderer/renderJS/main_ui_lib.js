@@ -127,6 +127,8 @@ const mainLib = {
 		
 		if ( Array.isArray(thisMod.displayBadges ) ) {
 			for ( const badge of thisMod.displayBadges ) {
+				if ( badge[0] === 'malware' && mainState.modCollect.appSettings.suppress_malware.includes(thisMod.colUUID)) { continue }
+
 				displayBadges.push(fsgUtil.badge_main(badge))
 				mainState.add_searchTagMap(badge[0], thisMod.colUUID)
 			}
