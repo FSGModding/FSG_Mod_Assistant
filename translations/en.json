@@ -240,7 +240,7 @@
 	"malware_button_delete"                 : "I do not trust it, delete it right now",
 	"malware_button_false"                  : "I am sure it is fine, keep it, and never ask me about this mod again",
 	"malware_button_keep"                   : "I would like to investigate, keep it for now",
-	"malware_dialog_intro"                  : "Mod Assistant has detected that this mod uses possibly unsafe file operations in a LUA script.  It is capable of deleting either files or folders. This may be the intended behavior of this mod, or it may be downloaded from a suspect site and it will do bad things to your system.  If you are positive this is a false positive, please contact us on github and let us know what the mod is, and where we can get it so we can never ask this question about this mod again",
+	"malware_dialog_intro"                  : "Mod Assistant has detected that this mod uses possibly unsafe file operations in a LUA script.  It is capable of deleting either files or folders. This may be the intended behavior of this mod, or it may be downloaded from a suspect site and it will do bad things to your system.  If you are confident this is in error, please contact us on github and let us know what the mod is, and where we can get it so we can never ask this question about this mod again",
 	"malware_dialog_outro"                  : "What would you like to do with this file?",
 	"malware_dialog_path"                   : "File Path",
 	"malware_dialog_shortname"              : "Mod Name",
