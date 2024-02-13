@@ -177,7 +177,7 @@
 					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openSaveManage()"><l10n name="savegame_manage"></l10n></button>
 					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openFindAll()"><l10n name="search_all"></l10n></button>
 					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openGameLog()"><l10n name="button_gamelog"></l10n></button>
-					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" data-bs-toggle="offcanvas" data-bs-target="#prefcanvas" id="open_prefs"><l10n name="preferences_button"></l10n></button>
+					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="prefLib.overlay.show()" id="open_prefs"><l10n name="preferences_button"></l10n></button>
 					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openHelp()" ><l10n name="help_button"></l10n></button>
 					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.openMini()" id="mini_button"><l10n name="mini_mode_button"></l10n></button>
 					<button type="button" class="btn-win_ui btn rounded-0" style="-webkit-app-region: no-drag;" onclick="window.mods.sendToTray()"><l10n name="min_tray_button"></l10n></button>
@@ -381,7 +381,7 @@
 	<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-version" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel">
 		<div class="offcanvas-header">
 			<h5 class="offcanvas-title" id="offcanvasLabel"><l10n name="notes_title_version"></l10n></h5>
-			<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#offcanvas-version" aria-label="Close"><i class="bi-x-lg"></i></button>
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#offcanvas-version" style="z-index: 1;" aria-label="Close"><i class="bi-x-lg"></i></button>
 		</div>
 		<div class="offcanvas-body">
 			<l10n name="offcanvas_blurb"></l10n>
@@ -391,7 +391,7 @@
 
 	<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="prefcanvas" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel-prefs">
 		<div class="offcanvas-header justify-content-start">
-			<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#prefcanvas" aria-label="Close"><i class="bi-x-lg"></i></button>
+			<button type="button" class="btn btn-secondary" id="prefcanvas-close" onclick="prefLib.overlay.hide()" style="z-index: 1;" aria-label="Close"><i class="bi-x-lg"></i></button>
 			<h5 class="offcanvas-title ps-3" id="offcanvasLabel-prefs"><l10n name="user_pref_title_main"></l10n></h5>
 		</div>
 		<div class="offcanvas-body full-scroll" id="prefcanvas_content">
@@ -789,7 +789,7 @@
 
 	<div class="offcanvas offcanvas-bottom h-100" tabindex="-1" id="fileOpCanvas" style="-webkit-app-region: no-drag; transition: 0.5s">
 		<div class="offcanvas-header justify-content-start">
-			<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#fileOpCanvas" aria-label="Close"><i class="bi-x-lg"></i></button>
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#fileOpCanvas" style="z-index: 1;" aria-label="Close"><i class="bi-x-lg"></i></button>
 			<h5 class="offcanvas-title ps-3"><l10n name="app_name"></l10n></h5>
 		</div>
 		<div class="offcanvas-body full-scroll">

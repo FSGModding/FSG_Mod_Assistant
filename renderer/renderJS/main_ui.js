@@ -334,6 +334,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	loaderLib.overlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
 	fileOpLib.overlay = new bootstrap.Offcanvas('#fileOpCanvas')
+	prefLib.overlay = new bootstrap.Offcanvas('#prefcanvas')
 
 	const todayIs = new Date()
 	if ( todayIs.getMonth() === 3 && todayIs.getDate() === 1 ) {
@@ -378,3 +379,13 @@ window?.l10n?.receive('fromMain_getText_return', (data) => {
 		}, 250)
 	}
 })
+
+window.onbeforeunload = (e) => {
+	if ( fsgUtil.byId('prefcanvas').classList.contains('show') ) {
+		prefLib.overlay.hide()
+		e.returnValue = false
+	} else if ( fsgUtil.byId('fileOpCanvas').classList.contains('show') ) {
+		fileOpLib.overlay.hide()
+		e.returnValue = false
+	}
+}
