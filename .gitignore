@@ -14,3 +14,4 @@ test/bgBuilder/*
 .VSCodeCounter
 TEST_OUTPUT.md
 .deepl_key
+jsdoc_server/
