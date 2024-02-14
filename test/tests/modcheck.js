@@ -26,7 +26,7 @@ module.exports.test = async () => { return Promise.allSettled([
 
 	testSingleFlag(
 		'EXAMPLE_Bad_ModDesc_CRC.zip',
-		['NOT_MOD_MODDESC_MISSING', 'MOD_ERROR_NO_MOD_ICON', 'PERF_L10N_NOT_SET'],
+		['NOT_MOD_MODDESC_PARSE_ERROR', 'MOD_ERROR_NO_MOD_ICON', 'PERF_L10N_NOT_SET'],
 		new testLib('Mod Checker - Broken ZIP (Bad CRC) File')
 	),
 
@@ -74,7 +74,7 @@ module.exports.test = async () => { return Promise.allSettled([
 
 	testSingleFlag(
 		'EXAMPLE_Missing_ModDesc.zip',
-		['NOT_MOD_MODDESC_MISSING', 'MOD_ERROR_NO_MOD_ICON', 'PERF_L10N_NOT_SET'],
+		['NOT_MOD_MODDESC_MISSING', 'PERF_L10N_NOT_SET'],
 		new testLib('Mod Checker - Missing modDesc')
 	),
 

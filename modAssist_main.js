@@ -160,7 +160,7 @@ ipcMain.on('toMain_dropFolder', (_, newFolder) => {
 	funcLib.processor.addFolderTracking(newFolder)
 	processModFolders()
 })
-ipcMain.on('toMain_dropFiles', (_, files) => {
+ipcMain.on('toMain_dropFiles', async (_, files) => {
 	if ( files.length === 1 && files[0].endsWith('.csv') ) {
 		new csvFileChecker(files[0]).getInfo().then((results) => {
 			serveIPC.windowLib.createNamedWindow('save', {
@@ -170,7 +170,7 @@ ipcMain.on('toMain_dropFiles', (_, files) => {
 		})
 		return
 	} else if ( files.length === 1 && files[0].endsWith('.zip') ) {
-		sendCopyMoveDelete('import', null, null, files, new modPackChecker(files[0]).getInfo())
+		sendCopyMoveDelete('import', null, null, files, await new modPackChecker(files[0]).getInfo())
 	} else {
 		sendCopyMoveDelete('import', null, null, files, false)
 	}
