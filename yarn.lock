@@ -2505,6 +2505,7 @@ __metadata:
     fast-xml-parser: ^4.3.4
     glob: ^10.3.10
     html-validate: ^8.9.1
+    node-stream-zip: ^1.15.0
     unzip-stream: ^0.3.1
     wasm-vips: ^0.0.7
   languageName: unknown
@@ -3685,6 +3686,13 @@ __metadata:
   version: 2.0.14
   resolution: "node-releases@npm:2.0.14"
   checksum: 59443a2f77acac854c42d321bf1b43dea0aef55cd544c6a686e9816a697300458d4e82239e2d794ea05f7bbbc8a94500332e2d3ac3f11f52e4b16cbe638b3c41
+  languageName: node
+  linkType: hard
+
+"node-stream-zip@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "node-stream-zip@npm:1.15.0"
+  checksum: 0b73ffbb09490e479c8f47038d7cba803e6242618fbc1b71c26782009d388742ed6fb5ce6e9d31f528b410249e7eb1c6e7534e9d3792a0cafd99813ac5a35107
   languageName: node
   linkType: hard
 

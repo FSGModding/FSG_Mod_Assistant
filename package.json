@@ -41,6 +41,7 @@
     "electron-updater": "^6.1.8",
     "fast-xml-parser": "^4.3.4",
     "glob": "^10.3.10",
+    "node-stream-zip": "^1.15.0",
     "unzip-stream": "^0.3.1",
     "wasm-vips": "^0.0.7"
   },
