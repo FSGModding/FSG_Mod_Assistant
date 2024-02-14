@@ -335,6 +335,7 @@ const mainLib = {
 		fsgUtil.valueById('collectionSelect', mainState.gameSetCollect.selected)
 		window.mods.startFarmSim()
 	},
+
 }
 
 const actionLib = {
@@ -370,6 +371,12 @@ const actionLib = {
 			fsgUtil.valueById('mod_info_input')
 		)
 		mainState.win.modInfo.hide()
+	},
+
+	doCacheClean : () => {
+		fsgUtil.setById('clean_cache_size', '')
+		fsgUtil.setById('clean_detail_cache_size', '')
+		window.mods.cleanCache()
 	},
 }
 

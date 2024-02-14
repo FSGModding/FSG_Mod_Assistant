@@ -642,7 +642,7 @@ ipcMain.on('toMain_cleanCacheFile', () => {
 
 	setTimeout(() => {
 		serveIPC.windowLib.sendToValidWindow('main', 'fromMain_l10n_refresh', serveIPC.l10n.currentLocale)
-	}, 1000)
+	}, 500)
 })
 ipcMain.on('toMain_setPrefFile',    (_, version) => { funcLib.prefs.changeFilePath(version, false) })
 ipcMain.on('toMain_setGamePath',    (_, version) => { funcLib.prefs.changeFilePath(version, true) })
