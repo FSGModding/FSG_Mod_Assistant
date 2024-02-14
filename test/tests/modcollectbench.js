@@ -25,7 +25,7 @@ const modCollect = new modFileCollection( require('node:os').homedir, queueDoneE
 
 module.exports.test = () => {
 	return Promise.allSettled([
-		testGood(new testLib('Mod Collection - Valid'))
+		testGood(new testLib('Mod Collection - Benchmark All'))
 	])
 }
 
