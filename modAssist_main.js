@@ -32,6 +32,16 @@ const __ = (x) => serveIPC.l10n.syncStringLookup(x)
 class queueEmitter extends EventEmitter {}
 const modQueueRunner = new queueEmitter()
 
+/**
+ * @typedef referenceFunctions
+ * @property {function} gameLauncher launch the game
+ * @property {function} processModFolders process mod folders
+ * @property {function} readGameLog read the game log
+ * @property {function} refreshClientModList refresh mod list in client
+ * @property {function} refreshTransientStatus refresh status flags in client
+ * @property {function} toggleMiniWindow toggle mini window on and off
+ */
+
 serveIPC.refFunc = {
 	gameLauncher           : funcLib.gameLauncher,
 	processModFolders      : processModFolders,
