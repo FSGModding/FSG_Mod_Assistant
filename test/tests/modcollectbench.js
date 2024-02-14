@@ -78,6 +78,7 @@ const testGood = (test) => {
 			test.error(`Got unexpected ${actualSize} bytes of data, outside range`)
 		}
 
+		test.step(`Size of All : ${modCollect.fullCollectSize} bytes`)
 		test.step(`Total Mods Processed : ${modCollect.totalModCount}`)
 		test.step(`Collection Process took ${Date.now() - startTime}ms`)
 
