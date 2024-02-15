@@ -409,6 +409,8 @@
 	"save_csv_failed"                       : "Impossible d'exporter la liste des collections CSV (vérifiez le journal de débogage)",
 	"save_csv_worked"                       : "Collection exportée vers la liste CSV",
 	"save_import_slot"                      : "Emplacement de destination",
+	"save_json_failed"                      : "Impossible d'exporter la collection vers JSON (vérifier le journal de débogage)",
+	"save_json_worked"                      : "Collection exportée en JSON",
 	"save_log_failed"                       : "La sauvegarde du log de débogage a échoué",
 	"save_log_worked"                       : "Log de débogage sauvegardé avec succès",
 	"save_manage_active"                    : "Active Save Games",

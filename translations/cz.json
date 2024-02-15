@@ -409,6 +409,8 @@
 	"save_csv_failed"                       : "Nelze exportovat seznam CSV kolekce (zkontrolujte protokol ladění)",
 	"save_csv_worked"                       : "Kolekce exportována do seznamu CSV",
 	"save_import_slot"                      : "Cílový slot",
+	"save_json_failed"                      : "Nelze exportovat kolekci do JSON (zkontrolujte protokol ladění)",
+	"save_json_worked"                      : "Kolekce exportovaná do JSON",
 	"save_log_failed"                       : "Uložení ladicího protokolu se nezdařilo",
 	"save_log_worked"                       : "Ladící log byl úspěšně uložen",
 	"save_manage_active"                    : "Aktivní ukládání her",

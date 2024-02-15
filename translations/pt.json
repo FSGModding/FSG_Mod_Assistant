@@ -409,6 +409,8 @@
 	"save_csv_failed"                       : "Não é possível exportar a lista de coleta CSV (verifique o registro de depuração)",
 	"save_csv_worked"                       : "Coleção exportada para lista CSV",
 	"save_import_slot"                      : "Ranhura de destino",
+	"save_json_failed"                      : "Não é possível exportar a coleção para JSON (verificar o registo de depuração)",
+	"save_json_worked"                      : "Coleção exportada para JSON",
 	"save_log_failed"                       : "Falha ao salvar log de depuração",
 	"save_log_worked"                       : "Log de depuração salvo com sucesso",
 	"save_manage_active"                    : "Jogos de poupança ativa",

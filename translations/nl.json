@@ -409,6 +409,8 @@
 	"save_csv_failed"                       : "Kan CSV niet exporteren (controleer de error log)",
 	"save_csv_worked"                       : "Collectie geëxporteerd naar CSV",
 	"save_import_slot"                      : "Bestemming Slot",
+	"save_json_failed"                      : "Kan verzameling niet exporteren naar JSON (controleer debug-logboek)",
+	"save_json_worked"                      : "Collectie geëxporteerd naar JSON",
 	"save_log_failed"                       : "Opslaan debug log mislukt",
 	"save_log_worked"                       : "Debug log succesvol opgeslagen",
 	"save_manage_active"                    : "Actief opslaan Spelletjes",

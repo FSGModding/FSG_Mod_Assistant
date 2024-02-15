@@ -409,6 +409,8 @@
 	"save_csv_failed"                       : "Exportieren der CSV-Sammlungsliste nicht möglich (Debug-Log überprüfen)",
 	"save_csv_worked"                       : "Sammlung in CSV-Liste exportiert",
 	"save_import_slot"                      : "Ziel Slot",
+	"save_json_failed"                      : "Sammlung kann nicht nach JSON exportiert werden (Debug-Protokoll prüfen)",
+	"save_json_worked"                      : "In JSON exportierte Sammlung",
 	"save_log_failed"                       : "Debug-Log konnte nicht gespeichert werden",
 	"save_log_worked"                       : "Debug-Log wurde gespeichert",
 	"save_manage_active"                    : "Aktive Spielstände",
