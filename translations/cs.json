@@ -409,6 +409,7 @@
 	"save_csv_failed"                       : "Unable to export CSV collection list (check debug log)",
 	"save_csv_worked"                       : "Collection Exported to CSV List",
 	"save_import_slot"                      : "目的地插槽",
+	"save_json"                             : "导出设置（JSON）",
 	"save_json_failed"                      : "无法将集合导出为 JSON（检查调试日志）",
 	"save_json_worked"                      : "导出为 JSON 格式的收藏集",
 	"save_log_failed"                       : "调试日志保存失败",

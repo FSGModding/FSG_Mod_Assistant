@@ -409,6 +409,7 @@
 	"save_csv_failed"                       : "Unable to export CSV collection list (check debug log)",
 	"save_csv_worked"                       : "Collection Exported to CSV List",
 	"save_import_slot"                      : "Destination Slot",
+	"save_json"                             : "Export Settings (JSON)",
 	"save_json_failed"                      : "Unable to export collection to JSON (check debug log)",
 	"save_json_worked"                      : "Collection Exported to JSON",
 	"save_log_failed"                       : "Debug log save failed",

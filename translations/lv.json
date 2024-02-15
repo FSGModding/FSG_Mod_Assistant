@@ -409,6 +409,7 @@
 	"save_csv_failed"                       : "Nav iespējams eksportēt CSV kolekciju sarakstu (pārbaudiet atkļūdošanas žurnālu)",
 	"save_csv_worked"                       : "Kolekcija eksportēta uz CSV sarakstu",
 	"save_import_slot"                      : "Galamērķa slots",
+	"save_json"                             : "Eksportēt iestatījumus (JSON)",
 	"save_json_failed"                      : "Nav iespējams eksportēt kolekciju uz JSON (pārbaudiet atkļūdošanas žurnālu)",
 	"save_json_worked"                      : "Kolekcija eksportēta uz JSON",
 	"save_log_failed"                       : "Debug log save failed",

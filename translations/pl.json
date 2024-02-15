@@ -409,6 +409,7 @@
 	"save_csv_failed"                       : "Nie można wyeksportować listy folderów CSV (sprawdź dziennik debugowania)",
 	"save_csv_worked"                       : "Foldery wyeksportowane do listy CSV",
 	"save_import_slot"                      : "Miejsce docelowe",
+	"save_json"                             : "Eksportuj ustawienia (JSON)",
 	"save_json_failed"                      : "Nie można wyeksportować kolekcji do formatu JSON (sprawdź dziennik debugowania)",
 	"save_json_worked"                      : "Kolekcja wyeksportowana do JSON",
 	"save_log_failed"                       : "Zapisanie LOGa nie powiodło się",
