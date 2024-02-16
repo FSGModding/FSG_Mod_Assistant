@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Definir esta coleção como ativa em gameSettings.xml",
 	"list-none"                             : "Desativar",
 	"list-none__title"                      : "Desativar substituição em gameSettings.xml",
+	"load_save_import_failed"               : "Não foi possível ler o ficheiro guardado especificado, não é possível continuar a importação.",
+	"load_save_import_title"                : "Ficheiro de gravação inválido",
 	"loading_cache_subtitle"                : "Limpando entradas de cache adicionais (lento!)",
 	"loading_cache_title"                   : "limpeza de cache",
 	"loading_download_subtitle"             : "Aguarde, isso pode levar um minuto.",

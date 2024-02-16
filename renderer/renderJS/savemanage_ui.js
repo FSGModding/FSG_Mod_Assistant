@@ -11,6 +11,7 @@
 let uuidMap    = {}
 
 window.mods.receive('fromMain_saveImport', (savePath) => {
+	console.log(savePath)
 	fsgUtil.setContent({
 		save_import_path : savePath,
 	})
@@ -20,8 +21,8 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	uuidMap    = {}
 	const theseSaves = modCollect.opts.saveInfo
 
-	const activeIDS      = Object.keys(theseSaves).filter((x) => theseSaves[x].active !== false && theseSaves[x].active.error === false)
-	const backIDS        = Object.keys(theseSaves).filter((x) => theseSaves[x].backups.length !== 0 )
+	const activeIDS      = Object.keys(theseSaves).filter((x) => typeof theseSaves[x].active === 'object' && theseSaves[x].active?.error === false)
+	const backIDS        = Object.keys(theseSaves).filter((x) => Array.isArray(theseSaves[x].backups) && theseSaves[x].backups.length !== 0 )
 
 	const activeGameHTML = []
 	const backGameHTML   = []

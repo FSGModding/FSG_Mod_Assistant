@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Establece esta colección como activa en gameSettings.xml",
 	"list-none"                             : "Desactivar",
 	"list-none__title"                      : "Desactivar la anulación en gameSettings.xml",
+	"load_save_import_failed"               : "No se ha podido leer el archivo guardado especificado, no se puede continuar con la importación.",
+	"load_save_import_title"                : "Archivo de almacenamiento no válido",
 	"loading_cache_subtitle"                : "Limpieza de entradas de caché adicionales (¡lento!)",
 	"loading_cache_title"                   : "Limpieza de la caché",
 	"loading_download_subtitle"             : "Por favor, espere, esto puede tardar un minuto",

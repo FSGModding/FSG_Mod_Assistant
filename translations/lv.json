@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Iestatiet šo kolekciju Active in gameSettings.xml",
 	"list-none"                             : "Deaktivizēt",
 	"list-none__title"                      : "Deaktivizēt override in gameSettings.xml",
+	"load_save_import_failed"               : "Nevar nolasīt norādīto saglabāšanas failu, nevar turpināt importēšanu.",
+	"load_save_import_title"                : "Nederīgs saglabāšanas fails",
 	"loading_cache_subtitle"                : "Papildu kešatmiņas ierakstu tīrīšana (lēni!)",
 	"loading_cache_title"                   : "Cache tīrīšana",
 	"loading_download_subtitle"             : "Lūdzu, pagaidiet, tas var aizņemt minūti",

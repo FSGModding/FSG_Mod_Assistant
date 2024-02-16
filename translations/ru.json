@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Активировать эту коллекцию в файле gameSettings.xml.",
 	"list-none"                             : "Деактивировать",
 	"list-none__title"                      : "Деактивировать переопределение в gameSettings.xml",
+	"load_save_import_failed"               : "Невозможно прочитать указанный файл сохранения, невозможно продолжить импорт.",
+	"load_save_import_title"                : "Недопустимый файл сохранения",
 	"loading_cache_subtitle"                : "Очистка лишних записей в кеше (медленно!)",
 	"loading_cache_title"                   : "Очистка кеша",
 	"loading_download_subtitle"             : "Пожалуйста, подождите, это может занять минуту",

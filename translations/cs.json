@@ -210,6 +210,8 @@
 	"list-active__title"                    : "请在 gameSettings.xml 文件中将此收藏夹设置为激活状态",
 	"list-none"                             : "取消激活",
 	"list-none__title"                      : "请在 gameSettings.xml 文件中取消激活覆盖。",
+	"load_save_import_failed"               : "无法读取指定的保存文件，无法继续导入。",
+	"load_save_import_title"                : "无效保存文件",
 	"loading_cache_subtitle"                : "清理额外的缓存条目 (较慢)",
 	"loading_cache_title"                   : "清除缓存",
 	"loading_download_subtitle"             : "Please wait, this could take a minute",

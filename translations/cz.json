@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Nastavte tuto kolekci Aktivní v herním Settings.xml",
 	"list-none"                             : "Deaktivovat",
 	"list-none__title"                      : "Deaktivovat přepsání v herním Settings.xml",
+	"load_save_import_failed"               : "Nelze přečíst zadaný uložený soubor, nelze pokračovat v importu.",
+	"load_save_import_title"                : "Neplatný soubor pro uložení",
 	"loading_cache_subtitle"                : "Čištění extra položek mezipaměti (pomalé!)",
 	"loading_cache_title"                   : "Vyčistit mezipaměť",
 	"loading_download_subtitle"             : "Počkejte prosím, může to chvíli trvat",

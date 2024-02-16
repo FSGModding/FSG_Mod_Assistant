@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Diese Sammlung in gameSettings.xml auf Aktiv setzen",
 	"list-none"                             : "Deaktivieren",
 	"list-none__title"                      : "Deaktivieren der Überschreibung in gameSettings.xml",
+	"load_save_import_failed"               : "Die angegebene Speicherdatei kann nicht gelesen werden, der Import kann nicht fortgesetzt werden.",
+	"load_save_import_title"                : "Ungültige Speicherdatei",
 	"loading_cache_subtitle"                : "Bereinigung zusätzlicher Cache-Einträge (langsam!)",
 	"loading_cache_title"                   : "Cache reinigen",
 	"loading_download_subtitle"             : "Bitte warten. Dies kann einige Minuten dauern",

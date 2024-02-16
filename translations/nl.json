@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Stel deze collectie actief in gameSettings.xml",
 	"list-none"                             : "Deactiveer",
 	"list-none__title"                      : "Deactiveer override in gameSettings.xml",
+	"load_save_import_failed"               : "Kan opgegeven opslagbestand niet lezen, kan import niet voortzetten.",
+	"load_save_import_title"                : "Ongeldig bestand opslaan",
 	"loading_cache_subtitle"                : "Opschonen van extra cache entries (traag!)",
 	"loading_cache_title"                   : "Cache schoonmaken",
 	"loading_download_subtitle"             : "Geduld a.u.b., dit kan enkele minuten duren",

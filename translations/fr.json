@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Définissez cette collection active dans gameSettings.xml.",
 	"list-none"                             : "Désactiver",
 	"list-none__title"                      : "Désactiver la surcharge dans gameSettings.xml",
+	"load_save_import_failed"               : "Impossible de lire le fichier d'enregistrement spécifié, impossible de poursuivre l'importation.",
+	"load_save_import_title"                : "Fichier d'enregistrement invalide",
 	"loading_cache_subtitle"                : "Nettoyage des entrées supplémentaires dans le cache (lent !)",
 	"loading_cache_title"                   : "Nettoyage du cache",
 	"loading_download_subtitle"             : "Veuillez patienter. Cette action peut prendre quelques minutes",

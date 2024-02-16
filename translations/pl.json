@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Ustaw ten folder jako aktywny w gameSettings.xml",
 	"list-none"                             : "Dezaktywuj",
 	"list-none__title"                      : "Dezaktywuj nadpisywanie w gameSettings.xml",
+	"load_save_import_failed"               : "Nie można odczytać określonego pliku zapisu, nie można kontynuować importu.",
+	"load_save_import_title"                : "Nieprawidłowy plik zapisu",
 	"loading_cache_subtitle"                : "Czyszczenie dodatkowych wpisów w pamięci podręcznej (wolno!)",
 	"loading_cache_title"                   : "Czyszczenie pamięci podręcznej",
 	"loading_download_subtitle"             : "Proszę czekać, to może potrwać minutę",

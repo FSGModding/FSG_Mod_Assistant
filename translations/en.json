@@ -210,6 +210,8 @@
 	"list-active__title"                    : "Set this Collection Active in gameSettings.xml",
 	"list-none"                             : "Deactivate",
 	"list-none__title"                      : "Deactivate override in gameSettings.xml",
+	"load_save_import_failed"               : "Unable to read specified save file, unable to continue import.",
+	"load_save_import_title"                : "Invalid Save File",
 	"loading_cache_subtitle"                : "Cleaning extra cache entries (slow!)",
 	"loading_cache_title"                   : "Cleaning Cache",
 	"loading_download_subtitle"             : "Please wait, this could take a minute",
