@@ -70,6 +70,9 @@ window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
 })
 
 window.mods.receive('fromMain_modList', (modCollect) => {
+	if ( modCollect.opts.isDev ) {
+		fsgUtil.clsAddId('drag_target', 'fsg-back-3')
+	}
 	mainState.isMultiVersion     = modCollect.appSettings.multi_version
 	mainState.currentGameVersion = modCollect.appSettings.game_version
 	mainState.modCollect         = modCollect

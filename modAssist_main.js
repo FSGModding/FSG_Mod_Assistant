@@ -884,6 +884,7 @@ function refreshClientModList(closeLoader = true) {
 			foldersEdit            : serveIPC.isFoldersEdit,
 			gameRunning            : serveIPC.isGameRunning,
 			gameRunningEnable      : serveIPC.isGamePolling,
+			isDev                  : !app.isPackaged,
 			l10n                   : {
 				disable    : __('override_disabled'),
 				unknown    : __('override_unknown'),
