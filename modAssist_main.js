@@ -698,7 +698,11 @@ ipcMain.on('toMain_setNote', (_, id, value, collectKey) => {
 	openNotesWindow(collectKey)
 })
 ipcMain.on('toMain_setModInfo', (_, mod, site) => {
-	serveIPC.storeSites.set(mod, site)
+	if ( site === '' || site === null ) {
+		serveIPC.storeSites.delete(mod)
+	} else {
+		serveIPC.storeSites.set(mod, site)
+	}
 	refreshClientModList()
 })
 // END : Collection Settings Operation (notes)
