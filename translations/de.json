@@ -80,6 +80,7 @@
 	"context_mod_detail"                    : "Details anzeigen",
 	"context_open_website"                  : "Quellseite festlegen",
 	"context_paste"                         : "Einfügen",
+	"context_select_all"                    : "Alle auswählen",
 	"context_set_website"                   : "Quellseite festlegen",
 	"copy"                                  : "Ja, Mod(s) kopieren",
 	"copy_cropcal"                          : "Kopiere Wachstumskalender JSON in die Zwischenablage",

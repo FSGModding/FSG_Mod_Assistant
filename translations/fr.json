@@ -80,6 +80,7 @@
 	"context_mod_detail"                    : "Afficher les détails",
 	"context_open_website"                  : "Site web à source ouverte",
 	"context_paste"                         : "Coller",
+	"context_select_all"                    : "Sélectionner tout",
 	"context_set_website"                   : "Set Source Website",
 	"copy"                                  : "Oui, copier le(s) mod(s)",
 	"copy_cropcal"                          : "Copier le JSON du calendrier des récoltes dans le presse-papiers",

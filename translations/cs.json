@@ -80,6 +80,7 @@
 	"context_mod_detail"                    : "Show Details",
 	"context_open_website"                  : "Open Source Website",
 	"context_paste"                         : "Paste",
+	"context_select_all"                    : "全部选择",
 	"context_set_website"                   : "Set Source Website",
 	"copy"                                  : "是的，复制模组",
 	"copy_cropcal"                          : "将作物日历 JSON 复制到剪贴板",

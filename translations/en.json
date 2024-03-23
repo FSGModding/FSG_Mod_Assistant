@@ -80,6 +80,7 @@
 	"context_mod_detail"                    : "Show Details",
 	"context_open_website"                  : "Open Source Website",
 	"context_paste"                         : "Paste",
+	"context_select_all"                    : "Select All",
 	"context_set_website"                   : "Set Source Website",
 	"copy"                                  : "Yes, Copy Mod(s)",
 	"copy_cropcal"                          : "Copy Crop Calender JSON to Clipboard",

@@ -80,6 +80,7 @@
 	"context_mod_detail"                    : "Показать подробности",
 	"context_open_website"                  : "Открыть исходный веб-сайт",
 	"context_paste"                         : "Вставить",
+	"context_select_all"                    : "Выбрать все",
 	"context_set_website"                   : "Задать исходный веб-сайт",
 	"copy"                                  : "Да, скопировать мод(ы)",
 	"copy_cropcal"                          : "Копировать Календарь урожая в формате JSON в буфер обмена",

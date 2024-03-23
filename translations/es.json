@@ -80,6 +80,7 @@
 	"context_mod_detail"                    : "Mostrar detalles",
 	"context_open_website"                  : "Sitio web de código abierto",
 	"context_paste"                         : "Pegar",
+	"context_select_all"                    : "Seleccionar todo",
 	"context_set_website"                   : "Establecer sitio web de origen",
 	"copy"                                  : "Sí, Copiar Mod(s)",
 	"copy_cropcal"                          : "Copiar JSON de Calendario de Recortes al Portapapeles",

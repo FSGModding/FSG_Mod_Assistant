@@ -80,6 +80,7 @@
 	"context_mod_detail"                    : "Mostrar Detalhes",
 	"context_open_website"                  : "Abrir Website de Origem",
 	"context_paste"                         : "Colar",
+	"context_select_all"                    : "Selecionar tudo",
 	"context_set_website"                   : "Definir Website de Origem",
 	"copy"                                  : "Sim, Copiar Mod(s)",
 	"copy_cropcal"                          : "Copiar JSON do calendário de corte para a área de transferência",
