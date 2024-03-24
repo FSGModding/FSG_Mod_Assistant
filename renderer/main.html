@@ -937,7 +937,7 @@
 				<button type="button" onclick="mainLib.setItemOrder('{{id}}', true)" id="{{id}}_order_up" class="btn btn-sm btn-secondary"><l10n name="folder_up_button"></l10n></button>
 				<button type="button" onclick="mainLib.setItemOrder('{{id}}', false)" id="{{id}}_order_down" class="btn btn-sm btn-secondary"><l10n name="folder_down_button"></l10n></button>
 				<button type="button" onclick="mainLib.setItemOrder('{{id}}', false, true)" id="{{id}}_order_down_last" class="btn btn-sm btn-secondary"><l10n name="folder_bot_button"></l10n></button>
-				<button type="button" class="btn btn-danger text-white" onclick="window.mods.removeFolder('{{id}}')"><l10n name="remove_folder"></l10n></button>
+				<button type="button" class="btn btn-danger text-white" onclick="mainLib.removeItemOrder('{{id}}')"><l10n name="remove_folder"></l10n></button>
 			</div>
 		</td>
 	</tr>

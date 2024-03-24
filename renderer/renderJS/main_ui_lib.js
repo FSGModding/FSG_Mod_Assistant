@@ -291,6 +291,10 @@ const mainLib = {
 		}
 		return null
 	},
+	removeItemOrder : (collectKey) => {
+		fsgUtil.clearTooltipsXX()
+		window.mods.removeFolder(collectKey)
+	},
 	setItemOrder : (collectKey, moveUpInList, forceLast = false) => {
 		const curIndex = mainState.collectOrder.map[collectKey]
 		const newIndex = forceLast ?
