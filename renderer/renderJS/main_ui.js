@@ -213,7 +213,12 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	select_lib.new_tag_reset()
 	select_lib.clear_range()
 
-	openCurrentTable(lastOpenID, lastOpenQ, scrollStart, modCollect.opts.cacheGameSave?.collectKey)
+	openCurrentTable(
+		lastOpenID,
+		lastOpenQ,
+		modCollect.opts.foldersEdit ? mainState.lastFolderScroll : scrollStart,
+		modCollect.opts.cacheGameSave?.collectKey
+	)
 
 	select_lib.filter_begin()
 	processL10N()
@@ -355,7 +360,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	})
 	fsgUtil.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
 		dragLib.preventRun = false
-		fsgUtil.clearTooltips()
+		fsgUtil.clearTooltipsXX()
 	})
 	fsgUtil.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
 		fsgUtil.byId('prefcanvas').querySelector('.offcanvas-body').scrollTop = 0

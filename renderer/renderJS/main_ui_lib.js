@@ -17,6 +17,7 @@ const mainState = {
 		all      : {},
 	},
 	isMultiVersion     : false,
+	lastFolderScroll   : 0,
 	modCollect         : null,
 	searchStringMap    : {},
 	searchTagMap       : {},
@@ -295,8 +296,11 @@ const mainLib = {
 		const newIndex = forceLast ?
 			moveUpInList ? 0 : mainState.collectOrder.max :
 			moveUpInList ? mainLib.getOrderPrev(collectKey) : mainLib.getOrderNext(collectKey)
-	
+
+		fsgUtil.clearTooltipsXX()
+
 		if ( curIndex !== null && newIndex !== null ) {
+			mainState.lastFolderScroll = fsgUtil.byId('mod-collections').offsetParent.scrollTop
 			window.mods.reorderFolder(curIndex, newIndex)
 		}
 	},
