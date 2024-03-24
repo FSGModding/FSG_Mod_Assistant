@@ -11,7 +11,6 @@
 let uuidMap    = {}
 
 window.mods.receive('fromMain_saveImport', (savePath) => {
-	console.log(savePath)
 	fsgUtil.setContent({
 		save_import_path : savePath,
 	})
