@@ -383,7 +383,7 @@
 	"notes_units_use_acres"                 : "Acres gebruiken voor oppervlakte",
 	"notes_units_use_fahrenheit"            : "Gebruik Fahrenheit voor temperatuur",
 	"notes_units_use_miles"                 : "Gebruik mijlen voor afstand",
-	"notes_usage_blurb"                     : "<strong>Notitie:</strong> Als je de wijzigingen hier wilt activeren, moet je opnieuw op de \"Activieren\" knop voor deze collectie drukken!",
+	"notes_usage_blurb_2"                   : "<strong>Let op:</strong> Dit is de collectie die op dit moment actief is - om hier wijzigingen te activeren (wachtwoord, filters, gebruikersnaam) moet je opnieuw op de knop \"Actief instellen\" voor deze collectie drukken!",
 	"offcanvas_blurb"                       : "Selecteer welke versie van Farming Simulator je wilt dat actief is",
 	"open_debug_log"                        : "Bekijk Debug Log",
 	"open_folder"                           : "Openen in Verkenner",

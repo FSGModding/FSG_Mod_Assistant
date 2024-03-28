@@ -383,7 +383,7 @@
 	"notes_units_use_acres"                 : "Use Acres for Area",
 	"notes_units_use_fahrenheit"            : "Use Fahrenheit for Temperature",
 	"notes_units_use_miles"                 : "Use Miles For Distance",
-	"notes_usage_blurb"                     : "<strong>Please Note:</strong> To activate any changes here you must press the \"Set Active\" button for this collection again!",
+	"notes_usage_blurb_2"                   : "<strong>Please Note:</strong> This is the currently active collection - to activate any changes here (password, filters, user name) you must press the \"Set Active\" button for this collection again!",
 	"offcanvas_blurb"                       : "Select which version of Farming Simulator you wish to be active",
 	"open_debug_log"                        : "View Debug Log",
 	"open_folder"                           : "Open in Explorer",

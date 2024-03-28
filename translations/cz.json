@@ -383,7 +383,7 @@
 	"notes_units_use_acres"                 : "Použijte akry pro plochu",
 	"notes_units_use_fahrenheit"            : "Použití Fahrenheita pro teplotu",
 	"notes_units_use_miles"                 : "Použití mil pro vzdálenost",
-	"notes_usage_blurb"                     : "<strong>Upozornění:</strong> Chcete-li zde aktivovat změny, musíte pro tuto kolekci znovu stisknout tlačítko \"Nastavit aktivní\"!",
+	"notes_usage_blurb_2"                   : "<strong>Upozornění:</strong> Jedná se o aktuálně aktivní kolekci - pro aktivaci jakýchkoli změn (heslo, filtry, uživatelské jméno) je nutné znovu stisknout tlačítko \"Nastavit aktivní\" pro tuto kolekci!",
 	"offcanvas_blurb"                       : "Vyberte, která verze farmařicího simulátoru chcete být aktivní",
 	"open_debug_log"                        : "Zobrazit protokol ladění",
 	"open_folder"                           : "Otevřít v Průzkumníku",

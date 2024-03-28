@@ -383,7 +383,7 @@
 	"notes_units_use_acres"                 : "用 \"英亩 \"表示面积",
 	"notes_units_use_fahrenheit"            : "使用华氏温度表示温度",
 	"notes_units_use_miles"                 : "用 \"英里 \"表示距离",
-	"notes_usage_blurb"                     : "<strong>Please Note:</strong> To activate any changes here you must press the \"Set Active\" button for this collection again!",
+	"notes_usage_blurb_2"                   : "<strong>请注意：</strong>这是当前激活的收藏集--要激活此处的任何更改（密码、筛选器、用户名），必须再次按下该收藏集的 \"设置激活 \"按钮！",
 	"offcanvas_blurb"                       : "Select which version of Farming Simulator you wish to be active",
 	"open_debug_log"                        : "查看调试日志",
 	"open_folder"                           : "在资源管理器中打开",

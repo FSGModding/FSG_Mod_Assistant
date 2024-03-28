@@ -383,7 +383,7 @@
 	"notes_units_use_acres"                 : "Utilizar hectares para a área",
 	"notes_units_use_fahrenheit"            : "Utilizar Fahrenheit para a temperatura",
 	"notes_units_use_miles"                 : "Utilizar milhas como distância",
-	"notes_usage_blurb"                     : "<strong>Nota:</strong> Para ativar quaisquer alterações aqui, você deve pressionar o botão \"Definir ativo\" para esta coleção novamente!",
+	"notes_usage_blurb_2"                   : "<strong>Nota: </strong> Esta é a coleção atualmente ativa - para ativar quaisquer alterações aqui (palavra-passe, filtros, nome de utilizador), tem de premir novamente o botão \"Definir como ativa\" para esta coleção!",
 	"offcanvas_blurb"                       : "Selecione qual versão do Farming Simulator deseja que esteja ativa",
 	"open_debug_log"                        : "Exibir registro de Log",
 	"open_folder"                           : "Abrir no Explorer",

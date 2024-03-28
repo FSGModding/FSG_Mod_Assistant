@@ -681,8 +681,9 @@ function openWizard() {
 // Collection Settings Operation (notes)
 function openNotesWindow(collectKey) {
 	serveIPC.windowLib.createNamedWindow('notes', {
-		collectKey       : collectKey,
-		lastGameSettings : serveIPC.gameSetOverride.xml,
+		collectKey         : collectKey,
+		isActiveCollection : serveIPC.gameSetOverride.index === collectKey,
+		lastGameSettings   : serveIPC.gameSetOverride.xml,
 	})
 }
 ipcMain.on('toMain_openNotes', (_, collectKey) => { openNotesWindow(collectKey) })

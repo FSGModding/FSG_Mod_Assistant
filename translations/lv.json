@@ -383,7 +383,7 @@
 	"notes_units_use_acres"                 : "Izmantojiet akrus platībai",
 	"notes_units_use_fahrenheit"            : "Temperatūras apzīmēšanai izmantojiet Fārenheita grādu",
 	"notes_units_use_miles"                 : "Attāluma apzīmēšanai izmantojiet jūdzes",
-	"notes_usage_blurb"                     : "<strong>Pievērsiet uzmanību:</strong> Lai aktivizētu šeit veiktās izmaiņas, vēlreiz nospiediet šīs kolekcijas pogu \"Iestatīt aktīvo\"!",
+	"notes_usage_blurb_2"                   : "<strong> Lūdzu, ņemiet vērā:</strong> Šī ir pašreiz aktīvā kolekcija - lai aktivizētu jebkādas izmaiņas (parole, filtri, lietotājvārds), jums vēlreiz jānospiež šīs kolekcijas poga \"Iestatīt aktīvu\"!",
 	"offcanvas_blurb"                       : "Izvēlieties, kuru Farming Simulator versiju vēlaties, lai tā būtu aktīva",
 	"open_debug_log"                        : "Skatīt atkļūdošanas žurnālu",
 	"open_folder"                           : "Atvērt pārlūkā Explorer",

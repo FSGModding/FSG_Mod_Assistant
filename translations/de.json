@@ -383,7 +383,7 @@
 	"notes_units_use_acres"                 : "Acker für Fläche verwenden",
 	"notes_units_use_fahrenheit"            : "Fahrenheit für Temperatur verwenden",
 	"notes_units_use_miles"                 : "Meilen für Distanz verwenden",
-	"notes_usage_blurb"                     : "<strong>Bitte beachten:</strong> Um Änderungen hier zu aktivieren, drücken Sie erneut die Schaltfläche \"Aktivieren\" für diese Sammlung!",
+	"notes_usage_blurb_2"                   : "<strong>Bitte beachten Sie:</strong> Dies ist die derzeit aktive Sammlung - um hier Änderungen (Passwort, Filter, Benutzername) zu aktivieren, müssen Sie die Schaltfläche \"Aktiv setzen\" für diese Sammlung erneut drücken!",
 	"offcanvas_blurb"                       : "Wählen Sie die Version des Landwirtschafts-Simulators aus, die Sie aktivieren möchten",
 	"open_debug_log"                        : "Debug-Log anzeigen",
 	"open_folder"                           : "Im Explorer öffnen",
