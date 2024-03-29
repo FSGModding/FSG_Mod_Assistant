@@ -124,6 +124,7 @@
 		"iconfilename",
 		"IMAGEFILENAME",
 		"IMAGENAME",
+		"importjson",
 		"incomeperhour",
 		"ingame",
 		"inputbinding",

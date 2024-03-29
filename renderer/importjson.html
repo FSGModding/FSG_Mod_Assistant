@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
+
+	<script src="inc/bootstrap.bundle.min.js"></script>
+
+	<script src="renderJS/util/general_lib.js"></script>
+
+	<script src="renderJS/importjson_ui.js"></script>
+</head>
+<body data-bs-theme="dark" class="overflow-custom2">
+	<div class="container-fluid px-1">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100">
+				<div class="col-7" style="-webkit-app-region: drag;">
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+				</div>
+				<div class="col-5 pt-4">
+					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><l10n class="h4" name="import_json_title"></l10n></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row gx-3 gy-5 mx-3 mb-3">
+			<div class="col-12 px-3 display-7"><l10n name="import_json_blurb"></l10n></div>
+
+			<div class="col-12 inset-block"><div>  <!-- step 0 -->
+				<l10n class="inset-block-header" name="import_json_step_0_title"></l10n>
+				<l10n class="inset-block-blurb-section" name="import_json_step_0_blurb"></l10n>
+				<div class="row gx-3 gy-4">
+					<div class="col-6 inset-block"><div> <!-- desc -->
+						<l10n class="inset-block-header" name="notes_title_tagline"></l10n>
+						<div class="inset-block-blurb-option d-flex align-items-center"><div id="notes_collection_color"></div><div class="ms-2" id="notes_collection_description"></div></div>
+					</div></div>
+
+					<div class="col-6 inset-block"><div> <!-- version -->
+						<l10n class="inset-block-header" name="notes_title_version"></l10n>
+						<div class="inset-block-blurb-option d-flex align-items-center h-100">20<span id="notes_game_version"></span></div>
+					</div></div>
+
+					<div class="col-6 inset-block"><div> <!-- server name -->
+						<l10n class="inset-block-header" name="notes_title_server"></l10n>
+						<div class="inset-block-blurb-option d-flex align-items-center h-100"><span id="notes_server_name"></span></div>
+					</div></div>
+
+					<div class="col-6 inset-block"><div> <!-- server pass -->
+						<l10n class="inset-block-header" name="notes_title_password"></l10n>
+						<div class="inset-block-blurb-option d-flex align-items-center h-100"><span id="notes_server_password"></span></div>
+					</div></div>
+
+					<div class="col-6 inset-block"><div> <!-- bot -->
+						<l10n class="inset-block-header" name="notes_title_fsg_bot"></l10n>
+						<div class="inset-block-blurb-option d-flex align-items-center h-100"><span id="notes_server_id"></span></div>
+					</div></div>
+
+					<div class="col-6 inset-block"><div> <!-- web -->
+						<l10n class="inset-block-header" name="notes_title_website"></l10n>
+						<div class="inset-block-blurb-option d-flex align-items-center h-100"><span id="notes_server_website"></span></div>
+					</div></div>
+
+					<div class="col-6 inset-block"><div> <!-- download -->
+						<l10n class="inset-block-header" name="notes_blurb_website_dl"></l10n>
+						<div class="inset-block-blurb-option d-flex align-items-center h-100"><span id="notes_server_downloads"></span></div>
+					</div></div>
+
+					<div class="col-6 inset-block"><div> <!-- freeze -->
+						<l10n class="inset-block-header" name="notes_title_frozen"></l10n>
+						<div class="inset-block-blurb-option d-flex align-items-center h-100"><span id="notes_force_frozen"></span></div>
+					</div></div>
+				</div>
+			</div></div>
+
+			<div class="col-12 inset-block"><div>  <!-- step 1 -->
+				<l10n class="inset-block-header" name="import_json_step_1_title"></l10n>
+				<l10n class="inset-block-blurb-section" name="import_json_step_1_blurb"></l10n>
+				<div class="row gx-3 gy-4">
+					<div class="col-12 inset-block"><div> <!-- folder -->
+						<l10n class="inset-block-header" name="import_json_step_1_folder"></l10n>
+						<div class="inset-block-blurb-option"><l10n name="import_json_step_1_folder_blurb"></l10n></div>
+						<div onclick="window.mods.setFolder()" class="mt-2 btn btn-primary w-75 d-block mx-auto btn-sm"><l10n name="import_json_step_1_folder_button"></l10n></div>
+					</div></div>
+					<div class="col-12 inset-block"><div> <!-- folder (set) -->
+						<l10n class="inset-block-header" name="import_json_step_1_folder_return"></l10n>
+						<div class="inset-block-blurb-option d-none" id="folder_location_empty"><l10n name="import_json_folder_empty"></l10n></div>
+						<div class="inset-block-blurb-option d-none" id="folder_location_not_empty"><l10n name="import_json_folder_not_empty"></l10n></div>
+						<div class="text-center mt-2" id="folder_location"><em><l10n name="import_json_not_set"></l10n></em></div>
+					</div></div>
+					<div class="col-12 inset-block"><div> <!-- settings -->
+						<l10n class="inset-block-header" name="import_json_step_1_options"></l10n>
+						<div class="inset-block-blurb-option"><l10n name="import_json_step_1_options_blurb"></l10n></div>
+						<div id="apply_button" onclick="clientDoSettings()" class="disabled mt-2 btn btn-primary w-75 d-block mx-auto btn-sm"><l10n name="import_json_step_1_options_button"></l10n></div>
+					</div></div>
+				</div>
+			</div></div>
+
+			<div class="col-12 inset-block"><div>  <!-- step 2 -->
+				<l10n class="inset-block-header" name="import_json_step_2_title"></l10n>
+				<l10n class="inset-block-blurb-section" name="import_json_step_2_blurb"></l10n>
+				<div class="row gx-3 gy-4">
+					<div class="col-12 inset-block"><div> <!-- packs -->
+						<l10n class="inset-block-header" name="import_json_step_2_pack"></l10n>
+						<div id="import_mod_packs"></div>
+					</div></div>
+					<div class="col-12 inset-block"><div> <!-- packs -->
+						<l10n class="inset-block-header" name="import_json_step_2_single"></l10n>
+						<div id="import_mod_singles"></div>
+					</div></div>
+				</div>
+			</div></div>
+		</div>
+
+	</div>
+
+	<div id="loadOverlay" class="modal" tabindex="-1">
+		<div class="modal-dialog modal-lg modal-dialog-centered" style="width:600px; height:300px;">
+			<div class="modal-content p-0 m-0 bg-dark">
+				<img alt="" style="margin:0; padding:0; width:600px; height:300px; opacity: 0.4;" src="img/splash.webp">
+				<div style="position: absolute; left: 311px; height: 270px; width: 270px; top: 20px; opacity: 7%; z-index:2; ">
+					<img alt="" src="img/wait_ani.webp" class="w-100">
+				</div>
+				<div id="loadOverlay_downloadCancel" style="position: absolute; left: 10px; width: 280px; top: 250px;" class="py-1 px-3">
+					<button type="button" id="loadOverlay_downloadCancelButton" onclick="window.mods.cancelDownload()" class="btn btn-danger text-white w-100"></button>
+				</div>
+				<div style="position: absolute; left: 310px; height: 270px; width: 280px; top: 20px;" class="bg-dark py-1 px-3 text-white">
+					<div id="loadOverlay_statusMessage" class="text-center display-6 mb-1">Status Title</div>
+					<div id="status-icon-working" class="d-flex justify-content-center">
+						<div id="loadOverlay_speed" class="d-none" style="text-align:center; margin-top:1.7rem; width:4rem; display:block;"><span id="loadOverlay_speed_speed" style="white-space:nowrap" class="small">SPEED</span><br><span id="loadOverlay_speed_time" style="white-space:nowrap" class="small">TIME</span></div>
+					</div>
+					<div id="loadOverlay_statusProgBar" class="progress mt-2">
+						<div id="loadOverlay_statusProgBarInner" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+					</div>
+					<div id="loadOverlay_statusDetail" class="text-center mw-bold my-2 small">Status Title</div>
+					<div id="loadOverlay_statusCount" class="text-center mw-bold my-2">
+						<span id="loadOverlay_statusCurrent">0</span> / <span id="loadOverlay_statusTotal">0</span>
+					</div>
+				</div>
+				<div class="spinner-border position-absolute opacity-25" style="width: 200px; height: 200px; left:346px; top:56px;" role="status"></div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
