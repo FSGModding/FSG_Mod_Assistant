@@ -2666,7 +2666,7 @@ __metadata:
     eslint-plugin-unicorn: ^51.0.1
     fast-xml-parser: ^4.3.6
     glob: ^10.3.12
-    html-validate: ^8.18.0
+    html-validate: ^8.18.1
     jsdoc: ^4.0.2
     node-stream-zip: ^1.15.0
     unzip-stream: ^0.3.1
@@ -2941,9 +2941,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-validate@npm:^8.18.0":
-  version: 8.18.0
-  resolution: "html-validate@npm:8.18.0"
+"html-validate@npm:^8.18.1":
+  version: 8.18.1
+  resolution: "html-validate@npm:8.18.1"
   dependencies:
     "@babel/code-frame": ^7.10.0
     "@html-validate/stylish": ^4.1.0
@@ -2972,7 +2972,7 @@ __metadata:
       optional: true
   bin:
     html-validate: bin/html-validate.js
-  checksum: d6608cddb062fe5e49f202bdf8d3cbd7d166210ded6da0630b4d7efb9ae77e9beb864e20c59d66d7836948047bb2691eb7e63a67fae97f112e5552ca280d130a
+  checksum: 53479bf75bcb6ad748a6543583de6a26bfb55d85c0ae793bd6619c0079795f482c01b4168a7dea2584219f31b8a05c3ea2a0d5ebfd639099caf623263d3ac536
   languageName: node
   linkType: hard
 
