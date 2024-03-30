@@ -6,7 +6,7 @@
 
 // Base Game generator library
 
-const { requiredItems, logCollector, fileHandler } = require('../lib/workerThreadLib.js')
+const { requiredItems, logCollector, fileHandlerAsync } = require('../lib/workerThreadLib.js')
 const path          = require('node:path')
 const allLang       = require('../lib/modLookerLang.json')
 const {XMLParser}   = require('fast-xml-parser')
@@ -40,7 +40,9 @@ class baseLooker {
 	}
 
 	async getInfo() {
-		this.#modHandle = new fileHandler(path.dirname(this.#fullFileName), true, this.#log)
+		this.#modHandle = new fileHandlerAsync(path.dirname(this.#fullFileName), true, this.#log)
+
+		await this.#modHandle.open()
 		
 		const thisItem = path.basename(this.#fullFileName)
 		const thisItemName = path.relative(this.#dataPath, this.#fullFileName).replaceAll('\\', '_').replace('.xml', '')
@@ -48,7 +50,7 @@ class baseLooker {
 
 		const iconLoads = []
 
-		const thisItemTree = this.#modHandle.readXML(thisItem, 'modlook')
+		const thisItemTree = await this.#modHandle.readXML(thisItem, 'modlook')
 		const thisItemInfo = this.#parseStoreItem(thisItemTree)
 
 		if ( thisItemInfo !== null && thisItemInfo.icon !== null ) {
@@ -60,10 +62,9 @@ class baseLooker {
 			}))
 		}
 
-		this.#modHandle.close()
-		this.#modHandle = null
-
 		return Promise.allSettled(iconLoads).then(() => {
+			this.#modHandle.close()
+			this.#modHandle = null
 			return { shortname : thisItemName, log : this.#log.lines, record : thisItemInfo }
 		})
 	}
@@ -97,7 +98,7 @@ class baseLooker {
 		try {
 			if ( this.#modHandle.exists(fileName) ) {
 				return this.#iconParser.parseDDS(
-					this.#modHandle.readBin(fileName),
+					await this.#modHandle.readBin(fileName),
 					true,
 					isMap
 				)

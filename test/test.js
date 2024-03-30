@@ -171,7 +171,7 @@ if (require.main === module) {
 		} else {
 			rootTest.end(true)
 		}
-		
+
 		// console.log(serveIPC.log.textLog)
 	})
 }

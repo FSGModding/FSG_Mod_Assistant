@@ -37,7 +37,7 @@ const testGood = (test) => {
 		}
 
 		if ( Object.keys(results.farms).length === 2 ) {
-			test.step('Got expected number of farms (2)')
+			test.step('Got expected number of farms (2 [default])')
 		} else {
 			test.error('Got unexpected number of farms')
 		}

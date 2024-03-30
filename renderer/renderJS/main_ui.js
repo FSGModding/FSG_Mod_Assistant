@@ -70,6 +70,9 @@ window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
 })
 
 window.mods.receive('fromMain_modList', (modCollect) => {
+	if ( modCollect.opts.isDev ) {
+		fsgUtil.clsAddId('drag_target', 'fsg-back-3')
+	}
 	mainState.isMultiVersion     = modCollect.appSettings.multi_version
 	mainState.currentGameVersion = modCollect.appSettings.game_version
 	mainState.modCollect         = modCollect
@@ -210,7 +213,12 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	select_lib.new_tag_reset()
 	select_lib.clear_range()
 
-	openCurrentTable(lastOpenID, lastOpenQ, scrollStart, modCollect.opts.cacheGameSave?.collectKey)
+	openCurrentTable(
+		lastOpenID,
+		lastOpenQ,
+		modCollect.opts.foldersEdit ? mainState.lastFolderScroll : scrollStart,
+		modCollect.opts.cacheGameSave?.collectKey
+	)
 
 	select_lib.filter_begin()
 	processL10N()
@@ -352,7 +360,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	})
 	fsgUtil.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
 		dragLib.preventRun = false
-		fsgUtil.clearTooltips()
+		fsgUtil.clearTooltipsXX()
 	})
 	fsgUtil.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
 		fsgUtil.byId('prefcanvas').querySelector('.offcanvas-body').scrollTop = 0

@@ -9,8 +9,8 @@
 /* global l10n, bootstrap, ft_doReplace */
 /* exported tableBuilder */
 
-const getText     = (text, extraTitle = null) => `<l10n ${extraTitle!==null ? `data-extra-title="${extraTitle}"` : ''} name="${text}"></l10n>`
-const getTextBase = (text, extraTitle = null) => `<l10nBase ${extraTitle!==null ? `data-extra-title="${extraTitle}"` : ''} name="${text}"></l10nBase>`
+const getText     = (text, extraTitle = null) => `<l10n ${extraTitle!==null ? `data-extra-title="${extraTitle}"` : ''} name="${text}">&nbsp;</l10n>`
+const getTextBase = (text, extraTitle = null) => `<l10nBase ${extraTitle!==null ? `data-extra-title="${extraTitle}"` : ''} name="${text}">&nbsp;</l10nBase>`
 const _l = () => l10n.getLocale()
 const __ = (text, { skipIfNotBase = false, skipOnSpace = true, skipAlways = false, title = null } = {} ) => {
 	if ( skipAlways || typeof text !== 'string' || text.length === 0 ) { return text }
@@ -28,7 +28,7 @@ const __ = (text, { skipIfNotBase = false, skipOnSpace = true, skipAlways = fals
 		} catch { /* Ignore Problems Here */ }
 		return newName
 	}
-	return text.startsWith('$l10n') ? getTextBase(text, title) : skipIfNotBase || (text.indexOf(' ') !== -1 && skipOnSpace) ? text :getText(text, title)
+	return text.startsWith('$l10n') ? getTextBase(text, title) : skipIfNotBase || (text.indexOf(' ') !== -1 && skipOnSpace) ? text : getText(text, title)
 }
 
 const fsgUtil = {
@@ -333,7 +333,8 @@ const fsgUtil = {
 		}
 	},
 
-	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip.remove() } },
+	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.dispose?.() } },
+	clearTooltipsXX : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.remove?.() } },
 	setTheme        : (theme) => { document.body.setAttribute('data-bs-theme', theme) },
 	windowCheckAll  : () => { fsgUtil.windowCheckOp(true) },
 	windowCheckInv  : () => {
@@ -393,14 +394,12 @@ function processL10N() {
 }
 
 function clientGetL10NEntries() {
-	const l10nSendArray = fsgUtil.queryA('l10n').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
-
+	const l10nSendArray = fsgUtil.queryA('l10n:not([data-done="true"]').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
 	l10n.getText_send(new Set(l10nSendArray))
 }
 
 function clientGetL10NEntriesBase() {
-	const l10nSendArray = fsgUtil.queryA('l10nBase').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
-
+	const l10nSendArray = fsgUtil.queryA('l10nBase:not([data-done="true"]').map((element) => fsgUtil.getAttribNullEmpty(element, 'name'))
 	l10n.getTextBase_send(new Set(l10nSendArray))
 }
 
@@ -408,12 +407,18 @@ window?.l10n?.receive('fromMain_getText_return', (data) => {
 	if ( data[0] === '__currentLocale__'  ) {
 		document.body.setAttribute('data-i18n', data[1])
 	} else {
-		for ( const item of fsgUtil.query(`l10n[name="${data[0]}"]`) ) { item.innerHTML = data[1] }
+		for ( const item of fsgUtil.query(`l10n[name="${data[0]}"]`) ) {
+			item.innerHTML = data[1]
+			item.setAttribute('data-done', 'true')
+		}
 	}
 })
 
 window?.l10n?.receive('fromMain_getText_return_base', (data) => {
-	for ( const item of fsgUtil.query(`l10nBase[name="${data[0]}"]`) ) { item.innerHTML = data[1] }
+	for ( const item of fsgUtil.query(`l10nBase[name="${data[0]}"]`) ) {
+		item.innerHTML = data[1]
+		item.setAttribute('data-done', 'true')
+	}
 })
 
 const currentTooltips = []
@@ -423,6 +428,7 @@ window?.l10n?.receive('fromMain_getText_return_title', (data) => {
 		let thisTitle   = item.closest('button')
 		thisTitle     ??= item.closest('span')
 		thisTitle     ??= item.closest('label')
+		thisTitle     ??= item.closest('a')
 
 		if ( data[0] === 'game_icon_lg' ) { thisTitle = item.closest('#multi_version_button') }
 
@@ -439,6 +445,10 @@ window?.l10n?.receive('fromMain_l10n_refresh', (newLang) => {
 	}
 	currentTooltips.length = 0
 	document.body.setAttribute('data-i18n', newLang)
+
+	for ( const element of fsgUtil.query('l10n[data-done]') ) {
+		element.removeAttribute('data-done')
+	}
 	processL10N()
 })
 

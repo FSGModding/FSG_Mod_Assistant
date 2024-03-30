@@ -32,6 +32,16 @@ const __ = (x) => serveIPC.l10n.syncStringLookup(x)
 class queueEmitter extends EventEmitter {}
 const modQueueRunner = new queueEmitter()
 
+/**
+ * @typedef referenceFunctions
+ * @property {function} gameLauncher launch the game
+ * @property {function} processModFolders process mod folders
+ * @property {function} readGameLog read the game log
+ * @property {function} refreshClientModList refresh mod list in client
+ * @property {function} refreshTransientStatus refresh status flags in client
+ * @property {function} toggleMiniWindow toggle mini window on and off
+ */
+
 serveIPC.refFunc = {
 	gameLauncher           : funcLib.gameLauncher,
 	processModFolders      : processModFolders,
@@ -108,16 +118,24 @@ ipcMain.on('toMain_addFolder_direct', (event, potentialFolder) => {
 	funcLib.processor.addFolderTracking(potentialFolder)
 	event.sender.send( 'fromMain_allSettings', ...funcLib.commonSend.settings() )
 })
-ipcMain.on('toMain_addFolder', () => {
+ipcMain.on('toMain_addFolder', (notify_import = false) => {
 	funcLib.general.showFileDialog({
 		defaultPath : serveIPC.path.last ?? app.getPath('home'),
 		filterAll   : false,
+		parent      : notify_import ? 'importjson' : 'main',
 		
 		callback    : (result) => {
 			const potentialFolder = result.filePaths[0]
 
 			serveIPC.path.last = path.resolve(path.join(potentialFolder, '..'))
-			funcLib.processor.addFolderTracking(potentialFolder)
+			funcLib.processor.addFolderTracking(potentialFolder, notify_import)
+			if ( notify_import ) {
+				serveIPC.windowLib.sendToValidWindow('importjson', 'fromMain_importFolder', {
+					folder     : result.filePaths[0],
+					collectKey : serveIPC.modCollect.getFolderHash(result.filePaths[0]),
+					contents   : fs.readdirSync(result.filePaths[0]).length,
+				})
+			}
 			processModFolders()
 		},
 	})
@@ -160,7 +178,10 @@ ipcMain.on('toMain_dropFolder', (_, newFolder) => {
 	funcLib.processor.addFolderTracking(newFolder)
 	processModFolders()
 })
-ipcMain.on('toMain_dropFiles', (_, files) => {
+ipcMain.on('toMain_import_json_download', (_, collectKey, uri, unpack) => {
+	funcLib.general.importJSON_download(uri, unpack, collectKey)
+})
+ipcMain.on('toMain_dropFiles', async (_, files) => {
 	if ( files.length === 1 && files[0].endsWith('.csv') ) {
 		new csvFileChecker(files[0]).getInfo().then((results) => {
 			serveIPC.windowLib.createNamedWindow('save', {
@@ -169,8 +190,10 @@ ipcMain.on('toMain_dropFiles', (_, files) => {
 			})
 		})
 		return
+	} else if ( files.length === 1 && files[0].endsWith('.json') ) {
+		funcLib.general.importJSON_process(files[0])
 	} else if ( files.length === 1 && files[0].endsWith('.zip') ) {
-		sendCopyMoveDelete('import', null, null, files, new modPackChecker(files[0]).getInfo())
+		sendCopyMoveDelete('import', null, null, files, await new modPackChecker(files[0]).getInfo())
 	} else {
 		sendCopyMoveDelete('import', null, null, files, false)
 	}
@@ -642,7 +665,7 @@ ipcMain.on('toMain_cleanCacheFile', () => {
 
 	setTimeout(() => {
 		serveIPC.windowLib.sendToValidWindow('main', 'fromMain_l10n_refresh', serveIPC.l10n.currentLocale)
-	}, 1000)
+	}, 500)
 })
 ipcMain.on('toMain_setPrefFile',    (_, version) => { funcLib.prefs.changeFilePath(version, false) })
 ipcMain.on('toMain_setGamePath',    (_, version) => { funcLib.prefs.changeFilePath(version, true) })
@@ -671,12 +694,13 @@ function openWizard() {
 // Collection Settings Operation (notes)
 function openNotesWindow(collectKey) {
 	serveIPC.windowLib.createNamedWindow('notes', {
-		collectKey       : collectKey,
-		lastGameSettings : serveIPC.gameSetOverride.xml,
+		collectKey         : collectKey,
+		isActiveCollection : serveIPC.gameSetOverride.index === collectKey,
+		lastGameSettings   : serveIPC.gameSetOverride.xml,
 	})
 }
 ipcMain.on('toMain_openNotes', (_, collectKey) => { openNotesWindow(collectKey) })
-ipcMain.on('toMain_setNote', (_, id, value, collectKey) => {
+ipcMain.on('toMain_setNote', (_, id, value, collectKey, json_import = false) => {
 	const cleanValue = ( id === 'notes_version' ) ? parseInt(value, 10) : value
 
 	if ( cleanValue === '' ) {
@@ -685,10 +709,16 @@ ipcMain.on('toMain_setNote', (_, id, value, collectKey) => {
 		serveIPC.storeNote.set(`${collectKey}.${id}`, cleanValue)
 	}
 
-	openNotesWindow(collectKey)
+	if ( ! json_import ) {
+		openNotesWindow(collectKey)
+	}
 })
 ipcMain.on('toMain_setModInfo', (_, mod, site) => {
-	serveIPC.storeSites.set(mod, site)
+	if ( site === '' || site === null ) {
+		serveIPC.storeSites.delete(mod)
+	} else {
+		serveIPC.storeSites.set(mod, site)
+	}
 	refreshClientModList()
 })
 // END : Collection Settings Operation (notes)
@@ -874,6 +904,7 @@ function refreshClientModList(closeLoader = true) {
 			foldersEdit            : serveIPC.isFoldersEdit,
 			gameRunning            : serveIPC.isGameRunning,
 			gameRunningEnable      : serveIPC.isGamePolling,
+			isDev                  : !app.isPackaged,
 			l10n                   : {
 				disable    : __('override_disabled'),
 				unknown    : __('override_unknown'),

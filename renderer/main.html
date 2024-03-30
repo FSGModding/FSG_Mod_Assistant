@@ -149,6 +149,12 @@
 			background-position: bottom 0px left 30px !important;
 			background-blend-mode: multiply !important;
 		}
+		.fsg-back-3 {
+			background-image: url(img/fsg_back_3.svg);
+			background-size: 70vh !important;
+			background-position: bottom 35px left 30px !important;
+			background-blend-mode: multiply !important;
+		}
 		.fake-disable { opacity: .65;}
 	</style>
 	
@@ -769,9 +775,9 @@
 						<div class="col-12 inset-block"><div>  <!-- cache -->
 							<l10n class="inset-block-header" name="user_pref_title_clean_cache"></l10n>
 							<l10n class="inset-block-blurb-option" name="user_pref_blurb_clean_cache"></l10n>
-							<l10n class="inset-block-blurb-option text-body-emphasis py-1" name="clean_cache_size"></l10n>
-							<l10n class="inset-block-blurb-option text-body-emphasis py-1" name="clean_detail_cache_size"></l10n>
-							<div class="d-block btn btn-success btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.cleanCache()"><l10n name="user_pref_button_clean_cache"></l10n></div>
+							<l10n class="inset-block-blurb-option text-body-emphasis py-1" name="clean_cache_size" id="clean_cache_size"></l10n>
+							<l10n class="inset-block-blurb-option text-body-emphasis py-1" name="clean_detail_cache_size" id="clean_detail_cache_size"></l10n>
+							<div class="d-block btn btn-success btn-sm w-75 mt-2 mx-auto mb-3" onclick="actionLib.doCacheClean()"><l10n name="user_pref_button_clean_cache"></l10n></div>
 							<div class="d-block btn btn-warning btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.clearDetailCache()"><l10n name="user_pref_button_clear_detail_cache"></l10n></div>
 							<l10n class="inset-block-blurb-option" name="user_pref_blurb_clear_cache"></l10n>
 							<div class="d-block btn btn-danger btn-sm w-75 mt-2 mx-auto" onclick="window.mods.clearCache()"><l10n name="user_pref_button_clear_cache"></l10n></div>
@@ -918,20 +924,20 @@
 				<img alt="" class="img-fluid rounded" style="width: 27px; height: 27px;" src="{{mapIcon}}">
 			</button>
 			{{mapMultiButton}}
-			<button type="button" class="{{class_showFolderEdit}} {{class_hideRemovable}} btn btn-outline-secondary rounded-4 btn-sm me-2" onclick="return"><l10n name="removable_button"></l10n></button>
-			<button type="button" class="{{class_showFolderEdit}} {{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button"></l10n></button>
-			<button type="button" class="{{class_showFolderEdit}} {{class_hideGameAdminPassword}} btn btn-outline-success btn-sm me-2" onclick="window.mods.popClipboard('{{game_admin_password}}')"><l10n name="game_admin_pass_button"></l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} {{class_hideRemovable}} btn btn-outline-secondary rounded-4 btn-sm me-2" onclick="return"><l10n name="removable_button">&nbsp;</l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} {{class_hideDownload}} btn btn-outline-warning btn-sm me-2" onclick="window.mods.download('{{id}}')"><l10n name="download_button">&nbsp;</l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} {{class_hideGameAdminPassword}} btn btn-outline-success btn-sm me-2" onclick="window.mods.popClipboard('{{game_admin_password}}')"><l10n name="game_admin_pass_button">&nbsp;</l10n></button>
 			<button type="button" class="{{class_showFolderEdit}} {{class_hidePassword}} btn btn-outline-info btn-sm me-2" onclick="window.mods.popClipboard('{{password}}')"><l10n name="admin_pass_button"></l10n></button>
-			<a target="_blank" class="{{class_showFolderEdit}} {{class_hideWebsite}} btn btn-outline-info btn-sm me-2" href="{{website}}" rel="noopener noreferrer"><l10n name="admin_button">open admin</l10n></a>
-			<button type="button" class="{{class_showFolderEdit}} btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('{{id}}')"><l10n name="export_button"></l10n></button>
-			<button type="button" class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('{{id}}')"><l10n name="notes_button"></l10n></button>
-			<button type="button" class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save"></l10n></button>
+			<a target="_blank" class="{{class_showFolderEdit}} {{class_hideWebsite}} btn btn-outline-info btn-sm me-2" href="{{website}}" rel="noopener noreferrer"><l10n name="admin_button">&nbsp;</l10n></a>
+			<button type="button" class="{{class_showFolderEdit}} btn btn-outline-info btn-sm me-2" onclick="window.mods.exportList('{{id}}')"><l10n name="export_button">&nbsp;</l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openNotes('{{id}}')"><l10n name="notes_button">&nbsp;</l10n></button>
+			<button type="button" class="{{class_showFolderEdit}} btn btn-primary btn-sm me-2" onclick="window.mods.openSave('{{id}}')"><l10n name="check_save">&nbsp;</l10n></button>
 			<div class="btn-group btn-group-sm {{class_hideFolderEdit}}">
 				<button type="button" onclick="mainLib.setItemOrder('{{id}}', true, true)" id="{{id}}_order_up_last" class="btn btn-sm btn-secondary"><l10n name="folder_top_button"></l10n></button>
 				<button type="button" onclick="mainLib.setItemOrder('{{id}}', true)" id="{{id}}_order_up" class="btn btn-sm btn-secondary"><l10n name="folder_up_button"></l10n></button>
 				<button type="button" onclick="mainLib.setItemOrder('{{id}}', false)" id="{{id}}_order_down" class="btn btn-sm btn-secondary"><l10n name="folder_down_button"></l10n></button>
 				<button type="button" onclick="mainLib.setItemOrder('{{id}}', false, true)" id="{{id}}_order_down_last" class="btn btn-sm btn-secondary"><l10n name="folder_bot_button"></l10n></button>
-				<button type="button" class="btn btn-danger text-white" onclick="window.mods.removeFolder('{{id}}')"><l10n name="remove_folder"></l10n></button>
+				<button type="button" class="btn btn-danger text-white" onclick="mainLib.removeItemOrder('{{id}}')"><l10n name="remove_folder"></l10n></button>
 			</div>
 		</td>
 	</tr>

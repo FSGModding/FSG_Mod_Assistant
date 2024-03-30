@@ -28,6 +28,13 @@ const knownCrops = {
 	olive         : {	name : 'croptype_olive',			icon : 'olive' },
 	clover        : {	name : 'croptype_clover',			icon : 'clover' },
 	alfalfa       : {	name : 'croptype_alfalfa',			icon : 'alfalfa' },
+	onion         : {	name : 'croptype_onion',			icon : 'onion' },
+	carrot        : {	name : 'croptype_carrot',			icon : 'carrot' },
+	whitecabbage  : {	name : 'croptype_whitecabbage',		icon : 'whitecabbage' },
+	redcabbage    : {	name : 'croptype_redcabbage',		icon : 'redcabbage' },
+	rye           : {	name : 'croptype_rye',				icon : 'rye' },
+	poppy         : {	name : 'croptype_poppy',			icon : 'poppy' },
+	spelt         : {	name : 'croptype_spelt',			icon : 'spelt' },
 }
 /* eslint-enable sort-keys */
 

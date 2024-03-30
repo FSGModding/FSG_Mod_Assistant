@@ -13,10 +13,9 @@ let thisCollection = null
 window.mods.receive('fromMain_collectionName', (modCollect) => {
 	thisCollection = modCollect.opts.collectKey
 
-	if ( !modCollect.appSettings.multi_version ) {
-		fsgUtil.clsHide('multi_version')
-	}
-	
+	fsgUtil.clsHideFalse('is_active_collect', modCollect.opts.isActiveCollection)
+	fsgUtil.clsHideFalse('multi_version', modCollect.appSettings.multi_version)
+
 	fsgUtil.setById('collection_name', modCollect.collectionToName[thisCollection])
 
 	for ( const element of fsgUtil.query('input') ) {
@@ -158,3 +157,11 @@ window.addEventListener('DOMContentLoaded', () => {
 		thisLabel.innerHTML = fsgUtil.getIconSVG('folder', false, false, false, thisNum, true)
 	}
 })
+
+window.onbeforeunload = (e) => {
+	if ( document.activeElement.tagName === 'INPUT' ) {
+		e.returnValue = false
+		document.activeElement.blur()
+		setTimeout(() => { window.close()}, 250)
+	}
+}

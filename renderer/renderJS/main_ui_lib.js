@@ -17,6 +17,7 @@ const mainState = {
 		all      : {},
 	},
 	isMultiVersion     : false,
+	lastFolderScroll   : 0,
 	modCollect         : null,
 	searchStringMap    : {},
 	searchTagMap       : {},
@@ -290,13 +291,20 @@ const mainLib = {
 		}
 		return null
 	},
+	removeItemOrder : (collectKey) => {
+		fsgUtil.clearTooltipsXX()
+		window.mods.removeFolder(collectKey)
+	},
 	setItemOrder : (collectKey, moveUpInList, forceLast = false) => {
 		const curIndex = mainState.collectOrder.map[collectKey]
 		const newIndex = forceLast ?
 			moveUpInList ? 0 : mainState.collectOrder.max :
 			moveUpInList ? mainLib.getOrderPrev(collectKey) : mainLib.getOrderNext(collectKey)
-	
+
+		fsgUtil.clearTooltipsXX()
+
 		if ( curIndex !== null && newIndex !== null ) {
+			mainState.lastFolderScroll = fsgUtil.byId('mod-collections').offsetParent.scrollTop
 			window.mods.reorderFolder(curIndex, newIndex)
 		}
 	},
@@ -335,6 +343,7 @@ const mainLib = {
 		fsgUtil.valueById('collectionSelect', mainState.gameSetCollect.selected)
 		window.mods.startFarmSim()
 	},
+
 }
 
 const actionLib = {
@@ -370,6 +379,12 @@ const actionLib = {
 			fsgUtil.valueById('mod_info_input')
 		)
 		mainState.win.modInfo.hide()
+	},
+
+	doCacheClean : () => {
+		fsgUtil.setById('clean_cache_size', '')
+		fsgUtil.setById('clean_detail_cache_size', '')
+		window.mods.cleanCache()
 	},
 }
 
