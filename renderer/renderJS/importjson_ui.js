@@ -17,7 +17,7 @@ const formatBool  = (value) => value ?
 const downloadButton = (uri, isPack = true) => {
 	const thisID = crypto.randomUUID()
 	return [
-		`<div id="but_${thisID}" onclick="clientDoDownload('${thisID}','${uri}', ${isPack})" class="w-75 d-block mx-auto btn btn-primary btn-sm disabled btn-download">`,
+		`<div id="but_${thisID}" onclick="clientDoDownload('${thisID}','${uri}', ${isPack})" class="w-75 d-block mx-auto btn btn-primary btn-sm disabled btn-download mb-2">`,
 		isPack ? __('import_json_step_2_download_unpack') : __('import_json_step_2_download'),
 		' :: ',
 		uri,
