@@ -64,7 +64,7 @@ function clientDoDownload(id, uri, isPack) {
 }
 
 function clientDoSettings() {
-	window.mods.setNote('notes_color', importJSON.collection_color, importKey)
+	window.mods.setNote('notes_color', importJSON.collection_color.toString(), importKey)
 	window.mods.setNote('notes_tagline', importJSON.collection_description, importKey)
 	window.mods.setNote('notes_version', importJSON.game_version, importKey)
 	window.mods.setNote('notes_server', importJSON.server_name, importKey)
