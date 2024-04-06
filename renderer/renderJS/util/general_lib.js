@@ -333,8 +333,8 @@ const fsgUtil = {
 		}
 	},
 
-	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.remove?.() } },
-	clearTooltipsXX : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.remove?.() } },
+	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.hide?.() } },
+	clearTooltipsXX : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.hide?.() } },
 	setTheme        : (theme) => { document.body.setAttribute('data-bs-theme', theme) },
 	windowCheckAll  : () => { fsgUtil.windowCheckOp(true) },
 	windowCheckInv  : () => {
@@ -434,7 +434,7 @@ window?.l10n?.receive('fromMain_getText_return_title', (data) => {
 
 		if ( thisTitle !== null ) {
 			thisTitle.title = `${data[1]}${extTitle !== null && extTitle !== '' ? ` : ${extTitle}` : ''}`
-			currentTooltips.push(new bootstrap.Tooltip(thisTitle))
+			currentTooltips.push(new bootstrap.Tooltip(thisTitle, { trigger : 'hover' }))
 		}
 	}
 })

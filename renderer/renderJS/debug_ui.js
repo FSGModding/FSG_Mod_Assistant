@@ -30,5 +30,5 @@ function clientResetButtons() {
 window.addEventListener('DOMContentLoaded', () => {
 	processL10N()
 
-	fsgUtil.queryA('[data-bs-toggle="tooltip"]').map((element) => new bootstrap.Tooltip(element))
+	fsgUtil.queryA('[data-bs-toggle="tooltip"]').map((element) => new bootstrap.Tooltip(element, { trigger : 'hover' }))
 })
