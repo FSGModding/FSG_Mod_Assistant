@@ -10,7 +10,6 @@
 
 let thisCollection = null
 
-/* eslint-disable-next-line complexity */
 window.mods.receive('fromMain_collectionName', (modCollect) => {
 	thisCollection = modCollect.opts.collectKey
 
