@@ -69,6 +69,7 @@ window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
 	prefLib.update()
 })
 
+/* eslint-disable-next-line complexity */
 window.mods.receive('fromMain_modList', (modCollect) => {
 	if ( modCollect.opts.isDev ) {
 		fsgUtil.clsAddId('drag_target', 'fsg-back-3')

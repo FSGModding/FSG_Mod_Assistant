@@ -5,6 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Base Game generator library
+/* eslint complexity: ['warn', 80] */
 
 const { requiredItems, logCollector, fileHandlerAsync } = require('../lib/workerThreadLib.js')
 const path          = require('node:path')
@@ -163,7 +164,7 @@ class baseLooker {
 	#util_getGTCount(key, count = 1) { return typeof key !== 'number' ? false : key > count}
 
 	#parseProductionInput(thisInput) {
-		const isBoost  = thisInput?.$?.MIX === 'boost' ?? false
+		const isBoost  = thisInput?.$?.MIX === 'boost'
 		const mixIndex = typeof thisInput?.$?.MIX === 'undefined' ? null : `mix-${thisInput.$.MIX}`
 
 		return {
@@ -301,7 +302,7 @@ class baseLooker {
 	#parseWeight(xml) {
 		if ( typeof xml !== 'object' || xml === null ) { return 0 }
 
-		return xml.reduce((total, current) => total + current?.$?.MASS ?? 0, 0)
+		return xml.reduce((total, current) => total + (current?.$?.MASS ?? 0), 0)
 	}
 
 	#parseBrand(xml) {
@@ -507,7 +508,7 @@ class baseLooker {
 				typeDesc       : xml.base?.typedesc || 'unknown',
 				weight         : this.#parseWeight(xml.base?.components?.component),
 			}
-		} catch (_) {
+		} catch {
 			return null
 		}
 	}

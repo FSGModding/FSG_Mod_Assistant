@@ -89,6 +89,7 @@ const doMapImage = (mapImage) => {
 	fsgUtil.byId('map_image').src = mapImage
 }
 
+/* eslint-disable-next-line complexity */
 const buildStore = (lookRecord, chartUnits) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []

@@ -5,6 +5,8 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // Main Program
 
+const superDebugCache = false
+
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu, Tray, clipboard } = require('electron')
 
 const isPortable = Object.hasOwn(process.env, 'PORTABLE_EXECUTABLE_DIR')
@@ -54,7 +56,7 @@ serveIPC.refFunc = {
 serveIPC.windowLib = new (require('./lib/modAssist_window_lib.js')).windowLib()
 serveIPC.log.dangerCallBack = () => { serveIPC.windowLib.toggleMainDangerFlag() }
 
-serveIPC.isModCacheDisabled = false && !(app.isPackaged)
+serveIPC.isModCacheDisabled = superDebugCache && !(app.isPackaged)
 
 process.on('uncaughtException',  (err, origin) => { funcLib.general.handleUnhandled('exception', err, origin) })
 process.on('unhandledRejection', (err, origin) => { funcLib.general.handleUnhandled('rejection', err, origin) })

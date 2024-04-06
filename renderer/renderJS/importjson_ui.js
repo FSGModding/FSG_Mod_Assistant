@@ -100,7 +100,7 @@ const loaderLib = {
 		const thisCount   = inMB ? fsgUtil.bytesToMB(count, false) : count
 		const thisElement = fsgUtil.byId('loadOverlay_statusCurrent')
 		const thisProg    = fsgUtil.byId('loadOverlay_statusProgBarInner')
-		const thisPercent = `${Math.ceil((count / loaderLib.lastTotal) * 100)}%` || '0%'
+		const thisPercent = `${Math.max(Math.ceil((count / loaderLib.lastTotal) * 100), 0)}%`
 	
 		if ( thisProg !== null ) { thisProg.style.width = thisPercent }
 	

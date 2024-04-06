@@ -98,6 +98,7 @@ const make_combos = (combos) => {
 	
 }
 
+/* eslint-disable-next-line complexity */
 const client_buildStore = (thisItem) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []

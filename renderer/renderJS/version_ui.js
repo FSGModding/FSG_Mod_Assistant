@@ -8,7 +8,7 @@
 
 /* global fsgUtil, processL10N */
 
-
+/* eslint-disable-next-line complexity */
 window.mods.receive('fromMain_modList', (modCollect) => {
 	const doMultiVersion     = modCollect.appSettings.multi_version
 	const thisVersion        = modCollect.appSettings.game_version
