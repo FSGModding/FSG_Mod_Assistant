@@ -158,9 +158,10 @@ function clientBuildTable() {
 	const rowHeight  = 19
 	const thisData   = filterLines()
 
-	
-	if ( theContain.scrollTop > ((thisData.length - 1) * rowHeight) + 100 ) {
-		theContain.scrollTo({top : ((thisData.length - 1) * rowHeight) - theContain.offsetHeight - 50, behavior : 'instant'})
+	const overScrollCheck = (thisData.length * rowHeight) + (rowHeight * 2) - theContain.offsetHeight
+
+	if ( theContain.scrollTop > overScrollCheck ) {
+		theContain.scrollTo({top : overScrollCheck, behavior : 'instant'})
 	}
 	
 	const startAt   = Math.floor(theContain.scrollTop)
