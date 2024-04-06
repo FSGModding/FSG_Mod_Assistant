@@ -333,7 +333,7 @@ const fsgUtil = {
 		}
 	},
 
-	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.dispose?.() } },
+	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.remove?.() } },
 	clearTooltipsXX : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.remove?.() } },
 	setTheme        : (theme) => { document.body.setAttribute('data-bs-theme', theme) },
 	windowCheckAll  : () => { fsgUtil.windowCheckOp(true) },
