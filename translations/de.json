@@ -446,7 +446,7 @@
 	"removable_offline"                     : "OFFLINE",
 	"remove_folder"                         : "Sammlung entfernen",
 	"remove_folder__title"                  : "Entfernen Sie diesen Ordner im Mod Assistant",
-	"remove_folder_message"                 : "Sind Sie sicher, dass Sie diesen Ordner aus der Verfolgung entfernen möchten?",
+	"remove_folder_message"                 : "Bist du sicher, dass du diesen Ordner aus dem Tracking entfernen möchten?",
 	"remove_from_list"                      : "Löschen...",
 	"remove_from_list__title"               : "Ausgewählte Mods löschen",
 	"remove_selected_from_list"             : "Alle ausgewählten Mods löschen...",
