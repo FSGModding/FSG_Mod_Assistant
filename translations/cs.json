@@ -446,6 +446,7 @@
 	"removable_offline"                     : "脱机",
 	"remove_folder"                         : "忘记收藏",
 	"remove_folder__title"                  : "在 Mod Assistant 中忘记这个文件夹",
+	"remove_folder_message"                 : "您确定要从跟踪中删除此文件夹吗？",
 	"remove_from_list"                      : "删除...",
 	"remove_from_list__title"               : "删除已选模组",
 	"remove_selected_from_list"             : "删除所有选中的模块...",

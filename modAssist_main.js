@@ -151,14 +151,34 @@ ipcMain.on('toMain_refreshFolders', () => { processModFolders(true) })
 ipcMain.on('toMain_openFolder',     (_, collectKey) => { shell.openPath(serveIPC.modCollect.mapCollectionToFolder(collectKey)) })
 ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 	const folder = serveIPC.modCollect.mapCollectionToFolder(collectKey)
-	if ( serveIPC.modFolders.delete(folder) ) {
-		serveIPC.log.notice('folder-opts', 'Folder removed from tracking', folder)
-		funcLib.prefs.saveFolders()
-		serveIPC.modCollect.removeCollection(collectKey)
-		funcLib.general.toggleFolderDirty()
-		refreshClientModList(false)
-	} else {
-		serveIPC.log.warning('folder-opts', 'Folder NOT removed from tracking', folder)
+	const userChoice = dialog.showMessageBoxSync(serveIPC.windowLib.win.main, {
+		cancelId  : 1,
+		defaultId : 1,
+		message   : `${__('remove_folder_message')}\n\n${folder}`,
+		title     : __('remove_folder__title'),
+		type      : 'question',
+
+		buttons : [
+			serveIPC.__('bad_folder_action_delete'),
+			serveIPC.__('save_manage_button_cancel'),
+		],
+	})
+
+	switch (userChoice) {
+		case 0: {
+			if ( serveIPC.modFolders.delete(folder) ) {
+				serveIPC.log.notice('folder-opts', 'Folder removed from tracking', folder)
+				funcLib.prefs.saveFolders()
+				serveIPC.modCollect.removeCollection(collectKey)
+				funcLib.general.toggleFolderDirty()
+				refreshClientModList(false)
+			} else {
+				serveIPC.log.warning('folder-opts', 'Folder NOT removed from tracking', folder)
+			}
+			break
+		}
+		default :
+			serveIPC.log.info('folder-opts', 'Folder remove canceled', folder)
 	}
 })
 ipcMain.on('toMain_reorderFolder', (_, from, to) => {

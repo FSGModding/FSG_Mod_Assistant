@@ -446,6 +446,7 @@
 	"removable_offline"                     : "HORS LIGNE",
 	"remove_folder"                         : "Collection Forget",
 	"remove_folder__title"                  : "Oubliez ce dossier dans Mod Assistant",
+	"remove_folder_message"                 : "Êtes-vous sûr de vouloir supprimer ce dossier du suivi ?",
 	"remove_from_list"                      : "Supprimer...",
 	"remove_from_list__title"               : "Supprimer les mods sélectionnés",
 	"remove_selected_from_list"             : "Supprimer tous les mods sélectionnés...",

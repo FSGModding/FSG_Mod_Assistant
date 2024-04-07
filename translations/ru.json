@@ -446,6 +446,7 @@
 	"removable_offline"                     : "НЕ В СЕТИ",
 	"remove_folder"                         : "Забыть коллекцию",
 	"remove_folder__title"                  : "Забыть эту папку в Mod Assistant",
+	"remove_folder_message"                 : "Вы уверены, что хотите удалить эту папку из отслеживания?",
 	"remove_from_list"                      : "Удалить…",
 	"remove_from_list__title"               : "Удалить выбранные моды",
 	"remove_selected_from_list"             : "Удалить все выбранные моды...",

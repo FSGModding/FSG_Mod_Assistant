@@ -446,6 +446,7 @@
 	"removable_offline"                     : "FUERA DE LÍNEA",
 	"remove_folder"                         : "Olvidar la colección",
 	"remove_folder__title"                  : "Olvida esta carpeta en el Asistente de Mod",
+	"remove_folder_message"                 : "¿Está seguro de que desea eliminar esta carpeta del seguimiento?",
 	"remove_from_list"                      : "Borrar...",
 	"remove_from_list__title"               : "Borrar los Mods seleccionados",
 	"remove_selected_from_list"             : "Borrar todos los mods seleccionados...",

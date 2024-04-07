@@ -16,6 +16,7 @@
   },
   "repository": "github:FSGModding/FSG_Mod_Assistant",
   "scripts": {
+    "lang": "node ./test/fix-locale-files.js",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "test": "node ./test/test.js",

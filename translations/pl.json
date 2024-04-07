@@ -446,6 +446,7 @@
 	"removable_offline"                     : "OFFLINE",
 	"remove_folder"                         : "Zapomnij folder",
 	"remove_folder__title"                  : "Zapomnij o tym folderze w Mod Asystent",
+	"remove_folder_message"                 : "Czy na pewno chcesz usunąć ten folder ze śledzenia?",
 	"remove_from_list"                      : "Usuń...",
 	"remove_from_list__title"               : "Usuń wybrane mody",
 	"remove_selected_from_list"             : "Usuń wszystkie wybrane mody...",

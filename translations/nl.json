@@ -446,6 +446,7 @@
 	"removable_offline"                     : "OFFLINE",
 	"remove_folder"                         : "Vergeet collectie",
 	"remove_folder__title"                  : "Vergeet deze map in Mod Assistant",
+	"remove_folder_message"                 : "Weet je zeker dat je deze map wilt verwijderen?",
 	"remove_from_list"                      : "Verwijderen...",
 	"remove_from_list__title"               : "Geselecteerde mods verwijderen",
 	"remove_selected_from_list"             : "Alle geselecteerde mods verwijderen...",

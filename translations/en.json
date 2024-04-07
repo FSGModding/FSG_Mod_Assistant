@@ -446,6 +446,7 @@
 	"removable_offline"                     : "OFFLINE",
 	"remove_folder"                         : "Forget Collection",
 	"remove_folder__title"                  : "Forget this folder in Mod Assistant",
+	"remove_folder_message"                 : "Are you sure you want to remove this folder from tracking?",
 	"remove_from_list"                      : "Delete...",
 	"remove_from_list__title"               : "Delete Selected Mods",
 	"remove_selected_from_list"             : "Delete All Selected Mods...",

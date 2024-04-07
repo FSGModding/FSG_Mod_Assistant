@@ -446,6 +446,7 @@
 	"removable_offline"                     : "FORA DE LINHA",
 	"remove_folder"                         : "Esquecer coleção",
 	"remove_folder__title"                  : "Esqueça esta pasta no Mod Assistant",
+	"remove_folder_message"                 : "Tem a certeza de que pretende remover esta pasta do rastreio?",
 	"remove_from_list"                      : "Apagar...",
 	"remove_from_list__title"               : "Excluir Mods selecionados",
 	"remove_selected_from_list"             : "Eliminar todos os mods seleccionados...",

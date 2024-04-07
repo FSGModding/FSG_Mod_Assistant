@@ -446,6 +446,7 @@
 	"removable_offline"                     : "OFFLINE",
 	"remove_folder"                         : "Zapomenout kolekci",
 	"remove_folder__title"                  : "Zapomenout tuto složku v Mod Assistant",
+	"remove_folder_message"                 : "Opravdu chcete tuto složku odstranit ze sledování?",
 	"remove_from_list"                      : "Odstranit...",
 	"remove_from_list__title"               : "Odstranit vybrané módy",
 	"remove_selected_from_list"             : "Smazat všechny vybrané mody...",

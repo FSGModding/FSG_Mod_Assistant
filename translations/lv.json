@@ -446,6 +446,7 @@
 	"removable_offline"                     : "OFFLINE",
 	"remove_folder"                         : "Aizmirstiet kolekciju",
 	"remove_folder__title"                  : "Aizmirstiet šo mapi programmā Mod Assistant",
+	"remove_folder_message"                 : "Vai esat pārliecināts, ka vēlaties noņemt šo mapi no izsekošanas?",
 	"remove_from_list"                      : "Dzēst...",
 	"remove_from_list__title"               : "Izdzēst atlasītos Mods",
 	"remove_selected_from_list"             : "Dzēst visus atlasītos Mods...",
