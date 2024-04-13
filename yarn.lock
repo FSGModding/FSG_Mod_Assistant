@@ -1882,15 +1882,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepl-node@npm:^1.12.0":
-  version: 1.12.0
-  resolution: "deepl-node@npm:1.12.0"
+"deepl-node@npm:^1.13.0":
+  version: 1.13.0
+  resolution: "deepl-node@npm:1.13.0"
   dependencies:
     "@types/node": ">=12.0"
     axios: ^1.6.4
     form-data: ^3.0.0
     loglevel: ">=1.6.2"
-  checksum: a2e5100d837d95ed91abc4036ab148bfcdbbf4bd66608a0025f2940a8f8b4d00616e46b54647255722787d6ed60bdb6b2e0778bc0593e20b112b2d38303dc4bd
+  checksum: 730fa93c72aa78c1ef0f583d4b9d14c50d354f46ad92ed3dbed2c1d9ecf2c28e58f8218bee29d1b921d1c791a64aaa07bc11109db97af812c52f8ad8d3cf0a34
   languageName: node
   linkType: hard
 
@@ -2126,16 +2126,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^29.2.0":
-  version: 29.2.0
-  resolution: "electron@npm:29.2.0"
+"electron@npm:^29.3.0":
+  version: 29.3.0
+  resolution: "electron@npm:29.3.0"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^20.9.0
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: c0697a33f854ad03676b45192ed109b4e82496635150b15411b65ff0d751363e473c57f1e92b4505d6604785621d339ae96ac7f2ef31dc2ac120598cd3875cb6
+  checksum: 4d7c2f87e38dc29611d3f5fd11e7440611086936477da11483a750611690d280b9d536190606f2227bb18e1f7314176ca5c6d6c33494e6eb6bd56ed69441723d
   languageName: node
   linkType: hard
 
@@ -2693,10 +2693,10 @@ __metadata:
     ansi-colors: ^4.1.3
     archiver: ^7.0.1
     clean-css: ^5.3.3
-    deepl-node: ^1.12.0
+    deepl-node: ^1.13.0
     discord-rpc: ^4.0.1
     docdash: ^2.0.2
-    electron: ^29.2.0
+    electron: ^29.3.0
     electron-builder: ^24.13.3
     electron-store: ^8.2.0
     electron-updater: ^6.2.1
