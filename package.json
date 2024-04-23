@@ -30,12 +30,12 @@
     "clean-css": "^5.3.3",
     "deepl-node": "^1.13.0",
     "docdash": "^2.0.2",
-    "electron": "^29.3.0",
+    "electron": "^29.3.1",
     "electron-builder": "^24.13.3",
-    "eslint": "^9.0.0",
+    "eslint": "^9.1.1",
     "eslint-plugin-unicorn": "^52.0.0",
     "globals": "^15.0.0",
-    "html-validate": "^8.18.1",
+    "html-validate": "^8.18.2",
     "jsdoc": "^4.0.2"
   },
   "dependencies": {
@@ -48,7 +48,7 @@
     "fast-xml-parser": "^4.3.6",
     "glob": "^10.3.12",
     "node-stream-zip": "^1.15.0",
-    "unzip-stream": "^0.3.1",
+    "unzip-stream": "^0.3.4",
     "wasm-vips": "^0.0.8"
   },
   "build": {
