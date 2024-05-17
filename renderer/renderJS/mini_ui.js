@@ -23,7 +23,6 @@ function toggleGameStatus(status = false, show = false) {
 
 window.mods.receive('fromMain_gameUpdate', (status) => {
 	toggleGameStatus(status.gameRunning, status.gameRunningEnabled)
-	fsgUtil.clsShowTrue('update-is-ready-button', status.updateReady)
 })
 
 window.mods.receive('fromMain_modList', (modCollect) => {
