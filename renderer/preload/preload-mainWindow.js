@@ -95,6 +95,7 @@ contextBridge.exposeInMainWorld(
 		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },
 
 		removeFolder  : ( collectKey ) => { ipcRenderer.send('toMain_removeFolder', collectKey) },
+		reorderAlpha  : ( )            => { ipcRenderer.send('toMain_reorderFolderAlpha') },
 		reorderFolder : ( from, to )   => { ipcRenderer.send('toMain_reorderFolder', from, to) },
 
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },

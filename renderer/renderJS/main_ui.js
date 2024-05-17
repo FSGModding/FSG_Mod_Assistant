@@ -101,7 +101,12 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 	const lastOpenQ   = (lastOpenAcc !== null) ? fsgUtil.valueById('filter_input') : ''
 	const scrollStart = window.scrollY
 
-	const modTable     = []
+	const modTable     = [
+		fsgUtil.useTemplate('collect_row_sorter', {
+			class_hideFolderEdit   : modCollect.opts.foldersEdit ? '' : 'd-none',
+		})
+	]
+
 	const scrollTable  = []
 	const verList      = {}
 	let   verFlag      = false

@@ -181,6 +181,42 @@ ipcMain.on('toMain_removeFolder',   (_, collectKey) => {
 			serveIPC.log.info('folder-opts', 'Folder remove canceled', folder)
 	}
 })
+ipcMain.on('toMain_reorderFolderAlpha', () => {
+	const newOrder = []
+	const collator = new Intl.Collator()
+
+	for ( const collectKey of serveIPC.modCollect.collections ) {
+		newOrder.push({
+			collectKey : collectKey,
+			name       : serveIPC.modCollect.mapCollectionToName(collectKey),
+			path       : serveIPC.modCollect.mapCollectionToFolder(collectKey),
+		})
+	}
+
+	newOrder.sort((a, b) =>
+		collator.compare(a.name, b.name) ||
+		collator.compare(a.collectKey, b.collectKey)
+	)
+
+	const newModFolders    = new Set()
+	const newModSetOrder   = new Set()
+
+	for ( const orderPart of newOrder ) {
+		newModFolders.add(orderPart.path)
+		newModSetOrder.add(orderPart.collectKey)
+	}
+
+	serveIPC.modFolders.modFolders         = newModFolders
+	serveIPC.modCollect.newCollectionOrder = newModSetOrder
+
+	funcLib.prefs.saveFolders()
+
+	refreshClientModList(false)
+
+	// win.sendModList({},	'fromMain_getFolders', 'folder', false )
+	// mainProcessFlags.foldersDirty = true
+	// win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
+})
 ipcMain.on('toMain_reorderFolder', (_, from, to) => {
 	const newOrder    = [...serveIPC.modFolders]
 	const item        = newOrder.splice(from, 1)[0]
