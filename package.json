@@ -24,29 +24,29 @@
     "generate-docs": "node_modules\\.bin\\jsdoc -c .jsdoc.json"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.4",
-    "@babel/eslint-parser": "^7.24.1",
+    "@babel/core": "^7.24.5",
+    "@babel/eslint-parser": "^7.24.5",
     "ansi-colors": "^4.1.3",
     "clean-css": "^5.3.3",
     "deepl-node": "^1.13.0",
     "docdash": "^2.0.2",
-    "electron": "^30.0.1",
+    "electron": "^30.0.6",
     "electron-builder": "^24.13.3",
-    "eslint": "^9.1.1",
-    "eslint-plugin-unicorn": "^52.0.0",
-    "globals": "^15.0.0",
+    "eslint": "^9.2.0",
+    "eslint-plugin-unicorn": "^53.0.0",
+    "globals": "^15.2.0",
     "html-validate": "^8.18.2",
-    "jsdoc": "^4.0.2"
+    "jsdoc": "^4.0.3"
   },
   "dependencies": {
-    "ajv": "^8.12.0",
+    "ajv": "^8.13.0",
     "ajv-formats": "^2.1.1",
     "archiver": "^7.0.1",
     "discord-rpc": "^4.0.1",
     "electron-store": "^8.2.0",
     "electron-updater": "^6.2.1",
     "fast-xml-parser": "^4.3.6",
-    "glob": "^10.3.12",
+    "glob": "^10.3.15",
     "node-stream-zip": "^1.15.0",
     "unzip-stream": "^0.3.4",
     "wasm-vips": "^0.0.8"
