@@ -334,6 +334,7 @@ const fsgUtil = {
 	},
 
 	clearTooltips   : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.hide?.() } },
+	clearTooltipsWX : () => { setTimeout(fsgUtil.clearTooltipsXX, 250) },
 	clearTooltipsXX : () => { for ( const tooltip of fsgUtil.query('.tooltip') ) { tooltip?.hide?.() } },
 	setTheme        : (theme) => { document.body.setAttribute('data-bs-theme', theme) },
 	windowCheckAll  : () => { fsgUtil.windowCheckOp(true) },

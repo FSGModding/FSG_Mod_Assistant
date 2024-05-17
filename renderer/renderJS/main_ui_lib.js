@@ -300,12 +300,11 @@ const mainLib = {
 		window.mods.reorderAlpha()
 	},
 	setItemOrder : (collectKey, moveUpInList, forceLast = false) => {
+		fsgUtil.clearTooltipsWX()
 		const curIndex = mainState.collectOrder.map[collectKey]
 		const newIndex = forceLast ?
 			moveUpInList ? 0 : mainState.collectOrder.max :
 			moveUpInList ? mainLib.getOrderPrev(collectKey) : mainLib.getOrderNext(collectKey)
-
-		fsgUtil.clearTooltipsXX()
 
 		if ( curIndex !== null && newIndex !== null ) {
 			mainState.lastFolderScroll = fsgUtil.byId('mod-collections').offsetParent.scrollTop
