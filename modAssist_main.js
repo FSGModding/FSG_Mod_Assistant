@@ -73,7 +73,7 @@ const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSet
 
 serveIPC.isFirstRun = !fs.existsSync(path.join(app.getPath('userData'), 'config.json'))
 
-serveIPC.storeSet         = new Store({schema : settingDefault.defaults, migrations : settingDefault.migrateConfig, clearInvalidConfig : true })
+serveIPC.storeSet         = new Store({schema : settingDefault.defaults, clearInvalidConfig : true })
 serveIPC.storeCache       = new (require('./lib/modUtilLib.js')).modCacheManager(app.getPath('userData'))
 serveIPC.storeSites       = new Store({name : 'mod_source_site', migrations : settingDefault.migrateSite, clearInvalidConfig : true})
 serveIPC.storeNote        = new Store({name : 'col_notes', clearInvalidConfig : true})
