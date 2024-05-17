@@ -266,6 +266,11 @@ function updateCounts() {
 		const quantity  = element.querySelector('.quantity')
 		quantity.innerHTML = selectCount[labelName]
 	}
+	for ( const element of fsgUtil.query('[for^="check_savegame"]') ) {
+		const labelName = element.getAttribute('for').replace('check_savegame_', '')
+		const quantity  = element.querySelector('.quantity')
+		quantity.innerHTML = selectCount[labelName]
+	}
 }
 
 function getColor(mod) {
