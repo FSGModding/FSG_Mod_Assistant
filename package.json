@@ -32,10 +32,10 @@
     "docdash": "^2.0.2",
     "electron": "^30.0.6",
     "electron-builder": "^24.13.3",
-    "eslint": "^9.2.0",
+    "eslint": "^9.3.0",
     "eslint-plugin-unicorn": "^53.0.0",
-    "globals": "^15.2.0",
-    "html-validate": "^8.18.2",
+    "globals": "^15.3.0",
+    "html-validate": "^8.19.0",
     "jsdoc": "^4.0.3"
   },
   "dependencies": {
@@ -45,7 +45,7 @@
     "discord-rpc": "^4.0.1",
     "electron-store": "^8.2.0",
     "electron-updater": "^6.2.1",
-    "fast-xml-parser": "^4.3.6",
+    "fast-xml-parser": "^4.4.0",
     "glob": "^10.3.15",
     "node-stream-zip": "^1.15.0",
     "unzip-stream": "^0.3.4",
