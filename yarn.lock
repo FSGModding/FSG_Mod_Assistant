@@ -723,6 +723,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jsdoc/salty@npm:^0.2.7":
+  version: 0.2.8
+  resolution: "@jsdoc/salty@npm:0.2.8"
+  dependencies:
+    lodash: ^4.17.21
+  checksum: 9e5db29e2de8ba5db716f85a35119b6e8168779215e027cb467b092215d641fe1d035e9ff7264137bf785993be7eb139aca5f5dd329ba429851f218d3ecb993c
+  languageName: node
+  linkType: hard
+
+"@jsdoc/util@npm:^0.3.2":
+  version: 0.3.3
+  resolution: "@jsdoc/util@npm:0.3.3"
+  dependencies:
+    lodash: ^4.17.21
+    ow: ^1.1.1
+  checksum: de023595b929d24775d069a6eb90bbb178ec0ddad44fa1640db2287a93f890485b56295a079c296c32c988929034a0ae249fb25760ff8f065b0b5e2752117069
+  languageName: node
+  linkType: hard
+
+"@juggle/resize-observer@npm:^3.3.1":
+  version: 3.4.0
+  resolution: "@juggle/resize-observer@npm:3.4.0"
+  checksum: 2505028c05cc2e17639fcad06218b1c4b60f932a4ebb4b41ab546ef8c157031ae377e3f560903801f6d01706dbefd4943b6c4704bf19ed86dfa1c62f1473a570
+  languageName: node
+  linkType: hard
+
 "@malept/cross-spawn-promise@npm:^1.1.0":
   version: 1.1.1
   resolution: "@malept/cross-spawn-promise@npm:1.1.1"
@@ -812,6 +838,13 @@ __metadata:
   version: 4.6.0
   resolution: "@sindresorhus/is@npm:4.6.0"
   checksum: 83839f13da2c29d55c97abc3bc2c55b250d33a0447554997a85c539e058e57b8da092da396e252b11ec24a0279a0bed1f537fa26302209327060643e327f81d2
+  languageName: node
+  linkType: hard
+
+"@sindresorhus/is@npm:^5.3.0":
+  version: 5.6.0
+  resolution: "@sindresorhus/is@npm:5.6.0"
+  checksum: 2e6e0c3acf188dcd9aea0f324ac1b6ad04c9fc672392a7b5a1218512fcde066965797eba8b9fe2108657a504388bd4a6664e6e6602555168e828a6df08b9f10e
   languageName: node
   linkType: hard
 
@@ -1565,6 +1598,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"callsites@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "callsites@npm:4.1.0"
+  checksum: 4ad31de7b7615fa25bdab9c2373865209d2d5190f895cdf2e2f518bd1dafa7ebcda2e6e9cc9640f2dfde6b3893d82fa4359a78ffc27baad2503227553c6882fa
+  languageName: node
+  linkType: hard
+
+"can-use-dom@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "can-use-dom@npm:0.1.0"
+  checksum: 488fc94c40f2fcce46ebd41abf17ef0449acf0d6b145116036cd592a8e977e5729918d4b3b7c642ce7b1f5b83d330ade39a172cf6b6ef91093785991a868b308
+  languageName: node
+  linkType: hard
+
 "caniuse-lite@npm:^1.0.30001565":
   version: 1.0.30001574
   resolution: "caniuse-lite@npm:1.0.30001574"
@@ -1643,6 +1690,13 @@ __metadata:
   version: 4.0.0
   resolution: "ci-info@npm:4.0.0"
   checksum: 122fe41c5eb8d0b5fa0ab6fd674c5ddcf2dc59766528b062a0144ff0d913cfb210ef925ec52110e7c2a7f4e603d5f0e8b91cfe68867e196e9212fa0b94d0a08a
+  languageName: node
+  linkType: hard
+
+"classnames@npm:^2.2.5":
+  version: 2.5.1
+  resolution: "classnames@npm:2.5.1"
+  checksum: da424a8a6f3a96a2e87d01a432ba19315503294ac7e025f9fece656db6b6a0f7b5003bb1fbb51cbb0d9624d964f1b9bb35a51c73af9b2434c7b292c42231c1e5
   languageName: node
   linkType: hard
 
@@ -1833,6 +1887,13 @@ __metadata:
   dependencies:
     browserslist: ^4.23.0
   checksum: 5e7430329358bced08c30950512d2081aea0a5652b4c5892cbb3c4a6db05b0d3893a191a955162a07fdb5f4fe74e61b6429fdb503f54e062336d76e43c9555d9
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.0.1, core-js@npm:^3.1.3":
+  version: 3.37.1
+  resolution: "core-js@npm:3.37.1"
+  checksum: 2d58a5c599f05c3e04abc8bc5e64b88eb17d914c0f552f670fb800afa74ec54b4fcc7f231ad6bd45badaf62c0fb0ce30e6fe89cedb6bb6d54e6f19115c3c17ff
   languageName: node
   linkType: hard
 
@@ -2050,12 +2111,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docdash@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "docdash@npm:2.0.2"
+"docolatte@npm:^4.5.1":
+  version: 4.5.1
+  resolution: "docolatte@npm:4.5.1"
   dependencies:
-    "@jsdoc/salty": ^0.2.1
-  checksum: de802483b5f72458c488d430b17de7cf0ad86b8e1dea38bae14607d820e5860f18f61d11578280f5fc2051bf31d294b7ca8c8192d0a9b159df801e2b56778875
+    "@jsdoc/salty": ^0.2.7
+    "@jsdoc/util": ^0.3.2
+    emoji-js: ^3.8.0
+    feather-icons: ^4.29.1
+    fuse.js: ^6.6.2
+    highlight.js: ^11.9.0
+    obj-digger: ^1.2.0
+    simplebar: ^5.3.9
+  checksum: bc013ba2074dd642dc4b478f365299c2fafcaa35f99d61a4c5ce8374b78c83316ccc09e332435263fa3835445770bc9255e31de5ff62721008bd137105989e9d
   languageName: node
   linkType: hard
 
@@ -2065,6 +2133,15 @@ __metadata:
   dependencies:
     is-obj: ^2.0.0
   checksum: 0f47600a4b93e1dc37261da4e6909652c008832a5d3684b5bf9a9a0d3f4c67ea949a86dceed9b72f5733ed8e8e6383cc5958df3bbd0799ee317fd181f2ece700
+  languageName: node
+  linkType: hard
+
+"dot-prop@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "dot-prop@npm:7.2.0"
+  dependencies:
+    type-fest: ^2.11.2
+  checksum: 08e4ff14f7305ffb5fda7e4c88f3cdbeb3cd97bd27efa4f47503869a2ee7f96938b4c21b0a2abf9c37d891a1bdb3994a09d219b0dcfd6130da4eaeb44c6f067e
   languageName: node
   linkType: hard
 
@@ -2187,6 +2264,22 @@ __metadata:
   bin:
     electron: cli.js
   checksum: ac0ee83517e0306672ea6c6084f901f1bd1bec730384e833bf1fa3e2b6ceb8ee4a39341db7958803e457df4bbb7070c4f94f0c51a201addd95460cc5f8fc3dea
+  languageName: node
+  linkType: hard
+
+"emoji-datasource@npm:15.0.1":
+  version: 15.0.1
+  resolution: "emoji-datasource@npm:15.0.1"
+  checksum: 6b6eb09694fd74cd9b7b36c41550932db3d8a4c909fb5e16bf584fd679d107d6175cf9acc76c350c017147a5aa6a4ebb671d021118a47f83c00491ddb4d795b6
+  languageName: node
+  linkType: hard
+
+"emoji-js@npm:^3.8.0":
+  version: 3.8.0
+  resolution: "emoji-js@npm:3.8.0"
+  dependencies:
+    emoji-datasource: 15.0.1
+  checksum: d977040fa11be6f9888fdcce3904c5c2ed66fe316a239ca462d91fd43466c649629cf0ea941017c88aaeafaf7d1a64a26a485172551ec74431d0035269abd326
   languageName: node
   linkType: hard
 
@@ -2550,6 +2643,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"feather-icons@npm:^4.29.1":
+  version: 4.29.2
+  resolution: "feather-icons@npm:4.29.2"
+  dependencies:
+    classnames: ^2.2.5
+    core-js: ^3.1.3
+  checksum: 14afc5a186ec9ba4647476532039190e7e7953bcd8668a68f192314a1265d3570058d687b604f7bb876022ef9e8448d36b38393a54433fe7ebe56c5e65a29bcd
+  languageName: node
+  linkType: hard
+
 "file-entry-cache@npm:^8.0.0":
   version: 8.0.0
   resolution: "file-entry-cache@npm:8.0.0"
@@ -2735,7 +2838,7 @@ __metadata:
     clean-css: ^5.3.3
     deepl-node: ^1.13.0
     discord-rpc: ^4.0.1
-    docdash: ^2.0.2
+    docolatte: ^4.5.1
     electron: ^30.0.6
     electron-builder: ^24.13.3
     electron-store: ^8.2.0
@@ -2757,6 +2860,13 @@ __metadata:
   version: 1.1.1
   resolution: "function-bind@npm:1.1.1"
   checksum: b32fbaebb3f8ec4969f033073b43f5c8befbb58f1a79e12f1d7490358150359ebd92f49e72ff0144f65f2c48ea2a605bff2d07965f548f6474fd8efd95bf361a
+  languageName: node
+  linkType: hard
+
+"fuse.js@npm:^6.6.2":
+  version: 6.6.2
+  resolution: "fuse.js@npm:6.6.2"
+  checksum: 17ae758ce205276ebd88bd9c9f088a100be0b4896abac9f6b09847151269d1690f41d7f98ff5813d4a58973162dbd99d0072ce807020fee6f9de60170f6b08eb
   languageName: node
   linkType: hard
 
@@ -2999,6 +3109,13 @@ __metadata:
   dependencies:
     function-bind: ^1.1.1
   checksum: b9ad53d53be4af90ce5d1c38331e712522417d017d5ef1ebd0507e07c2fbad8686fffb8e12ddecd4c39ca9b9b47431afbb975b8abf7f3c3b82c98e9aad052792
+  languageName: node
+  linkType: hard
+
+"highlight.js@npm:^11.9.0":
+  version: 11.9.0
+  resolution: "highlight.js@npm:11.9.0"
+  checksum: 4043d31c5de9d27d13387d9a9e5e1939557254b7b85f0fab85d9cae0e420e131a3456ebf6148552020a1d8a216d671d583f2433d6c4de6179b8a66487a8325cb
   languageName: node
   linkType: hard
 
@@ -3616,6 +3733,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.debounce@npm:^4.0.8":
+  version: 4.0.8
+  resolution: "lodash.debounce@npm:4.0.8"
+  checksum: a3f527d22c548f43ae31c861ada88b2637eb48ac6aa3eb56e82d44917971b8aa96fbb37aa60efea674dc4ee8c42074f90f7b1f772e9db375435f6c83a19b3bc6
+  languageName: node
+  linkType: hard
+
 "lodash.escaperegexp@npm:^4.1.2":
   version: 4.1.2
   resolution: "lodash.escaperegexp@npm:4.1.2"
@@ -3630,10 +3754,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.memoize@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "lodash.memoize@npm:4.1.2"
+  checksum: 9ff3942feeccffa4f1fafa88d32f0d24fdc62fd15ded5a74a5f950ff5f0c6f61916157246744c620173dddf38d37095a92327d5fd3861e2063e736a5c207d089
+  languageName: node
+  linkType: hard
+
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: ad580b4bdbb7ca1f7abf7e1bce63a9a0b98e370cf40194b03380a46b4ed799c9573029599caebc1b14e3f24b111aef72b96674a56cfa105e0f5ac70546cdc005
+  languageName: node
+  linkType: hard
+
+"lodash.throttle@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "lodash.throttle@npm:4.1.1"
+  checksum: 129c0a28cee48b348aef146f638ef8a8b197944d4e9ec26c1890c19d9bf5a5690fe11b655c77a4551268819b32d27f4206343e30c78961f60b561b8608c8c805
   languageName: node
   linkType: hard
 
@@ -4111,6 +4249,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"obj-digger@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "obj-digger@npm:1.2.0"
+  checksum: 7a645f393ecfbcae54262612a7c410aafe942709d97b6cda7e555904421bf9666e222d987802f757dd4ffd2486da0f59c5ec1b376b9d011bbabf41137c77fdef
+  languageName: node
+  linkType: hard
+
 "object-keys@npm:^1.1.1":
   version: 1.1.1
   resolution: "object-keys@npm:1.1.1"
@@ -4147,6 +4292,19 @@ __metadata:
     prelude-ls: ^1.2.1
     type-check: ^0.4.0
   checksum: 09281999441f2fe9c33a5eeab76700795365a061563d66b098923eb719251a42bdbe432790d35064d0816ead9296dbeb1ad51a733edf4167c96bd5d0882e428a
+  languageName: node
+  linkType: hard
+
+"ow@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "ow@npm:1.1.1"
+  dependencies:
+    "@sindresorhus/is": ^5.3.0
+    callsites: ^4.0.0
+    dot-prop: ^7.2.0
+    lodash.isequal: ^4.5.0
+    vali-date: ^1.0.0
+  checksum: 475ece4268af8cb3558ecd3f5b64bf35c91a705515be4854404b0f75871b5aee711973d9a24d973c1b2eef5d5ee6a87735cfb0da8a57ba7ddfaa362a832a09ee
   languageName: node
   linkType: hard
 
@@ -4818,6 +4976,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"simplebar@npm:^5.3.9":
+  version: 5.3.9
+  resolution: "simplebar@npm:5.3.9"
+  dependencies:
+    "@juggle/resize-observer": ^3.3.1
+    can-use-dom: ^0.1.0
+    core-js: ^3.0.1
+    lodash.debounce: ^4.0.8
+    lodash.memoize: ^4.1.2
+    lodash.throttle: ^4.1.1
+  checksum: 11918d02c946b4925068852b4fb2dcc5008e2fb91b7eeba6c27aed810f23b985de043b12fef674fbffbbfa6201904e09d8fbc29e9959562fa6a5cfb9935751d1
+  languageName: node
+  linkType: hard
+
 "sisteransi@npm:^1.0.5":
   version: 1.0.5
   resolution: "sisteransi@npm:1.0.5"
@@ -5190,7 +5362,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^2.17.0":
+"type-fest@npm:^2.11.2, type-fest@npm:^2.17.0":
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: a4ef07ece297c9fba78fc1bd6d85dff4472fe043ede98bd4710d2615d15776902b595abf62bd78339ed6278f021235fb28a96361f8be86ed754f778973a0d278
@@ -5314,6 +5486,13 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 474acf1146cb2701fe3b074892217553dfcf9a031280919ba1b8d651a068c9b15d863b7303cb15bd00a862b498e6cf4ad7b4a08fb134edd5a6f7641681cb54a2
+  languageName: node
+  linkType: hard
+
+"vali-date@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "vali-date@npm:1.0.0"
+  checksum: 6464369cb77003a966591f2bd17b7c938c480956992e254b3455fd1651a3b7633e23aac8a03b974bbdfbd2357da52b98d46357bb6f292ffd28768a6d3959e61e
   languageName: node
   linkType: hard
 

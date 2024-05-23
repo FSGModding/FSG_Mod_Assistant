@@ -1,16 +1,25 @@
 {
     "tags": {
-        "allowUnknownTags": false
+        "allowUnknownTags": true
     },
     "source": {
-        "include": ["./modAssist_main.js", "./lib"]
+        "include": [
+            "./modAssist_main.js",
+            "./lib"
+        ]
     },
     "plugins": [
         "plugins/markdown"
     ],
     "opts": {
-        "access": ["private", "protected", "public", "undefined"],
-        "template": "node_modules/docdash/",
+        "access": [
+            "private",
+            "public",
+            "protected",
+            "undefined"
+        ],
+        "private": true,
+        "template": "node_modules/docolatte/",
         "encoding": "utf8",
         "destination": "jsdoc_server/",
         "recurse": true,
@@ -18,6 +27,29 @@
     },
     "templates": {
         "cleverLinks": false,
-        "monospaceLinks": false
+        "monospaceLinks": false,
+        "docolatte": {
+            "branding": {
+                "title": "FSG ModAssistant",
+                "link": "https://github.com/FSGModding/FSG_Mod_Assistant/",
+                "icon": "home",
+                "font": {
+                    "size": "0.9em",
+                    "family": "Helvetica, sans-serif"
+                }
+            },
+            "footer": {
+                "copyright": "&copy; 2022-present JTSage/FSGModding",
+                "license": "Licensed under the ISC License"
+            }
+        }
+    },
+    "markdown": {
+        "hardwrap": true,
+        "idInHeadings": true
+    },
+    "docdash": {
+        "private": true,
+        "search": true
     }
 }
