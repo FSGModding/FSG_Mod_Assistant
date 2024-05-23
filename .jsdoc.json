@@ -9,6 +9,7 @@
         "plugins/markdown"
     ],
     "opts": {
+        "access": ["private", "protected", "public", "undefined"],
         "template": "node_modules/docdash/",
         "encoding": "utf8",
         "destination": "jsdoc_server/",
