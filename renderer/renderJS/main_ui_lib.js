@@ -545,6 +545,7 @@ const loaderLib = {
 }
 
 const fileOpLib = {
+	countEnabled : 0,
 	isRunning    : false,
 	isZipImport  : false,
 	mods         : null,
@@ -667,6 +668,26 @@ const fileOpLib = {
 		if ( fileOpLib.operation === 'move' ) { window.mods.realMoveFile(fileMap) }
 		if ( fileOpLib.operation === 'copy' ) { window.mods.realCopyFile(fileMap) }
 	},
+	goodFileCount : () => {
+		if ( ! fileOpLib.dest_single.has(fileOpLib.operation) ) { return }
+		const selectedDest = fsgUtil.valueById('fileOpCanvas-select-dest')
+
+		fileOpLib.countEnabled = 0
+
+		if ( selectedDest !== '0' ) {
+			for ( const mod of fileOpLib.mods ) {
+				const includeMeElement = fsgUtil.byId(`file_op__${mod.uuid}`)
+		
+				if ( includeMeElement.getAttribute('type') === 'checkbox' && includeMeElement.checked === true ) {
+					fileOpLib.countEnabled++
+				}
+				if ( includeMeElement.getAttribute('type') === 'hidden' && includeMeElement.value ) {
+					fileOpLib.countEnabled++
+				}
+			}
+		}
+		fsgUtil.setById('fileOpCanvas-goodFileCount', fileOpLib.countEnabled)
+	},
 	initBatchOp : (mode) => {
 		const allModRows     = fsgUtil.queryA('.mod-row .mod-row-checkbox:checked')
 		const selectedMods   = allModRows.map((thisRow) => thisRow.id.replace('__checkbox', ''))
@@ -707,6 +728,7 @@ const fileOpLib = {
 					element.checked = false; break
 			}
 		}
+		fileOpLib.goodFileCount()
 	},
 	listMods : () => {
 		const noConflict   = fileOpLib.noConflict()
@@ -764,6 +786,7 @@ const fileOpLib = {
 		)
 		fsgUtil.clsDisableFalse('fileOpCanvas-button', enableButton)
 		fsgUtil.setById('fileOpCanvas-source', confirmHTML)
+		fileOpLib.goodFileCount()
 		processL10N()
 	},
 	noConflict   : () => fileOpLib.dest_multi.has(fileOpLib.operation) || fileOpLib.dest_none.has(fileOpLib.operation),
@@ -779,9 +802,11 @@ const fileOpLib = {
 
 		fsgUtil.clsShowTrue('fileOpCanvas-zipImport', fileOpLib.isZipImport)
 
+		const countText = fileOpLib.dest_single.has(fileOpLib.operation) ? ' [<span id="fileOpCanvas-goodFileCount">0</span>]' : ''
+
 		fsgUtil.setById('fileOpCanvas-title', __(fileOpLib.l10n_title[fileOpLib.operation]))
 		fsgUtil.setById('fileOpCanvas-info', __(fileOpLib.l10n_info[fileOpLib.operation]))
-		fsgUtil.setById('fileOpCanvas-button', __(fileOpLib.l10n_button[fileOpLib.operation]))
+		fsgUtil.setById('fileOpCanvas-button', `${__(fileOpLib.l10n_button[fileOpLib.operation])}${countText}`)
 		fsgUtil.clsShow('fileOpCanvas-destination-block')
 
 		if ( fileOpLib.dest_single.has(fileOpLib.operation) ) {
