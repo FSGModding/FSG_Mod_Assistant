@@ -24,32 +24,32 @@
     "generate-docs": "node_modules\\.bin\\jsdoc -c .jsdoc.json"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.5",
-    "@babel/eslint-parser": "^7.24.5",
+    "@babel/core": "^7.24.7",
+    "@babel/eslint-parser": "^7.24.7",
     "ansi-colors": "^4.1.3",
     "clean-css": "^5.3.3",
     "deepl-node": "^1.13.0",
     "docolatte": "^4.5.1",
-    "electron": "^30.0.6",
+    "electron": "^30.1.2",
     "electron-builder": "^24.13.3",
-    "eslint": "^9.3.0",
-    "eslint-plugin-unicorn": "^53.0.0",
-    "globals": "^15.3.0",
-    "html-validate": "^8.19.0",
+    "eslint": "^9.5.0",
+    "eslint-plugin-unicorn": "^54.0.0",
+    "globals": "^15.6.0",
+    "html-validate": "^8.20.1",
     "jsdoc": "^4.0.3"
   },
   "dependencies": {
-    "ajv": "^8.13.0",
+    "ajv": "^8.16.0",
     "ajv-formats": "^2.1.1",
     "archiver": "^7.0.1",
     "discord-rpc": "^4.0.1",
     "electron-store": "^8.2.0",
     "electron-updater": "^6.2.1",
     "fast-xml-parser": "^4.4.0",
-    "glob": "^10.3.15",
+    "glob": "^10.4.2",
     "node-stream-zip": "^1.15.0",
     "unzip-stream": "^0.3.4",
-    "wasm-vips": "^0.0.8"
+    "wasm-vips": "^0.0.9"
   },
   "build": {
     "appId": "jtsage.fsmodassist",
