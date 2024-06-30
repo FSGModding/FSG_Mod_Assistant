@@ -361,6 +361,16 @@ function returnL10n(event, key, value, extra = null) {
 	if ( value === null ) { return }
 	event.sender.send(`fromMain_getText_return${extra !== null ? `_${extra}` : ''}`, [key, value])
 }
+
+ipcMain.handle('i18n:lang', (_e, newValue = null) => {
+	if ( newValue !== null ) {
+		serveIPC.l10n.currentLocale = newValue
+		serveIPC.storeSet.set('force_lang', serveIPC.l10n.currentLocale)
+		serveIPC.windowLib.refreshL10n(serveIPC.l10n.currentLocale)
+	}
+	return serveIPC.l10n.currentLocale
+})
+ipcMain.handle('i18n:get', (_e, key) => serveIPC.l10n.getText(key))
 // END: l10n Operations
 
 
@@ -581,6 +591,9 @@ ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
+
+
+
 // END : Context Menus
 
 
@@ -623,11 +636,7 @@ ipcMain.on('toMain_changeGameLog',     () => {
 })
 // END : Game log window operation
 
-// Debug window operation
 ipcMain.on('toMain_openDebugLog',    () => { serveIPC.windowLib.createNamedWindow('debug') })
-ipcMain.on('toMain_openDebugFolder', () => { shell.showItemInFolder(serveIPC.log.pathToLog) })
-ipcMain.on('toMain_getDebugLog',     (event) => { event.sender.send('fromMain_debugLog', serveIPC.log.htmlLog) })
-// END : Debug window operation
 
 // Compare window operation
 function compare_base(id) { serveIPC.windowLib.sendToValidWindow('compare', 'fromMain_addBaseItem', id) }
@@ -692,6 +701,8 @@ function toggleMiniWindow () {
 // END : Mini-mode operation
 
 // Preferences operations
+ipcMain.handle('settings:get', (_e, key) => serveIPC.storeSet.get(key) )
+
 ipcMain.on('toMain_getPref', (event, name)    => { event.returnValue = serveIPC.storeSet.get(name) })
 ipcMain.on('toMain_setPref', (_, name, value) => { funcLib.prefs.setNamed(name, value) })
 ipcMain.on('toMain_resetWindows',   () => { serveIPC.windowLib.resetPositions() })
@@ -900,7 +911,18 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 })
 // END: Version window operation */
 
-// Common Handlers
+async function contextCopyMenu(event) {
+	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+}
+
+// DEBUG LOG Page
+ipcMain.handle('debug:context', contextCopyMenu)
+ipcMain.handle('debug:log', (_e, level, process, ...args) => { serveIPC.log[level](process, ...args) })
+ipcMain.handle('debug:all', () => serveIPC.log.htmlLog )
+
+
+// Other shit.
 ipcMain.on('toMain_log', (_, level, process, text) => { serveIPC.log[level](text, process) })
 ipcMain.on('toMain_startFarmSim', () => { funcLib.gameLauncher() })
 ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
@@ -1144,6 +1166,8 @@ app.whenReady().then(() => {
 
 			funcLib.discord.init()
 		})
+
+		serveIPC.log.on('logAdded', (level, item) => { serveIPC.windowLib.sendToValidWindow('debug', 'debug:item', level, item) })
 
 		app.on('quit',     () => {
 			if ( serveIPC.windowLib.tray ) { serveIPC.windowLib.tray.destroy() }

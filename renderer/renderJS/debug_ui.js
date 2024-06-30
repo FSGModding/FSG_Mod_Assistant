@@ -6,29 +6,74 @@
 
 // Debug window UI
 
-/* global processL10N, fsgUtil, bootstrap */
+/* global MA, bootstrap */
 
-window.debug.receive('fromMain_debugLog', (data) => {
-	const showData  = []
-	const levelInfo = new RegExp(/<span class="log_level .+?">(.+?)<\/span>/)
-	const showThese = new Set(fsgUtil.queryA(':checked').map((element) => element.id.replace('debug_', '').toUpperCase()))
+window.debug.receive('debug:item', (level, item) => { addItem(level, item) })
 
-	for ( const line of data.split('\n') ) {
-		if ( showThese.has(line.match(levelInfo)[1].trim()) ) { showData.push(line) }
-	}
-
-	fsgUtil.setById('debug_log', showData, '\n')
-})
-
-function clientResetButtons() {
-	for ( const element of fsgUtil.query('.filter_only') ) {
-		element.checked = ! ( element.id === 'debug_debug' )
-	}
-	window.debug.getDebugLogContents()
+function clearOutput() {
+	MA.byIdText('debug_log', '')
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-	processL10N()
+function addItem(level, html) {
+	const thisDiv = document.createElement('div')
+	thisDiv.innerHTML = html
+	thisDiv.classList.add('debug_log_item', level)
+	MA.byIdAppend('debug_log', thisDiv)
+}
 
-	fsgUtil.queryA('[data-bs-toggle="tooltip"]').map((element) => new bootstrap.Tooltip(element, { trigger : 'hover' }))
+function getAll() {
+	clearOutput()
+	window.debug.all().then((results) => {
+		for ( const thisItem of results ) {
+			addItem(...thisItem)
+		}
+	})
+}
+
+function resetViewRules() {
+	while ( levelStyleSheet.cssRules.length !== 0 ) {
+		levelStyleSheet.deleteRule(0)
+	}
+	for ( const thisLevel of levelNames ) {
+		MA.byId(`debug_${thisLevel}`).checked = thisLevel !== 'debug'
+	}
+	initialViewRules()
+}
+
+function initialViewRules() {
+	for ( const thisLevel of levelNames ) {
+		levelStyleSheet.insertRule(`.debug_log_item.${thisLevel} { display : ${thisLevel === 'debug' ? 'none' : 'block' } }`)
+	}
+}
+
+let   levelStyleSheet = null
+const levelNames      = new Set(['debug', 'info', 'notice', 'warning', 'danger'])
+
+window.addEventListener('DOMContentLoaded', () => {
+	for ( const element of MA.queryA('input.filter_only') ) {
+		element.addEventListener('change', (e) => {
+			const thisLevel = e.target.id.replace(/^debug_/, '')
+
+			for ( const [index, cssRule] of Object.entries(levelStyleSheet.cssRules) ) {
+				if ( cssRule.selectorText.endsWith(thisLevel) ) {
+					levelStyleSheet.deleteRule(index)
+					break
+				}
+			}
+			levelStyleSheet.insertRule(`.debug_log_item.${thisLevel} { display : ${e.target.checked ? 'block' : 'none' } }`)
+		})
+	}
+
+	const viewStyle = document.createElement('style')
+
+	document.head.appendChild(viewStyle)
+
+	levelStyleSheet = viewStyle.sheet
+
+	initialViewRules()
+
+	MA.queryA('[data-bs-toggle="tooltip"]').map((element) => new bootstrap.Tooltip(element, { trigger : 'hover', placement : 'bottom' }))
+	MA.byId('debug_reset').addEventListener('click', resetViewRules)
+	MA.byId('debug_log').addEventListener('contextmenu', window.debug.context)
+	getAll()
 })
