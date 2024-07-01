@@ -402,7 +402,13 @@ function openDetailWindow(thisMod) {
 		}
 	)
 }
-ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(serveIPC.modCollect.modColUUIDToRecord(thisMod)) })
+ipcMain.on('toMain_openModDetail', (_, thisMod) => {
+	serveIPC.windowLib.createNamedMulti('detail', { queryString : `mod=${thisMod}` })
+})
+
+ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.modColUUIDToRecord(fullUUID))
+
+// ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(serveIPC.modCollect.modColUUIDToRecord(thisMod)) })
 // END : Detail window operation
 
 
@@ -702,6 +708,8 @@ function toggleMiniWindow () {
 
 // Preferences operations
 ipcMain.handle('settings:get', (_e, key) => serveIPC.storeSet.get(key) )
+ipcMain.handle('settings:theme', () => serveIPC.windowLib.themeCurrentColor )
+
 
 ipcMain.on('toMain_getPref', (event, name)    => { event.returnValue = serveIPC.storeSet.get(name) })
 ipcMain.on('toMain_setPref', (_, name, value) => { funcLib.prefs.setNamed(name, value) })
@@ -921,6 +929,8 @@ ipcMain.handle('debug:context', contextCopyMenu)
 ipcMain.handle('debug:log', (_e, level, process, ...args) => { serveIPC.log[level](process, ...args) })
 ipcMain.handle('debug:all', () => serveIPC.log.htmlLog )
 
+
+ipcMain.handle('win:close', (e) => { BrowserWindow.fromWebContents(e.sender).close() })
 
 // Other shit.
 ipcMain.on('toMain_log', (_, level, process, text) => { serveIPC.log[level](text, process) })

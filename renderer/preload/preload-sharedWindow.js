@@ -20,6 +20,12 @@ const pageAPI = {
 			'debug:item',
 		]),
 	},
+	'detail' : {
+		functions : {
+			getMod : (key) => ipcRenderer.invoke('mod:modColUUID', key),
+		},
+		validAsync : new Set(),
+	},
 }
 
 if ( typeof pageAPI[pageName] !== 'undefined' ) {
@@ -64,6 +70,7 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'settings', {
 		get : (key) => ipcRenderer.invoke('settings:get', key),
+		theme : () => ipcRenderer.invoke('settings:theme'),
 	}
 )
 
@@ -88,13 +95,15 @@ contextBridge.exposeInMainWorld(
 // 	}
 // )
 
+
 contextBridge.exposeInMainWorld(
-	'win_ops', {
-		closeWindow        : () => { ipcRenderer.send('toMain_closeSubWindow') },
-		receive            : ( channel, func ) => {
+	'operations', {
+		close   : () => { ipcRenderer.invoke('win:close') },
+		receive : ( channel, func ) => {
 			const validChannels = new Set([
-				'fromMain_clearTooltips',
-				'fromMain_themeSetting',
+				'win:updateFontSize',
+				'win:removeTooltips',
+				'win:updateTheme',
 			])
 		
 			if ( validChannels.has( channel ) ) {
