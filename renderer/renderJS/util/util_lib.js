@@ -44,6 +44,25 @@ const MA = {
 	hideTest   : ( test ) => test ? 'd-none' : '',
 	showTest   : ( test ) => test ? '' : 'd-none',
 
+	hideTestVale      : (value, requiredValue = null) => MA.hideTestValueBool(value, requiredValue) ? 'd-none' : '',
+	hideTestValueBool : (value, requiredValue = null) => {
+		if ( typeof value === 'undefined' || value === null || value === false || value.length === 0 || value === 0 ) {
+			return true
+		}
+		if ( Array.isArray(value) && value.filter((x) => x !== null).length === 0 ) { return true }
+		if ( requiredValue !== null ) {
+			if ( typeof value === 'string' && typeof requiredValue === 'string' && value.toLowerCase() === requiredValue.toLowerCase() ) {
+				return false
+			} else if ( typeof value === 'number' && typeof requiredValue === 'number' && value === requiredValue ) {
+				return false
+			}
+			return true
+		}
+		return false
+	},
+	showTestValue     : (value, requiredValue = null) => !MA.hideTestValueBool(value, requiredValue) ? 'd-none' : '',
+	showTestValueBool : (value, requiredValue = null) => !MA.hideTestValueBool(value, requiredValue),
+
 	clearTooltips   : () => { for ( const tooltip of MA.query('.tooltip') ) { tooltip?.hide?.() } },
 
 	interceptLog : (page) => {
@@ -170,6 +189,11 @@ const DATA = {
 			'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 903.2 904.2\'%3E%3Cpath d=\'M461.6 21a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2Zm-313 673.4a387 387 0 0 1-76.4-231.8 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114A386.9 386.9 0 0 1 744 194.7L148.6 694.4ZM737 737.9a388 388 0 0 1-275.3 114 386.9 386.9 0 0 1-279.1-117.8l595-499.3A387.5 387.5 0 0 1 851 462.6a386.9 386.9 0 0 1-114 275.3Z\'/%3E%3Cpath fill=\'%23711\' d=\'M441.6 0a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2ZM129 674a387.4 387.4 0 0 1-76.9-232.4 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114 386.9 386.9 0 0 1 283 122L129.2 674Zm587.8 43a388 388 0 0 1-275.3 114A386.9 386.9 0 0 1 163 713.6l595-499.1a387 387 0 0 1 73 227A386.9 386.9 0 0 1 717 717Z\'/%3E%3C/svg%3E'
 	},
 
+	eventEngine : (nodeObject, selector, handler, eventType = 'click') => {
+		for ( const element of nodeObject.querySelectorAll(selector) ) {
+			element.addEventListener(eventType, handler)
+		}
+	},
 	templateEngine : (id, variableReplacers = {}, idReplacers = {}, classAdditions = {}) => {
 		const template = MA.byId(id)
 		const clone    = template.content.cloneNode(true)
@@ -183,7 +207,6 @@ const DATA = {
 			const filterList = classList.filter((x) => x !== '')
 			if ( filterList.length !== 0 ) {
 				for ( const element of clone.querySelectorAll(query) ) {
-					console.log(element)
 					element.classList.add(...filterList)
 				}
 			}
@@ -316,4 +339,5 @@ window.addEventListener('DOMContentLoaded', () => {
 window?.operations?.receive('win:updateTheme', MA.updateTheme)
 window?.operations?.receive('win:updateFontSize', MA.updateFontSize)
 window?.operations?.receive('win:removeTooltips', MA.clearTooltips)
+window?.operations?.receive('win:forceRefresh', () => { location.reload() })
 window.addEventListener('click', MA.clearTooltips)

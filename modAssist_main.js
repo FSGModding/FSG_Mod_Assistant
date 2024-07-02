@@ -410,7 +410,12 @@ ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConfl
 ipcMain.handle('collect:malware', () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
 
 
-// ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(serveIPC.modCollect.modColUUIDToRecord(thisMod)) })
+ipcMain.handle('dispatch:basegame', (_, pageObj) => {
+	serveIPC.log.debug('unimplemented', 'ASKED TO OPEN BASEGAME', pageObj)
+})
+ipcMain.handle('dispatch:compare', (_, compareArray) => {
+	serveIPC.log.debug('unimplemented', 'ASKED TO OPEN COMPARE', compareArray)
+})
 // END : Detail window operation
 
 

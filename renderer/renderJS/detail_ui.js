@@ -3,14 +3,14 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
+/* eslint complexity: ["error", 25] */
+/* global DATA, MA, ST, I18N, __, ft_doReplace, clientGetKeyMapSimple, clientGetKeyMap, clientMakeCropCalendar, client_BGData */
 
-/* global DATA, MA, ST, I18N, __, ft_doReplace, clientGetKeyMapSimple, clientGetKeyMap, clientMakeCropCalendar */
-
-// let modName = ''
+let modName = ''
 let lookItemData = {}
 let lookItemMap  = {}
 let comboItemMap = {}
-let i18nUnits    = null
+// let i18nUnits    = null
 let locale       = 'en'
 
 
@@ -23,10 +23,10 @@ window.addEventListener('DOMContentLoaded', () => {
 	const modColUUID = urlParams.get('mod')
 
 	window.detail.getMod(modColUUID).then(async (thisMod) => {
-		// modName   = thisMod.fileDetail.shortName
+		modName   = thisMod.fileDetail.shortName
 
 		locale    = await window.i18n.lang()
-		i18nUnits = await window.settings.units()
+		// i18nUnits = await window.settings.units()
 
 		const basicPromises = [
 			step_table(thisMod),
@@ -39,7 +39,6 @@ window.addEventListener('DOMContentLoaded', () => {
 		try {
 			const storeInfo = await window.detail.getStore(modColUUID)
 
-			console.log(storeInfo)
 			const storePromises = [
 				step_mapImage(storeInfo.mapImage),
 			]
@@ -49,7 +48,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
 			for ( const [storeItemFile, thisItem] of Object.entries(storeInfo.items) ) {
 				if ( thisItem.masterType === 'vehicle' ) {
-					storePromises.push(subStep_vehicle(storeItemFile, thisItem, storeInfo.icons[storeItemFile], storeInfo.brands))
+					const thisUUID = crypto.randomUUID()
+					const combos   = subStep_combos(thisItem?.specs?.combination, storeInfo, thisUUID)
+					storePromises.push(subStep_vehicle(
+						thisUUID,
+						storeItemFile,
+						thisItem,
+						storeInfo.icons[storeItemFile],
+						storeInfo.brands,
+						combos
+					))
 				} else if ( thisItem.masterType === 'placeable' ) {
 					// storePromises.push(subStep_placeable(thisItem, thisItemUUID))
 				}
@@ -136,6 +144,7 @@ async function step_problems(thisMod) {
 				...await subStep_issues(thisMod),
 				...await subStep_binds(bindingIssue, locale),
 			]).then((value) => {
+				console.log(value)
 				const theseIssues = value.map((item) => `<tr class="py-2"><td class="px-2">${DATA.checkX(0, false)}</td><td>${item.value}}</td></tr>`)
 				MA.byIdHTML('problems', `<table class="table table-borderless mb-0">${theseIssues.join('')}</table>`)
 			})
@@ -228,12 +237,71 @@ async function subStep_binds(bindingIssue) {
 			)
 		}
 	}
-	return Promise.allSettled(problemPromises)
+	return problemPromises
 }
 
-async function subStep_vehicle(thisFile, thisItem, thisIcon, brands) {
-	const thisUUID = crypto.randomUUID()
-	lookItemMap[thisFile] = crypto.randomUUID()
+function subStep_combos (combos, lookRecord, parentItem) {
+	if ( typeof combos === 'undefined' || combos === null || combos.length === 0 ) { return null }
+
+	const comboKeyList = new Set()
+	const comboNodes   = []
+
+	for ( const thisCombo of combos ) {
+		if ( thisCombo === null ) { continue }
+
+		const thisComboIsBase = thisCombo.startsWith('$data')
+		const thisComboKey    = thisComboIsBase ? thisCombo.replaceAll('$data/', '').replaceAll('/', '_').replaceAll('.xml', '') : thisCombo
+
+		if ( thisComboKey !== null ) {
+			const thisItem = thisComboIsBase ? client_BGData.records[thisComboKey] : lookRecord.items[thisComboKey]
+
+			if ( typeof thisItem === 'undefined' ) { continue }
+
+			const thisIcon = ST.resolveIcon(
+				thisItem.icon,
+				lookRecord?.icons?.[thisComboKey]
+			)
+
+			comboKeyList.add({
+				contents : thisComboIsBase ? null : thisItem,
+				internal : thisComboIsBase,
+				key      : thisComboKey,
+				source   : thisComboIsBase ? null : modName,
+			})
+
+			const thisItemData = ST.getInfo(thisItem)
+			const brandImgSRC  = ST.resolveBrand(lookRecord.brands?.[thisItem.brand]?.icon, thisItem.brand)
+
+			const thisNode = DATA.templateEngine('combo_div_source', {
+				brandImage : `<img src="${brandImgSRC}" class="img-fluid store-brand-image">`,
+				iconImage  : `<img src="${thisIcon}" class="img-fluid store-icon-image">`,
+
+				category       : I18N.defer(thisItem.category),
+				clickPage      : thisComboKey,
+				clickSource    : thisComboIsBase ? 'base' : 'internal',
+				clickType      : 'item',
+				fullName       : I18N.defer(thisItem.name),
+				
+				compareTerms   : [
+					ST.markupDataType('price', thisItemData.price),
+					ST.markupDataType('workWidth', thisItemData.workWidth),
+				].join(''),
+			}, {}, {
+				'.comboCompareButton' : MA.showTest(thisItem.masterType === 'vehicle'),
+			})
+
+			DATA.eventEngine(thisNode, '.comboItemClicker', comboItemClicker)
+			DATA.eventEngine(thisNode, '.comboItemAddClicker', comboAddSingle)
+			
+			comboNodes.push(thisNode)
+		}
+	}
+	comboItemMap[parentItem] = [...comboKeyList]
+	return comboNodes
+}
+
+async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, combos) {
+	lookItemMap[thisFile] = thisUUID
 	lookItemData[thisUUID] = thisItem
 	lookItemData[thisUUID].icon = ST.resolveIcon(thisIcon, thisItem.icon)
 	lookItemData[thisUUID].uuid_name = thisFile
@@ -241,41 +309,51 @@ async function subStep_vehicle(thisFile, thisItem, thisIcon, brands) {
 	const thisItemData = ST.getInfo(thisItem)
 	const brandImgSRC  = ST.resolveBrand(brands?.[thisItem.brand]?.icon, thisItem.brand)
 	const fillImages   = ST.markupFillTypes(thisItem.fillTypes)
+	const sprayTypes   = ST.markupSprayTypes(thisItem?.sprayTypes, thisItemData.workWidth)
 
 	const thisItemDataHTML = ST.typeDataOrder.map((x) => ST.markupDataType(x, thisItemData[x]))
-	// console.log(thisItemDataHTML)
-	// for ( const testItem of dtLib.vehTestTypes ) {
-	// 	if ( fsgUtil.getShowBool(thisItem[testItem[0]], testItem[1]) ) {
-	// 		thisItemDataHTML.push(dtLib.doDataRow(testItem[2], __(testItem[3] === false ? thisItem[testItem[0]]: testItem[3])))
-	// 	}
-	// }
+	
+	for ( const testItem of ST.vehTestTypes ) {
+		if ( MA.showTestValueBool(thisItem[testItem[0]], testItem[1]) ) {
+			thisItemDataHTML.push(ST.markupDataRow(
+				testItem[2],
+				testItem[3] === false ?
+					thisItem[testItem[0]] :
+					I18N.defer(testItem[3], false)
+			))
+		}
+	}
+
+	if ( sprayTypes !== null ) {
+		thisItemDataHTML.push(ST.markupDataRowTrue(
+			'look-width',
+			sprayTypes
+		))
+	} else {
+		thisItemDataHTML.push(ST.markupDataType(
+			'workWidth',
+			thisItemData.workWidth
+		))
+	}
 
 	thisItemDataHTML.push(
 		ST.markupDataType(
 			'fillLevel',
 			thisItemData.fillLevel,
 			fillImages.length !== 0 ? fillImages.join('') : null
-		)//,
+		),
+		ST.markupDataRowTrue(
+			'cat-attach-has',
+			MA.showTestValueBool(thisItem?.joints?.canUse) ? I18N.defer('basegame_attach_has', false) : null,
+			ST.markupJoints(thisItem?.joints?.canUse, true, false)
+		),
+		ST.markupDataRowTrue(
+			'cat-attach-need',
+			MA.showTestValueBool(thisItem?.joints?.needs) ? I18N.defer('basegame_attach_need', false) : null,
+			ST.markupJoints(thisItem?.joints?.needs, false, false)
+		)
 	)
-	// 	dtLib.doDataType(
-	// 		'workWidth',
-	// 		thisItemData.workWidth,
-	// 		dtLib.doSprayTypes(thisItem?.sprayTypes, thisItemData.workWidth)
-	// 	),
-	// 	dtLib.doDataRowTrue(
-	// 		'cat-attach-has',
-	// 		fsgUtil.getShowBool(thisItem?.joints?.canUse) ? __('basegame_attach_has') : null,
-	// 		dtLib.doJoints(thisItem?.joints?.canUse, true, false)
-	// 	),
-	// 	dtLib.doDataRowTrue(
-	// 		'cat-attach-need',
-	// 		fsgUtil.getShowBool(thisItem?.joints?.needs) ? __('basegame_attach_need') : null,
-	// 		dtLib.doJoints(thisItem?.joints?.needs, false, false)
-	// 	)
-	// )
-	MA.byIdAppend('storeitems', DATA.templateEngine('vehicle_info_div', {
-		// parentID : thisUUID,
-
+	const infoDivNode = DATA.templateEngine('vehicle_info_div', {
 		brandImage : `<img src="${brandImgSRC}" class="img-fluid store-brand-image">`,
 		iconImage  : `<img src="${lookItemData[thisUUID].icon}" class="img-fluid store-icon-image">`,
 
@@ -290,10 +368,20 @@ async function subStep_vehicle(thisFile, thisItem, thisIcon, brands) {
 		'vehicle-info-parent' : thisUUID,
 	}, {
 		'.combo-list' : MA.showTest(thisItem?.specs?.combination),
-	}))
-	// storeItemsHTML.push(fsgUtil.useTemplate('vehicle_info_div', {
-	// 	combinations : make_combos(thisItem?.specs?.combination, lookRecord, thisItemUUID),
-	// }))
+	})
+
+	if ( combos !== null ) {
+		const comboParent = infoDivNode.querySelector('.combo-item-list')
+		for ( const thisCombo of combos ) {
+			comboParent.appendChild(thisCombo)
+		}
+	}
+	
+	DATA.eventEngine(infoDivNode, '.action-compare-all-combo', comboAddAll)
+	DATA.eventEngine(infoDivNode, '.action-item-compare', singleAdd)
+	DATA.eventEngine(infoDivNode, '.attach_has, .attach_need', attachClicker)
+
+	MA.byIdAppend('storeitems', infoDivNode)
 
 	// if ( thisItem.motorInfo !== null ) {
 	// 	storeItemsJS.push(dtLib.doChart(thisItem, thisItemUUID, chartUnits))
@@ -311,4 +399,75 @@ function showHideClicker(e) {
 	section.clsShow(isShow)
 	buttonGroup.children[0].clsShow(!isShow)
 	buttonGroup.children[1].clsShow(isShow)
+}
+
+
+function itemGetInfo(target) {
+	const thisItemDIV = target.closest('.vehicleInfoBlock')
+	return thisItemDIV.id
+}
+
+function comboGetInfo(target) {
+	const thisItemDIV = target.closest('.comboItemEntry')
+	const theseVars = thisItemDIV.querySelector('.comboItemInfo').querySelectorAll('template-var')
+	const returnObj = {
+		source : null,
+		type   : null,
+		page   : null,
+	}
+	for ( const element of theseVars ) {
+		if ( element.safeAttribute('data-name') === 'clickSource' ) { returnObj.source = element.textContent }
+		if ( element.safeAttribute('data-name') === 'clickPage' ) { returnObj.page = element.textContent }
+		if ( element.safeAttribute('data-name') === 'clickType' ) { returnObj.type = element.textContent }
+	}
+	return returnObj
+}
+
+function singleAdd(e) {
+	const itemID = itemGetInfo(e.target)
+	const compareObj = {
+		contents : lookItemData[itemID],
+		internal : false,
+		key      : lookItemData[itemID].uuid_name,
+		source   : modName,
+	}
+	window.detail.sendCompare([compareObj])
+}
+
+function comboAddAll(e) {
+	const compareObjArray = comboItemMap[itemGetInfo(e.target)]
+	window.detail.sendCompare(compareObjArray)
+}
+
+function comboAddSingle(e) {
+	const { source, page } = comboGetInfo(e.target)
+	const compareObj = {
+		contents : null,
+		internal : source !== 'internal',
+		key      : page,
+		source   : source === 'internal' ? modName : null,
+	}
+	if ( source === 'internal' ) {
+		compareObj.contents = lookItemData[lookItemMap[page]]
+	}
+	window.detail.sendCompare([compareObj])
+}
+
+function comboItemClicker(e) {
+	const { source, type, page } = comboGetInfo(e.target)
+	if ( source === 'internal' ) {
+		location.hash = lookItemMap[page]
+	} else {
+		window.detail.sendBase({ type : type, page : page })
+	}
+}
+
+function attachClicker(e) {
+	const realTarget = e.target.closest('.badge')
+	if ( realTarget.classList.contains('custom') ) { return }
+	const openObject = {
+		type  : realTarget.classList.contains('attach_need') ? 'attach_need' : 'attach_has',
+		page : realTarget.safeAttribute('data-jointpage'),
+	}
+	window.detail.sendBase(openObject)
 }

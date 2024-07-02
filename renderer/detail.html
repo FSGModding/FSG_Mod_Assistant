@@ -58,66 +58,33 @@
 			margin-right : 0.3em;
 		}
 
-		.inset-block-header-show-hide>l10n::before {
-			content : "[ ";
-		}
-		.inset-block-header-show-hide>l10n::after {
-			content : " ]";
-		}
-		.inset-block-header-show-hide {
-			--bs-bg-opacity: 1;
-			--bs-text-opacity: 1;
-			background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity))!important;
-			color: rgba(var(--bs-info-rgb),var(--bs-text-opacity))!important;
-			display : block;
-			font-size: 1rem;
-			font-weight: 500;
-			line-height: 1.2;
-			margin-top: -2rem;
-			padding-bottom: 0.5rem!important;
-			padding-left: 1rem!important;
-			padding-right: 1rem!important;
-			width: fit-content;
-			margin-left: auto;
-			margin-right: 0px;
-			cursor: pointer;
-		}
-
 		.store-icon-brand {
 			margin-top: -10%;
 			width: 35%;
 		}
-		.inset-inline-header {
-			width: 75%!important;
-			margin-right : auto!important;
-			margin-left: auto!important;
-			border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
-		}
-		.inset-inline-header-text {
+
+		.joint-container .joint {
+			border: none;
+			border-radius : 0px;
 			--bs-bg-opacity: 1;
-			--bs-text-opacity: 1;
-			background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity))!important;
-			color: rgba(var(--bs-info-rgb),var(--bs-text-opacity))!important;
-			display : block;
-			font-size: 1.1rem;
-			font-weight: 500;
-			width: fit-content;
-			margin-top: -0.8em;
-			margin-left: auto !important;
-			margin-right: auto !important;
-			padding-left: 0.5em;
-			padding-right: 0.5em;
+			background-color: #547aa3!important;
+			margin-left: 2px;
+			font-weight: normal;
+			cursor: pointer;
+			padding-right: 1rem !important;
+			padding-left: 1rem !important;
 		}
-		.inset-inline-header-button {
-			--bs-bg-opacity: 1;
-			background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity))!important;
-			display: block;
-			margin-top: -1.6em;
-			margin-left: auto !important;
-			margin-right: 10px !important;
-			padding-right: 5px;
-			padding-left: 5px;
-			width: fit-content;
+		.joint-container .joint.custom {
+			font-weight: bold;
+			font-style: italic;
+			cursor: default;
+		}
+		.joint-container .joint.attach_need {
+			clip-path: polygon(100% 0, 90% 50%, 100% 100%, 10% 100%, 0% 50%, 10% 0%);
+		}
+		.joint-container .joint.attach_has {
+			clip-path: polygon(90% 0, 100% 50%, 90% 100%, 0% 100%, 10% 50%, 0% 0%);
+
 		}
 	</style>
 </head>
@@ -253,32 +220,31 @@
 	</div>
 
 <template id="combo_div_source">
-	<div class="row border-bottom mb-2">
-		<div class="text-center col-2 py-2">
-			<a class="text-decoration-none" onclick="clientClickCombo('{{clickSource}}', '{{clickType}}', '{{clickPage}}')">
-				{{itemIcon}}
-			</a>
+	<div class="row border-bottom mb-2 comboItemEntry">
+		<div class="comboItemInfo d-none">
+			<template-var data-name="clickSource">clickSource</template-var>
+			<template-var data-name="clickType">clickType</template-var>
+			<template-var data-name="clickPage">clickPage</template-var>
 		</div>
-		<div class="text-center col-2 align-self-center">
-			<a class="text-decoration-none" onclick="clientClickCombo('{{clickSource}}', '{{clickType}}', '{{clickPage}}')">
-				{{brandIcon}}
-			</a>
+		<div class="text-center col-2 py-2 mt-0 pt-0 comboItemClicker">
+			<div class="store-icon-image"><template-var>iconImage</template-var></div>
+			<div class="store-icon-brand"><template-var>brandImage</template-var></div>
 		</div>
-		<div class="col-4 align-self-center text-center">
-			<a class="text-decoration-none text-white-50" onclick="clientClickCombo('{{clickSource}}', '{{clickType}}', '{{clickPage}}')">
-				{{fullName}}<br>
-				<em>{{category}}</em>
-			</a>
+		<div class="col-5 align-self-center text-center comboItemClicker">
+			<template-var>fullName</template-var><br>
+			<em><template-var>category</template-var></em>
 		</div>
-		<div class="col-3 align-self-center">
-			{{compareTerms}}
+		<div class="col-4 align-self-center comboItemClicker">
+			<template-var>compareTerms</template-var>
 		</div>
-		<div class="text-center col-1 align-self-center"><button type="button" onclick="clientCompareCombo('{{clickSource}}', '{{clickPage}}')" class="btn btn-warning btn-vsm float-end mt-2 {{showCompButton}}" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button></div>
+		<div class="text-center col-1 align-self-center comboCompareButton">
+			<button type="button" class="btn btn-warning btn-vsm float-end mt-2 comboItemAddClicker" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button>
+		</div>
 	</div>
 </template>
 
 <template id="vehicle_info_div">
-	<div class="inset-vehicle-block col-12 inset-block" id="vehicle-info-parent"><div>
+	<div class="inset-vehicle-block vehicleInfoBlock col-12 inset-block" id="vehicle-info-parent"><div>
 		<span class="inset-block-header" name="detail_dev_info"><template-var>itemName</template-var></span>
 		<span class="inset-block-header-show-hide"><button type="button" class="btn btn-sm btn-warning action-item-compare"><l10n name="basegame_button_comp"></l10n></button></span>
 		<span class="inset-block-blurb-detail">
@@ -306,7 +272,7 @@
 							<button type="button" class="btn btn-warning btn-vsm action-compare-all-combo"><l10n name="basegame_compare_all"></l10n></button>
 						</span>
 					</div>
-					<template-var>combinations</template-var>
+					<div class="combo-item-list"></div>
 				</div>
 
 				<!-- <nav class="{{showGraph}}">

@@ -26,6 +26,9 @@ const pageAPI = {
 			getMalware : ()    => ipcRenderer.invoke('collect:malware'),
 			getMod     : (key) => ipcRenderer.invoke('mod:modColUUID', key),
 			getStore   : (key) => ipcRenderer.invoke('store:modColUUID', key),
+
+			sendBase    : (pageObject)   => ipcRenderer.invoke('dispatch:basegame', pageObject),
+			sendCompare : (compareArray) => ipcRenderer.invoke('dispatch:compare', compareArray),
 		},
 		validAsync : new Set(),
 	},
@@ -110,6 +113,7 @@ contextBridge.exposeInMainWorld(
 				'win:updateFontSize',
 				'win:removeTooltips',
 				'win:updateTheme',
+				'win:forceRefresh',
 			])
 		
 			if ( validChannels.has( channel ) ) {

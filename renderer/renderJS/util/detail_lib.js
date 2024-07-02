@@ -11,111 +11,7 @@
 const _f = (type, width = '2rem') => `<fillType style="font-size: ${width}" name="${type}"></fillType>`
 
 const dtLib = {
-	/* cSpell:disable */
-	brandList : new Set([
-		'abi', 'aebi', 'agco', 'agrisem', 'agromasz', 'albutt', 'aldi', 'alpego', 'amazone',
-		'amitytech', 'amitytechnology', 'andersongroup', 'annaburger', 'apv', 'arcusin', 'armatrac', 'bednar',
-		'bergmann', 'berthoud', 'bkt', 'bmvolvo', 'boeckmann', 'bomech', 'bourgault', 'brantner',
-		'bredal', 'bremer', 'brielmaier', 'briri', 'buehrer', 'capello', 'caseih', 'challenger',
-		'claas', 'continental', 'conveyall', 'corteva', 'dalbo', 'damcon', 'degelman', 'demco',
-		'deutzfahr', 'dfm', 'duevelsdorf', 'easysheds', 'einboeck', 'elho', 'elmersmfg', 'elten',
-		'engelbertstrauss', 'ero', 'faresin', 'farmax', 'farmet', 'farmtech', 'fendt', 'fiat',
-		'flexicoil', 'fliegl', 'fmz', 'fortschritt', 'fortuna', 'fsi', 'fuhrmann', 'gessner',
-		'giants', 'goeweil', 'goldhofer', 'gorenc', 'greatplains', 'gregoirebesson', 'grimme',
-		'groha', 'hardi', 'hatzenbichler', 'hauer', 'hawe', 'heizomat', 'helm', 'holaras', 'holmer',
-		'horsch', 'husqvarna', 'impex', 'iseki', 'jcb', 'jenz', 'johndeere', 'jonsered', 'joskin',
-		'jungheinrich', 'kaercher', 'kaweco', 'kemper', 'kesla', 'kingston', 'kinze', 'kline',
-		'knoche', 'koeckerling', 'kockerling', 'koller', 'komatsu', 'kongskilde', 'kotschenreuther', 'kotte',
-		'kramer', 'krampe', 'kroeger', 'krone', 'kronetrailer', 'ksag', 'kubota', 'kuhn',
-		'kverneland', 'lacotec', 'landini', 'lely', 'lemken', 'lindner', 'lizard', 'lizardbuilding',
-		'lizardenergy', 'lizardfarming', 'lizardforestry', 'lizardgoods', 'lizardlawncare',
-		'lizardlogistics', 'lizardmotors', 'lizardstorage', 'lodeking', 'mack', 'mackhistorical',
-		'magsi', 'mahindra', 'man', 'manitou', 'masseyferguson', 'mccormack', 'mccormick',
-		'mcculloch', 'meridian', 'michelin', 'michieletto', 'mitas', 'nardi', 'neuero',
-		'newholland', 'nokian', 'none', 'nordsten', 'olofsfors', 'oxbo', 'paladin', 'pesslinstruments',
-		'pfanzelt', 'pioneer', 'planet', 'ploeger', 'poettinger', 'ponsse', 'porschediesel',
-		'prinoth', 'provita', 'provitis', 'quicke', 'rabe', 'randon', 'rau', 'reform', 'reiter',
-		'riedler', 'rigitrac', 'risutec', 'ropa', 'rostselmash', 'rottne', 'rudolfhoermann',
-		'rudolph', 'salek', 'salford', 'samasz', 'samporosenlew', 'samsonagro', 'schaeffer',
-		'schaumann', 'schouten', 'schuitemaker', 'schwarzmueller', 'seppknuesel', 'seppknusel', 'siloking', 'sip',
-		'stadia', 'stara', 'starkindustries', 'stepa', 'steyr', 'stihl', 'stoll', 'strautmann',
-		'suer', 'tajfun', 'tatra', 'tenwinkel', 'thueringeragrar', 'thundercreek', 'tmccancela',
-		'treffler', 'trelleborg', 'tt', 'unia', 'unverferth', 'vaederstad', 'valtra', 'valtravalmet',
-		'veenhuis', 'vermeer', 'versatile', 'vervaet', 'vicon', 'volvo', 'volvobm', 'volvokrabat',
-		'vredestein', 'walkabout', 'warzee', 'webermt', 'welger', 'westtech', 'wilson', 'zetor',
-		'ziegler', 'zunhammer', 'agi', 'agibatco', 'agineco', 'agisentinel', 'agistorm',
-		'agiwesteel', 'agiwestfield', 'antoniocarraro'
-	]),
-	/* cSpell:enable */
-	unit : {
-		ft   : { factor : 3.28084,   precision : 1, unit : 'unit_ft' },
-		ft3  : { factor : 0.0353147, precision : 1, unit : 'unit_ft3' },
-		hp   : { factor : 1,         precision : 0, unit : 'unit_hp' },
-		kg   : { factor : 1,         precision : 0, unit : 'unit_kg' },
-		kph  : { factor : 1,         precision : 0, unit : 'unit_kph' },
-		kw   : { factor : 0.7457,    precision : 1, unit : 'unit_kw' },
-		l    : { factor : 1,         precision : 0, unit : 'unit_l' },
-		lbs  : { factor : 2.20462,   precision : 0, unit : 'unit_lbs' },
-		m    : { factor : 1,         precision : 1, unit : 'unit_m' },
-		m3   : { factor : 0.001,     precision : 1, unit : 'unit_m3' },
-		mph  : { factor : 0.621371,  precision : 0, unit : 'unit_mph' },
-		none : { factor : 1,         precision : 0, unit : '' },
-		t    : { factor : 0.01,      precision : 1, unit : 'unit_t' },
-	},
-	unitCombo : (type) => {
-		switch ( type ) {
-			case 'capacity' :
-				return [ST.unit.l, ST.unit.m3, ST.unit.ft3]
-			case 'capacity-sm' :
-				return [ST.unit.l, ST.unit.ft3]
-			case 'power' :
-				return [ST.unit.hp, ST.unit.kw]
-			case 'speed' :
-				return [ST.unit.kph, ST.unit.mph]
-			case 'width' :
-				return [ST.unit.m, ST.unit.ft]
-			case 'weight' :
-				return [ST.unit.kg, ST.unit.t, ST.unit.lbs]
-			default :
-				return [ST.unit.none]
-		}
-	},
-
-	vehTestTypes : [
-		//[ 'thisItem.record', 'must equal', 'iconName', 'l10n entry']
-		['transType',      null,             'look-transmission', false],
-		['fuelType',       'diesel',         'look-diesel',       'look_diesel'],
-		['fuelType',       'electriccharge', 'look-electric',     'look_electric'],
-		['fuelType',       'methane',        'look-methane',      'look_methane'],
-		['hasLights',      null,             'look-lights',       'look_has_lights'],
-		['hasBeacons',     null,             'look-beacons',      'look_has_beacons'],
-		['hasColor',       null,             'look-paintable',    'look_has_paint'],
-		['hasWheelChoice', null,             'look-wheels',       'look_has_wheels'],
-		['year',           null,             'look-year',         false],
-	],
-
-	husbandTestTypes : ['CHICKEN', 'COW', 'HORSE', 'PIG', 'SHEEP'],
-
-	typeDataOrder : ['price', 'powerSpan', 'needPower', 'maxSpeed', 'speedLimit', 'weight'],
-	typeIconMap : {
-		'bees'       : ['fill-honey', 'width'],
-		'fillLevel'  : ['look-fillunit', 'capacity-sm'],
-		'income'     : ['look-income', 'money'],
-		'maxSpeed'   : ['look-speed', 'speed'],
-		'needPower'  : ['look-engine', 'power'],
-		'objects'    : ['look-objects', 'count'],
-		'powerSpan'  : ['look-engine', 'power'],
-		'price'      : ['look-price', 'money'],
-		'speedLimit' : ['look-speedlimit', 'speed'],
-		'weight'     : ['look-weight', 'weight'],
-		'workWidth'  : ['look-width', 'width'],
-	},
-	typeMap : {
-		'baleLoader'                  : ['price'],
-		'default'                     : ['price', 'powerSpan', 'needPower', 'maxSpeed', 'speedLimit', 'fillLevel', 'workWidth'],
-		'dynamicMountAttacherTrailer' : ['price'],
-	},
-
+	
 	
 	getDataTypes : (type) => ( typeof ST.typeMap[type] !== 'undefined' ) ? ST.typeMap[type] : ST.typeMap.default,
 
@@ -147,42 +43,7 @@ const dtLib = {
 		`${extraHTML !== null ? extraHTML : ''}<img class="mb-3 rounded-2" style="width: ${width}" src="${imgSrc}">`,
 	
 
-	doJoints         : (joints, doesHave, isBase = true) => {
-		if ( typeof joints === 'undefined' ) { return '' }
 	
-		let   hasCustom = false
-		const jointHTML = []
-	
-		for ( const thisJoint of joints ) {
-			if ( ! client_BGData.joints_list.includes(thisJoint) ) {
-				hasCustom = true
-				continue
-			}
-			if ( isBase ) {
-				jointHTML.push(`<a href="?type=${ !doesHave ? 'attach_has' : 'attach_need'}&page=${thisJoint.toLowerCase()}">${thisJoint}</a>`)
-			} else {
-				jointHTML.push(`<a href="#" onclick="clientClickCombo('base', '${!doesHave ? 'attach_has' : 'attach_need'}', '${thisJoint.toLowerCase()}'); return false">${thisJoint}</a>`)
-			}
-		}
-		if ( hasCustom ) { jointHTML.push('<l10n name="attachment_custom"></l10n>')}
-
-		return jointHTML.length === 0 ? null : jointHTML.join(', ')
-	},
-	doSprayTypes     : (sprayTypes, defaultWidth) => {
-		if ( typeof sprayTypes !== 'object' || sprayTypes === null || sprayTypes.length === 0 ) { return null }
-
-		const sprayTypesHTML = []
-
-		for ( const thisType of sprayTypes ) {
-			const fillImages = ST.doFillTypes(thisType.fills)
-			sprayTypesHTML.push(`${fillImages.join('')} ${ST.numFmtMany(
-				thisType.width !== null ? thisType.width : defaultWidth,
-				_l(),
-				ST.unitCombo('width')
-			)}`)
-		}
-		return sprayTypesHTML.length === 0 ? null : sprayTypesHTML.join('<br>')
-	},
 
 
 

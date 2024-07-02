@@ -270,7 +270,49 @@ const ST = {
 		return ST.markupDataRow(thisTypeMap[0], NUM.fmtType(thisTypeMap[1], value), extraLine)
 	},
 	markupFunctions : ( functions ) => functions.map((x) => I18N.defer(x)).join('<br>'),
+	markupJoint     : ( haveClass, id, name ) => `<div class="badge joint ${haveClass}" data-jointPage="${id}">${name}</div>`,
+	markupJoints    : (joints, doesHave ) => { //, isBase = true) => {
+		if ( typeof joints === 'undefined' ) { return '' }
 	
+		let   hasCustom = false
+		const jointHTML = []
+	
+		for ( const thisJoint of joints ) {
+			if ( ! client_BGData.joints_list.includes(thisJoint) ) {
+				hasCustom = true
+				continue
+			}
+			jointHTML.push(ST.markupJoint(
+				!doesHave ? 'attach_has' : 'attach_need',
+				thisJoint.toLowerCase(),
+				thisJoint
+			))
+		}
+		if ( hasCustom ) {
+			jointHTML.push(ST.markupJoint(
+				!doesHave ? 'attach_has custom' : 'attach_need custom',
+				'',
+				I18N.defer('attachment_custom', false)
+			))
+		}
+
+		return jointHTML.length === 0 ? null : `<div class="d-flex joint-container justify-content-end">${jointHTML.join('')}</div>`
+	},
+	markupSprayTypes     : (sprayTypes, defaultWidth) => {
+		if ( typeof sprayTypes !== 'object' || sprayTypes === null || sprayTypes.length === 0 ) { return null }
+
+		const sprayTypesHTML = []
+
+		for ( const thisType of sprayTypes ) {
+			const fillImages = ST.markupFillTypes(thisType.fills)
+			sprayTypesHTML.push(`${fillImages.join('')} ${NUM.fmtMany(
+				thisType.width !== null ? thisType.width : defaultWidth,
+				locale,
+				ST.unitCombo('width')
+			)}`)
+		}
+		return sprayTypesHTML.length === 0 ? null : sprayTypesHTML.join('<br>')
+	},
 	
 	
 }
