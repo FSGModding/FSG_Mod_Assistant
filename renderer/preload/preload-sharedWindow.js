@@ -22,7 +22,10 @@ const pageAPI = {
 	},
 	'detail' : {
 		functions : {
-			getMod : (key) => ipcRenderer.invoke('mod:modColUUID', key),
+			getBinds   : ()    => ipcRenderer.invoke('collect:bindConflict'),
+			getMalware : ()    => ipcRenderer.invoke('collect:malware'),
+			getMod     : (key) => ipcRenderer.invoke('mod:modColUUID', key),
+			getStore   : (key) => ipcRenderer.invoke('store:modColUUID', key),
 		},
 		validAsync : new Set(),
 	},
@@ -71,6 +74,7 @@ contextBridge.exposeInMainWorld(
 	'settings', {
 		get : (key) => ipcRenderer.invoke('settings:get', key),
 		theme : () => ipcRenderer.invoke('settings:theme'),
+		units : () => ipcRenderer.invoke('settings:units'),
 	}
 )
 
@@ -99,6 +103,8 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'operations', {
 		close   : () => { ipcRenderer.invoke('win:close') },
+		clip    : (value) => { ipcRenderer.invoke('win:clipboard', value)},
+
 		receive : ( channel, func ) => {
 			const validChannels = new Set([
 				'win:updateFontSize',

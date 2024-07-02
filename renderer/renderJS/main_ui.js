@@ -155,11 +155,12 @@ window.mods.receive('fromMain_modList', (modCollect) => {
 					const thisModEntry = makeModRow(
 						thisMod.colUUID,
 						thisMod,
-						mainLib.getBadgeHTML(
-							thisMod,
-							modCollect.opts.cacheGameSave?.modList?.[thisMod.fileDetail.shortName],
-							modCollect.opts.cacheGameSave?.collectKey === collectKey
-						),
+						'',
+						// mainLib.getBadgeHTML(
+						// 	thisMod,
+						// 	modCollect.opts.cacheGameSave?.modList?.[thisMod.fileDetail.shortName],
+						// 	modCollect.opts.cacheGameSave?.collectKey === collectKey
+						// ),
 						thisMod.modHub.id,
 						modCollect.appSettings.game_version,
 						Object.hasOwn(modCollect.opts.modSites, thisMod.fileDetail.shortName)

@@ -12,15 +12,6 @@ const pageSTATE = {
 }
 
 const MA = {
-	attrib : (element, attrib, replacer = null) => {
-		const attribValue = element.getAttribute(attrib)
-	
-		return ( typeof attribValue !== 'string' || attribValue === null || attribValue === '' ) ?
-			replacer :
-			attribValue
-	},
-	attribToString : (element, attrib ) => MA.attrib(element, attrib, ''),
-
 	byId       : ( id ) => document.getElementById( id ),
 	byIdAppend : ( id, element = null ) => {
 		if ( element === null ) { return false }
@@ -50,22 +41,8 @@ const MA = {
 	queryA     : ( query ) => [...document.querySelectorAll( query )],
 	queryF     : ( query ) => document.querySelector(query),
 
-	
-	clsOrGate   : ( id, test, ifTrue, ifFalse ) => {
-		const element = MA.byId(id)
-		if ( test ) {
-			element.classList.add(ifTrue)
-			element.classList.remove(ifFalse)
-		} else {
-			element.classList.add(ifFalse)
-			element.classList.remove(ifTrue)
-		}
-	},
-	clsOrGateArr : (id, arr, ifTrue = 'text-danger', ifFalse = 'text-success') => {
-		MA.clsOrGate(id, (Array.isArray(arr) && arr.length !== 0), ifTrue, ifFalse )
-	},
-
-	prefixNotEmpty : (text, prefix = '') => text.length === 0 ? text : `${prefix}${text}`,
+	hideTest   : ( test ) => test ? 'd-none' : '',
+	showTest   : ( test ) => test ? '' : 'd-none',
 
 	clearTooltips   : () => { for ( const tooltip of MA.query('.tooltip') ) { tooltip?.hide?.() } },
 
@@ -184,10 +161,60 @@ const DATA = {
 		Array.isArray(arr) && arr.length !== 0 ?
 			arr.join('\n') :
 			I18N.buildElement(l10nKey),
+
+	prefixNotEmpty : (text, prefix = '') => text.length === 0 ? text : `${prefix}${text}`,
+
+	iconMaker : (icon = null) => {
+		return ( typeof icon === 'string' && icon.startsWith('data:') ) ?
+			icon :
+			'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 903.2 904.2\'%3E%3Cpath d=\'M461.6 21a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2Zm-313 673.4a387 387 0 0 1-76.4-231.8 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114A386.9 386.9 0 0 1 744 194.7L148.6 694.4ZM737 737.9a388 388 0 0 1-275.3 114 386.9 386.9 0 0 1-279.1-117.8l595-499.3A387.5 387.5 0 0 1 851 462.6a386.9 386.9 0 0 1-114 275.3Z\'/%3E%3Cpath fill=\'%23711\' d=\'M441.6 0a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2ZM129 674a387.4 387.4 0 0 1-76.9-232.4 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114 386.9 386.9 0 0 1 283 122L129.2 674Zm587.8 43a388 388 0 0 1-275.3 114A386.9 386.9 0 0 1 163 713.6l595-499.1a387 387 0 0 1 73 227A386.9 386.9 0 0 1 717 717Z\'/%3E%3C/svg%3E'
+	},
+
+	templateEngine : (id, variableReplacers = {}, idReplacers = {}, classAdditions = {}) => {
+		const template = MA.byId(id)
+		const clone    = template.content.cloneNode(true)
+
+		for ( const [oldID, newID] of Object.entries(idReplacers) ) {
+			clone.getElementById(oldID).id = newID
+		}
+
+		for ( const [query, classArgs] of Object.entries(classAdditions) ) {
+			const classList = typeof classArgs === 'string' ? [classArgs] : classArgs
+			const filterList = classList.filter((x) => x !== '')
+			if ( filterList.length !== 0 ) {
+				for ( const element of clone.querySelectorAll(query) ) {
+					console.log(element)
+					element.classList.add(...filterList)
+				}
+			}
+		}
+
+		for ( const thisVar of clone.querySelectorAll('template-var') ) {
+			const thisVariableName = thisVar.textContent
+			if ( typeof variableReplacers[thisVariableName] !== 'undefined' ) {
+				thisVar.innerHTML = variableReplacers[thisVariableName]
+			}
+		}
+
+		I18N.processGroup(clone.querySelectorAll('l10n'))
+
+		return clone
+	},
 }
 
 
 const I18N = {
+	buildBadgeMod   : async (badge) => {
+		const lcBadgeName = badge.name.toLowerCase()
+		return window.i18n.get(`mod_badge_${lcBadgeName}`).then((result) => {
+			const badgeDiv = document.createElement('div')
+			badgeDiv.classList.add('badge', 'border', 'border-2', `badge-mod-${lcBadgeName}`, ...badge.class)
+			badgeDiv.textContent = result.entry
+			badgeDiv.setAttribute('title', `${result.title}${DATA.prefixNotEmpty(badge.title, ' : ')}`)
+			pageSTATE.tooltips.push(new bootstrap.Tooltip(badgeDiv, { trigger : 'hover' }))
+			return badgeDiv
+		})
+	},
 	buildElement : async (key) =>
 		window.i18n.get(key).then((result) =>
 			`<l10n name="${key}" data-done="true">${result.entry}</l10n>`),
@@ -197,6 +224,7 @@ const I18N = {
 			oldTooltip?.dispose?.()
 		}
 	},
+	defer : (key, skipNonBase = true) => !skipNonBase || key.startsWith('$l10n') ? `<l10n name="${key}"></l10n>` : key,
 	pageLang : () => {
 		window.i18n.lang().then((value) => {
 			document.documentElement.setAttribute('lang', value)
@@ -206,8 +234,12 @@ const I18N = {
 		const elements = ! refresh ?
 			MA.query('l10n:not([data-done="true"]') :
 			MA.query('l10n')
+
+		I18N.processGroup(elements)
+	},
+	processGroup : ( elements ) => {
 		for ( const element of elements ) {
-			const key = MA.attrib(element, 'name')
+			const key = element.safeAttribute('name')
 
 			if ( key === null ) { continue }
 
@@ -215,7 +247,7 @@ const I18N = {
 				element.innerHTML = result.entry
 				element.setAttribute('data-done', 'true')
 				if ( result.title !== null && pageSTATE.do_tooltips ) {
-					const extra        = MA.prefixNotEmpty(MA.attribToString(element, 'data-extra-title'), ' : ')
+					const extra        = DATA.prefixNotEmpty(element.stringAttribute('data-extra-title'), ' : ')
 					const titleElement = ( result.entry_key === 'game_icon_lg' ) ?
 						element.closest('#multi_version_button') :
 						element.closest('button') || element.closest('span') || element.closest('label') || element.closest('a')
@@ -268,7 +300,10 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 	})(window.console)
 	
-	window.console = newConsole
+	// eslint-disable-next-line no-constant-condition
+	if ( false ) {
+		window.console = newConsole
+	}
 
 	document.addEventListener('keydown', (event) => {
 		if (event.code === 'Escape' && ! document.location.href.includes('main.html') ) {

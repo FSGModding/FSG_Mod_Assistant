@@ -6,7 +6,7 @@
 
 // Detail window UI
 
-/* global dtLib, __, processL10N, fsgUtil, client_BGData, clientGetKeyMap, clientMakeCropCalendar */
+/* global dtLib, __, processL10N, fsgUtil, client_BGData, ,  */
 
 let lookItemData = {}
 let lookItemMap  = {}
@@ -83,18 +83,12 @@ const make_combos = (combos, lookRecord, parentItem) => {
 	return comboHTML.join('')
 }
 
-const doMapImage = (mapImage) => {
-	if ( mapImage === null || typeof mapImage !== 'string') { return }
-	fsgUtil.clsShow('map_image_div')
-	fsgUtil.byId('map_image').src = mapImage
-}
 
 /* eslint-disable-next-line complexity */
 const buildStore = (lookRecord, chartUnits) => {
 	const storeItemsHTML = []
 	const storeItemsJS   = []
 
-	doMapImage(lookRecord?.mapImage)
 
 	for ( const storeitem in lookRecord.items ) {
 		const thisItem     = lookRecord.items[storeitem]
@@ -212,76 +206,10 @@ const buildPage = (modCollect) => {
 	modName            = modRecord.fileDetail.shortName
 
 
-	const bindingIssue     = modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] ?? null
-
-	if ( modRecord.issues.length === 0 && bindingIssue === null ) {
-		fsgUtil.clsHide('problem_div')
-	} else {
-		const problems = [
-			...doStep_issues(modRecord),
-			...doStep_binds(bindingIssue, modCollect.currentLocale)
-		].map((x) => `<tr class="py-2"><td class="px-2">${fsgUtil.checkX(0, false)}</td><td>${x}</td></tr>`)
-
-		fsgUtil.setById('problems', `<table class="table table-borderless mb-0">${problems.join('')}</table>`)
-	}
-
-	let foundMalware = false
-
-	const theseBadges = Array.isArray(modRecord.displayBadges) ? modRecord.displayBadges.filter((badge) => {
-		if ( badge[0] === 'malware' ) {
-			if ( modCollect.dangerModsSkip.has(modRecord.fileDetail.shortName) ) { return false }
-			if ( modCollect.appSettings.suppress_malware.includes(modRecord.fileDetail.shortName)) { return false }
-			foundMalware = true
-		}
-		return true
-	}).map((badge) => fsgUtil.badge_main(badge)).join(' ') : false
-
-	fsgUtil.clsShowTrue('malware-found', foundMalware)
-	fsgUtil.setTextOrHide(
-		'badges',
-		theseBadges,
-		theseBadges
-	)
-
 	
 
-	if ( Array.isArray(modRecord.modDesc.cropInfo) ) {
-		fsgUtil.clsShow('cropcal_div')
-		fsgUtil.clsShow('detail_crop_json')
-		
-		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false, modRecord.modDesc?.cropWeather || null)
-		
-		fsgUtil.byId('cropcal_button').addEventListener('click', () => {
-			window.mods.popClipboard(JSON.stringify(modRecord.modDesc.cropInfo))
-		})
-	}
 }
 
-function doStep_issues(modRecord) {
-	const problems = []
-	for ( const issue of modRecord.issues ) {
-		let issueText = __(issue)
-		
-		if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
-			issueText += ` ${__('file_error_copy_name')} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
-		}
-		problems.push(issueText)
-	}
-	return problems
-}
-
-function doStep_binds(bindingIssue, locale) {
-	const problems = []
-	if ( bindingIssue !== null ) {
-		for ( const keyCombo in bindingIssue ) {
-			const actualKey = clientGetKeyMap(keyCombo, locale)
-			const confList  = bindingIssue[keyCombo].join(', ')
-			const issueText = `${__('bind_conflict')} : ${actualKey} :: ${confList}`
-			problems.push(issueText)
-		}
-	}
-	return problems
-}
 
 
 function clientOpenCompare(uuid) {

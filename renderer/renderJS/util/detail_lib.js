@@ -6,7 +6,7 @@
 
 // FSG Mod Assist Utilities (detail windows)
 
-/* global Chart, client_BGData, fsgUtil, __, _l */
+/* global Chart, client_BGData, ST */ //, fsgUtil, __, _l */
 
 const _f = (type, width = '2rem') => `<fillType style="font-size: ${width}" name="${type}"></fillType>`
 
@@ -65,19 +65,19 @@ const dtLib = {
 	unitCombo : (type) => {
 		switch ( type ) {
 			case 'capacity' :
-				return [dtLib.unit.l, dtLib.unit.m3, dtLib.unit.ft3]
+				return [ST.unit.l, ST.unit.m3, ST.unit.ft3]
 			case 'capacity-sm' :
-				return [dtLib.unit.l, dtLib.unit.ft3]
+				return [ST.unit.l, ST.unit.ft3]
 			case 'power' :
-				return [dtLib.unit.hp, dtLib.unit.kw]
+				return [ST.unit.hp, ST.unit.kw]
 			case 'speed' :
-				return [dtLib.unit.kph, dtLib.unit.mph]
+				return [ST.unit.kph, ST.unit.mph]
 			case 'width' :
-				return [dtLib.unit.m, dtLib.unit.ft]
+				return [ST.unit.m, ST.unit.ft]
 			case 'weight' :
-				return [dtLib.unit.kg, dtLib.unit.t, dtLib.unit.lbs]
+				return [ST.unit.kg, ST.unit.t, ST.unit.lbs]
 			default :
-				return [dtLib.unit.none]
+				return [ST.unit.none]
 		}
 	},
 
@@ -116,47 +116,25 @@ const dtLib = {
 		'dynamicMountAttacherTrailer' : ['price'],
 	},
 
-	doDataRow  : (icon, value, extraLine = null ) => {
-		return [
-			'<div class="row border-top align-items-center py-1">',
-			`<div class="col-auto">${dtLib.safeGameIcon(icon, { width : '1.5em' })}</div>`,
-			`<div class="col text-end">${value}</div>`,
-			'</div>',
-			extraLine === null || extraLine.length === 0 ? '' : `<div class="row"><div class="col-1"></div><div class="col-11 text-end">${extraLine}</div></div>`,
-		].join('')
-	},
-	doDataRowTrue : (icon, value, extraLine = null ) => {
-		if ( typeof value === 'undefined' || value === 0 || value === null || value === 0 || value === '' ) { return '' }
-		return dtLib.doDataRow(icon, value, extraLine)
-	},
-	doDataType : (type, value, extraLine = null ) => {
-		if ( value === 0 || ( Array.isArray(value) && value[0] === 0 )) { return '' }
-		const thisTypeMap = dtLib.typeIconMap[type]
-		return dtLib.doDataRow(thisTypeMap[0], dtLib.numFmtType(thisTypeMap[1], value), extraLine)
-	},
-	getDataTypes : (type) => ( typeof dtLib.typeMap[type] !== 'undefined' ) ? dtLib.typeMap[type] : dtLib.typeMap.default,
+	
+	getDataTypes : (type) => ( typeof ST.typeMap[type] !== 'undefined' ) ? ST.typeMap[type] : ST.typeMap.default,
 
-	checkBrand : (brand) => {
-		if ( typeof brand !== 'string' ) { return '' }
-		const testBrand = brand.toLowerCase().replace(/^brand_/, '').replace(/\.png|\.webp|\.dds/, '')
 
-		return dtLib.brandList.has(testBrand) ? testBrand : null
-	},
 	safeBrandFromRecord : ( brand, lookRecord, { extraHTML = null, width = '12vw' } = {} ) => {
 		if ( typeof lookRecord?.brands?.[brand]?.icon !== 'undefined' ) {
-			return dtLib.safeStaticImage(lookRecord.brands[brand].icon, { extraHTML : extraHTML, width : width })
+			return ST.safeStaticImage(lookRecord.brands[brand].icon, { extraHTML : extraHTML, width : width })
 		}
-		return dtLib.safeBrandImage(brand, { extraHTML : extraHTML, width : width })
+		return ST.safeBrandImage(brand, { extraHTML : extraHTML, width : width })
 	},
 	safeBrandImage : ( brand, { extraHTML = null, width = '12vw' } = {} ) => {
-		const testBrand = dtLib.checkBrand(brand)
+		const testBrand = ST.checkBrand(brand)
 		if ( ! testBrand && brand !== null && typeof brand !== 'undefined' ) { window.log.warning(`Missing Brand: ${brand}`, 'basegame_ui')}
-		return dtLib.safeStaticImage(testBrand ? `img/brand/brand_${testBrand}.webp` : null, { width : width, extraHTML : extraHTML })
+		return ST.safeStaticImage(testBrand ? `img/brand/brand_${testBrand}.webp` : null, { width : width, extraHTML : extraHTML })
 	},
 	safeDataImage : (imgData, { extraHTML = null, width = '12vw' } = {}) => {
 		if ( ! fsgUtil.onlyText(imgData) ) { return '' }
 
-		return dtLib.safeStaticImage(imgData.startsWith('data:') ? imgData : `img/baseCategory/${imgData}.webp`, { width : width, extraHTML : extraHTML })
+		return ST.safeStaticImage(imgData.startsWith('data:') ? imgData : `img/baseCategory/${imgData}.webp`, { width : width, extraHTML : extraHTML })
 	},
 	safeGameIcon : (icon, { width = '10vw' } = {}) =>
 		typeof icon !== 'string' ?
@@ -168,10 +146,7 @@ const dtLib = {
 		'' :
 		`${extraHTML !== null ? extraHTML : ''}<img class="mb-3 rounded-2" style="width: ${width}" src="${imgSrc}">`,
 	
-	doFillTypes      : (fillArray) => {
-		if ( typeof fillArray !== 'object' || !Array.isArray(fillArray) ) { return [] }
-		return fillArray.map((x) => `<fillType name="${x}"></fillType>`)
-	},
+
 	doJoints         : (joints, doesHave, isBase = true) => {
 		if ( typeof joints === 'undefined' ) { return '' }
 	
@@ -199,109 +174,19 @@ const dtLib = {
 		const sprayTypesHTML = []
 
 		for ( const thisType of sprayTypes ) {
-			const fillImages = dtLib.doFillTypes(thisType.fills)
-			sprayTypesHTML.push(`${fillImages.join('')} ${dtLib.numFmtMany(
+			const fillImages = ST.doFillTypes(thisType.fills)
+			sprayTypesHTML.push(`${fillImages.join('')} ${ST.numFmtMany(
 				thisType.width !== null ? thisType.width : defaultWidth,
 				_l(),
-				dtLib.unitCombo('width')
+				ST.unitCombo('width')
 			)}`)
 		}
 		return sprayTypesHTML.length === 0 ? null : sprayTypesHTML.join('<br>')
 	},
 
-	
-	numFmtMulti  : (amount, multi) => `<span class="me-1">${dtLib.numFmtNoFrac(amount * multi)}</span>`,
-	numFmtNoFrac : (amount) => Intl.NumberFormat(_l(), { maximumFractionDigits : 0 }).format(amount),
-	numFmtType : ( type, value ) => {
-		if ( typeof value === 'number' && value === 0 ) { return '' }
-		
-		if ( type === 'power' && Array.isArray(value) && value.length === 3 ) {
-			return dtLib.numFmtMany(value[2] ? value[0] : value.slice(0, 2), _l(), dtLib.unitCombo(type))
-		}
-		return dtLib.numFmtMany(value, _l(), dtLib.unitCombo(type))
-	},
 
-	numFmtMany : (value, locale, transArray, dashZeros = false) => {
-		if ( typeof value === 'undefined' || value === null ) { return '' }
 
-		const valueList  = typeof value === 'number' ? [value] : value
-		const separator   = valueList.length < 3 ? ' - ' : ', '
-		const returnText = []
 
-		for ( const thisValue of valueList ) {
-			if ( dashZeros && thisValue === 0 ) {
-				returnText.push('--')
-				continue
-			}
-			
-			const thisText = []
-
-			for ( const thisTrans of transArray ) {
-				const thisNumber = thisValue * thisTrans.factor
-				thisText.push(`${Intl.NumberFormat(locale, { maximumFractionDigits : thisTrans.precision }).format(thisNumber)} ${__(thisTrans.unit)}`)
-			}
-			returnText.push(thisText.join(' / '))
-		}
-
-		return returnText.join(separator)
-	},
-
-	default(value, { float = false, safe = 0 } = {}) {
-		const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
-		return !float ? parseInt(newValue) : parseFloat(newValue)
-	},
-
-	getInfo : (thisItem) => {
-		const thisData = {
-			fillLevel  : dtLib.default(thisItem.fillLevel),
-			hasPower   : dtLib.default(thisItem?.specs?.power),
-			maxSpeed   : dtLib.getMaxSpeed(thisItem?.specs?.maxspeed, thisItem?.motorInfo?.speed),
-			needPower  : dtLib.default(thisItem?.specs?.neededpower),
-			price      : dtLib.default(thisItem.price),
-			speedLimit : dtLib.default(thisItem?.speedLimit),
-			weight     : dtLib.default(thisItem.weight),
-			workWidth  : dtLib.default(thisItem?.specs?.workingwidth, { float : true }),
-		}
-		thisData.powerSpan = dtLib.getMinMaxHP(thisData.hasPower, thisItem?.motorInfo)
-		
-		if ( typeof thisItem.sprayTypes !== 'undefined' && thisItem.sprayTypes !== null && thisItem?.sprayTypes?.length !== 0 && thisData.workWidth === 0 ) {
-			for ( const thisWidth of thisItem.sprayTypes ) {
-				thisData.workWidth = Math.max(thisWidth.width, thisData.workWidth)
-			}
-		}
-		return thisData
-	},
-	getMaxSpeed : (specSpeed, motorSpeed) => {
-		const specSpeed_clean = dtLib.default(specSpeed)
-	
-		if ( specSpeed_clean > 0 ) { return specSpeed_clean }
-	
-		if ( typeof motorSpeed !== 'undefined' && motorSpeed !== null ) {
-			let thisMax = 0
-			for ( const thisSpeed of motorSpeed ) {
-				thisMax = Math.max(thisMax, thisSpeed)
-			}
-			return thisMax
-		}
-		return 0
-	},
-	getMinMaxHP     : (baseHP, motorInfo) => {
-		if ( !baseHP ) { return [0, 0, true] }
-		if ( !motorInfo ) { return [baseHP, 0, true] }
-
-		let trueMin = 10000
-		let trueMax = 0
-
-		for ( const thisHP of motorInfo.hp ) {
-			let thisMax = 0
-			for ( const thisHPEntry of thisHP.data ) {
-				thisMax = Math.max(thisMax, thisHPEntry.y)
-			}
-			trueMin = Math.min(trueMin, thisMax)
-			trueMax = Math.max(trueMax, thisMax)
-		}
-		return [trueMin, trueMax, trueMin === trueMax]
-	},
 
 	getCleanParentID  : ( parentFile ) => {
 		if ( typeof parentFile !== 'string' ) { return null }
@@ -309,50 +194,36 @@ const dtLib = {
 		return ( typeof client_BGData.records[attemptKey] !== 'undefined' ) ? attemptKey : null
 	},
 
-	iconChooser : (...iconArray) => {
-		for ( const testIcon of iconArray ) {
-			if ( typeof testIcon === 'string' ) {
-				if ( testIcon.startsWith('data:') ) { return testIcon }
-				if ( testIcon.startsWith('$data') ) {
-					const iconPointer = client_BGData.iconMap[testIcon.toLowerCase()]
-					const trueIcon    = client_BGData.records[iconPointer]?.icon
-					if ( typeof trueIcon === 'string' ) { return trueIcon }
-				}
-			}
-		}
-		return fsgUtil.iconMaker(null)
-		
-	},
+	
 
 	wrap : {
-		functions : ( functions ) => functions.map((x) => __(x, {skipIfNotBase : true})).join('<br>'),
 		item : ( itemID ) => {
 			const thisItem         = client_BGData.records[itemID]
-			const thisItemData     = dtLib.getInfo(thisItem)
+			const thisItemData     = ST.getInfo(thisItem)
 			let   dataItems        = null
-			const attemptKey       = dtLib.getCleanParentID(thisItem.parentFile)
+			const attemptKey       = ST.getCleanParentID(thisItem.parentFile)
 
 			if ( attemptKey !== null ) {
 				const attemptItem = client_BGData.records[attemptKey]
-				const newItemData = dtLib.getInfo(attemptItem)
-				dataItems = dtLib.getDataTypes(attemptItem.type).map((x) => dtLib.doDataType(x, newItemData[x])).join('')
+				const newItemData = ST.getInfo(attemptItem)
+				dataItems = ST.getDataTypes(attemptItem.type).map((x) => ST.doDataType(x, newItemData[x])).join('')
 			} else {
-				dataItems = dtLib.getDataTypes(thisItem.type).map((x) => dtLib.doDataType(x, thisItemData[x])).join('')
+				dataItems = ST.getDataTypes(thisItem.type).map((x) => ST.doDataType(x, thisItemData[x])).join('')
 			}
 			
 			return fsgUtil.useTemplate('store_item', {
-				brandString    : dtLib.safeBrandImage(thisItem.brand, { extraHTML : '<br>' }),
+				brandString    : ST.safeBrandImage(thisItem.brand, { extraHTML : '<br>' }),
 				dataItems      : dataItems,
 				dlc            : thisItem.dlcKey !== null ? thisItem.dlcKey : '',
 				hasParentFile  : attemptKey !== null ? 'notRealItem' : '',
-				iconString     : dtLib.safeDataImage(thisItem.icon),
+				iconString     : ST.safeDataImage(thisItem.icon),
 				name           : __(thisItem.name, { skipIfNotBase : true }),
 				page           : attemptKey !== null ? attemptKey : itemID,
 				showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
 			})
 		},
 		pRow  : (content) => `<div class="d-flex flex-wrap justify-content-center align-items-center">${content}</div>`,
-		pRowS : (icon, amount = '') => dtLib.wrap.pRow(`${icon}${amount}`),
+		pRowS : (icon, amount = '') => ST.wrap.pRow(`${icon}${amount}`),
 		row : (HTMLArray, extraClass = 'g-2')  =>
 			`<div class="row ${extraClass}">${ typeof HTMLArray !== 'object' ? HTMLArray : HTMLArray.join('') }</div>`,
 		single : ({ name = null, brand = null, icon = null, fsIcon = null, type = 'item', page = null, noTrans = false} = {}) =>
@@ -360,7 +231,7 @@ const dtLib = {
 				'<div class="col-2 text-center">',
 				'<div class="p-2 border rounded-3 h-100">',
 				`<a class="text-decoration-none text-white-50" href="?type=${type}&page=${page}">`,
-				`${dtLib.safeDataImage(icon)}${dtLib.safeBrandImage(brand)}${dtLib.safeGameIcon(fsIcon)}<br />`,
+				`${ST.safeDataImage(icon)}${ST.safeBrandImage(brand)}${ST.safeGameIcon(fsIcon)}<br />`,
 				`${__(name, { skipAlways : noTrans })}</a></div></div>`
 			].join(''),
 	},
@@ -376,32 +247,32 @@ const dtLib = {
 	
 			for ( const inputMix in thisProduction.inputs ) {
 				if ( inputMix !== 'no_mix' ) {
-					inputHTML.push(dtLib.wrap.pRow(
+					inputHTML.push(ST.wrap.pRow(
 						thisProduction.inputs[inputMix].map((x) =>
-							`${dtLib.numFmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}`
+							`${ST.numFmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}`
 						).join('<i class="text-info bi-distribute-horizontal mx-1"></i>')
 					))
 				}
 			}
 	
 			inputHTML.push(...thisProduction.inputs.no_mix.map((x) => {
-				return dtLib.wrap.pRowS(dtLib.numFmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
+				return ST.wrap.pRowS(ST.numFmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
 			}))
 	
 			if ( thisProduction.boosts.length !== 0 ) {
-				inputHTML.unshift(dtLib.wrap.pRow(thisProduction.boosts.map((x) =>
-					`<div class="d-flex align-items-center">${dtLib.numFmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}<span class="ms-1">(${x.boostFac * 100}%)</span></div>`
+				inputHTML.unshift(ST.wrap.pRow(thisProduction.boosts.map((x) =>
+					`<div class="d-flex align-items-center">${ST.numFmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}<span class="ms-1">(${x.boostFac * 100}%)</span></div>`
 				).join('<i class="text-info bi-plus-slash-minus mx-1"></i>')))
 			}
 
 			prodHTML.push(fsgUtil.useTemplate('prod_div', {
-				prodCost         : dtLib.numFmtNoFrac(thisProduction.cost),
+				prodCost         : ST.numFmtNoFrac(thisProduction.cost),
 				prodCycles       : thisProduction.cycles,
-				prodInputs       : inputHTML.join(dtLib.wrap.pRow('<i class="text-success bi-plus-lg"></i>')),
+				prodInputs       : inputHTML.join(ST.wrap.pRow('<i class="text-success bi-plus-lg"></i>')),
 				prodName         : __(thisProduction.name, {skipIfNotBase : true}),
 				prodOutput       : thisProduction.outputs.map((x) =>
-					dtLib.wrap.pRowS(dtLib.numFmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
-				).join(dtLib.wrap.pRow('<i class="text-success bi-plus-lg"></i>')),
+					ST.wrap.pRowS(ST.numFmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
+				).join(ST.wrap.pRow('<i class="text-success bi-plus-lg"></i>')),
 			}))
 		}
 		return prodHTML.join('')

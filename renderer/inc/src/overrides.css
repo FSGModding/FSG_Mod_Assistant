@@ -273,3 +273,148 @@ l10n[name="game_icon_lg"] i {
 	margin: -30px 0px;
 	font-size: 75px;
 }
+
+.badge-mod-broken {
+	background-color: var(--bs-danger-bg-subtle)!important;
+	border-color: var(--bs-danger)!important;
+}
+.badge-mod-collect {
+	background-color: var(--bs-pink)!important;
+}
+.badge-mod-depend {
+	background-color: var(--bs-danger-bg-subtle)!important;
+	border-color: var(--bs-danger-border-subtle)!important;
+}
+.badge-mod-depend_flag {
+	background-color: var(--bs-success-bg-subtle)!important;
+	border-color: var(--bs-success-border-subtle)!important;
+}
+.badge-mod-folder {
+	background-color: var(--bs-purple)!important;
+}
+.badge-mod-fs0 {
+	background-color: #340406!important;
+	border-color: #850f0f!important;
+	border-radius: .75em;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	background-image: var(--bs-gradient) !important;
+	transform: skew(-7deg, 0deg);
+}
+.badge-mod-fs11 {
+	background-color: #D95440!important;
+	border-color: #231F20!important;
+	border-radius: .75em;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	background-image: var(--bs-gradient) !important;
+	transform: skew(-7deg, 0deg);
+}
+.badge-mod-fs13 {
+	background-color: #D95440!important;
+	border-color: #231F20!important;
+	border-radius: .75em;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	background-image: var(--bs-gradient) !important;
+	transform: skew(-7deg, 0deg);
+}
+.badge-mod-fs15 {
+	background-color: #C65B2B!important;
+	border-color: #DD6420!important;
+	border-radius: .75em;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	background-image: var(--bs-gradient) !important;
+	transform: skew(-7deg, 0deg);
+}
+.badge-mod-fs17 {
+	background-color: #79B72D!important;
+	border-color: #8DE01B!important;
+	border-radius: .75em;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	background-image: var(--bs-gradient) !important;
+	transform: skew(-7deg, 0deg);
+}
+.badge-mod-fs19 {
+	background-color: #FF9200!important;
+	border-color: #FFB300!important;
+	border-radius: .75em;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	background-image: var(--bs-gradient) !important;
+	transform: skew(-7deg, 0deg);
+}
+.badge-mod-fs22 {
+	background-color: #0EB4F3!important;
+	border-color: #11C2F7!important;
+	border-radius: .75em;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	background-image: var(--bs-gradient) !important;
+	transform: skew(-7deg, 0deg);
+}
+.badge-mod-keys_bad {
+	background-color: var(--bs-danger-bg-subtle)!important;
+	border-color: var(--bs-danger-border-subtle)!important;
+}
+.badge-mod-keys_ok {
+	background-color: var(--bs-success-bg-subtle)!important;
+	border-color: var(--bs-success-border-subtle)!important;
+}
+.badge-mod-log {
+	background-color: var(--bs-blue)!important;
+	font-style: italic;
+}
+.badge-mod-malware {
+	background-color: var(--bs-yellow)!important;
+	border-color: var(--bs-warning-border-subtle)!important;
+}
+.badge-mod-map {
+	background-color: var(--bs-blue)!important;
+	font-style: italic;
+}
+.badge-mod-new {
+	background-color: var(--bs-gray-500)!important;
+	color: #444;
+	font-style: italic;
+}
+.badge-mod-nomp {
+	background-color: #bf8e5c!important;
+}
+.badge-mod-nonmh {
+	background-color: #6ca1a7!important;
+}
+.badge-mod-notmod {
+	background-color: var(--bs-blue)!important;
+	font-style: italic;
+}
+.badge-mod-pconly {
+	background-color: #bf8e5c!important;
+}
+.badge-mod-problem {
+	background-color: var(--bs-warning-bg-subtle)!important;
+	border-color: var(--bs-warning)!important;
+}
+.badge-mod-recent {
+	background-color: var(--bs-gray-500)!important;
+	color: #444;
+	font-style: italic;
+}
+.badge-mod-require {
+	background-color: var(--bs-success-bg-subtle)!important;
+	border-color: var(--bs-success-border-subtle)!important;
+}
+.badge-mod-savegame {
+	background-color: var(--bs-blue)!important;
+	font-style: italic;
+}
+.badge-mod-update {
+	background-color: var(--bs-gray-500)!important;
+	color: #444;
+	font-style: italic;
+}
+.badge-mod-web {
+	background-color: #6ca1a7!important;
+}

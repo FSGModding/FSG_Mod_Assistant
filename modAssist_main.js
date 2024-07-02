@@ -373,40 +373,42 @@ ipcMain.handle('i18n:lang', (_e, newValue = null) => {
 ipcMain.handle('i18n:get', (_e, key) => serveIPC.l10n.getText(key))
 // END: l10n Operations
 
+ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(thisMod) })
 
-// Detail window operation
 function openDetailWindow(thisMod) {
-	const thisUUID  = thisMod.uuid
-	const slowStore = thisMod.modDesc.storeItems > 0 && (thisMod.fileDetail.isFolder || !serveIPC.storeCacheDetail.has(thisUUID))
-	serveIPC.windowLib.createNamedWindow(
-		'detail',
-		{ selected : thisMod, hasStore : slowStore },
-		async () => {
-			try {
-				if ( thisMod.modDesc.storeItems > 0 ) {
-					if ( !thisMod.fileDetail.isFolder && serveIPC.storeCacheDetail.has(thisUUID) ) {
-						const thisCache = serveIPC.storeCacheDetail.get(thisUUID)
-						serveIPC.storeCacheDetail.set(thisUUID, { // refresh date
-							date    : new Date(),
-							results : thisCache.results,
-						})
-						serveIPC.windowLib.sendToValidWindow('detail', 'fromMain_lookRecord', thisCache.results, serveIPC.l10n.currentUnits, serveIPC.l10n.currentLocale)
-						serveIPC.log.info('mod-look', 'Loaded details from cache', thisUUID)
-						return
-					}
-					doModLook_thread(thisMod, thisUUID)
-				}
-			} catch (err) {
-				serveIPC.log.notice('mod-look', 'Failed to load store items', err)
-			}
-		}
-	)
+	return serveIPC.windowLib.createNamedMulti('detail', { queryString : `mod=${thisMod}` })
 }
-ipcMain.on('toMain_openModDetail', (_, thisMod) => {
-	serveIPC.windowLib.createNamedMulti('detail', { queryString : `mod=${thisMod}` })
-})
 
-ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.modColUUIDToRecord(fullUUID))
+async function getStoreItems(fullUUID) {
+	const thisPromise   = Promise.withResolvers()
+	const thisMod       = serveIPC.modCollect.modColUUIDToRecord(fullUUID)
+	const thisCacheUUID = thisMod.uuid
+
+	if ( !thisMod.fileDetail.isFolder && serveIPC.storeCacheDetail.has(thisCacheUUID) ) {
+		const thisCache = serveIPC.storeCacheDetail.get(thisCacheUUID)
+		serveIPC.storeCacheDetail.set(thisCacheUUID, { // refresh date
+			date    : new Date(),
+			results : thisCache.results,
+		})
+		thisPromise.resolve(thisCache.results)
+		serveIPC.log.info('mod-look', 'Loaded details from cache', thisCacheUUID)
+	} else {
+		modStoreItems({
+			thisMod : thisMod,
+			cacheUUID : thisCacheUUID,
+			thisPromise : thisPromise,
+		})
+	}
+
+	return thisPromise.promise
+}
+
+
+ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
+ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.renderMod(fullUUID))
+ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConflict() )
+ipcMain.handle('collect:malware', () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
+
 
 // ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(serveIPC.modCollect.modColUUIDToRecord(thisMod)) })
 // END : Detail window operation
@@ -439,7 +441,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 	if ( !isSave && !notMod && !isLog ) {
 		template.push(funcLib.menu.iconL10n(
 			'context_mod_detail',
-			() => { openDetailWindow(thisMod) },
+			() => { openDetailWindow(modID) },
 			'modDetail'
 		))
 	} else if ( isLog ) {
@@ -709,6 +711,7 @@ function toggleMiniWindow () {
 // Preferences operations
 ipcMain.handle('settings:get', (_e, key) => serveIPC.storeSet.get(key) )
 ipcMain.handle('settings:theme', () => serveIPC.windowLib.themeCurrentColor )
+ipcMain.handle('settings:units', () => serveIPC.l10n.currentUnits )
 
 
 ipcMain.on('toMain_getPref', (event, name)    => { event.returnValue = serveIPC.storeSet.get(name) })
@@ -960,7 +963,7 @@ ipcMain.on('toMain_runUpdateInstall', () => {
 	}
 })
 ipcMain.on('toMain_populateClipboard', (_, text) => { clipboard.writeText(text, 'selection') })
-
+ipcMain.handle('win:clipboard', (_e, value) => clipboard.writeText(value, 'selection') )
 
 // send status flags to main and mini
 function refreshTransientStatus() {
@@ -1191,46 +1194,50 @@ app.on('window-all-closed', () => {	if (process.platform !== 'darwin') { app.qui
 // THREADS
 
 // ModLook Threading
-function doModLook_response(m, thisMod, thisUUID) {
-	if ( Object.hasOwn(m, 'type') ) {
-		switch (m.type) {
-			case 'log' :
-				serveIPC.log[m.level](`worker-thread-${m.pid}`, m.data.join(' '))
-				break
-			case 'modLook' : {
-				for ( const logLine of m.logLines.items ) {
-					serveIPC.log[logLine[0]](m.logLines.group, logLine[1])
-				}
-
-				if ( typeof m.modLook === 'undefined' ) {
-					serveIPC.log.danger(`worker-thread-${m.pid}`, 'Unable to read mod file/folder!')
-					break
-				}
-
-				if ( ! thisMod.isFolder ) {
-					serveIPC.storeCacheDetail.set(thisUUID, {
-						date    : new Date(),
-						results : m.modLook,
-					})
-				}
-				serveIPC.windowLib.sendToValidWindow('detail', 'fromMain_lookRecord', m.modLook, serveIPC.l10n.currentUnits, serveIPC.l10n.currentLocale)
-
-				serveIPC.log.debug(`worker-thread-${m.pid}`, `To main - modLook :: ${Object.keys(m.modLook.items).length} items`)
-				break
-			}
-			default :
-				break
-		}
-	}
-}
-function doModLook_thread(thisMod, thisUUID) {
+function modStoreItems({ thisMod = null, cacheUUID = null, thisPromise = null} = {}) {
 	const lookThread = require('node:child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
 		23,
 		serveIPC.decodePath,
 		serveIPC.l10n.deferCurrentLocale(),
 		serveIPC.__('unit_hp')
 	])
-	lookThread.on('message', (m) => { doModLook_response(m, thisMod, thisUUID) })
+	lookThread.on('message', (m) => {
+		if ( Object.hasOwn(m, 'type') ) {
+			switch (m.type) {
+				case 'log' :
+					serveIPC.log[m.level](`worker-thread-${m.pid}`, m.data.join(' '))
+					break
+				case 'modLook' : {
+					for ( const logLine of m.logLines.items ) {
+						serveIPC.log[logLine[0]](m.logLines.group, logLine[1])
+					}
+	
+					if ( typeof m.modLook === 'undefined' ) {
+						serveIPC.log.danger(`worker-thread-${m.pid}`, 'Unable to read mod file/folder!')
+						break
+					}
+	
+					if ( ! thisMod.isFolder ) {
+						serveIPC.storeCacheDetail.set(cacheUUID, {
+							date    : new Date(),
+							results : m.modLook,
+						})
+					}
+					
+					thisPromise.resolve(m.modLook)
+					serveIPC.log.debug(`worker-thread-${m.pid}`, `To main - modLook :: ${Object.keys(m.modLook.items).length} items`)
+					break
+				}
+				case 'modLookFail' :
+					thisPromise.reject(m.error)
+					break
+				default :
+					break
+			}
+		}
+		// doModLook_response(m, thisMod, thisUUID) })
+	})
+
 	lookThread.send({
 		type : 'look',
 		data : {

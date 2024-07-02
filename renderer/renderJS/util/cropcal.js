@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // Crop Calendar Rendering
 
-/* global __, fsgUtil */
+/* global __ */
 
 /* eslint-disable sort-keys */
 const knownCrops = {
@@ -40,11 +40,12 @@ const knownCrops = {
 
 const nameMonth = ['mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb']
 
-function getCropInfo(name) {
+async function getCropInfo(name) {
 	if ( ! Object.hasOwn(knownCrops, name) ) {
 		return `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
 	}
-	return `<fillType style="font-size: calc(1.35rem + .6vw)" name="${knownCrops[name].icon}"></fillType> ${__(knownCrops[name].name)}`
+	const theName = await __(knownCrops[name].name)
+	return `<fillType style="font-size: calc(1.35rem + .6vw)" name="${knownCrops[name].icon}"></fillType> ${theName}`
 }
 
 function makeTD(classes, text = '', isHeader = false, span = 1, rows = 1) {
@@ -60,8 +61,7 @@ function orderLine(lineArray, isSouth) {
 
 const c2f = (value) => Math.floor((value * 9/5) + 32)
 
-function clientMakeCropCalendar(elementID, theData, isSouth = false, weather = null) {
-	const theTable      = fsgUtil.byId(elementID)
+async function clientMakeCropCalendar(theData, isSouth = false, weather = null) {
 	const tableLines    = []
 	let   evenRow       = false
 
@@ -109,7 +109,8 @@ function clientMakeCropCalendar(elementID, theData, isSouth = false, weather = n
 					'text-white',
 					'pe-2'
 				],
-				getCropInfo(crop.name),
+				// eslint-disable-next-line no-await-in-loop
+				await getCropInfo(crop.name),
 				false,
 				1,
 				2
@@ -148,5 +149,5 @@ function clientMakeCropCalendar(elementID, theData, isSouth = false, weather = n
 		}
 	}
 
-	theTable.innerHTML = tableLines.join('')
+	return tableLines.join('')
 }
