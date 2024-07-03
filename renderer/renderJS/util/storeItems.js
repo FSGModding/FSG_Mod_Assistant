@@ -6,7 +6,9 @@
 
 // FSG Mod Assist Utilities (detail windows)
 
-/* global  client_BGData, I18N, locale */ //Chart,
+/* global client_BGData, I18N, DATA, locale, Chart, MA */
+
+const _f = (type, width = '2rem') => `<fillType style="font-size: ${width}" name="${type}"></fillType>`
 
 const NUM = {
 	default(value, { float = false, safe = 0 } = {}) {
@@ -240,7 +242,7 @@ const ST = {
 				}
 			}
 		}
-		return 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 903.2 904.2\'%3E%3Cpath d=\'M461.6 21a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2Zm-313 673.4a387 387 0 0 1-76.4-231.8 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114A386.9 386.9 0 0 1 744 194.7L148.6 694.4ZM737 737.9a388 388 0 0 1-275.3 114 386.9 386.9 0 0 1-279.1-117.8l595-499.3A387.5 387.5 0 0 1 851 462.6a386.9 386.9 0 0 1-114 275.3Z\'/%3E%3Cpath fill=\'%23711\' d=\'M441.6 0a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2ZM129 674a387.4 387.4 0 0 1-76.9-232.4 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114 386.9 386.9 0 0 1 283 122L129.2 674Zm587.8 43a388 388 0 0 1-275.3 114A386.9 386.9 0 0 1 163 713.6l595-499.1a387 387 0 0 1 73 227A386.9 386.9 0 0 1 717 717Z\'/%3E%3C/svg%3E'
+		return 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'-250 -250 1403.2 1404.2\'%3E%3Cpath style=\'fill: %23771111; filter: drop-shadow(10px 10px 5px rgb(0 0 0 / 0.4));\' opacity=\'0.3\' d=\'M441.6 0a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2ZM129 674a387.4 387.4 0 0 1-76.9-232.4 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114 386.9 386.9 0 0 1 283 122L129.2 674Zm587.8 43a388 388 0 0 1-275.3 114A386.9 386.9 0 0 1 163 713.6l595-499.1a387 387 0 0 1 73 227A386.9 386.9 0 0 1 717 717Z\' /%3E%3C/svg%3E'
 	},
 	
 
@@ -314,5 +316,245 @@ const ST = {
 		return sprayTypesHTML.length === 0 ? null : sprayTypesHTML.join('<br>')
 	},
 	
+
+	markupChart : (thisUUID) => {
+		return [
+			`<nav><div class="nav nav-tabs" id="${thisUUID}_nav-tab" role="tablist">`,
+			...ST.markupChartButtons(thisUUID),
+			'</div></nav>',
+			`<div class="tab-content" id="${thisUUID}_nav-tabContent">`,
+			...ST.markupChartPanes(thisUUID),
+			'</div>'
+		].join('')
+	},
+	markupChartButtons : (uuid) => {
+		return [
+			{ active : true, id : 'hp',  icon : 'engine'},
+			{ active : false, id : 'kph', icon : 'speed'},
+			{ active : false, id : 'mph', icon : 'speed'},
+		].map((x) => `<button class="nav-link ${x.active ? 'active' : ''}" id="${uuid}_${x.id}_tab" data-bs-toggle="tab" data-bs-target="#${uuid}_${x.id}_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-${x.icon}"></i><l10n name="unit_${x.id}"></l10n></button>`)
+	},
+	markupChartPanes : (uuid) => {
+		return [
+			{ active : true, id : 'hp'},
+			{ active : false, id : 'kph'},
+			{ active : false, id : 'mph'},
+		].map((x) => `<div class="tab-pane fade ${x.active ? 'show active' : ''}" id="${uuid}_${x.id}_graph" role="tabpanel"><canvas id="${uuid}_canvas_${x.id}" ></canvas></div>`)
+	},
+	markupChartScripts : (thisItem, thisItemUUID, chartUnits) => {
+		return async () => {
+			new Chart(
+				MA.byId(`${thisItemUUID}_canvas_hp`),
+				{
+					type : 'line',
+					data : {
+						datasets : [
+							...thisItem.motorInfo.hp,
+						],
+					},
+					options : {
+						interaction : {
+							intersect : false,
+							mode      : 'dataset',
+						},
+						plugins : {
+							legend     : { display : false },
+							tooltip    : {
+								bodyAlign      : 'right',
+								bodyFontFamily : 'courier',
+								callbacks      : {
+									label : (context) => `${context.parsed.y}${chartUnits.unit_hp} @ ${context.parsed.x} ${chartUnits.unit_rpm}`,
+								},
+								mode           : 'dataset',
+								titleAlign     : 'center',
+							},
+						},
+						scales  : {
+							x : {
+								display : true,
+								title   : {
+									text    : chartUnits.unit_rpm,
+									display : true,
+								},
+								type    : 'linear',
+							},
+							y : {
+								
+								display  : true,
+								position : 'left',
+								title    : {
+									text    : chartUnits.unit_hp,
+									display : true,
+								},
+								type     : 'linear',
+							},
+						},
+						stacked : false,
+					},
+				}
+			)
+			new Chart(
+				MA.byId(`${thisItemUUID}_canvas_kph`),
+				{
+					type : 'line',
+					data : {
+						datasets : [
+							...thisItem.motorInfo.kph,
+						],
+					},
+					options : {
+						interaction : {
+							intersect : false,
+							mode      : 'index',
+						},
+						plugins : {
+							legend     : { display : false },
+							tooltip    : {
+								bodyAlign      : 'right',
+								bodyFontFamily : 'courier',
+								callbacks      : {
+									label : (context) => `${context.dataset.label} : ${context.parsed.y} ${chartUnits.unit_kph}`,
+									title : (context) => `@ ${context[0].label} ${chartUnits.unit_rpm}`,
+								},
+								mode           : 'index',
+								titleAlign     : 'center',
+							},
+						},
+						scales  : {
+							x : {
+								display : true,
+								title   : {
+									text    : chartUnits.unit_rpm,
+									display : true,
+								},
+								type    : 'linear',
+							},
+							y : {
+								
+								display  : true,
+								position : 'left',
+								title    : {
+									text    : chartUnits.unit_kph,
+									display : true,
+								},
+								type     : 'linear',
+							},
+						},
+						stacked : false,
+					},
+				}
+			)
+			new Chart(
+				MA.byId(`${thisItemUUID}_canvas_mph`),
+				{
+					type : 'line',
+					data : {
+						datasets : [
+							...thisItem.motorInfo.mph,
+						],
+					},
+					options : {
+						interaction : {
+							intersect : false,
+							mode      : 'index',
+						},
+						plugins : {
+							legend     : { display : false },
+							tooltip    : {
+								bodyAlign      : 'right',
+								bodyFontFamily : 'courier',
+								callbacks      : {
+									label : (context) => `${context.dataset.label} : ${context.parsed.y} ${chartUnits.unit_mph}`,
+									title : (context) => `@ ${context[0].label} ${chartUnits.unit_rpm}`,
+								},
+								mode           : 'index',
+								titleAlign     : 'center',
+							},
+						},
+						scales  : {
+							x : {
+								display : true,
+								title   : {
+									text    : chartUnits.unit_rpm,
+									display : true,
+								},
+								type    : 'linear',
+							},
+							y : {
+								
+								display  : true,
+								position : 'left',
+								title    : {
+									text    : chartUnits.unit_mph,
+									display : true,
+								},
+								type     : 'linear',
+							},
+						},
+						stacked : false,
+					},
+				}
+			)
+		}
+	},
+
+	markupProductions : (prodRecords) => {
+		if ( typeof prodRecords === 'undefined' || prodRecords === null ) { return ''}
+		const prodNodes = []
 	
+		for ( const thisProduction of prodRecords ) {
+			const cycleMultiplier = thisProduction.cycles
+	
+			const inputHTML = []
+	
+			for ( const inputMix in thisProduction.inputs ) {
+				if ( inputMix !== 'no_mix' ) {
+					inputHTML.push(ST.markupRow(
+						thisProduction.inputs[inputMix].map((x) =>
+							`${NUM.fmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}`
+						).join('<i class="text-info bi-distribute-horizontal mx-1"></i>')
+					))
+				}
+			}
+	
+			inputHTML.push(...thisProduction.inputs.no_mix.map((x) => {
+				return ST.markupRowSinglet(NUM.fmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
+			}))
+	
+			if ( thisProduction.boosts.length !== 0 ) {
+				inputHTML.unshift(ST.markupRow(thisProduction.boosts.map((x) =>
+					`<div class="d-flex align-items-center">${NUM.fmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}<span class="ms-1">(${x.boostFac * 100}%)</span></div>`
+				).join('<i class="text-info bi-plus-slash-minus mx-1"></i>')))
+			}
+
+			let nameString = thisProduction.name
+
+			if ( thisProduction.params !== null ) {
+				const paramArray = thisProduction.params.split('|')
+				let   matchNum = -1
+				nameString = nameString.replace(/%s/g, () => {
+					matchNum++
+					return paramArray[matchNum] || '%s'
+				})
+			}
+
+			nameString = nameString.replace(/\$l10n_\w+/g, (match) => {
+				I18N.defer(match)
+			})
+
+			prodNodes.push(DATA.templateEngine('prod_div', {
+				prodCost         : NUM.fmtNoFrac(thisProduction.cost),
+				prodCycles       : thisProduction.cycles,
+				prodInputs       : inputHTML.join(ST.markupRow('<i class="text-success bi-plus-lg"></i>')),
+				prodName         : nameString,
+				prodOutput       : thisProduction.outputs.map((x) =>
+					ST.markupRowSinglet(NUM.fmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
+				).join(ST.markupRow('<i class="text-success bi-plus-lg"></i>')),
+			}))
+		}
+		return prodNodes
+	},
+
+	markupRow  : (content) => `<div class="d-flex flex-wrap justify-content-center align-items-center">${content}</div>`,
+	markupRowSinglet : (icon, amount = '') => ST.markupRow(`${icon}${amount}`),
 }

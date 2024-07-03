@@ -4,13 +4,13 @@
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
 /* eslint complexity: ["error", 25] */
-/* global DATA, MA, ST, I18N, __, ft_doReplace, clientGetKeyMapSimple, clientGetKeyMap, clientMakeCropCalendar, client_BGData */
+/* global DATA, MA, ST, NUM, I18N, __, ft_doReplace, clientGetKeyMapSimple, clientGetKeyMap, clientMakeCropCalendar, client_BGData */
 
 let modName = ''
 let lookItemData = {}
 let lookItemMap  = {}
 let comboItemMap = {}
-// let i18nUnits    = null
+let i18nUnits    = null
 let locale       = 'en'
 
 
@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		modName   = thisMod.fileDetail.shortName
 
 		locale    = await window.i18n.lang()
-		// i18nUnits = await window.settings.units()
+		i18nUnits = await window.settings.units()
 
 		const basicPromises = [
 			step_table(thisMod),
@@ -44,7 +44,8 @@ window.addEventListener('DOMContentLoaded', () => {
 			]
 
 			MA.byIdHTML('storeitems', '')
-			MA.byId('store_div').clsShow(storeInfo.items.length !== 0)
+
+			MA.byId('store_div').clsShow(Object.keys(storeInfo.items).length !== 0)
 
 			for ( const [storeItemFile, thisItem] of Object.entries(storeInfo.items) ) {
 				if ( thisItem.masterType === 'vehicle' ) {
@@ -59,23 +60,27 @@ window.addEventListener('DOMContentLoaded', () => {
 						combos
 					))
 				} else if ( thisItem.masterType === 'placeable' ) {
-					// storePromises.push(subStep_placeable(thisItem, thisItemUUID))
+					storePromises.push(subStep_placeable(
+						thisItem,
+						storeInfo.icons[storeItemFile]
+					))
 				}
 			}
 
 			basicPromises.push(...storePromises)
-		} catch {
-			// console.log(`UNABLE TO LOAD STORE INFO :: ${err}`)
+		} finally {
+			Promise.allSettled(basicPromises).then((results) => {
+				for ( const thisResult of results ) {
+					if ( thisResult.status === 'rejected' ) {
+						window.log.log('Issue with page build', thisResult.reason.toString())
+					}
+				}
+				ft_doReplace()
+				MA.byId('loading-spinner').clsHide()
+			})
 		}
-
-		
-		
-
-		Promise.allSettled(basicPromises).then(() => {
-			ft_doReplace()
-			MA.byId('loading-spinner').clsHide()
-		})
-		
+	}).catch((err) => {
+		window.log.error('page build error',  err.message, `\n${err.stack}`)
 	})
 
 	for ( const element of MA.query('.inset-block-header-show-hide l10n') ) {
@@ -144,7 +149,6 @@ async function step_problems(thisMod) {
 				...await subStep_issues(thisMod),
 				...await subStep_binds(bindingIssue, locale),
 			]).then((value) => {
-				console.log(value)
 				const theseIssues = value.map((item) => `<tr class="py-2"><td class="px-2">${DATA.checkX(0, false)}</td><td>${item.value}}</td></tr>`)
 				MA.byIdHTML('problems', `<table class="table table-borderless mb-0">${theseIssues.join('')}</table>`)
 			})
@@ -310,6 +314,7 @@ async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, c
 	const brandImgSRC  = ST.resolveBrand(brands?.[thisItem.brand]?.icon, thisItem.brand)
 	const fillImages   = ST.markupFillTypes(thisItem.fillTypes)
 	const sprayTypes   = ST.markupSprayTypes(thisItem?.sprayTypes, thisItemData.workWidth)
+	const chartHTML    = MA.showTestValueBool(thisItem.motorInfo) ? ST.markupChart(thisUUID) : ''
 
 	const thisItemDataHTML = ST.typeDataOrder.map((x) => ST.markupDataType(x, thisItemData[x]))
 	
@@ -363,6 +368,7 @@ async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, c
 		itemTitle : thisItem.type,
 		typeDesc  : I18N.defer(thisItem.typeDesc),
 
+		chartData : chartHTML,
 		itemData  : thisItemDataHTML.join(''),
 	}, {
 		'vehicle-info-parent' : thisUUID,
@@ -383,13 +389,53 @@ async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, c
 
 	MA.byIdAppend('storeitems', infoDivNode)
 
-	// if ( thisItem.motorInfo !== null ) {
-	// 	storeItemsJS.push(dtLib.doChart(thisItem, thisItemUUID, chartUnits))
-	// }
-
-	// console.log(thisItemData)
+	if ( MA.showTestValueBool(thisItem.motorInfo) ) {
+		ST.markupChartScripts(thisItem, thisUUID, i18nUnits)()
+	}
 }
 
+async function subStep_placeable(thisItem, thisIcon) {
+	const fillImages       = ST.markupFillTypes(thisItem.silo.types)
+	const thisItemIcon     = ST.resolveIcon(thisIcon, thisItem.icon)
+	const thisItemDataHTML = []
+
+	thisItemDataHTML.push(
+		ST.markupDataType('price', NUM.default(thisItem.price)),
+		ST.markupDataType('income', NUM.default(thisItem.incomePerHour)),
+		ST.markupDataType('objects', NUM.default(thisItem.objectStorage)),
+		ST.markupDataType(
+			'fillLevel',
+			NUM.default(thisItem?.silo?.capacity),
+			fillImages.length !== 0 ? fillImages.join('') : null
+		),
+		ST.markupDataType('bees', NUM.default(thisItem.beehive.radius))
+	)
+	
+	for ( const husbandType of ST.husbandTestTypes ) {
+		if ( MA.showTestValueBool(thisItem.husbandry.type, husbandType) ) {
+			thisItemDataHTML.push(ST.markupDataRow(`fill-${husbandType.toLowerCase()}`, thisItem.husbandry.capacity))
+		}
+	}
+	
+	const infoDivNode = DATA.templateEngine('place_div', {
+		category  : I18N.defer(thisItem.category),
+		functions : ST.markupFunctions(thisItem.functions),
+		iconImage : `<img src="${thisItemIcon}" class="img-fluid store-icon-image">`,
+		itemName  : I18N.defer(thisItem.name),
+		itemTitle : thisItem.type,
+		placeData : thisItemDataHTML.join(''),
+	})
+
+	if ( MA.showTestValueBool(thisItem?.productions) ) {
+		const prodLines = ST.markupProductions(thisItem?.productions)
+		const parentElement = infoDivNode.querySelector('.prodLines')
+		for ( const element of prodLines ) {
+			parentElement.appendChild(element)
+		}
+	}
+
+	MA.byIdAppend('storeitems', infoDivNode)
+}
 
 function showHideClicker(e) {
 	const isShow      = e.target.classList.contains('section_show')

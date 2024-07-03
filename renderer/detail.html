@@ -44,7 +44,7 @@
 		.prodIcon   { color:#28a5c8; }
 		.prodIconLG { color:#28a5c8; font-size: 120%; }
 
-		.inset-vehicle-block .inset-block-blurb-detail {
+		.inset-vehicle-block .inset-block-blurb-detail, .inset-placable-block .inset-block-blurb-detail  {
 			text-align: start;
 			margin-top: -0.75rem;
 		}
@@ -274,19 +274,7 @@
 					</div>
 					<div class="combo-item-list"></div>
 				</div>
-
-				<!-- <nav class="{{showGraph}}">
-					<div class="nav nav-tabs" id="{{uuid}}_nav-tab" role="tablist">
-						<button class="nav-link active" id="{{uuid}}_hp_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_hp_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-engine"></i><l10n name="unit_hp"></l10n></button>
-						<button class="nav-link" id="{{uuid}}_kph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_kph_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-speed"></i><l10n name="unit_kph"></l10n></button>
-						<button class="nav-link" id="{{uuid}}_mph_tab" data-bs-toggle="tab" data-bs-target="#{{uuid}}_mph_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-speed"></i><l10n name="unit_mph"></l10n></button>
-					</div>
-				</nav>
-				<div class="tab-content {{showGraph}}" id="{{uuid}}_nav-tabContent">
-					<div class="tab-pane fade show active" id="{{uuid}}_hp_graph" role="tabpanel"><canvas id="{{uuid}}_canvas_hp" ></canvas></div>
-					<div class="tab-pane fade" id="{{uuid}}_kph_graph" role="tabpanel" ><canvas id="{{uuid}}_canvas_kph" ></canvas></div>
-					<div class="tab-pane fade" id="{{uuid}}_mph_graph" role="tabpanel" ><canvas id="{{uuid}}_canvas_mph" ></canvas></div>
-				</div> -->
+				<template-var>chartData</template-var>
 			</div>
 		</div>
 	</div></div>
@@ -295,14 +283,14 @@
 <template id="prod_div">
 	<div class="row border-top mt-2">
 		<div class="col-3 text-center align-self-top border-end">
-			<div class="row py-2"><div class="col">{{prodName}}</div></div>
-			<div class="row py-2 align-items-center"><div class="col-6"><i style="font-size: 1.5rem" class="fsico-look-prod-cycle"></i></div><div class="col-6">{{prodCycles}}</div></div>
-			<div class="row py-2 align-items-center"><div class="col-6"><i style="font-size: 1.5rem" class="fsico-look-price"></i></div><div class="col-6">{{prodCost}}</div></div>
+			<div class="row py-2"><div class="col"><template-var>prodName</template-var></div></div>
+			<div class="row py-2 align-items-center"><div class="col-6"><i style="font-size: 1.5rem" class="fsico-look-prod-cycle"></i></div><div class="col-6"><template-var>prodCycles</template-var></div></div>
+			<div class="row py-2 align-items-center"><div class="col-6"><i style="font-size: 1.5rem" class="fsico-look-price"></i></div><div class="col-6"><template-var>prodCost</template-var></div></div>
 		</div>
 		<div class="col-9 text-center align-self-center">
 			<div class="row align-items-center"><!-- inputs -->
 				<div class="col-10">
-					{{prodInputs}}
+					<template-var>prodInputs</template-var>
 				</div>
 				<div class="col-2">
 					<i style="font-size: 1.5rem" class="fsico-look-prod-input"></i>
@@ -310,7 +298,7 @@
 			</div>
 			<div class="row border-top align-items-center pt-2 mt-2"><!-- outputs -->
 				<div class="col-10">
-					{{prodOutput}}
+					<template-var>prodOutput</template-var>
 				</div>
 				<div class="col-2">
 					<i style="font-size: 1.5rem" class="fsico-look-prod-output"></i>
@@ -321,23 +309,23 @@
 </template>
 
 <template id="place_div">
-	<div class="col-12 inset-block" id="{{uuid}}"><div>
-		<span class="inset-block-header" name="detail_dev_info">{{itemName}}</span>
+	<div class="col-12 inset-block inset-placable-block"><div>
+		<span class="inset-block-header" name="detail_dev_info"><template-var>itemName</template-var></span>
 		<span class="inset-block-blurb-detail">
-			<small class="fst-italic fw-normal">{{itemTitle}}</small>
+			<small class="fst-italic fw-normal"><template-var>itemTitle</template-var></small>
 			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fw-bold">{{category}}</small>
+			<small class="fw-bold"><template-var>category</template-var></small>
 		</span>
 		<div class="inset-body">
 			<div class="row mx-2">
 				<div class="col-5 my-auto mx-auto">
-					{{iconImage}}
+					<div class="store-icon-image"><template-var>iconImage</template-var></div>
 				</div>
 				<div class="col-7">
-					{{placeData}}
-					{{prodLines}}
+					<template-var>placeData</template-var>
+					<div class="prodLines"></div>
 				</div>
-				<div class="col-12 pt-2"><p class="text-center">{{functions}}</p></div>
+				<div class="col-12 pt-2"><p class="text-center"><template-var>functions</template-var></p></div>
 			</div>
 		</div>
 	</div></div>
