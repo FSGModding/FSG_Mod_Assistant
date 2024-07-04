@@ -32,42 +32,42 @@ const filePaths = [
 ]
 
 const dlcPaths = {
-	'agiPack' : [
-		path.join(dlcBasePath, 'agiPath', 'vehicles'),
-		path.join(dlcBasePath, 'agiPath', 'placeables'),
-		path.join(dlcBasePath, 'agiPath', 'objects')
-	],
-	'antonioCarraroPack' : [
-		path.join(dlcBasePath, 'antonioCarraroPack', 'vehicles'),
-	],
-	'claasSaddleTracPack' : [
-		path.join(dlcBasePath, 'claasSaddleTracPack', 'vehicles'),
-	],
-	'eroPack' : [
-		path.join(dlcBasePath, 'eroPack', 'vehicles'),
-	],
-	'forestry' : [
-		path.join(dlcBasePath, 'forestry', 'vehicles'),
-		path.join(dlcBasePath, 'forestry', 'placeables'),
-		path.join(dlcBasePath, 'forestry', 'objects')
-	],
-	'goeweilPack' : [
-		path.join(dlcBasePath, 'goeweilPack', 'vehicles'),
-	],
-	'hayAndForagePack' : [
-		path.join(dlcBasePath, 'hayAndForagePack', 'vehicles'),
-	],
-	'kubotaPack' : [
-		path.join(dlcBasePath, 'kubotaPack', 'vehicles'),
-	],
+	// 'agiPack' : [
+	// 	path.join(dlcBasePath, 'agiPath', 'vehicles'),
+	// 	path.join(dlcBasePath, 'agiPath', 'placeables'),
+	// 	path.join(dlcBasePath, 'agiPath', 'objects')
+	// ],
+	// 'antonioCarraroPack' : [
+	// 	path.join(dlcBasePath, 'antonioCarraroPack', 'vehicles'),
+	// ],
+	// 'claasSaddleTracPack' : [
+	// 	path.join(dlcBasePath, 'claasSaddleTracPack', 'vehicles'),
+	// ],
+	// 'eroPack' : [
+	// 	path.join(dlcBasePath, 'eroPack', 'vehicles'),
+	// ],
+	// 'forestry' : [
+	// 	path.join(dlcBasePath, 'forestry', 'vehicles'),
+	// 	path.join(dlcBasePath, 'forestry', 'placeables'),
+	// 	path.join(dlcBasePath, 'forestry', 'objects')
+	// ],
+	// 'goeweilPack' : [
+	// 	path.join(dlcBasePath, 'goeweilPack', 'vehicles'),
+	// ],
+	// 'hayAndForagePack' : [
+	// 	path.join(dlcBasePath, 'hayAndForagePack', 'vehicles'),
+	// ],
+	// 'kubotaPack' : [
+	// 	path.join(dlcBasePath, 'kubotaPack', 'vehicles'),
+	// ],
 	'premiumExpansion' : [
 		path.join(dlcBasePath, 'premiumExpansion', 'vehicles'),
 		path.join(dlcBasePath, 'premiumExpansion', 'placeables'),
 		path.join(dlcBasePath, 'premiumExpansion', 'objects')
 	],
-	'vermeerPack' : [
-		path.join(dlcBasePath, 'vermeerPack', 'vehicles'),
-	],
+	// 'vermeerPack' : [
+	// 	path.join(dlcBasePath, 'vermeerPack', 'vehicles'),
+	// ],
 }
 
 const baseData = {
@@ -195,12 +195,12 @@ for ( const thisBrandFile of brandFiles ) {
 
 const fullFileList = []
 
-for ( const thisPath of filePaths ) {
-	const theseFiles = globSync('**/*.xml', { cwd : thisPath, follow : true, mark : true, stat : true, withFileTypes : true })
-	for ( const thisFile of theseFiles ) {
-		fullFileList.push([thisFile.fullpath(), dataPath, null])
-	}
-}
+// for ( const thisPath of filePaths ) {
+// 	const theseFiles = globSync('**/*.xml', { cwd : thisPath, follow : true, mark : true, stat : true, withFileTypes : true })
+// 	for ( const thisFile of theseFiles ) {
+// 		fullFileList.push([thisFile.fullpath(), dataPath, null])
+// 	}
+// }
 
 for ( const packKey in dlcPaths ) {
 	for ( const thisPath of dlcPaths[packKey] ) {
@@ -229,8 +229,8 @@ const doWork = async () => {
 	baseData.brands.sort((a, b) => Intl.Collator().compare(a.title, b.title))
 	
 	fs.writeFileSync(
-		path.join(__dirname, '..', 'renderer', 'renderJS', 'util', 'baseGameData.js'),
-		`/* eslint-disable indent, key-spacing, quotes, comma-dangle, sort-keys */\n/* cSpell:disable */\nconst client_BGData = ${JSON.stringify(baseData, null, 2)}`
+		path.join(__dirname, 'thisSectionOut.js'),
+		`/* eslint-disable indent, key-spacing, quotes, comma-dangle, sort-keys */\n/* cSpell:disable */\nmodule.exports.premium = ${JSON.stringify(baseData, null, 2)}`
 	)
 }
 
