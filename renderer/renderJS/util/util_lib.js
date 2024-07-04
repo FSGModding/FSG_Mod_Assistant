@@ -17,6 +17,11 @@ const MA = {
 		if ( element === null ) { return false }
 		return MA.byId(id).appendChild(element)
 	},
+	byIdEventIfExists : (id, handler, eventType = 'click') => {
+		const element = MA.byId(id)
+		if ( element === null ) { return }
+		element.addEventListener(eventType, handler)
+	},
 	byIdHTML   : ( id, newValue = null ) => {
 		if ( newValue !== null ) { MA.byId(id).innerHTML = newValue }
 		return MA.byId(id).innerHTML
@@ -247,7 +252,26 @@ const I18N = {
 			oldTooltip?.dispose?.()
 		}
 	},
-	defer : (key, skipNonBase = true) => !skipNonBase || key.startsWith('$l10n') ? `<l10n name="${key}"></l10n>` : key,
+	defer : (key, skipNonBase = true) => {
+		if ( key.includes('[[') ) {
+			const nameParts    = key.match(/(.+?) \[\[(.+?)]]/)
+			const replaceParts = nameParts[2] ?? null
+			let   newName      = nameParts[1] ?? key
+
+			if ( replaceParts !== null ) {
+				const paramArray = replaceParts.split('|')
+				let   matchNum = -1
+				newName = newName.replace(/%s/g, () => {
+					matchNum++
+					
+					return I18N.defer(paramArray[matchNum], skipNonBase) || '%s'
+				})
+			}
+
+			return newName
+		}
+		return !skipNonBase || key.startsWith('$l10n') ? `<l10n name="${key}"></l10n>` : key
+	},
 	pageLang : () => {
 		window.i18n.lang().then((value) => {
 			document.documentElement.setAttribute('lang', value)

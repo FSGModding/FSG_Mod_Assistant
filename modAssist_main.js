@@ -409,14 +409,24 @@ ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.renderMod(
 ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConflict() )
 ipcMain.handle('collect:malware', () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
 
+ipcMain.handle('dispatch:basegame', (_, pageObj = { type : null, page : null}) => { openBaseGameWindow(pageObj.type, pageObj.page) })
 
-ipcMain.handle('dispatch:basegame', (_, pageObj) => {
-	serveIPC.log.debug('unimplemented', 'ASKED TO OPEN BASEGAME', pageObj)
-})
 ipcMain.handle('dispatch:compare', (_, compareArray) => {
 	serveIPC.log.debug('unimplemented', 'ASKED TO OPEN COMPARE', compareArray)
 })
 // END : Detail window operation
+
+ipcMain.handle('basegame:context', contextCutCopyPasteMenu)
+ipcMain.handle('basegame:folder', (_e, folderParts) => {
+	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', 22))
+
+	if ( typeof gamePath !== 'string') { return }
+
+	const dataPathParts = gamePath.split(path.sep)
+	const dataPath = path.join(...(dataPathParts[dataPathParts.length - 1] === 'x64' ? dataPathParts.slice(0, -1) : dataPathParts), 'data', ...folderParts)
+	
+	shell.openPath(dataPath)
+})
 
 
 // All Context menus
@@ -677,22 +687,19 @@ ipcMain.on('toMain_openCompareMulti', (_, itemMap, source) => {
 ipcMain.on('toMain_openCompareMod', (_, itemContents, source) => {
 	serveIPC.windowLib.raiseOrOpen('compare', () => { compare_mod(itemContents, source) })
 })
-ipcMain.on('toMain_openBaseGame', () => {  serveIPC.windowLib.createNamedWindow('basegame') })
-ipcMain.on('toMain_openBaseGameDeep', (_, type, page) => {
+ipcMain.on('toMain_openBaseGame', () => { openBaseGameWindow() })
+
+
+function openBaseGameWindow(type = null, page = null) {
 	serveIPC.windowLib.raiseOrOpen('basegame', () => {
-		serveIPC.windowLib.sendToValidWindow('basegame', 'fromMain_forceNavigate', type, page)
+		serveIPC.windowLib.setWindowURL(
+			'basegame',
+			( type === null || page === null ) ?
+				null :
+				{ page : page, type : type }
+		)
 	})
-})
-ipcMain.on('toMain_openBaseFolder', (_, folderParts) => {
-	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', 22))
-
-	if ( typeof gamePath !== 'string') { return }
-
-	const dataPathParts = gamePath.split(path.sep)
-	const dataPath = path.join(...(dataPathParts[dataPathParts.length - 1] === 'x64' ? dataPathParts.slice(0, -1) : dataPathParts), 'data', ...folderParts)
-	
-	shell.openPath(dataPath)
-})
+}
 // END : Compare window operation
 
 // One-off window types.
@@ -929,6 +936,10 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 
 async function contextCopyMenu(event) {
 	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+}
+async function contextCutCopyPasteMenu(event) {
+	const menu = Menu.buildFromTemplate(funcLib.menu.snip_cut_copy_paste())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 }
 

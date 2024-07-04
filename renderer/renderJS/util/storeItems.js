@@ -230,7 +230,7 @@ const ST = {
 	resolveBrand : (icon, brand) => {
 		if ( typeof icon === 'string' && icon !== '' ) { return icon }
 		const includedBrand = ST.isKnownBrand(brand)
-		return includedBrand === null ? '' : `img/brand/brand_${includedBrand}.webp`
+		return includedBrand === false ? '' : `img/brand/brand_${includedBrand}.webp`
 	},
 	resolveGameIcon : (icon, { width = '10vw' } = {}) =>
 		typeof icon !== 'string' ?
