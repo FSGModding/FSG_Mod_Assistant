@@ -199,6 +199,12 @@ const ST = {
 		return ST.brandList.has(testBrand) ? testBrand : false
 	},
 
+	getCleanParentID  : ( parentFile ) => {
+		if ( typeof parentFile !== 'string' ) { return null }
+		const attemptKey = parentFile.replace('.xml', '').replace('$data/', '').replaceAll('/', '_')
+		return ( typeof client_BGData.records[attemptKey] !== 'undefined' ) ? attemptKey : null
+	},
+	getDataTypes : (type) => ( typeof ST.typeMap[type] !== 'undefined' ) ? ST.typeMap[type] : ST.typeMap.default,
 	getInfo : (thisItem) => {
 		const thisData = {
 			fillLevel  : NUM.default(thisItem.fillLevel),
@@ -219,6 +225,7 @@ const ST = {
 		}
 		return thisData
 	},
+	
 
 	resolveBrand : (icon, brand) => {
 		if ( typeof icon === 'string' && icon !== '' ) { return icon }

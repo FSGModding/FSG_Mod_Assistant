@@ -42,6 +42,8 @@
 	"basegame_fills"                        : "By Fill Type",
 	"basegame_fills_title"                  : "Base Game Items - By Fill Type",
 	"basegame_main_title"                   : "Base Game Items - All",
+	"basegame_browser"                      : "Base Game Browser",
+	"basegame_browser_blurb"                : "In this section, you can view all of the base game vehicles, placeables and most of the objects.  It includes most of the DLC items as well.",
 	"basegame_object"                       : "Objects",
 	"basegame_object_title"                 : "Base Game Items - Objects",
 	"basegame_placeable"                    : "Placeables",

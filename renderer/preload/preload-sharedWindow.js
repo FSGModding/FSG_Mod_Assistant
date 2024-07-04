@@ -16,9 +16,7 @@ const pageAPI = {
 			all     : () => ipcRenderer.invoke('debug:all'),
 			context : () => ipcRenderer.invoke('debug:context'),
 		},
-		validAsync : new Set([
-			'debug:item',
-		]),
+		validAsync : new Set(['debug:item']),
 	},
 	'detail' : {
 		functions : {
@@ -31,6 +29,14 @@ const pageAPI = {
 			sendCompare : (compareArray) => ipcRenderer.invoke('dispatch:compare', compareArray),
 		},
 		validAsync : new Set(),
+	},
+	'basegame' : {
+		functions : {
+			context     : () => ipcRenderer.invoke('basegame:context'),
+			openFolder  : (folder) => ipcRenderer.invoke('basegame:folder', folder),
+			sendCompare : (compareArray) => ipcRenderer.invoke('dispatch:compare', compareArray),
+		},
+		validAsync : new Set(['basegame:setPage']),
 	},
 }
 

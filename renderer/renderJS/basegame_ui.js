@@ -6,7 +6,10 @@
 
 // Base game window UI
 
-/* global __, processL10N, fsgUtil, dtLib, client_BGData */
+/* global __, I18N, MA, ST, DATA, client_BGData, ft_doReplace */
+let locale       = 'en'
+let i18nUnits    = null
+
 
 let searchTree = {}
 const chartUnits = {}
@@ -210,82 +213,64 @@ const client_buildStore = (thisItem) => {
 function getTopCat(cat) {
 	switch ( cat ) {
 		case 'vehicle' :
-			return dtLib.wrap.row(client_BGData.category.vehicle.map((x) => dtLib.wrap.single({
-				icon : x.iconName,
-				name : x.title,
-				page : x.iconName,
-				type : 'subcat',
-			})))
+			return client_BGData.category.vehicle.map((x) => buildCategoryItem({
+				image      : `<img src="img/baseCategory/${x.iconName}.webp" style="width:160px">`,
+				page       : x.iconName,
+				text       : x.title,
+				type       : 'subcat',
+			}))
 		case 'tool' :
-			return dtLib.wrap.row(client_BGData.category.tool.map((x) => dtLib.wrap.single({
-				icon : x.iconName,
-				name : x.title,
-				page : x.iconName,
-				type : 'subcat',
-			})))
+			return client_BGData.category.tool.map((x) => buildCategoryItem({
+				image      : `<img src="img/baseCategory/${x.iconName}.webp" style="width:160px">`,
+				page       : x.iconName,
+				text       : x.title,
+				type       : 'subcat',
+			}))
 		case 'object' :
-			return dtLib.wrap.row(client_BGData.category.object.map((x) => dtLib.wrap.single({
-				icon : x.iconName,
-				name : x.title,
-				page : x.iconName,
-				type : 'subcat',
-			})))
+			return client_BGData.category.object.map((x) => buildCategoryItem({
+				image      : `<img src="img/baseCategory/${x.iconName}.webp" style="width:160px">`,
+				page       : x.iconName,
+				text       : x.title,
+				type       : 'subcat',
+			}))
 		case 'placeable' :
-			return dtLib.wrap.row(client_BGData.category.placeable.map((x) => dtLib.wrap.single({
-				icon : x.iconName,
-				name : x.title,
-				page : x.iconName,
-				type : 'subcat',
-			})))
+			return client_BGData.category.placeable.map((x) => buildCategoryItem({
+				image      : `<img src="img/baseCategory/${x.iconName}.webp" style="width:160px">`,
+				page       : x.iconName,
+				text       : x.title,
+				type       : 'subcat',
+			}))
 		case 'brand' :
-			return dtLib.wrap.row(client_BGData.brands.map((x) => dtLib.wrap.single({
-				brand   : x.image,
-				name    : x.title,
-				noTrans : true,
-				page    : x.name,
-				type    : 'brand',
-			})))
+			return client_BGData.brands.map((x) => buildCategoryItem({
+				image : `<img src="img/brand/${x.image}.webp" style="width:100px">`,
+				maxWidthCalc : '100px',
+				page  : x.name,
+				text  : x.title,
+				type  : 'brand',
+			}))
 		case 'fills' :
-			return dtLib.wrap.row(selectFills.map((x) => dtLib.wrap.single({
-				fsIcon  : `fill-${x.filltype}`,
-				name    : x.l10n,
-				noTrans : false,
-				page    : x.filltype,
-				type    : 'fill',
-			})))
+			return selectFills.map((x) => buildCategoryItem({
+				image      : `<fillType class="h0" name="fill-${x.filltype}"></fillType>`,
+				page       : x.filltype,
+				text       : x.l10n,
+				type       : 'fill',
+			}))
 		case 'attach_need' :
-			return dtLib.wrap.row(Object.keys(client_BGData.joints_needs).sort().map((x) => dtLib.wrap.single({
-				icon    : `attach_${x.toLowerCase()}`,
-				name    : x,
-				noTrans : true,
-				page    : x.toLowerCase(),
-				type    : 'attach_need',
-			})))
+			return Object.keys(client_BGData.joints_needs).sort().map((x) => buildCategoryItem({
+				image      : `<img src="img/baseCategory/attach_${x.toLowerCase()}.webp" style="width:160px">`,
+				page       : x.toLowerCase(),
+				text       : x,
+				type       : 'attach_need',
+			}))
 		case 'attach_has' :
-			return dtLib.wrap.row(Object.keys(client_BGData.joints_has).sort().map((x) => dtLib.wrap.single({
-				icon    : `attach_${x.toLowerCase()}`,
-				name    : x,
-				noTrans : true,
-				page    : x.toLowerCase(),
-				type    : 'attach_has',
-			})))
-		default : {
-			return [
-				dtLib.wrap.row(client_BGData.topLevel.slice(0, 5).map((x) => dtLib.wrap.single({
-					fsIcon : x.class,
-					name   : x.name,
-					page   : x.page,
-					type   : 'cat',
-				})), 'g-2 justify-content-center'),
-				dtLib.wrap.row(client_BGData.topLevel.slice(5).map((x) => dtLib.wrap.single({
-					fsIcon : x.class,
-					name   : x.name,
-					page   : x.page,
-					type   : 'cat',
-				})), 'g-2 justify-content-center mt-2')
-			].join('')
-		}
-			
+			return Object.keys(client_BGData.joints_has).sort().map((x) => buildCategoryItem({
+				image      : `<img src="img/baseCategory/attach_${x.toLowerCase()}.webp" style="width:160px">`,
+				page       : x.toLowerCase(),
+				text       : x,
+				type       : 'attach_has',
+			}))
+		default :
+			break
 	}
 }
 
@@ -331,105 +316,184 @@ function getByFill(fillType) {
 	return vehicleList.sort()
 }
 
+function buildCategoryItem({type = null, page = null, maxWidthCalc = null, image = null, text = null, skipIfNotBase = true} = {}) {
+	return [
+		`<div class="text-center pageClicker flex-grow-0" data-type="${type}" data-page="${page}">`,
+		`<div class="p-2 border rounded-3 d-flex flex-column h-100 justify-content-center" style="max-width: ${maxWidthCalc === null ? 'auto' : `calc(${maxWidthCalc} + 1rem)`}">`,
+		image,
+		I18N.defer(text, skipIfNotBase),
+		'</div></div>'
+	].join('')
+}
 
-window.mods.receive('fromMain_forceNavigate', (type, page) => { location.search = `?type=${type}&page=${page}` })
+function buildItem(itemID, noBrand = false) {
+	const thisItem         = client_BGData.records[itemID]
+	const thisItemData     = ST.getInfo(thisItem)
+	let   dataItems        = null
+	const attemptKey       = ST.getCleanParentID(thisItem.parentFile)
 
-window.addEventListener('DOMContentLoaded', () => {
+	if ( attemptKey !== null ) {
+		const attemptItem = client_BGData.records[attemptKey]
+		const newItemData = ST.getInfo(attemptItem)
+		dataItems = ST.getDataTypes(attemptItem.type).map((x) => ST.markupDataType(x, newItemData[x])).join('')
+	} else {
+		dataItems = ST.getDataTypes(thisItem.type).map((x) => ST.markupDataType(x, thisItemData[x])).join('')
+	}
+
+	const iconImage = ST.resolveIcon(thisItem.icon)
+	const iconBrand = noBrand ? '' : ST.resolveBrand('', thisItem.brand)
+			
+	const infoDivNode = DATA.templateEngine('store_item', {
+		brandImage : noBrand ? '' : `<img src="${iconBrand}" class="img-fluid store-brand-image">`,
+		iconImage  : `<img src="${iconImage}" class="img-fluid store-icon-image">`,
+
+		dataItems  : dataItems,
+		dlc        : thisItem.dlcKey !== null ? thisItem.dlcKey : '',
+		name       : I18N.defer(thisItem.name),
+	}, {}, {
+		'.compareSingle'    : MA.showTest(thisItem.masterType === 'vehicle'),
+		'.hasParentFile'    : attemptKey !== null ? 'notRealItem' : '',
+		'.store-icon-brand' : MA.showTest(!noBrand),
+	})
+
+	infoDivNode.firstElementChild.setAttribute('data-type', 'item')
+	infoDivNode.firstElementChild.setAttribute('data-page', attemptKey !== null ? attemptKey : itemID)
+
+	return infoDivNode
+}
+
+
+// window.mods.receive('fromMain_forceNavigate', (type, page) => { location.search = `?type=${type}&page=${page}` })
+
+function changePage(e) {
+	const realTarget = e.target.closest('.pageClicker')
+	const thisType = realTarget.safeAttribute('data-type')
+	const thisPage = realTarget.safeAttribute('data-page')
+	if ( thisType !== null && thisPage !== null ) {
+		location.search = `?type=${thisType}&page=${thisPage}`
+	}
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
 	const urlParams     = new URLSearchParams(window.location.search)
 	const pageType      = urlParams.get('type')
 	const pageID        = urlParams.get('page')
 
-	window.comp_all_list = []
+	locale    = await window.i18n.lang()
+	i18nUnits = await window.settings.units()
+	console.log(pageType, pageID)
+	
+	// window.comp_all_list = []
 
-	for ( const thisUnit of ['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp']) {
-		chartUnits[thisUnit] = window.l10n.getText_sync(thisUnit)
-	}
+	// for ( const thisUnit of ['unit_rpm', 'unit_mph', 'unit_kph', 'unit_hp']) {
+	// 	chartUnits[thisUnit] = window.l10n.getText_sync(thisUnit)
+	// }
 
 	switch (pageType) {
-		case 'cat':
-			setPageInfo(
-				`<l10n name="basegame_${pageID}_title"></l10n>`,
-				getTopCat(pageID)
-			)
+		case 'cat' :
+			MA.byId('bgContent').innerHTML = getTopCat(pageID).join('')
 			break
 		case 'subcat' : {
 			const isVehicleCat = Object.hasOwn(client_BGData.catMap_vehicle, pageID)
 			const catL10n      = isVehicleCat ? client_BGData.catMap_vehicle[pageID] : client_BGData.catMap_place[pageID]
 			const catContent   = ((isVehicleCat ? client_BGData.byCat_vehicle[catL10n] : client_BGData.byCat_placeable[catL10n]) ?? []).sort()
 
-			if ( isVehicleCat ) {
-				window.comp_all_list = catContent
-			}
+			// if ( isVehicleCat ) {
+			// 	window.comp_all_list = catContent
+			// }
 
-			setPageInfo(
-				`<l10nBase name="${catL10n}"></l10nBase>`,
-				dtLib.wrap.row(catContent.sort().map((x) => dtLib.wrap.item(x))),
-				{
-					button_comp_all : isVehicleCat,
-				}
-			)
+			const titleDiv = document.createElement('div')
+
+			titleDiv.classList.add('w-100', 'pb-2', 'fs-2', 'text-center')
+			titleDiv.innerHTML = I18N.defer(catL10n)
+
+			MA.byId('bgContent').innerHTML = ''
+			MA.byId('bgContent').appendChild(titleDiv)
+
+			for ( const element of catContent.sort().map((x) => buildItem(x, !isVehicleCat)) ) {
+				MA.byId('bgContent').appendChild(element)
+			}
 			break
 		}
 		case 'brand' : {
 			const brandDisplay = pageID.replace('brand_', '').toUpperCase()
 			const brandContent = (client_BGData.byBrand_vehicle[brandDisplay] ?? []).sort()
 
-			setPageInfo(
-				`<l10nBase name="${client_BGData.brandMap[pageID]}"></l10nBase>`,
-				dtLib.wrap.row(brandContent.sort().map((x) => dtLib.wrap.item(x)))
-			)
-			break
-		}
-		case 'attach_has' : {
-			const jointType = attachProperCase(pageID)
+			const titleDiv = document.createElement('div')
 
-			setPageInfo(
-				`<l10n name="basegame_attach_has"></l10n> : ${jointType}`,
-				dtLib.wrap.row(client_BGData.joints_has[jointType].sort().map((x) => dtLib.wrap.item(x)))
-			)
-			break
-		}
-		case 'attach_need' : {
-			const jointType = attachProperCase(pageID)
+			titleDiv.classList.add('w-100', 'pb-2', 'fs-2', 'text-center')
+			titleDiv.innerHTML = I18N.defer(client_BGData.brandMap[pageID])
 
-			setPageInfo(
-				`<l10n name="basegame_attach_need"></l10n> : ${jointType}`,
-				dtLib.wrap.row(client_BGData.joints_needs[jointType].sort().map((x) => dtLib.wrap.item(x)))
-			)
-			break
-		}
-		case 'fill' : {
-			setPageInfo(
-				`<l10n name="basegame_fills"></l10n> : <l10nBase name="${findFill(pageID)}"></l10nBase>`,
-				dtLib.wrap.row(getByFill(pageID).sort().map((x) => dtLib.wrap.item(x)))
-			)
-			break
-		}
-		case 'item' : {
-			const thisItem = client_BGData.records[pageID]
-	
-			fsgUtil.setById('mod_location', thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`)
+			MA.byId('bgContent').innerHTML = ''
+			MA.byId('bgContent').appendChild(titleDiv)
 
-			setPageInfo(
-				typeof thisItem.brand !== 'undefined' ? `${client_BGData.brandMap[thisItem.brand.toLowerCase()]} ${__(thisItem.name, {skipIfNotBase : true})}` : __(thisItem.name, {skipIfNotBase : true}),
-				client_buildStore(thisItem),
-				{
-					button_comp   : thisItem.masterType === 'vehicle',
-					button_folder : thisItem.isBase,
-				}
-			)
+			for ( const element of brandContent.sort().map((x) => buildItem(x)) ) {
+				MA.byId('bgContent').appendChild(element)
+			}
 			break
 		}
 		default :
-			buildSearchTree()
-			fsgUtil.clsShow('searchBox')
-			setPageInfo(
-				'<l10n name="basegame_main_title"></l10n>',
-				getTopCat('top')
-			)
 			break
 	}
-	processL10N()
+	// switch (pageType) {
+
+	// 	case 'attach_has' : {
+	// 		const jointType = attachProperCase(pageID)
+
+	// 		setPageInfo(
+	// 			`<l10n name="basegame_attach_has"></l10n> : ${jointType}`,
+	// 			dtLib.wrap.row(client_BGData.joints_has[jointType].sort().map((x) => dtLib.wrap.item(x)))
+	// 		)
+	// 		break
+	// 	}
+	// 	case 'attach_need' : {
+	// 		const jointType = attachProperCase(pageID)
+
+	// 		setPageInfo(
+	// 			`<l10n name="basegame_attach_need"></l10n> : ${jointType}`,
+	// 			dtLib.wrap.row(client_BGData.joints_needs[jointType].sort().map((x) => dtLib.wrap.item(x)))
+	// 		)
+	// 		break
+	// 	}
+	// 	case 'fill' : {
+	// 		setPageInfo(
+	// 			`<l10n name="basegame_fills"></l10n> : <l10nBase name="${findFill(pageID)}"></l10nBase>`,
+	// 			dtLib.wrap.row(getByFill(pageID).sort().map((x) => dtLib.wrap.item(x)))
+	// 		)
+	// 		break
+	// 	}
+	// 	case 'item' : {
+	// 		const thisItem = client_BGData.records[pageID]
+	
+	// 		fsgUtil.setById('mod_location', thisItem.isBase ? `$data/${thisItem.diskPath.join('/')}` : `DLC : ${thisItem.dlcKey}`)
+
+	// 		setPageInfo(
+	// 			typeof thisItem.brand !== 'undefined' ? `${client_BGData.brandMap[thisItem.brand.toLowerCase()]} ${__(thisItem.name, {skipIfNotBase : true})}` : __(thisItem.name, {skipIfNotBase : true}),
+	// 			client_buildStore(thisItem),
+	// 			{
+	// 				button_comp   : thisItem.masterType === 'vehicle',
+	// 				button_folder : thisItem.isBase,
+	// 			}
+	// 		)
+	// 		break
+	// 	}
+	// 	default :
+	// 		buildSearchTree()
+	// 		fsgUtil.clsShow('searchBox')
+	// 		setPageInfo(
+	// 			'<l10n name="basegame_main_title"></l10n>',
+	// 			getTopCat('top')
+	// 		)
+	// 		break
+	// }
+	// processL10N()
+
+	ft_doReplace()
+	I18N.process()
+
+	for ( const element of MA.queryA('.pageClicker')) {
+		element.addEventListener('click', changePage)
+	}
 })
 
 function findItemsByTerm(strTerm) {
