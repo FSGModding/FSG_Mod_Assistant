@@ -5,6 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 
 // Base Game data generator
+// HUGE NOTE: this doesn't work out-of-the-box, it'll run out of memory.
 
 /* cSpell:disable */
 
@@ -58,6 +59,11 @@ const dlcPaths = {
 	],
 	'kubotaPack' : [
 		path.join(dlcBasePath, 'kubotaPack', 'vehicles'),
+	],
+	'premiumExpansion' : [
+		path.join(dlcBasePath, 'premiumExpansion', 'vehicles'),
+		path.join(dlcBasePath, 'premiumExpansion', 'placeables'),
+		path.join(dlcBasePath, 'premiumExpansion', 'objects')
 	],
 	'vermeerPack' : [
 		path.join(dlcBasePath, 'vermeerPack', 'vehicles'),

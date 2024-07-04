@@ -1930,7 +1930,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:4.3.1":
+"deepmerge@npm:4.3.1, deepmerge@npm:^4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 2024c6a980a1b7128084170c4cf56b0fd58a63f2da1660dcfe977415f27b17dbe5888668b59d0b063753f3220719d5e400b7f113609489c90160bb9a5518d052
@@ -2768,6 +2768,7 @@ __metadata:
     archiver: ^7.0.1
     clean-css: ^5.3.3
     deepl-node: ^1.13.0
+    deepmerge: ^4.3.1
     discord-rpc: ^4.0.1
     docolatte: ^4.5.1
     electron: ^30.1.2

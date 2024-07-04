@@ -120,7 +120,7 @@ const ST = {
 		'veenhuis', 'vermeer', 'versatile', 'vervaet', 'vicon', 'volvo', 'volvobm', 'volvokrabat',
 		'vredestein', 'walkabout', 'warzee', 'webermt', 'welger', 'westtech', 'wilson', 'zetor',
 		'ziegler', 'zunhammer', 'agi', 'agibatco', 'agineco', 'agisentinel', 'agistorm',
-		'agiwesteel', 'agiwestfield', 'antoniocarraro'
+		'agiwesteel', 'agiwestfield', 'antoniocarraro', 'agrio', 'dewulf', 'wifo',
 	]),
 	/* cSpell:enable */
 	unit : {
