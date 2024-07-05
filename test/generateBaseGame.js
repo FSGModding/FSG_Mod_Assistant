@@ -8,19 +8,12 @@
 // HUGE NOTE: this doesn't work out-of-the-box, it'll run out of memory.
 
 /* cSpell:disable */
-
 const path          = require('node:path')
-const os            = require('node:os')
 const fs            = require('node:fs')
 const { globSync }  = require('glob')
 const c             = require('ansi-colors')
 
-const { requiredItems, ddsDecoder } = require('../lib/workerThreadLib.js')
-const { baseLooker, getParser }     = require('./generateBaseGame_lib.js')
-
-requiredItems.currentLocale = 'en'
-requiredItems.l10n_hp       = 'HP'
-requiredItems.iconDecoder   = new ddsDecoder(path.join(__dirname, '..', 'texconv.exe'), os.tmpdir())
+const { getParser }     = require('./generateBaseGame_lib.js')
 
 const dataPath    = 'C:\\Program Files (x86)\\Farming Simulator 2022\\data'
 const dlcBasePath = 'C:\\Users\\jtsag\\Desktop\\ModEdit\\_openedDLC'
@@ -32,42 +25,42 @@ const filePaths = [
 ]
 
 const dlcPaths = {
-	// 'agiPack' : [
-	// 	path.join(dlcBasePath, 'agiPath', 'vehicles'),
-	// 	path.join(dlcBasePath, 'agiPath', 'placeables'),
-	// 	path.join(dlcBasePath, 'agiPath', 'objects')
-	// ],
-	// 'antonioCarraroPack' : [
-	// 	path.join(dlcBasePath, 'antonioCarraroPack', 'vehicles'),
-	// ],
-	// 'claasSaddleTracPack' : [
-	// 	path.join(dlcBasePath, 'claasSaddleTracPack', 'vehicles'),
-	// ],
-	// 'eroPack' : [
-	// 	path.join(dlcBasePath, 'eroPack', 'vehicles'),
-	// ],
-	// 'forestry' : [
-	// 	path.join(dlcBasePath, 'forestry', 'vehicles'),
-	// 	path.join(dlcBasePath, 'forestry', 'placeables'),
-	// 	path.join(dlcBasePath, 'forestry', 'objects')
-	// ],
-	// 'goeweilPack' : [
-	// 	path.join(dlcBasePath, 'goeweilPack', 'vehicles'),
-	// ],
-	// 'hayAndForagePack' : [
-	// 	path.join(dlcBasePath, 'hayAndForagePack', 'vehicles'),
-	// ],
-	// 'kubotaPack' : [
-	// 	path.join(dlcBasePath, 'kubotaPack', 'vehicles'),
-	// ],
+	'agiPack' : [
+		path.join(dlcBasePath, 'agiPath', 'vehicles'),
+		path.join(dlcBasePath, 'agiPath', 'placeables'),
+		path.join(dlcBasePath, 'agiPath', 'objects')
+	],
+	'antonioCarraroPack' : [
+		path.join(dlcBasePath, 'antonioCarraroPack', 'vehicles'),
+	],
+	'claasSaddleTracPack' : [
+		path.join(dlcBasePath, 'claasSaddleTracPack', 'vehicles'),
+	],
+	'eroPack' : [
+		path.join(dlcBasePath, 'eroPack', 'vehicles'),
+	],
+	'forestry' : [
+		path.join(dlcBasePath, 'forestry', 'vehicles'),
+		path.join(dlcBasePath, 'forestry', 'placeables'),
+		path.join(dlcBasePath, 'forestry', 'objects')
+	],
+	'goeweilPack' : [
+		path.join(dlcBasePath, 'goeweilPack', 'vehicles'),
+	],
+	'hayAndForagePack' : [
+		path.join(dlcBasePath, 'hayAndForagePack', 'vehicles'),
+	],
+	'kubotaPack' : [
+		path.join(dlcBasePath, 'kubotaPack', 'vehicles'),
+	],
 	'premiumExpansion' : [
 		path.join(dlcBasePath, 'premiumExpansion', 'vehicles'),
 		path.join(dlcBasePath, 'premiumExpansion', 'placeables'),
 		path.join(dlcBasePath, 'premiumExpansion', 'objects')
 	],
-	// 'vermeerPack' : [
-	// 	path.join(dlcBasePath, 'vermeerPack', 'vehicles'),
-	// ],
+	'vermeerPack' : [
+		path.join(dlcBasePath, 'vermeerPack', 'vehicles'),
+	],
 }
 
 const baseData = {
@@ -137,15 +130,17 @@ const handleResults = (results, fileDetails) => {
 	baseData.records[thisName].diskPath = (fileDetails[2] !== null) ? null : path.relative(fileDetails[1], fileDetails[0]).split(path.sep)
 
 	/* eslint-disable no-console */
+	const mem  = Math.round(process.memoryUsage().rss / (1024 * 1024))
 	if ( results.log.items.length !== 0 ) {
-		console.log(c.redBright(`🗙 FAILED: ${c.red(thisName)} had errors`))
+		console.log(c.redBright(`🗙 FAILED: ${c.red(thisName)} had errors ${mem}`))
 		console.log(results.log.items)
 	} else {
-		console.log(c.greenBright(`✓ ADDED: ${c.green(thisName)}`))
+		console.log(c.greenBright(`✓ ADDED: ${c.green(thisName)} ${mem}`))
 	}
 	/* eslint-enable no-console */
 }
 
+const threadList = new Set()
 
 const thisXMLParser = getParser()
 
@@ -195,12 +190,12 @@ for ( const thisBrandFile of brandFiles ) {
 
 const fullFileList = []
 
-// for ( const thisPath of filePaths ) {
-// 	const theseFiles = globSync('**/*.xml', { cwd : thisPath, follow : true, mark : true, stat : true, withFileTypes : true })
-// 	for ( const thisFile of theseFiles ) {
-// 		fullFileList.push([thisFile.fullpath(), dataPath, null])
-// 	}
-// }
+for ( const thisPath of filePaths ) {
+	const theseFiles = globSync('**/*.xml', { cwd : thisPath, follow : true, mark : true, stat : true, withFileTypes : true })
+	for ( const thisFile of theseFiles ) {
+		fullFileList.push([thisFile.fullpath(), dataPath, null])
+	}
+}
 
 for ( const packKey in dlcPaths ) {
 	for ( const thisPath of dlcPaths[packKey] ) {
@@ -211,31 +206,88 @@ for ( const packKey in dlcPaths ) {
 	}
 }
 
-const doWork = async () => {
-	/* eslint-disable no-await-in-loop */
-	for ( const thisFile of fullFileList ) {
-		const results = await new baseLooker(thisFile[0], thisFile[1]).getInfo()
-		try {
-			handleResults(results, thisFile)
-		} catch (err) {
-			/* eslint-disable no-console */
-			console.log(err)
-			console.log(results)
-		}
+const doWork = () => {
+	const threadPromises = []
+
+	const threadCount = Math.ceil(fullFileList.length / 200)
+	// eslint-disable-next-line no-console
+	console.log(c.greenBright(`Spawning ${threadCount - 1} threads for ${fullFileList.length} files`))
+	
+
+	for ( let i = 0; i <= threadCount - 1; i++ ) {
+		const thisPromise = Promise.withResolvers()
+		threadPromises.push(thisPromise.promise)
+		openLookThread(i+1, thisPromise, fullFileList.slice(i * 200, (i+1) * 200))
 	}
-	/* eslint-enable no-await-in-loop */
-	
-	baseData.joints_list = [...baseData.joints_set]
-	baseData.brands.sort((a, b) => Intl.Collator().compare(a.title, b.title))
-	
-	fs.writeFileSync(
-		path.join(__dirname, 'thisSectionOut.js'),
-		`/* eslint-disable indent, key-spacing, quotes, comma-dangle, sort-keys */\n/* cSpell:disable */\nmodule.exports.premium = ${JSON.stringify(baseData, null, 2)}`
-	)
+
+	Promise.allSettled(threadPromises).then(() => {
+		baseData.joints_list = [...baseData.joints_set]
+		baseData.brands.sort((a, b) => Intl.Collator().compare(a.title, b.title))
+		
+		fs.writeFileSync(
+			path.join(__dirname, 'baseGameData.js'),
+			`/* eslint-disable indent, key-spacing, quotes, comma-dangle, sort-keys */\n/* cSpell:disable */\nconst client_BGData = ${JSON.stringify(baseData, null, 2)}`
+		)
+		// eslint-disable-next-line no-console
+		console.log(c.greenBright('all done!'), threadPromises)
+	})
 }
 
-doWork().then(() => { console.log('done.') })
+doWork()
 
+
+function openLookThread(threadID = 1, thisPromise, workPacket) {
+	threadList.add(threadID)
+	const lookThread = require('node:child_process').fork(path.join(__dirname, 'generateBaseGame_queue.js'), [
+		threadID,
+		path.join(__dirname, '..', 'texconv.exe'),
+		() => {return 'en'},
+		'hp',
+	])
+	lookThread.on('message', (m) => {
+		if ( Object.hasOwn(m, 'type') ) {
+			switch (m.type) {
+				case 'log' :
+					// eslint-disable-next-line no-console
+					console.log(`worker-thread-${m.pid}`, m.data.join(' '))
+					break
+				case 'modLook' : {
+					for ( const logLine of m.logLines.items ) {
+						// eslint-disable-next-line no-console
+						console.log(m.logLines.group, logLine[1])
+					}
+	
+					if ( typeof m.modLook === 'undefined' ) {
+						// eslint-disable-next-line no-console
+						console.error(`worker-thread-${m.pid}`, 'Unable to read mod file/folder!')
+						break
+					}
+					handleResults(m.results, m.fileDetails)
+
+					break
+				}
+				default :
+					break
+			}
+		}
+	})
+	lookThread.on('close', () => {
+		thisPromise.resolve(true)
+		threadList.delete(threadID)
+	})
+
+	for ( const workItem of workPacket ) {
+		lookThread.send({
+			type : 'look',
+			data : {
+				fullPath : workItem[0],
+				dataPath : workItem[1],
+				fileDetails : workItem,
+			},
+		})
+	}
+	lookThread.send({ type : 'exit' })
+}
 
 
 

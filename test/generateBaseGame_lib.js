@@ -66,7 +66,6 @@ class baseLooker {
 		return Promise.allSettled(iconLoads).then(() => {
 			this.#modHandle.close()
 			this.#modHandle = null
-			console.log('at end', thisItemInfo?.fillTypes)
 			return { shortname : thisItemName, log : this.#log.lines, record : thisItemInfo }
 		})
 	}
@@ -278,11 +277,9 @@ class baseLooker {
 				const thisTypes = thisFill?.$?.FILLTYPES?.split?.(' ') ?? null
 				const thisCats  = thisFill?.$?.FILLTYPECATEGORIES?.split?.(' ') ?? null
 
-				console.log('cats', thisCats, thisFill?.$?.FILLTYPECATEGORIES)
 				if ( thisCats !== null ) {
 					for ( const thisCat of thisCats ) {
 						const thisCatKey = thisCat.toLowerCase()
-						console.log('catkey', thisCatKey, this.#fillCats[thisCatKey])
 						if ( Object.hasOwn(this.#fillCats, thisCatKey) ) {
 							returnObject.types.push(...this.#fillCats[thisCatKey])
 						}
@@ -294,7 +291,6 @@ class baseLooker {
 						returnObject.types.push(thisType.toLowerCase())
 					}
 				}
-				console.log(returnObject.types)
 
 				returnObject.capacity += thisFill?.$?.CAPACITY ?? 0
 			}
@@ -479,7 +475,6 @@ class baseLooker {
 
 		try {
 			const theseFills = this.#parseFillTypes(xml?.fillunit?.fillunitconfigurations?.fillunitconfiguration?.[0]?.fillunits?.fillunit ?? null)
-			console.log('fills', theseFills.types)
 			return {
 				brand          : this.#parseBrand(storeData?.brand),
 				category       : this.#getCategory(storeData?.category),
