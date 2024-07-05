@@ -22,7 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	const urlParams = new URLSearchParams(window.location.search)
 	const modColUUID = urlParams.get('mod')
 
-	window.detail.getMod(modColUUID).then(async (thisMod) => {
+	window.detail_IPC.getMod(modColUUID).then(async (thisMod) => {
 		modName   = thisMod.fileDetail.shortName
 
 		locale    = await window.i18n.lang()
@@ -37,7 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		]
 
 		try {
-			const storeInfo = await window.detail.getStore(modColUUID)
+			const storeInfo = await window.detail_IPC.getStore(modColUUID)
 
 			const storePromises = [
 				step_mapImage(storeInfo.mapImage),
@@ -114,7 +114,7 @@ async function step_crops(thisMod) {
 }
 
 async function step_badges(thisMod) {
-	return window.detail.getMalware().then((malware) => {
+	return window.detail_IPC.getMalware().then((malware) => {
 		let foundMalware = false
 
 		const theseBadges = Array.isArray(thisMod.displayBadges) ? thisMod.displayBadges.filter((badge) => {
@@ -139,7 +139,7 @@ async function step_badges(thisMod) {
 }
 
 async function step_problems(thisMod) {
-	return window.detail.getBinds().then(async (bindConflicts) => {
+	return window.detail_IPC.getBinds().then(async (bindConflicts) => {
 		const bindingIssue     = bindConflicts[thisMod.currentCollection][thisMod.fileDetail.shortName] ?? null
 
 		if ( thisMod.issues.length === 0 && bindingIssue === null ) {
@@ -477,12 +477,12 @@ function singleAdd(e) {
 		key      : lookItemData[itemID].uuid_name,
 		source   : modName,
 	}
-	window.detail.sendCompare([compareObj])
+	window.detail_IPC.sendCompare([compareObj])
 }
 
 function comboAddAll(e) {
 	const compareObjArray = comboItemMap[itemGetInfo(e.target)]
-	window.detail.sendCompare(compareObjArray)
+	window.detail_IPC.sendCompare(compareObjArray)
 }
 
 function comboAddSingle(e) {
@@ -496,7 +496,7 @@ function comboAddSingle(e) {
 	if ( source === 'internal' ) {
 		compareObj.contents = lookItemData[lookItemMap[page]]
 	}
-	window.detail.sendCompare([compareObj])
+	window.detail_IPC.sendCompare([compareObj])
 }
 
 function comboItemClicker(e) {
@@ -504,7 +504,7 @@ function comboItemClicker(e) {
 	if ( source === 'internal' ) {
 		location.hash = lookItemMap[page]
 	} else {
-		window.detail.sendBase({ type : type, page : page })
+		window.detail_IPC.sendBase({ type : type, page : page })
 	}
 }
 
@@ -515,5 +515,5 @@ function attachClicker(e) {
 		type  : realTarget.classList.contains('attach_need') ? 'attach_need' : 'attach_has',
 		page : realTarget.safeAttribute('data-jointpage'),
 	}
-	window.detail.sendBase(openObject)
+	window.detail_IPC.sendBase(openObject)
 }

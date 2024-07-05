@@ -196,7 +196,7 @@ async function subStep_vehicle(thisUUID, thisItem, pageID, combos = null) {
 	
 	DATA.eventEngine(infoDivNode, '.action-compare-all-combo', comboAddAll)
 	DATA.eventEngine(infoDivNode, '.action-item-compare', () => {
-		window.basegame.sendCompare([buildCompareRequest(pageID)])
+		window.basegame_IPC.sendCompare([buildCompareRequest(pageID)])
 	})
 	DATA.eventEngine(infoDivNode, '.attach_has, .attach_need', attachClicker)
 
@@ -437,7 +437,7 @@ function compareSingle(e) {
 	e.stopPropagation()
 	const realTarget = e.target.closest('.pageClicker')
 
-	window.basegame.sendCompare([buildCompareRequest(realTarget.safeAttribute('data-page'))])
+	window.basegame_IPC.sendCompare([buildCompareRequest(realTarget.safeAttribute('data-page'))])
 }
 
 // eslint-disable-next-line complexity
@@ -470,7 +470,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 			}
 
 			MA.byIdEventIfExists('compareAllButton', () => {
-				window.basegame.sendCompare(catContent.map((x) => buildCompareRequest(x)))
+				window.basegame_IPC.sendCompare(catContent.map((x) => buildCompareRequest(x)))
 			})
 			break
 		}
@@ -485,7 +485,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 			}
 
 			MA.byIdEventIfExists('compareAllButton', () => {
-				window.basegame.sendCompare(brandContent.map((x) => buildCompareRequest(x)))
+				window.basegame_IPC.sendCompare(brandContent.map((x) => buildCompareRequest(x)))
 			})
 			break
 		}
@@ -503,7 +503,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 			}
 
 			MA.byIdEventIfExists('compareAllButton', () => {
-				window.basegame.sendCompare(jointContents.map((x) => buildCompareRequest(x)))
+				window.basegame_IPC.sendCompare(jointContents.map((x) => buildCompareRequest(x)))
 			})
 			break
 		}
@@ -518,7 +518,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 			}
 
 			MA.byIdEventIfExists('compareAllButton', () => {
-				window.basegame.sendCompare(fillContents.map((x) => buildCompareRequest(x)))
+				window.basegame_IPC.sendCompare(fillContents.map((x) => buildCompareRequest(x)))
 			})
 			
 			break
@@ -549,7 +549,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 				if ( thisItem.isBase ) {
 					MA.byIdEventIfExists('openFolderButton', () => {
-						window.basegame.openFolder(thisItem.diskPath.slice(0, -1))
+						window.basegame_IPC.openFolder(thisItem.diskPath.slice(0, -1))
 					})
 				}
 				break
@@ -573,7 +573,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 			MA.byId('homePageContent').clsShow()
 
 			MA.byId('mods__filter').addEventListener('keyup', doFilter)
-			MA.byId('mods__filter').addEventListener('contextmenu', window.basegame.context)
+			MA.byId('mods__filter').addEventListener('contextmenu', window.basegame_IPC.context)
 			MA.byId('mods__filter_clear').addEventListener('click', doClear)
 
 			break
@@ -657,7 +657,7 @@ function comboGetInfo(target) {
 	return returnObj
 }
 
-function comboAddAll() { window.basegame.sendCompare([...comboKeyList]) }
+function comboAddAll() { window.basegame_IPC.sendCompare([...comboKeyList]) }
 
 function comboAddSingle(e) {
 	const { page } = comboGetInfo(e.target)
@@ -667,7 +667,7 @@ function comboAddSingle(e) {
 		key      : page,
 		source   : null,
 	}
-	window.basegame.sendCompare([compareObj])
+	window.basegame_IPC.sendCompare([compareObj])
 }
 
 function comboItemClicker(e) {

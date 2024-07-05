@@ -8,7 +8,7 @@
 
 /* global MA, bootstrap */
 
-window.debug.receive('debug:item', (level, item) => { addItem(level, item) })
+window.debug_IPC.receive('debug:item', (level, item) => { addItem(level, item) })
 
 function clearOutput() {
 	MA.byIdText('debug_log', '')
@@ -23,7 +23,7 @@ function addItem(level, html) {
 
 function getAll() {
 	clearOutput()
-	window.debug.all().then((results) => {
+	window.debug_IPC.all().then((results) => {
 		for ( const thisItem of results ) {
 			addItem(...thisItem)
 		}
@@ -74,6 +74,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	MA.queryA('[data-bs-toggle="tooltip"]').map((element) => new bootstrap.Tooltip(element, { trigger : 'hover', placement : 'bottom' }))
 	MA.byId('debug_reset').addEventListener('click', resetViewRules)
-	MA.byId('debug_log').addEventListener('contextmenu', window.debug.context)
+	MA.byId('debug_log').addEventListener('contextmenu', window.debug_IPC.context)
 	getAll()
 })

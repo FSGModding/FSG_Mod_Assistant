@@ -87,7 +87,7 @@ function updateTable(order, data) {
 		})
 
 		thisElement.querySelector('.removeButton').addEventListener('click', () => {
-			window.compare.remove(key).then((newList) => { processList(newList) })
+			window.compare_IPC.remove(key).then((newList) => { processList(newList) })
 		})
 		tableElement.appendChild(thisElement)
 	}
@@ -98,14 +98,14 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 	getSorting()
 
-	window.compare.get().then((compareList) => { processList(compareList) })
+	window.compare_IPC.get().then((compareList) => { processList(compareList) })
 	
 	for ( const element of MA.query('.sort-up, .sort-down') ) {
 		element.addEventListener('click', changeSort)
 	}
 
 	MA.byId('clearButton').addEventListener('click', () => {
-		window.compare.clear().then((compareList) => { processList(compareList) })
+		window.compare_IPC.clear().then((compareList) => { processList(compareList) })
 	})
 })
 

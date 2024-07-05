@@ -13,7 +13,7 @@ const pageName = window.location.pathname.split('/').pop().replace('.html', '')
 const pageAPI = {
 	'basegame' : {
 		functions : {
-			context     : () => ipcRenderer.invoke('basegame:context'),
+			context     : () => ipcRenderer.invoke('context:cutCopyPaste'),
 			openFolder  : (folder) => ipcRenderer.invoke('basegame:folder', folder),
 			sendCompare : (compareArray) => ipcRenderer.invoke('dispatch:compare', compareArray),
 		},
@@ -30,7 +30,7 @@ const pageAPI = {
 	'debug' : {
 		functions : {
 			all     : () => ipcRenderer.invoke('debug:all'),
-			context : () => ipcRenderer.invoke('debug:context'),
+			context : () => ipcRenderer.invoke('context:copy'),
 		},
 		validAsync : new Set(['debug:item']),
 	},
@@ -46,12 +46,20 @@ const pageAPI = {
 		},
 		validAsync : new Set(),
 	},
+	'find' : {
+		functions : {
+			inputContext : () => ipcRenderer.invoke('context:cutCopyPaste'),
+			modContext   : () => ipcRenderer.invoke('context:find'),
+			all          : () => ipcRenderer.invoke('collect:all'),
+		},
+		validAsync : new Set(['find:filterText']),
+	},
 	
 }
 
 if ( typeof pageAPI[pageName] !== 'undefined' ) {
 	contextBridge.exposeInMainWorld(
-		pageName, {
+		`${pageName}_IPC`, {
 			...pageAPI[pageName].functions,
 
 			receive   : ( channel, func ) => {
