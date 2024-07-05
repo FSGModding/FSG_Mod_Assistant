@@ -14,36 +14,94 @@
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
 
-	<script src="renderJS/util/general_lib.js"></script>
-	<script src="renderJS/util/detail_lib.js"></script>
+	<script src="renderJS/util/element_lib.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
+	<script src="renderJS/util/storeItems.js"></script>
 	<script src="renderJS/util/baseGameData.js"></script>
 
 	<script src="renderJS/compare_ui.js"></script>
+
+	<style>
+		.sort-active {
+			color: #2abce6;
+		}
+		.sort-down, .sort-up {
+			cursor: pointer;
+		}
+		.store-icon-brand {
+			margin-top: -10%;
+			margin-left: -35%;
+			width: 35%;
+		}
+		.store-thumb-image {
+			max-width : 150px;
+		}
+	</style>
 </head>
-<body data-bs-theme="dark" class="overflow-custom2">
-	<div class="container-fluid px-1">
-		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3" style="-webkit-app-region: drag;">
+<body data-bs-theme="dark" class="overflow-auto">
+	<div class="container-fluid px-0">
+		<div class="sticky-top pb-2 bg-body border-bottom mb-3" style="-webkit-app-region: drag;">
 			<div class="row w-100">
-				<div class="col-7" >
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+				<div class="col-12 py-2" >
+					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n> - <l10n name="compare_title"></l10n></h2>
 				</div>
-				<div class="col-5 text-center mx-auto pt-4" id="badges"></div>
 			</div>
-			<h3 class="text-center mb-1 w-100 mx-auto display-6" id="title"><l10n name="compare_title"></l10n></h3>
-			
 		</div>
 
-		<div class="mx-4 mb-3 row g-0" id="bgContent">
+		<div class="mx-3 mb-3 row g-0" id="bgContent">
+			<button class="w-75 btn btn-primary mx-auto btn-sm mb-2" type="button" id="clearButton"><l10n name="compare_clear"></l10n></button>
 			<table class="w-100 table table-bordered table-sm"><thead>
 				<tr>
 					<th scope="col">&nbsp;</th>
-					<th scope="col" class="text-center" style="width:100px" id="head_price" onclick="clientSortBy('price')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class="fsico-look-price"></i></th>
-					<th scope="col" class="text-center" style="width:100px" id="head_engineLow" onclick="clientSortBy('engineLow')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class="fsico-look-engine"></i> <i style="color: #2abce6;" class="bi bi-chevron-bar-down"></i></th>
-					<th scope="col" class="text-center" style="width:100px" id="head_engineHigh" onclick="clientSortBy('engineHigh')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class="fsico-look-engine"></i> <i style="color: #2abce6;" class="bi bi-chevron-bar-up"></i></th>
-					<th scope="col" class="text-center" style="width:100px" id="head_maxspeed" onclick="clientSortBy('maxspeed')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class="fsico-look-speed"></i></th>
-					<th scope="col" class="text-center" style="width:100px" id="head_width" onclick="clientSortBy('width')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class="fsico-look-width"></i></th>
-					<th scope="col" class="text-center" style="width:100px" id="head_weight" onclick="clientSortBy('weight')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class="fsico-look-weight"></i></th>
-					<th scope="col" class="text-center" style="width:100px" id="head_fillunit" onclick="clientSortBy('fillunit')"><i style="font-size: 1.2em" class="sort-icon fsico-sort-none"></i><i style="font-size: 1.4rem" class="fsico-look-fillunit"></i></th>
+					<th scope="col" class="text-center" style="width:100px" id="head_price" data-sort="price">
+						<div class="d-flex flex-row align-items-center justify-content-around">
+							<div class="bi bi-caret-up-fill sort-up"></div>
+							<div style="font-size: 1.4rem" class="fsico-look-price"></div>
+							<div class="bi bi-caret-down-fill sort-down sort-active"></div>
+						</div>
+					</th>
+					<th scope="col" class="text-center" style="width:100px" id="head_engineLow" data-sort="engine_low">
+						<div class="d-flex flex-row align-items-center justify-content-around">
+							<div class="bi bi-caret-up-fill sort-up"></div>
+							<div style="font-size: 1.4rem" class="fsico-look-engine"> <i style="color: #2abce6;" class="bi bi-chevron-bar-down"></i></div>
+							<div class="bi bi-caret-down-fill sort-down"></div>
+						</div>
+					</th>
+					<th scope="col" class="text-center" style="width:100px" id="head_engineHigh" data-sort="engine_high">
+						<div class="d-flex flex-row align-items-center justify-content-around">
+							<div class="bi bi-caret-up-fill sort-up"></div>
+							<div style="font-size: 1.4rem" class="fsico-look-engine"> <i style="color: #2abce6;" class="bi bi-chevron-bar-up"></i></div>
+							<div class="bi bi-caret-down-fill sort-down"></div>
+						</div>
+					</th>
+					<th scope="col" class="text-center" style="width:100px" id="head_maxspeed" data-sort="speed">
+						<div class="d-flex flex-row align-items-center justify-content-around">
+							<div class="bi bi-caret-up-fill sort-up"></div>
+							<div style="font-size: 1.4rem" class="fsico-look-speed"></div>
+							<div class="bi bi-caret-down-fill sort-down"></div>
+						</div>
+					</th>
+					<th scope="col" class="text-center" style="width:100px" id="head_width" data-sort="width">
+						<div class="d-flex flex-row align-items-center justify-content-around">
+							<div class="bi bi-caret-up-fill sort-up"></div>
+							<div style="font-size: 1.4rem" class="fsico-look-width"></div>
+							<div class="bi bi-caret-down-fill sort-down"></div>
+						</div>
+					</th>
+					<th scope="col" class="text-center" style="width:100px" id="head_weight" data-sort="weight">
+						<div class="d-flex flex-row align-items-center justify-content-around">
+							<div class="bi bi-caret-up-fill sort-up"></div>
+							<div style="font-size: 1.4rem" class="fsico-look-weight"></div>
+							<div class="bi bi-caret-down-fill sort-down"></div>
+						</div>
+					</th>
+					<th scope="col" class="text-center" style="width:100px" id="head_fillunit" data-sort="fill">
+						<div class="d-flex flex-row align-items-center justify-content-around">
+							<div class="bi bi-caret-up-fill sort-up"></div>
+							<div style="font-size: 1.4rem" class="fsico-look-fillunit"></div>
+							<div class="bi bi-caret-down-fill sort-down"></div>
+						</div>
+					</th>
 					<th scope="col" class="text-center">&nbsp;</th>
 				</tr>
 			</thead>
@@ -54,18 +112,24 @@
 
 
 <template id="item_div">
-	<td class="text-center">
-		{{iconImage}}<br>
-		{{name}}<br><em>{{source}}</em>
-	</td>
-	<td class="text-end align-middle" data-type="price" data-sort="{{price_raw}}">{{price}}</td>
-	<td class="text-end align-middle" data-type="engineLow" data-sort="{{engineLow_raw}}">{{engineLow}}</td>
-	<td class="text-end align-middle" data-type="engineHigh" data-sort="{{engineHigh_raw}}">{{engineHigh}}</td>
-	<td class="text-end align-middle" data-type="maxspeed" data-sort="{{maxspeed_raw}}">{{maxspeed}}</td>
-	<td class="text-end align-middle" data-type="width" data-sort="{{width_raw}}">{{width}}</td>
-	<td class="text-end align-middle" data-type="weight" data-sort="{{weight_raw}}">{{weight}}</td>
-	<td class="text-end align-middle" data-type="fillunit" data-sort="{{fillunit_raw}}">{{fillunit}}</td>
-	<td class="text-center align-middle"><button type="button" class="btn btn-sm btn-danger" onclick="clientRemoveItem('{{uuid}}')"><i class="bi bi-trash3"></i></button></td>
+	<tr>
+		<td class="text-center">
+			<div class="d-flex flex-column align-items-center">
+				<div class="store-icon-image"><template-var>iconImage</template-var></div>
+				<div class="store-icon-brand"><template-var>brandImage</template-var></div>
+				<div><template-var>name</template-var></div>
+				<div class="fst-italic"><template-var>source</template-var></div>
+			</div>
+		</td>
+		<td class="text-end align-middle"><template-var>price</template-var></td>
+		<td class="text-end align-middle"><template-var>engineLow</template-var></td>
+		<td class="text-end align-middle"><template-var>engineHigh</template-var></td>
+		<td class="text-end align-middle"><template-var>maxspeed</template-var></td>
+		<td class="text-end align-middle"><template-var>width</template-var></td>
+		<td class="text-end align-middle"><template-var>weight</template-var></td>
+		<td class="text-end align-middle"><template-var>fillunit</template-var></td>
+		<td class="text-center align-middle"><button type="button" class="btn btn-sm btn-danger removeButton"><i class="bi bi-trash3"></i></button></td>
+	</tr>
 </template>
 
 </body>

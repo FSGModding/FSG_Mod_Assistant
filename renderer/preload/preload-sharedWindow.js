@@ -11,6 +11,22 @@ const {contextBridge, ipcRenderer} = require('electron')
 const pageName = window.location.pathname.split('/').pop().replace('.html', '')
 
 const pageAPI = {
+	'basegame' : {
+		functions : {
+			context     : () => ipcRenderer.invoke('basegame:context'),
+			openFolder  : (folder) => ipcRenderer.invoke('basegame:folder', folder),
+			sendCompare : (compareArray) => ipcRenderer.invoke('dispatch:compare', compareArray),
+		},
+		validAsync : new Set(['basegame:setPage']),
+	},
+	'compare' : {
+		functions : {
+			get     : () => ipcRenderer.invoke('compare:get'),
+			clear   : () => ipcRenderer.invoke('compare:clear'),
+			remove  : (key) => ipcRenderer.invoke('compare:remove', key),
+		},
+		validAsync : new Set(),
+	},
 	'debug' : {
 		functions : {
 			all     : () => ipcRenderer.invoke('debug:all'),
@@ -30,14 +46,7 @@ const pageAPI = {
 		},
 		validAsync : new Set(),
 	},
-	'basegame' : {
-		functions : {
-			context     : () => ipcRenderer.invoke('basegame:context'),
-			openFolder  : (folder) => ipcRenderer.invoke('basegame:folder', folder),
-			sendCompare : (compareArray) => ipcRenderer.invoke('dispatch:compare', compareArray),
-		},
-		validAsync : new Set(['basegame:setPage']),
-	},
+	
 }
 
 if ( typeof pageAPI[pageName] !== 'undefined' ) {

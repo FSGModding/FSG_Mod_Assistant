@@ -308,10 +308,10 @@ async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, c
 	lookItemMap[thisFile] = thisUUID
 	lookItemData[thisUUID] = thisItem
 	lookItemData[thisUUID].icon = ST.resolveIcon(thisIcon, thisItem.icon)
+	lookItemData[thisUUID].brandIcon = ST.resolveBrand(brands?.[thisItem.brand]?.icon, thisItem.brand)
 	lookItemData[thisUUID].uuid_name = thisFile
 
 	const thisItemData = ST.getInfo(thisItem)
-	const brandImgSRC  = ST.resolveBrand(brands?.[thisItem.brand]?.icon, thisItem.brand)
 	const fillImages   = ST.markupFillTypes(thisItem.fillTypes)
 	const sprayTypes   = ST.markupSprayTypes(thisItem?.sprayTypes, thisItemData.workWidth)
 	const chartHTML    = MA.showTestValueBool(thisItem.motorInfo) ? ST.markupChart(thisUUID) : ''
@@ -359,7 +359,7 @@ async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, c
 		)
 	)
 	const infoDivNode = DATA.templateEngine('vehicle_info_div', {
-		brandImage : `<img src="${brandImgSRC}" class="img-fluid store-brand-image">`,
+		brandImage : `<img src="${lookItemData[thisUUID].brandIcon}" class="img-fluid store-brand-image">`,
 		iconImage  : `<img src="${lookItemData[thisUUID].icon}" class="img-fluid store-icon-image">`,
 
 		category  : I18N.defer(thisItem.category),

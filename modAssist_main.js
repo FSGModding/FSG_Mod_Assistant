@@ -61,9 +61,7 @@ serveIPC.isModCacheDisabled = superDebugCache && !(app.isPackaged)
 process.on('uncaughtException',  (err, origin) => { funcLib.general.handleUnhandled('exception', err, origin) })
 process.on('unhandledRejection', (err, origin) => { funcLib.general.handleUnhandled('rejection', err, origin) })
 
-if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) {
-	funcLib.general.initUpdater()
-}
+if ( process.platform === 'win32' && app.isPackaged && gotTheLock && !isPortable ) { funcLib.general.initUpdater() }
 
 funcLib.wizard.initMain()
 
@@ -373,7 +371,13 @@ ipcMain.handle('i18n:lang', (_e, newValue = null) => {
 ipcMain.handle('i18n:get', (_e, key) => serveIPC.l10n.getText(key))
 // END: l10n Operations
 
-ipcMain.on('toMain_openModDetail', (_, thisMod) => { openDetailWindow(thisMod) })
+
+// #region DETAIL
+ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
+ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.renderMod(fullUUID))
+ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConflict() )
+ipcMain.handle('collect:malware', () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
+ipcMain.handle('dispatch:detail', (_, thisMod) => { openDetailWindow(thisMod) })
 
 function openDetailWindow(thisMod) {
 	return serveIPC.windowLib.createNamedMulti('detail', { queryString : `mod=${thisMod}` })
@@ -402,20 +406,36 @@ async function getStoreItems(fullUUID) {
 
 	return thisPromise.promise
 }
+// #endregion MOD DETAIL WINDOW
 
 
-ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
-ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.renderMod(fullUUID))
-ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConflict() )
-ipcMain.handle('collect:malware', () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
-
-ipcMain.handle('dispatch:basegame', (_, pageObj = { type : null, page : null}) => { openBaseGameWindow(pageObj.type, pageObj.page) })
-
-ipcMain.handle('dispatch:compare', (_, compareArray) => {
-	serveIPC.log.debug('unimplemented', 'ASKED TO OPEN COMPARE', compareArray)
+// #region COMPARE
+ipcMain.handle('dispatch:compare', (_, compareArray) => openCompareWindow(compareArray))
+ipcMain.handle('compare:get', () => Object.fromEntries(serveIPC.compareMap))
+ipcMain.handle('compare:clear', () => {
+	serveIPC.compareMap.clear()
+	return Object.fromEntries(serveIPC.compareMap)
 })
-// END : Detail window operation
+ipcMain.handle('compare:remove', (_, compareObj) => {
+	serveIPC.compareMap.delete(compareObj)
+	return Object.fromEntries(serveIPC.compareMap)
+})
+function openCompareWindow(compareArray) {
+	if ( Array.isArray(compareArray) ) {
+		for ( const compareObj of compareArray ) {
+			const compareKey = compareObj.internal ? compareObj.key : `${compareObj.source}--${compareObj.key}`
+			serveIPC.compareMap.set(compareKey, compareObj)
+		}
+	}
+	serveIPC.windowLib.raiseOrOpen('compare', () => {
+		serveIPC.windowLib.sendToValidWindow('compare', 'win:forceRefresh')
+	})
+}
+// #endregion
 
+
+// #region BASEGAME
+ipcMain.handle('dispatch:basegame', (_, pageObj = { type : null, page : null}) => { openBaseGameWindow(pageObj.type, pageObj.page) })
 ipcMain.handle('basegame:context', contextCutCopyPasteMenu)
 ipcMain.handle('basegame:folder', (_e, folderParts) => {
 	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', 22))
@@ -423,10 +443,21 @@ ipcMain.handle('basegame:folder', (_e, folderParts) => {
 	if ( typeof gamePath !== 'string') { return }
 
 	const dataPathParts = gamePath.split(path.sep)
-	const dataPath = path.join(...(dataPathParts[dataPathParts.length - 1] === 'x64' ? dataPathParts.slice(0, -1) : dataPathParts), 'data', ...folderParts)
+	const dataPath      = path.join(...(dataPathParts[dataPathParts.length - 1] === 'x64' ? dataPathParts.slice(0, -1) : dataPathParts), 'data', ...folderParts)
 	
 	shell.openPath(dataPath)
 })
+
+function openBaseGameWindow(type = null, page = null) {
+	serveIPC.windowLib.raiseOrOpen('basegame', () => {
+		serveIPC.windowLib.setWindowURL(
+			'basegame',
+			( type === null || page === null ) ? null : { page : page, type : type }
+		)
+	})
+}
+// #endregion BASEGAME WINDOW
+
 
 
 // All Context menus
@@ -661,46 +692,6 @@ ipcMain.on('toMain_changeGameLog',     () => {
 
 ipcMain.on('toMain_openDebugLog',    () => { serveIPC.windowLib.createNamedWindow('debug') })
 
-// Compare window operation
-function compare_base(id) { serveIPC.windowLib.sendToValidWindow('compare', 'fromMain_addBaseItem', id) }
-function compare_mod(content, source) { serveIPC.windowLib.sendToValidWindow('compare', 'fromMain_addModItem', content, source) }
-
-ipcMain.on('toMain_openCompareBase', (_, baseGameItemID) => {
-	serveIPC.windowLib.raiseOrOpen('compare', () => { compare_base(baseGameItemID) })
-})
-ipcMain.on('toMain_openCompareBaseMulti', (_, baseGameItemIDs) => {
-	serveIPC.windowLib.raiseOrOpen('compare', () => {
-		for ( const thisItemID of baseGameItemIDs ) { compare_base(thisItemID) }
-	})
-})
-ipcMain.on('toMain_openCompareMulti', (_, itemMap, source) => {
-	serveIPC.windowLib.raiseOrOpen('compare', () => {
-		for ( const thisItem of itemMap ) {
-			if ( thisItem.internal ) {
-				compare_base(thisItem.key)
-			} else {
-				compare_mod(thisItem.contents, source)
-			}
-		}
-	})
-})
-ipcMain.on('toMain_openCompareMod', (_, itemContents, source) => {
-	serveIPC.windowLib.raiseOrOpen('compare', () => { compare_mod(itemContents, source) })
-})
-ipcMain.on('toMain_openBaseGame', () => { openBaseGameWindow() })
-
-
-function openBaseGameWindow(type = null, page = null) {
-	serveIPC.windowLib.raiseOrOpen('basegame', () => {
-		serveIPC.windowLib.setWindowURL(
-			'basegame',
-			( type === null || page === null ) ?
-				null :
-				{ page : page, type : type }
-		)
-	})
-}
-// END : Compare window operation
 
 // One-off window types.
 ipcMain.on('toMain_showChangelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
@@ -720,11 +711,11 @@ function toggleMiniWindow () {
 }
 // END : Mini-mode operation
 
-// Preferences operations
+// #region SETTINGS IPC
 ipcMain.handle('settings:get', (_e, key) => serveIPC.storeSet.get(key) )
 ipcMain.handle('settings:theme', () => serveIPC.windowLib.themeCurrentColor )
 ipcMain.handle('settings:units', () => serveIPC.l10n.currentUnits )
-
+//#endregion
 
 ipcMain.on('toMain_getPref', (event, name)    => { event.returnValue = serveIPC.storeSet.get(name) })
 ipcMain.on('toMain_setPref', (_, name, value) => { funcLib.prefs.setNamed(name, value) })
@@ -934,6 +925,7 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 })
 // END: Version window operation */
 
+// #region REUSABLE CONTEXT MENUS
 async function contextCopyMenu(event) {
 	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
@@ -942,11 +934,14 @@ async function contextCutCopyPasteMenu(event) {
 	const menu = Menu.buildFromTemplate(funcLib.menu.snip_cut_copy_paste())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 }
+// #endregion REUSABLE CONTEXT MENUS
 
-// DEBUG LOG Page
+
+// #region DEBUG LOG WINDOW
 ipcMain.handle('debug:context', contextCopyMenu)
 ipcMain.handle('debug:log', (_e, level, process, ...args) => { serveIPC.log[level](process, ...args) })
 ipcMain.handle('debug:all', () => serveIPC.log.htmlLog )
+// #endregion DEBUG LOG WINDOW
 
 
 ipcMain.handle('win:close', (e) => { BrowserWindow.fromWebContents(e.sender).close() })
