@@ -48,9 +48,9 @@ const pageAPI = {
 	},
 	'find' : {
 		functions : {
-			inputContext : () => ipcRenderer.invoke('context:cutCopyPaste'),
-			modContext   : () => ipcRenderer.invoke('context:find'),
-			all          : () => ipcRenderer.invoke('collect:all'),
+			inputContext : ()     => ipcRenderer.invoke('context:cutCopyPaste'),
+			modContext   : (data) => ipcRenderer.invoke('context:find', data),
+			all          : ()     => ipcRenderer.invoke('collect:all'),
 		},
 		validAsync : new Set(['find:filterText']),
 	},
@@ -76,6 +76,7 @@ contextBridge.exposeInMainWorld(
 		debug   : (...args) => ipcRenderer.invoke('debug:log', 'debug', `render-${pageName}`, ...args),
 		error   : (...args) => ipcRenderer.invoke('debug:log', 'danger', `render-${pageName}`, ...args),
 		log     : (...args) => ipcRenderer.invoke('debug:log', 'info', `render-${pageName}`, ...args),
+		warning : (...args) => ipcRenderer.invoke('debug:log', 'warning', `render-${pageName}`, ...args),
 	}
 )
 

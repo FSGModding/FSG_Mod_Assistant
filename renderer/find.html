@@ -12,7 +12,7 @@
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
-	<script src="renderJS/util/general_lib.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
 	<script src="renderJS/find_ui.js"></script>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
@@ -29,30 +29,30 @@
 
 			<div class="input-group input-group-sm my-2">
 				<span class="input-group-text"><l10n name="filter_only"></l10n></span>
-				<input type="text" id="mods__filter" oncontextmenu="window.mods.cutCopyPaste()" oninput="clientFilter()" class="form-control mod-row-filter rounded-end">
-				<span id="mods__filter_clear" onclick="clientClearInput()" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:calc( 50% - 10px); "></span>
+				<input type="text" id="mods__filter" class="form-control mod-row-filter rounded-end">
+				<span id="mods__filter_clear" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:calc( 50% - 10px); "></span>
 			</div>
 		</div>
 
-		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped" id="full_table"></table>
+		<table class="w-100 py-0 my-0 table table-sm table-hover table-striped table-bordered" id="full_table"></table>
 
 	</div>
 
 
 <template id="version_entry">
-	<dt class="col-9 mb-1 overflow-hidden">{{name}}</dt><dd class="col-3 mb-1 ps-1">{{version}}</dd>
+	<dt class="col-9 mb-1 overflow-hidden"><template-var>name</template-var></dt><dd class="col-3 mb-1 ps-1"><template-var>version</template-var></dd>
 </template>
 
 <template id="mod_entry">
-	<tr id="{{id}}" oncontextmenu="clientRightClick('{{name}}')">
-		<td style="width: 64px; height: 64px">
-			<img class="img-fluid" alt="" src="{{icon}}">
+	<tr class="mod-entry-row">
+		<td class="p-2" style="width: 64px; height: 64px">
+			<template-var>icon</template-var>
 		</td>
 		<td>
-			<div class="search-string" data-search="{{search}}">{{name}}<br><small>{{title}} - <em>{{author}}</em></small></div>
+			<div><template-var>name</template-var><br><small><template-var>title</template-var> - <em><template-var>author</template-var></em></small></div>
 		</td>
 		<td class="text-end pe-4">
-			<dl class="small row g-0">{{versions}}</dl>
+			<dl class="small row g-0 versionList"></dl>
 		</td>
 	</tr>
 </template>

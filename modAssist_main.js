@@ -372,11 +372,18 @@ ipcMain.handle('i18n:get', (_e, key) => serveIPC.l10n.getText(key))
 // END: l10n Operations
 
 
-// #region DETAIL
-ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
-ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.renderMod(fullUUID))
+// #region MODCOLLECT IPC
 ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConflict() )
 ipcMain.handle('collect:malware', () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
+ipcMain.handle('collect:all', () => serveIPC.modCollect.toRenderer())
+
+ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.renderMod(fullUUID))
+
+ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
+// #endregion
+
+
+// #region DETAIL
 ipcMain.handle('dispatch:detail', (_, thisMod) => { openDetailWindow(thisMod) })
 
 function openDetailWindow(thisMod) {
@@ -436,7 +443,6 @@ function openCompareWindow(compareArray) {
 
 // #region BASEGAME
 ipcMain.handle('dispatch:basegame', (_, pageObj = { type : null, page : null}) => { openBaseGameWindow(pageObj.type, pageObj.page) })
-ipcMain.handle('basegame:context', contextCutCopyPasteMenu)
 ipcMain.handle('basegame:folder', (_e, folderParts) => {
 	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', 22))
 
@@ -460,7 +466,24 @@ function openBaseGameWindow(type = null, page = null) {
 
 
 
-// All Context menus
+// #region CONTEXT MENU
+ipcMain.handle('context:copy', (event) => {
+	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
+ipcMain.handle('context:cutCopyPaste', (event) => {
+	const menu = Menu.buildFromTemplate(funcLib.menu.snip_cut_copy_paste())
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
+ipcMain.handle('context:find', (event, thisMod) => {
+	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
+	menu.popup(BrowserWindow.fromWebContents(event.sender))
+})
+// #endregion
+
+
+
+
 ipcMain.on('toMain_dragOut', (event, modID) => {
 	const thisMod     = serveIPC.modCollect.modColUUIDToRecord(modID)
 	const thisFolder  = serveIPC.modCollect.modColUUIDToFolder(modID)
@@ -641,10 +664,7 @@ ipcMain.on('toMain_logContextMenu', async (event) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-ipcMain.on('toMain_findContextMenu', async (event, thisMod) => {
-	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
-	menu.popup(BrowserWindow.fromWebContents(event.sender))
-})
+
 
 
 
@@ -925,20 +945,10 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 })
 // END: Version window operation */
 
-// #region REUSABLE CONTEXT MENUS
-async function contextCopyMenu(event) {
-	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
-	menu.popup(BrowserWindow.fromWebContents(event.sender))
-}
-async function contextCutCopyPasteMenu(event) {
-	const menu = Menu.buildFromTemplate(funcLib.menu.snip_cut_copy_paste())
-	menu.popup(BrowserWindow.fromWebContents(event.sender))
-}
-// #endregion REUSABLE CONTEXT MENUS
+
 
 
 // #region DEBUG LOG WINDOW
-ipcMain.handle('debug:context', contextCopyMenu)
 ipcMain.handle('debug:log', (_e, level, process, ...args) => { serveIPC.log[level](process, ...args) })
 ipcMain.handle('debug:all', () => serveIPC.log.htmlLog )
 // #endregion DEBUG LOG WINDOW
