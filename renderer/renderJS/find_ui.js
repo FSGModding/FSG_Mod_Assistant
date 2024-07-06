@@ -3,8 +3,7 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-
-// Find Window UI
+// MARK: FIND UI
 
 /* global MA, DATA */
 
@@ -14,11 +13,13 @@ let fullList_filter = []
 let filter_last     = ''
 let filter_length   = 0
 
+// MARK: force filter
 window.find_IPC.receive('find:filterText', (text) => {
 	MA.byIdValue('mods__filter', text)
 	doFilter()
 })
 
+// MARK: doFilter
 function doFilter() {
 	const filter_this = MA.byIdValueLC('mods__filter')
 
@@ -49,6 +50,7 @@ function doFilter() {
 	}
 }
 
+// MARK: buildObject [data]
 function buildObject(response) {
 	fullList_data   = {}
 	fullList_sort   = []
@@ -94,6 +96,7 @@ function buildObject(response) {
 	buildDisplay()
 }
 
+// MARK: buildDisplay [html]
 function buildDisplay() {
 	const displayNode = MA.byId('full_table')
 
@@ -126,6 +129,7 @@ function buildDisplay() {
 	}
 }
 
+// MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
 	window.find_IPC.all().then(buildObject)
 

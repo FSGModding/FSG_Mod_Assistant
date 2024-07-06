@@ -3,8 +3,7 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-
-// Base game window UI
+// MARK: BASE GAME UI
 
 /* global I18N, MA, ST, DATA, NUM, client_BGData, ft_doReplace */
 let locale     = 'en'
@@ -63,6 +62,7 @@ const selectFills = [
 
 const comboKeyList = new Set()
 
+// #region COMBOS
 function subStep_combos (combos) {
 	if ( typeof combos === 'undefined' || combos === null || combos.length === 0 ) { return null }
 
@@ -117,7 +117,9 @@ function subStep_combos (combos) {
 	}
 	return comboNodes
 }
+// #endregion
 
+// #region VEHICLES
 // eslint-disable-next-line complexity
 async function subStep_vehicle(thisUUID, thisItem, pageID, combos = null) {
 	const thisIcon     = ST.resolveIcon(thisItem.icon)
@@ -206,7 +208,10 @@ async function subStep_vehicle(thisUUID, thisItem, pageID, combos = null) {
 		ST.markupChartScripts(thisItem, thisUUID, i18nUnits)()
 	}
 }
+// #endregion
 
+
+// #region PLACEABLE
 async function subStep_placeable(thisItem, thisIcon) {
 	const fillImages       = ST.markupFillTypes(thisItem.silo.types)
 	const thisItemIcon     = ST.resolveIcon(thisIcon, thisItem.icon)
@@ -249,7 +254,9 @@ async function subStep_placeable(thisItem, thisIcon) {
 
 	MA.byIdAppend('bgContent', infoDivNode)
 }
+// #endregion
 
+// #region CAT LISTS
 function getTopCat(cat) {
 	switch ( cat ) {
 		case 'vehicle' :
@@ -314,47 +321,6 @@ function getTopCat(cat) {
 	}
 }
 
-function buildSearchTree () {
-	searchTree = {}
-
-	for ( const [thisItemKey, thisItem] of Object.entries(client_BGData.records) ) {
-		const brandString = (thisItem.brand ? client_BGData.brandMap[thisItem.brand?.toLowerCase()]?.toLowerCase() : '')
-		searchTree[thisItemKey] = `${thisItem.name.toLowerCase()} ${brandString} ${thisItemKey.toLowerCase()}`
-	}
-}
-
-function attachProperCase(pageID) {
-	for ( const thisAttach of client_BGData.joints_list ) {
-		if ( thisAttach.toLowerCase() === pageID ) { return thisAttach }
-	}
-}
-
-function findFill(fillType) {
-	for ( const thisFill of selectFills ) {
-		if ( thisFill.filltype === fillType ) { return thisFill.l10n }
-	}
-}
-
-function getByFill(fillType) {
-	const vehicleList = []
-
-	for ( const [thisItemID, thisItem] of Object.entries(client_BGData.records) ) {
-		if ( thisItem.masterType !== 'vehicle' ) { continue }
-		if ( thisItem.fillTypes.length === 0 ) { continue }
-		if ( thisItem.fillTypes.includes(fillType) ) { vehicleList.push(thisItemID) }
-	}
-	return vehicleList.sort()
-}
-
-function buildCompareRequest(id) {
-	return {
-		contents : null,
-		internal : true,
-		key      : id,
-		source   : null,
-	}
-}
-
 function buildCategoryItem({type = null, page = null, maxWidthCalc = null, image = null, text = null, skipIfNotBase = true} = {}) {
 	return [
 		`<div class="text-center pageClicker flex-grow-0" data-type="${type}" data-page="${page}">`,
@@ -401,6 +367,49 @@ function buildItem(itemID, noBrand = false) {
 
 	return infoDivNode
 }
+// #endregion
+
+// #region UTILITY
+function buildSearchTree () {
+	searchTree = {}
+
+	for ( const [thisItemKey, thisItem] of Object.entries(client_BGData.records) ) {
+		const brandString = (thisItem.brand ? client_BGData.brandMap[thisItem.brand?.toLowerCase()]?.toLowerCase() : '')
+		searchTree[thisItemKey] = `${thisItem.name.toLowerCase()} ${brandString} ${thisItemKey.toLowerCase()}`
+	}
+}
+
+function attachProperCase(pageID) {
+	for ( const thisAttach of client_BGData.joints_list ) {
+		if ( thisAttach.toLowerCase() === pageID ) { return thisAttach }
+	}
+}
+
+function findFill(fillType) {
+	for ( const thisFill of selectFills ) {
+		if ( thisFill.filltype === fillType ) { return thisFill.l10n }
+	}
+}
+
+function getByFill(fillType) {
+	const vehicleList = []
+
+	for ( const [thisItemID, thisItem] of Object.entries(client_BGData.records) ) {
+		if ( thisItem.masterType !== 'vehicle' ) { continue }
+		if ( thisItem.fillTypes.length === 0 ) { continue }
+		if ( thisItem.fillTypes.includes(fillType) ) { vehicleList.push(thisItemID) }
+	}
+	return vehicleList.sort()
+}
+
+function buildCompareRequest(id) {
+	return {
+		contents : null,
+		internal : true,
+		key      : id,
+		source   : null,
+	}
+}
 
 function pageTitle(title, { compareAll = false, openFolder = false, preTranslated = false, skipIfNotBase = false } = {}) {
 	const titleDiv = document.createElement('div')
@@ -422,24 +431,10 @@ function pageTitle(title, { compareAll = false, openFolder = false, preTranslate
 
 	return titleDiv
 }
+// #endregion
 
-function changePage(e) {
-	const realTarget = e.target.closest('.pageClicker')
-	const thisType   = realTarget.safeAttribute('data-type')
-	const thisPage   = realTarget.safeAttribute('data-page')
-	if ( thisType !== null && thisPage !== null ) {
-		location.search = `?type=${thisType}&page=${thisPage}`
-	}
-}
 
-function compareSingle(e) {
-	e.preventDefault()
-	e.stopPropagation()
-	const realTarget = e.target.closest('.pageClicker')
-
-	window.basegame_IPC.sendCompare([buildCompareRequest(realTarget.safeAttribute('data-page'))])
-}
-
+// #region PAGE LOAD
 // eslint-disable-next-line complexity
 window.addEventListener('DOMContentLoaded', async () => {
 	const urlParams     = new URLSearchParams(window.location.search)
@@ -595,7 +590,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 	MA.byIdEventIfExists('homeButton', () => { location.search = '' })
 	MA.byIdEventIfExists('homeButtonError', () => { location.search = '' })
 })
+// #endregion
 
+// #region FILTER
 function findItemsByTerm(strTerm) {
 	const foundItems = []
 	for ( const [thisItemKey, thisItem] of Object.entries(searchTree) ) {
@@ -626,6 +623,25 @@ function doFilter() {
 function doClear() {
 	MA.byIdValue('mods__filter', '')
 	doFilter()
+}
+// #endregion
+
+// #region CLICKS
+function changePage(e) {
+	const realTarget = e.target.closest('.pageClicker')
+	const thisType   = realTarget.safeAttribute('data-type')
+	const thisPage   = realTarget.safeAttribute('data-page')
+	if ( thisType !== null && thisPage !== null ) {
+		location.search = `?type=${thisType}&page=${thisPage}`
+	}
+}
+
+function compareSingle(e) {
+	e.preventDefault()
+	e.stopPropagation()
+	const realTarget = e.target.closest('.pageClicker')
+
+	window.basegame_IPC.sendCompare([buildCompareRequest(realTarget.safeAttribute('data-page'))])
 }
 
 function attachClicker(e) {
@@ -673,3 +689,4 @@ function comboItemClicker(e) {
 	const { type, page } = comboGetInfo(e.target)
 	location.search = `?type=${type}&page=${page}`
 }
+// #endregion

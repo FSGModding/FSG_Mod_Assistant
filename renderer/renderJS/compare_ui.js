@@ -3,8 +3,7 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-
-// Compare window UI
+// MARK: COMPARE UI
 
 /* global DATA, MA, ST, NUM, I18N, client_BGData */
 
@@ -13,6 +12,7 @@ let sorting      = null
 
 function noNull(value) { return value === null ? 0 : value }
 
+// MARK: PROCESS
 function processList(list) {
 	const keyArray   = Object.keys(list)
 	const dataObject = {}
@@ -63,6 +63,7 @@ function processList(list) {
 	I18N.process()
 }
 
+// MARK: TABLE
 function updateTable(order, data) {
 	const tableElement = MA.byId('displayTable')
 
@@ -93,6 +94,7 @@ function updateTable(order, data) {
 	}
 }
 
+// MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', async () => {
 	locale    = await window.i18n.lang()
 
@@ -110,6 +112,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 })
 
 
+// MARK: CLICKS
 function changeSort(e) {
 	const sortType = e.target.closest('th').safeAttribute('data-sort')
 	const sortDirection = e.target.classList.contains('sort-down') ? 'sort-down' : 'sort-up'

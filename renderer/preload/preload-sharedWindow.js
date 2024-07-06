@@ -13,16 +13,16 @@ const pageName = window.location.pathname.split('/').pop().replace('.html', '')
 const pageAPI = {
 	'basegame' : {
 		functions : {
-			context     : () => ipcRenderer.invoke('context:cutCopyPaste'),
-			openFolder  : (folder) => ipcRenderer.invoke('basegame:folder', folder),
-			sendCompare : (compareArray) => ipcRenderer.invoke('dispatch:compare', compareArray),
+			context     : ()         => ipcRenderer.send('context:cutCopyPaste'),
+			openFolder  : (folder)   => ipcRenderer.invoke('basegame:folder', folder),
+			sendCompare : (aCompare) => ipcRenderer.send('dispatch:compare', aCompare),
 		},
 		validAsync : new Set(['basegame:setPage']),
 	},
 	'compare' : {
 		functions : {
-			get     : () => ipcRenderer.invoke('compare:get'),
-			clear   : () => ipcRenderer.invoke('compare:clear'),
+			get     : ()    => ipcRenderer.invoke('compare:get'),
+			clear   : ()    => ipcRenderer.invoke('compare:clear'),
 			remove  : (key) => ipcRenderer.invoke('compare:remove', key),
 		},
 		validAsync : new Set(),
@@ -30,7 +30,7 @@ const pageAPI = {
 	'debug' : {
 		functions : {
 			all     : () => ipcRenderer.invoke('debug:all'),
-			context : () => ipcRenderer.invoke('context:copy'),
+			context : () => ipcRenderer.send('context:copy'),
 		},
 		validAsync : new Set(['debug:item']),
 	},
@@ -41,15 +41,15 @@ const pageAPI = {
 			getMod     : (key) => ipcRenderer.invoke('mod:modColUUID', key),
 			getStore   : (key) => ipcRenderer.invoke('store:modColUUID', key),
 
-			sendBase    : (pageObject)   => ipcRenderer.invoke('dispatch:basegame', pageObject),
-			sendCompare : (compareArray) => ipcRenderer.invoke('dispatch:compare', compareArray),
+			sendBase    : (pageObject)   => ipcRenderer.send('dispatch:basegame', pageObject),
+			sendCompare : (compareArray) => ipcRenderer.send('dispatch:compare', compareArray),
 		},
 		validAsync : new Set(),
 	},
 	'find' : {
 		functions : {
-			inputContext : ()     => ipcRenderer.invoke('context:cutCopyPaste'),
-			modContext   : (data) => ipcRenderer.invoke('context:find', data),
+			inputContext : ()     => ipcRenderer.send('context:cutCopyPaste'),
+			modContext   : (data) => ipcRenderer.send('context:find', data),
 			all          : ()     => ipcRenderer.invoke('collect:all'),
 		},
 		validAsync : new Set(['find:filterText']),
@@ -59,12 +59,21 @@ const pageAPI = {
 			auto         : () => ipcRenderer.invoke('gamelog:auto'),
 			filename     : () => ipcRenderer.invoke('gamelog:getFile'),
 			get          : () => ipcRenderer.invoke('gamelog:get'),
-			inputContext : () => ipcRenderer.invoke('context:cutCopyPaste'),
-			logContext   : () => ipcRenderer.invoke('context:copy'),
-			openFolder   : () => ipcRenderer.invoke('gamelog:folder'),
+			inputContext : () => ipcRenderer.send('context:cutCopyPaste'),
+			logContext   : () => ipcRenderer.send('context:copy'),
+			openFolder   : () => ipcRenderer.send('gamelog:folder'),
 			pickFile     : () => ipcRenderer.invoke('gamelog:open'),
 		},
 		validAsync : new Set(),
+	},
+	'notes' : {
+		functions : {
+			active : ()    => ipcRenderer.invoke('settings:activeCollection'),
+			get    : (key) => ipcRenderer.invoke('settings:collection:get', key),
+			last   : ()    => ipcRenderer.invoke('settings:lastGame'),
+			set    : (collect, key, value) => ipcRenderer.invoke('settings:collection:set', collect, key, value),
+		},
+		validAsync : new Set(['settings:collection:id']),
 	},
 }
 
@@ -84,17 +93,17 @@ if ( typeof pageAPI[pageName] !== 'undefined' ) {
 
 contextBridge.exposeInMainWorld(
 	'log', {
-		debug   : (...args) => ipcRenderer.invoke('debug:log', 'debug', `render-${pageName}`, ...args),
-		error   : (...args) => ipcRenderer.invoke('debug:log', 'danger', `render-${pageName}`, ...args),
-		log     : (...args) => ipcRenderer.invoke('debug:log', 'info', `render-${pageName}`, ...args),
-		warning : (...args) => ipcRenderer.invoke('debug:log', 'warning', `render-${pageName}`, ...args),
+		debug   : (...args) => ipcRenderer.send('debug:log', 'debug', `render-${pageName}`, ...args),
+		error   : (...args) => ipcRenderer.send('debug:log', 'danger', `render-${pageName}`, ...args),
+		log     : (...args) => ipcRenderer.send('debug:log', 'info', `render-${pageName}`, ...args),
+		warning : (...args) => ipcRenderer.send('debug:log', 'warning', `render-${pageName}`, ...args),
 	}
 )
 
 contextBridge.exposeInMainWorld(
 	'i18n', {
-		get  : (key) => ipcRenderer.invoke('i18n:get', key),
-		lang : (newValue = null) => ipcRenderer.invoke('i18n:lang', newValue),
+		get  : (key)       => ipcRenderer.invoke('i18n:get', key),
+		lang : (nv = null) => ipcRenderer.invoke('i18n:lang', nv),
 
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
@@ -110,33 +119,11 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'settings', {
-		get : (key) => ipcRenderer.invoke('settings:get', key),
-		theme : () => ipcRenderer.invoke('settings:theme'),
-		units : () => ipcRenderer.invoke('settings:units'),
+		get   : (key) => ipcRenderer.invoke('settings:get', key),
+		theme : ()    => ipcRenderer.invoke('settings:theme'),
+		units : ()    => ipcRenderer.invoke('settings:units'),
 	}
 )
-
-// contextBridge.exposeInMainWorld(
-// 	'l10n', {
-// 		getLocale        : () => { return ipcRenderer.sendSync('toMain_getText_locale') },
-// 		getText_send     : ( text )  => { ipcRenderer.send('toMain_getText_send', text) },
-// 		getText_sync     : ( items ) => { return ipcRenderer.sendSync('toMain_getText_sync', items) },
-// 		getTextBase_send : ( text )  => { ipcRenderer.send('toMain_getTextBase_send', text) },
-// 		receive          : ( channel, func ) => {
-// 			const validChannels = new Set([
-// 				'fromMain_getText_return',
-// 				'fromMain_getText_return_base',
-// 				'fromMain_getText_return_title',
-// 				'fromMain_l10n_refresh'
-// 			])
-		
-// 			if ( validChannels.has( channel ) ) {
-// 				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
-// 			}
-// 		},
-// 	}
-// )
-
 
 contextBridge.exposeInMainWorld(
 	'operations', {

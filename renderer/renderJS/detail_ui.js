@@ -3,6 +3,7 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
+// MARK: DETAIL UI
 /* eslint complexity: ["error", 25] */
 /* global DATA, MA, ST, NUM, I18N, __, ft_doReplace, clientGetKeyMapSimple, clientGetKeyMap, clientMakeCropCalendar, client_BGData */
 
@@ -13,7 +14,7 @@ let comboItemMap = {}
 let i18nUnits    = null
 let locale       = 'en'
 
-
+// MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
 	lookItemData = {}
 	lookItemMap  = {}
@@ -88,13 +89,14 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 })
 
-
+// MARK: mapImage
 async function step_mapImage(mapImage) {
 	if ( mapImage === null || typeof mapImage !== 'string') { return }
 	MA.byId('map_image_div').clsShow()
 	MA.byId('map_image').src = mapImage
 }
 
+// MARK: crops
 async function step_crops(thisMod) {
 	if ( Array.isArray(thisMod.modDesc.cropInfo) ) {
 		MA.byId('cropcal_div').clsShow()
@@ -113,6 +115,7 @@ async function step_crops(thisMod) {
 	}
 }
 
+// MARK: badges
 async function step_badges(thisMod) {
 	return window.detail_IPC.getMalware().then((malware) => {
 		let foundMalware = false
@@ -138,6 +141,7 @@ async function step_badges(thisMod) {
 	})
 }
 
+// MARK: problems
 async function step_problems(thisMod) {
 	return window.detail_IPC.getBinds().then(async (bindConflicts) => {
 		const bindingIssue     = bindConflicts[thisMod.currentCollection][thisMod.fileDetail.shortName] ?? null
@@ -156,6 +160,7 @@ async function step_problems(thisMod) {
 	})
 }
 
+// MARK: keyBinds
 async function step_keyBinds(thisMod) {
 	const keyBinds = []
 	for ( const action in thisMod.modDesc.binds ) {
@@ -169,6 +174,7 @@ async function step_keyBinds(thisMod) {
 	
 }
 
+// MARK: table (top)
 async function step_table(thisMod) {
 	const joinedArrays = {
 		bigFiles       : [thisMod.fileDetail.tooBigFiles],
@@ -213,6 +219,7 @@ async function step_table(thisMod) {
 	)
 }
 
+// MARK: SUB issues
 async function subStep_issues(modRecord) {
 	const problemPromises = []
 	for ( const issue of modRecord.issues ) {
@@ -230,6 +237,7 @@ async function subStep_issues(modRecord) {
 	return problemPromises
 }
 
+// MARK: SUB binds
 async function subStep_binds(bindingIssue) {
 	const problemPromises = []
 	if ( bindingIssue !== null ) {
@@ -244,6 +252,7 @@ async function subStep_binds(bindingIssue) {
 	return problemPromises
 }
 
+// MARK: SUB combos
 function subStep_combos (combos, lookRecord, parentItem) {
 	if ( typeof combos === 'undefined' || combos === null || combos.length === 0 ) { return null }
 
@@ -304,6 +313,7 @@ function subStep_combos (combos, lookRecord, parentItem) {
 	return comboNodes
 }
 
+// MARK: SUB vehicles
 async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, combos) {
 	lookItemMap[thisFile] = thisUUID
 	lookItemData[thisUUID] = thisItem
@@ -394,6 +404,7 @@ async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, c
 	}
 }
 
+// MARK: sub PLACEABLE
 async function subStep_placeable(thisItem, thisIcon) {
 	const fillImages       = ST.markupFillTypes(thisItem.silo.types)
 	const thisItemIcon     = ST.resolveIcon(thisIcon, thisItem.icon)
@@ -437,6 +448,7 @@ async function subStep_placeable(thisItem, thisIcon) {
 	MA.byIdAppend('storeitems', infoDivNode)
 }
 
+// MARK: CLICKERS
 function showHideClicker(e) {
 	const isShow      = e.target.classList.contains('section_show')
 	const buttonGroup = e.target.parentElement

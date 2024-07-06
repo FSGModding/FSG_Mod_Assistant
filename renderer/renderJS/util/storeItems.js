@@ -3,13 +3,13 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-
-// FSG Mod Assist Utilities (detail windows)
+// MARK: STORE HELPER
 
 /* global client_BGData, I18N, DATA, locale, Chart, MA */
 
 const _f = (type, width = '2rem') => `<fillType style="font-size: ${width}" name="${type}"></fillType>`
 
+// MARK: NUM formatters
 const NUM = {
 	default(value, { float = false, safe = 0 } = {}) {
 		const newValue = typeof value === 'number' || typeof value === 'string' ? value : safe
@@ -86,6 +86,7 @@ const NUM = {
 	},
 }
 
+// MARK: ST store
 const ST = {
 	/* cSpell:disable */
 	brandList : new Set([
@@ -226,7 +227,7 @@ const ST = {
 		return thisData
 	},
 	
-
+	// MARK: icons
 	resolveBrand : (icon, brand) => {
 		if ( typeof icon === 'string' && icon !== '' ) { return icon }
 		const includedBrand = ST.isKnownBrand(brand)
@@ -253,14 +254,8 @@ const ST = {
 	},
 	
 
-	markupFillTypes : (fillArray) => {
-		if ( typeof fillArray !== 'object' || !Array.isArray(fillArray) ) { return [] }
-		return fillArray.map((x) => `<fillType name="${x}"></fillType>`)
-	},
-
-
-
-	markupDataRow  : (icon, value, extraLine = null ) => {
+	// MARK: markup...
+	markupDataRow     : (icon, value, extraLine = null ) => {
 		return [
 			'<div class="row border-top align-items-center py-1">',
 			`<div class="col-auto">${ST.resolveGameIcon(icon, { width : '1.5em' })}</div>`,
@@ -273,14 +268,18 @@ const ST = {
 		if ( typeof value === 'undefined' || value === 0 || value === null || value === 0 || value === '' ) { return '' }
 		return ST.markupDataRow(icon, value, extraLine)
 	},
-	markupDataType : (type, value, extraLine = null ) => {
+	markupDataType    : (type, value, extraLine = null ) => {
 		if ( value === 0 || ( Array.isArray(value) && value[0] === 0 )) { return '' }
 		const thisTypeMap = ST.typeIconMap[type]
 		return ST.markupDataRow(thisTypeMap[0], NUM.fmtType(thisTypeMap[1], value), extraLine)
 	},
-	markupFunctions : ( functions ) => functions.map((x) => I18N.defer(x)).join('<br>'),
-	markupJoint     : ( haveClass, id, name ) => `<div class="badge joint ${haveClass}" data-jointPage="${id}">${name}</div>`,
-	markupJoints    : (joints, doesHave ) => { //, isBase = true) => {
+	markupFillTypes   : (fillArray) => {
+		if ( typeof fillArray !== 'object' || !Array.isArray(fillArray) ) { return [] }
+		return fillArray.map((x) => `<fillType name="${x}"></fillType>`)
+	},
+	markupFunctions   : ( functions ) => functions.map((x) => I18N.defer(x)).join('<br>'),
+	markupJoint       : ( haveClass, id, name ) => `<div class="badge joint ${haveClass}" data-jointPage="${id}">${name}</div>`,
+	markupJoints      : (joints, doesHave ) => { //, isBase = true) => {
 		if ( typeof joints === 'undefined' ) { return '' }
 	
 		let   hasCustom = false
@@ -307,7 +306,65 @@ const ST = {
 
 		return jointHTML.length === 0 ? null : `<div class="d-flex joint-container justify-content-end">${jointHTML.join('')}</div>`
 	},
-	markupSprayTypes     : (sprayTypes, defaultWidth) => {
+	markupProductions : (prodRecords) => {
+		if ( typeof prodRecords === 'undefined' || prodRecords === null ) { return ''}
+		const prodNodes = []
+	
+		for ( const thisProduction of prodRecords ) {
+			const cycleMultiplier = thisProduction.cycles
+	
+			const inputHTML = []
+	
+			for ( const inputMix in thisProduction.inputs ) {
+				if ( inputMix !== 'no_mix' ) {
+					inputHTML.push(ST.markupRow(
+						thisProduction.inputs[inputMix].map((x) =>
+							`${NUM.fmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}`
+						).join('<i class="text-info bi-distribute-horizontal mx-1"></i>')
+					))
+				}
+			}
+	
+			inputHTML.push(...thisProduction.inputs.no_mix.map((x) => {
+				return ST.markupRowSinglet(NUM.fmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
+			}))
+	
+			if ( thisProduction.boosts.length !== 0 ) {
+				inputHTML.unshift(ST.markupRow(thisProduction.boosts.map((x) =>
+					`<div class="d-flex align-items-center">${NUM.fmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}<span class="ms-1">(${x.boostFac * 100}%)</span></div>`
+				).join('<i class="text-info bi-plus-slash-minus mx-1"></i>')))
+			}
+
+			let nameString = thisProduction.name
+
+			if ( thisProduction.params !== null ) {
+				const paramArray = thisProduction.params.split('|')
+				let   matchNum = -1
+				nameString = nameString.replace(/%s/g, () => {
+					matchNum++
+					return paramArray[matchNum] || '%s'
+				})
+			}
+
+			nameString = nameString.replace(/\$l10n_\w+/g, (match) => {
+				I18N.defer(match)
+			})
+
+			prodNodes.push(DATA.templateEngine('prod_div', {
+				prodCost         : NUM.fmtNoFrac(thisProduction.cost),
+				prodCycles       : thisProduction.cycles,
+				prodInputs       : inputHTML.join(ST.markupRow('<i class="text-success bi-plus-lg"></i>')),
+				prodName         : nameString,
+				prodOutput       : thisProduction.outputs.map((x) =>
+					ST.markupRowSinglet(NUM.fmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
+				).join(ST.markupRow('<i class="text-success bi-plus-lg"></i>')),
+			}))
+		}
+		return prodNodes
+	},
+	markupRow         : (content) => `<div class="d-flex flex-wrap justify-content-center align-items-center">${content}</div>`,
+	markupRowSinglet  : (icon, amount = '') => ST.markupRow(`${icon}${amount}`),
+	markupSprayTypes  : (sprayTypes, defaultWidth) => {
 		if ( typeof sprayTypes !== 'object' || sprayTypes === null || sprayTypes.length === 0 ) { return null }
 
 		const sprayTypesHTML = []
@@ -323,7 +380,7 @@ const ST = {
 		return sprayTypesHTML.length === 0 ? null : sprayTypesHTML.join('<br>')
 	},
 	
-
+	// MARK: markupCharts...
 	markupChart : (thisUUID) => {
 		return [
 			`<nav><div class="nav nav-tabs" id="${thisUUID}_nav-tab" role="tablist">`,
@@ -504,64 +561,4 @@ const ST = {
 			)
 		}
 	},
-
-	markupProductions : (prodRecords) => {
-		if ( typeof prodRecords === 'undefined' || prodRecords === null ) { return ''}
-		const prodNodes = []
-	
-		for ( const thisProduction of prodRecords ) {
-			const cycleMultiplier = thisProduction.cycles
-	
-			const inputHTML = []
-	
-			for ( const inputMix in thisProduction.inputs ) {
-				if ( inputMix !== 'no_mix' ) {
-					inputHTML.push(ST.markupRow(
-						thisProduction.inputs[inputMix].map((x) =>
-							`${NUM.fmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}`
-						).join('<i class="text-info bi-distribute-horizontal mx-1"></i>')
-					))
-				}
-			}
-	
-			inputHTML.push(...thisProduction.inputs.no_mix.map((x) => {
-				return ST.markupRowSinglet(NUM.fmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
-			}))
-	
-			if ( thisProduction.boosts.length !== 0 ) {
-				inputHTML.unshift(ST.markupRow(thisProduction.boosts.map((x) =>
-					`<div class="d-flex align-items-center">${NUM.fmtMulti(x.amount, cycleMultiplier)}${_f(x.filltype)}<span class="ms-1">(${x.boostFac * 100}%)</span></div>`
-				).join('<i class="text-info bi-plus-slash-minus mx-1"></i>')))
-			}
-
-			let nameString = thisProduction.name
-
-			if ( thisProduction.params !== null ) {
-				const paramArray = thisProduction.params.split('|')
-				let   matchNum = -1
-				nameString = nameString.replace(/%s/g, () => {
-					matchNum++
-					return paramArray[matchNum] || '%s'
-				})
-			}
-
-			nameString = nameString.replace(/\$l10n_\w+/g, (match) => {
-				I18N.defer(match)
-			})
-
-			prodNodes.push(DATA.templateEngine('prod_div', {
-				prodCost         : NUM.fmtNoFrac(thisProduction.cost),
-				prodCycles       : thisProduction.cycles,
-				prodInputs       : inputHTML.join(ST.markupRow('<i class="text-success bi-plus-lg"></i>')),
-				prodName         : nameString,
-				prodOutput       : thisProduction.outputs.map((x) =>
-					ST.markupRowSinglet(NUM.fmtMulti(x.amount, cycleMultiplier), _f(x.filltype))
-				).join(ST.markupRow('<i class="text-success bi-plus-lg"></i>')),
-			}))
-		}
-		return prodNodes
-	},
-
-	markupRow  : (content) => `<div class="d-flex flex-wrap justify-content-center align-items-center">${content}</div>`,
-	markupRowSinglet : (icon, amount = '') => ST.markupRow(`${icon}${amount}`),
 }

@@ -4,12 +4,13 @@
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
 
-// Debug window UI
+// MARK: DEBUG UI
 
 /* global MA, bootstrap */
 
 window.debug_IPC.receive('debug:item', (level, item) => { addItem(level, item) })
 
+// MARK: OUTPUT BUILD
 function clearOutput() {
 	MA.byIdText('debug_log', '')
 }
@@ -30,6 +31,7 @@ function getAll() {
 	})
 }
 
+// MARK: DYNAMIC CSS
 function resetViewRules() {
 	while ( levelStyleSheet.cssRules.length !== 0 ) {
 		levelStyleSheet.deleteRule(0)
@@ -49,6 +51,7 @@ function initialViewRules() {
 let   levelStyleSheet = null
 const levelNames      = new Set(['debug', 'info', 'notice', 'warning', 'danger'])
 
+// MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
 	for ( const element of MA.queryA('input.filter_only') ) {
 		element.addEventListener('change', (e) => {

@@ -4,16 +4,19 @@
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
 /* global bootstrap */
-// FSG Mod Assist Utilities (client side)
+// MARK: MA Util Lib
 
 enhanceElement()
 
+// MARK: pageSTATE
 const pageSTATE = {
 	do_tooltips : false,
 	tooltips    : [],
 }
 
+// MARK: MA
 const MA = {
+	// MARK: id selectors
 	byId       : ( id ) => document.getElementById( id ),
 	byIdAppend : ( id, element = null ) => {
 		if ( element === null ) { return false }
@@ -47,11 +50,13 @@ const MA = {
 		const testValue = MA.byIdValue(id, newValue)
 		return testValue === null ? '' : testValue.toLowerCase()
 	},
+	// MARK: query selectors
 	byTag      : ( tag )   => document.getElementsByTagName(tag),
 	query      : ( query ) => document.querySelectorAll( query ),
 	queryA     : ( query ) => [...document.querySelectorAll( query )],
 	queryF     : ( query ) => document.querySelector(query),
 
+	// MARK: display tests
 	hideTest   : ( test ) => test ? 'd-none' : '',
 	showTest   : ( test ) => test ? '' : 'd-none',
 
@@ -76,11 +81,7 @@ const MA = {
 
 	clearTooltips   : () => { for ( const tooltip of MA.query('.tooltip') ) { tooltip?.hide?.() } },
 
-	interceptLog : (page) => {
-		window.console.log = (...args) => window.log.log([...args].map((x) => x.toString()).join(''), page)
-		window.console.error = (...args) => window.log.error([...args].map((x) => x.toString()).join(''), page)
-	},
-
+	// MARK: async rcvd
 	start : () => {
 		MA.updateFontSize()
 		MA.updateTheme()
@@ -96,7 +97,7 @@ const MA = {
 		})
 	},
 }
-
+// MARK: DATA
 const DATA = {
 	checkX : (amount, showCount = true) =>
 		`${(showCount)?`${amount} `:''}${(amount>0)?DATA.getIcon('check', 'success'):DATA.getIcon('x', 'danger')}`,
@@ -199,6 +200,7 @@ const DATA = {
 		'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'-250 -250 1403.2 1404.2\'%3E%3Cpath style=\'fill: %23771111; filter: drop-shadow(10px 10px 5px rgb(0 0 0 / 0.4));\' opacity=\'0.3\' d=\'M441.6 0a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2ZM129 674a387.4 387.4 0 0 1-76.9-232.4 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114 386.9 386.9 0 0 1 283 122L129.2 674Zm587.8 43a388 388 0 0 1-275.3 114A386.9 386.9 0 0 1 163 713.6l595-499.1a387 387 0 0 1 73 227A386.9 386.9 0 0 1 717 717Z\' /%3E%3C/svg%3E',
 
 
+	// MARK: ...Engine
 	eventEngine : (nodeObject, selector, handler, eventType = 'click') => {
 		for ( const element of nodeObject.querySelectorAll(selector) ) {
 			element.addEventListener(eventType, handler)
@@ -235,7 +237,7 @@ const DATA = {
 	},
 }
 
-
+// MARK: I18N
 const I18N = {
 	buildBadgeMod   : async (badge) => {
 		const lcBadgeName = badge.name.toLowerCase()
@@ -324,6 +326,7 @@ const I18N = {
 
 const __ = I18N.buildElement
 
+// MARK: ELEMENT clsHelp
 function enhanceElement() {
 	Element.prototype.clsOrGate = function ( test, ifTrue = 'text-success', ifFalse = 'text-danger' ) {
 		if ( test ) {
@@ -392,6 +395,7 @@ function enhanceElement() {
 	}
 }
 
+// MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
 	window.fontSheet = new CSSStyleSheet()
 	document.adoptedStyleSheets.push(window.fontSheet)
@@ -432,6 +436,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	})
 })
 
+// MARK: ASYNC RECEIVERS
 //TODO: theme change
 window?.operations?.receive('win:updateTheme', MA.updateTheme)
 window?.operations?.receive('win:updateFontSize', MA.updateFontSize)

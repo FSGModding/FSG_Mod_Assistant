@@ -74,6 +74,7 @@ contextBridge.exposeInMainWorld(
 		doDownload : ( collectKey, uri, unpack ) => { ipcRenderer.send('toMain_import_json_download', collectKey, uri, unpack) },
 		doReload   : ( ) => { ipcRenderer.send('toMain_refreshFolders') },
 		setFolder  : ( ) => { ipcRenderer.send('toMain_addFolder', true) },
+		// FIXME : broken now.
 		setNote    : ( id, value, collection ) => ipcRenderer.send('toMain_setNote', id, value, collection, true),
 
 		receive   : ( channel, func ) => {

@@ -3,19 +3,17 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-
-// Debug window UI
+// MARK: DEBUG UI
 
 /* global MA, bootstrap */
 
 const autoUpdateTimeSeconds = 15
-// const maxLinesWatch = 10000
 let   dataCache     = []
 let   findCache     = []
 let   dataCacheGood = false
 let   showData      = []
-// window.gamelog.receive('fromMain_gameLog', (data, fileName) => { processLogData(data, fileName) })
 
+// MARK: PROCESS LOG
 function processLogData (data, fileName) {
 	const autoScroll = MA.byId('auto_scroll').checked || false
 	
@@ -133,6 +131,11 @@ function processLogData (data, fileName) {
 	}
 }
 
+// MARK: FILTER
+function getActiveFilters() {
+	const showThese  = new Set(MA.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
+	return { showDupes : showThese.has('dupes'), showThese : showThese }
+}
 
 function filterLines() {
 	if ( dataCacheGood ) { return dataCache }
@@ -154,6 +157,7 @@ function filterLines() {
 	return returnLines
 }
 
+// MARK: DISPLAY [part]
 function buildDisplayTable() {
 	const theTable   = MA.byId('game_log')
 	const theContain = MA.byId('game_log_contain')
@@ -181,6 +185,7 @@ function buildDisplayTable() {
 	highLightFinds()
 }
 
+// MARK: HTML Line
 function lineEntry(cell1 = '', cell2 = '', cell3 = '', cell3ClassList = new Set(), height = '19') {
 	return [
 		`<tr style="height:${height}px">`,
@@ -191,6 +196,7 @@ function lineEntry(cell1 = '', cell2 = '', cell3 = '', cell3ClassList = new Set(
 	].join('')
 }
 
+// MARK: DATA Line
 function doLine(filterList, dupeCount, showDupes, classList, lineNum, thisLine) {
 	return [
 		filterList,
@@ -205,6 +211,7 @@ function doLine(filterList, dupeCount, showDupes, classList, lineNum, thisLine) 
 	]
 }
 
+// MARK: highLightFinds
 function highLightFinds() {
 	const thisFind = MA.byIdValueLC('gamelog_find')
 	const allLines = MA.query('.logLine')
@@ -228,6 +235,7 @@ function highLightFinds() {
 	}
 }
 
+// MARK: clientFind [data]
 let lastFind = null
 let findIdx  = 0
 let finds    = []
@@ -279,6 +287,7 @@ function clientFind(doForward = false, isReload = false) {
 	}
 }
 
+// MARK: CLICKERS
 function clientClearInput() {
 	MA.byIdValue('gamelog_find', '')
 	clientFind(true)
@@ -291,6 +300,7 @@ function clientCatchEnter(e) {
 	}
 }
 
+// MARK: getLogContents
 async function getLogContents() {
 	const fileName = await window.gamelog_IPC.filename()
 
@@ -299,11 +309,7 @@ async function getLogContents() {
 	})
 }
 
-function getActiveFilters() {
-	const showThese  = new Set(MA.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
-	return { showDupes : showThese.has('dupes'), showThese : showThese }
-}
-
+// MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
 	getLogContents()
 

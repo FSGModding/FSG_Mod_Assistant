@@ -371,7 +371,7 @@ ipcMain.handle('i18n:get', (_e, key) => serveIPC.l10n.getText(key))
 // END: l10n Operations
 
 
-// #region MODCOLLECT IPC
+// #region COLLECT IPC
 ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConflict() )
 ipcMain.handle('collect:malware', () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
 ipcMain.handle('collect:all', () => serveIPC.modCollect.toRenderer())
@@ -383,7 +383,7 @@ ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
 
 
 // #region DETAIL
-ipcMain.handle('dispatch:detail', (_, thisMod) => { openDetailWindow(thisMod) })
+ipcMain.on('dispatch:detail', (_, thisMod) => { openDetailWindow(thisMod) })
 
 function openDetailWindow(thisMod) {
 	return serveIPC.windowLib.createNamedMulti('detail', { queryString : `mod=${thisMod}` })
@@ -416,7 +416,7 @@ async function getStoreItems(fullUUID) {
 
 
 // #region COMPARE
-ipcMain.handle('dispatch:compare', (_, compareArray) => openCompareWindow(compareArray))
+ipcMain.on('dispatch:compare', (_, compareArray) => openCompareWindow(compareArray))
 ipcMain.handle('compare:get', () => Object.fromEntries(serveIPC.compareMap))
 ipcMain.handle('compare:clear', () => {
 	serveIPC.compareMap.clear()
@@ -441,8 +441,8 @@ function openCompareWindow(compareArray) {
 
 
 // #region BASEGAME
-ipcMain.handle('dispatch:basegame', (_, pageObj = { type : null, page : null}) => { openBaseGameWindow(pageObj.type, pageObj.page) })
-ipcMain.handle('basegame:folder', (_e, folderParts) => {
+ipcMain.on('dispatch:basegame', (_, pageObj = { type : null, page : null}) => { openBaseGameWindow(pageObj.type, pageObj.page) })
+ipcMain.on('basegame:folder', (_e, folderParts) => {
 	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', 22))
 
 	if ( typeof gamePath !== 'string') { return }
@@ -464,16 +464,16 @@ function openBaseGameWindow(type = null, page = null) {
 // #endregion BASEGAME WINDOW
 
 
-// #region CONTEXT MENU
-ipcMain.handle('context:copy', (event) => {
+// #region CONTEXT
+ipcMain.on('context:copy', (event) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-ipcMain.handle('context:cutCopyPaste', (event) => {
+ipcMain.on('context:cutCopyPaste', (event) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.snip_cut_copy_paste())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-ipcMain.handle('context:find', (event, thisMod) => {
+ipcMain.on('context:find', (event, thisMod) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
@@ -671,16 +671,16 @@ ipcMain.handle('gamelog:open', () => {
 		serveIPC.log.danger('file-folder-chooser', 'Could not read specified file', err)
 	})
 })
-ipcMain.handle('gamelog:get', () => funcLib.gameSet.streamGameLog())
-ipcMain.handle('gamelog:folder', () => shell.showItemInFolder(funcLib.prefs.gameLogFile()) )
+ipcMain.handle('gamelog:get',     () => funcLib.gameSet.streamGameLog())
 ipcMain.handle('gamelog:getFile', () => funcLib.prefs.gameLogFile())
-ipcMain.handle('dispatch:gamelog', () => { serveIPC.windowLib.createNamedWindow('gamelog') })
+ipcMain.on('gamelog:folder',   () => shell.showItemInFolder(funcLib.prefs.gameLogFile()) )
+ipcMain.on('dispatch:gamelog', () => { serveIPC.windowLib.createNamedWindow('gamelog') })
 // #endregion
 
 
 // #region 1-OFF WIN
-ipcMain.handle('dispatch:changelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
-ipcMain.handle('dispatch:find',      () => { serveIPC.windowLib.createNamedWindow('find') } )
+ipcMain.on('dispatch:changelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
+ipcMain.on('dispatch:find',      () => { serveIPC.windowLib.createNamedWindow('find') } )
 // #endregion
 
 
@@ -702,9 +702,30 @@ function toggleMiniWindow () {
 // END : Mini-mode operation
 
 // #region SETTINGS IPC
-ipcMain.handle('settings:get', (_e, key) => serveIPC.storeSet.get(key) )
-ipcMain.handle('settings:theme', () => serveIPC.windowLib.themeCurrentColor )
-ipcMain.handle('settings:units', () => serveIPC.l10n.currentUnits )
+ipcMain.handle('settings:get',      (_, key) => serveIPC.storeSet.get(key) )
+ipcMain.handle('settings:set',      (_, key, value) => {
+	funcLib.prefs.setNamed(key, value)
+	return serveIPC.storeSet.get(key)
+})
+ipcMain.handle('settings:theme',    ()       => serveIPC.windowLib.themeCurrentColor )
+ipcMain.handle('settings:units',    ()       => serveIPC.l10n.currentUnits )
+ipcMain.handle('settings:lastGame', ()       => serveIPC.gameSetOverride.xml)
+ipcMain.handle('settings:activeCollection', () => serveIPC.gameSetOverride.index )
+
+ipcMain.on('settings:resetWindows', () => { serveIPC.windowLib.resetPositions() })
+ipcMain.on('settings:clearCache',   () => {
+	serveIPC.storeCache.clearAll()
+	serveIPC.windowLib.forceFocus('main')
+	processModFolders(true)
+})
+ipcMain.on('settings:clearMalware', () => {
+	serveIPC.storeSet.set('suppress_malware', [])
+	processModFolders(true)
+})
+ipcMain.on('settings:clearDetail', () => {
+	serveIPC.storeCacheDetail.clear()
+	return true
+})
 //#endregion
 
 ipcMain.on('toMain_getPref', (event, name)    => { event.returnValue = serveIPC.storeSet.get(name) })
@@ -764,28 +785,20 @@ function openWizard() {
 }
 // END : Setup Wizard Functions
 
-// Collection Settings Operation (notes)
-function openNotesWindow(collectKey) {
-	serveIPC.windowLib.createNamedWindow('notes', {
-		collectKey         : collectKey,
-		isActiveCollection : serveIPC.gameSetOverride.index === collectKey,
-		lastGameSettings   : serveIPC.gameSetOverride.xml,
-	})
-}
-ipcMain.on('toMain_openNotes', (_, collectKey) => { openNotesWindow(collectKey) })
-ipcMain.on('toMain_setNote', (_, id, value, collectKey, json_import = false) => {
-	const cleanValue = ( id === 'notes_version' ) ? parseInt(value, 10) : value
 
-	if ( cleanValue === '' ) {
-		serveIPC.storeNote.delete(`${collectKey}.${id}`)
-	} else {
-		serveIPC.storeNote.set(`${collectKey}.${id}`, cleanValue)
-	}
+// #region NOTES
+ipcMain.on('dispatch:notes', (key) => { serveIPC.windowLib.createNamedWindow('notes', { collectKey : key }) })
+ipcMain.handle('settings:collection:get',   (_, collectKey) => serveIPC.modCollect.renderCollectNotes(collectKey) )
+ipcMain.handle('settings:collection:set',   (_, collectKey, key, value) => {
+	const cleanValue = ( key === 'notes_version' ) ? parseInt(value) : value
 
-	if ( ! json_import ) {
-		openNotesWindow(collectKey)
-	}
+	funcLib.prefs.setOrDelete(serveIPC.storeNote, `${collectKey}.${key}`, cleanValue)
+
+	return serveIPC.modCollect.renderCollectNotes(collectKey)[key]
 })
+// #endregion
+
+
 ipcMain.on('toMain_setModInfo', (_, mod, site) => {
 	if ( site === '' || site === null ) {
 		serveIPC.storeSites.delete(mod)
@@ -919,13 +932,13 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 
 
 // #region DEBUG LOG WINDOW
-ipcMain.handle('debug:log', (_e, level, process, ...args) => { serveIPC.log[level](process, ...args) })
+ipcMain.on('debug:log', (_e, level, process, ...args) => { serveIPC.log[level](process, ...args) })
 ipcMain.handle('debug:all', () => serveIPC.log.htmlLog )
-ipcMain.handle('dispatch:debug', () => { serveIPC.windowLib.createNamedWindow('debug') })
+ipcMain.on('dispatch:debug', () => { serveIPC.windowLib.createNamedWindow('debug') })
 // #endregion DEBUG LOG WINDOW
 
 
-ipcMain.handle('win:close', (e) => { BrowserWindow.fromWebContents(e.sender).close() })
+ipcMain.on('win:close', (e) => { BrowserWindow.fromWebContents(e.sender).close() })
 
 // Other shit.
 ipcMain.on('toMain_log', (_, level, process, text) => { serveIPC.log[level](text, process) })

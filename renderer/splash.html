@@ -11,30 +11,61 @@
 		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 		<style>
 			.version {
-				top:258px;
-				left:0px;
-				width: 590px;
-				position:absolute;
-				font-weight:bolder;
-				text-transform: lowercase;
-				text-align: right;
-				-webkit-transform: skew(-9deg);
-				font-size: 25px;
-				font-family: Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif;
-				background: linear-gradient(to top, #FFFFFF 0%, #D9D9D9 50%, #FFFFFF 100%);
-				-webkit-background-clip: text;
-				-webkit-text-fill-color: transparent;
-				-webkit-text-stroke-width: 1.3px;
-				-webkit-text-stroke-color: black;
-				filter: drop-shadow(2px 2px 3px #333);
+				-webkit-text-fill-color   : transparent;
+				-webkit-text-stroke-color : black;
+				-webkit-text-stroke-width : 1.3px;
+				background                : linear-gradient(to top, #FFFFFF 0%, #D9D9D9 50%, #FFFFFF 100%);
+				background-clip           : text;
+				filter                    : drop-shadow(2px 2px 3px #333);
+				font-family               : Impact, Haettenschweiler, Franklin Gothic Bold, Charcoal, Helvetica Inserat, Bitstream Vera Sans Bold, Arial Black, sans serif;
+				font-size                 : 25px;
+				font-weight               : bolder;
+				left                      : 0px;
+				position                  : absolute;
+				text-align                : right;
+				text-transform            : lowercase;
+				top                       : 258px;
+				transform                 : skew(-9deg);
+				width                     : 590px;
+			}
+			#image-bg {
+				height  : 300px;
+				margin  : 0px;
+				padding : 0px;
+				width   : 600px;
+			}
+			#image-fsg-logo {
+				left     : 0px;
+				opacity  : 30%;
+				position : absolute;
+				top      : 115px;
+				width    : 300px;
+			}
+			#image-thumb {
+				left     : 495px;
+				opacity  : 90%;
+				position : absolute;
+				top      : 98px;
+				width    : 100px;
+			}
+			body {
+				margin   : 0px;
+				overflow : hidden;
+				padding  : 0px;
 			}
 		</style>
-		<script src="renderJS/splash_ui.js"></script>
+		<script>
+			window.addEventListener('DOMContentLoaded', () => {
+				const urlParams = new URLSearchParams(window.location.search)
+				const version   = urlParams.get('version')
+				document.getElementById('version').innerText = `v${version}`
+			})
+		</script>
 	</head>
-	<body style="margin:0; padding:0;overflow:hidden;">
-		<img alt="" style="margin:0; padding:0; width:600px; height:300px;" src="img/splash.webp">
+	<body>
+		<img alt="" id="image-bg" src="img/splash.webp">
 		<div id="version" class="version"></div>
-		<img alt="" style="position: absolute; top: 115px; left:0px; width: 300px; opacity: 30%" src="img/fsg_full_logo.webp">
-		<img alt="" style="position: absolute; top: 98px; left:495px; width: 100px; opacity: 90%" src="img/thumbsup.webp">
+		<img alt="" id="image-fsg-logo" src="img/fsg_full_logo.webp">
+		<img alt="" id="image-thumb" src="img/thumbsup.webp">
 	</body>
 </html>
