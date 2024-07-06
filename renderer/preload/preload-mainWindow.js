@@ -70,12 +70,12 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'mods', {
 		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
-		cutCopyPaste    : () => { ipcRenderer.send('toMain_notesContextMenu') },
-		debugLog        : () => { ipcRenderer.send('toMain_openDebugLog') },
+		cutCopyPaste    : () => ipcRenderer.invoke('context:cutCopyPaste'),
+		debugLog        : () => ipcRenderer.invoke('dispatch:debug'),
 		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
 		openBaseGame    : () => ipcRenderer.invoke('dispatch:basegame'),
-		openFindAll     : () => { ipcRenderer.send('toMain_openFind') },
-		openGameLog     : () => { ipcRenderer.send('toMain_openGameLog') },
+		openFindAll     : () => ipcRenderer.invoke('dispatch:find'),
+		openGameLog     : () => ipcRenderer.invoke('dispatch:gamelog'),
 		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },
 		openMini        : () => { ipcRenderer.send('toMain_openMiniMode') },
 		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
@@ -129,7 +129,7 @@ contextBridge.exposeInMainWorld(
 		setGamePath   : (ver = 22) => { ipcRenderer.send('toMain_setGamePath', ver) },
 		setPref       : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
 		setPrefFile   : (ver = 22) => { ipcRenderer.send('toMain_setPrefFile', ver) },
-		showChangelog : () => { ipcRenderer.send('toMain_showChangelog') },
+		showChangelog : () => ipcRenderer.invoke('dispatch:changelog'),
 		showWizard    : () => { ipcRenderer.send('toMain_showSetupWizard') },
 
 		realCopyFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileCopy', fileMap) },

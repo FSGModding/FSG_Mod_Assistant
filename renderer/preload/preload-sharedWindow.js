@@ -54,7 +54,18 @@ const pageAPI = {
 		},
 		validAsync : new Set(['find:filterText']),
 	},
-	
+	'gamelog' : {
+		functions : {
+			auto         : () => ipcRenderer.invoke('gamelog:auto'),
+			filename     : () => ipcRenderer.invoke('gamelog:getFile'),
+			get          : () => ipcRenderer.invoke('gamelog:get'),
+			inputContext : () => ipcRenderer.invoke('context:cutCopyPaste'),
+			logContext   : () => ipcRenderer.invoke('context:copy'),
+			openFolder   : () => ipcRenderer.invoke('gamelog:folder'),
+			pickFile     : () => ipcRenderer.invoke('gamelog:open'),
+		},
+		validAsync : new Set(),
+	},
 }
 
 if ( typeof pageAPI[pageName] !== 'undefined' ) {
@@ -134,9 +145,9 @@ contextBridge.exposeInMainWorld(
 
 		receive : ( channel, func ) => {
 			const validChannels = new Set([
-				'win:updateFontSize',
+				'win:updateFontSize', // TODO: not yet implemented
 				'win:removeTooltips',
-				'win:updateTheme',
+				'win:updateTheme', // TODO : theme switch not implemented yet
 				'win:forceRefresh',
 			])
 		

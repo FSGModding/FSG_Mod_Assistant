@@ -42,7 +42,7 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
-		openCText    : ()   => { ipcRenderer.send('toMain_notesContextMenu') },
+		openCText    : ()   => ipcRenderer.invoke('context:cutCopyPaste'),
 		setNote      : ( id, value, collection ) => ipcRenderer.send('toMain_setNote', id, value, collection),
 		receive      : ( channel, func ) => {
 			const validChannels = new Set([

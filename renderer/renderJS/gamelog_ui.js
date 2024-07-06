@@ -6,18 +6,20 @@
 
 // Debug window UI
 
-/* global processL10N, fsgUtil, bootstrap */
+/* global MA, bootstrap */
 
+const autoUpdateTimeSeconds = 15
 // const maxLinesWatch = 10000
 let   dataCache     = []
 let   findCache     = []
 let   dataCacheGood = false
 let   showData      = []
+// window.gamelog.receive('fromMain_gameLog', (data, fileName) => { processLogData(data, fileName) })
 
-window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
-	const autoScroll = fsgUtil.byId('auto_scroll').checked || false
+function processLogData (data, fileName) {
+	const autoScroll = MA.byId('auto_scroll').checked || false
 	
-	fsgUtil.setById('gameLogPath', fileName)
+	MA.byIdText('gameLogPath', fileName)
 	
 	dataCacheGood = false
 	showData      = []
@@ -88,8 +90,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 	let   filterList = null
 	
 	const allLines   = data.split('\n')
-	const showThese  = new Set(fsgUtil.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
-	const showDupes  = showThese.has('dupes')
+	const { showDupes } = getActiveFilters()
 
 	for ( const line of allLines ) {
 		if ( lastLine === line && !showDupes ) {
@@ -101,7 +102,7 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 
 			dupeCount  = 1
 			lastLine   = line
-			classList  = new Set(['logLine', 'py-0', 'my-0'])
+			classList  = new Set()
 			filterList = new Set()
 			thisLine   = line
 		
@@ -123,18 +124,19 @@ window.gamelog.receive('fromMain_gameLog', (data, fileName) => {
 		showData.push(doLine(filterList, dupeCount, showDupes, classList, lineNum, thisLine))
 	}
 
-	clientBuildTable()
+	buildDisplayTable()
 
 	clientFind(true, true)
 
 	if ( autoScroll ) {
-		fsgUtil.byId('game_log_contain').scrollTo(0, fsgUtil.byId('game_log_contain').scrollHeight)
+		MA.byId('game_log_contain').scrollTo(0, MA.byId('game_log_contain').scrollHeight)
 	}
-})
+}
+
 
 function filterLines() {
 	if ( dataCacheGood ) { return dataCache }
-	const showThese  = new Set(fsgUtil.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
+	const { showThese } = getActiveFilters()
 	const returnLines = []
 	findCache         = []
 
@@ -147,14 +149,14 @@ function filterLines() {
 			findCache.push([thisLine[2], thisLine[3]])
 		}
 	}
-	dataCache = returnLines
+	dataCache     = returnLines
 	dataCacheGood = true
 	return returnLines
 }
 
-function clientBuildTable() {
-	const theTable   = fsgUtil.byId('game_log')
-	const theContain = fsgUtil.byId('game_log_contain')
+function buildDisplayTable() {
+	const theTable   = MA.byId('game_log')
+	const theContain = MA.byId('game_log_contain')
 	const rowHeight  = 19
 	const thisData   = filterLines()
 
@@ -170,38 +172,42 @@ function clientBuildTable() {
 	const endIdx    = startIdx + totalShow
 	const endPad    = Math.max(rowHeight * 2, ((thisData.length - 1) * rowHeight) - theContain.offsetHeight - startAt)
 	
-	theTable.innerHTML = `
-		<tr style="height: ${startAt}px"><td class="py-0 my-0" style="width: 2em;"></td><td class="logLineName py-0 my-0" style="width: 4em;" ></td><td></td></tr>
-		${thisData.slice(startIdx, endIdx).join('')}
-		<tr style="height: ${endPad}px"><td class="py-0 my-0" style="width: 2em;"></td><td class="logLineName py-0 my-0" style="width: 4em;" ></td><td></td></tr>
-	`
+	theTable.innerHTML = [
+		lineEntry('', '', '', '', startAt),
+		...thisData.slice(startIdx, endIdx),
+		lineEntry('', '', '', '', endPad)
+	].join('')
+
 	highLightFinds()
 }
 
+function lineEntry(cell1 = '', cell2 = '', cell3 = '', cell3ClassList = new Set(), height = '19') {
+	return [
+		`<tr style="height:${height}px">`,
+		'<td>', cell1, '</td>',
+		'<td class="logLineName">', cell2, '</td>',
+		`<td class="logLine ${[...cell3ClassList].join(' ')}">`, cell3, '</td>',
+		'</tr>'
+	].join('')
+}
+
 function doLine(filterList, dupeCount, showDupes, classList, lineNum, thisLine) {
-	return [filterList, `<tr style="height:19px;" class="ps-3">
-		<td class="py-0 my-0 text-center" style="width: 2em;">
-			${ !showDupes && dupeCount > 1 ? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` : '' }
-		</td>
-		<td class="logLineName py-0 my-0 border-end text-white-50 fst-italic" style="width: 4em;" >${lineNum}</td>
-		<td class="${[...classList].join(' ')}">${thisLine}</td>
-	</tr>`, thisLine, lineNum]
-}
-
-function clientChangeFilter() {
-	window.gamelog.getGameLogContents()
-}
-
-function clientResetButtons() {
-	for ( const element of fsgUtil.query('.filter_only') ) {
-		element.checked = ! ( element.id === 'debug_dupes' )
-	}
-	window.gamelog.getGameLogContents()
+	return [
+		filterList,
+		lineEntry(
+			!showDupes && dupeCount > 1 ? `<span class="badge rounded-pill text-bg-danger">${dupeCount}</span>` : '',
+			lineNum,
+			thisLine,
+			classList
+		),
+		thisLine,
+		lineNum
+	]
 }
 
 function highLightFinds() {
-	const thisFind = fsgUtil.valueByIdLC('gamelog_find')
-	const allLines = fsgUtil.query('.logLine')
+	const thisFind = MA.byIdValueLC('gamelog_find')
+	const allLines = MA.query('.logLine')
 
 	/* too short, clear input and reset display */
 	if ( thisFind.length < 2 ) {
@@ -227,14 +233,14 @@ let findIdx  = 0
 let finds    = []
 function clientFind(doForward = false, isReload = false) {
 	finds    = []
-	const thisFind = fsgUtil.valueByIdLC('gamelog_find')
+	const thisFind = MA.byIdValueLC('gamelog_find')
 
 	/* too short, clear input and reset display */
 	if ( thisFind.length < 2 ) {
-		fsgUtil.setById('currentFindIndex', '0')
-		fsgUtil.setById('currentFindTotal', '0')
+		MA.byIdText('currentFindIndex', '0')
+		MA.byIdText('currentFindTotal', '0')
 		if ( thisFind.length !== 0 ) {
-			fsgUtil.valueById('gamelog_find', '')
+			MA.byIdHTML('gamelog_find', '')
 		}
 		lastFind = null
 		findIdx  = 0
@@ -261,20 +267,20 @@ function clientFind(doForward = false, isReload = false) {
 	if ( finds.length !== 0 ) {
 		findIdx = findIdx % (finds.length)
 		findIdx = findIdx < 0 ? findIdx + finds.length : findIdx
-		fsgUtil.setById('currentFindIndex', findIdx + 1)
-		fsgUtil.setById('currentFindTotal', finds.length)
+		MA.byIdText('currentFindIndex', findIdx + 1)
+		MA.byIdText('currentFindTotal', finds.length)
 	} else {
-		fsgUtil.setById('currentFindIndex', '0')
-		fsgUtil.setById('currentFindTotal', '0')
+		MA.byIdText('currentFindIndex', '0')
+		MA.byIdText('currentFindTotal', '0')
 	}
 	
 	if ( finds.length !== 0 && !isReload ) {
-		fsgUtil.byId('game_log_contain').scrollTo({top : finds[findIdx][0] * 19, behavior : 'instant'})
+		MA.byId('game_log_contain').scrollTo({top : finds[findIdx][0] * 19, behavior : 'instant'})
 	}
 }
 
 function clientClearInput() {
-	fsgUtil.valueById('gamelog_find', '')
+	MA.byIdValue('gamelog_find', '')
 	clientFind(true)
 }
 
@@ -285,8 +291,70 @@ function clientCatchEnter(e) {
 	}
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-	processL10N()
+async function getLogContents() {
+	const fileName = await window.gamelog_IPC.filename()
 
-	fsgUtil.queryA('[data-bs-toggle="tooltip"]').map((element) => new bootstrap.Tooltip(element, { trigger : 'hover' }))
+	window.gamelog_IPC.get().then((data) => {
+		processLogData(data, fileName)
+	})
+}
+
+function getActiveFilters() {
+	const showThese  = new Set(MA.queryA('.filter_only:checked').map((element) => element.id.replace('debug_', '').toLowerCase() ))
+	return { showDupes : showThese.has('dupes'), showThese : showThese }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+	getLogContents()
+
+	for ( const element of MA.queryA('[data-bs-toggle="tooltip"]') ) {
+		new bootstrap.Tooltip(element, { trigger : 'hover' })
+	}
+
+	for ( const element of MA.queryA('.filter_only') ) {
+		element.addEventListener('click', getLogContents)
+	}
+
+	MA.byIdEventIfExists('filterGroupReset', () => {
+		for ( const element of MA.query('.filter_only') ) {
+			element.checked = ! ( element.id === 'debug_dupes' )
+		}
+		getLogContents()
+	})
+
+	MA.byIdEventIfExists('logActionRefresh', getLogContents)
+	MA.byIdEventIfExists('logActionFolder', window.gamelog_IPC.openFolder)
+	MA.byIdEventIfExists('logActionOpen', () => {
+		window.gamelog_IPC.pickFile().then(async (data) => {
+			const fileName = await window.gamelog_IPC.filename()
+			processLogData(data, fileName)
+		})
+	})
+	MA.byIdEventIfExists('logActionAuto', () => {
+		window.gamelog_IPC.auto().then(async (data) => {
+			const fileName = await window.gamelog_IPC.filename()
+			processLogData(data, fileName)
+		})
+	})
+
+	MA.byIdEventIfExists('game_log_contain', buildDisplayTable, 'scroll')
+	MA.byIdEventIfExists('game_log', window.gamelog_IPC.logContext, 'contextmenu')
+
+	MA.byIdEventIfExists('findNext', () => { clientFind(true) })
+	MA.byIdEventIfExists('findPrev', () => { clientFind(false) })
+	MA.byIdEventIfExists('findClear', () => {
+		MA.byIdValue('gamelog_find', '')
+		clientFind(true)
+	})
+	MA.byIdEventIfExists('gamelog_find', window.gamelog_IPC.inputContext, 'contextmenu')
+	MA.byIdEventIfExists('gamelog_find', (e) => {
+		if ( e.code === 'Enter' || e.code === 'NumpadEnter' ) {
+			e.preventDefault()
+			clientFind(true)
+		}
+	}, 'keydown')
+
+	setInterval(() => {
+		getLogContents()
+	}, (autoUpdateTimeSeconds * 1000))
 })

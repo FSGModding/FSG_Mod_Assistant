@@ -43,6 +43,10 @@ const MA = {
 		if ( newValue !== null ) { MA.byId(id).value = newValue }
 		return MA.byId(id)?.value || null
 	},
+	byIdValueLC  : ( id, newValue = null ) => {
+		const testValue = MA.byIdValue(id, newValue)
+		return testValue === null ? '' : testValue.toLowerCase()
+	},
 	byTag      : ( tag )   => document.getElementsByTagName(tag),
 	query      : ( query ) => document.querySelectorAll( query ),
 	queryA     : ( query ) => [...document.querySelectorAll( query )],

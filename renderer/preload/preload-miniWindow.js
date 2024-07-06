@@ -44,7 +44,7 @@ contextBridge.exposeInMainWorld(
 contextBridge.exposeInMainWorld(
 	'mods', {
 		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
-		openGameLog     : () => { ipcRenderer.send('toMain_openGameLog') },
+		openGameLog     : () => ipcRenderer.invoke('dispatch:gamelog'),
 		openMini        : () => { ipcRenderer.send('toMain_openMiniMode') },
 		pinMiniWindow   : () => { ipcRenderer.send('toMain_toggleMiniPin') },
 		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },

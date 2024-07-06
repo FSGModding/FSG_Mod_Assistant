@@ -605,8 +605,7 @@ function findItemsByTerm(strTerm) {
 }
 
 function doFilter() {
-	const filterValue = MA.byIdValue('mods__filter')
-	const filterText = filterValue === null ? '' : filterValue.toLowerCase()
+	const filterText = MA.byIdValueLC('mods__filter')
 
 	MA.byId('mods__filter_clear').clsShow(filterText !== '')
 

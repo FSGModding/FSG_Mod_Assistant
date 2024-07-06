@@ -20,8 +20,7 @@ window.find_IPC.receive('find:filterText', (text) => {
 })
 
 function doFilter() {
-	const raw_value   = MA.byIdValue('mods__filter')
-	const filter_this = raw_value === null ? '' : raw_value.toLowerCase()
+	const filter_this = MA.byIdValueLC('mods__filter')
 
 	MA.byId('mods__filter_clear').clsHide(filter_this === '')
 
@@ -37,7 +36,7 @@ function doFilter() {
 	const filter_new = new Set()
 
 	for ( const key of fullList_sort ) {
-		if ( fullList_data[key].search.includes(raw_value) ) {
+		if ( fullList_data[key].search.includes(filter_this) ) {
 			filter_new.add(key)
 		}
 	}

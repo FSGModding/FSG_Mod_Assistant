@@ -47,7 +47,6 @@ const modQueueRunner = new queueEmitter()
 serveIPC.refFunc = {
 	gameLauncher           : funcLib.gameLauncher,
 	processModFolders      : processModFolders,
-	readGameLog            : funcLib.gameSet.readGameLog,
 	refreshClientModList   : refreshClientModList,
 	refreshTransientStatus : refreshTransientStatus,
 	toggleMiniWindow       : toggleMiniWindow,
@@ -465,7 +464,6 @@ function openBaseGameWindow(type = null, page = null) {
 // #endregion BASEGAME WINDOW
 
 
-
 // #region CONTEXT MENU
 ipcMain.handle('context:copy', (event) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
@@ -479,10 +477,6 @@ ipcMain.handle('context:find', (event, thisMod) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-// #endregion
-
-
-
 
 ipcMain.on('toMain_dragOut', (event, modID) => {
 	const thisMod     = serveIPC.modCollect.modColUUIDToRecord(modID)
@@ -517,7 +511,7 @@ ipcMain.on('toMain_modContextMenu', async (event, modID, modIDs, isHoldingPen) =
 		template.push(funcLib.menu.iconL10n(
 			'button_gamelog__title',
 			() => {
-				funcLib.gameSet.loadGameLog(thisPath)
+				funcLib.gameSet.setGameLog(thisPath)
 				serveIPC.windowLib.createNamedWindow('gamelog')
 			},
 			'log'
@@ -656,67 +650,43 @@ ipcMain.on('toMain_mainContextMenu', async (event, collection) => {
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-ipcMain.on('toMain_notesContextMenu', async (event) => {
-	const menu = Menu.buildFromTemplate(funcLib.menu.snip_cut_copy_paste())
-	menu.popup(BrowserWindow.fromWebContents(event.sender))
+// #endregion
+
+
+// #region GAME LOG
+ipcMain.handle('gamelog:auto', () => {
+	funcLib.gameSet.setGameLog(false)
+	return funcLib.gameSet.streamGameLog()
 })
-ipcMain.on('toMain_logContextMenu', async (event) => {
-	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
-	menu.popup(BrowserWindow.fromWebContents(event.sender))
-})
-
-
-
-
-// END : Context Menus
-
-
-// Game log window operation
-ipcMain.on('toMain_openGameLog',       () => {
-	serveIPC.windowLib.createNamedWindow('gamelog')
-	if ( serveIPC.watch.log === null ) { funcLib.gameSet.loadGameLog() }
-})
-ipcMain.on('toMain_openGameLogFolder', () => { shell.showItemInFolder(funcLib.prefs.gameLogFile()) })
-ipcMain.on('toMain_getGameLog',        () => { funcLib.gameSet.readGameLog() })
-ipcMain.on('toMain_guessGameLog',      () => {
-	serveIPC.storeSet.set('game_log_auto', true)
-	funcLib.gameSet.loadGameLog()
-	funcLib.gameSet.readGameLog()
-})
-ipcMain.on('toMain_clearGameLog',      () => {
-	const thisGameLog = funcLib.prefs.gameLogFile()
-
-	if ( thisGameLog === null || !fs.existsSync(thisGameLog) ) { return }
-
-	try {
-		fs.writeFileSync(thisGameLog, '')
-	} catch (err)  {
-		serveIPC.log.danger('game-log', 'Could not clear specified log', err)
-	}
-	funcLib.gameSet.readGameLog()
-})
-ipcMain.on('toMain_changeGameLog',     () => {
-	funcLib.general.showFileDialog({
+ipcMain.handle('gamelog:open', () => {
+	return dialog.showOpenDialog(serveIPC.windowLib.win.gamelog, {
+		properties  : ['openFile'],
 		defaultPath : path.join(serveIPC.path.setFolder, 'log.txt'),
-		extraFilter : { name : 'Log Files', extensions : ['txt'] },
-		isFolder    : false,
-		parent      : 'gamelog',
+		filters     : [{ name : 'Log Files', extensions : ['txt'] }],
+	}).then((result) => {
+		if ( ! result.canceled ) { funcLib.gameSet.setGameLog(result.filePaths[0]) }
 
-		callback : (result) => {
-			funcLib.gameSet.loadGameLog(result.filePaths[0])
-			funcLib.gameSet.readGameLog()
-		},
+		return funcLib.gameSet.streamGameLog()
+	}).catch((err) => {
+		serveIPC.log.danger('file-folder-chooser', 'Could not read specified file', err)
 	})
 })
-// END : Game log window operation
+ipcMain.handle('gamelog:get', () => funcLib.gameSet.streamGameLog())
+ipcMain.handle('gamelog:folder', () => shell.showItemInFolder(funcLib.prefs.gameLogFile()) )
+ipcMain.handle('gamelog:getFile', () => funcLib.prefs.gameLogFile())
+ipcMain.handle('dispatch:gamelog', () => { serveIPC.windowLib.createNamedWindow('gamelog') })
+// #endregion
 
-ipcMain.on('toMain_openDebugLog',    () => { serveIPC.windowLib.createNamedWindow('debug') })
+
+// #region 1-OFF WIN
+ipcMain.handle('dispatch:changelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
+ipcMain.handle('dispatch:find',      () => { serveIPC.windowLib.createNamedWindow('find') } )
+// #endregion
 
 
-// One-off window types.
-ipcMain.on('toMain_showChangelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
-ipcMain.on('toMain_openFind',      () => { serveIPC.windowLib.createNamedWindow('find') })
-// END : One-off window types.
+
+
+
 
 // Mini-mode operation
 ipcMain.on('toMain_toggleMiniPin', () => { serveIPC.windowLib.toggleAlwaysOnTop('mini'); refreshClientModList() })
@@ -951,6 +921,7 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 // #region DEBUG LOG WINDOW
 ipcMain.handle('debug:log', (_e, level, process, ...args) => { serveIPC.log[level](process, ...args) })
 ipcMain.handle('debug:all', () => serveIPC.log.htmlLog )
+ipcMain.handle('dispatch:debug', () => { serveIPC.windowLib.createNamedWindow('debug') })
 // #endregion DEBUG LOG WINDOW
 
 
