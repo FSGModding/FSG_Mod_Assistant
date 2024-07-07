@@ -22,6 +22,11 @@ const MA = {
 		if ( element === null ) { return false }
 		return MA.byId(id).appendChild(element)
 	},
+	byIdCheck  : ( id ) => {
+		const element = MA.byId(id)
+		if ( element === null ) { return false }
+		return element.checked
+	},
 	byIdEventIfExists : (id, handler, eventType = 'click') => {
 		const element = MA.byId(id)
 		if ( element === null ) { return }
@@ -199,6 +204,7 @@ const DATA = {
 		icon :
 		'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'-250 -250 1403.2 1404.2\'%3E%3Cpath style=\'fill: %23771111; filter: drop-shadow(10px 10px 5px rgb(0 0 0 / 0.4));\' opacity=\'0.3\' d=\'M441.6 0a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2ZM129 674a387.4 387.4 0 0 1-76.9-232.4 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114 386.9 386.9 0 0 1 283 122L129.2 674Zm587.8 43a388 388 0 0 1-275.3 114A386.9 386.9 0 0 1 163 713.6l595-499.1a387 387 0 0 1 73 227A386.9 386.9 0 0 1 717 717Z\' /%3E%3C/svg%3E',
 
+	optionFromArray : ([value, text], select = null) => `<option value="${value}" ${value.toString() === select.toString() ? 'selected' : ''}>${text}</option>`,
 
 	// MARK: ...Engine
 	eventEngine : (nodeObject, selector, handler, eventType = 'click') => {

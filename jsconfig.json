@@ -3,5 +3,6 @@
 	  "module": "CommonJS",
 	  "target": "ES2023"
 	},
-	"exclude": ["node_modules", "renderer"]
+	"exclude": ["node_modules"],
+	"include": ["/*.js", "lib/*.js"]
 }

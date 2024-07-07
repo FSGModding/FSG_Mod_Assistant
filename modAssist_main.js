@@ -373,8 +373,10 @@ ipcMain.handle('i18n:get', (_e, key) => serveIPC.l10n.getText(key))
 
 // #region COLLECT IPC
 ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConflict() )
-ipcMain.handle('collect:malware', () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
-ipcMain.handle('collect:all', () => serveIPC.modCollect.toRenderer())
+ipcMain.handle('collect:malware',      () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
+ipcMain.handle('collect:all',          () => serveIPC.modCollect.toRenderer())
+
+ipcMain.handle('collect:name', (_, key) => serveIPC.modCollect.mapCollectionToName(key))
 
 ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.renderMod(fullUUID))
 
@@ -707,6 +709,7 @@ ipcMain.handle('settings:set',      (_, key, value) => {
 	funcLib.prefs.setNamed(key, value)
 	return serveIPC.storeSet.get(key)
 })
+ipcMain.handle('settings:verList',  ()       => funcLib.gameSet.verList() )
 ipcMain.handle('settings:theme',    ()       => serveIPC.windowLib.themeCurrentColor )
 ipcMain.handle('settings:units',    ()       => serveIPC.l10n.currentUnits )
 ipcMain.handle('settings:lastGame', ()       => serveIPC.gameSetOverride.xml)
@@ -787,14 +790,13 @@ function openWizard() {
 
 
 // #region NOTES
-ipcMain.on('dispatch:notes', (key) => { serveIPC.windowLib.createNamedWindow('notes', { collectKey : key }) })
+ipcMain.on('dispatch:notes', (_, key) => { serveIPC.windowLib.createNamedWindow('notes', { collectKey : key }) })
 ipcMain.handle('settings:collection:get',   (_, collectKey) => serveIPC.modCollect.renderCollectNotes(collectKey) )
 ipcMain.handle('settings:collection:set',   (_, collectKey, key, value) => {
 	const cleanValue = ( key === 'notes_version' ) ? parseInt(value) : value
 
 	funcLib.prefs.setOrDelete(serveIPC.storeNote, `${collectKey}.${key}`, cleanValue)
-
-	return serveIPC.modCollect.renderCollectNotes(collectKey)[key]
+	return serveIPC.modCollect.renderCollectNotes(collectKey)
 })
 // #endregion
 
@@ -1196,9 +1198,8 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {	if (process.platform !== 'darwin') { app.quit() } })
 
-// THREADS
 
-// ModLook Threading
+// #region ModLook Thread
 function modStoreItems({ thisMod = null, cacheUUID = null, thisPromise = null} = {}) {
 	const lookThread = require('node:child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
 		23,
@@ -1252,4 +1253,4 @@ function modStoreItems({ thisMod = null, cacheUUID = null, thisPromise = null} =
 	})
 	lookThread.send({ type : 'exit' })
 }
-// END : ModLook Threading
+// #endregion ModLook Thread

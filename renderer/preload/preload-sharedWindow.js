@@ -68,10 +68,15 @@ const pageAPI = {
 	},
 	'notes' : {
 		functions : {
-			active : ()    => ipcRenderer.invoke('settings:activeCollection'),
-			get    : (key) => ipcRenderer.invoke('settings:collection:get', key),
-			last   : ()    => ipcRenderer.invoke('settings:lastGame'),
-			set    : (collect, key, value) => ipcRenderer.invoke('settings:collection:set', collect, key, value),
+			active       : ()    => ipcRenderer.invoke('settings:activeCollection'),
+			collectName  : (key) => ipcRenderer.invoke('collect:name', key),
+			get          : (key) => ipcRenderer.invoke('settings:collection:get', key),
+			getSetting   : (key) => ipcRenderer.invoke('settings:get', key),
+			inputContext : ()    => ipcRenderer.send('context:cutCopyPaste'),
+			last         : ()    => ipcRenderer.invoke('settings:lastGame'),
+			verList      : ()    => ipcRenderer.invoke('settings:verList'),
+
+			set          : (collect, key, value) => ipcRenderer.invoke('settings:collection:set', collect, key, value),
 		},
 		validAsync : new Set(['settings:collection:id']),
 	},

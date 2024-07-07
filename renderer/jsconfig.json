@@ -1,0 +1,8 @@
+{
+	"compilerOptions": {
+	  "module": "CommonJS",
+	  "target": "ES2023"
+	},
+	"include": ["renderJS/util/*.js", "renderJS/*.js", "preload/**/*"],
+	// "exclude": [],
+}

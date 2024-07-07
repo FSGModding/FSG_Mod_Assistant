@@ -111,7 +111,7 @@ contextBridge.exposeInMainWorld(
 		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },
 		openMod    : (modID)        => ipcRenderer.send('dispatch:detail', modID),
 		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
-		openNotes  : (collection)   => { ipcRenderer.send('toMain_openNotes', collection ) },
+		openNotes  : (collection)   => { ipcRenderer.send('dispatch:notes', collection ) },
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		openTrack  : ()             => { ipcRenderer.send('toMain_openSaveTrack') },
 		setModInfo : (mod, site)    => { ipcRenderer.send('toMain_setModInfo', mod, site) },
