@@ -198,7 +198,7 @@ const DATA = {
 			arr.join('\n') :
 			I18N.buildElement(l10nKey),
 
-	prefixNotEmpty : (text, prefix = '') => text.length === 0 ? text : `${prefix}${text}`,
+	prefixNotEmpty : (text, prefix = '') => typeof text === 'undefined' ? '' : text.length === 0 ? text : `${prefix}${text}`,
 
 	iconMaker : (icon = null) => ( typeof icon === 'string' && icon.startsWith('data:') ) ?
 		icon :
@@ -245,16 +245,28 @@ const DATA = {
 
 // MARK: I18N
 const I18N = {
-	buildBadgeMod   : async (badge) => {
+	buildBadgeBare : async (badge, {classPrefix = 'badge', i18nPrefix = ''} = {}) => {
 		const lcBadgeName = badge.name.toLowerCase()
-		return window.i18n.get(`mod_badge_${lcBadgeName}`).then((result) => {
+		return window.i18n.get(`${i18nPrefix}${lcBadgeName}`).then((result) => {
 			const badgeDiv = document.createElement('div')
-			badgeDiv.classList.add('badge', 'border', 'border-2', `badge-mod-${lcBadgeName}`, ...badge.class)
+			badgeDiv.classList.add('badge', 'border', 'border-2', `${classPrefix}-${lcBadgeName}`, ...badge.class)
 			badgeDiv.textContent = result.entry
 			badgeDiv.setAttribute('title', `${result.title}${DATA.prefixNotEmpty(badge.title, ' : ')}`)
 			pageSTATE.tooltips.push(new bootstrap.Tooltip(badgeDiv, { trigger : 'hover' }))
 			return badgeDiv
 		})
+	},
+	buildBadgeMod   : async (badge) => I18N.buildBadgeBare(badge, {
+		classPrefix : 'badge-mod',
+		i18nPrefix  : 'mod_badge_',
+	}),
+	buildBadgeNoI18N : async ( badge ) => {
+		const badgeDiv = document.createElement('div')
+		if ( badge.skip !== true ) {
+			badgeDiv.classList.add('badge', 'border', 'border-2', ...badge.class)
+			badgeDiv.textContent = badge.name
+		}
+		return badgeDiv
 	},
 	buildElement : async (key) =>
 		window.i18n.get(key).then((result) =>
@@ -449,3 +461,4 @@ window?.operations?.receive('win:updateFontSize', MA.updateFontSize)
 window?.operations?.receive('win:removeTooltips', MA.clearTooltips)
 window?.operations?.receive('win:forceRefresh', () => { location.reload() })
 window.addEventListener('click', MA.clearTooltips)
+MA.byIdEventIfExists('pageActionRefresh', () => { location.reload() })

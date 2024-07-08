@@ -80,6 +80,13 @@ const pageAPI = {
 		},
 		validAsync : new Set(['settings:collection:id']),
 	},
+	'version' : {
+		functions : {
+			get     : ()    => ipcRenderer.invoke('collect:all'),
+			resolve : (key) => ipcRenderer.invoke('version:resolve', key),
+		},
+		validAsync : new Set(),
+	},
 }
 
 if ( typeof pageAPI[pageName] !== 'undefined' ) {
@@ -149,4 +156,3 @@ contextBridge.exposeInMainWorld(
 		},
 	}
 )
-

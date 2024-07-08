@@ -903,7 +903,9 @@ function saveCompare_open(zipMode = false) {
 }
 // END: Savegame compare window operation
 
-// Version window operation
+// #region VERSIONS
+ipcMain.on('dispatch:version', () => { serveIPC.windowLib.createNamedWindow('version') })
+
 ipcMain.on('toMain_versionCheck',    () => { serveIPC.windowLib.createNamedWindow('version') })
 ipcMain.on('toMain_refreshVersions', () => { serveIPC.windowLib.sendModList({}, 'fromMain_modList', 'version', false ) } )
 ipcMain.on('toMain_versionResolve',  (_, shortName) => {
@@ -928,7 +930,7 @@ ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 		shortName : shortName,
 	})
 })
-// END: Version window operation */
+// #endregion VERSIONS
 
 
 

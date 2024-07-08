@@ -628,6 +628,8 @@
 	"version_collections"                   : "Collections",
 	"version_diff"                          : "Version Mismatch",
 	"version_same"                          : "Version Match",
+	"version_diff__title"                   : "Versions of mods mismatch between collections",
+	"version_same__title"                   : "Versions of mods match between collections",
 	"wizard_current"                        : "Current Setting",
 	"wizard_mods_exists"                    : "already tracked",
 	"wizard_mods_files"                     : "Your default mods folder contains files that look like mods, add it as a collection?",
@@ -650,5 +652,6 @@
 	"wizard_use_this"                       : "Use this one",
 	"wizard_using_this"                     : "In Use",
 	"section_show"                          : "show",
-	"section_hide"                          : "hide"
+	"section_hide"                          : "hide",
+	"refresh_page__title"                   : "Reload Data"
 }
