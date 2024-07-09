@@ -69,6 +69,17 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'mods', {
+		dispatch        : (win) => {
+			const knownWindows = new Set([
+				'detail', 'compare', 'basegame', 'gamelog',
+				'changelog', 'find', 'notes', 'version',
+				'resolve', 'debug'
+			])
+			if ( knownWindows.has(win) ) {
+				ipcRenderer.send(`dispatch:${win}`)
+			}
+		},
+		
 		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
 		cutCopyPaste    : () => ipcRenderer.send('context:cutCopyPaste'),
 		debugLog        : () => ipcRenderer.send('dispatch:debug'),
@@ -84,7 +95,7 @@ contextBridge.exposeInMainWorld(
 		runUpdate       : () => { ipcRenderer.send('toMain_runUpdateInstall') },
 		sendToTray      : () => { ipcRenderer.send('toMain_sendMainToTray') },
 		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
-		versionCheck    : () => { ipcRenderer.send('toMain_versionCheck' ) },
+		versionCheck    : () => ipcRenderer.send('dispatch:version' ),
 
 		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
 		cancelDownload  : () => { ipcRenderer.send('toMain_cancelDownload') },

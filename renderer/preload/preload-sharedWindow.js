@@ -80,10 +80,17 @@ const pageAPI = {
 		},
 		validAsync : new Set(['settings:collection:id']),
 	},
+	'resolve' : {
+		functions : {
+			fileOp : ( object ) => ipcRenderer.invoke('file:operation', object),
+			get    : ( key ) => ipcRenderer.invoke('collect:resolveList', key),
+		},
+		validAsync : new Set(['resolve:shortname']),
+	},
 	'version' : {
 		functions : {
 			get     : ()    => ipcRenderer.invoke('collect:all'),
-			resolve : (key) => ipcRenderer.invoke('version:resolve', key),
+			resolve : (key) => ipcRenderer.send('dispatch:resolve', key),
 		},
 		validAsync : new Set(),
 	},
@@ -148,6 +155,10 @@ contextBridge.exposeInMainWorld(
 				'win:removeTooltips',
 				'win:updateTheme', // TODO : theme switch not implemented yet
 				'win:forceRefresh',
+
+				'select:all',
+				'select:none',
+				'select:invert',
 			])
 		
 			if ( validChannels.has( channel ) ) {

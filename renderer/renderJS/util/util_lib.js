@@ -101,6 +101,15 @@ const MA = {
 			document.body.setAttribute('data-bs-theme', value)
 		})
 	},
+
+	fileOpCheckAll  : () => { MA.fileOpCheckOp(true) },
+	fileOpCheckInv  : () => {
+		for ( const element of MA.query('.fileOpCheck[type="checkbox"]') ) { element.checked = !element.checked }
+	},
+	fileOpCheckNone : () => { MA.fileOpCheckOp(false) },
+	fileOpCheckOp   : ( newChecked = true ) => {
+		for ( const element of MA.query('.fileOpCheck[type="checkbox"]') ) { element.checked = newChecked }
+	},
 }
 // MARK: DATA
 const DATA = {
@@ -323,10 +332,12 @@ const I18N = {
 					const titleElement = ( result.entry_key === 'game_icon_lg' ) ?
 						element.closest('#multi_version_button') :
 						element.closest('button') || element.closest('span') || element.closest('label') || element.closest('a')
-
-					titleElement.setAttribute('title', `${result.title}${extra}`)
-
-					pageSTATE.tooltips.push(new bootstrap.Tooltip(titleElement, { trigger : 'hover' }))
+					
+					if ( titleElement !== null ) {
+						titleElement.setAttribute('title', `${result.title}${extra}`)
+					
+						pageSTATE.tooltips.push(new bootstrap.Tooltip(titleElement, { trigger : 'hover' }))
+					}
 				}
 			})
 		}
