@@ -146,8 +146,8 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'operations', {
-		close   : () => { ipcRenderer.invoke('win:close') },
-		clip    : (value) => { ipcRenderer.invoke('win:clipboard', value)},
+		close   : () => { ipcRenderer.send('win:close') },
+		clip    : (value) => { ipcRenderer.send('win:clipboard', value)},
 
 		receive : ( channel, func ) => {
 			const validChannels = new Set([

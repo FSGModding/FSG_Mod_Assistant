@@ -19,7 +19,6 @@ const { funcLib }      = require('./lib/modAssist_func_lib.js')
 const { EventEmitter } = require('node:events')
 const path             = require('node:path')
 const fs               = require('node:fs')
-const fsPromise        = require('node:fs/promises')
 const Store            = require('electron-store')
 
 serveIPC.log = new (require('./lib/modUtilLib')).ma_logger('modAssist', app, 'assist.log', gotTheLock)
@@ -1022,6 +1021,7 @@ function refreshClientModList(closeLoader = true) {
 		'main',
 		closeLoader
 	)
+	serveIPC.windowLib.sendToValidWindow('version', 'win:forceRefresh')
 }
 
 
@@ -1031,54 +1031,8 @@ function refreshClientModList(closeLoader = true) {
 // source_modUUID    : sourceMod.uuid,
 // source_rawPath    : string
 // type              : 'copy','move','delete'
-ipcMain.handle('file:operation', async (_, operations) => {
-	const filePromises = []
+ipcMain.handle('file:operation', async (_, operations) => funcLib.fileOperation.process(operations))
 
-	for ( const thisOp of operations ) {
-		thisOp.source_file = thisOp.source_rawPath ?? serveIPC.modCollect.mapColAndUUIDToFullPath(thisOp.source_collectKey, thisOp.source_modUUID)
-		thisOp.dest_filename = path.basename(thisOp.source_file)
-		console.log(thisOp)
-		if ( thisOp.type === 'copy' ) {
-			filePromises.push(...doFileCopy(thisOp))
-		} else if ( thisOp.type === 'move' ) {
-			filePromises.push(doFileMove(thisOp))
-		} else if ( thisOp.type === 'delete' ) {
-			serveIPC.log.info('file-op', 'Trashing', thisOp.source_file)
-			filePromises.push(shell.trashItem(thisOp.source_file))
-		}
-	}
-	return Promise.allSettled(filePromises).then(() => {
-		serveIPC.refFunc.processModFolders()
-	})
-})
-
-async function doFileMove(obj) {
-	serveIPC.log.info('file-op', 'Move', obj.source_file)
-	const copyOps = [...doFileCopy(obj)]
-	return Promise.all(copyOps).then(() => {
-		serveIPC.log.info('file-op', 'Removing original', obj.source_file)
-		return fsPromise.rm(obj.source_file, { recursive : true, force : true }).catch(() => {
-			serveIPC.log.info('file-op', 'Delete failed', obj.source_file)
-		})
-	}).catch(() => {
-		serveIPC.log.info('file-op', 'One or more copies failed')
-	})
-}
-
-async function doFileCopy(obj) {
-	const copyOps = []
-	for ( const thisDest of obj.destinations ) {
-		const destFile = path.join(
-			serveIPC.modCollect.mapCollectionToFolder(thisDest),
-			obj.dest_filename
-		)
-		serveIPC.log.info('file-op', 'Copy', obj.source_file, destFile)
-		copyOps.push(fsPromise.copyFile(obj.source_file, destFile).catch(() => {
-			serveIPC.log.info('file-op', 'Copy failed', destFile)
-		}))
-	}
-	return copyOps
-}
 
 
 // Start physical operation on file(s)

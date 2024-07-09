@@ -35,6 +35,7 @@ window.resolve_IPC.receive('resolve:shortname', (key) => {
 			MA.byId('fileOpWorking').clsShow()
 			MA.byId('fileOpSuccess').clsHide()
 			MA.byId('fileOpDanger').clsHide()
+			MA.byId('badFileFeedback').clsHide()
 			const fileOpPacket = []
 			for ( const thisCheck of MA.query('.fileOpCheck:checked') ) {
 				fileOpPacket.push({
@@ -44,8 +45,33 @@ window.resolve_IPC.receive('resolve:shortname', (key) => {
 					type              : 'copy',
 				})
 			}
-			window.resolve_IPC.fileOp(fileOpPacket).then((operResult) => {
-				console.log(operResult)
+			window.resolve_IPC.fileOp(fileOpPacket).then((opResult) => {
+				const didFail = opResult.some((x) => x.status === false )
+				if ( didFail ) {
+					MA.byId('fileOpDanger').clsShow()
+					MA.byId('fileOpWorking').clsHide()
+					MA.byId('badFileFeedback').clsShow()
+					const badFiles = opResult
+						.filter((x) => x.status === false)
+						.map((x) => {
+							if ( x.type === 'delete' ) {
+								return `<i class="bi bi-trash3"></i> ${x.source}`
+							}
+							return `-> ${x.dest}<br>`
+						})
+					MA.byId('badFileList').innerHTML = badFiles.join('')
+				} else {
+					MA.byId('fileOpSuccess').clsShow()
+					MA.byId('fileOpWorking').clsHide()
+				}
+
+				setTimeout(() => {
+					if ( ! didFail ) {
+						window.operations.close()
+					} else {
+						location.reload()
+					}
+				}, didFail ? 5000 : 1500)
 			})
 		})
 	})

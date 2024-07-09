@@ -654,5 +654,6 @@
 	"section_show"                          : "show",
 	"section_hide"                          : "hide",
 	"refresh_page__title"                   : "Reload Data",
-	"resolve_version_broken"                : "Non-numeric version string found, unable to provide automatic version resolution"
+	"resolve_version_broken"                : "Non-numeric version string found, unable to provide automatic version resolution",
+	"file_operation_failure"                : "Some file operations failed:"
 }

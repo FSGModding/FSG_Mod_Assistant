@@ -60,9 +60,12 @@
 	<div class="modal fade" id="fileOpProgress">
 		<div class="modal-dialog modal-dialog-centered w-50">
 			<div class="modal-content" style="height: 220px;">
-				<div class="modal-body position-relative text-center d-flex align-items-center justify-content-center">
-					
+				<div class="modal-body position-relative text-center d-flex flex-column align-items-center justify-content-center">
 					<l10n class="z-2 fs-2 text-center" name="loading_files_title"></l10n>
+					<div id="badFileFeedback" class="d-none">
+						<l10n class="text-center w-100 fs-5" name="file_operation_failure"></l10n>
+						<div id="badFileList" class="text-start"></div>
+					</div>
 					
 				</div>
 				<div class="position-absolute" style="top:10px; left: calc(50% - 100px);">
