@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // MARK: DETAIL UI
 /* eslint complexity: ["error", 25] */
-/* global DATA, MA, ST, NUM, I18N, __, ft_doReplace, clientGetKeyMapSimple, clientGetKeyMap, clientMakeCropCalendar, client_BGData */
+/* global DATA, MA, ST, NUM, I18N, ft_doReplace, clientGetKeyMapSimple, clientGetKeyMap, clientMakeCropCalendar, client_BGData */
 
 let modName = ''
 let lookItemData = {}
@@ -199,7 +199,7 @@ async function step_table(thisMod) {
 		is_multiplayer : DATA.checkX(thisMod.modDesc.multiPlayer, false),
 		mh_version     : ( thisMod.modHub.id !== null ) ?
 			`<a href="https://www.farming-simulator.com/mod.php?mod_id=${thisMod.modHub.id}" target="_BLANK">${thisMod.modHub.version}</a>` :
-			`<em>${await __(thisMod.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
+			`<em>${await I18N.buildElement(thisMod.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
 		mod_author     : DATA.escapeSpecial(thisMod.modDesc.author),
 		mod_location   : thisMod.fileDetail.fullPath,
 		store_items    : DATA.checkX(thisMod.modDesc.storeItems),
@@ -224,9 +224,9 @@ async function subStep_issues(modRecord) {
 	const problemPromises = []
 	for ( const issue of modRecord.issues ) {
 
-		const thisIssue = __(issue).then((issueI18N) => {
+		const thisIssue = I18N.buildElement(issue).then((issueI18N) => {
 			if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
-				return __('file_error_copy_name').then((copyI18N) => {
+				return I18N.buildElement('file_error_copy_name').then((copyI18N) => {
 					return `${issueI18N} ${copyI18N} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
 				})
 			}
@@ -245,7 +245,7 @@ async function subStep_binds(bindingIssue) {
 			const actualKey = clientGetKeyMap(keyCombo, locale)
 			const confList  = bindingIssue[keyCombo].join(', ')
 			problemPromises.push(
-				__('bind_conflict').then((i18n) => `${i18n} : ${actualKey} :: ${confList}`)
+				I18N.buildElement('bind_conflict').then((i18n) => `${i18n} : ${actualKey} :: ${confList}`)
 			)
 		}
 	}

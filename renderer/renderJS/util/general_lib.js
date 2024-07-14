@@ -465,20 +465,3 @@ window?.l10n?.receive('fromMain_themeList_return', (listData, selected) => {
 	}).join('')
 })
 
-
-document.addEventListener('keydown', (event) => {
-	const evt = event || window.event
-	if (evt.code === 'Escape' && ! document.location.href.includes('main.html') ) {
-		window.win_ops.closeWindow()
-	}
-})
-
-window.addEventListener('error', (errorObj) => {
-	if ( typeof errorObj === 'object' ) {
-		window.log.warning(errorObj.message, errorObj.filename.split('/').pop())
-	}
-})
-
-window?.win_ops?.receive('fromMain_themeSetting', (theme) => fsgUtil.setTheme(theme))
-window?.win_ops?.receive('fromMain_clearTooltips', fsgUtil.clearTooltips)
-window.addEventListener('click', fsgUtil.clearTooltips)

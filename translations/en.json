@@ -185,6 +185,7 @@
 	"filter_only"                           : "Limit To",
 	"filter_out_badges"                     : "Hide Tags",
 	"filter_tag_reset"                      : "RESET",
+	"filter_tag_title"                      : "Filter mods by tags",
 	"find_basegame_match"                   : "Find",
 	"folder_add"                            : "Add Folder",
 	"folder_add__title"                     : "Add Collection Folder",
@@ -539,9 +540,9 @@
 	"select_pick"                           : "Select",
 	"status-processing-title"               : "Processing Mods...",
 	"status-set-list-title"                 : "Setting Game Mod Folder...",
-	"tag_filter__exclusive__title"          : "Show Only Tag",
-	"tag_filter__hide__title"               : "Hide Tag",
-	"tag_filter__show__title"               : "Show Tag",
+	"tag_filter__exclusive__title"          : "Mod MUST have this tag",
+	"tag_filter__hide__title"               : "Mod MUST NOT have this tag",
+	"tag_filter__show__title"               : "Mod MAY have this tag",
 	"tag_filter_button"                     : "Filter By Tag",
 	"theme_name_dark"                       : "Dark",
 	"theme_name_light"                      : "Light",
@@ -655,5 +656,15 @@
 	"section_hide"                          : "hide",
 	"refresh_page__title"                   : "Reload Data",
 	"resolve_version_broken"                : "Non-numeric version string found, unable to provide automatic version resolution",
-	"file_operation_failure"                : "Some file operations failed:"
+	"file_operation_failure"                : "Some file operations failed:",
+	"sort_name"     : "Sort : Filename",
+	"sort_title"    : "Sort : Title",
+	"sort_author"   : "Sort : Author",
+	"sort_version"  : "Sort : Version",
+	"find_all"     : "Find : All",
+	"find_author"  : "Find : Author",
+	"find_title"   : "Find : Title",
+	"find_name"    : "Find : File Name",
+	"find_version" : "Find : Version"
+
 }

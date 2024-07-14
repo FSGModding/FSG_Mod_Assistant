@@ -47,88 +47,90 @@ contextBridge.exposeInMainWorld(
 	}
 )
 
-contextBridge.exposeInMainWorld(
-	'loader', {
-		receive   : ( channel, func ) => {
-			const validChannels = new Set([
-				'formMain_loading_show',
-				'formMain_loading_hide',
-				'formMain_loadingTitles',
-				'fromMain_loadingDownload',
-				'fromMain_loadingNoCount',
-				'fromMain_loading_total',
-				'fromMain_loading_current',
-			])
-		
-			if ( validChannels.has( channel ) ) {
-				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
-			}
-		},
-	}
-)
+
 
 contextBridge.exposeInMainWorld(
-	'mods', {
+	'main_IPC', {
 		dispatch        : (win) => {
 			const knownWindows = new Set([
-				'detail', 'compare', 'basegame', 'gamelog',
+				'compare', 'basegame', 'gamelog', 'help',
 				'changelog', 'find', 'notes', 'version',
-				'resolve', 'debug'
+				'resolve', 'debug', 'savetrack', 'savemanage',
+				'mini',
 			])
 			if ( knownWindows.has(win) ) {
 				ipcRenderer.send(`dispatch:${win}`)
 			}
 		},
+
+		drag : {
+			out : (modID)  => { ipcRenderer.send('main:dragOut', modID ) },
+		},
+
+		updateState       : () => ipcRenderer.invoke('state:all'),
+
+		minimizeToTray    : () => { ipcRenderer.send('main:minimizeToTray') },
+		updateApplication : () => { ipcRenderer.send('main:runUpdateInstall') },
+
+		contextCol   : (CKey)               => { ipcRenderer.send('context:collection', CKey) },
+		contextInput : ()                   => ipcRenderer.send('context:cutCopyPaste'),
+		contextMod   : (mod, select, hold ) => { ipcRenderer.send('context:mod', mod, select, hold ) },
+		
+		dispatchDetail : (id)                => { ipcRenderer.send('dispatch:detail', id) },
+		dispatchLog    : (file)              => { ipcRenderer.send('dispatch:gamelog', file) },
+		dispatchNotes  : (CKey)              => { ipcRenderer.send('dispatch:notes', CKey) },
+		dispatchSave   : (CKey, file = null) => { ipcRenderer.send('dispatch:save', CKey, file) },
+
+		folder : {
+			add    : ()     => { ipcRenderer.send('folders:add') },
+			alpha  : ()     => { ipcRenderer.send('toMain_reorderFolderAlpha') },
+			edit   : ()     => { ipcRenderer.send('folders:edit') },
+			open   : (CKey) => { ipcRenderer.send('folders:open', CKey) },
+			reload : ()     => { ipcRenderer.send('folders:reload') },
+			remove : (CKey) => { ipcRenderer.send('folders:remove', CKey) },
+			set    : (f, t) => { ipcRenderer.send('folders:set', f, t) },
+		},
+		
+		cancelDownload  : ()       => { ipcRenderer.send('file:downloadCancel') },
+		collectDownload : (CKey)   => { ipcRenderer.send('file:download', CKey) },
+		collectExport   : (CKey)   => { ipcRenderer.send('file:exportCSV', CKey ) },
 		
 		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
 		cutCopyPaste    : () => ipcRenderer.send('context:cutCopyPaste'),
-		debugLog        : () => ipcRenderer.send('dispatch:debug'),
+
 		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
-		openBaseGame    : () => ipcRenderer.send('dispatch:basegame'),
-		openFindAll     : () => ipcRenderer.send('dispatch:find'),
-		openGameLog     : () => ipcRenderer.send('dispatch:gamelog'),
-		openHelp        : () => { ipcRenderer.send('toMain_openHelpSite') },
-		openMini        : () => { ipcRenderer.send('toMain_openMiniMode') },
-		openPreferences : () => { ipcRenderer.send('toMain_openPrefs') },
-		openSaveManage  : () => { ipcRenderer.send('toMain_openSaveManage') },
+
 		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
-		runUpdate       : () => { ipcRenderer.send('toMain_runUpdateInstall') },
-		sendToTray      : () => { ipcRenderer.send('toMain_sendMainToTray') },
+
 		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
 		versionCheck    : () => ipcRenderer.send('dispatch:version' ),
 
-		addFolder       : () => { ipcRenderer.send('toMain_addFolder') },
-		cancelDownload  : () => { ipcRenderer.send('toMain_cancelDownload') },
+
 		changeVersion   : (ver) => { ipcRenderer.send('toMain_setGameVersion', ver) },
-		editFolders     : () => { ipcRenderer.send('toMain_editFolders') },
+		
 		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
 		makeInactive    : () => { ipcRenderer.send('toMain_makeInactive' ) },
-		refreshFolders  : () => { ipcRenderer.send('toMain_refreshFolders') },
 
-		removeFolder  : ( collectKey ) => { ipcRenderer.send('toMain_removeFolder', collectKey) },
-		reorderAlpha  : ( )            => { ipcRenderer.send('toMain_reorderFolderAlpha') },
-		reorderFolder : ( from, to )   => { ipcRenderer.send('toMain_reorderFolder', from, to) },
+
+		
 
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
 		copyMulti  : (selectedMods) => { ipcRenderer.send('toMain_copyMultiMods', selectedMods) },
 		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
 		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
-		modCText   : (selectedMod, selectedMods, isHoldingPen )  => { ipcRenderer.send('toMain_modContextMenu', selectedMod, selectedMods, isHoldingPen ) },
+		
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		moveMulti  : (selectedMods) => { ipcRenderer.send('toMain_moveMultiMods', selectedMods) },
-		openCText  : (collection)   => { ipcRenderer.send('toMain_mainContextMenu', collection ) },
+		
 		openExt    : (selectedMods) => { ipcRenderer.send('toMain_openExt', selectedMods) },
 		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },
-		openMod    : (modID)        => ipcRenderer.send('dispatch:detail', modID),
-		openMods   : (selectedMods) => { ipcRenderer.send('toMain_openMods', selectedMods) },
-		openNotes  : (collection)   => { ipcRenderer.send('dispatch:notes', collection ) },
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
-		openTrack  : ()             => { ipcRenderer.send('toMain_openSaveTrack') },
+		
 		setModInfo : (mod, site)    => { ipcRenderer.send('toMain_setModInfo', mod, site) },
 		zipMods    : (selectedMods) => { ipcRenderer.send('toMain_exportZip', selectedMods) },
 
-		dragOut    : (modID)  => { ipcRenderer.send('toMain_dragOut', modID ) },
+		
 		dropFiles  : (files)  => { ipcRenderer.send('toMain_dropFiles', files) },
 		dropFolder : (folder) => { ipcRenderer.send('toMain_dropFolder', folder) },
 
@@ -152,12 +154,18 @@ contextBridge.exposeInMainWorld(
 
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
+				'loading:show',
+				'loading:hide',
+				'loading:titles',
+				'loading:download',
+				'loading:noCount',
+				'loading:total',
+				'loading:current',
+				'status:all',
+
 				'fromMain_allSettings',
-				'fromMain_debugLogDangerFlag',
-				'fromMain_dirtyUpdate',
 				'fromMain_fileOperation',
 				'fromMain_filterOnly',
-				'fromMain_gameUpdate',
 				'fromMain_modInfoPop',
 				'fromMain_modList',
 				'fromMain_selectAllOpen',
@@ -173,6 +181,7 @@ contextBridge.exposeInMainWorld(
 		},
 	}
 )
+window.main_IPC = window.mods
 
 contextBridge.exposeInMainWorld(
 	'win_ops', {
@@ -181,6 +190,56 @@ contextBridge.exposeInMainWorld(
 			const validChannels = new Set([
 				'fromMain_clearTooltips',
 				'fromMain_themeSetting',
+			])
+		
+			if ( validChannels.has( channel ) ) {
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
+			}
+		},
+	}
+)
+
+contextBridge.exposeInMainWorld(
+	'i18n', {
+		get  : (key)       => ipcRenderer.invoke('i18n:get', key),
+		lang : (nv = null) => ipcRenderer.invoke('i18n:lang', nv),
+
+		receive   : ( channel, func ) => {
+			const validChannels = new Set([
+				'i18n:refresh',
+			])
+		
+			if ( validChannels.has( channel ) ) {
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
+			}
+		},
+	}
+)
+
+contextBridge.exposeInMainWorld(
+	'settings', {
+		get   : (key) => ipcRenderer.invoke('settings:get', key),
+		theme : ()    => ipcRenderer.invoke('settings:theme'),
+		units : ()    => ipcRenderer.invoke('settings:units'),
+	}
+)
+
+contextBridge.exposeInMainWorld(
+	'operations', {
+		clip    : (value) => { ipcRenderer.send('win:clipboard', value)},
+		close   : ()      => { ipcRenderer.send('win:close') },
+		url     : (url)   => { ipcRenderer.send('win:openURL', url)},
+
+		receive : ( channel, func ) => {
+			const validChannels = new Set([
+				'win:updateFontSize', // TODO: not yet implemented
+				'win:removeTooltips',
+				'win:updateTheme', // TODO : theme switch not implemented yet
+				'win:forceRefresh',
+
+				'select:all',
+				'select:none',
+				'select:invert',
 			])
 		
 			if ( validChannels.has( channel ) ) {

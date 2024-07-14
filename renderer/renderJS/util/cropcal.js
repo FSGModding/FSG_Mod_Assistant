@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // MARK: Crop Calendar
 
-/* global __ */
+/* global I18N */
 
 /* eslint-disable sort-keys */
 const knownCrops = {
@@ -44,7 +44,7 @@ async function getCropInfo(name) {
 	if ( ! Object.hasOwn(knownCrops, name) ) {
 		return `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
 	}
-	const theName = await __(knownCrops[name].name)
+	const theName = await I18N.buildElement(knownCrops[name].name)
 	return `<fillType style="font-size: calc(1.35rem + .6vw)" name="${knownCrops[name].icon}"></fillType> ${theName}`
 }
 

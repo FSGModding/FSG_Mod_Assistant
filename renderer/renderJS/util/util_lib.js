@@ -3,20 +3,31 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
-/* global bootstrap */
 // MARK: MA Util Lib
 
 enhanceElement()
 
-// MARK: pageSTATE
-const pageSTATE = {
-	do_tooltips : false,
-	tooltips    : [],
-}
-
 // MARK: MA
 const MA = {
+	led        : {
+		product    : 0x1710,
+		vendor     : 0x340d,
+
+		blink      : new Uint8Array([0xFF, 0x07, 0xFF, 0x64, 0xFF, 0xEB, 0x7D, 0x9A, 0x03]),
+		off        : new Uint8Array([0xFF, 0x00, 0x00, 0x64, 0x00, 0x32, 0x9E, 0xD7, 0x0D]),
+		spin       : new Uint8Array([0xFF, 0x01, 0x66, 0xC8, 0xFF, 0xAD, 0x52, 0x81, 0xD6]),
+	},
+
 	// MARK: id selectors
+	safeClsAdd : ( id, ...classes ) => {
+		const element = MA.byId(id)
+		if ( element !== null ) { element.classList.add(...classes)}
+	},
+	safeClsRem : ( id, ...classes ) => {
+		const element = MA.byId(id)
+		if ( element !== null ) { element.classList.remove(...classes)}
+	},
+
 	byId       : ( id ) => document.getElementById( id ),
 	byIdAppend : ( id, element = null ) => {
 		if ( element === null ) { return false }
@@ -84,8 +95,6 @@ const MA = {
 	showTestValue     : (value, requiredValue = null) => !MA.hideTestValueBool(value, requiredValue) ? 'd-none' : '',
 	showTestValueBool : (value, requiredValue = null) => !MA.hideTestValueBool(value, requiredValue),
 
-	clearTooltips   : () => { for ( const tooltip of MA.query('.tooltip') ) { tooltip?.hide?.() } },
-
 	// MARK: async rcvd
 	start : () => {
 		MA.updateFontSize()
@@ -113,6 +122,64 @@ const MA = {
 }
 // MARK: DATA
 const DATA = {
+	makeFolderIcon : (isOpen = false, isFav = false, isAct = false, isDrop = false, colorIndex = 0) => {
+		const colors = DATA.getIconCLR(isAct, colorIndex)
+		const trans  = isOpen ? [40, 60] : [32, 54]
+		const svgData = [
+			'<svg style="width: 45px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">',
+			`<g data-name="folder-back" fill="${colors[0]}">`,
+			'<path d="M5 134c-.6-1.1-1-2.4-1-3.7V32.8c0-3 2.3-5.4 5-5.4h3.8c3.8 0 7-3.3 7-7.4 0-4.2 3-7.5 6.9-7.5H66c2.6 0 5 1.5 6.1 4l3.4 7c1.1 2.4 3.5 4 6.1 4h45.5c2.8 0 5 2.3 5 5.3v31L5.2 134Z"/>',
+			'<path fill="#111111" d="m4.6 136.1-.8-1.2c-.9-1.3-1.4-3-1.4-4.6V32.8c0-3.9 3-7.1 6.6-7.1h3.8c3 0 5.3-2.6 5.3-5.8 0-5 3.9-9.1 8.5-9.1H66c3.2 0 6 1.9 7.5 5l3.4 6.8a5 5 0 0 0 4.7 3.1H127c3.7 0 6.7 3.2 6.7 7.1v32L4.6 136.2ZM9 29.1c-1.9 0-3.4 1.7-3.4 3.7v97.5c0 .4 0 .9.2 1.3l124.8-68.8v-30c0-2-1.6-3.7-3.5-3.7H81.6c-3.2 0-6-1.9-7.6-5l-3.3-6.8a5 5 0 0 0-4.7-3.1H26.7c-3 0-5.4 2.6-5.4 5.7 0 5.1-3.8 9.2-8.5 9.2H9Z"/>',
+			'</g>',
+		]
+
+		if ( isOpen ) {
+			svgData.push(
+				`<g data-name="folder-open" fill="${colors[1]}">`,
+				'<path fill="#CCCCCC" d="M114.3 62.2V41c0-4-3-7.2-6.6-7.2H23.2c-3.6 0-6.6 3.2-6.6 7.2v23.2l97.7-2Z" />',
+				'<path fill="#DDDDDD" d="M121.2 48.4v13H23.5v-13c0-4 3-7.1 6.6-7.1h84.5c3.7 0 6.6 3.2 6.6 7.1Z" />',
+				'<path d="M12.1 137.2h114.3c5.2 0 10.1-4.8 11-10.7l8.5-60.6c.8-6-2.8-10.7-8-10.7H23.6c-5.2 0-10.1 4.8-11 10.7l-8.5 60.6c-.8 5.9 2.8 10.7 8 10.7Z" data-name="F_FRONT"/>',
+				'<path fill="#111111" d="M126.4 139.2H12c-3 0-5.9-1.5-7.7-4a12.6 12.6 0 0 1-1.9-9L11 65.6c1-6.9 6.6-12.4 12.6-12.4H138c3 0 5.9 1.5 7.7 4 1.7 2.5 2.4 5.7 1.9 9l-8.5 60.6c-1 6.9-6.6 12.4-12.6 12.4Zm-102.8-82c-4.4 0-8.6 4-9.3 9l-8.5 60.6a8 8 0 0 0 1.2 5.7 6 6 0 0 0 5.1 2.7h114.3c4.5 0 8.7-4 9.4-9l8.4-60.7a8 8 0 0 0-1.1-5.7 6.1 6.1 0 0 0-5.2-2.6H23.6Z"/>',
+				'</g>'
+			)
+		} else {
+			svgData.push(
+				`<g data-name="folder-closed" fill="${colors[1]}">`,
+				'<path d="M13.3 138.8h111.5c5.1 0 9.3-5.8 9.3-13V52.5c0-7.2-4.2-13-9.3-13H13.3c-5.1 0-9.2 5.8-9.2 13v73.3c0 7.2 4.1 13 9.2 13Z" data-name="F_FRONT"/>',
+				'<path fill="#111111" d="M125 141.2H13.7c-3 0-6-1.8-8-5-2-2.9-3.2-6.8-3.2-10.8V52.1c0-8.3 4.8-15 10.6-15h111.5c3 0 6 1.8 8 5 2 3 3.2 6.8 3.2 10.8v73.3c0 8.3-4.8 15-10.6 15ZM13.7 42c-4.4 0-8 4.9-8 11l.1 73.2c0 2.6.7 5 2 7s3.3 3.1 5.4 3.1h111.4c4.4 0 8-4.9 8-10.9l-.1-73.3c0-2.6-.7-5-2-7S127.2 42 125 42H13.6Z"/>',
+				'</g>'
+			)
+		}
+
+		if ( isFav ) {
+			svgData.push(
+				`<g fill="${colors[2]}" data-name="favorite" transform="translate(${trans[0]},${trans[1]})">`,
+				'<path d="m 37 1.6 l 7 21.6 a 6.2 6.2 0 0 0 5.9 4.3 h 22.7 L 54.2 40.8 a 6.2 6.2 0 0 0 -2.2 7 l 7 21.5 L 40.6 56 a 6.2 6.2 0 0 0 -7.3 0 L 15 69.3 l 7 -21.6 c 0.8 -2.5 -0.1 -5.3 -2.3 -7 L 1.4 27.6 H 24 c 2.7 0 5.1 -1.8 6 -4.3 l 7 -21.6 Z"/>',
+				'</g>'
+			)
+		}
+
+		if ( !isFav && isDrop ) {
+			svgData.push(
+				`<g fill="${colors[2]}" data-name="closed-holding" transform="translate(${trans[0]},${trans[1]})">`,
+				'<path d="M 60.8 17.5 c 0 -1.4 -0.2 -3.2 1.3 -4 c 0.9 -0.4 1.8 -0.3 2.5 0.3 l 6.3 4.6 c 2 1.4 4.9 3.3 2.1 5.6 l -8.2 6.2 c -0.8 0.6 -1.7 0.7 -2.6 0.3 c -2 -1 -1.1 -3.6 -1.3 -5.4 c 0 -0.5 0 -0.6 -0.5 -0.5 c -6.8 1.5 -11.6 7.1 -17 11.1 c -8.5 6 -17.5 17 -27.9 18.7 c -0.3 0 -0.5 0.2 -0.4 0.5 v 3.6 c 0.1 2 -2.3 3.3 -3.9 2 l -8.4 -6.4 a 2.3 2.3 0 0 1 0 -3.8 l 8.4 -6.3 c 1.5 -1.2 3.9 0 3.8 2 v 3.2 c 0 0.4 0 0.6 0.6 0.5 c 6.8 -1.6 11.7 -7.3 17.2 -11.4 c 8.5 -6 17.2 -16.8 27.6 -18.5 c 0.3 0 0.5 -0.1 0.5 -0.5 v -1.8 Z"/>',
+				'<path d="M 15 17.5 v 2 c 0 0.2 0.1 0.3 0.4 0.4 c 7.3 0.8 12.5 6.2 18 10.6 c 1.2 0.9 1.3 2.3 0.5 3.4 c -0.9 1 -2.3 1.1 -3.4 0.2 c -2.8 -2.3 -5.5 -4.6 -8.5 -6.6 c -0.5 -0.6 -7.2 -4.1 -7 -2.5 v 3.3 c 0.1 2 -2.3 3.2 -3.8 2 l -8.4 -6.4 c -1.4 -1 -1.3 -2.7 0 -3.7 l 8.5 -6.4 c 1.6 -1.3 3.9 0 3.8 2 v 1.7 Z m 45.9 39.3 v -2 c 0 -0.2 0 -0.3 -0.3 -0.3 c -7.4 -1 -12.7 -6.3 -18.2 -10.7 c -1.4 -1.2 -1.1 -3.3 0.5 -4 c 1 -0.4 1.8 -0.2 2.5 0.4 l 6 4.9 c 2.7 2 5.7 4 9 4.6 c 0.4 0.1 0.5 0 0.5 -0.3 V 46 c -0.1 -2 2.4 -3.3 4 -2 l 8.2 6.2 c 1.4 1 1.4 2.9 0 4 l -8.4 6.2 c -1.5 1.3 -4 0 -3.9 -2 v -1.7 Z m -20.6 -36 V 26 c 0 3.3 -4.7 3.3 -4.7 0 V 15.5 c 0 -0.5 -0.1 -0.6 -0.6 -0.6 h -3 a 2.4 2.4 0 0 1 -2.1 -4 l 6.1 -8.2 c 1 -1.4 2.9 -1.4 4 0 l 6 8.3 c 0.6 0.8 0.8 1.6 0.3 2.6 c -0.9 2 -3.9 1.1 -5.7 1.3 c -0.3 0 -0.4 0 -0.4 0.4 v 5.5 Z m -4.7 32.7 v -5.2 c 0 -1.5 1 -2.5 2.4 -2.5 c 1.3 0 2.3 1 2.3 2.4 v 10.6 c 0 0.5 0.1 0.7 0.6 0.6 h 3 a 2.4 2.4 0 0 1 2.2 4 l -6.2 8.2 a 2.3 2.3 0 0 1 -3.9 0 l -6.2 -8.3 c -0.6 -0.8 -0.7 -1.6 -0.3 -2.5 c 1 -2 3.8 -1.2 5.7 -1.4 c 0.3 0 0.5 0 0.5 -0.4 v -5.5 Z"/>',
+				'</g>'
+			)
+		}
+
+		if ( isAct ) {
+			svgData.push(
+				'<g data-name="active">',
+				'<path fill="#ffffff" d="M122.4 141.2c-1 0-2-.4-2.8-1.2l-8.9-8.7a4 4 0 0 1 0-5.7 4 4 0 0 1 5.7 0l5.2 5.2 13.2-21.4a4 4 0 1 1 6.8 4.2l-15.8 25.7a4 4 0 0 1-3.4 1.9Z"/>',
+				'<path fill="#111111" d="M138.2 109.5c.4 0 .7.1 1 .3a2 2 0 0 1 .7 2.8L124 138.3a2 2 0 0 1-1.5 1h-.2a2 2 0 0 1-1.4-.7l-8.9-8.8a2 2 0 0 1 2.8-2.8l7.1 7 14.5-23.5c.4-.7 1-1 1.7-1m0-4a6 6 0 0 0-5.1 2.9l-11.9 19.2-3.4-3.4a5.6 5.6 0 0 0-4.2-1.8 6 6 0 0 0-6 6 6 6 0 0 0 1.7 4.3l8.9 8.8a6 6 0 0 0 5 1.7 6 6 0 0 0 4.3-2.8l15.8-25.7a6 6 0 0 0-5.1-9.2Z"/>',
+				'</g>'
+			)
+		}
+		svgData.push('</svg>')
+		return svgData.join('')
+	},
+
 	checkX : (amount, showCount = true) =>
 		`${(showCount)?`${amount} `:''}${(amount>0)?DATA.getIcon('check', 'success'):DATA.getIcon('x', 'danger')}`,
 
@@ -183,7 +250,16 @@ const DATA = {
 		].filter((x) => x !== null).join(' ')
 	},
 	bytesToMB     : async (count, suffix = true) => DATA.bytesToHR(count, { forceMB : true, showSuffix : suffix}),
+	bytesToMBCalc : (bytes) => Math.round((bytes / ( 1024 * 1024) * 100 )) / 100,
 
+	dateToString : (textDate) => {
+		const year2000 = 949381200000
+		const date = typeof textDate === 'string' ? new Date(Date.parse(textDate)) : textDate
+
+		if ( date < year2000 ) { return I18N.defer('mh_unknown', false) }
+
+		return `<span class="text-body-emphasis">${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}</span>`
+	},
 	escapeDesc    : ( text ) => typeof text === 'string' ? text.replaceAll(/&/g, '&amp;').replaceAll(/<(?!(a |\/a))/g, '&lt;') : text,
 	escapeSpecial : ( text ) => typeof text === 'string' ? DATA.unescapeText(text).replaceAll(/&/g, '&amp;').replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/"/g, '&quot;').replaceAll(/'/g, '&#39;') : text,
 	unescapeText  : (encodedString) => {
@@ -213,7 +289,7 @@ const DATA = {
 		icon :
 		'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'-250 -250 1403.2 1404.2\'%3E%3Cpath style=\'fill: %23771111; filter: drop-shadow(10px 10px 5px rgb(0 0 0 / 0.4));\' opacity=\'0.3\' d=\'M441.6 0a441.6 441.6 0 1 0 0 883.2 441.6 441.6 0 0 0 0-883.2ZM129 674a387.4 387.4 0 0 1-76.9-232.4 386.9 386.9 0 0 1 114-275.4 388 388 0 0 1 275.4-114 386.9 386.9 0 0 1 283 122L129.2 674Zm587.8 43a388 388 0 0 1-275.3 114A386.9 386.9 0 0 1 163 713.6l595-499.1a387 387 0 0 1 73 227A386.9 386.9 0 0 1 717 717Z\' /%3E%3C/svg%3E',
 
-	optionFromArray : ([value, text], select = null) => `<option value="${value}" ${value.toString() === select.toString() ? 'selected' : ''}>${text}</option>`,
+	optionFromArray : ([value, text], select = '') => `<option value="${value}" ${value.toString() === select.toString() ? 'selected' : ''}>${text}</option>`,
 
 	// MARK: ...Engine
 	eventEngine : (nodeObject, selector, handler, eventType = 'click') => {
@@ -254,18 +330,19 @@ const DATA = {
 
 // MARK: I18N
 const I18N = {
-	buildBadgeBare : async (badge, {classPrefix = 'badge', i18nPrefix = ''} = {}) => {
-		const lcBadgeName = badge.name.toLowerCase()
-		return window.i18n.get(`${i18nPrefix}${lcBadgeName}`).then((result) => {
-			const badgeDiv = document.createElement('div')
-			badgeDiv.classList.add('badge', 'border', 'border-2', `${classPrefix}-${lcBadgeName}`, ...badge.class)
-			badgeDiv.textContent = result.entry
-			badgeDiv.setAttribute('title', `${result.title}${DATA.prefixNotEmpty(badge.title, ' : ')}`)
-			pageSTATE.tooltips.push(new bootstrap.Tooltip(badgeDiv, { trigger : 'hover' }))
-			return badgeDiv
-		})
+	__ : (key) => {
+		const node = document.createElement('i18n-text')
+		node.setAttribute('data-key', key)
+		return node
 	},
-	buildBadgeMod   : async (badge) => I18N.buildBadgeBare(badge, {
+	buildBadge : (badge, {classPrefix = 'badge', i18nPrefix = ''} = {}) => {
+		const lcBadgeName = badge.name.toLowerCase()
+		const badgeDiv    = document.createElement('i18n-text')
+		badgeDiv.classList.add('badge', 'border', 'border-2', `${classPrefix}-${lcBadgeName}`, ...badge.class)
+		badgeDiv.setAttribute('data-key', `${i18nPrefix}${lcBadgeName}`)
+		return badgeDiv
+	},
+	buildBadgeMod   : (badge) => I18N.buildBadge(badge, {
 		classPrefix : 'badge-mod',
 		i18nPrefix  : 'mod_badge_',
 	}),
@@ -280,12 +357,6 @@ const I18N = {
 	buildElement : async (key) =>
 		window.i18n.get(key).then((result) =>
 			`<l10n name="${key}" data-done="true">${result.entry}</l10n>`),
-	clearTooltip : () => {
-		while ( pageSTATE.tooltips.length !== 0 ) {
-			const oldTooltip = pageSTATE.tooltips.pop()
-			oldTooltip?.dispose?.()
-		}
-	},
 	defer : (key, skipNonBase = true) => {
 		if ( key.includes('[[') ) {
 			const nameParts    = key.match(/(.+?) \[\[(.+?)]]/)
@@ -304,7 +375,7 @@ const I18N = {
 
 			return newName
 		}
-		return !skipNonBase || key.startsWith('$l10n') ? `<l10n name="${key}"></l10n>` : key
+		return !skipNonBase || key.startsWith('$l10n') ? `<i18n-text data-key="${key}"></i18n-text>` : key
 	},
 	pageLang : () => {
 		window.i18n.lang().then((value) => {
@@ -327,7 +398,7 @@ const I18N = {
 			window.i18n.get(key).then((result) => {
 				element.innerHTML = result.entry
 				element.setAttribute('data-done', 'true')
-				if ( result.title !== null && pageSTATE.do_tooltips ) {
+				if ( result.title !== null ) {
 					const extra        = DATA.prefixNotEmpty(element.stringAttribute('data-extra-title'), ' : ')
 					const titleElement = ( result.entry_key === 'game_icon_lg' ) ?
 						element.closest('#multi_version_button') :
@@ -336,24 +407,17 @@ const I18N = {
 					if ( titleElement !== null ) {
 						titleElement.setAttribute('title', `${result.title}${extra}`)
 					
-						pageSTATE.tooltips.push(new bootstrap.Tooltip(titleElement, { trigger : 'hover' }))
+						// pageSTATE.tooltips.push(new bootstrap.Tooltip(titleElement, { trigger : 'hover' }))
 					}
 				}
 			})
 		}
 	},
 	refresh : async () => {
-		await I18N.start()
 		I18N.pageLang()
-		I18N.clearTooltip()
 		I18N.process(true)
 	},
-	start : async () => {
-		pageSTATE.do_tooltips = await window.settings.get('show_tooltips') === true
-	},
 }
-
-const __ = I18N.buildElement
 
 // MARK: ELEMENT clsHelp
 function enhanceElement() {
@@ -424,8 +488,77 @@ function enhanceElement() {
 	}
 }
 
+// MARK: custom i18n-text element
+function enhanceI18N() {
+	customElements.define('i18n-text', class extends HTMLElement {
+		constructor() {
+			super()
+		}
+		static get observedAttributes() { return ['refresh', 'data-key'] }
+
+		get loading() {
+			return JSON.parse(this.getAttribute('data-loading'))
+		}
+		set loading(v) {
+			this.setAttribute('data-loading', JSON.stringify(v))
+		}
+		get response() {
+			return JSON.parse(this.getAttribute('data-response'))
+		}
+		set response(v) {
+			this.setAttribute('data-response', JSON.stringify(v))
+		}
+		get key() {
+			return this.getAttribute('data-key')
+		}
+		get extra() {
+			return DATA.prefixNotEmpty(this.stringAttribute('data-extra-title'), ' : ')
+		}
+
+		async getString() {
+			this.loading = true
+
+			return window.i18n.get(this.key).then((result) => {
+				this.response = result.entry
+				
+				if ( result.title !== null ) {
+					const parent = this.parentElement
+					if ( parent !== null && (parent.tagName === 'BUTTON' || parent.tagName === 'LABEL' ) ) {
+						parent.setAttribute('title', `${result.title}${this.extra}`)
+					} else {
+						this.setAttribute('title', `${result.title}${this.extra}`)
+					}
+				}
+				this.loading = false
+			})
+		}
+
+		async connectedCallback() {
+			await this.getString()
+		}
+		disconnectedCallback() {}
+		attributeChangedCallback(attrName, _oldVal, newVal) {
+			if ( attrName === 'refresh' && newVal === true ) {
+				this.removeAttribute('refresh')
+			}
+			this.loading = true
+			this.render()
+			this.getString().then(() => { this.render()})
+		}
+		render() {
+			if (this.loading) {
+				this.innerHTML = '...'
+			} else {
+				this.innerHTML = this.response
+			}
+		}
+	})
+}
+
 // MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
+	enhanceI18N()
+
 	window.fontSheet = new CSSStyleSheet()
 	document.adoptedStyleSheets.push(window.fontSheet)
 
@@ -469,7 +602,5 @@ window.addEventListener('DOMContentLoaded', () => {
 //TODO: theme change
 window?.operations?.receive('win:updateTheme', MA.updateTheme)
 window?.operations?.receive('win:updateFontSize', MA.updateFontSize)
-window?.operations?.receive('win:removeTooltips', MA.clearTooltips)
 window?.operations?.receive('win:forceRefresh', () => { location.reload() })
-window.addEventListener('click', MA.clearTooltips)
 MA.byIdEventIfExists('pageActionRefresh', () => { location.reload() })

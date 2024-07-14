@@ -6,140 +6,194 @@
 
 // Main Window UI
 
-/* global processL10N, fsgUtil, select_lib, __ */
+/* global MA, DATA, I18N, select_lib, bootstrap, fsgUtil */
+// processL10N, fsgUtil, select_lib, __ */
 
-const mainState = {
-	collectOrder       : { map : {}, numeric : {}, max : 0 },
-	currentGameVersion : 22,
-	gameIsRunningFlag  : false,
-	gameSetCollect     : {
-		selected : null,
-		all      : {},
-	},
-	isMultiVersion     : false,
-	lastFolderScroll   : 0,
-	modCollect         : null,
-	searchStringMap    : {},
-	searchTagMap       : {},
-	win                : {
-		collectMismatch : null,
-		modInfo         : null,
-	},
+// eslint-disable-next-line no-unused-vars
+class StateManager {
+	malwareSkip     = []
+	malwareSuppress = []
 
-	add_searchTagMap : (tag, uuid) => {
-		mainState.searchTagMap?.[tag.toLowerCase()]?.push?.(uuid)
-	},
+	flag = {
+		activeCollect  : null,
+		currentVersion : 22,
+		debugMode      : false,
+		folderDirty    : false,
+		folderEdit     : false,
+		gameRunning    : false,
+		launchEnable   : false,
+		miniMode       : false,
+		updateReady    : false,
+		versionTool    : false,
+	}
+	track = {
+		altClick       : null,
+		filter_must    : new Set(),
+		filter_not     : new Set(),
+		lastID         : null,
+		lastIndex      : null,
+		openCollection : null,
+		scrollPosition : 0,
+		searchString   : '',
+		searchType     : 'find_all',
+		selected       : new Set(),
+		selectedOnly   : false,
+		sortOrder      : 'sort_name',
+	}
+	orderMap = { keys : [], keyToNum : {}, max : 0, numToKey : {} }
 
-	empty_searchStringMap : () => { mainState.searchStringMap = {} },
-	empty_searchTagMap    : () => { mainState.searchTagMap = {
-		broken      : [],
-		depend      : [],
-		depend_flag : [],
-		folder      : [],
-		keys_bad    : [],
-		keys_ok     : [],
-		log         : [],
-		malware     : [],
-		map         : [],
-		new         : [],
-		nomp        : [],
-		nonmh       : [],
-		notmod      : [],
-		pconly      : [],
-		problem     : [],
-		recent      : [],
-		require     : [],
-		savegame    : [],
-		update      : [],
-	}},
+	collections = {}
+	mods        = {}
+	verList     = {}
+	extSites    = {}
 
-	toggleDebugLogDangerFlag : (status) => {
-		fsgUtil.clsShowTrue('debug_danger_bubble', status)
-	},
-	toggleDirtyUpdate : (dirtyFlag) => {
-		fsgUtil.clsHideFalse('dirty_folders', dirtyFlag)
-	},
-	toggleGameStatus(status = false, show = true) {
-		mainState.gameIsRunningFlag = status.gameRunning
-		fsgUtil.clsHideFalse('gameRunningBubble', show)
-		fsgUtil.clsOrGate('gameRunningBubble', status, 'text-success', 'text-danger')
-	},
-	updateBotStatus : (botObject) => {
-		if ( Object.keys(botObject.response).length === 0 ) { return }
+	searchTagList = new Set()
+
+	mapCollectionDropdown = new Map()
+	mapCollectionFiles    = new Map()
+
+	// MARK: process data
+	async updateFromData(data) {
+		this.flag.activeCollect  = data.opts.activeCollection
+		this.flag.currentVersion = data.appSettings.game_version
+		this.flag.debugMode      = data.opts.isDev
+		this.flag.folderDirty    = data.opts.foldersDirty
+		this.flag.folderEdit     = data.opts.foldersEdit
+		this.flag.gameRunning    = data.opts.gameRunning
+		this.flag.launchEnable   = data.opts.gameRunningEnable
+		this.flag.miniMode       = data.opts.showMini
+		this.flag.updateReady    = data.updateReady
+		this.flag.versionTool    = false
+
+		this.extSites            = data.opts.modSites
+		this.malwareSkip         = data.dangerModsSkip
+		this.malwareSuppress     = data.appSettings.suppress_malware
+
+		this.searchTagList       = new Set()
+		this.collections         = {}
+		this.mods                = {}
+		this.orderMap            = { keys : [], keyToNum : {}, max : 0, numToKey : {} }
+
+		this.mapCollectionFiles    = new Map()
+		this.mapCollectionDropdown = new Map()
+		this.mapCollectionDropdown.set(0, `--${data.opts.l10n.disable}--`)
 	
-		for ( const [collectKey, IDs] of Object.entries(botObject.requestMap) ) {
-			const thisBotDiv = fsgUtil.byId(`${collectKey}__bot`)
-			if ( thisBotDiv === null ) { continue }
-			if ( IDs.length === 0 ) {
-				thisBotDiv.innerHTML = ''
-				thisBotDiv.classList.add('d-none')
-				continue
-			}
-	
-			const thisCollectHTML = []
-	
-			for ( const thisID of IDs ) {
-				thisCollectHTML.push(mainLib.getBotStatusLine(
-					thisID,
-					botObject.response[thisID],
-					botObject.response[thisID].status === 'Good',
-					botObject.l10nMap
-				))
-			}
-			thisBotDiv.classList.remove('d-none')
-			thisBotDiv.innerHTML = thisCollectHTML.join('')
-		}
-	},
-}
+		for ( const [CIndex, CKey] of Object.entries([...data.set_Collections]) ) {
+			if ( data.collectionNotes[CKey].notes_version !== this.flag.currentVersion ) { continue }
 
-const mainLib = {
-	keyBoard : (action) => {
-		const lastOpenAcc = fsgUtil.queryF('.accordion-collapse.show')
+			this.orderMap.keys.push(CKey)
+			this.orderMap.keyToNum[CKey]   = parseInt(CIndex)
+			this.orderMap.numToKey[CIndex] = CKey
+			this.orderMap.max              = Math.max(this.orderMap.max, parseInt(CIndex))
+			
+			this.mapCollectionDropdown.set(CKey, data.modList[CKey].fullName)
+			this.mapCollectionFiles.set(CKey, data.modList[CKey].fullName)
 
-		if ( lastOpenAcc !== null ) { select_lib[`click_${action}`](lastOpenAcc.id) }
-	},
+			// eslint-disable-next-line no-await-in-loop
+			const thisCol = await this.#addCollection(CKey, data.modList[CKey], data.collectionNotes[CKey], data.collectionToStatus[CKey])
+			this.collections[CKey] = thisCol
 
-	checkVersion : (verFlag, verList, isFrozen, thisMod) => {
-		if ( !verFlag && !isFrozen && !thisMod.fileDetail.isFolder ) {
-			return (
-				Object.hasOwn(verList, thisMod.fileDetail.shortName) &&
-				verList[thisMod.fileDetail.shortName] !== thisMod.modDesc.version
-			) ? 1 : 2
-		}
-		return 0
-	},
+			if ( !this.flag.folderEdit ) {
+				this.mods[CKey] = {}
 
-	getBadgeHTML    : (thisMod, extraBadge = null, showExtras = false) => {
-		const displayBadges = []
-		
-		if ( showExtras ) {
-			if ( extraBadge?.isUsed ) {
-				displayBadges.push(fsgUtil.badge('success bg-gradient border-savegame', 'savegame_isused', true ))
-			} else {
-				displayBadges.push(fsgUtil.badge('danger bg-gradient border-savegame', 'savegame_unused', true ))
-			}
+				for ( const [MKey, thisMod] of Object.entries(data.modList[CKey].mods) ) {
+					const thisModName = thisMod.fileDetail.shortName
 
-			if ( extraBadge?.isLoaded ) {
-				displayBadges.push(fsgUtil.badge('success bg-gradient border-savegame', 'savegame_isloaded', true ))
-			} else {
-				displayBadges.push(fsgUtil.badge('danger bg-gradient border-savegame', 'savegame_inactive', true ))
-			}
-		}
-		
-		if ( Array.isArray(thisMod.displayBadges) ) {
-			for ( const badge of thisMod.displayBadges ) {
-				if ( badge[0] === 'malware' ) {
-					if ( mainState.modCollect.dangerModsSkip.has(thisMod.fileDetail.shortName) ) { continue }
-					if ( mainState.modCollect.appSettings.suppress_malware.includes(thisMod.fileDetail.shortName)) { continue }
+					// eslint-disable-next-line no-await-in-loop
+					const thisModRec  = await this.#addMod(thisMod)
+
+					for ( const tag of thisModRec.filters ) { this.searchTagList.add(tag) }
+
+					thisCol.sorter.push([
+						MKey,
+						thisModRec.search.find_name,
+						thisModRec.search.find_author,
+						thisModRec.search.find_title,
+						thisModRec.search.find_version
+					])
+
+					this.mods[CKey][MKey] = thisModRec
+
+					if ( thisModRec.filters.has('map') ) {
+						thisCol.mapList.push({
+							icon  : thisMod.modDesc.iconImageCache,
+							key   : thisMod.colUUID,
+							title : thisMod.fileDetail.shortName,
+						})
+					}
+
+					if ( thisCol.notes.notes_frozen ) { continue }
+					if ( this.flag.versionTool ) { continue }
+					if ( typeof this.verList[thisModName] !== 'undefined' && this.verList[thisModName] !== thisMod.modDesc.version ) {
+						this.flag.versionTool = true
+						continue
+					}
+					this.verList[thisModName] = thisMod.modDesc.version
 				}
-
-				displayBadges.push(fsgUtil.badge_main(badge))
-				mainState.add_searchTagMap(badge[0], thisMod.colUUID)
+				this.#processCollection_std(CKey)
 			}
 		}
-		return displayBadges.join('')
-	},
-	getBotStatusLine : (id, response, isGood,  l10n) => {
+		this.mapCollectionDropdown.set(999, `--${data.opts.l10n.unknown}--`)
+
+		if ( this.flag.folderEdit ) {
+			for ( const CKey of Object.keys(this.collections) ) {
+				this.#processCollection_edit(CKey)
+			}
+		}
+
+		this.updateUI()
+		this.fixSorts()
+		if ( this.track.openCollection !== null ) {
+			this.collections[this.track.openCollection]?.modNode?.classList?.remove?.('d-none')
+		}
+		this.doDisplay()
+	}
+
+	// MARK: finish sort trees
+	fixSorts() {
+		for ( const CKey of this.orderMap.keys ) {
+			const thisCol = this.collections[CKey]
+			thisCol.sorter       = thisCol.sorter.sort((a, b) => Intl.Collator().compare(a[1], b[1]))
+			thisCol.sort_name    = thisCol.sorter.map((x) => x[0])
+			thisCol.sort_author  = thisCol.sorter.sort((a, b) => Intl.Collator().compare(a[2], b[2])).map((x) => x[0])
+			thisCol.sort_title   = thisCol.sorter.sort((a, b) => Intl.Collator().compare(a[3], b[3])).map((x) => x[0])
+			thisCol.sort_version = thisCol.sorter.sort((a, b) => Intl.Collator().compare(a[4], b[4])).map((x) => x[0])
+		}
+	}
+
+	// MARK: update state
+	updateState() {
+		window.main_IPC.updateState().then((status) => {
+			MA.byId('debug_danger_bubble').clsShow(status.dangerDebug)
+			MA.byId('topBar-update').clsShow(status.updateReady)
+			this.flag.gameRunning  = status.gameRunning
+			this.flag.launchEnable = status.gameRunningEnabled
+			MA.byId('gameRunningBubble')
+				.clsShow(this.flag.launchEnable)
+				.clsOrGate(this.flag.gameRunning, 'text-success', 'text-danger')
+
+			
+			if ( Object.keys(status.botStatus.response).length === 0 ) { return }
+				
+			for ( const [CKey, IDs] of Object.entries(status.botStatus.requestMap) ) {
+				const thisBotDiv = this.collections?.[CKey]?.nodeBot ?? null
+
+				if ( thisBotDiv === null ) { continue }
+				thisBotDiv.innerHTML = ''
+
+				for ( const thisID of IDs ) {
+					thisBotDiv.appendChild(this.#botEntry(
+						thisID,
+						status.botStatus.response[thisID],
+						status.botStatus.response[thisID].status === 'Good',
+						status.botStatus.l10nMap
+					))
+				}
+			}
+		})
+	}
+
+	#botEntry(id, response, isGood, l10n) {
 		const thisStatus = !isGood ? 'broken' : response.online ? 'online' : 'offline'
 		const thisTitle  = !isGood ?
 			`${id} ${l10n.unknown}` :
@@ -147,181 +201,721 @@ const mainLib = {
 				`${response.name} :: ${response.playersOnline} / ${response.slotCount} ${l10n.online}` :
 				`${response.name} ${l10n.offline}`
 		const thisText = isGood && response.online ? response.playersOnline : ''
-	
-		return [
-			`<a title="${thisTitle}" target="_blank" href="https://www.farmsimgame.com/Server/${id}">`,
-			`<span class="bot-status bot-${thisStatus}">${thisText}</span>`,
-			'</a>'
-		].join('')
-	},
-	getCollectSelect : (modCollect) => {
-		const optList          = []
-		const activeCollection = modCollect.opts.activeCollection
-		const multiVersion     = modCollect.appSettings.multi_version
-		const curVersion       = modCollect.appSettings.game_version
-	
-		mainState.gameSetCollect.selected = ( activeCollection !== '999' && activeCollection !== '0') ? `collection--${modCollect.opts.activeCollection}` : modCollect.opts.activeCollection
-		mainState.gameSetCollect.all = {
-			0   : `--${modCollect.opts.l10n.disable}--`,
-			999 : `--${modCollect.opts.l10n.unknown}--`,
+		const node = document.createElement('a')
+		node.setAttribute('title', thisTitle)
+		node.innerHTML = `<span class="bot-status bot-${thisStatus}">${thisText}</span>`
+		node.addEventListener('click', (e) => {
+			e.stopPropagation()
+			window.operations.url(`https://www.farmsimgame.com/Server/${id}`)
+		})
+		return node
+	}
+
+	// MARK: update UI
+	updateUI() {
+		const todayIS = new Date()
+		if ( this.flag.debugMode ) {
+			MA.byId('drag_target', 'fsg-back-3')
+		} else if ( todayIS.getMonth() === 3 && todayIS.getDate() === 1 ) {
+			MA.byId('drag_target', 'fsg-back-2')
 		}
-		
-		optList.push(fsgUtil.buildSelectOpt(
-			'0',
-			`--${modCollect.opts.l10n.disable}--`,
-			mainState.gameSetCollect.selected,
-			true
-		))
-	
-		for ( const collectKey of modCollect.set_Collections ) {
-			const thisVersion = modCollect.collectionNotes[collectKey].notes_version
-			const fullKey     = `collection--${collectKey}`
-	
-			mainState.gameSetCollect.all[fullKey] = modCollect.modList[collectKey].fullName
-	
-			if ( !multiVersion || thisVersion === curVersion ) {
-				optList.push(fsgUtil.buildSelectOpt(
-					fullKey,
-					modCollect.modList[collectKey].fullName,
-					mainState.gameSetCollect.selected,
-					false,
-					modCollect.collectionToFolder[collectKey]
-				))
+
+		document.body.setAttribute('data-version', this.flag.currentVersion)
+
+		MA.byId('topBar-mini').clsOrGate(this.flag.miniMode, 'text-info', null)
+		MA.byId('topBar-update').clsShow(this.flag.updateReady)
+		MA.byId('dirty_folders').clsShow(this.flag.folderDirty)
+		MA.byId('moveButton_ver').clsOrGate(this.flag.versionTool, 'btn-danger', 'btn-success')
+		MA.byId('folderEditButton').clsOrGate(this.flag.folderEdit, 'btn-primary', 'btn-outline-primary')
+
+		const optList = []
+		for (const [value, text] of this.mapCollectionDropdown) {
+			optList.push(DATA.optionFromArray([value, text], this.flag.activeCollect))
+		}
+		MA.byIdHTML('collectionSelect', optList.join(''))
+
+		this.updateI18NDrops()
+		// modSortOrder
+	}
+
+	// MARK: translated UI selects
+	async updateI18NDrops() {
+		const finds = ['find_all', 'find_author', 'find_title', 'find_name', 'find_version']
+		const sorts = ['sort_name', 'sort_title', 'sort_author', 'sort_version']
+
+		const findOptions = finds.map((x) =>
+			window.i18n.get(x).then((r) => DATA.optionFromArray([x, r.entry], this.track.searchType))
+		)
+		const sortOptions = sorts.map((x) =>
+			window.i18n.get(x).then((r) => DATA.optionFromArray([x, r.entry], this.track.sortOrder))
+		)
+		Promise.all(findOptions).then((r) => {
+			MA.byIdHTML('modFindType', r.join(''))
+		})
+		Promise.all(sortOptions).then((r) => {
+			MA.byIdHTML('modSortOrder', r.join(''))
+		})
+	}
+
+	// MARK: update sideBar
+	doSideBar() {
+		MA.byId('moveButton_move').clsDisable(this.track.selected.size === 0)
+		MA.byId('moveButton_copy').clsDisable(this.track.selected.size === 0)
+		MA.byId('moveButton_delete').clsDisable(this.track.selected.size === 0)
+		MA.byId('moveButton_zip').clsDisable(this.track.selected.size === 0)
+
+		MA.byId('moveButton_open').clsEnable(this.track.selected.size === 1 || this.track.altClick !== null)
+
+		if ( this.track.selected.size !== 1 && this.track.altClick === null ) {
+			MA.byId('moveButton_hub').clsDisable()
+			MA.byId('moveButton_site').clsDisable()
+		} else {
+			const singleModID = this.track.altClick !== null ? this.track.altClick : [...this.track.selected][0]
+			const element = MA.byId(singleModID)
+			MA.byId('moveButton_hub').clsEnable(element !== null && element.classList.contains('has-hash'))
+			MA.byId('moveButton_site').clsEnable(element !== null && element.classList.contains('has-ext-site'))
+		}
+		this.select.count()
+	}
+
+	// MARK: update display
+	doDisplay() {
+		const scrollFrag = document.createDocumentFragment()
+		const docFrag    = document.createDocumentFragment()
+
+		if ( this.flag.folderEdit ) {
+			const editNode = document.createElement('tr')
+			editNode.classList.add('mod-table-folder', 'border-bottom')
+			editNode.innerHTML = '<td colspan="3" class="py-2"><i18n-text type="button" class="w-75 mx-auto d-block btn btn-sm btn-primary" data-key="folder_alpha"></i18n-text></td>'
+			editNode.querySelector('i18n-text').addEventListener('click', () => {
+				window.main_IPC.folder.alpha()
+			})
+			docFrag.appendChild(editNode)
+		} else {
+			this.filter.build()
+		}
+
+		for ( const CKey of this.orderMap.keys ) {
+			const thisCol = this.collections[CKey]
+			thisCol.nodeIcon.innerHTML = DATA.makeFolderIcon(
+				this.track.openCollection === CKey,
+				thisCol.notes.notes_favorite,
+				this.flag.activeCollect === CKey,
+				thisCol.notes.notes_holding,
+				thisCol.notes.notes_color
+			)
+
+			scrollFrag.appendChild(thisCol.scroll)
+			docFrag.appendChild(thisCol.node)
+
+			if ( ! this.flag.folderEdit && this.track.openCollection === CKey ) {
+				thisCol.modNodePoint.innerHTML = ''
+				for ( const MKey of thisCol[this.track.sortOrder] ) {
+					const modRec = this.mods[CKey][MKey]
+					const modKey = `${CKey}--${MKey}`
+					if ( ! this.track.selected.has(modKey) ) {
+						if ( this.doesSearchExclude(modRec) ) { continue }
+						if ( this.doesTagExclude(modRec)    ) { continue }
+					} else if ( this.track.selectedOnly ) { continue }
+
+					thisCol.modNodePoint.appendChild(modRec.node)
+					scrollFrag.appendChild(modRec.scroll)
+				}
 			}
-			if ( multiVersion && fullKey === mainState.gameSetCollect.selected && thisVersion !== curVersion ) {
-				mainState.gameSetCollect.selected = '999'
+
+			docFrag.appendChild(thisCol.modNode)
+		}
+		MA.byId('mod-collections').innerHTML = ''
+		MA.byId('mod-collections').appendChild(docFrag)
+		MA.byId('scroll-bar-fake').innerHTML = ''
+		MA.byId('scroll-bar-fake').appendChild(scrollFrag)
+		this.doSideBar()
+		this.refreshSelected()
+	}
+
+	doesSearchExclude(mod) {
+		// reversed condition! false if OK!
+		if ( this.track.searchString.length < 2 ) { return false }
+
+		return mod.search[this.track.searchType].indexOf(this.track.searchString) === -1
+	}
+
+	doesTagExclude(mod) {
+		if ( this.track.filter_must.size === 0 && this.track.filter_not.size === 0 ) { return false }
+
+		for ( const excludeTag of this.track.filter_not ) {
+			if ( mod.filters.has(excludeTag) ) { return true }
+		}
+
+		for ( const mustTag of this.track.filter_must ) {
+			if ( ! mod.filters.has(mustTag) ) { return true }
+		}
+		return false
+	}
+
+	// MARK: addCollection
+	async #addCollection(CKey, collection, notes, online) {
+		const colRec = {
+			data         : collection,
+			mapList      : [],
+			modNode      : document.createElement('tr'),
+			modNodePoint : null,
+			node         : document.createElement('tr'),
+			nodeBot      : null,
+			nodeIcon     : null,
+			notes        : notes,
+			online       : online,
+			scroll       : document.createElement('scroller-item'),
+			sorter       : [],
+
+			sort_author   : [],
+			sort_name     : [],
+			sort_title    : [],
+			sort_version  : [],
+		}
+
+		colRec.scroll.id = `${CKey}--scroller`
+		colRec.node.id   = CKey
+		colRec.node.classList.add('mod-table-folder', 'border-bottom')
+		colRec.node.addEventListener('contextmenu', () => { this.colContext(CKey)} )
+		
+
+		if ( ! this.flag.folderEdit ) {
+			colRec.node.appendChild(DATA.templateEngine('item_collect', {
+				folderSize : colRec.online ? await DATA.bytesToHR(collection.folderSize) : I18N.defer('removable_offline', false),
+				name       : collection.name,
+				tagLine    : notes.notes_tagline,
+				totalCount : collection.alphaSort.length > 999 ? '999+' : collection.alphaSort.length,
+			}))
+
+			colRec.node.children[0].addEventListener('click',       () => { this.colToggle(CKey)} )
+			colRec.node.children[1].addEventListener('click',       () => { this.colToggle(CKey)} )
+
+			colRec.nodeBot  = colRec.node.querySelector('.botInfo')
+			colRec.nodeIcon = colRec.node.querySelector('.folder-icon-svg')
+
+			colRec.modNode.id = `${CKey}--mods`
+			colRec.modNode.classList.add('mod-table-folder-detail', 'd-none')
+			colRec.modNode.innerHTML = [
+				'<td class="mod-table-folder-details px-0 ps-4" colspan="3">',
+				'<span class="no-mods-found d-block fst-italic small text-center d-none"><l10n name="empty_or_filtered"></l10n></span>',
+				'<table class="w-100 py-0 my-0 table table-sm table-hover table-striped"></table>',
+				'</td>'
+			].join('')
+
+			colRec.modNodePoint = colRec.modNode.querySelector('table')
+		} else {
+			colRec.node.appendChild(DATA.templateEngine('item_collect_edit', {
+				dateAdd    : DATA.dateToString(notes.notes_add_date),
+				dateUsed   : DATA.dateToString(notes.notes_last),
+				folderSize : colRec.online ? await DATA.bytesToHR(collection.folderSize) : I18N.defer('removable_offline', false),
+				name       : collection.name,
+				tagLine    : notes.notes_tagline,
+				totalCount : collection.alphaSort.length > 999 ? '999+' : collection.alphaSort.length,
+			}))
+			colRec.nodeIcon = colRec.node.querySelector('.folder-icon-svg')
+		}
+		return colRec
+	}
+
+	// MARK: collect buttons
+	#buttonMaker(text, color, callback, disabled = false) {
+		const node = document.createElement('i18n-text')
+		node.classList.add('btn', `btn-${color}`, 'btn-sm')
+		node.setAttribute('data-key', text)
+		node.addEventListener('click', callback)
+		if ( disabled ) { node.clsDisable() }
+		return node
+	}
+
+	#processCollection_edit(CKey) {
+		const col     = this.collections[CKey]
+		const btnNode = col.node.querySelector('.collect-line-buttons')
+
+		btnNode.innerHTML = ''
+		btnNode.appendChild(this.#buttonMaker(
+			'folder_top_button',
+			'secondary',
+			() => { this.order.set(CKey, true, true) },
+			this.order.prev(CKey) === null
+		))
+		btnNode.appendChild(this.#buttonMaker(
+			'folder_up_button',
+			'secondary',
+			() => { this.order.set(CKey, true, false) },
+			this.order.prev(CKey) === null
+		))
+		btnNode.appendChild(this.#buttonMaker(
+			'folder_down_button',
+			'secondary',
+			() => { this.order.set(CKey, false, false) },
+			this.order.next(CKey) === null
+		))
+		btnNode.appendChild(this.#buttonMaker(
+			'folder_bot_button',
+			'secondary',
+			() => { this.order.set(CKey, false, true) },
+			this.order.next(CKey) === null
+		))
+		btnNode.appendChild(this.#buttonMaker(
+			'remove_folder',
+			'danger',
+			() => { window.main_IPC.folder.remove(CKey) }
+		))
+		btnNode.appendChild(this.#buttonMaker(
+			'basegame_button_folder',
+			'success',
+			() => { window.main_IPC.folder.open(CKey) }
+		))
+	}
+	#processCollection_std(CKey) {
+		const col     = this.collections[CKey]
+		const note    = col.notes
+		const btnNode = col.node.querySelector('.collect-line-buttons')
+
+		btnNode.innerHTML = ''
+
+		if ( col.mapList.length === 1 ) {
+			const map = col.mapList[0]
+			const node = document.createElement('div')
+			node.classList.add('btn', 'btn-outline-primary', 'btn-sm', 'p-0')
+			node.setAttribute('title', map.title)
+			node.innerHTML = `<img src="${DATA.iconMaker(map.icon)}" alt="" class="img-fluid rounded" style="width: 27px; height: 27px;">`
+			node.addEventListener('click', () => { window.main_IPC.dispatchDetail(map.key) })
+			btnNode.appendChild(node)
+		} else if ( col.mapList.length > 1 ) {
+			const maps = col.mapList.sort((a, b) => Intl.Collator().compare(a.title, b.title))
+			const node = document.createElement('div')
+			node.classList.add('dropdown', 'd-inline-block')
+			node.innerHTML = [
+				'<button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">',
+				'<i18n-text data-key="map_multi_button"></i18n-text>',
+				'</button>',
+				'<ul class="dropdown-menu dropdown-menu-end" style="min-width: 30vw; max-width: 50vw;">',
+				'</ul></div>',
+			].join('')
+
+			const mapNodeP = node.querySelector('ul')
+			for ( const map of maps ) {
+				const mNode = document.createElement('li')
+				mNode.innerHTML = [
+					`<a class="dropdown-item" title="${map.title}">`,
+					`<img alt="" class="img-fluid rounded me-2" style="width: 27px; height: 27px;" src="${DATA.iconMaker(map.icon)}">`,
+					map.title,
+					'</a>'
+				].join('')
+				mNode.querySelector('a').addEventListener('click', () => { window.main_IPC.dispatchDetail(map.key) })
+				mapNodeP.appendChild(mNode)
+			}
+			btnNode.appendChild(node)
+		}
+
+		if ( note.notes_removable ) {
+			btnNode.appendChild(this.#buttonMaker('removable_button', 'outline-secondary', () => { return }))
+		}
+		if ( note.notes_websiteDL ) {
+			btnNode.appendChild(this.#buttonMaker('download_button', 'outline-warning', () => { window.main_IPC.collectDownload(CKey) }))
+		}
+		if ( note.notes_game_admin !== null ) {
+			btnNode.appendChild(this.#buttonMaker('game_admin_pass_button', 'outline-success', () => { window.operations.clip(note.notes_game_admin) }))
+		}
+		if ( note.notes_admin !== null ) {
+			btnNode.appendChild(this.#buttonMaker('admin_pass_button', 'outline-info', () => { window.operations.clip(note.notes_admin) }))
+		}
+		if ( note.notes_website !== null ) {
+			btnNode.appendChild(this.#buttonMaker('admin_button', 'outline-info', () => { window.operations.url(note.notes_website) }))
+		}
+
+		btnNode.appendChild(this.#buttonMaker('export_button', 'outline-info', () => { window.main_IPC.collectExport(CKey) }))
+		btnNode.appendChild(this.#buttonMaker('notes_button', 'primary', () => { window.main_IPC.dispatchNotes(CKey) }))
+		btnNode.appendChild(this.#buttonMaker('check_save', 'primary', () => { window.main_IPC.dispatchSave(CKey) }))
+	}
+
+	// MARK: addMod
+	async #addMod(thisMod) {
+		const mod = {
+			filters : new Set(thisMod?.displayBadges?.map?.((x) => x.name) || []),
+			node    : document.createElement('tr'),
+			scroll  : document.createElement('scroller-item'),
+			search  : {
+				find_author  : DATA.escapeSpecial(thisMod.modDesc.author).toLowerCase(),
+				find_name    : thisMod.fileDetail.shortName.toLowerCase(),
+				find_title   : DATA.escapeSpecial(thisMod.l10n.title).toLowerCase(),
+				find_version : DATA.escapeSpecial(thisMod.modDesc.version).toLowerCase(),
+			},
+		}
+		mod.search.find_all = Object.values(mod.search).join(' ')
+
+		mod.scroll.id  = `${thisMod.colUUID}--scroller`
+
+		mod.node.classList.add(...[
+			'mod-row',
+			'border-bottom',
+			this.extSites[thisMod.fileDetail.shortName] ? 'has-ext-site' : null,
+			thisMod.modHub.id ? 'has-hash' : null,
+			...( thisMod.canNotUse === true || this.flag.currentVersion !== thisMod.gameVersion ) ?
+				['mod-disabled', 'bg-secondary-subtle', 'bg-opacity-25'] :
+				[]
+		].filter((x) => x !== null))
+	
+		mod.node.id = thisMod.colUUID
+		mod.node.setAttribute('draggable', true)
+	
+		mod.node.addEventListener('contextmenu', () => { this.modContext(thisMod.colUUID, thisMod.currentCollection) })
+		mod.node.addEventListener('dragstart',   (e) => { this.modDrag(e, thisMod.colUUID) })
+		mod.node.addEventListener('click',       (e) => { this.modClick(e, thisMod.colUUID) })
+
+		if ( ! thisMod.badgeArray.includes('notmod') && ! thisMod.badgeArray.includes('savegame') ) {
+			mod.node.addEventListener('dblclick',  () => {
+				if ( thisMod.badgeArray.includes('log') ) {
+					window.main_IPC.dispatchLog(thisMod.fileDetail.fullPath)
+				} else {
+					window.main_IPC.dispatchDetail(thisMod.colUUID)
+				}
+			})
+		}
+
+		mod.node.appendChild(DATA.templateEngine('item_mod', {
+			author     : DATA.escapeSpecial(thisMod.modDesc.author),
+			fileSize   : ( thisMod.fileDetail.fileSize > 0 ) ? await DATA.bytesToHR(thisMod.fileDetail.fileSize) : '',
+			folderIcon : thisMod.badgeArray.includes('folder') ? '<i class="bi bi-folder2-open mod-folder-overlay"></i>' : '',
+			iconImage  : `<img alt="" class="img-fluid" src="${DATA.iconMaker(thisMod.modDesc.iconImageCache)}">`,
+			shortname  : thisMod.fileDetail.shortName,
+			title      : DATA.escapeSpecial(thisMod.l10n.title),
+			version    : DATA.escapeSpecial(thisMod.modDesc.version),
+		}))
+
+		const badgeContain = mod.node.querySelector('.issue_badges')
+		for ( const badge of thisMod?.displayBadges?.filter?.((x) => x.name !== `fs${this.flag.currentVersion}`) || [] ) {
+			badgeContain.appendChild(I18N.buildBadgeMod(badge))
+		}
+
+		return mod
+	}
+
+	// MARK: col actions
+	colToggle(id) {
+		this.track.lastID    = null
+		this.track.lastIndex = null
+		this.track.altClick  = null
+
+		for ( const selected of this.track.selected ) {
+			this.modToggle(selected, false)
+		}
+
+		if ( this.track.openCollection !== null ) {
+			this.collections[this.track.openCollection].modNode.classList.add('d-none')
+		}
+
+		if ( this.track.openCollection === id ) {
+			this.track.openCollection = null
+		} else {
+			this.track.openCollection = id
+			this.collections[id].modNode.classList.remove('d-none')
+		}
+		this.doDisplay()
+	}
+
+	colContext(id) { window.main_IPC.contextCol(id) }
+
+
+	// MARK: mod actions
+	modContext(id, CKey) {
+		const isHoldingPen = this.track.selected.size === 0 ? false : this.collections[CKey].notes.notes_holding
+		window.main_IPC.contextMod(id, [...this.track.selected], isHoldingPen)
+	}
+
+	modClick(e, id) {
+		if ( e.altKey ) {
+			this.track.altClick = id
+			this.doSideBar()
+			return
+		}
+
+		this.track.altClick = null
+
+		const thisRow   = e.target.closest('.mod-row')
+		const theTable  = thisRow.closest('table')
+		const thisIndex = [...theTable.children].indexOf(thisRow)
+
+		if ( !e.shiftKey || this.track.lastIndex === null || thisIndex === this.track.lastIndex ) {
+			this.track.lastIndex = thisIndex
+			this.track.lastID    = id
+			this.modToggle(id)
+			this.doSideBar()
+			return
+		}
+
+		const shiftOn     = this.track.selected.has(this.track.lastID)
+		const index_start = Math.min(thisIndex, this.track.lastIndex)
+		const index_end   = Math.max(thisIndex, this.track.lastIndex)
+
+		for ( let i = index_start; i <= index_end; i++ ) {
+			this.modToggle(theTable.children[i].id, shiftOn)
+		}
+
+		this.track.lastIndex = thisIndex
+		this.track.lastID    = id
+		this.doSideBar()
+	}
+
+	modToggle(id, force = null) {
+		let doAdd = !this.track.selected.has(id)
+
+		if ( force === false ) {
+			doAdd = false
+		} else if ( force === true ) {
+			doAdd = true
+		}
+
+		if ( doAdd ) {
+			this.track.selected.add(id)
+			MA.safeClsAdd(id, 'bg-success-subtle')
+			MA.safeClsAdd(`${id}--scroller`, 'bg-success')
+		} else {
+			this.track.selected.delete(id)
+			MA.safeClsRem(id, 'bg-success-subtle')
+			MA.safeClsRem(`${id}--scroller`, 'bg-success')
+		}
+		
+	}
+
+	modDrag(e, id) {
+		e.preventDefault()
+		e.stopPropagation()
+
+		if ( dragLib.preventRun ) { return }
+		window.main_IPC.drag.out(id)
+	}
+
+	// MARK: safe refresh
+	refreshSelected() {
+		for ( const element of MA.query('.mod-row.bg-success-subtle') ) {
+			element.classList.remove('bg-success-subtle')
+		}
+		for ( const element of MA.query('scroller-item.bg-success') ) {
+			element.classList.remove('bg-success')
+		}
+
+		for ( const id of this.track.selected ) {
+			if ( !id.startsWith(this.track.openCollection) ) {
+				this.track.selected.remove(id)
+			} else {
+				MA.safeClsAdd(id, 'bg-success-subtle')
+				MA.safeClsAdd(`${id}--scroller`, 'bg-success')
 			}
 		}
-	
-		optList.push(fsgUtil.buildSelectOpt(
-			'999',
-			`--${modCollect.opts.l10n.unknown}--`,
-			mainState.gameSetCollect.selected,
-			true
-		))
-	
-		return optList.join('')
-	},
-	getPrintDate : (textDate) => {
-		const year2000 = 949381200000
-		const date = typeof textDate === 'string' ? new Date(Date.parse(textDate)) : textDate
+		this.select.count()
+	}
 
-		if ( date < year2000 ) { return __('mh_unknown')}
+	// MARK: selection toggles
+	toggleSelectOnly() {
+		this.track.selectedOnly = MA.byIdCheck('modFilter_selected')
+	}
 
-		return `<span class="text-body-emphasis">${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${(date.getDate()).toString().padStart(2, '0')}</span>`
-	},
-	getSearchString : (thisMod) => ([
-		thisMod.fileDetail.shortName,
-		thisMod.l10n.title,
-		thisMod.modDesc.author
-	].join(' ').toLowerCase()),
+	changeSort() {
+		this.track.sortOrder = MA.byIdValue('modSortOrder')
+		this.doDisplay()
+	}
 
-	getFilterButton2 : ( name ) => [
-		'<div class="row border-bottom gx-1 gy-0 mt-1 pb-1"><div class="col-2">',
-		mainLib.getFilterButton3(name, 'show', 'success', true),
-		'</div><div class="col-2">',
-		mainLib.getFilterButton3(name, 'hide', 'warning'),
-		'</div><div class="col-6 align-self-center text-center">',
-		fsgUtil.badge(false, name),
-		'</div><div class="col-2">',
-		mainLib.getFilterButton3(name, 'exclusive', 'danger'),
-		'</div></div>'
-	].join(''),
-	getFilterButton3 : ( id, action, color, checked = false) => [
-		`<input type="checkbox" id="tag_filter__${action}__${id}" onchange="select_lib.new_tag('${action}', '${id}')" class="btn-check tag_filter__${action}" autocomplete="off" ${checked ? 'checked' : ''}>`,
-		`<label class="btn w-100 btn-sm btn-outline-${color}" for="tag_filter__${action}__${id}"><l10n name="tag_filter__${action}"></l10n></label>`
-	].join(''),
-	getFilterReset2 : () =>
-		'<button class="btn btn-primary btn-sm w-100 text-center mt-1" onclick="select_lib.new_tag_reset()"><l10n name="filter_tag_reset"></l10n></button>',
-	setDropDownFilters : ( l10n ) => {
-		// Dynamically build filter lists based on what is in the collections
-		const tagOrder = Object.keys(l10n)
-			.sort((a, b) => new Intl.Collator().compare(l10n[a], l10n[b]))
-			.filter((x) => Object.hasOwn(mainState.searchTagMap, x) && mainState.searchTagMap[x].length !== 0)
-	
-		const newTags   = tagOrder.map((x) => mainLib.getFilterButton2(x))
-	
-		newTags.push(mainLib.getFilterReset2())
-	
-		fsgUtil.setById('filter_new_style', newTags)
-	},
+	// MARK: filters
+	filter = {
+		build : () => {
+			MA.byIdText('tag_filter_full_count', this.track.filter_must.size + this.track.filter_not.size)
+			const dropNode = document.createDocumentFragment()
+			const textNode = document.createElement('i18n-text')
+			textNode.classList.add('text-center', 'd-block', 'pb-1')
+			textNode.setAttribute('data-key', 'filter_tag_title')
 
-	getMapDrop : (icons, names) => {
-		// icons is array of images
-		// names is array of [shortName, title, modCollectKey]
-		if ( icons.length < 2 ) { return '' }
+			dropNode.appendChild(textNode)
 
-		const eachMapHTML = [...icons.entries(icons)].map(([idx, icon]) => [
-			`<li><a class="dropdown-item" onclick="actionLib.openMod('true', '${names[idx][2]}')" title="${names[idx][0]}">`,
-			`<img alt="" class="img-fluid rounded me-2" style="width: 27px; height: 27px;" src="${icon}">`,
-			names[idx][1],
-			'</a></li>'
-		].join(''))
+			const allTags = []
+			for ( const tag of [...this.searchTagList].filter((x) => x !== `fs${this.flag.currentVersion}`).sort() ) {
+				allTags.push(this.filter.buildTag(tag.toLowerCase()))
+			}
 
-		return [
-			'<div class="dropdown d-inline-block">',
-			'<button class="btn btn-outline-primary btn-sm dropdown-toggle me-2 rounded-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">',
-			'<l10n name="map_multi_button"></l10n>',
-			'</button>',
-			'<ul class="dropdown-menu dropdown-menu-end" style="min-width: 25vw; max-width: 50vw;">',
-			eachMapHTML.join(''),
-			'</ul></div>',
-		].join('')
-		
-	},
+			const halfMark = Math.ceil(allTags.length / 2)
 
-	// Order Buttons
-	getOrderNext : (key) => {
-		const thisIndex = mainState.collectOrder.map[key]
-	
-		if ( typeof thisIndex === 'undefined' ) { return null }
-	
-		for ( let i = thisIndex + 1; i <= mainState.collectOrder.max; i++ ) {
-			if ( typeof mainState.collectOrder.numeric[i] !== 'undefined' ) { return i }
-		}
-		return null
-	},
-	getOrderPrev : (key) => {
-		const thisIndex = mainState.collectOrder.map[key]
-		
-		if ( typeof thisIndex === 'undefined' ) { return null }
-	
-		for ( let i = thisIndex - 1; i >= 0; i-- ) {
-			if ( typeof mainState.collectOrder.numeric[i] !== 'undefined' ) { return i }
-		}
-		return null
-	},
-	removeItemOrder : (collectKey) => {
-		fsgUtil.clearTooltipsXX()
-		window.mods.removeFolder(collectKey)
-	},
-	setItemAlpha : () => {
-		fsgUtil.clearTooltipsXX()
-		window.mods.reorderAlpha()
-	},
-	setItemOrder : (collectKey, moveUpInList, forceLast = false) => {
-		fsgUtil.clearTooltipsWX()
-		const curIndex = mainState.collectOrder.map[collectKey]
-		const newIndex = forceLast ?
-			moveUpInList ? 0 : mainState.collectOrder.max :
-			moveUpInList ? mainLib.getOrderPrev(collectKey) : mainLib.getOrderNext(collectKey)
+			for ( let i = 0; i < halfMark; i++ ) {
+				const tagNode = document.createElement('div')
+				tagNode.classList.add('row', 'filter-row', 'border-top', 'mt-0', 'py-0', 'mx-0')
+				tagNode.appendChild(allTags[i])
+				if ( typeof allTags[i+halfMark] !== 'undefined') {
+					tagNode.appendChild(allTags[i+halfMark])
+				}
+				dropNode.appendChild(tagNode)
+			}
 
-		if ( curIndex !== null && newIndex !== null ) {
-			mainState.lastFolderScroll = fsgUtil.byId('mod-collections').offsetParent.scrollTop
-			window.mods.reorderFolder(curIndex, newIndex)
-		}
-	},
-	setOrderButtons : (keys, doSomething) => {
-		if ( !doSomething ) { return }
-		for ( const key of keys ) {
-			fsgUtil.clsDisableTrue(`${key}_order_up_last`, mainLib.getOrderPrev(key) === null)
-			fsgUtil.clsDisableTrue(`${key}_order_up`, mainLib.getOrderPrev(key) === null)
-			fsgUtil.clsDisableTrue(`${key}_order_down`, mainLib.getOrderNext(key) === null)
-			fsgUtil.clsDisableTrue(`${key}_order_down_last`, mainLib.getOrderNext(key) === null)
-		}
-	},
+			const resetNode = document.createElement('i18n-text')
+			resetNode.classList.add('btn', 'btn-primary', 'btn-sm', 'w-75', 'mx-auto', 'd-block', 'my-2')
+			resetNode.setAttribute('data-key', 'filter_tag_reset')
+			resetNode.addEventListener('click', () => {
+				this.track.filter_must.clear()
+				this.track.filter_not.clear()
+				this.doDisplay()
+			})
+			dropNode.appendChild(resetNode)
+
+			MA.byIdHTML('filter_new_style', '')
+			MA.byId('filter_new_style').appendChild(dropNode)
+		},
+		buildTag : (tag) => {
+			const must    = this.track.filter_must.has(tag)
+			const mustNot = this.track.filter_not.has(tag)
+			const may     = !must && !mustNot
+			
+			const tagNode    = document.createDocumentFragment()
+			const tagNodeTag = document.createElement('div')
+			tagNodeTag.classList.add('col-3', 'text-center', 'py-1')
+			tagNodeTag.appendChild(I18N.buildBadgeMod({name : tag, class : []}))
+			tagNode.appendChild(tagNodeTag)
+
+			const tagNodeBtn = document.createElement('div')
+			tagNodeBtn.classList.add('col-3', 'py-1')
+			tagNodeBtn.innerHTML = [
+				`<input type="radio" class="btn-check" name="tag_filters__${tag}" id="tag_filters__${tag}__may" value="may" autocomplete="off" ${may ? 'checked' : ''}>`,
+				`<label for="tag_filters__${tag}__may" class="btn btn-sm btn-outline-success rounded-0 rounded-start"><i18n-text data-key="tag_filter__show"></i18n-text></label>`,
+				`<input type="radio" class="btn-check" name="tag_filters__${tag}" id="tag_filters__${tag}__not" value="not" autocomplete="off" ${mustNot ? 'checked' : ''}>`,
+				`<label for="tag_filters__${tag}__not" class="btn btn-sm btn-outline-warning rounded-0"><i18n-text data-key="tag_filter__hide"></i18n-text></label>`,
+				`<input type="radio" class="btn-check" name="tag_filters__${tag}" id="tag_filters__${tag}__must" value="must" autocomplete="off" ${must ? 'checked' : ''}>`,
+				`<label for="tag_filters__${tag}__must" class="btn btn-sm btn-outline-danger rounded-0 rounded-end"><i18n-text data-key="tag_filter__exclusive"></i18n-text></label>`,
+			].join('')
+			for ( const element of tagNodeBtn.querySelectorAll('input') ) {
+				element.addEventListener('change', (e) => {
+					const value = e.target.value
+					if ( value === 'may' ) {
+						this.track.filter_must.delete(tag)
+						this.track.filter_not.delete(tag)
+					} else if ( value === 'must') {
+						this.track.filter_must.add(tag)
+						this.track.filter_not.delete(tag)
+					} else {
+						this.track.filter_must.delete(tag)
+						this.track.filter_not.add(tag)
+					}
+					this.doDisplay()
+				})
+			}
+			tagNode.appendChild(tagNodeBtn)
+
+			return tagNode
+		},
+
+		findClear : () => {
+			MA.byIdValue('filter_input', '')
+			this.track.searchString = ''
+			this.doDisplay()
+		},
+		findTerm : () => {
+			const newValue = MA.byIdValueLC('filter_input')
+			const needsUpdate = this.track.searchString.length >= 2 ||
+				(this.track.searchString.length <= 2 && newValue.length >= 2)
 	
-	// launch game
+			this.track.searchString = MA.byIdValueLC('filter_input')
+			MA.byId('filter_clear').clsHide(this.track.searchString.length === 0)
+	
+			if ( needsUpdate ) { this.doDisplay() }
+		},
+		findType : () => {
+			this.track.searchType = MA.byIdValue('modFindType')
+			this.doDisplay()
+		},
+	}
+
+	select = {
+		all : () => {
+			if ( this.track.openCollection === null ) { return }
+
+			const CKey = this.track.openCollection
+
+			for ( const MKey of Object.keys(this.mods[CKey]) ) {
+				this.track.selected.add(`${CKey}--${MKey}`)
+			}
+			this.refreshSelected()
+		},
+		count : () => {
+			MA.byIdText('select_quantity', this.track.selected.size)
+		},
+		invert : () => {
+			if ( this.track.openCollection === null ) { return }
+
+			const CKey    = this.track.openCollection
+			const allMods = new Set(Object.keys(this.mods[CKey]).map((MKey) => `${CKey}--${MKey}`))
+
+			this.track.selected = allMods.difference(this.track.selected)
+			this.refreshSelected()
+		},
+		none : () => {
+			this.track.selected.clear()
+			this.refreshSelected()
+		},
+	}
+
+	// MARK: collect order
+	order = {
+		next : (key) => {
+			const thisIndex = this.orderMap.keyToNum[key]
+
+			if ( typeof thisIndex === 'undefined' ) { return null }
+
+			for ( let i = thisIndex + 1; i <= this.orderMap.max; i++ ) {
+				if ( typeof this.orderMap.numToKey[i] !== 'undefined' ) { return i }
+			}
+			return null
+		},
+		prev : (key) => {
+			const thisIndex = this.orderMap.keyToNum[key]
+
+			if ( typeof thisIndex === 'undefined' ) { return null }
+
+			for ( let i = thisIndex - 1; i >= 0; i-- ) {
+				if ( typeof this.orderMap.numToKey[i] !== 'undefined' ) { return i }
+			}
+			return null
+		},
+		set : (CKey, moveUp, forceLast = false) => {
+			const curIndex = this.orderMap.keyToNum[CKey]
+			const newIndex = forceLast ?
+				moveUp ? 0 : this.orderMap.max :
+				moveUp ? this.order.prev(CKey) : this.order.next(CKey)
+
+			if ( curIndex !== null && newIndex !== null ) {
+				this.track.scrollPosition = MA.byId('mod-collections').offsetParent.scrollTop
+				window.main_IPC.folder.set(curIndex, newIndex)
+			}
+		},
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const mainState = {
+	gameIsRunningFlag  : false,
+	gameSetCollect     : {
+		selected : null,
+		all      : {},
+	},
+	modCollect         : null,
+	win                : {
+		collectMismatch : null,
+		modInfo         : null,
+	},
+}
+
+
+const mainLib = {
 	launchGame() {
 		const currentList = fsgUtil.valueById('collectionSelect')
 		if ( currentList === mainState.gameSetCollect.selected ) {
@@ -346,20 +940,10 @@ const mainLib = {
 		fsgUtil.valueById('collectionSelect', mainState.gameSetCollect.selected)
 		window.mods.startFarmSim()
 	},
-
 }
 
 const actionLib = {
-	clearInput : () => { select_lib.filter_begin(null, '') },
-	openMod : (enabled, modID) => {
-		if ( enabled === 'true' ) { window.mods.openMod(modID) }
-	},
-	openModContext : (id) => {
-		const allModRows     = fsgUtil.queryA('.mod-row .mod-row-checkbox:checked')
-		const selectedMods   = allModRows.map((thisRow) => thisRow.id.replace('__checkbox', ''))
-		const isHoldingPen   = selectedMods.length === 0 ? false : fsgUtil.byId(`${selectedMods[0].split('--')[0]}_mods`).classList.contains('is-holding-pen')
-		window.mods.modCText(id, selectedMods, isHoldingPen)
-	},
+
 	setCollectionActive : () => {
 		const activePick = fsgUtil.valueById('collectionSelect').replace('collection--', '')
 	
@@ -446,7 +1030,6 @@ const prefLib = {
 			fsgUtil.classPerTest(`.game_disabled_${version}`, !prefLib.currentSet[`game_enabled_${version}`])
 		}
 	
-		processL10N()
 	},
 }
 
@@ -476,71 +1059,6 @@ const LEDLib = {
 		} catch (err) {
 			window.log.debug(`Unable to spin LED (no light?) : ${err}`, 'main')
 		}
-	},
-}
-
-const loaderLib = {
-	overlay : null,
-
-	lastTotal : 1,
-	startTime : Date.now(),
-
-	hide : () => { loaderLib.overlay?.hide() },
-	show : () => { loaderLib.overlay?.show() },
-
-	hideCount : () => {
-		fsgUtil.clsHide('loadOverlay_statusCount')
-		fsgUtil.clsHide('loadOverlay_statusProgBar')
-	},
-	startDownload : () => {
-		loaderLib.startTime = Date.now()
-		fsgUtil.clsShow('loadOverlay_downloadCancel')
-		fsgUtil.clsShow('loadOverlay_speed')
-	},
-	updateCount : (count, inMB = false) => {
-		const thisCount   = inMB ? fsgUtil.bytesToMB(count, false) : count
-		const thisElement = fsgUtil.byId('loadOverlay_statusCurrent')
-		const thisProg    = fsgUtil.byId('loadOverlay_statusProgBarInner')
-		const thisPercent = `${Math.max(Math.ceil((count / loaderLib.lastTotal) * 100), 0)}%`
-	
-		if ( thisProg !== null ) { thisProg.style.width = thisPercent }
-	
-		if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
-	
-		if ( inMB ) {
-			const perDone    = Math.max(1, Math.ceil((count / loaderLib.lastTotal) * 100))
-			const perRem     = 100 - perDone
-			const elapsedSec = (Date.now() - loaderLib.startTime) / 1000
-			const estSpeed   = fsgUtil.bytesToMBCalc(count, false) / elapsedSec // MB/sec
-			const secRemain  = elapsedSec / perDone * perRem
-	
-			const prettyMinRemain = Math.floor(secRemain / 60)
-			const prettySecRemain = secRemain % 60
-	
-			fsgUtil.setById('loadOverlay_speed_speed', `${estSpeed.toFixed(1)} MB/s`)
-			fsgUtil.setById('loadOverlay_speed_time', `~ ${prettyMinRemain.toFixed(0).padStart(2, '0')}:${prettySecRemain.toFixed(0).padStart(2, '0')}`)
-		}
-	},
-	updateText : (mainTitle, subTitle, dlCancel) => {
-		fsgUtil.setById('loadOverlay_statusMessage', mainTitle)
-		fsgUtil.setById('loadOverlay_statusDetail', subTitle)
-		fsgUtil.setById('loadOverlay_statusTotal', '0')
-		fsgUtil.setById('loadOverlay_statusCurrent', '0')
-		fsgUtil.setById('loadOverlay_downloadCancelButton', dlCancel)
-	
-		fsgUtil.clsShow('loadOverlay_statusCount')
-		fsgUtil.clsShow('loadOverlay_statusProgBar')
-	
-		fsgUtil.clsHide('loadOverlay_downloadCancel')
-		fsgUtil.clsHide('loadOverlay_speed')
-		
-		loaderLib.show()
-	},
-	updateTotal : (count, inMB = false) => {
-		if ( inMB ) { loaderLib.startTime = Date.now() }
-		const thisCount   = inMB ? fsgUtil.bytesToMB(count) : count
-		fsgUtil.setById('loadOverlay_statusTotal', thisCount)
-		loaderLib.lastTotal = ( count < 1 ) ? 1 : count
 	},
 }
 
@@ -787,7 +1305,6 @@ const fileOpLib = {
 		fsgUtil.clsDisableFalse('fileOpCanvas-button', enableButton)
 		fsgUtil.setById('fileOpCanvas-source', confirmHTML)
 		fileOpLib.goodFileCount()
-		processL10N()
 	},
 	noConflict   : () => fileOpLib.dest_multi.has(fileOpLib.operation) || fileOpLib.dest_none.has(fileOpLib.operation),
 	startOverlay : (opPayload) => {
@@ -940,25 +1457,81 @@ const dragLib = {
 			fsgUtil.clsDelId('drag_add_folder', 'd-none', 'bg-primary')
 		}
 	},
-	dragOut : (e) => {
-		e.preventDefault()
-		e.stopPropagation()
-
-		if ( dragLib.preventRun ) { return }
-	
-		const thePath = e.composedPath()
-	
-		for ( const thisPath of thePath ) {
-			if ( thisPath.nodeName === 'TR' ) {
-				window.mods.dragOut(thisPath.id)
-				break
-			}
-		}
-	},
 	dragOver : (e) => {
 		e.preventDefault()
 		e.stopPropagation()
 	
 		e.dataTransfer.dropEffect = (dragLib.isFolder ? 'link' : 'copy')
 	},
+}
+
+
+// eslint-disable-next-line no-unused-vars
+class LoaderLib {
+	overlay = null
+
+	lastTotal = 1
+	startTime = Date.now()
+
+	constructor() {
+		this.overlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
+	}
+
+	hide() { this.overlay?.hide() }
+	show() { this.overlay?.show() }
+
+	hideCount() {
+		MA.byId('loadOverlay_statusCount').clsHide()
+		MA.byId('loadOverlay_statusProgBar').clsHide()
+	}
+	startDownload() {
+		this.startTime = Date.now()
+		MA.byId('loadOverlay_downloadCancel').clsShow()
+		MA.byId('loadOverlay_speed').clsShow()
+	}
+	updateCount(count, inMB = false) {
+		const thisCount   = inMB ? DATA.bytesToMB(count, false) : count
+		const thisElement = MA.byId('loadOverlay_statusCurrent')
+		const thisProg    = MA.byId('loadOverlay_statusProgBarInner')
+		const thisPercent = `${Math.max(Math.ceil((count / this.lastTotal) * 100), 0)}%`
+	
+		if ( thisProg !== null ) { thisProg.style.width = thisPercent }
+	
+		if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
+	
+		if ( inMB ) {
+			const perDone    = Math.max(1, Math.ceil((count / this.lastTotal) * 100))
+			const perRem     = 100 - perDone
+			const elapsedSec = (Date.now() - this.startTime) / 1000
+			const estSpeed   = DATA.bytesToMBCalc(count, false) / elapsedSec // MB/sec
+			const secRemain  = elapsedSec / perDone * perRem
+	
+			const prettyMinRemain = Math.floor(secRemain / 60)
+			const prettySecRemain = secRemain % 60
+	
+			MA.byIdText('loadOverlay_speed_speed', `${estSpeed.toFixed(1)} MB/s`)
+			MA.byIdText('loadOverlay_speed_time', `~ ${prettyMinRemain.toFixed(0).padStart(2, '0')}:${prettySecRemain.toFixed(0).padStart(2, '0')}`)
+		}
+	}
+	updateText(mainTitle, subTitle, dlCancel) {
+		MA.byIdHTML('loadOverlay_statusMessage', mainTitle)
+		MA.byIdHTML('loadOverlay_statusDetail', subTitle)
+		MA.byIdText('loadOverlay_statusTotal', '0')
+		MA.byIdText('loadOverlay_statusCurrent', '0')
+		MA.byIdHTML('loadOverlay_downloadCancelButton', dlCancel)
+	
+		MA.byId('loadOverlay_statusCount').clsShow()
+		MA.byId('loadOverlay_statusProgBar').clsShow()
+	
+		MA.byId('loadOverlay_downloadCancel').clsHide()
+		MA.byId('loadOverlay_speed').clsHide()
+		
+		this.show()
+	}
+	updateTotal(count, inMB = false) {
+		if ( inMB ) { this.startTime = Date.now() }
+		const thisCount   = inMB ? DATA.bytesToMB(count) : count
+		MA.byIdText('loadOverlay_statusTotal', thisCount)
+		this.lastTotal = ( count < 1 ) ? 1 : count
+	}
 }

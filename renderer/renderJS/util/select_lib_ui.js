@@ -134,6 +134,11 @@ const select_lib = {
 		select_lib.clear_range_then_filter()
 	},
 	
+
+	click_mod         : (e) => {
+		console.log(e)
+	},
+
 	click_row         : (modID) => {
 		if ( window.event.altKey ) {
 			select_lib.click_alt(modID)
@@ -236,7 +241,7 @@ const select_lib = {
 		fsgUtil.clsDisableFalse('moveButton_site', hasExtSite)
 
 		fsgUtil.clsEnable('moveButton_fav')
-		fsgUtil.clsEnable('verButton')
+		fsgUtil.clsEnable('moveButton_ver')
 		
 		select_lib.change_count(countSelected)
 	},
