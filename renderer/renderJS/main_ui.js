@@ -99,7 +99,7 @@ function topBarHandlers() {
 //MARK: side bar event
 function sideBarHandlers() {
 	MA.byIdEventIfExists('moveButton_ver', () => { window.main_IPC.dispatch('version') })
-	MA.byIdEventIfExists('moveButton_fav', () => { window.mods.copyFavorites() })
+	MA.byIdEventIfExists('moveButton_fav', () => { window.state.startFile('favs') })
 
 	MA.byIdEventIfExists('moveButton_move',   () => { window.state.startFile('move') })
 	MA.byIdEventIfExists('moveButton_copy',   () => { window.state.startFile('copy') })

@@ -1014,34 +1014,27 @@ class StateManager {
 
 
 
-// MARK: OLD
+// MARK: OLD SHIT
 
 
-const mainState = {
-	win                : {
-		modInfo         : null,
-	},
-}
-
-
-const actionLib = {
+// const actionLib = {
 
 	
 
-	setModInfo : () => {
-		window.mods.setModInfo(
-			fsgUtil.htmlById('mod_info_mod_name'),
-			fsgUtil.valueById('mod_info_input')
-		)
-		mainState.win.modInfo.hide()
-	},
+// 	setModInfo : () => {
+// 		window.mods.setModInfo(
+// 			fsgUtil.htmlById('mod_info_mod_name'),
+// 			fsgUtil.valueById('mod_info_input')
+// 		)
+// 		mainState.win.modInfo.hide()
+// 	},
 
-	doCacheClean : () => {
-		fsgUtil.setById('clean_cache_size', '')
-		fsgUtil.setById('clean_detail_cache_size', '')
-		window.mods.cleanCache()
-	},
-}
+// 	doCacheClean : () => {
+// 		fsgUtil.setById('clean_cache_size', '')
+// 		fsgUtil.setById('clean_detail_cache_size', '')
+// 		window.mods.cleanCache()
+// 	},
+// }
 
 const prefLib = {
 	currentDev : null,
@@ -1234,6 +1227,9 @@ const dragLib = {
 }
 
 
+// MARK: SUB MODULE CLASSES
+
+
 // MARK: modalCollectMismatch
 class ModalOverlay {
 	overlay = null
@@ -1338,8 +1334,8 @@ class FileLib {
 
 	l10n_button = {
 		copy      : 'copy',
-		copyFavs  : 'copy',
 		delete    : 'delete',
+		favs      : 'copy',
 		import    : 'copy',
 		move      : 'move',
 		multiCopy : 'copy',
@@ -1347,8 +1343,8 @@ class FileLib {
 	}
 	l10n_info = {
 		copy      : 'confirm_copy_blurb',
-		copyFavs  : 'confirm_copy_multi_blurb',
 		delete    : 'confirm_delete_blurb',
+		favs      : 'confirm_copy_multi_blurb',
 		import    : 'confirm_import_blurb',
 		move      : 'confirm_move_blurb',
 		multiCopy : 'confirm_copy_multi_blurb',
@@ -1356,8 +1352,8 @@ class FileLib {
 	}
 	l10n_title = {
 		copy      : 'confirm_copy_title',
-		copyFavs  : 'confirm_multi_copy_title',
 		delete    : 'confirm_delete_title',
+		favs      : 'confirm_multi_copy_title',
 		import    : 'confirm_import_title',
 		move      : 'confirm_move_title',
 		multiCopy : 'confirm_multi_copy_title',
@@ -1380,6 +1376,7 @@ class FileLib {
 		MA.byId('fileOpCanvas-button').addEventListener('click', () => { this.process() })
 	}
 
+	// MARK: start (button)
 	start(mode, selectAll, selectOne) {
 		if ( selectAll.length === 0 ) { return }
 
@@ -1417,6 +1414,7 @@ class FileLib {
 		}
 	}
 
+	// MARK: user buttons
 	selectDestination(single = true, dest) {
 		if ( this.selectedDest.has(dest) ) {
 			this.selectedDest.delete(dest)
@@ -1439,6 +1437,12 @@ class FileLib {
 		this.updateMods()
 	}
 
+	toggleMod(key) {
+		this.selectedMods[key].doAction = !this.selectedMods[key].doAction
+		this.updateMods()
+	}
+
+	// MARK: check conflict
 	doesModConflict(mod) {
 		if ( this.selectedDest.size === 0 ) { return true }
 
@@ -1453,11 +1457,7 @@ class FileLib {
 		return false
 	}
 
-	toggleMod(key) {
-		this.selectedMods[key].doAction = !this.selectedMods[key].doAction
-		this.updateMods()
-	}
-
+	// MARK: update display
 	updateButton() {
 		this.flags.count = 0
 
@@ -1466,7 +1466,10 @@ class FileLib {
 				if ( mod.doAction ) { this.flags.count++ }
 			}
 		}
-		MA.byIdHTML('fileOpCanvas-button', `${I18N.defer(this.l10n_button[this.flags.operation], false)} [${this.flags.count}]`)
+
+		const lookupOp = this.lastPayload.multiDestination ? `multi${this.flags.operation.slice(0, 1).toUpperCase()}${this.flags.operation.slice(1)}` : this.flags.operation
+
+		MA.byIdHTML('fileOpCanvas-button', `${I18N.defer(this.l10n_button[lookupOp], false)} [${this.flags.count}]`)
 		MA.byId('fileOpCanvas-button').clsEnable(this.flags.count)
 	}
 
@@ -1521,25 +1524,17 @@ class FileLib {
 			modList.appendChild(node)
 		}
 		this.updateButton()
-
-		// fsgUtil.clsDelId('fileOpCanvas-button', 'btn-success', 'btn-danger', 'btn-warning')
-		// fsgUtil.clsAddId(
-		// 	'fileOpCanvas-button',
-		// 	fileOpLib.operation === 'delete' ?
-		// 		'btn-danger' :
-		// 		enableButton ? 'btn-success' : 'btn-warning'
-		// )
-		// fsgUtil.clsDisableFalse('fileOpCanvas-button', enableButton)
-		// fsgUtil.setById('fileOpCanvas-source', confirmHTML)
-		// fileOpLib.goodFileCount()
 	}
 
+	// MARK: prepare display
 	display(mode, mods) {
 		this.lastPayload = mods
 
-		MA.byIdHTML('fileOpCanvas-title', I18N.defer(this.l10n_title[this.flags.operation], false))
-		MA.byIdHTML('fileOpCanvas-info', I18N.defer(this.l10n_info[this.flags.operation], false))
-		MA.byIdHTML('fileOpCanvas-button', `${I18N.defer(this.l10n_button[this.flags.operation], false)} [${this.flags.count}]`)
+		const lookupOp = mods.multiDestination ? `multi${this.flags.operation.slice(0, 1).toUpperCase()}${this.flags.operation.slice(1)}` : this.flags.operation
+
+		MA.byIdHTML('fileOpCanvas-title', I18N.defer(this.l10n_title[lookupOp], false))
+		MA.byIdHTML('fileOpCanvas-info', I18N.defer(this.l10n_info[lookupOp], false))
+		MA.byIdHTML('fileOpCanvas-button', `${I18N.defer(this.l10n_button[lookupOp], false)} [${this.flags.count}]`)
 		MA.byId('fileOpCanvas-zipImport').clsShow(mods.isZipImport)
 
 		const isSingle = mode !== 'delete' && !mods.multiDestination
@@ -1574,9 +1569,10 @@ class FileLib {
 		// destinations      : [thisCheck.value],
 		// source_collectKey : sourceMod.collectKey,
 		// source_modUUID    : sourceMod.uuid,
-		// source_rawPath    : string
+		// source_rawPath    : string (for drag-drop)
 		// type              : 'copy','move','delete'
 
+		// TODO: handle drops.
 		for ( const mod of this.lastPayload.records ) {
 			this.selectedMods[mod.colUUID] = {
 				destinations      : [],
@@ -1600,6 +1596,7 @@ class FileLib {
 		// })
 	}
 	
+	// MARK: keyboard interaction
 	key(type) {
 		if ( this.selectedDest.size === 0 ) { return }
 		if ( this.flags.operation === 'delete' ) { return }
@@ -1625,6 +1622,7 @@ class FileLib {
 	key_invert() { this.key('invert') }
 	key_none()   { this.key('none') }
 
+	// MARK: stop operation and hide
 	stop() {
 		this.flags.count     = 0
 		this.flags.isRunning = false
