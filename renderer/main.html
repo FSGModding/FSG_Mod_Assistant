@@ -174,18 +174,17 @@
 			--bs-btn-disabled-border-color: #6c757d;
 			--bs-btn-padding-y: 0.175rem;
 		}
-		#moveButtons button {
-			--bs-text-opacity: 1;
-			border-radius: var(--bs-border-radius-lg)!important;
-			color: rgba(var(--bs-white-rgb),var(--bs-text-opacity))!important;
-			flex: 1 1 auto!important;
-			--bs-btn-padding-y: 0.25rem;
-			--bs-btn-padding-x: 0.5rem;
-			--bs-btn-font-size: 0.875rem;
-			--bs-btn-border-radius: 0.25rem;
-		}
-		#moveButtons button l10n {
-			font-size: 0.875em;
+		#moveButtons i18n-text {
+			--bs-text-opacity      : 1;
+			border-radius          : var(--bs-border-radius-lg)!important;
+			color                  : rgba(var(--bs-white-rgb),var(--bs-text-opacity))!important;
+			flex                   : 1 1 auto!important;
+			--bs-btn-padding-y     : 0.25rem;
+			--bs-btn-padding-x     : 0.5rem;
+			--bs-btn-font-size     : 0.875rem;
+			--bs-btn-border-radius : 0.25rem;
+			font-size              : 0.75em;
+			align-content          : space-around!important;
 		}
 		.mod-folder-overlay {
 			color     : rgb(175 165 141);
@@ -197,6 +196,13 @@
 
 		.filter-row .col-3:nth-child(3) {
 			border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+		}
+
+		.bg-file-op-good {
+			background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 20%, var(--bs-success-bg-subtle) 80%);
+		}
+		.bg-file-op-bad {
+			background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 20%, var(--bs-danger-bg-subtle) 80%);
 		}
 
 	</style>
@@ -246,8 +252,8 @@
 						<div class="col">
 							<div class="input-group input-group-sm w-100 h-100">
 								<select class="form-select" id="collectionSelect"></select>
-								<button class="text-white btn btn-warning" type="button" data-bs-placement="bottom" onclick="actionLib.setCollectionActive()"><l10n name="list-active"></l10n></button>
-								<button class="text-white btn btn-danger" type="button" data-bs-placement="bottom" onclick="actionLib.setCollectionInactive()"><l10n name="list-none"></l10n></button>
+								<i18n-text class="text-white btn btn-warning" type="button" data-bs-placement="bottom" id="collectButtonActive" data-key="list-active"></i18n-text>
+								<i18n-text class="text-white btn btn-danger" type="button" data-bs-placement="bottom" id="collectButtonInActive" data-key="list-none"></i18n-text>
 							</div>
 						</div>
 					</div><!-- end: collection management-->
@@ -295,17 +301,17 @@
 			</div>
 			<div id="scroll-bar-fake" class="position-relative d-flex flex-column p-0"></div>
 			<div class="col py-2 ps-2 d-flex flex-column justify-content-between gap-1" id="moveButtons"><!-- buttons -->
-				<button id="moveButton_move" type="button" class="btn btn-success disabled"><l10n name="move_to_list"></l10n></button>
-				<button id="moveButton_copy" type="button" class="btn btn-success disabled"><l10n name="copy_to_list"></l10n></button>
-				<button id="moveButton_delete" type="button" class="btn btn-danger disabled"><l10n name="remove_from_list"></l10n></button>
-				<button id="moveButton_zip" type="button" class="btn btn-primary disabled"><l10n name="make_zip"></l10n></button>
+				<i18n-text id="moveButton_move" type="button" class="btn btn-success disabled" data-key="move_to_list"></i18n-text>
+				<i18n-text id="moveButton_copy" type="button" class="btn btn-success disabled" data-key="copy_to_list"></i18n-text>
+				<i18n-text id="moveButton_delete" type="button" class="btn btn-danger disabled" data-key="remove_from_list"></i18n-text>
+				<i18n-text id="moveButton_zip" type="button" class="btn btn-primary disabled" data-key="make_zip"></i18n-text>
 
-				<button id="moveButton_open" type="button" class="btn btn-secondary disabled"><l10n name="open_from_list"></l10n></button>
-				<button id="moveButton_hub" type="button" class="btn btn-secondary disabled"><l10n name="open_hub"></l10n></button>
-				<button id="moveButton_site" type="button" class="btn btn-secondary disabled"><l10n name="context_open_website"></l10n></button>
+				<i18n-text id="moveButton_open" type="button" class="btn btn-secondary disabled" data-key="open_from_list"></i18n-text>
+				<i18n-text id="moveButton_hub" type="button" class="btn btn-secondary disabled" data-key="open_hub"></i18n-text>
+				<i18n-text id="moveButton_site" type="button" class="btn btn-secondary disabled" data-key="context_open_website"></i18n-text>
 				
-				<button id="moveButton_fav" type="button" class="btn btn-warning"><l10n name="copy_fav_to"></l10n></button>
-				<button id="moveButton_ver" type="button" class="btn btn-success"><l10n name="version_check"></l10n></button>
+				<i18n-text id="moveButton_fav" type="button" class="btn btn-warning" data-key="copy_fav_to"></i18n-text>
+				<i18n-text id="moveButton_ver" type="button" class="btn btn-success" data-key="version_check"></i18n-text>
 			</div><!-- end: buttons-->
 			
 		</div>
@@ -340,7 +346,7 @@
 			</div>
 			<div class="align-self-center">
 				<a class="fw-bold text-white btn btn-vsm btn-primary position-relative" style="padding-top: 3px; padding-bottom: 3px;" id="bottomBar-debug">
-					<l10n name="open_debug_log">Debug Log</l10n>
+					<i18n-text data-key="open_debug_log">Debug Log</i18n-text>
 					<span id="debug_danger_bubble" class="d-none position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
 				</a>
 			</div>
@@ -352,14 +358,14 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title"><l10n name="active_no_match_title"></l10n></h5>
+					<i18n-text class="h5 modal-title" data-key="active_no_match_title"></i18n-text>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#open_game_modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<p class="m-0"><l10n name="active_no_match_body"></l10n></p>
+					<i18n-text class="m-0" data-key="active_no_match_body"></i18n-text>
 					<ul class="m-0 py-2">
-						<li><strong><l10n name="active_no_match_game_list"></l10n>:</strong> <span id="no_match_game_list"></span></li>
-						<li><strong><l10n name="active_no_match_ma_list"></l10n>:</strong> <span id="no_match_ma_list"></span></li>
+						<li><strong><i18n-text data-key="active_no_match_game_list"></i18n-text>:</strong> <span id="no_match_game_list"></span></li>
+						<li><strong><i18n-text data-key="active_no_match_ma_list"></i18n-text>:</strong> <span id="no_match_ma_list"></span></li>
 					</ul>
 				</div>
 				<div class="modal-footer">
@@ -368,8 +374,8 @@
 							<img src="img/facepalm.webp" alt="" class="w-100">
 						</div>
 						<div class="col-9">
-							<button type="button" class="w-100 mb-2 btn btn-warning" onclick="mainLib.launchGame_IGNORE()"><l10n name="active_no_match_ignore"></l10n></button>
-							<button type="button" class="w-100 btn btn-success" onclick="mainLib.launchGame_FIX()"><l10n name="active_no_match_fix"></l10n></button>
+							<i18n-text type="button" class="w-100 mb-2 btn btn-warning" id="mismatchLaunchIgnore" data-key="active_no_match_ignore"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="mismatchLaunchFix" data-key="active_no_match_fix"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -829,9 +835,9 @@
 	</div>
 
 	<div class="offcanvas offcanvas-bottom h-100" tabindex="-1" id="fileOpCanvas" style="-webkit-app-region: no-drag; transition: 0.5s">
-		<div class="offcanvas-header justify-content-start">
+		<div class="offcanvas-header justify-content-start" style="-webkit-app-region: drag;">
 			<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#fileOpCanvas" style="z-index: 1;" aria-label="Close"><i class="bi-x-lg"></i></button>
-			<h5 class="offcanvas-title ps-3"><l10n name="app_name"></l10n></h5>
+			<i18n-text class="h5 offcanvas-title ps-3" data-key="app_name"></i18n-text>
 		</div>
 		<div class="offcanvas-body full-scroll">
 			<div class="col-12 inset-block"><div>
@@ -850,23 +856,23 @@
 				</div>
 
 				<div class="row justify-content-around small">
-					<div class="col-auto" id="fileOpCanvas-key-exit"><kbd>ESC</kbd> : <l10n name="file_op_key_esc"></l10n></div>
-					<div class="col-auto" id="fileOpCanvas-key-all"><kbd>CTRL</kbd> + <kbd>A</kbd> : <l10n name="file_op_key_ctrl_a"></l10n></div>
-					<div class="col-auto" id="fileOpCanvas-key-none"><kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>A</kbd> : <l10n name="file_op_key_ctrl_shift_a"></l10n></div>
-					<div class="col-auto" id="fileOpCanvas-key-invert"><kbd>CTRL</kbd> + <kbd>I</kbd> : <l10n name="file_op_key_ctrl_i"></l10n></div>
+					<div class="col-auto" id="fileOpCanvas-key-exit"><kbd>ESC</kbd> : <i18n-text data-key="file_op_key_esc"></i18n-text></div>
+					<div class="col-auto" id="fileOpCanvas-key-all"><kbd>CTRL</kbd> + <kbd>A</kbd> : <i18n-text data-key="file_op_key_ctrl_a"></i18n-text></div>
+					<div class="col-auto" id="fileOpCanvas-key-none"><kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>A</kbd> : <i18n-text data-key="file_op_key_ctrl_shift_a"></i18n-text></div>
+					<div class="col-auto" id="fileOpCanvas-key-invert"><kbd>CTRL</kbd> + <kbd>I</kbd> : <i18n-text data-key="file_op_key_ctrl_i"></i18n-text></div>
 				</div>
 				<div class="row gy-4 mt-3">
 					<div class="col-12 inset-block" id="fileOpCanvas-destination-block"><div>
-						<l10n class="inset-block-header" name="destination"></l10n>
-						<div id="fileOpCanvas-destination"></div>
+						<i18n-text class="inset-block-header" data-key="destination"></i18n-text>
+						<div id="fileOpCanvas-destination" class="row g-0"></div>
 					</div></div>
 
 					<div class="col-12">
-						<div id="fileOpCanvas-button" class="btn btn-warning btn-check-mark w-75 mx-auto d-block mb-4 text-white disabled" onclick="fileOpLib.goButton()"></div>
+						<div id="fileOpCanvas-button" class="btn btn-warning btn-check-mark w-75 mx-auto d-block mb-4 text-white disabled"></div>
 					</div>
 
 					<div class="col-12 inset-block"><div>
-						<l10n class="inset-block-header" name="file_op_mod_selected"></l10n>
+						<i18n-text class="inset-block-header" data-key="file_op_mod_selected"></i18n-text>
 						<div id="fileOpCanvas-source" class="row gx-2 gy-4 mt-3"></div>
 					</div></div>
 				</div>
@@ -905,67 +911,45 @@
 
 
 <template id="version_row">
-	<div data-bs-dismiss="offcanvas" data-bs-target="#offcanvas-version" class="row {{backgroundClass}} mb-3 mx-2 py-2 rounded-2 d-flex align-items-center" style="cursor: pointer;" onclick="actionLib.setGameVersion('{{version}}')">
+	<div data-bs-dismiss="offcanvas" data-bs-target="#offcanvas-version" class="row mb-3 mx-2 py-2 rounded-2 d-flex align-items-center" style="cursor: pointer;">
 		<div class="col-3">
-			<i class="fsico-ver-{{version}}" style="font-size: 75px;"></i>
+			<i class="versionIcon" style="font-size: 75px;"></i>
 		</div>
 		<div class="col-9 text-white" style="font-size: 150%">
-			<l10n name="game_title_farming_simulator"></l10n> 20{{version}}<br>
-			<span style="font-size: 60%"><l10n name="total_collections"></l10n> : {{collections}}, <l10n name="total_mods"></l10n> : {{mods}}</span>
+			<l10n name="game_title_farming_simulator"></l10n> 20<template-var>version</template-var><br>
+			<span style="font-size: 60%"><i18n-text data-key="total_collections"></i18n-text> : <template-var>collections</template-var>, <i18n-text data-key="total_mods"></i18n-text> : <template-var>mods</template-var></span>
 		</div>
 	</div>
 </template>
 
-<template id="file_op_no_dest">
-	<div class="row mt-0"><div class="col col-form-label"><i class="bi bi-exclamation-triangle text-danger"></i> <l10n name="no_destination_selected"></l10n></div></div>
-</template>
-
-<template id="file_op_clear_dest">
-	<div class="row mt-0">
-		<div class="col col-form-label"><i class="bi bi-check-circle text-success"></i> <l10n name="destination_clear"></l10n></div>
-	</div>
-	<input type="hidden" value="1" id="file_op__{{uuid}}">
-</template>
-
-<template id="file_op_conflict_dest">
-	<div class="row mt-0 align-items-center">
-		<div class="col-12 col-form-label"><i class="bi bi-question-circle text-warning"></i> <l10n name="destination_full"></l10n></div>
-		<div class="col-2 offset-1 form-check form-switch custom-switch">
-			<input id="file_op__{{uuid}}" class="form-check-input fileOpCanvas-check" onclick="fileOpLib.goodFileCount()" type="checkbox" role="switch">
-		</div>
-		<l10n class="col-9" name="overwrite"></l10n>
-	</div>
-</template>
-
-<template id="file_op_file_row">
+<template id="file_op_mod">
 	<div class="col-md-6 inset-block"><div>
-		<div class="text-end font-monospace ps-3 small mt-1 overflow-hidden longPrintPath">{{printPath}}</div>
-	</div></div>
-</template>
-
-<template id="file_op_mod_row">
-	<div class="col-md-6 inset-block"><div>
-		<span class="inset-block-header">{{shortname}}</span>
+		<span class="inset-block-header"><template-var>shortname</template-var></span>
 		<div class="row">
 			<div class="col-2">
-				<img class="img-fluid" alt="" src="{{icon}}">
-				<div class="bi bi-folder2-open {{isAFolder}}" style="margin-top: -16px; margin-left: -5px; margin-bottom: -5px; font-size: 18px; color: rgb(175 165 141);"></div>
+				<template-var class="m-0 p-0">iconImage</template-var>
+				<template-var>folderIcon</template-var>
 			</div>
 			<div class="col-10 align-self-center">
-				<h5>{{title}}</h5>
-				{{destHTML}}
+				<h5><template-var>title</template-var></h5>
+				<div class="no-dest"><i class="bi bi-exclamation-triangle text-danger"></i> <i18n-text data-key="no_destination_selected"></i18n-text></div>
+				<div class="conf-dest"><i class="bi bi-question-circle text-warning"></i> <i18n-text data-key="destination_full"></i18n-text></div>
+				<div class="over-dest"><i class="bi bi-check-circle text-warning"></i> <i18n-text data-key="destination_over"></i18n-text></div>
+				<div class="clear-dest"><i class="bi bi-check-circle text-success"></i> <i18n-text data-key="destination_clear"></i18n-text></div>
 			</div>
-			<div class="text-end font-monospace ps-3 small mt-1 overflow-hidden longPrintPath">{{printPath}}</div>
 		</div>
 	</div></div>
 </template>
 
-<template id="file_op_collect_box">
-	<div class="col-1 offset-1 form-check form-switch custom-switch">
-		<input id="file_dest__{{id}}" oninput="fileOpLib.listMods()" class="form-check-input fileOpCanvas-check" type="checkbox" role="switch">
+<template id="file_op_collect_option">
+	<div class="col-4" style="cursor:pointer">
+		<div class="m-1 d-flex flex-row p-1 border rounded-2 bg-danger-subtle collect-indicate">
+			<div class="folder-icon-svg"><template-var>icon</template-var></div>
+			<div class="align-content-center">
+				<template-var>name</template-var><template-var>tag</template-var>
+			</div>
+		</div>
 	</div>
-	<div class="col-5">{{name}}</div>
-	<div class="col-5 small longPrintPath">{{folder}}</div>
 </template>
 
 <template id="item_mod">

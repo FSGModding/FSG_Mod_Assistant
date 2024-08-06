@@ -6,7 +6,7 @@
 
 // Main Window UI
 
-/* global MA, DATA, I18N, select_lib, bootstrap, fsgUtil */
+/* global MA, DATA, I18N, bootstrap, fsgUtil */
 // processL10N, fsgUtil, select_lib, __ */
 
 // eslint-disable-next-line no-unused-vars
@@ -32,6 +32,7 @@ class StateManager {
 		filter_not     : new Set(),
 		lastID         : null,
 		lastIndex      : null,
+		lastPayload    : null,
 		openCollection : null,
 		scrollPosition : 0,
 		searchString   : '',
@@ -47,13 +48,29 @@ class StateManager {
 	verList     = {}
 	extSites    = {}
 
+	loader = null
+
+	modal = {
+		mismatch : null,
+		modInfo  : null,
+	}
+
 	searchTagList = new Set()
 
 	mapCollectionDropdown = new Map()
 	mapCollectionFiles    = new Map()
 
+	// MARK: constructor
+	constructor() {
+		this.loader = new LoaderLib()
+		this.files  = new FileLib()
+		this.modal.mismatch = new ModalOverlay('#open_game_modal')
+		this.modal.modInfo  = new ModalOverlay('#open_mod_info_modal')
+	}
+
 	// MARK: process data
 	async updateFromData(data) {
+		this.track.lastPayload   = data
 		this.flag.activeCollect  = data.opts.activeCollection
 		this.flag.currentVersion = data.appSettings.game_version
 		this.flag.debugMode      = data.opts.isDev
@@ -87,7 +104,12 @@ class StateManager {
 			this.orderMap.max              = Math.max(this.orderMap.max, parseInt(CIndex))
 			
 			this.mapCollectionDropdown.set(CKey, data.modList[CKey].fullName)
-			this.mapCollectionFiles.set(CKey, data.modList[CKey].fullName)
+			this.mapCollectionFiles.set(CKey, {
+				color  : data.collectionNotes[CKey].notes_color,
+				folder : data.collectionToFolderRelative[CKey],
+				name   : data.modList[CKey].name,
+				tag    : data.collectionNotes[CKey].notes_tagline,
+			})
 
 			// eslint-disable-next-line no-await-in-loop
 			const thisCol = await this.#addCollection(CKey, data.modList[CKey], data.collectionNotes[CKey], data.collectionToStatus[CKey])
@@ -139,6 +161,13 @@ class StateManager {
 			for ( const CKey of Object.keys(this.collections) ) {
 				this.#processCollection_edit(CKey)
 			}
+		}
+
+		const versionPicker = MA.byId('farm_sim_versions')
+		versionPicker.innerHTML = ''
+		for ( const ver of [25, 22, 19, 17, 15, 13] ) {
+			const verNode = this.doVersionChanger(ver, data.appSettings, data)
+			if ( verNode !== null ) { versionPicker.appendChild(verNode) }
 		}
 
 		this.updateUI()
@@ -220,6 +249,9 @@ class StateManager {
 			MA.byId('drag_target', 'fsg-back-2')
 		}
 
+		MA.queryF('[data-key="game_icon_lg"]').setAttribute('refresh', 'true')
+		MA.queryF('[data-key="game_icon"]').setAttribute('refresh', 'true')
+
 		document.body.setAttribute('data-version', this.flag.currentVersion)
 
 		MA.byId('topBar-mini').clsOrGate(this.flag.miniMode, 'text-info', null)
@@ -235,7 +267,6 @@ class StateManager {
 		MA.byIdHTML('collectionSelect', optList.join(''))
 
 		this.updateI18NDrops()
-		// modSortOrder
 	}
 
 	// MARK: translated UI selects
@@ -333,11 +364,42 @@ class StateManager {
 		this.refreshSelected()
 	}
 
+	doVersionChanger(version, options, modCollect) {
+		const counts = { collect : 0, mods : 0 }
+		
+		if ( !options[`game_enabled_${version}`] && version !== this.flag.currentVersion ) { return null }
+		
+		for ( const collectKey of modCollect.set_Collections ) {
+			if ( modCollect.collectionNotes[collectKey].notes_version === version ) {
+				counts.collect++
+				counts.mods += modCollect.modList[collectKey].alphaSort.length
+			}
+		}
+
+		const node = DATA.templateEngine('version_row', {
+			collections     : counts.collect,
+			mods            : counts.mods,
+			version         : version,
+		}, {}, {
+			'.versionIcon' : `fsico-ver-${version}`,
+		})
+
+		node.firstElementChild.classList.add(version === this.flag.currentVersion ? 'bg-success' : 'bg-primary')
+		node.firstElementChild.addEventListener('click', () => {
+			window.settings.set('game_version', version).then(() => {
+				window.main_IPC.folder.reload()
+			})
+		})
+		return node
+	}
+
 	doesSearchExclude(mod) {
 		// reversed condition! false if OK!
 		if ( this.track.searchString.length < 2 ) { return false }
 
-		return mod.search[this.track.searchType].indexOf(this.track.searchString) === -1
+		const termNotFound = mod.search[this.track.searchType].indexOf(this.track.searchString) === -1
+
+		return ( this.track.searchString.startsWith('!') ) ? !termNotFound : termNotFound
 	}
 
 	doesTagExclude(mod) {
@@ -718,6 +780,10 @@ class StateManager {
 		this.doDisplay()
 	}
 
+	startFile(mode) {
+		this.files.start(mode, this.track.selected, this.track.altClick)
+	}
+
 	// MARK: filters
 	filter = {
 		build : () => {
@@ -886,6 +952,56 @@ class StateManager {
 		},
 	}
 
+	// MARK: actions
+	action = {
+		collectActive : async () => {
+			const activePick = fsgUtil.valueById('collectionSelect').replace('collection--', '')
+		
+			if ( activePick !== '0' && activePick !== '999' ) {
+				LEDLib.blinkLED()
+				
+				return window.main_IPC.folder.active(activePick).then((result) => {
+					if ( this.flag.gameRunning ) {
+						window.l18n.get('game_running_warning').then((entry) => {
+							alert(entry.entry)
+						})
+					}
+					return result
+				})
+				
+			}
+		},
+		collectInActive : async () => {
+			fsgUtil.valueById('collectionSelect', 0)
+			return window.main_IPC.folder.active(null)
+		},
+		launchGame() {
+			const currentList = MA.byIdValue('collectionSelect')
+			if ( currentList === this.flag.activeCollect ) {
+				// Selected is active, no confirm
+				LEDLib.spinLED()
+				window.main_IPC.dispatch('game')
+			} else {
+				// Different, ask confirmation
+				fsgUtil.setById('no_match_game_list', this.mapCollectionDropdown[this.flag.activeCollect])
+				fsgUtil.setById('no_match_ma_list', this.mapCollectionDropdown[currentList])
+				LEDLib.fastBlinkLED()
+				this.modal.mismatch.show()
+			}
+		},
+		launchGame_FIX : () => {
+			this.modal.mismatch.hide()
+			this.action.collectActive().then(() => {
+				window.main_IPC.dispatch('game')
+			})
+		},
+		launchGame_IGNORE : () => {
+			this.modal.mismatch.hide()
+			LEDLib.spinLED()
+			fsgUtil.valueById('collectionSelect', this.flag.activeCollect)
+			window.main_IPC.dispatch('game')
+		},
+	}
 }
 
 
@@ -898,68 +1014,20 @@ class StateManager {
 
 
 
-
+// MARK: OLD
 
 
 const mainState = {
-	gameIsRunningFlag  : false,
-	gameSetCollect     : {
-		selected : null,
-		all      : {},
-	},
-	modCollect         : null,
 	win                : {
-		collectMismatch : null,
 		modInfo         : null,
 	},
 }
 
 
-const mainLib = {
-	launchGame() {
-		const currentList = fsgUtil.valueById('collectionSelect')
-		if ( currentList === mainState.gameSetCollect.selected ) {
-			// Selected is active, no confirm
-			LEDLib.spinLED()
-			window.mods.startFarmSim()
-		} else {
-			// Different, ask confirmation
-			fsgUtil.setById('no_match_game_list', mainState.gameSetCollect.all[mainState.gameSetCollect.selected])
-			fsgUtil.setById('no_match_ma_list', mainState.gameSetCollect.all[currentList])
-			LEDLib.fastBlinkLED()
-			mainState.win.collectMismatch.show()
-		}
-	},
-	launchGame_FIX : () => {
-		mainState.win.collectMismatch.hide()
-		actionLib.setCollectionActive()
-	},
-	launchGame_IGNORE : () => {
-		mainState.win.collectMismatch.hide()
-		LEDLib.spinLED()
-		fsgUtil.valueById('collectionSelect', mainState.gameSetCollect.selected)
-		window.mods.startFarmSim()
-	},
-}
-
 const actionLib = {
 
-	setCollectionActive : () => {
-		const activePick = fsgUtil.valueById('collectionSelect').replace('collection--', '')
 	
-		if ( activePick !== '0' && activePick !== '999' ) {
-			LEDLib.blinkLED()
-			window.mods.makeActive(activePick)
-			if ( mainState.gameIsRunningFlag ) { alert(window.l10n.getText_sync('game_running_warning')) }
-		}
-	},
-	setCollectionInactive : () => {
-		fsgUtil.valueById('collectionSelect', 0)
-		window.mods.makeInactive()
-	},
-	setGameVersion : (version) => {
-		window.mods.changeVersion(parseInt(version, 10))
-	},
+
 	setModInfo : () => {
 		window.mods.setModInfo(
 			fsgUtil.htmlById('mod_info_mod_name'),
@@ -1034,14 +1102,17 @@ const prefLib = {
 }
 
 const LEDLib = {
-	ledUSB : { filters : [{ vendorId : fsgUtil.led.vendor, productId : fsgUtil.led.product }] },
+	ledUSB : { filters : [{ vendorId : MA.led.vendor, productId : MA.led.product }] },
 
 	blinkLED     : async () => { LEDLib.operateLED('blink') },
 	fastBlinkLED : async () => { LEDLib.operateLED('blink', 1000) },
 	spinLED      : async () => { LEDLib.operateLED('spin') },
 
 	operateLED   : async (type = 'spin', time = 2500) => {
-		if ( ! window.mods.isLEDActive() ) { return }
+		if ( ! await window.settings.get('led_active') ) {
+			window.log.debug('LED is not active')
+			return
+		}
 		
 		try {
 			const clientLED = await navigator.hid.requestDevice(LEDLib.ledUSB)
@@ -1051,317 +1122,14 @@ const LEDLib = {
 			const clientLEDDevice = clientLED[0]
 
 			await clientLEDDevice.open()
-			await clientLEDDevice.sendReport(0x00, fsgUtil.led[type])
+			await clientLEDDevice.sendReport(0x00, MA.led[type])
 			setTimeout(async () => {
-				await clientLEDDevice.sendReport(0x00, fsgUtil.led.off)
+				await clientLEDDevice.sendReport(0x00, MA.led.off)
 				await clientLEDDevice.close()
 			}, time)
 		} catch (err) {
-			window.log.debug(`Unable to spin LED (no light?) : ${err}`, 'main')
+			window.log.debug('Unable to spin LED (no light?)', err.message)
 		}
-	},
-}
-
-const fileOpLib = {
-	countEnabled : 0,
-	isRunning    : false,
-	isZipImport  : false,
-	mods         : null,
-	operation    : null,
-	overlay      : null,
-	rawFiles     : null,
-	thisCollect  : null,
-	thisFolder   : null,
-	thisLimit    : null,
-	validCollect : [],
-
-	dest_multi  : new Set(['import', 'multiCopy', 'multiMove', 'copyFavs']),
-	dest_none   : new Set(['delete']),
-	dest_single : new Set(['copy', 'move']),
-
-	l10n_button : {
-		copy      : 'copy',
-		copyFavs  : 'copy',
-		delete    : 'delete',
-		import    : 'copy',
-		move      : 'move',
-		multiCopy : 'copy',
-		multiMove : 'move',
-	},
-	l10n_info : {
-		copy      : 'confirm_copy_blurb',
-		copyFavs  : 'confirm_copy_multi_blurb',
-		delete    : 'confirm_delete_blurb',
-		import    : 'confirm_import_blurb',
-		move      : 'confirm_move_blurb',
-		multiCopy : 'confirm_copy_multi_blurb',
-		multiMove : 'confirm_move_multi_blurb',
-	},
-	l10n_title : {
-		copy      : 'confirm_copy_title',
-		copyFavs  : 'confirm_multi_copy_title',
-		delete    : 'confirm_delete_title',
-		import    : 'confirm_import_title',
-		move      : 'confirm_move_title',
-		multiCopy : 'confirm_multi_copy_title',
-		multiMove : 'confirm_move_title',
-	},
-
-	findConflict : (collectKey, shortName, folder) => {
-		for ( const modKey of mainState.modCollect.modList[collectKey].modSet ) {
-			const thisMod = mainState.modCollect.modList[collectKey].mods[modKey]
-	
-			if ( shortName === thisMod.fileDetail.shortName && folder === thisMod.fileDetail.isFolder ) {
-				return true
-			}
-		}
-		return false
-	},
-	goButton : () => {
-		if ( fileOpLib.operation === 'delete' ) {
-			fileOpLib.goButton_delete()
-		} else if ( fileOpLib.operation === 'move' || fileOpLib.operation === 'copy' ) {
-			fileOpLib.goButton_single()
-		} else if ( fileOpLib.dest_multi.has(fileOpLib.operation) ) {
-			fileOpLib.goButton_multi()
-		}
-		fileOpLib.overlay.hide()
-	},
-	goButton_delete : () => {
-		window.mods.realDeleteFile(fileOpLib.mods.map((thisMod) => [
-			fileOpLib.thisCollect,
-			fileOpLib.thisCollect,
-			thisMod.fileDetail.fullPath
-		]))
-	},
-	goButton_multi  : () => {
-		const realDestinations = fsgUtil.query('#fileOpCanvas-destination :checked')
-		const fileMap          = []
-
-		if ( fileOpLib.operation === 'import' ) {
-			for ( const rawFile of fileOpLib.rawFiles ) {
-				for ( const realDest of realDestinations ) {
-					fileMap.push([
-						realDest.id.replace('file_dest__', ''),
-						'',
-						rawFile
-					])
-				}
-			}
-
-			window.mods.realImportFile(fileMap, fileOpLib.isZipImport)
-			return
-		}
-
-		for ( const mod of fileOpLib.mods ) {
-			for ( const realDest of realDestinations ) {
-				fileMap.push([
-					realDest.id.replace('file_dest__', ''),
-					mod.currentCollection,
-					mod.fileDetail.fullPath
-				])
-			}
-		}
-
-		if ( fileOpLib.operation === 'multiCopy' ) { window.mods.realCopyMultiFile(fileMap) }
-		if ( fileOpLib.operation === 'multiMove' ) { window.mods.realMoveMultiFile(fileMap) }
-		if ( fileOpLib.operation === 'copyFavs'  ) { window.mods.realCopyMultiFile(fileMap)}
-	},
-	goButton_single : () => {
-		const destination = fsgUtil.valueById('fileOpCanvas-select-dest')
-		const fileMap     = []
-
-		if ( destination === '0' ) { return false }
-
-		for ( const mod of fileOpLib.mods ) {
-			const includeMeElement = fsgUtil.byId(`file_op__${mod.uuid}`)
-	
-			if ( includeMeElement.getAttribute('type') === 'checkbox' && includeMeElement.checked === true ) {
-				fileMap.push([destination, fileOpLib.thisCollect, mod.fileDetail.fullPath])
-			}
-			if ( includeMeElement.getAttribute('type') === 'hidden' && includeMeElement.value ) {
-				fileMap.push([destination, fileOpLib.thisCollect, mod.fileDetail.fullPath])
-			}
-		}
-		if ( fileOpLib.operation === 'move' ) { window.mods.realMoveFile(fileMap) }
-		if ( fileOpLib.operation === 'copy' ) { window.mods.realCopyFile(fileMap) }
-	},
-	goodFileCount : () => {
-		if ( ! fileOpLib.dest_single.has(fileOpLib.operation) ) { return }
-		const selectedDest = fsgUtil.valueById('fileOpCanvas-select-dest')
-
-		fileOpLib.countEnabled = 0
-
-		if ( selectedDest !== '0' ) {
-			for ( const mod of fileOpLib.mods ) {
-				const includeMeElement = fsgUtil.byId(`file_op__${mod.uuid}`)
-		
-				if ( includeMeElement.getAttribute('type') === 'checkbox' && includeMeElement.checked === true ) {
-					fileOpLib.countEnabled++
-				}
-				if ( includeMeElement.getAttribute('type') === 'hidden' && includeMeElement.value ) {
-					fileOpLib.countEnabled++
-				}
-			}
-		}
-		fsgUtil.setById('fileOpCanvas-goodFileCount', fileOpLib.countEnabled)
-	},
-	initBatchOp : (mode) => {
-		const allModRows     = fsgUtil.queryA('.mod-row .mod-row-checkbox:checked')
-		const selectedMods   = allModRows.map((thisRow) => thisRow.id.replace('__checkbox', ''))
-		const alternateMod   = select_lib.last_alt_select !== null ? [select_lib.last_alt_select] : selectedMods
-	
-		if ( selectedMods.length === 0 ) { return }
-	
-		const isHoldingPen   = fsgUtil.clsIdHas(`${selectedMods[0].split('--')[0]}_mods`, 'is-holding-pen')
-	
-		switch ( mode ) {
-			case 'copy' :
-			case 'move' :
-				window.mods[`${mode}${isHoldingPen ? 'Multi' : 'Mods'}`](selectedMods)
-				break
-			case 'delete' :
-			case 'zip' :
-				window.mods[`${mode}Mods`](selectedMods)
-				break
-			case 'openMods' :
-			case 'openHub' :
-			case 'openExt' :
-				if ( alternateMod.length === 1 ) {
-					window.mods[mode](alternateMod)
-				}
-				break
-			default :
-				break
-		}
-	},
-	keyBoard     : (action) => {
-		for ( const element of fsgUtil.query('.fileOpCanvas-check') ) {
-			switch ( action ) {
-				case 'invert':
-					element.checked = !element.checked; break
-				case 'all':
-					element.checked = true; break
-				default:
-					element.checked = false; break
-			}
-		}
-		fileOpLib.goodFileCount()
-	},
-	listMods : () => {
-		const noConflict   = fileOpLib.noConflict()
-		const confirmHTML  = []
-		const selectedDest = fsgUtil.valueById('fileOpCanvas-select-dest')
-		const multiDest    = fsgUtil.query('#fileOpCanvas-destination :checked')
-		let   enableButton = false
-
-		if ( noConflict ) {
-			if ( fileOpLib.operation === 'delete' ) { enableButton = true }
-			if ( multiDest.length !== 0 ) { enableButton = true }
-		}
-
-		for ( const thisMod of fileOpLib.mods ) {
-			let destHTML = ''
-
-			if ( !noConflict )	{
-				switch ( true ) {
-					case selectedDest === '0':
-						destHTML = fsgUtil.useTemplate('file_op_no_dest', {})
-						break
-					case fileOpLib.findConflict(selectedDest, thisMod.fileDetail.shortName, thisMod.fileDetail.isFolder) :
-						enableButton = true
-						destHTML = fsgUtil.useTemplate('file_op_conflict_dest', { uuid : thisMod.uuid })
-						break
-					default :
-						enableButton = true
-						destHTML = fsgUtil.useTemplate('file_op_clear_dest', { uuid : thisMod.uuid })
-						break
-				}
-			}
-
-			confirmHTML.push(fsgUtil.useTemplate('file_op_mod_row', {
-				destHTML  : destHTML,
-				icon      : fsgUtil.iconMaker(thisMod.modDesc.iconImageCache),
-				isAFolder : thisMod.fileDetail.isFolder ? '' : 'd-none',
-				printPath : `${fileOpLib.thisFolder}\\${fsgUtil.basename(thisMod.fileDetail.fullPath)}`,
-				shortname : thisMod.fileDetail.shortName,
-				title     : fsgUtil.escapeSpecial(thisMod.l10n.title),
-			}))
-		}
-
-		for ( const rawFile of fileOpLib.rawFiles || [] ) {
-			confirmHTML.push(fsgUtil.useTemplate('file_op_file_row', {
-				printPath : rawFile,
-			}))
-		}
-
-		fsgUtil.clsDelId('fileOpCanvas-button', 'btn-success', 'btn-danger', 'btn-warning')
-		fsgUtil.clsAddId(
-			'fileOpCanvas-button',
-			fileOpLib.operation === 'delete' ?
-				'btn-danger' :
-				enableButton ? 'btn-success' : 'btn-warning'
-		)
-		fsgUtil.clsDisableFalse('fileOpCanvas-button', enableButton)
-		fsgUtil.setById('fileOpCanvas-source', confirmHTML)
-		fileOpLib.goodFileCount()
-	},
-	noConflict   : () => fileOpLib.dest_multi.has(fileOpLib.operation) || fileOpLib.dest_none.has(fileOpLib.operation),
-	startOverlay : (opPayload) => {
-		fileOpLib.isZipImport = opPayload.isZipImport
-		fileOpLib.isRunning   = true
-		fileOpLib.operation   = opPayload.operation
-		fileOpLib.mods        = opPayload.records
-		fileOpLib.thisCollect = opPayload.originCollectKey
-		fileOpLib.thisLimit   = opPayload.multiSource
-		fileOpLib.rawFiles    = opPayload.rawFileList
-		fileOpLib.thisFolder  = mainState.modCollect.collectionToFolderRelative[fileOpLib.thisCollect]
-
-		fsgUtil.clsShowTrue('fileOpCanvas-zipImport', fileOpLib.isZipImport)
-
-		const countText = fileOpLib.dest_single.has(fileOpLib.operation) ? ' [<span id="fileOpCanvas-goodFileCount">0</span>]' : ''
-
-		fsgUtil.setById('fileOpCanvas-title', __(fileOpLib.l10n_title[fileOpLib.operation]))
-		fsgUtil.setById('fileOpCanvas-info', __(fileOpLib.l10n_info[fileOpLib.operation]))
-		fsgUtil.setById('fileOpCanvas-button', `${__(fileOpLib.l10n_button[fileOpLib.operation])}${countText}`)
-		fsgUtil.clsShow('fileOpCanvas-destination-block')
-
-		if ( fileOpLib.dest_single.has(fileOpLib.operation) ) {
-			fsgUtil.setById('fileOpCanvas-destination', [
-				'<select onchange="fileOpLib.listMods()" id="fileOpCanvas-select-dest" class="form-select">',
-				fsgUtil.buildSelectOpt(0, '...', 0),
-				...fileOpLib.validCollect.filter((x) => x[0] !== fileOpLib.thisCollect).map((x) => fsgUtil.buildSelectOpt(x[0], x[1], 0)),
-				'</select>'
-			])
-		} else if ( fileOpLib.dest_multi.has(fileOpLib.operation) ) {
-			fsgUtil.setById('fileOpCanvas-destination', [
-				'<div class="row gy-2 align-items-center">',
-				...fileOpLib.validCollect
-					.filter((x) => x[0] !== fileOpLib.thisCollect && ( fileOpLib.thisLimit === null || !fileOpLib.thisLimit.includes(x[0]) ))
-					.map((x) =>
-						fsgUtil.useTemplate('file_op_collect_box', {
-							id     : x[0],
-							name   : x[1],
-							folder : mainState.modCollect.collectionToFolderRelative[x[0]],
-						})
-					),
-				'</div>',
-			])
-		} else {
-			fsgUtil.clsHide('fileOpCanvas-destination-block')
-		}
-
-		fileOpLib.listMods()
-
-		fileOpLib.overlay.show()
-		processL10N()
-	},
-	stop : () => {
-		fileOpLib.isRunning   = false
-		fileOpLib.mods        = []
-		fileOpLib.thisCollect = null
-		fileOpLib.thisFolder  = null
-		fileOpLib.operation   = null
 	},
 }
 
@@ -1374,7 +1142,7 @@ const dragLib = {
 		e.preventDefault()
 		e.stopPropagation()
 	
-		if ( fileOpLib.isRunning ) { return }
+		if ( window.state.files.flags.isRunning ) { return }
 		if ( dragLib.preventRun ) { return }
 		
 		dragLib.isRunning = false
@@ -1402,7 +1170,7 @@ const dragLib = {
 		e.preventDefault()
 		e.stopPropagation()
 	
-		if ( fileOpLib.isRunning ) { return }
+		if ( window.state.files.flags.isRunning ) { return }
 		if ( dragLib.preventRun ) { return }
 
 		if ( !dragLib.isRunning ) {
@@ -1466,7 +1234,25 @@ const dragLib = {
 }
 
 
-// eslint-disable-next-line no-unused-vars
+// MARK: modalCollectMismatch
+class ModalOverlay {
+	overlay = null
+
+	constructor(id) {
+		this.overlay = new bootstrap.Modal(id, {backdrop : 'static'})
+		this.overlay.hide()
+	}
+
+	show() {
+		this.overlay.show()
+	}
+
+	hide() {
+		this.overlay.hide()
+	}
+}
+
+// MARK: LoaderLib
 class LoaderLib {
 	overlay = null
 
@@ -1533,5 +1319,319 @@ class LoaderLib {
 		const thisCount   = inMB ? DATA.bytesToMB(count) : count
 		MA.byIdText('loadOverlay_statusTotal', thisCount)
 		this.lastTotal = ( count < 1 ) ? 1 : count
+	}
+}
+
+// MARK: FileLib
+class FileLib {
+	flags = {
+		count      : 0,
+		isRunning  : false,
+		operation  : null,
+	}
+
+	overlay      = null
+
+	dest_multi  = new Set(['import', 'multiCopy', 'multiMove', 'copyFavs'])
+	dest_none   = new Set(['delete'])
+	dest_single = new Set(['copy', 'move'])
+
+	l10n_button = {
+		copy      : 'copy',
+		copyFavs  : 'copy',
+		delete    : 'delete',
+		import    : 'copy',
+		move      : 'move',
+		multiCopy : 'copy',
+		multiMove : 'move',
+	}
+	l10n_info = {
+		copy      : 'confirm_copy_blurb',
+		copyFavs  : 'confirm_copy_multi_blurb',
+		delete    : 'confirm_delete_blurb',
+		import    : 'confirm_import_blurb',
+		move      : 'confirm_move_blurb',
+		multiCopy : 'confirm_copy_multi_blurb',
+		multiMove : 'confirm_move_multi_blurb',
+	}
+	l10n_title = {
+		copy      : 'confirm_copy_title',
+		copyFavs  : 'confirm_multi_copy_title',
+		delete    : 'confirm_delete_title',
+		import    : 'confirm_import_title',
+		move      : 'confirm_move_title',
+		multiCopy : 'confirm_multi_copy_title',
+		multiMove : 'confirm_move_title',
+	}
+
+	lastPayload  = null
+	selectedDest = new Set()
+	buttonDest   = new Map()
+	selectedMods = {}
+
+	constructor() {
+		this.overlay = new bootstrap.Offcanvas('#fileOpCanvas')
+		MA.byId('fileOpCanvas').addEventListener('hide.bs.offcanvas', () => {
+			this.stop()
+		})
+		MA.byId('fileOpCanvas').addEventListener('show.bs.offcanvas', () => {
+			MA.byId('fileOpCanvas').querySelector('.offcanvas-body').scrollTop = 0
+		})
+		MA.byId('fileOpCanvas-button').addEventListener('click', () => { this.process() })
+	}
+
+	start(mode, selectAll, selectOne) {
+		if ( selectAll.length === 0 ) { return }
+
+		const realSelect = selectOne !== null ? new Set([selectOne]) : selectAll
+
+		this.flags.operation = mode
+		this.flags.isRunning = true
+
+		this.selectedDest.clear()
+		this.buttonDest.clear()
+		this.lastPayload = null
+
+		switch (mode) {
+			case 'favs' :
+				window.main_IPC.files.listFavs().then((files) => {
+					this.display(mode, files)
+				})
+				break
+			case 'copy' :
+			case 'move' :
+			case 'delete' :
+			case 'zip' :
+				window.main_IPC.files.list(mode, [...realSelect]).then((files) => {
+					this.display(mode, files)
+				})
+				break
+			case 'openMods' :
+				return window.main_IPC.files.openExplore([...realSelect][0])
+			case 'openHub' :
+				return window.main_IPC.files.openModHub([...realSelect][0])
+			case 'openExt' :
+				return window.main_IPC.files.openExtSite([...realSelect][0])
+			default :
+				break
+		}
+	}
+
+	selectDestination(single = true, dest) {
+		if ( this.selectedDest.has(dest) ) {
+			this.selectedDest.delete(dest)
+		} else if ( single ) {
+			this.selectedDest.clear()
+			this.selectedDest.add(dest)
+		} else {
+			this.selectedDest.add(dest)
+		}
+		for ( const [key, button] of this.buttonDest ) {
+			button.clsOrGate(this.selectedDest.has(key), 'bg-success-subtle', 'bg-danger-subtle')
+		}
+		const selectArray = [...this.selectedDest]
+		for ( const mod of Object.values(this.selectedMods) ) {
+			if ( single && this.flags.operation !== 'delete') {
+				mod.doAction = false
+			}
+			mod.destinations = selectArray
+		}
+		this.updateMods()
+	}
+
+	doesModConflict(mod) {
+		if ( this.selectedDest.size === 0 ) { return true }
+
+		const thisKey = [...this.selectedDest][0]
+
+		for ( const modKey of window.state.track.lastPayload.modList[thisKey].modSet ) {
+			const checkMod = window.state.track.lastPayload.modList[thisKey].mods[modKey]
+			if ( mod.fileDetail.shortName === checkMod.fileDetail.shortName && mod.fileDetail.isFolder === checkMod.fileDetail.isFolder ) {
+				return true
+			}
+		}
+		return false
+	}
+
+	toggleMod(key) {
+		this.selectedMods[key].doAction = !this.selectedMods[key].doAction
+		this.updateMods()
+	}
+
+	updateButton() {
+		this.flags.count = 0
+
+		if ( this.selectedDest.size !== 0 ) {
+			for ( const mod of Object.values(this.selectedMods) ) {
+				if ( mod.doAction ) { this.flags.count++ }
+			}
+		}
+		MA.byIdHTML('fileOpCanvas-button', `${I18N.defer(this.l10n_button[this.flags.operation], false)} [${this.flags.count}]`)
+		MA.byId('fileOpCanvas-button').clsEnable(this.flags.count)
+	}
+
+	updateMods() {
+		const isDelete      = this.flags.operation === 'delete'
+		const isMulti       = this.lastPayload.multiDestination
+		const hasDest       = this.selectedDest.size !== 0
+
+		const modList = MA.byId('fileOpCanvas-source')
+
+		modList.innerHTML = ''
+		for ( const mod of this.lastPayload.records ) {
+			let doesConflict = false
+			if ( hasDest && !isDelete && !isMulti ) {
+				doesConflict = this.doesModConflict(mod)
+			}
+
+			const node = DATA.templateEngine('file_op_mod', {
+				folderIcon : mod.fileDetail.isFolder ? '<i class="bi bi-folder2-open mod-folder-overlay"></i>' : '',
+				iconImage  : `<img alt="" class="img-fluid" src="${DATA.iconMaker(mod.modDesc.iconImageCache)}">`,
+				shortname  : mod.fileDetail.shortName,
+				title      : DATA.escapeSpecial(mod.l10n.title),
+			})
+
+			
+
+			if ( isMulti || isDelete ) {
+				node.querySelector('.no-dest').clsHide()
+				node.querySelector('.conf-dest').clsHide()
+				node.querySelector('.over-dest').clsHide()
+				node.querySelector('.clear-dest').clsHide()
+			} else if ( !hasDest ) {
+				node.querySelector('.no-dest').clsShow()
+				node.querySelector('.conf-dest').clsHide()
+				node.querySelector('.over-dest').clsHide()
+				node.querySelector('.clear-dest').clsHide()
+			} else {
+				node.querySelector('.no-dest').clsHide()
+				if ( doesConflict ) {
+					node.firstElementChild.setAttribute('style', 'cursor:pointer')
+					node.firstElementChild.addEventListener('click', () => { this.toggleMod(mod.colUUID)} )
+				} else {
+					this.selectedMods[mod.colUUID].doAction = true
+				}
+				node.querySelector('.conf-dest').clsShow((doesConflict && !this.selectedMods[mod.colUUID].doAction))
+				node.querySelector('.over-dest').clsShow((doesConflict && this.selectedMods[mod.colUUID].doAction))
+				node.querySelector('.clear-dest').clsShow(!doesConflict)
+			}
+
+			node.firstElementChild.children[0].clsOrGate(this.selectedMods[mod.colUUID].doAction, 'bg-file-op-good', 'bg-file-op-bad')
+
+			modList.appendChild(node)
+		}
+		this.updateButton()
+
+		// fsgUtil.clsDelId('fileOpCanvas-button', 'btn-success', 'btn-danger', 'btn-warning')
+		// fsgUtil.clsAddId(
+		// 	'fileOpCanvas-button',
+		// 	fileOpLib.operation === 'delete' ?
+		// 		'btn-danger' :
+		// 		enableButton ? 'btn-success' : 'btn-warning'
+		// )
+		// fsgUtil.clsDisableFalse('fileOpCanvas-button', enableButton)
+		// fsgUtil.setById('fileOpCanvas-source', confirmHTML)
+		// fileOpLib.goodFileCount()
+	}
+
+	display(mode, mods) {
+		this.lastPayload = mods
+
+		MA.byIdHTML('fileOpCanvas-title', I18N.defer(this.l10n_title[this.flags.operation], false))
+		MA.byIdHTML('fileOpCanvas-info', I18N.defer(this.l10n_info[this.flags.operation], false))
+		MA.byIdHTML('fileOpCanvas-button', `${I18N.defer(this.l10n_button[this.flags.operation], false)} [${this.flags.count}]`)
+		MA.byId('fileOpCanvas-zipImport').clsShow(mods.isZipImport)
+
+		const isSingle = mode !== 'delete' && !mods.multiDestination
+
+		const collectPick = MA.byId('fileOpCanvas-destination')
+		collectPick.innerHTML = ''
+		collectPick.clsHide(mode === 'delete')
+
+		if ( mode !== 'delete' ) {
+			for ( const [key, info] of window.state.mapCollectionFiles ) {
+				const node = DATA.templateEngine('file_op_collect_option', {
+					icon : DATA.makeFolderIcon(
+						false,
+						false,
+						false,
+						false,
+						info.color
+					),
+					name : info.name,
+					tag  : info.tag === null ? '' : `<br><span class="small fst-italic">${info.tag}</span>`,
+				})
+				node.firstElementChild.addEventListener('click', () => { this.selectDestination(isSingle, key) })
+				node.firstElementChild.setAttribute('title', info.folder)
+				this.buttonDest.set(key, node.querySelector('.collect-indicate'))
+				collectPick.appendChild(node)
+			}
+		}
+		
+		this.overlay.show()
+
+		// NOTE: FILE OPS
+		// destinations      : [thisCheck.value],
+		// source_collectKey : sourceMod.collectKey,
+		// source_modUUID    : sourceMod.uuid,
+		// source_rawPath    : string
+		// type              : 'copy','move','delete'
+
+		for ( const mod of this.lastPayload.records ) {
+			this.selectedMods[mod.colUUID] = {
+				destinations      : [],
+				doAction          : mode === 'delete' || this.lastPayload.multiDestination,
+				source_collectKey : mod.currentCollection,
+				source_modUUID    : mod.uuid,
+				source_rawPath    : null,
+				type              : this.flags.operation,
+			}
+		}
+		this.updateMods()
+	}
+
+	process() {
+		const filePayload = Object.values(this.selectedMods).filter((x) => x.doAction)
+
+		// console.log(filePayload)
+		// TODO: submit operation, listen for response
+		// window.main_IPC.files.process(filePayload).then((result) => {
+		// 	console.log(result)
+		// })
+	}
+	
+	key(type) {
+		if ( this.selectedDest.size === 0 ) { return }
+		if ( this.flags.operation === 'delete' ) { return }
+		if ( this.lastPayload.multiDestination ) { return }
+
+		for ( const data of Object.values(this.selectedMods) ) {
+			switch (type) {
+				case 'all' :
+					data.doAction = true
+					break
+				case 'invert' :
+					data.doAction = !data.doAction
+					break
+				default :
+					data.doAction = false
+					break
+			}
+		}
+		this.updateMods()
+	}
+
+	key_all()    { this.key('all') }
+	key_invert() { this.key('invert') }
+	key_none()   { this.key('none') }
+
+	stop() {
+		this.flags.count     = 0
+		this.flags.isRunning = false
+		this.flags.operation = null
+		this.lastPayload     = null
+		this.selectedMods    = {}
+		this.selectedDest.clear()
+		this.buttonDest.clear()
 	}
 }

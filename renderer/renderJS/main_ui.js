@@ -6,22 +6,22 @@
 
 // Main Window UI
 
-/* global MA, StateManager, LoaderLib, DATA, processL10N, bootstrap, select_lib, __, mainState, mainLib, prefLib, fileOpLib, dragLib */
+/* global MA, StateManager, bootstrap, prefLib, dragLib */
 
 
 window.operations.receive('select:invert', () => {
-	if ( ! fileOpLib.isRunning ) { window.state.select.invert() }
-	else { fileOpLib.keyBoard('invert') }
+	if ( ! window.state.files.flags.isRunning ) { window.state.select.invert() }
+	else { window.state.files.key_invert() }
 })
 
 window.operations.receive('select:none', () => {
-	if ( ! fileOpLib.isRunning ) { window.state.select.none() }
-	else { fileOpLib.keyBoard('none') }
+	if ( ! window.state.files.flags.isRunning ) { window.state.select.none() }
+	else { window.state.files.key_none() }
 })
 
 window.operations.receive('select:all', () => {
-	if ( ! fileOpLib.isRunning ) { window.state.select.all() }
-	else { fileOpLib.keyBoard('all') }
+	if ( ! window.state.files.flags.isRunning ) { window.state.select.all() }
+	else { window.state.files.key_all() }
 })
 
 
@@ -69,75 +69,23 @@ window.operations.receive('select:all', () => {
 
 window.main_IPC.receive('fromMain_modList', (modCollect) => {
 	window.state.updateFromData(modCollect)
-
-
-	// fsgUtil.setById('farm_sim_versions', [22, 19, 17, 15, 13].map((version) =>  makeVersionRow(version, modCollect.appSettings, modCollect)))
-
-
-	// 				const thisModEntry = makeModRow(
-	// 					thisMod.colUUID,
-	// 					thisMod,
-	// 					'',
-	// 					// TODO: handle cacheGameSave later
-	// 					// mainLib.getBadgeHTML(
-	// 					// 	thisMod,
-	// 					// 	modCollect.opts.cacheGameSave?.modList?.[thisMod.fileDetail.shortName],
-	// 					// 	modCollect.opts.cacheGameSave?.collectKey === collectKey
-	// 					// ),
-	// 					thisMod.modHub.id,
-	// 					modCollect.appSettings.game_version,
-	// 					Object.hasOwn(modCollect.opts.modSites, thisMod.fileDetail.shortName)
-	// 				)
-	// 				const modDisplayBadges = []
-
-	// openCurrentTable(
-	// 	lastOpenID,
-	// 	lastOpenQ,
-	// 	modCollect.opts.foldersEdit ? mainState.lastFolderScroll : scrollStart,
-	// 	modCollect.opts.cacheGameSave?.collectKey
-	// )
 })
 
-
-// Main Interface builders
-
-
-
-const makeVersionRow = (version, options, modCollect) => {
-	const thisVersionEnabled = version === 22 ? true : options[`game_enabled_${version}`]
-	const counts = { collect : 0, mods : 0 }
-
-	if ( !thisVersionEnabled && version !== options.game_version ) { return '' }
-
-	for ( const collectKey of modCollect.set_Collections ) {
-		if ( modCollect.collectionNotes[collectKey].notes_version === version ) {
-			counts.collect++
-			counts.mods += modCollect.modList[collectKey].alphaSort.length
-		}
-	}
-	return fsgUtil.useTemplate('version_row', {
-		backgroundClass : version === options.game_version ? 'bg-success' : 'bg-primary',
-		collections     : counts.collect,
-		mods            : counts.mods,
-		version         : version,
-	})
-}
-
 // MARK: Loader Overlay
-window.main_IPC.receive('loading:show',     () => { window.loader.show() })
-window.main_IPC.receive('loading:hide',     () => { window.loader.hide() })
-window.main_IPC.receive('loading:download', () => { window.loader.startDownload() })
-window.main_IPC.receive('loading:noCount',  () => { window.loader.hideCount() })
-window.main_IPC.receive('loading:titles',   (main, sub, cancel) => { window.loader.updateText(main, sub, cancel) })
-window.main_IPC.receive('loading:total',    (count, inMB) => { window.loader.updateTotal(count, inMB) })
-window.main_IPC.receive('loading:current',  (count, inMB) => { window.loader.updateCount(count, inMB) })
+window.main_IPC.receive('loading:show',     () => { window.state.loader.show() })
+window.main_IPC.receive('loading:hide',     () => { window.state.loader.hide() })
+window.main_IPC.receive('loading:download', () => { window.state.loader.startDownload() })
+window.main_IPC.receive('loading:noCount',  () => { window.state.loader.hideCount() })
+window.main_IPC.receive('loading:titles',   (main, sub, cancel) => { window.state.loader.updateText(main, sub, cancel) })
+window.main_IPC.receive('loading:total',    (count, inMB) => { window.state.loader.updateTotal(count, inMB) })
+window.main_IPC.receive('loading:current',  (count, inMB) => { window.state.loader.updateCount(count, inMB) })
 
 // File Operations
 // window.mods.receive('fromMain_fileOperation', (opPayload) => { fileOpLib.startOverlay(opPayload) })
 
 //MARK: top bar event
 function topBarHandlers() {
-	MA.byIdEventIfExists('topBar-launch',      () => { mainLib.launchGame() })
+	MA.byIdEventIfExists('topBar-launch',      () => { window.state.action.launchGame() })
 	MA.byIdEventIfExists('topBar-update',      () => { window.main_IPC.updateApplication() })
 	MA.byIdEventIfExists('topBar-preferences', () => { prefLib.overlay.show() })
 	MA.byIdEventIfExists('topBar-tray',        () => { window.main_IPC.minimizeToTray() })
@@ -153,14 +101,14 @@ function sideBarHandlers() {
 	MA.byIdEventIfExists('moveButton_ver', () => { window.main_IPC.dispatch('version') })
 	MA.byIdEventIfExists('moveButton_fav', () => { window.mods.copyFavorites() })
 
-	MA.byIdEventIfExists('moveButton_move',   () => { fileOpLib.initBatchOp('move') })
-	MA.byIdEventIfExists('moveButton_copy',   () => { fileOpLib.initBatchOp('copy') })
-	MA.byIdEventIfExists('moveButton_delete', () => { fileOpLib.initBatchOp('delete') })
-	MA.byIdEventIfExists('moveButton_zip',    () => { fileOpLib.initBatchOp('zip') })
+	MA.byIdEventIfExists('moveButton_move',   () => { window.state.startFile('move') })
+	MA.byIdEventIfExists('moveButton_copy',   () => { window.state.startFile('copy') })
+	MA.byIdEventIfExists('moveButton_delete', () => { window.state.startFile('delete') })
+	MA.byIdEventIfExists('moveButton_zip',    () => { window.state.startFile('zip') })
 
-	MA.byIdEventIfExists('moveButton_open', () => { fileOpLib.initBatchOp('openMods') })
-	MA.byIdEventIfExists('moveButton_hub',  () => { fileOpLib.initBatchOp('openHub') })
-	MA.byIdEventIfExists('moveButton_site', () => { fileOpLib.initBatchOp('openExt') })
+	MA.byIdEventIfExists('moveButton_open', () => { window.state.startFile('openMods') })
+	MA.byIdEventIfExists('moveButton_hub',  () => { window.state.startFile('openHub') })
+	MA.byIdEventIfExists('moveButton_site', () => { window.state.startFile('openExt') })
 }
 // MARK: top UI event
 function topUIHandlers() {
@@ -179,13 +127,18 @@ function topUIHandlers() {
 	MA.byIdEventIfExists('folderAddButton',    () => { window.main_IPC.folder.add() })
 	MA.byIdEventIfExists('folderEditButton',   () => { window.main_IPC.folder.edit() })
 	MA.byIdEventIfExists('folderReloadButton', () => { window.main_IPC.folder.reload() })
+
+	MA.byIdEventIfExists('collectButtonActive',   () => { window.state.action.collectActive() })
+	MA.byIdEventIfExists('collectButtonInActive', () => { window.state.action.collectInActive() })
 }
 
 function popUIHandlers() {
 	MA.byIdEventIfExists('loadOverlay_downloadCancelButton', () => { window.main_IPC.cancelDownload() })
+	MA.byIdEventIfExists('mismatchLaunchIgnore', () => { window.state.action.launchGame_IGNORE() })
+	MA.byIdEventIfExists('mismatchLaunchFix',    () => { window.state.action.launchGame_FIX() })
 }
 
-// On Load
+// MARK: On Load
 window.addEventListener('DOMContentLoaded', () => {
 	window.state = new StateManager()
 
@@ -194,25 +147,11 @@ window.addEventListener('DOMContentLoaded', () => {
 	topUIHandlers()
 	popUIHandlers()
 
-	mainState.win.collectMismatch = new bootstrap.Modal('#open_game_modal', {backdrop : 'static'})
-	mainState.win.collectMismatch.hide()
-
-	mainState.win.modInfo = new bootstrap.Modal('#open_mod_info_modal', {backdrop : 'static'})
-	mainState.win.modInfo.hide()
-
-	window.loader = new LoaderLib()
-	fileOpLib.overlay = new bootstrap.Offcanvas('#fileOpCanvas')
 	prefLib.overlay   = new bootstrap.Offcanvas('#prefcanvas')
 
 	window.l10n.langList_send()
 	window.l10n.themeList_send()
 
-	MA.byId('fileOpCanvas').addEventListener('hide.bs.offcanvas', () => {
-		fileOpLib.stop()
-	})
-	MA.byId('fileOpCanvas').addEventListener('show.bs.offcanvas', () => {
-		MA.byId('fileOpCanvas').querySelector('.offcanvas-body').scrollTop = 0
-	})
 	MA.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
 		dragLib.preventRun = false
 		MA.clearTooltips()
@@ -240,7 +179,7 @@ window.addEventListener('beforeunload', (e) => {
 		prefLib.overlay.hide()
 		e.preventDefault()
 	} else if ( MA.byId('fileOpCanvas').classList.contains('show') ) {
-		fileOpLib.overlay.hide()
+		window.state.files.overlay.hide()
 		e.preventDefault()
 	}
 })

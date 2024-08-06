@@ -516,6 +516,7 @@ function enhanceI18N() {
 		}
 
 		async getString() {
+			if ( this.key === null ) { return }
 			this.loading = true
 
 			return window.i18n.get(this.key).then((result) => {

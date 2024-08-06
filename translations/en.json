@@ -135,6 +135,7 @@
 	"destination"                           : "Destination Collection",
 	"destination_clear"                     : "Destination file does not exist, good to go",
 	"destination_full"                      : "Destination file exists, overwrite is possible",
+	"destination_over"                      : "Destination file exists, fill will be overwritten",
 	"detail_big_files"                      : "Oversized files",
 	"detail_crop_json"                      : "Crop Calendar JSON (FSG Bot)",
 	"detail_depend"                         : "Mod Dependencies",

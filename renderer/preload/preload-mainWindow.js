@@ -53,7 +53,7 @@ contextBridge.exposeInMainWorld(
 	'main_IPC', {
 		dispatch        : (win) => {
 			const knownWindows = new Set([
-				'compare', 'basegame', 'gamelog', 'help',
+				'compare', 'basegame', 'game', 'gamelog', 'help',
 				'changelog', 'find', 'notes', 'version',
 				'resolve', 'debug', 'savetrack', 'savemanage',
 				'mini',
@@ -81,14 +81,25 @@ contextBridge.exposeInMainWorld(
 		dispatchNotes  : (CKey)              => { ipcRenderer.send('dispatch:notes', CKey) },
 		dispatchSave   : (CKey, file = null) => { ipcRenderer.send('dispatch:save', CKey, file) },
 
+		files : {
+			list        : (mode, mods) => ipcRenderer.invoke('files:list', mode, mods),
+			listFavs    : ()           => ipcRenderer.invoke('files:list:favs'),
+			openExplore : (MKey_s)     => { ipcRenderer.send('files:openExplore', MKey_s) },
+			openExtSite : (MKey_s)     => { ipcRenderer.send('files:openExtSite', MKey_s) },
+			openModHub  : (MKey_s)     => { ipcRenderer.send('files:openModHub', MKey_s) },
+			process     : ( object )   => ipcRenderer.invoke('file:operation', object),
+		},
+
 		folder : {
-			add    : ()     => { ipcRenderer.send('folders:add') },
-			alpha  : ()     => { ipcRenderer.send('toMain_reorderFolderAlpha') },
-			edit   : ()     => { ipcRenderer.send('folders:edit') },
-			open   : (CKey) => { ipcRenderer.send('folders:open', CKey) },
-			reload : ()     => { ipcRenderer.send('folders:reload') },
-			remove : (CKey) => { ipcRenderer.send('folders:remove', CKey) },
-			set    : (f, t) => { ipcRenderer.send('folders:set', f, t) },
+			active   : (CKey) => ipcRenderer.invoke('folders:activate', CKey),
+			add      : ()     => { ipcRenderer.send('folders:add') },
+			alpha    : ()     => { ipcRenderer.send('folders:alpha') },
+			edit     : ()     => { ipcRenderer.send('folders:edit') },
+			inactive : ()     => ipcRenderer.invoke('folders:active', null),
+			open     : (CKey) => { ipcRenderer.send('folders:open', CKey) },
+			reload   : ()     => { ipcRenderer.send('folders:reload') },
+			remove   : (CKey) => { ipcRenderer.send('folders:remove', CKey) },
+			set      : (f, t) => { ipcRenderer.send('folders:set', f, t) },
 		},
 		
 		cancelDownload  : ()       => { ipcRenderer.send('file:downloadCancel') },
@@ -102,17 +113,10 @@ contextBridge.exposeInMainWorld(
 
 		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
 
-		startFarmSim    : () => { ipcRenderer.send('toMain_startFarmSim') },
+		startFarmSim    : () => { ipcRenderer.send('dispatch:game') },
 		versionCheck    : () => ipcRenderer.send('dispatch:version' ),
 
 
-		changeVersion   : (ver) => { ipcRenderer.send('toMain_setGameVersion', ver) },
-		
-		makeActive      : (list) => { ipcRenderer.send('toMain_makeActive', list) },
-		makeInactive    : () => { ipcRenderer.send('toMain_makeInactive' ) },
-
-
-		
 
 		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
 		copyMulti  : (selectedMods) => { ipcRenderer.send('toMain_copyMultiMods', selectedMods) },
@@ -123,8 +127,7 @@ contextBridge.exposeInMainWorld(
 		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
 		moveMulti  : (selectedMods) => { ipcRenderer.send('toMain_moveMultiMods', selectedMods) },
 		
-		openExt    : (selectedMods) => { ipcRenderer.send('toMain_openExt', selectedMods) },
-		openHub    : (selectedMods) => { ipcRenderer.send('toMain_openHub', selectedMods) },
+		
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		
 		setModInfo : (mod, site)    => { ipcRenderer.send('toMain_setModInfo', mod, site) },
@@ -218,9 +221,10 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'settings', {
-		get   : (key) => ipcRenderer.invoke('settings:get', key),
-		theme : ()    => ipcRenderer.invoke('settings:theme'),
-		units : ()    => ipcRenderer.invoke('settings:units'),
+		get   : (key)  => ipcRenderer.invoke('settings:get', key),
+		set   : (k, v) => ipcRenderer.invoke('settings:set', k, v),
+		theme : ()     => ipcRenderer.invoke('settings:theme'),
+		units : ()     => ipcRenderer.invoke('settings:units'),
 	}
 )
 
