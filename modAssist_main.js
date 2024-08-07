@@ -105,27 +105,9 @@ ipcMain.on('files:openExplore',  (_, modID)    => {
 		shell.showItemInFolder(path.join(thisMod.folder, path.basename(thisMod.mod.fileDetail.fullPath)))
 	}
 })
-ipcMain.handle('files:list',      (_, mode, mods) => sendCopyMoveDelete(mode, mods))
-ipcMain.handle('files:list:favs', ()              => sendCopyMoveDelete('copyFavs', ...serveIPC.modCollect.getFavoriteCollectionFiles()))
+ipcMain.handle('files:list',      (_, mode, mods) => getCopyMoveDelete(mode, mods))
+ipcMain.handle('files:list:favs', ()              => getCopyMoveDelete('copyFavs', ...serveIPC.modCollect.getFavoriteCollectionFiles()))
 
-// ipcMain.on('toMain_copyFavorites',  () => { sendCopyMoveDelete('copyFavs', ...serveIPC.modCollect.getFavoriteCollectionFiles()) })
-// ipcMain.on('toMain_deleteMods',     (_, mods) => { sendCopyMoveDelete('delete', mods) })
-// ipcMain.on('toMain_moveMods',       (_, mods) => { sendCopyMoveDelete('move', mods) })
-// ipcMain.on('toMain_copyMods',       (_, mods) => { sendCopyMoveDelete('copy', mods) })
-// ipcMain.on('toMain_moveMultiMods',  (_, mods) => { sendCopyMoveDelete('multiMove', mods) })
-// ipcMain.on('toMain_copyMultiMods',  (_, mods) => { sendCopyMoveDelete('multiCopy', mods) })
-
-ipcMain.on('toMain_realFileDelete',    (_, fileMap) => { doFileOperation('delete', fileMap) })
-ipcMain.on('toMain_realFileMove',      (_, fileMap) => { doFileOperation('move', fileMap) })
-ipcMain.on('toMain_realFileCopy',      (_, fileMap) => { doFileOperation('copy', fileMap) })
-ipcMain.on('toMain_realMultiFileMove', (_, fileMap) => { doFileOperation('move_multi', fileMap) })
-ipcMain.on('toMain_realMultiFileCopy', (_, fileMap) => { doFileOperation('copy_multi', fileMap) })
-
-ipcMain.on('toMain_realFileImport',    (_, fileMap, unzipMe) => { doFileOperation(unzipMe ? 'importZIP' : 'import', fileMap) })
-ipcMain.on('toMain_realFileVerCP',     (_, fileMap) => {
-	doFileOperation('copy', fileMap, 'resolve')
-	setTimeout(() => { serveIPC.windowLib.sendModList({}, 'fromMain_modList', 'version', false ) }, 1500)
-})
 
 // MARK: folder manage
 ipcMain.handle('folders:activate', async (_, CKey) => funcLib.gameSet.change(CKey) )
@@ -254,8 +236,9 @@ ipcMain.on('folders:set', (_, from, to) => {
 ipcMain.on('toMain_import_json_download', (_, collectKey, uri, unpack) => {
 	funcLib.general.importJSON_download(uri, unpack, collectKey)
 })
-ipcMain.on('toMain_dropFiles', async (_, files) => {
+ipcMain.handle('files:drop', async (_, files) => {
 	if ( files.length === 1 && files[0].endsWith('.csv') ) {
+		// TODO: HANDLE CSV FILE DROP
 		new csvFileChecker(files[0]).getInfo().then((results) => {
 			serveIPC.windowLib.createNamedWindow('save', {
 				collectKey   : null,
@@ -264,26 +247,32 @@ ipcMain.on('toMain_dropFiles', async (_, files) => {
 		})
 		return
 	} else if ( files.length === 1 && files[0].endsWith('.json') ) {
+		// TODO: HANDLE JSON IMPORT
 		funcLib.general.importJSON_process(files[0])
 	} else if ( files.length === 1 && files[0].endsWith('.zip') ) {
-		sendCopyMoveDelete('import', null, null, files, await new modPackChecker(files[0]).getInfo())
+		return getCopyMoveDelete('import', null, null, files, await new modPackChecker(files[0]).getInfo())
 	} else {
-		sendCopyMoveDelete('import', null, null, files, false)
+		return getCopyMoveDelete('import', null, null, files, false)
 	}
 })
 
-function sendCopyMoveDelete(operation, modIDS, multiSource = null, fileList = null, isZipImport = false) {
+function sendCopyMoveDelete(operation, modIDS) {
+	serveIPC.windowLib.sendToValidWindow('main', 'files:operation', operation, getCopyMoveDelete(operation, modIDS))
+}
+
+function getCopyMoveDelete(operation, modIDS, multiSource = null, fileList = null, zipImport = false) {
 	if ( modIDS === null || modIDS.length !== 0 ) {
 		const isHolding = modIDS !== null ? serveIPC.storeNote.get(`${modIDS[0].split('--')[0]}.notes_holding`, false) : false
 		return {
 			isHoldingPen     : isHolding,
-			isZipImport      : isZipImport,
+			isZipImport      : zipImport === false ? false : zipImport[0],
 			multiDestination : isHolding && ( operation === 'copy' || operation === 'move' ),
 			multiSource      : multiSource,
 			operation        : operation,
 			originCollectKey : modIDS !== null ? modIDS[0].split('--')[0] : '',
 			rawFileList      : fileList,
 			records          : modIDS !== null ? serveIPC.modCollect.modColUUIDsToRecords(modIDS) : [],
+			zipFiles         : zipImport === false || zipImport[0] === false ? null : zipImport[1],
 		}
 	}
 	return null
@@ -545,7 +534,7 @@ ipcMain.on('main:dragOut', (event, modID) => {
 		icon : serveIPC.windowLib.contextIcons.fileCopy,
 	})
 })
-ipcMain.on('context:mod', async (event, modID, modIDs, isHoldingPen) => {
+ipcMain.on('context:mod', async (event, modID, modIDs) => {
 	const thisCollect = modID.split('--')[0]
 	const thisMod     = serveIPC.modCollect.modColUUIDToRecord(modID)
 	const thisSite    = serveIPC.storeSites.get(thisMod.fileDetail.shortName, '')
@@ -670,12 +659,12 @@ ipcMain.on('context:mod', async (event, modID, modIDs, isHoldingPen) => {
 			funcLib.menu.sep,
 			funcLib.menu.iconL10n(
 				'copy_selected_to_list',
-				() => { sendCopyMoveDelete(isHoldingPen ? 'multiCopy' : 'copy', modIDs) },
+				() => { sendCopyMoveDelete('copy', modIDs) },
 				'fileCopy'
 			),
 			funcLib.menu.iconL10n(
 				'move_selected_to_list',
-				() => { sendCopyMoveDelete(isHoldingPen ? 'multiMove' : 'move', modIDs) },
+				() => { sendCopyMoveDelete('move', modIDs) },
 				'fileMove'
 			),
 			funcLib.menu.iconL10n(
@@ -917,8 +906,8 @@ ipcMain.on('toMain_openTrackFolder', () => {
 
 // Savegame compare window operation
 // TODO: add file support.
-ipcMain.on('dispatch:save',       (_, collection, fileName) => { serveIPC.windowLib.createNamedWindow('save', { collectKey : collection }) })
-ipcMain.on('toMain_selectInMain',   (_, selectList) => {
+ipcMain.on('dispatch:save',       (_, collection, _fileName) => { serveIPC.windowLib.createNamedWindow('save', { collectKey : collection }) })
+ipcMain.on('toMain_selectInMain', (_, selectList) => {
 	if ( serveIPC.windowLib.isValid('main') ) {
 		serveIPC.windowLib.win.main.focus()
 		serveIPC.windowLib.sendToWindow('main', 'fromMain_selectOnly', selectList)
@@ -965,7 +954,6 @@ function saveCompare_open(zipMode = false) {
 ipcMain.on('dispatch:version', () => { serveIPC.windowLib.createNamedWindow('version') })
 ipcMain.on('dispatch:resolve', (_, key) => { serveIPC.windowLib.createNamedWindow('resolve', { shortName : key }) })
 
-ipcMain.on('toMain_versionCheck',    () => { serveIPC.windowLib.createNamedWindow('version') })
 ipcMain.on('toMain_refreshVersions', () => { serveIPC.windowLib.sendModList({}, 'fromMain_modList', 'version', false ) } )
 ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 	const modSet    = []
@@ -1086,27 +1074,7 @@ function refreshClientModList(closeLoader = true) {
 
 
 // MARK: FILE OPS
-// destinations      : [thisCheck.value],
-// source_collectKey : sourceMod.collectKey,
-// source_modUUID    : sourceMod.uuid,
-// source_rawPath    : string
-// type              : 'copy','move','delete'
 ipcMain.handle('file:operation', async (_, operations) => funcLib.fileOperation.process(operations))
-
-
-
-// Start physical operation on file(s)
-function doFileOperation(type, fileMap, srcWindow = null) {
-	if ( typeof fileMap !== 'object' ) { return }
-
-	if ( srcWindow !== null ) { serveIPC.windowLib.safeClose(srcWindow) }
-
-	serveIPC.loadWindow.open('files')
-	serveIPC.loadWindow.total(fileMap.length, true)
-	serveIPC.loadWindow.current(0, true)
-
-	serveIPC.loadWindow.doReady(() => { funcLib.realFileOperation(type, fileMap)})
-}
 
 // Launch mod scanner
 async function processModFolders(force = false) {

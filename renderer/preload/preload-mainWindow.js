@@ -72,9 +72,9 @@ contextBridge.exposeInMainWorld(
 		minimizeToTray    : () => { ipcRenderer.send('main:minimizeToTray') },
 		updateApplication : () => { ipcRenderer.send('main:runUpdateInstall') },
 
-		contextCol   : (CKey)               => { ipcRenderer.send('context:collection', CKey) },
-		contextInput : ()                   => ipcRenderer.send('context:cutCopyPaste'),
-		contextMod   : (mod, select, hold ) => { ipcRenderer.send('context:mod', mod, select, hold ) },
+		contextCol   : (CKey)         => { ipcRenderer.send('context:collection', CKey) },
+		contextInput : ()             => ipcRenderer.send('context:cutCopyPaste'),
+		contextMod   : (mod, select ) => { ipcRenderer.send('context:mod', mod, select ) },
 		
 		dispatchDetail : (id)                => { ipcRenderer.send('dispatch:detail', id) },
 		dispatchLog    : (file)              => { ipcRenderer.send('dispatch:gamelog', file) },
@@ -82,6 +82,8 @@ contextBridge.exposeInMainWorld(
 		dispatchSave   : (CKey, file = null) => { ipcRenderer.send('dispatch:save', CKey, file) },
 
 		files : {
+			drop        : (files)      => ipcRenderer.invoke('files:drop', files),
+			exportZIP   : (MKey_s)     => { ipcRenderer.send('file:exportZIP', MKey_s) },
 			list        : (mode, mods) => ipcRenderer.invoke('files:list', mode, mods),
 			listFavs    : ()           => ipcRenderer.invoke('files:list:favs'),
 			openExplore : (MKey_s)     => { ipcRenderer.send('files:openExplore', MKey_s) },
@@ -91,15 +93,16 @@ contextBridge.exposeInMainWorld(
 		},
 
 		folder : {
-			active   : (CKey) => ipcRenderer.invoke('folders:activate', CKey),
-			add      : ()     => { ipcRenderer.send('folders:add') },
-			alpha    : ()     => { ipcRenderer.send('folders:alpha') },
-			edit     : ()     => { ipcRenderer.send('folders:edit') },
-			inactive : ()     => ipcRenderer.invoke('folders:active', null),
-			open     : (CKey) => { ipcRenderer.send('folders:open', CKey) },
-			reload   : ()     => { ipcRenderer.send('folders:reload') },
-			remove   : (CKey) => { ipcRenderer.send('folders:remove', CKey) },
-			set      : (f, t) => { ipcRenderer.send('folders:set', f, t) },
+			active   : (CKey)   => ipcRenderer.invoke('folders:activate', CKey),
+			add      : ()       => { ipcRenderer.send('folders:add') },
+			alpha    : ()       => { ipcRenderer.send('folders:alpha') },
+			drop     : (folder) => { ipcRenderer.send('folders:addDrop', folder) },
+			edit     : ()       => { ipcRenderer.send('folders:edit') },
+			inactive : ()       => ipcRenderer.invoke('folders:active', null),
+			open     : (CKey)   => { ipcRenderer.send('folders:open', CKey) },
+			reload   : ()       => { ipcRenderer.send('folders:reload') },
+			remove   : (CKey)   => { ipcRenderer.send('folders:remove', CKey) },
+			set      : (f, t)   => { ipcRenderer.send('folders:set', f, t) },
 		},
 		
 		cancelDownload  : ()       => { ipcRenderer.send('file:downloadCancel') },
@@ -109,33 +112,21 @@ contextBridge.exposeInMainWorld(
 		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
 		cutCopyPaste    : () => ipcRenderer.send('context:cutCopyPaste'),
 
-		isLEDActive     : () => { return ipcRenderer.sendSync('toMain_getPref', 'led_active') },
-
-		popClipboard    : (text) => { ipcRenderer.send('toMain_populateClipboard', text )},
-
 		startFarmSim    : () => { ipcRenderer.send('dispatch:game') },
-		versionCheck    : () => ipcRenderer.send('dispatch:version' ),
+
+		// TODO: finish below line
 
 
-
-		copyMods   : (selectedMods) => { ipcRenderer.send('toMain_copyMods', selectedMods) },
-		copyMulti  : (selectedMods) => { ipcRenderer.send('toMain_copyMultiMods', selectedMods) },
-		deleteMods : (selectedMods) => { ipcRenderer.send('toMain_deleteMods', selectedMods) },
+		
 		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
 		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
-		
-		moveMods   : (selectedMods) => { ipcRenderer.send('toMain_moveMods', selectedMods) },
-		moveMulti  : (selectedMods) => { ipcRenderer.send('toMain_moveMultiMods', selectedMods) },
-		
 		
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		
 		setModInfo : (mod, site)    => { ipcRenderer.send('toMain_setModInfo', mod, site) },
-		zipMods    : (selectedMods) => { ipcRenderer.send('toMain_exportZip', selectedMods) },
 
 		
-		dropFiles  : (files)  => { ipcRenderer.send('toMain_dropFiles', files) },
-		dropFolder : (folder) => { ipcRenderer.send('toMain_dropFolder', folder) },
+		
 
 		cleanCache    : () => { ipcRenderer.send('toMain_cleanCacheFile') },
 		clearCache    : () => { ipcRenderer.send('toMain_clearCacheFile') },
@@ -148,13 +139,6 @@ contextBridge.exposeInMainWorld(
 		showChangelog : () => ipcRenderer.send('dispatch:changelog'),
 		showWizard    : () => { ipcRenderer.send('toMain_showSetupWizard') },
 
-		realCopyFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileCopy', fileMap) },
-		realCopyMultiFile : ( fileMap )          => { ipcRenderer.send('toMain_realMultiFileCopy', fileMap) },
-		realDeleteFile    : ( fileMap )          => { ipcRenderer.send('toMain_realFileDelete', fileMap) },
-		realImportFile    : ( fileMap, unzipMe ) => { ipcRenderer.send('toMain_realFileImport', fileMap, unzipMe) },
-		realMoveFile      : ( fileMap )          => { ipcRenderer.send('toMain_realFileMove', fileMap) },
-		realMoveMultiFile : ( fileMap )          => { ipcRenderer.send('toMain_realMultiFileMove', fileMap) },
-
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
 				'loading:show',
@@ -165,6 +149,7 @@ contextBridge.exposeInMainWorld(
 				'loading:total',
 				'loading:current',
 				'status:all',
+				'files:operation',
 
 				'fromMain_allSettings',
 				'fromMain_fileOperation',

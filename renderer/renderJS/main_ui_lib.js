@@ -62,8 +62,9 @@ class StateManager {
 
 	// MARK: constructor
 	constructor() {
-		this.loader = new LoaderLib()
-		this.files  = new FileLib()
+		this.loader   = new LoaderLib()
+		this.files    = new FileLib()
+		this.dragDrop = new DragDropLib()
 		this.modal.mismatch = new ModalOverlay('#open_game_modal')
 		this.modal.modInfo  = new ModalOverlay('#open_mod_info_modal')
 	}
@@ -623,7 +624,7 @@ class StateManager {
 		mod.node.id = thisMod.colUUID
 		mod.node.setAttribute('draggable', true)
 	
-		mod.node.addEventListener('contextmenu', () => { this.modContext(thisMod.colUUID, thisMod.currentCollection) })
+		mod.node.addEventListener('contextmenu', () => { this.modContext(thisMod.colUUID) })
 		mod.node.addEventListener('dragstart',   (e) => { this.modDrag(e, thisMod.colUUID) })
 		mod.node.addEventListener('click',       (e) => { this.modClick(e, thisMod.colUUID) })
 
@@ -682,9 +683,8 @@ class StateManager {
 
 
 	// MARK: mod actions
-	modContext(id, CKey) {
-		const isHoldingPen = this.track.selected.size === 0 ? false : this.collections[CKey].notes.notes_holding
-		window.main_IPC.contextMod(id, [...this.track.selected], isHoldingPen)
+	modContext(id) {
+		window.main_IPC.contextMod(id, [...this.track.selected])
 	}
 
 	modClick(e, id) {
@@ -746,7 +746,7 @@ class StateManager {
 		e.preventDefault()
 		e.stopPropagation()
 
-		if ( dragLib.preventRun ) { return }
+		if ( this.dragDrop.flags.preventRun ) { return }
 		window.main_IPC.drag.out(id)
 	}
 
@@ -1126,109 +1126,159 @@ const LEDLib = {
 	},
 }
 
-const dragLib = {
-	isFolder  : false,
-	isRunning : false,
-	preventRun : false,
 
-	dragDrop : (e) => {
-		e.preventDefault()
-		e.stopPropagation()
-	
-		if ( window.state.files.flags.isRunning ) { return }
-		if ( dragLib.preventRun ) { return }
-		
-		dragLib.isRunning = false
-	
-		fsgUtil.clsHide('drag_back')
-		fsgUtil.clsDelId('drag_add_file', 'bg-primary')
-		fsgUtil.clsDelId('drag_add_folder', 'd-none', 'bg-primary')
-	
-		const dt    = e.dataTransfer
-		const files = dt.files
-	
-	
-		if ( dragLib.isFolder ) {
-			const newFolder = files[0].path
-			window.mods.dropFolder(newFolder)
-		} else {
-			const fileList = []
-			for ( const thisFile of files ) { fileList.push(thisFile.path) }
-			window.mods.dropFiles(fileList)
-		}
-	
-		dragLib.isFolder = false
-	},
-	dragEnter : (e) => {
-		e.preventDefault()
-		e.stopPropagation()
-	
-		if ( window.state.files.flags.isRunning ) { return }
-		if ( dragLib.preventRun ) { return }
-
-		if ( !dragLib.isRunning ) {
-			fsgUtil.clsShow('drag_back')
-		
-			const isCSV = e.dataTransfer.items[0].type === 'text/csv'
-	
-			fsgUtil.clsHideTrue('csv-no', isCSV)
-			fsgUtil.clsHideTrue('csv-no-text', isCSV)
-			fsgUtil.clsHideFalse('csv-yes', isCSV)
-			fsgUtil.clsHideFalse('csv-yes-text', isCSV)
-	
-			if ( e.dataTransfer.items.length > 1 || e.dataTransfer.items[0].type !== '' ) {
-				// multiple, so can't add as collection or non-empty type
-				fsgUtil.clsHide('drag_add_folder')
-			}
-	
-		} else {
-			const addFolder = fsgUtil.byId('drag_add_folder')
-			const addFile   = fsgUtil.byId('drag_add_file')
-			let   thisID    = e.target.id
-			const thePath   = e.composedPath()
-	
-			if ( thisID !== 'drag_add_folder' && thisID !== 'drag_add_file' ) {
-				if ( thePath.includes(addFolder) ) { thisID = 'drag_add_folder' }
-				if ( thePath.includes(addFile) )   { thisID = 'drag_add_file' }
-			}
-			if ( thisID === 'drag_add_folder' ) {
-				addFolder.classList.add('bg-primary')
-				addFile.classList.remove('bg-primary')
-				dragLib.isFolder = true
-			}
-			if ( thisID === 'drag_add_file' ) {
-				addFolder.classList.remove('bg-primary')
-				addFile.classList.add('bg-primary')
-				dragLib.isFolder = false
-			}
-		}
-	
-		dragLib.isRunning = true
-	},
-	dragLeave : (e) => {
-		e.preventDefault()
-		e.stopPropagation()
-	
-		if ( e.x <= 0 && e.y <= 0 ) {
-			dragLib.isRunning = false
-			dragLib.isFolder  = false
-			fsgUtil.clsHide('drag_back')
-	
-			fsgUtil.clsDelId('drag_add_file', 'bg-primary')
-			fsgUtil.clsDelId('drag_add_folder', 'd-none', 'bg-primary')
-		}
-	},
-	dragOver : (e) => {
-		e.preventDefault()
-		e.stopPropagation()
-	
-		e.dataTransfer.dropEffect = (dragLib.isFolder ? 'link' : 'copy')
-	},
-}
 
 
 // MARK: SUB MODULE CLASSES
 
+
+// MARK: drag-and-drop
+class DragDropLib {
+	flags = {
+		isFolder   : false,
+		isRunning  : false,
+		preventRun : false,
+	}
+
+	feedback = {
+		backdrop         : null,
+		file             : null,
+		folder           : null,
+		icon_csv_file    : null,
+		icon_normal_file : null,
+		text_csv_file    : null,
+		text_normal_file : null,
+	}
+
+	constructor() {
+		/*
+		drag	...a dragged item (element or text selection) is dragged.
+		dragend	...a drag operation ends
+		dragenter	...a dragged item enters a valid drop target.
+		dragleave	...a dragged item leaves a valid drop target.
+		dragover	...a dragged item is being dragged over a valid drop target, every few hundred milliseconds.
+		dragstart	...the user starts dragging an item.
+		drop	...an item is dropped on a valid drop target.
+		*/
+
+		const dragTarget = MA.byId('drag_target')
+		dragTarget.addEventListener('dragenter', (e) => { this.dragEnter(e) } )
+		dragTarget.addEventListener('dragleave', (e) => { this.dragLeave(e) } )
+		dragTarget.addEventListener('dragover',  (e) => { this.dragOver(e) } )
+		dragTarget.addEventListener('drop',      (e) => { this.dragDrop(e) } )
+
+		this.feedback.backdrop         = MA.byId('drag_back')
+		this.feedback.file             = MA.byId('drag_add_file')
+		this.feedback.folder           = MA.byId('drag_add_folder')
+		this.feedback.text_csv_file    = MA.byId('csv-yes-text')
+		this.feedback.text_normal_file = MA.byId('csv-no-text')
+		this.feedback.icon_csv_file    = MA.byId('csv-yes')
+		this.feedback.icon_normal_file = MA.byId('csv-no')
+		
+	}
+
+	resetArea(area) {
+		area.classList.remove('d-none', 'bg-primary')
+	}
+
+	csvTrueSwitch(isCSV) {
+		this.feedback.text_csv_file.clsShow(isCSV)
+		this.feedback.text_normal_file.clsHide(isCSV)
+		this.feedback.icon_csv_file.clsShow(isCSV)
+		this.feedback.icon_normal_file.clsHide(isCSV)
+	}
+
+	dragDrop (e) {
+		e.preventDefault()
+		e.stopPropagation()
+	
+		if ( window.state.files.flags.isRunning ) { return }
+		if ( this.flags.preventRun ) { return }
+		
+		this.flags.isRunning = false
+	
+		this.feedback.backdrop.clsHide()
+		this.resetArea(this.feedback.file)
+		this.resetArea(this.feedback.folder)
+	
+		const dt    = e.dataTransfer
+		const files = dt.files
+	
+		if ( this.flags.isFolder ) {
+			const newFolder = files[0].path
+			window.main_IPC.folder.drop(newFolder)
+		} else {
+			const fileList = []
+			for ( const thisFile of files ) { fileList.push(thisFile.path) }
+			window.main_IPC.files.drop(fileList).then((result) => {
+				window.state.files.start_external('import', result)
+			})
+		}
+	
+		this.flags.isFolder = false
+	}
+
+	dragEnter (e) {
+		e.preventDefault()
+		e.stopPropagation()
+	
+		if ( window.state.files.flags.isRunning ) { return }
+		if ( this.flags.preventRun ) { return }
+
+		if ( !this.flags.isRunning ) {
+			this.feedback.backdrop.clsShow()
+		
+			const isCSV = e.dataTransfer.items[0].type === 'text/csv'
+	
+			this.csvTrueSwitch(isCSV)
+	
+			if ( e.dataTransfer.items.length > 1 || e.dataTransfer.items[0].type !== '' ) {
+				// multiple, so can't add as collection or non-empty type
+				this.feedback.folder.clsHide()
+			}
+	
+		} else {
+			let   thisID    = e.target.id
+			const thePath   = e.composedPath()
+	
+			if ( thisID !== 'drag_add_folder' && thisID !== 'drag_add_file' ) {
+				if ( thePath.includes(this.feedback.folder) ) { thisID = 'drag_add_folder' }
+				if ( thePath.includes(this.feedback.file) )   { thisID = 'drag_add_file' }
+			}
+			if ( thisID === 'drag_add_folder' ) {
+				this.feedback.folder.classList.add('bg-primary')
+				this.feedback.file.classList.remove('bg-primary')
+				this.flags.isFolder = true
+			}
+			if ( thisID === 'drag_add_file' ) {
+				this.feedback.folder.classList.remove('bg-primary')
+				this.feedback.file.classList.add('bg-primary')
+				this.flags.isFolder = false
+			}
+		}
+	
+		this.flags.isRunning = true
+	}
+	dragLeave (e) {
+		e.preventDefault()
+		e.stopPropagation()
+	
+		if ( e.x <= 0 && e.y <= 0 ) {
+			this.flags.isRunning = false
+			this.flags.isFolder  = false
+			this.feedback.backdrop.clsHide()
+	
+			this.resetArea(this.feedback.file)
+			this.resetArea(this.feedback.folder)
+		}
+	}
+	dragOver (e) {
+		e.preventDefault()
+		e.stopPropagation()
+	
+		e.dataTransfer.dropEffect = (this.flags.isFolder ? 'link' : 'copy')
+	}
+}
 
 // MARK: modalCollectMismatch
 class ModalOverlay {
@@ -1327,6 +1377,7 @@ class FileLib {
 	}
 
 	overlay      = null
+	feedback     = null
 
 	dest_multi  = new Set(['import', 'multiCopy', 'multiMove', 'copyFavs'])
 	dest_none   = new Set(['delete'])
@@ -1366,7 +1417,8 @@ class FileLib {
 	selectedMods = {}
 
 	constructor() {
-		this.overlay = new bootstrap.Offcanvas('#fileOpCanvas')
+		this.overlay  = new bootstrap.Offcanvas('#fileOpCanvas')
+		this.feedback = new bootstrap.Modal('#fileOpProgress', { backdrop : 'static', keyboard : false })
 		MA.byId('fileOpCanvas').addEventListener('hide.bs.offcanvas', () => {
 			this.stop()
 		})
@@ -1374,6 +1426,22 @@ class FileLib {
 			MA.byId('fileOpCanvas').querySelector('.offcanvas-body').scrollTop = 0
 		})
 		MA.byId('fileOpCanvas-button').addEventListener('click', () => { this.process() })
+
+		window.main_IPC.receive('files:operation', (mode, mods) => {
+			this.start_external(mode, mods)
+		})
+	}
+
+	// MARK: start (ext module)
+	start_external(mode, mods) {
+		this.flags.operation = mode
+		this.flags.isRunning = true
+
+		this.selectedDest.clear()
+		this.buttonDest.clear()
+		this.lastPayload = null
+
+		this.display(mode, mods)
 	}
 
 	// MARK: start (button)
@@ -1398,10 +1466,13 @@ class FileLib {
 			case 'copy' :
 			case 'move' :
 			case 'delete' :
-			case 'zip' :
 				window.main_IPC.files.list(mode, [...realSelect]).then((files) => {
 					this.display(mode, files)
 				})
+				break
+			case 'zip' :
+				window.main_IPC.files.exportZIP([...realSelect])
+				this.stop()
 				break
 			case 'openMods' :
 				return window.main_IPC.files.openExplore([...realSelect][0])
@@ -1443,6 +1514,35 @@ class FileLib {
 	}
 
 	// MARK: check conflict
+	doesNewConflict(path) {
+		if ( this.lastPayload.isZipImport ) { return false }
+		const shortNameParts = path.split('\\')
+		const shortNameExt   = shortNameParts.pop()
+		const thisKey      = [...this.selectedDest][0]
+
+		if ( shortNameExt.indexOf('.') !== -1 ) {
+			if ( shortNameExt.endsWith('.zip') ) {
+				const shortName = shortNameExt.replace('.zip', '')
+				for ( const modKey of window.state.track.lastPayload.modList[thisKey].modSet ) {
+					const checkMod = window.state.track.lastPayload.modList[thisKey].mods[modKey]
+					if ( shortName === checkMod.fileDetail.shortName && !checkMod.fileDetail.isFolder ) {
+						return true
+					}
+				}
+				return false
+			}
+			return false
+		}
+		
+		for ( const modKey of window.state.track.lastPayload.modList[thisKey].modSet ) {
+			const checkMod = window.state.track.lastPayload.modList[thisKey].mods[modKey]
+			if ( shortNameExt === checkMod.fileDetail.shortName && checkMod.fileDetail.isFolder ) {
+				return true
+			}
+		}
+		return false
+	}
+
 	doesModConflict(mod) {
 		if ( this.selectedDest.size === 0 ) { return true }
 
@@ -1461,7 +1561,7 @@ class FileLib {
 	updateButton() {
 		this.flags.count = 0
 
-		if ( this.selectedDest.size !== 0 ) {
+		if ( this.selectedDest.size !== 0 || this.flags.operation === 'delete' ) {
 			for ( const mod of Object.values(this.selectedMods) ) {
 				if ( mod.doAction ) { this.flags.count++ }
 			}
@@ -1473,6 +1573,80 @@ class FileLib {
 		MA.byId('fileOpCanvas-button').clsEnable(this.flags.count)
 	}
 
+	showMod_known(mod) {
+		return DATA.templateEngine('file_op_mod', {
+			folderIcon : mod.fileDetail.isFolder ? '<i class="bi bi-folder2-open mod-folder-overlay"></i>' : '',
+			iconImage  : `<img alt="" class="img-fluid" src="${DATA.iconMaker(mod.modDesc.iconImageCache)}">`,
+			shortname  : mod.fileDetail.shortName,
+			title      : DATA.escapeSpecial(mod.l10n.title),
+		})
+	}
+
+	showMod_new(path, zipFiles = null) {
+		const shortNameParts = path.split('\\')
+		const shortNameExt   = shortNameParts.pop()
+		const isFolder       = shortNameExt.indexOf('.') === -1
+		const shortName      = isFolder ? shortNameExt : shortNameExt.split('.')[0]
+
+		return DATA.templateEngine('file_op_mod', {
+			folderIcon : '',
+			iconImage  : isFolder ?
+				`<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
+					<path d="m.5 3 .04.87a2 2 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2m5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19q-.362.002-.683.12L1.5 2.98a1 1 0 0 1 1-.98z"/>
+					<path d="M13.5 9a.5.5 0 0 1 .5.5V11h1.5a.5.5 0 1 1 0 1H14v1.5a.5.5 0 1 1-1 0V12h-1.5a.5.5 0 0 1 0-1H13V9.5a.5.5 0 0 1 .5-.5"/>
+				</svg>` :
+				`<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+					<path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5"/>
+					<path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+				</svg>`,
+			shortname  : shortName,
+			title      : zipFiles === null ? path : [...zipFiles].join('<br>'),
+		})
+	}
+
+	showMod(mod, hasDest, isDelete, isMulti) {
+		const modPointer = this.flags.operation === 'import' ? mod : mod.colUUID
+		let doesConflict = false
+		if ( hasDest && !isDelete && !isMulti ) {
+			if ( this.flags.operation !== 'import' ) {
+				doesConflict = this.doesModConflict(mod)
+			} else {
+				doesConflict = this.doesNewConflict(mod)
+			}
+		}
+
+		const node = this.flags.operation !== 'import' ?
+			this.showMod_known(mod) :
+			this.showMod_new(mod, this.lastPayload.isZipImport ? this.lastPayload.zipFiles : null)
+
+		if ( isMulti || isDelete ) {
+			node.querySelector('.no-dest').clsHide()
+			node.querySelector('.conf-dest').clsHide()
+			node.querySelector('.over-dest').clsHide()
+			node.querySelector('.clear-dest').clsHide()
+		} else if ( !hasDest ) {
+			node.querySelector('.no-dest').clsShow()
+			node.querySelector('.conf-dest').clsHide()
+			node.querySelector('.over-dest').clsHide()
+			node.querySelector('.clear-dest').clsHide()
+		} else {
+			node.querySelector('.no-dest').clsHide()
+			if ( doesConflict ) {
+				node.firstElementChild.setAttribute('style', 'cursor:pointer')
+				node.firstElementChild.addEventListener('click', () => { this.toggleMod(modPointer)} )
+			} else {
+				this.selectedMods[modPointer].doAction = true
+			}
+			node.querySelector('.conf-dest').clsShow((doesConflict && !this.selectedMods[modPointer].doAction))
+			node.querySelector('.over-dest').clsShow((doesConflict && this.selectedMods[modPointer].doAction))
+			node.querySelector('.clear-dest').clsShow(!doesConflict)
+		}
+
+		node.firstElementChild.children[0].clsOrGate(this.selectedMods[modPointer].doAction, 'bg-file-op-good', 'bg-file-op-bad')
+
+		return node
+	}
+
 	updateMods() {
 		const isDelete      = this.flags.operation === 'delete'
 		const isMulti       = this.lastPayload.multiDestination
@@ -1481,47 +1655,14 @@ class FileLib {
 		const modList = MA.byId('fileOpCanvas-source')
 
 		modList.innerHTML = ''
-		for ( const mod of this.lastPayload.records ) {
-			let doesConflict = false
-			if ( hasDest && !isDelete && !isMulti ) {
-				doesConflict = this.doesModConflict(mod)
+		if ( this.flags.operation !== 'import' ) {
+			for ( const mod of this.lastPayload.records ) {
+				modList.appendChild(this.showMod(mod, hasDest, isDelete, isMulti))
 			}
-
-			const node = DATA.templateEngine('file_op_mod', {
-				folderIcon : mod.fileDetail.isFolder ? '<i class="bi bi-folder2-open mod-folder-overlay"></i>' : '',
-				iconImage  : `<img alt="" class="img-fluid" src="${DATA.iconMaker(mod.modDesc.iconImageCache)}">`,
-				shortname  : mod.fileDetail.shortName,
-				title      : DATA.escapeSpecial(mod.l10n.title),
-			})
-
-			
-
-			if ( isMulti || isDelete ) {
-				node.querySelector('.no-dest').clsHide()
-				node.querySelector('.conf-dest').clsHide()
-				node.querySelector('.over-dest').clsHide()
-				node.querySelector('.clear-dest').clsHide()
-			} else if ( !hasDest ) {
-				node.querySelector('.no-dest').clsShow()
-				node.querySelector('.conf-dest').clsHide()
-				node.querySelector('.over-dest').clsHide()
-				node.querySelector('.clear-dest').clsHide()
-			} else {
-				node.querySelector('.no-dest').clsHide()
-				if ( doesConflict ) {
-					node.firstElementChild.setAttribute('style', 'cursor:pointer')
-					node.firstElementChild.addEventListener('click', () => { this.toggleMod(mod.colUUID)} )
-				} else {
-					this.selectedMods[mod.colUUID].doAction = true
-				}
-				node.querySelector('.conf-dest').clsShow((doesConflict && !this.selectedMods[mod.colUUID].doAction))
-				node.querySelector('.over-dest').clsShow((doesConflict && this.selectedMods[mod.colUUID].doAction))
-				node.querySelector('.clear-dest').clsShow(!doesConflict)
+		} else {
+			for ( const mod of this.lastPayload.rawFileList ) {
+				modList.appendChild(this.showMod(mod, hasDest, isDelete, isMulti))
 			}
-
-			node.firstElementChild.children[0].clsOrGate(this.selectedMods[mod.colUUID].doAction, 'bg-file-op-good', 'bg-file-op-bad')
-
-			modList.appendChild(node)
 		}
 		this.updateButton()
 	}
@@ -1572,15 +1713,27 @@ class FileLib {
 		// source_rawPath    : string (for drag-drop)
 		// type              : 'copy','move','delete'
 
-		// TODO: handle drops.
-		for ( const mod of this.lastPayload.records ) {
-			this.selectedMods[mod.colUUID] = {
-				destinations      : [],
-				doAction          : mode === 'delete' || this.lastPayload.multiDestination,
-				source_collectKey : mod.currentCollection,
-				source_modUUID    : mod.uuid,
-				source_rawPath    : null,
-				type              : this.flags.operation,
+		if ( this.flags.operation === 'import' ) {
+			for ( const file of this.lastPayload.rawFileList ) {
+				this.selectedMods[file] = {
+					destinations      : [],
+					doAction          : false,
+					source_collectKey : null,
+					source_modUUID    : null,
+					source_rawPath    : file,
+					type              : this.lastPayload.isZipImport ? 'unzip' : 'copy',
+				}
+			}
+		} else {
+			for ( const mod of this.lastPayload.records ) {
+				this.selectedMods[mod.colUUID] = {
+					destinations      : [],
+					doAction          : mode === 'delete' || this.lastPayload.multiDestination,
+					source_collectKey : mod.currentCollection,
+					source_modUUID    : mod.uuid,
+					source_rawPath    : null,
+					type              : this.flags.operation,
+				}
 			}
 		}
 		this.updateMods()
@@ -1589,11 +1742,40 @@ class FileLib {
 	process() {
 		const filePayload = Object.values(this.selectedMods).filter((x) => x.doAction)
 
-		// console.log(filePayload)
-		// TODO: submit operation, listen for response
-		// window.main_IPC.files.process(filePayload).then((result) => {
-		// 	console.log(result)
-		// })
+		if ( filePayload.length === 0 ) { return }
+
+		this.feedback.show()
+		MA.byId('fileOpWorking').clsShow()
+		MA.byId('fileOpSuccess').clsHide()
+		MA.byId('fileOpDanger').clsHide()
+		MA.byId('badFileFeedback').clsHide()
+
+		window.main_IPC.files.process(filePayload).then((opResult) => {
+			const didFail = opResult.some((x) => x.status === false )
+			if ( didFail ) {
+				MA.byId('fileOpDanger').clsShow()
+				MA.byId('fileOpWorking').clsHide()
+				MA.byId('badFileFeedback').clsShow()
+				const badFiles = opResult
+					.filter((x) => x.status === false)
+					.map((x) => {
+						if ( x.type === 'delete' ) {
+							return `<i class="bi bi-trash3"></i> ${x.source}`
+						}
+						return `-> ${x.dest}<br>`
+					})
+				MA.byId('badFileList').innerHTML = badFiles.join('')
+			} else {
+				MA.byId('fileOpSuccess').clsShow()
+				MA.byId('fileOpWorking').clsHide()
+			}
+
+			setTimeout(() => {
+				this.feedback.hide()
+				this.overlay.hide()
+				window.main_IPC.folder.reload()
+			}, didFail ? 5000 : 1500)
+		})
 	}
 	
 	// MARK: keyboard interaction

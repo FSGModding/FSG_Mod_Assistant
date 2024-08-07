@@ -164,12 +164,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	window.addEventListener('hidden.bs.collapse', () => { window.state.select.none() })
 	window.addEventListener('shown.bs.collapse',  () => { window.state.select.none() })
 
-	const dragTarget = MA.byId('drag_target')
-	dragTarget.addEventListener('dragenter', dragLib.dragEnter )
-	dragTarget.addEventListener('dragleave', dragLib.dragLeave )
-	dragTarget.addEventListener('dragover',  dragLib.dragOver )
-	dragTarget.addEventListener('drop',      dragLib.dragDrop )
-
 	setInterval(() => { window.state.updateState() }, 5000)
 })
 
