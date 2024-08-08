@@ -117,10 +117,6 @@ contextBridge.exposeInMainWorld(
 		// TODO: finish below line
 
 
-		
-		download   : (collection)   => { ipcRenderer.send('toMain_downloadList', collection) },
-		exportList : (collection)   => { ipcRenderer.send('toMain_exportList', collection ) },
-		
 		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
 		
 		setModInfo : (mod, site)    => { ipcRenderer.send('toMain_setModInfo', mod, site) },
@@ -132,7 +128,6 @@ contextBridge.exposeInMainWorld(
 		clearCache    : () => { ipcRenderer.send('toMain_clearCacheFile') },
 		clearDetailCache : () => { ipcRenderer.send('toMain_clearDetailCacheFile') },
 		clearMalware  : () => { ipcRenderer.send('toMain_clearCacheMalware') },
-		resetWindows  : () => { ipcRenderer.send('toMain_resetWindows') },
 		setGamePath   : (ver = 22) => { ipcRenderer.send('toMain_setGamePath', ver) },
 		setPref       : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
 		setPrefFile   : (ver = 22) => { ipcRenderer.send('toMain_setPrefFile', ver) },
@@ -191,6 +186,7 @@ contextBridge.exposeInMainWorld(
 	'i18n', {
 		get  : (key)       => ipcRenderer.invoke('i18n:get', key),
 		lang : (nv = null) => ipcRenderer.invoke('i18n:lang', nv),
+		list : ()          => ipcRenderer.invoke('i18n:langList'),
 
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
@@ -206,10 +202,13 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'settings', {
-		get   : (key)  => ipcRenderer.invoke('settings:get', key),
-		set   : (k, v) => ipcRenderer.invoke('settings:set', k, v),
-		theme : ()     => ipcRenderer.invoke('settings:theme'),
-		units : ()     => ipcRenderer.invoke('settings:units'),
+		get         : (key)  => ipcRenderer.invoke('settings:get', key),
+		set         : (k, v) => ipcRenderer.invoke('settings:set', k, v),
+		theme       : ()     => ipcRenderer.invoke('settings:theme'),
+		themeChange : (k)    => { ipcRenderer.send('settings:themeChange', k) },
+		themeList   : ()     => ipcRenderer.invoke('settings:themeList'),
+		units       : ()     => ipcRenderer.invoke('settings:units'),
+		winReset    : ()     => { ipcRenderer.send('settings:resetWindows') },
 	}
 )
 

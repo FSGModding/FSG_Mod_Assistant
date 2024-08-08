@@ -427,112 +427,67 @@
 
 	<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-version" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel">
 		<div class="offcanvas-header">
-			<h5 class="offcanvas-title" id="offcanvasLabel"><l10n name="notes_title_version"></l10n></h5>
+			<i18n-text class="h5 offcanvas-title" id="offcanvasLabel" data-key="notes_title_version"></i18n-text>
 			<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#offcanvas-version" style="z-index: 1;" aria-label="Close"><i class="bi-x-lg"></i></button>
 		</div>
 		<div class="offcanvas-body">
-			<l10n name="offcanvas_blurb"></l10n>
+			<i18n-text data-key="offcanvas_blurb"></i18n-text>
 			<div id="farm_sim_versions" class="mt-3"></div>
 		</div>
 	</div>
 
 	<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="prefcanvas" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel-prefs">
-		<div class="offcanvas-header justify-content-start">
-			<button type="button" class="btn btn-secondary" id="prefcanvas-close" onclick="prefLib.overlay.hide()" style="z-index: 1;" aria-label="Close"><i class="bi-x-lg"></i></button>
-			<h5 class="offcanvas-title ps-3" id="offcanvasLabel-prefs"><l10n name="user_pref_title_main"></l10n></h5>
+		<div class="offcanvas-header justify-content-start" style="-webkit-app-region: drag;">
+			<button type="button" style="-webkit-app-region: no-drag; z-index: 1;" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#prefcanvas" aria-label="Close"><i class="bi-x-lg"></i></button>
+			<i18n-text class="h5 offcanvas-title ps-3" id="offcanvasLabel-prefs" data-key="user_pref_title_main"></i18n-text>
 		</div>
 		<div class="offcanvas-body full-scroll" id="prefcanvas_content">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item" role="presentation">
-					<button class="nav-link active" id="display-pref-tab" data-bs-toggle="tab" data-bs-target="#display-pref-pane" type="button" role="tab"><l10n name="user_pref_tab_display"></l10n></button>
+					<i18n-text class="nav-link active" id="display-pref-tab" data-bs-toggle="tab" data-bs-target="#display-pref-pane" type="button" role="tab" data-key="user_pref_tab_display"></i18n-text>
 				</li>
 				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="game-pref-tab" data-bs-toggle="tab" data-bs-target="#game-pref-pane" type="button" role="tab"><l10n name="user_pref_tab_game"></l10n></button>
+					<i18n-text class="nav-link" id="game-pref-tab" data-bs-toggle="tab" data-bs-target="#game-pref-pane" type="button" role="tab" data-key="user_pref_tab_game"></i18n-text>
 				</li>
 				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="advanced-pref-tab" data-bs-toggle="tab" data-bs-target="#advanced-pref-pane" type="button" role="tab"><l10n name="user_pref_tab_advanced"></l10n></button>
+					<i18n-text class="nav-link" id="advanced-pref-tab" data-bs-toggle="tab" data-bs-target="#advanced-pref-pane" type="button" role="tab" data-key="user_pref_tab_advanced"></i18n-text>
 				</li>
 			</ul>
 			<div class="tab-content" id="myTabContent">
 
 				<div class="tab-pane fade show active pt-4" id="display-pref-pane" role="tabpanel" aria-labelledby="display-pref-tab" tabindex="0">
 					<div class="row gx-3 gy-4">
-						<div class="col-md-6 inset-block"><div>  <!-- changelog -->
-							<l10n class="inset-block-header" name="user_pref_title_changelog"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_changelog"></l10n>
-								<div class="btn btn-primary btn-sm col-3 align-self-start" onclick="window.mods.showChangelog()"><i class="bi-check2-circle"></i></div>
-							</div>
-						</div></div>
+						<div class="col-md-6 inset-block"><!-- changelog -->
+							<page-replace data-type="button-input" data-name="changelog"></page-replace>
+						</div>
 
-						<div class="col-md-6 inset-block"><div>  <!-- wizard -->
-							<l10n class="inset-block-header" name="user_pref_title_wizard"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_wizard"></l10n>
-								<div class="btn btn-primary btn-sm col-3 align-self-start" onclick="window.mods.showWizard()"><i class="bi-check2-circle"></i></div>
-							</div>
-						</div></div>
+						<div class="col-md-6 inset-block"><!-- wizard -->
+							<page-replace data-type="button-input" data-name="wizard"></page-replace>
+						</div>
 
-						<div class="col-md-6 inset-block"><div>  <!-- led -->
-							<l10n class="inset-block-header" name="user_pref_title_led"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_led"></l10n>
-								<div class="col-3 form-switch custom-switch">
-									<input id="uPref_led_active" onchange="prefLib.setPref('led_active')" class="form-check-input" type="checkbox" role="switch">
-								</div>
-							</div>
-						</div></div>
+						<div class="col-md-6 inset-block"><!-- led -->
+							<page-replace data-type="switch-input" data-name="led"></page-replace>
+						</div>
 
-						<div class="col-md-6 inset-block"><div>  <!-- tooltips -->
-							<l10n class="inset-block-header" name="user_pref_title_show_tooltips"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_show_tooltips"></l10n>
-								<div class="col-3 form-switch custom-switch">
-									<input id="uPref_show_tooltips" onchange="prefLib.setPref('show_tooltips')" class="form-check-input" type="checkbox" role="switch">
-								</div>
-							</div>
-						</div></div>
+						<div class="col-md-6 inset-block"><!-- tooltips -->
+							<page-replace data-type="switch-input" data-name="show_tooltips"></page-replace>
+						</div>
 
-						<div class="col-md-6 inset-block"><div> <!-- font size -->
-							<l10n class="inset-block-header" name="user_pref_title_font_size"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_font_size"></l10n>
-								<div class="col-2 text-center small text-body-emphasis" id="font_size_value">XX</div>
-								<div class="col-12 mt-2">
-									<input oninput="prefLib.dragFontSize()" onchange="prefLib.setPref('font_size')" id="uPref_font_size" type="range" class="form-range" min="70" max="150" step="1" >
-									<div class="p-0" style="margin-top: -0.95rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>
-								</div>
-								<div class="col-10 offset-1 mt-2">
-									<div class="d-block btn btn-outline-primary btn-sm w-100 mx-auto" onclick="window.mods.setPref('font_size', 14)"><l10n name="user_pref_font_size_default"></l10n></div>
-								</div>
-							</div>
-						</div></div>
+						<div class="col-md-6 inset-block"><!-- font size -->
+							<page-replace data-type="special-input" data-name="font_size"></page-replace>
+						</div>
 
-						<div class="col-md-6 inset-block"><div> <!-- theme -->
-							<l10n class="inset-block-header" name="user_pref_title_theme_color"></l10n>
-							<l10n class="inset-block-blurb-option" name="user_pref_blurb_theme_color"></l10n>
-							<select onchange="prefLib.setTheme()" class="form-select mt-3 px-4" name="theme_select" id="theme_select"></select>
-						</div></div>
+						<div class="col-md-6 inset-block"><!-- theme -->
+							<page-replace data-type="special-input" data-name="theme_color"></page-replace>
+						</div>
 
-						<div class="col-md-6 inset-block"><div> <!-- language -->
-							<l10n class="inset-block-header" name="user_pref_title_lang"></l10n>
-							<l10n class="inset-block-blurb-option" name="user_pref_blurb_lang"></l10n>
-							<select onchange="prefLib.setL10n()" class="form-select mt-3 px-4" name="language_select" id="language_select"></select>
-							<div class="row mt-2">
-								<l10n class="inset-block-blurb-option col-9 fst-italic" name="user_pref_blurb2_lang"></l10n>
-								<div class="col-3 form-check form-switch custom-switch">
-									<input id="uPref_lock_lang" onchange="prefLib.setPref('lock_lang')" class="form-check-input" type="checkbox" role="switch">
-								</div>
-							</div>
-						</div></div>
+						<div class="col-md-6 inset-block"><!-- language -->
+							<page-replace data-type="special-input" data-name="lang"></page-replace>
+						</div>
 
-						<div class="col-md-6 inset-block"><div>  <!-- reset windows -->
-							<l10n class="inset-block-header" name="user_pref_title_reset_window"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-9" name="user_pref_blurb_reset_window"></l10n>
-								<div class="btn btn-primary btn-sm col-3 align-self-start" onclick="window.mods.resetWindows()"><i class="bi-check2-circle"></i></div>
-							</div>
-						</div></div>
+						<div class="col-md-6 inset-block"><!-- reset windows -->
+							<page-replace data-type="button-input" data-name="reset_window"></page-replace>
+						</div>
 					</div>
 				</div>
 
@@ -850,7 +805,7 @@
 							<img src="img/info_warn.webp" alt="" class="w-100">
 						</div>
 						<div class="col-10">
-							<l10n name="mod_pack_import"></l10n>
+							<i18n-text data-key="mod_pack_import"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -912,9 +867,9 @@
 		<div class="modal-dialog modal-dialog-centered w-50">
 			<div class="modal-content" style="height: 220px;">
 				<div class="modal-body position-relative text-center d-flex flex-column align-items-center justify-content-center">
-					<l10n class="z-2 fs-2 text-center" name="loading_files_title"></l10n>
+					<i18n-text class="z-2 fs-2 text-center" date-key="loading_files_title"></i18n-text>
 					<div id="badFileFeedback" class="d-none">
-						<l10n class="text-center w-100 fs-5" name="file_operation_failure"></l10n>
+						<i18n-text class="text-center w-100 fs-5" data-key="file_operation_failure"></i18n-text>
 						<div id="badFileList" class="text-start"></div>
 					</div>
 					
@@ -946,7 +901,7 @@
 			<i class="versionIcon" style="font-size: 75px;"></i>
 		</div>
 		<div class="col-9 text-white" style="font-size: 150%">
-			<l10n name="game_title_farming_simulator"></l10n> 20<template-var>version</template-var><br>
+			<i18n-text data-key="game_title_farming_simulator"></i18n-text> 20<template-var>version</template-var><br>
 			<span style="font-size: 60%"><i18n-text data-key="total_collections"></i18n-text> : <template-var>collections</template-var>, <i18n-text data-key="total_mods"></i18n-text> : <template-var>mods</template-var></span>
 		</div>
 	</div>

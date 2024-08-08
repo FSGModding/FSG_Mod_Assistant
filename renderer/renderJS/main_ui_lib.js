@@ -62,11 +62,16 @@ class StateManager {
 
 	// MARK: constructor
 	constructor() {
+		this.dragDrop = new DragDropLib()
 		this.loader   = new LoaderLib()
 		this.files    = new FileLib()
-		this.dragDrop = new DragDropLib()
+		this.prefs    = new PrefLib()
 		this.modal.mismatch = new ModalOverlay('#open_game_modal')
 		this.modal.modInfo  = new ModalOverlay('#open_mod_info_modal')
+
+		setTimeout(() => {
+			this.prefs.open()
+		}, 1500)
 	}
 
 	// MARK: process data
@@ -1131,6 +1136,322 @@ const LEDLib = {
 
 // MARK: SUB MODULE CLASSES
 
+
+// MARK: preferences
+class PrefLib {
+
+	currentDev = null
+	currentSet = null
+	overlay    = null
+
+	buttons = {
+		changelog : {
+			callback : () => { window.main_IPC.dispatch('changelog') },
+			icon     : 'check2-circle',
+		},
+		reset_window : {
+			callback : () => { window.settings.winReset() },
+			icon     : 'check2-circle',
+		},
+		wizard : {
+			callback : () => { window.main_IPC.dispatch('wizard') },
+			icon     : 'check2-circle',
+		},
+	}
+
+	inputs = {
+		led : {
+			set    : (input) => { this.#processCheck('led_active', input, true) },
+			update : (input) => { this.#processCheck('led_active', input, false) },
+		},
+		show_tooltips : {
+			set    : (input) => { this.#processCheck('show_tooltips', input, true) },
+			update : (input) => { this.#processCheck('show_tooltips', input, false) },
+		},
+	}
+
+	#processCheck(key, input, setValue = false) {
+		if ( !setValue ) {
+			window.settings.get(key).then((value) => {
+				input.checked = value
+			})
+		} else {
+			window.settings.set(key, input.checked).then((value) => {
+				input.checked = value
+			})
+		}
+	}
+
+	update = []
+
+	constructor () {
+		this.overlay = new bootstrap.Offcanvas('#prefcanvas')
+		MA.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
+			window.state.dragDrop.flags.preventRun = false
+		})
+		MA.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
+			MA.byId('prefcanvas').querySelector('.offcanvas-body').scrollTop = 0
+			window.state.dragDrop.flags.preventRun = true
+		})
+		this.init()
+	}
+
+	init() {
+		for ( const element of MA.byId('prefcanvas').querySelectorAll('page-replace')) {
+			const replaceType = element.safeAttribute('data-type')
+			const replaceKey  = element.safeAttribute('data-name')
+	
+			switch ( replaceType ) {
+				case 'button-input':
+					element.replaceWith(this.#doButton(replaceKey))
+					break
+				// case 'text-input':
+				// 	element.replaceWith(replaceTextInput(replaceKey))
+				// 	break
+				// case 'password-input':
+				// 	element.replaceWith(replacePasswordInput(replaceKey))
+				// 	break
+				case 'special-input' :
+					element.replaceWith(this.#doSpecial(replaceKey))
+					break
+				case 'switch-input':
+					element.replaceWith(this.#doSwitch(replaceKey))
+					break
+				default :
+					break
+			}
+		}
+	}
+
+	open() {
+		for ( const update of this.update ) {
+			update()
+		}
+		this.overlay.show()
+	}
+
+	#doButton(key) {
+		const node = document.createElement('div')
+		node.innerHTML = [
+			`<i18n-text class="inset-block-header" data-key="user_pref_title_${key}"></i18n-text>`,
+			'<div class="row">',
+			`<i18n-text class="inset-block-blurb-option col-9" data-key="user_pref_blurb_${key}"></i18n-text>`,
+			`<div class="btn btn-primary btn-sm col-3 align-self-start"><i class="bi-${this.buttons[key].icon}"></i></div>`,
+			'</div>'
+		].join('')
+		node.querySelector('.btn').addEventListener('click', this.buttons[key].callback)
+
+		return node
+	}
+
+	#doSwitch(key) {
+		const node = document.createElement('div')
+		node.innerHTML = [
+			`<i18n-text class="inset-block-header" data-key="user_pref_title_${key}"></i18n-text>`,
+			'<div class="row">',
+			`<i18n-text class="inset-block-blurb-option col-9" data-key="user_pref_blurb_${key}"></i18n-text>`,
+			'<div class="col-3 form-switch custom-switch">',
+			'<input class="form-check-input" type="checkbox" role="switch">',
+			'</div></div>',
+		].join('')
+		const input = node.querySelector('input')
+		input.addEventListener('change', () => { this.inputs[key].set(input) })
+		this.update.push(() => { this.inputs[key].update(input) })
+		return node
+	}
+
+	#doSpecial(key) {
+		const node = document.createElement('div')
+		switch (key) {
+			case 'font_size' : {
+				node.innerHTML = [
+					'<i18n-text class="inset-block-header" data-key="user_pref_title_font_size"></i18n-text>',
+					'<div class="row">',
+					'<i18n-text class="inset-block-blurb-option col-10" data-key="user_pref_blurb_font_size"></i18n-text>',
+					'<div class="col-2 text-center small text-body-emphasis" id="pref--font_size_value">XX</div>',
+					'<div class="col-12 mt-2">',
+					'<input id="pref--font_size_input" type="range" class="form-range" min="70" max="150" step="1" >',
+					'<div class="p-0" style="margin-top: -0.95rem"><i style="margin-left: calc(38% - 0.5rem)" class="text-body-tertiary bi-caret-up"></i></div>',
+					'</div><div class="col-10 offset-1 mt-2">',
+					'<i18n-text id="pref--font_size_reset" class="d-block btn btn-outline-primary btn-sm w-100 mx-auto" data-key="user_pref_font_size_default"></i18n-text>',
+					'</div></div>',
+				].join('')
+
+				const font_size_number = node.querySelector('#pref--font_size_value')
+				const font_size_slider = node.querySelector('#pref--font_size_input')
+				const font_size_reset  = node.querySelector('#pref--font_size_reset')
+
+				font_size_reset.addEventListener('click', () => {
+					window.settings.set('font_size', 14).then((value) => {
+						const percent = (value / 100) * 14
+						font_size_slider.value       = value
+						font_size_number.textContent = `${percent}%`
+					})
+				})
+				font_size_slider.addEventListener('input', () => {
+					font_size_number.textContent = `${Math.floor(font_size_slider.value)}%`
+				})
+				font_size_slider.addEventListener('change', () => {
+					const numberValue = (font_size_slider.value / 100) * 14
+					window.settings.set('font_size', numberValue).then((value) => {
+						const percent = (value / 14) * 100
+						font_size_slider.value       = value
+						font_size_number.textContent = `${Math.floor(percent)}%`
+					})
+				})
+
+				const font_size_update = () => {
+					window.settings.get('font_size').then((value) => {
+						const percent = (value / 14) * 100
+						font_size_slider.value       = percent
+						font_size_number.textContent = `${Math.floor(percent)}%`
+					})
+				}
+				
+				window?.operations?.receive('win:updateFontSize', font_size_update)
+
+				this.update.push(font_size_update)
+				break
+			}
+			case 'theme_color' : {
+				node.innerHTML = [
+					'<i18n-text class="inset-block-header" data-key="user_pref_title_theme_color"></i18n-text>',
+					'<i18n-text class="inset-block-blurb-option" data-key="user_pref_blurb_theme_color"></i18n-text>',
+					'<select class="form-select mt-3 px-4" name="theme_select" id="theme_select"></select>',
+				].join('')
+
+				const theme_select = node.querySelector('select')
+				
+				theme_select.addEventListener('change', () => {
+					window.settings.themeChange(theme_select.value)
+				})
+
+				const theme_update = () => {
+					window.settings.themeList().then((values) => {
+						theme_select.innerHTML = ''
+						for ( const value of values ) {
+							const opt = document.createElement('option')
+							opt.value = value[0]
+							opt.textContent = value[1]
+							theme_select.appendChild(opt)
+						}
+						window.settings.get('color_theme').then((value) => {
+							theme_select.value = value
+						})
+					})
+				}
+
+				this.update.push(theme_update)
+				window?.operations?.receive('win:updateTheme', theme_update)
+				break
+			}
+			case 'lang' : {
+				node.innerHTML = [
+					'<i18n-text class="inset-block-header" data-key="user_pref_title_lang"></i18n-text>',
+					'<i18n-text class="inset-block-blurb-option" data-key="user_pref_blurb_lang"></i18n-text>',
+					'<select class="form-select mt-3 px-4" name="language_select" id="language_select"></select>',
+					'<div class="row mt-2">',
+					'<i18n-text class="inset-block-blurb-option col-9 fst-italic" data-key="user_pref_blurb2_lang"></i18n-text>',
+					'<div class="col-3 form-check form-switch custom-switch">',
+					'<input id="uPref_lock_lang" class="form-check-input" type="checkbox" role="switch">',
+					'</div></div>'
+				].join('')
+
+				const lang_lock   = node.querySelector('input')
+				const lang_select = node.querySelector('select')
+
+				lang_lock.addEventListener('change', () => {
+					window.settings.set('lang_lock', lang_lock.checked).then((value) => {
+						lang_lock.checked = value
+					})
+				})
+				lang_select.addEventListener('change', () => {
+					window.i18n.lang(lang_select.value).then((value) => {
+						lang_select.value = value
+					})
+				})
+
+				const lang_update = () => {
+					window.i18n.list().then((values) => {
+						lang_select.innerHTML = ''
+						for ( const value of values ) {
+							const opt = document.createElement('option')
+							opt.value = value[0]
+							opt.textContent = value[1]
+							lang_select.appendChild(opt)
+						}
+						window.i18n.lang().then((value) => {
+							lang_select.value = value
+						})
+					})
+					window.settings.get('lang_lock').then((value) => {
+						lang_lock.checked = value
+					})
+				}
+
+				this.update.push(lang_update)
+				window?.i18n?.receive('i18n:refresh', lang_update)
+				break
+			}
+			default :
+				break
+		}
+
+		return node
+	}
+	// state : (settings = null, devControls = null ) => {
+	// 	if ( settings !== null )    { prefLib.currentSet = settings }
+	// 	if ( devControls !== null ) { prefLib.currentDev = devControls }
+	// },
+
+	// dragFontSize : () => {
+	// 	fsgUtil.setById('font_size_value', `${fsgUtil.valueById('uPref_font_size')}%`)
+	// },
+	// setL10n : () => {
+	// 	window.l10n.langList_change(fsgUtil.valueById('language_select'))
+	// },
+	// setPref : (id) => {
+	// 	const formControl = fsgUtil.byId(`uPref_${id}`)
+	
+	// 	if ( formControl.getAttribute('type') === 'checkbox' ) {
+	// 		window.mods.setPref(id, formControl.checked)
+	// 	} else if ( id === 'font_size' ) {
+	// 		window.mods.setPref(id, (formControl.value / 100) * 14)
+	// 	} else {
+	// 		window.mods.setPref(id, formControl.value)
+	// 	}
+	// },
+	// setTheme : () => {
+	// 	window.l10n.themeList_change(fsgUtil.valueById('theme_select'))
+	// },
+	// update : () => {
+	// 	for ( const name in prefLib.currentSet ) {
+	// 		const formControl = fsgUtil.byId(`uPref_${name}`)
+	// 		if ( formControl !== null ) {
+	// 			if ( formControl.getAttribute('type') === 'checkbox' ) {
+	// 				formControl.checked = prefLib.currentSet[name]
+	// 			} else if ( name === 'font_size' ) {
+	// 				formControl.value = (prefLib.currentSet[name] / 14) * 100
+	// 			} else {
+	// 				formControl.value = prefLib.currentSet[name]
+	// 			}
+	// 		}
+	// 	}
+	
+	// 	fsgUtil.setById('font_size_value', `${Math.floor((prefLib.currentSet.font_size / 14) * 100)}%`)
+	
+	// 	fsgUtil.classPerTest('.multi-version-pref', prefLib.currentSet.multi_version)
+	
+	// 	fsgUtil.byId('uPref_dev_mode').checked = prefLib.currentDev[22]
+
+	// 	for ( const version of [19, 17, 15, 13] ) {
+	// 		fsgUtil.byId(`uPref_dev_mode_${version}`).checked = prefLib.currentDev[version]
+	// 		fsgUtil.classPerTest(`.game_enabled_${version}`, prefLib.currentSet[`game_enabled_${version}`])
+	// 		fsgUtil.classPerTest(`.game_disabled_${version}`, !prefLib.currentSet[`game_enabled_${version}`])
+	// 	}
+	
+	// },
+}
 
 // MARK: drag-and-drop
 class DragDropLib {

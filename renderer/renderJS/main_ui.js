@@ -6,9 +6,9 @@
 
 // Main Window UI
 
-/* global MA, StateManager, bootstrap, prefLib, dragLib */
+/* global MA, StateManager */
 
-
+// MARK: async events
 window.operations.receive('select:invert', () => {
 	if ( ! window.state.files.flags.isRunning ) { window.state.select.invert() }
 	else { window.state.files.key_invert() }
@@ -25,7 +25,7 @@ window.operations.receive('select:all', () => {
 })
 
 
-
+//TODO: handle these
 // window.mods.receive('fromMain_selectOnly', (selectList) => {
 // 	const tableID   = `${selectList[0].split('--')[0]}_mods`
 // 	const checkList = selectList.map((id) => `${id}__checkbox`)
@@ -87,7 +87,7 @@ window.main_IPC.receive('loading:current',  (count, inMB) => { window.state.load
 function topBarHandlers() {
 	MA.byIdEventIfExists('topBar-launch',      () => { window.state.action.launchGame() })
 	MA.byIdEventIfExists('topBar-update',      () => { window.main_IPC.updateApplication() })
-	MA.byIdEventIfExists('topBar-preferences', () => { prefLib.overlay.show() })
+	MA.byIdEventIfExists('topBar-preferences', () => { window.state.prefs.open() })
 	MA.byIdEventIfExists('topBar-tray',        () => { window.main_IPC.minimizeToTray() })
 	MA.byIdEventIfExists('topBar-basegame',    () => { window.main_IPC.dispatch('basegame') })
 	MA.byIdEventIfExists('topBar-savetrack',   () => { window.main_IPC.dispatch('savetrack') })
@@ -147,20 +147,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	topUIHandlers()
 	popUIHandlers()
 
-	prefLib.overlay   = new bootstrap.Offcanvas('#prefcanvas')
-
-	window.l10n.langList_send()
-	window.l10n.themeList_send()
-
-	MA.byId('prefcanvas').addEventListener('hide.bs.offcanvas', () => {
-		dragLib.preventRun = false
-		MA.clearTooltips()
-	})
-	MA.byId('prefcanvas').addEventListener('show.bs.offcanvas', () => {
-		MA.byId('prefcanvas').querySelector('.offcanvas-body').scrollTop = 0
-		dragLib.preventRun = true
-		prefLib.update()
-	})
 	window.addEventListener('hidden.bs.collapse', () => { window.state.select.none() })
 	window.addEventListener('shown.bs.collapse',  () => { window.state.select.none() })
 
@@ -170,7 +156,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('beforeunload', (e) => {
 	if ( MA.byId('prefcanvas').classList.contains('show') ) {
-		prefLib.overlay.hide()
+		window.state.prefs.overlay.hide()
 		e.preventDefault()
 	} else if ( MA.byId('fileOpCanvas').classList.contains('show') ) {
 		window.state.files.overlay.hide()

@@ -280,28 +280,9 @@ function getCopyMoveDelete(operation, modIDS, multiSource = null, fileList = nul
 // END: File & Collection Operations
 
 // l10n Operations
-ipcMain.on('toMain_langList_change', (_, lang) => {
-	serveIPC.l10n.currentLocale = lang
-	serveIPC.storeSet.set('force_lang', serveIPC.l10n.currentLocale)
-	serveIPC.windowLib.refreshL10n(serveIPC.l10n.currentLocale)
-})
-ipcMain.on('toMain_themeList_change', (_, theme) => { serveIPC.windowLib.changeTheme(theme) })
-ipcMain.on('toMain_langList_send',   (event) => {
-	serveIPC.l10n.getLangList().then((langList) => {
-		event.sender.send('fromMain_langList_return', langList, serveIPC.l10n.currentLocale)
-	})
-})
-ipcMain.on('toMain_themeList_send',   (event) => {
-	event.sender.send(
-		'fromMain_themeList_return',
-		[
-			['system', __('theme_name_system')],
-			['light',  __('theme_name_light')],
-			['dark',   __('theme_name_dark')],
-		],
-		serveIPC.windowLib.themeCurrentColor
-	)
-})
+
+
+
 ipcMain.on('toMain_getText_sync',   (event, l10nItem) => { event.returnValue = __(l10nItem) })
 ipcMain.on('toMain_getText_locale', (event) => { event.returnValue = serveIPC.l10n.currentLocale })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
@@ -371,11 +352,12 @@ function returnL10n(event, key, value, extra = null) {
 	event.sender.send(`fromMain_getText_return${extra !== null ? `_${extra}` : ''}`, [key, value])
 }
 
+ipcMain.handle('i18n:langList',   () => serveIPC.l10n.getLangList() )
 ipcMain.handle('i18n:lang', (_e, newValue = null) => {
 	if ( newValue !== null ) {
 		serveIPC.l10n.currentLocale = newValue
 		serveIPC.storeSet.set('force_lang', serveIPC.l10n.currentLocale)
-		serveIPC.windowLib.refreshL10n(serveIPC.l10n.currentLocale)
+		serveIPC.windowLib.refreshL10n()
 	}
 	return serveIPC.l10n.currentLocale
 })
@@ -750,17 +732,25 @@ function toggleMiniWindow () {
 // END : Mini-mode operation
 
 // #region SETTINGS IPC
-ipcMain.handle('settings:get',      (_, key) => serveIPC.storeSet.get(key) )
+ipcMain.handle('settings:get',      (_, key) => {
+	return serveIPC.storeSet.get(key)
+})
 ipcMain.handle('settings:set',      (_, key, value) => {
 	funcLib.prefs.setNamed(key, value)
 	return serveIPC.storeSet.get(key)
 })
+ipcMain.handle('settings:themeList', () => [
+	['system', __('theme_name_system')],
+	['light',  __('theme_name_light')],
+	['dark',   __('theme_name_dark')],
+])
 ipcMain.handle('settings:verList',  ()       => funcLib.gameSet.verList() )
 ipcMain.handle('settings:theme',    ()       => serveIPC.windowLib.themeCurrentColor )
 ipcMain.handle('settings:units',    ()       => serveIPC.l10n.currentUnits )
 ipcMain.handle('settings:lastGame', ()       => serveIPC.gameSetOverride.xml)
 ipcMain.handle('settings:activeCollection', () => serveIPC.gameSetOverride.index )
 
+ipcMain.on('settings:themeChange',  (_, theme) => { serveIPC.windowLib.changeTheme(theme) })
 ipcMain.on('settings:resetWindows', () => { serveIPC.windowLib.resetPositions() })
 ipcMain.on('settings:clearCache',   () => {
 	serveIPC.storeCache.clearAll()
@@ -777,9 +767,8 @@ ipcMain.on('settings:clearDetail', () => {
 })
 //#endregion
 
-ipcMain.on('toMain_getPref', (event, name)    => { event.returnValue = serveIPC.storeSet.get(name) })
-ipcMain.on('toMain_setPref', (_, name, value) => { funcLib.prefs.setNamed(name, value) })
-ipcMain.on('toMain_resetWindows',   () => { serveIPC.windowLib.resetPositions() })
+
+
 ipcMain.on('toMain_clearCacheFile', () => {
 	serveIPC.storeCache.clearAll()
 	serveIPC.windowLib.forceFocus('main')

@@ -102,7 +102,7 @@ const MA = {
 	},
 	updateFontSize : () => {
 		window.settings.get('font_size').then((value) => {
-			window.fontSheet.replaceSync(`:root { --bs-root-font-size: ${value}px !important; }`)
+			window.fontSheet.replaceSync(`:root { font-size: ${value}px; --bs-root-font-size: ${value}px; }`)
 		})
 	},
 	updateTheme : () => {
@@ -355,6 +355,7 @@ const I18N = {
 		return badgeDiv
 	},
 	buildElement : async (key) =>
+		// TODO: undo this!
 		window.i18n.get(key).then((result) =>
 			`<l10n name="${key}" data-done="true">${result.entry}</l10n>`),
 	defer : (key, skipNonBase = true) => {
@@ -600,8 +601,12 @@ window.addEventListener('DOMContentLoaded', () => {
 })
 
 // MARK: ASYNC RECEIVERS
-//TODO: theme change
 window?.operations?.receive('win:updateTheme', MA.updateTheme)
 window?.operations?.receive('win:updateFontSize', MA.updateFontSize)
 window?.operations?.receive('win:forceRefresh', () => { location.reload() })
+window?.i18n?.receive('i18n:refresh', () => {
+	for ( const element of MA.query('i18n-text') ) {
+		element.setAttribute('refresh', true)
+	}
+})
 MA.byIdEventIfExists('pageActionRefresh', () => { location.reload() })
