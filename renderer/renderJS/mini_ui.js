@@ -63,7 +63,6 @@ function clientMakeListActive() {
 function buildCollectSelect(modCollect) {
 	const optList          = []
 	const activeCollection = modCollect.opts.activeCollection
-	const multiVersion     = modCollect.appSettings.multi_version
 	const curVersion       = modCollect.appSettings.game_version
 
 	lastList = ( activeCollection !== '999' && activeCollection !== '0') ? `collection--${modCollect.opts.activeCollection}` : modCollect.opts.activeCollection
@@ -85,7 +84,7 @@ function buildCollectSelect(modCollect) {
 
 		fullList[fullKey] = modCollect.modList[collectKey].fullName
 
-		if ( !multiVersion || thisVersion === curVersion ) {
+		if ( thisVersion === curVersion ) {
 			optList.push(fsgUtil.buildSelectOpt(
 				fullKey,
 				modCollect.modList[collectKey].fullName,
@@ -94,7 +93,7 @@ function buildCollectSelect(modCollect) {
 				modCollect.collectionToFolder[collectKey]
 			))
 		}
-		if ( multiVersion && fullKey === lastList && thisVersion !== curVersion ) {
+		if ( fullKey === lastList && thisVersion !== curVersion ) {
 			lastList = '999'
 		}
 	}

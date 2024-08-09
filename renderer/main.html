@@ -492,242 +492,57 @@
 				</div>
 
 				<div class="tab-pane fade pt-4" id="game-pref-pane" role="tabpanel" aria-labelledby="game-pref-tab" tabindex="0">
-					<div class="row gx-3 gy-4">
-						<div class="col-12 inset-block mt-5"><div><!-- version 22 -->
-							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-22" style="font-size: 75px;"></i></div>
-							<div class="row" style="margin-top: -2.5rem;">
-								<div class="col-10 offset-2"><div class="row gy-4">
-									<div class="col-12 inset-block"><div><!-- game settings -->
-										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_settings" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(22)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
-									</div></div>
-									<div class="col-12 inset-block"><div><!-- game path -->
-										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_path" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(22)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
-									</div></div>
-									<div class="col-12 inset-block"><div><!-- game args -->
-										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args" onchange="prefLib.setPref('game_args')" style="font-size: 70%">
-										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
-									</div></div>
-									<div class="col-12 inset-block"><div><!-- dev mode -->
-										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode" onchange="prefLib.setPref('dev_mode')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-								</div></div>
-							</div>
-						</div></div>
-
-						<div class="col-12 inset-block"><div>  <!-- multi -->
-							<l10n class="inset-block-header" name="user_pref_title_multi_version"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_multi_version"></l10n>
-								<div class="col-2 form-switch custom-switch">
-									<input id="uPref_multi_version" onchange="prefLib.setPref('multi_version')" class="form-check-input" type="checkbox" role="switch">
-								</div>
-							</div>
-						</div></div>
-
-						<div class="col-12 inset-block mt-5 multi-version-pref"><div><!-- version 19 -->
-							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-19" style="font-size: 75px;"></i></div>
-							<div class="row" style="margin-top: -3rem;">
-								<div class="col-10 offset-2"><div class="row gy-4">
-									<div class="col-12 inset-block"><div><!-- enable -->
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_game_enabled_19" onchange="prefLib.setPref('game_enabled_19')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-
-									<div class="col-12 inset-block game_enabled_19"><div><!-- game settings -->
-										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_settings_19" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(19)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_19"><div><!-- game path -->
-										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_path_19" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(19)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_19"><div><!-- game args -->
-										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args_19" onchange="prefLib.setPref('game_args_19')" style="font-size: 70%">
-										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_19"><div><!-- dev mode -->
-										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode_19" onchange="prefLib.setPref('dev_mode_19')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-								</div></div>
-							</div>
-						</div></div>
-
-						<div class="col-12 inset-block mt-5 multi-version-pref"><div><!-- version 17 -->
-							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-17" style="font-size: 75px;"></i></div>
-							<div class="row" style="margin-top: -3rem;">
-								<div class="col-10 offset-2"><div class="row gy-4">
-									<div class="col-12 inset-block"><div><!-- enable -->
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_game_enabled_17" onchange="prefLib.setPref('game_enabled_17')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-
-									<div class="col-12 inset-block game_enabled_17"><div><!-- game settings -->
-										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_settings_17" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(17)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_17"><div><!-- game path -->
-										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_path_17" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(17)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_17"><div><!-- game args -->
-										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args_17" onchange="prefLib.setPref('game_args_17')" style="font-size: 70%">
-										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_17"><div><!-- dev mode -->
-										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode_17" onchange="prefLib.setPref('dev_mode_17')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-								</div></div>
-							</div>
-						</div></div>
-
-						<div class="col-12 inset-block mt-5 multi-version-pref"><div><!-- version 15 -->
-							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-15" style="font-size: 75px;"></i></div>
-							<div class="row" style="margin-top: -3rem;">
-								<div class="col-10 offset-2"><div class="row gy-4">
-									<div class="col-12 inset-block"><div><!-- enable -->
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_game_enabled_15" onchange="prefLib.setPref('game_enabled_15')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-
-									<div class="col-12 inset-block game_enabled_15"><div><!-- game settings -->
-										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_settings_15" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(15)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_15"><div><!-- game path -->
-										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_path_15" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(15)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_15"><div><!-- game args -->
-										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args_15" onchange="prefLib.setPref('game_args_15')" style="font-size: 70%">
-										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_15"><div><!-- dev mode -->
-										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode_15" onchange="prefLib.setPref('dev_mode_15')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-								</div></div>
-							</div>
-						</div></div>
-
-						<div class="col-12 inset-block mt-5 multi-version-pref"><div><!-- version 13 -->
-							<div class="inset-block-header" style="margin-top: -3.5rem;"><i class="fsico-ver-13" style="font-size: 75px;"></i></div>
-							<div class="row" style="margin-top: -3rem;">
-								<div class="col-10 offset-2"><div class="row gy-4">
-									<div class="col-12 inset-block"><div><!-- enable -->
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_game_enabled"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_game_enabled_13" onchange="prefLib.setPref('game_enabled_13')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-
-									<div class="col-12 inset-block game_enabled_13"><div><!-- game settings -->
-										<l10n class="inset-block-header" name="user_pref_title_game_settings"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_settings_13" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setPrefFile(13)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_settings"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_13"><div><!-- game path -->
-										<l10n class="inset-block-header" name="user_pref_title_game_path"></l10n>
-										<div class="input-group ">
-											<input type="text" class="form-control" id="uPref_game_path_13" readonly style="font-size: 70%">
-											<button class="btn btn-outline-secondary" type="button" onclick="window.mods.setGamePath(13)"><i class="bi bi-folder"></i></button>
-										</div>
-										<l10n class="inset-block-subtext" name="user_pref_blurb_game_path"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_13"><div><!-- game args -->
-										<l10n class="inset-block-header" name="user_pref_setting_game_args"></l10n>
-										<input type="text" class="form-control" id="uPref_game_args_13" onchange="prefLib.setPref('game_args_13')" style="font-size: 70%">
-										<l10n class="inset-block-subtext" name="user_pref_setting_game_args_example"></l10n>
-									</div></div>
-									<div class="col-12 inset-block game_enabled_13"><div><!-- dev mode -->
-										<l10n class="inset-block-header" name="user_pref_title_dev"></l10n>
-										<div class="row">
-											<l10n class="inset-block-blurb-option col-10 align-self-center" name="user_pref_blurb_dev"></l10n>
-											<div class="form-check form-switch custom-switch col-2">
-												<input id="uPref_dev_mode_13" onchange="prefLib.setPref('dev_mode_13')" class="form-check-input" type="checkbox" role="switch">
-											</div>
-										</div>
-									</div></div>
-								</div></div>
-							</div>
-						</div></div>
+					<ul class="nav nav-pills border-bottom pb-2" id="pref--versions" role="tablist">
+						<li class="flex-grow-1 nav-item" role="presentation">
+							<button class="w-100 nav-link p-1" id="pref--version-25-tab" data-bs-toggle="pill" data-bs-target="#pref--version-25-pane" type="button" role="tab">
+								<i class="fsico-ver-25" style="font-size: 35px;"></i>
+							</button>
+						</li>
+						<li class="flex-grow-1 nav-item" role="presentation">
+							<button class="w-100 nav-link p-1 active" id="pref--version-22-tab" data-bs-toggle="pill" data-bs-target="#pref--version-22-pane" type="button" role="tab">
+								<i class="fsico-ver-22" style="font-size: 35px;"></i>
+							</button>
+						</li>
+						<li class="flex-grow-1 nav-item" role="presentation">
+							<button class="w-100 nav-link p-1" id="pref--version-19-tab" data-bs-toggle="pill" data-bs-target="#pref--version-19-pane" type="button" role="tab">
+								<i class="fsico-ver-19" style="font-size: 35px;"></i>
+							</button>
+						</li>
+						<li class="flex-grow-1 nav-item" role="presentation">
+							<button class="w-100 nav-link p-1" id="pref--version-17-tab" data-bs-toggle="pill" data-bs-target="#pref--version-17-pane" type="button" role="tab">
+								<i class="fsico-ver-17" style="font-size: 35px;"></i>
+							</button>
+						</li>
+						<li class="flex-grow-1 nav-item" role="presentation">
+							<button class="w-100 nav-link p-1" id="pref--version-15-tab" data-bs-toggle="pill" data-bs-target="#pref--version-15-pane" type="button" role="tab">
+								<i class="fsico-ver-15" style="font-size: 35px;"></i>
+							</button>
+						</li>
+						<li class="flex-grow-1 nav-item" role="presentation">
+							<button class="w-100 nav-link p-1" id="pref--version-13-tab" data-bs-toggle="pill" data-bs-target="#pref--version-13-pane" type="button" role="tab">
+								<i class="fsico-ver-13" style="font-size: 35px;"></i>
+							</button>
+						</li>
+					</ul>
+					<div class="tab-content" id="pref--tab-content">
+						<div class="tab-pane fade pt-4" id="pref--version-25-pane" role="tabpanel" tabindex="0">
+							<page-replace data-type="version-input" data-name="25"></page-replace>
+						</div>
+						<div class="tab-pane fade show active pt-4" id="pref--version-22-pane" role="tabpanel" tabindex="0">
+							<page-replace data-type="version-input" data-name="22"></page-replace>
+						</div>
+						<div class="tab-pane fade pt-4" id="pref--version-19-pane" role="tabpanel" tabindex="0">
+							<page-replace data-type="version-input" data-name="19"></page-replace>
+						</div>
+						<div class="tab-pane fade pt-4" id="pref--version-17-pane" role="tabpanel" tabindex="0">
+							<page-replace data-type="version-input" data-name="17"></page-replace>
+						</div>
+						<div class="tab-pane fade pt-4" id="pref--version-15-pane" role="tabpanel" tabindex="0">
+							<page-replace data-type="version-input" data-name="15"></page-replace>
+						</div>
+						<div class="tab-pane fade pt-4" id="pref--version-13-pane" role="tabpanel" tabindex="0">
+							<page-replace data-type="version-input" data-name="13"></page-replace>
+						</div>
 					</div>
 				</div>
 

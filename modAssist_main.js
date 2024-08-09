@@ -70,7 +70,7 @@ const settingDefault = new (require('./lib/modAssist_window_lib.js')).defaultSet
 
 serveIPC.isFirstRun = !fs.existsSync(path.join(app.getPath('userData'), 'config.json'))
 
-serveIPC.storeSet         = new Store({schema : settingDefault.defaults, clearInvalidConfig : true })
+serveIPC.storeSet         = new Store({schema : settingDefault.defaults, migrations : settingDefault.migrateBase, clearInvalidConfig : true })
 serveIPC.storeCache       = new (require('./lib/modUtilLib.js')).modCacheManager(app.getPath('userData'))
 serveIPC.storeSites       = new Store({name : 'mod_source_site', migrations : settingDefault.migrateSite, clearInvalidConfig : true})
 serveIPC.storeNote        = new Store({name : 'col_notes', clearInvalidConfig : true})
@@ -732,6 +732,7 @@ function toggleMiniWindow () {
 // END : Mini-mode operation
 
 // #region SETTINGS IPC
+ipcMain.handle('settings:dev',      () => serveIPC.devControls )
 ipcMain.handle('settings:get',      (_, key) => {
 	return serveIPC.storeSet.get(key)
 })
@@ -799,8 +800,8 @@ ipcMain.on('toMain_cleanCacheFile', () => {
 		serveIPC.windowLib.sendToValidWindow('main', 'fromMain_l10n_refresh', serveIPC.l10n.currentLocale)
 	}, 500)
 })
-ipcMain.on('toMain_setPrefFile',    (_, version) => { funcLib.prefs.changeFilePath(version, false) })
-ipcMain.on('toMain_setGamePath',    (_, version) => { funcLib.prefs.changeFilePath(version, true) })
+ipcMain.on('settings:prefFile',    (_, version) => { funcLib.prefs.changeFilePath(version, false) })
+ipcMain.on('settings:gamePath',    (_, version) => { funcLib.prefs.changeFilePath(version, true) })
 
 // END : Preferences operations
 

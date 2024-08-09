@@ -1041,63 +1041,6 @@ class StateManager {
 // 	},
 // }
 
-const prefLib = {
-	currentDev : null,
-	currentSet : null,
-
-	state : (settings = null, devControls = null ) => {
-		if ( settings !== null )    { prefLib.currentSet = settings }
-		if ( devControls !== null ) { prefLib.currentDev = devControls }
-	},
-
-	dragFontSize : () => {
-		fsgUtil.setById('font_size_value', `${fsgUtil.valueById('uPref_font_size')}%`)
-	},
-	setL10n : () => {
-		window.l10n.langList_change(fsgUtil.valueById('language_select'))
-	},
-	setPref : (id) => {
-		const formControl = fsgUtil.byId(`uPref_${id}`)
-	
-		if ( formControl.getAttribute('type') === 'checkbox' ) {
-			window.mods.setPref(id, formControl.checked)
-		} else if ( id === 'font_size' ) {
-			window.mods.setPref(id, (formControl.value / 100) * 14)
-		} else {
-			window.mods.setPref(id, formControl.value)
-		}
-	},
-	setTheme : () => {
-		window.l10n.themeList_change(fsgUtil.valueById('theme_select'))
-	},
-	update : () => {
-		for ( const name in prefLib.currentSet ) {
-			const formControl = fsgUtil.byId(`uPref_${name}`)
-			if ( formControl !== null ) {
-				if ( formControl.getAttribute('type') === 'checkbox' ) {
-					formControl.checked = prefLib.currentSet[name]
-				} else if ( name === 'font_size' ) {
-					formControl.value = (prefLib.currentSet[name] / 14) * 100
-				} else {
-					formControl.value = prefLib.currentSet[name]
-				}
-			}
-		}
-	
-		fsgUtil.setById('font_size_value', `${Math.floor((prefLib.currentSet.font_size / 14) * 100)}%`)
-	
-		fsgUtil.classPerTest('.multi-version-pref', prefLib.currentSet.multi_version)
-	
-		fsgUtil.byId('uPref_dev_mode').checked = prefLib.currentDev[22]
-
-		for ( const version of [19, 17, 15, 13] ) {
-			fsgUtil.byId(`uPref_dev_mode_${version}`).checked = prefLib.currentDev[version]
-			fsgUtil.classPerTest(`.game_enabled_${version}`, prefLib.currentSet[`game_enabled_${version}`])
-			fsgUtil.classPerTest(`.game_disabled_${version}`, !prefLib.currentSet[`game_enabled_${version}`])
-		}
-	
-	},
-}
 
 const LEDLib = {
 	ledUSB : { filters : [{ vendorId : MA.led.vendor, productId : MA.led.product }] },
@@ -1141,7 +1084,6 @@ const LEDLib = {
 class PrefLib {
 
 	currentDev = null
-	currentSet = null
 	overlay    = null
 
 	buttons = {
@@ -1193,6 +1135,7 @@ class PrefLib {
 			MA.byId('prefcanvas').querySelector('.offcanvas-body').scrollTop = 0
 			window.state.dragDrop.flags.preventRun = true
 		})
+		window.settings.receive('settings:invalidate', () => { this.forceUpdate() })
 		this.init()
 	}
 
@@ -1202,6 +1145,9 @@ class PrefLib {
 			const replaceKey  = element.safeAttribute('data-name')
 	
 			switch ( replaceType ) {
+				case 'version-input' :
+					element.replaceWith(this.#doVersion(replaceKey))
+					break
 				case 'button-input':
 					element.replaceWith(this.#doButton(replaceKey))
 					break
@@ -1223,10 +1169,14 @@ class PrefLib {
 		}
 	}
 
-	open() {
+	forceUpdate() {
 		for ( const update of this.update ) {
 			update()
 		}
+	}
+
+	open() {
+		this.forceUpdate()
 		this.overlay.show()
 	}
 
@@ -1399,58 +1349,124 @@ class PrefLib {
 
 		return node
 	}
-	// state : (settings = null, devControls = null ) => {
-	// 	if ( settings !== null )    { prefLib.currentSet = settings }
-	// 	if ( devControls !== null ) { prefLib.currentDev = devControls }
-	// },
 
-	// dragFontSize : () => {
-	// 	fsgUtil.setById('font_size_value', `${fsgUtil.valueById('uPref_font_size')}%`)
-	// },
-	// setL10n : () => {
-	// 	window.l10n.langList_change(fsgUtil.valueById('language_select'))
-	// },
-	// setPref : (id) => {
-	// 	const formControl = fsgUtil.byId(`uPref_${id}`)
-	
-	// 	if ( formControl.getAttribute('type') === 'checkbox' ) {
-	// 		window.mods.setPref(id, formControl.checked)
-	// 	} else if ( id === 'font_size' ) {
-	// 		window.mods.setPref(id, (formControl.value / 100) * 14)
-	// 	} else {
-	// 		window.mods.setPref(id, formControl.value)
-	// 	}
-	// },
-	// setTheme : () => {
-	// 	window.l10n.themeList_change(fsgUtil.valueById('theme_select'))
-	// },
-	// update : () => {
-	// 	for ( const name in prefLib.currentSet ) {
-	// 		const formControl = fsgUtil.byId(`uPref_${name}`)
-	// 		if ( formControl !== null ) {
-	// 			if ( formControl.getAttribute('type') === 'checkbox' ) {
-	// 				formControl.checked = prefLib.currentSet[name]
-	// 			} else if ( name === 'font_size' ) {
-	// 				formControl.value = (prefLib.currentSet[name] / 14) * 100
-	// 			} else {
-	// 				formControl.value = prefLib.currentSet[name]
-	// 			}
-	// 		}
-	// 	}
-	
-	// 	fsgUtil.setById('font_size_value', `${Math.floor((prefLib.currentSet.font_size / 14) * 100)}%`)
-	
-	// 	fsgUtil.classPerTest('.multi-version-pref', prefLib.currentSet.multi_version)
-	
-	// 	fsgUtil.byId('uPref_dev_mode').checked = prefLib.currentDev[22]
+	#doVersion(ver) {
+		const node = document.createElement('div')
+		node.classList.add('col-12', 'inset-block')
+		node.innerHTML = [
+			'<div>',
+			`<div class="inset-block-header"><i18n-text data-key="game_title_farming_simulator"></i18n-text> 20${ver}</div>`,
+			'<div class="row">',
 
-	// 	for ( const version of [19, 17, 15, 13] ) {
-	// 		fsgUtil.byId(`uPref_dev_mode_${version}`).checked = prefLib.currentDev[version]
-	// 		fsgUtil.classPerTest(`.game_enabled_${version}`, prefLib.currentSet[`game_enabled_${version}`])
-	// 		fsgUtil.classPerTest(`.game_disabled_${version}`, !prefLib.currentSet[`game_enabled_${version}`])
-	// 	}
-	
-	// },
+			'<div class="col-12 mt-3 inset-block"><div>',
+			'<i18n-text class="inset-block-header" data-key="user_pref_title_game_settings"></i18n-text>',
+			'<div class="input-group ">',
+			`<input type="text" class="form-control" id="pref--${ver}-game-settings" readonly style="font-size: 70%">`,
+			`<button class="btn btn-outline-secondary" id="pref--${ver}-game-settings-btn" type="button"><i class="bi bi-folder"></i></button>`,
+			'</div>',
+			'<i18n-text class="inset-block-subtext" data-key="user_pref_blurb_game_settings"></i18n-text>',
+			'</div></div>',
+
+			'<div class="col-12 mt-3 inset-block"><div>',
+			'<i18n-text class="inset-block-header" data-key="user_pref_title_game_path"></i18n-text>',
+			'<div class="input-group ">',
+			`<input type="text" class="form-control" id="pref--${ver}-game-path" readonly style="font-size: 70%">`,
+			`<button class="btn btn-outline-secondary" id="pref--${ver}-game-path-btn" type="button"><i class="bi bi-folder"></i></button>`,
+			'</div>',
+			'<i18n-text class="inset-block-subtext" data-key="user_pref_blurb_game_path"></i18n-text>',
+			'</div></div>',
+
+			'<div class="col-12 mt-3 inset-block"><div>',
+			'<i18n-text class="inset-block-header" data-key="user_pref_setting_game_args"></i18n-text>',
+			`<input type="text" class="form-control" id="pref--${ver}-game-args" style="font-size: 70%">`,
+			'<i18n-text class="inset-block-subtext" data-key="user_pref_setting_game_args_example"></i18n-text>',
+			'</div></div>',
+
+			'<div class="col-12"><div class="row">',
+
+			'<div class="col-6 mt-3 inset-block"><div>',
+			'<i18n-text class="inset-block-header" data-key="user_pref_title_game_enabled"></i18n-text>',
+			'<div class="row">',
+			'<i18n-text class="inset-block-blurb-option col-10 align-self-center" data-key="user_pref_blurb_game_enabled"></i18n-text>',
+			'<div class="form-check form-switch custom-switch col-2">',
+			`<input id="pref--${ver}-game-enabled" class="form-check-input" type="checkbox" role="switch">`,
+			'</div></div></div></div>',
+
+			'<div class="col-6 mt-3 inset-block"><div>',
+			'<i18n-text class="inset-block-header" data-key="user_pref_title_dev"></i18n-text>',
+			'<div class="row">',
+			'<i18n-text class="inset-block-blurb-option col-10 align-self-center" data-key="user_pref_blurb_dev"></i18n-text>',
+			'<div class="form-check form-switch custom-switch col-2">',
+			`<input id="pref--${ver}-dev-mode" class="form-check-input" type="checkbox" role="switch">`,
+			'</div></div></div></div>',
+			'</div></div>',
+
+			'</div>',
+			'</div>'
+		].join('')
+
+		const button_game_path = node.querySelector(`#pref--${ver}-game-path-btn`)
+		const button_set_path  = node.querySelector(`#pref--${ver}-game-settings-btn`)
+		const value_game_path  = node.querySelector(`#pref--${ver}-game-path`)
+		const value_set_path   = node.querySelector(`#pref--${ver}-game-settings`)
+		const value_args       = node.querySelector(`#pref--${ver}-game-args`)
+		const switch_dev_mode  = node.querySelector(`#pref--${ver}-dev-mode`)
+		const switch_enabled   = node.querySelector(`#pref--${ver}-game-enabled`)
+
+		const updater = () => {
+			window.settings.dev().then((dev) => {
+				this.currentDev = dev
+
+				window.settings.get(`game_settings_${ver}`).then((value) => {
+					value_set_path.value = value
+				})
+				window.settings.get(`game_path_${ver}`).then((value) => {
+					value_game_path.value = value
+				})
+				window.settings.get(`game_args_${ver}`).then((value) => {
+					value_args.value = value
+				})
+				window.settings.get(`game_enabled_${ver}`).then((value) => {
+					switch_enabled.checked = value
+				})
+				switch_dev_mode.checked = this.currentDev[ver]
+			})
+		}
+
+		button_game_path.addEventListener('click', () => {
+			window.settings.setGamePath(ver)
+		})
+
+		button_set_path.addEventListener('click', () => {
+			window.settings.setPrefFile(ver)
+		})
+
+		value_args.addEventListener('change', () => {
+			window.settings.set(`game_args_${ver}`, value_args.value).then((value) => {
+				value_args.value = value
+			})
+		})
+
+		switch_dev_mode.addEventListener('change', () => {
+			window.settings.set(`dev_mode_${ver}`, switch_dev_mode.checked).then(() => {
+				window.settings.dev().then((value) => {
+					this.currentDev = value
+					switch_dev_mode.checked = this.currentDev[ver]
+				})
+			})
+		})
+
+		switch_enabled.addEventListener('change', () => {
+			window.settings.set(`game_enabled_${ver}`, switch_enabled.checked).then((value) => {
+				switch_enabled.checked = value
+			})
+		})
+
+
+		this.update.push(updater)
+		return node
+
+	}
 }
 
 // MARK: drag-and-drop

@@ -202,13 +202,26 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'settings', {
+		dev         : ()     => ipcRenderer.invoke('settings:dev'),
 		get         : (key)  => ipcRenderer.invoke('settings:get', key),
 		set         : (k, v) => ipcRenderer.invoke('settings:set', k, v),
+		setGamePath : (ver = 22) => { ipcRenderer.send('settings:gamePath', ver) },
+		setPrefFile : (ver = 22) => { ipcRenderer.send('settings:prefFile', ver) },
 		theme       : ()     => ipcRenderer.invoke('settings:theme'),
 		themeChange : (k)    => { ipcRenderer.send('settings:themeChange', k) },
 		themeList   : ()     => ipcRenderer.invoke('settings:themeList'),
 		units       : ()     => ipcRenderer.invoke('settings:units'),
 		winReset    : ()     => { ipcRenderer.send('settings:resetWindows') },
+
+		receive   : ( channel, func ) => {
+			const validChannels = new Set([
+				'settings:invalidate',
+			])
+		
+			if ( validChannels.has( channel ) ) {
+				ipcRenderer.on( channel, ( _, ...args ) => func( ...args ))
+			}
+		},
 	}
 )
 

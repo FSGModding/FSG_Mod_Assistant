@@ -9,7 +9,6 @@
 
 // MARK: process data
 function processVersions(modCollect) {
-	const doMultiVersion     = modCollect.appSettings.multi_version
 	const thisVersion        = modCollect.appSettings.game_version
 	const modDisplayData     = {}
 	const collectKeyName     = {}
@@ -21,7 +20,7 @@ function processVersions(modCollect) {
 			continue
 		}
 
-		if ( doMultiVersion && theseNotes?.notes_version !== thisVersion ) {
+		if ( theseNotes?.notes_version !== thisVersion ) {
 			continue
 		}
 

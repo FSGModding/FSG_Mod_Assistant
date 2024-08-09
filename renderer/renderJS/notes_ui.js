@@ -13,7 +13,6 @@ window.notes_IPC.receive('settings:collection:id', async (key) => {
 	collectKey = key
 
 	MA.byId('is_active_collect').clsShow(key === await window.notes_IPC.active())
-	MA.byId('multi_version').clsShow(await window.notes_IPC.getSetting('multi_version'))
 	MA.byIdText('collection_name', await window.notes_IPC.collectName(key))
 
 	window.notes_IPC.get(key).then(async (results) => {

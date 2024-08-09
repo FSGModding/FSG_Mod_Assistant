@@ -56,12 +56,11 @@ function buildObject(response) {
 	fullList_sort   = []
 	fullList_filter = []
 
-	const multiVersion = response.appSettings.multi_version
 	const curVersion   = response.appSettings.game_version
 
 	try {
 		for ( const collectKey of response.set_Collections ) {
-			if ( multiVersion && response.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
+			if ( response.collectionNotes[collectKey].notes_version !== curVersion ) { continue }
 			for ( const modKey of response.modList[collectKey].modSet ) {
 				const mod = response.modList[collectKey].mods[modKey]
 				if ( ! mod.canNotUse ) {

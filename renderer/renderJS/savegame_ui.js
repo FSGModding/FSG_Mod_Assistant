@@ -226,7 +226,7 @@ window.mods.receive('fromMain_collectionName', (modCollect) => {
 	setHeader(thisCollection)
 
 	if ( thisCollection === null ) {
-		const checkVer   = modCollect.appSettings.multi_version ? modCollect.appSettings.game_version : false
+		const checkVer   = modCollect.appSettings.game_version
 		const selectHTML = [
 			fsgUtil.buildSelectOpt('--', '--', '--')
 		]
