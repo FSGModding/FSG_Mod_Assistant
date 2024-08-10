@@ -200,7 +200,7 @@ async function step_table(thisMod) {
 		is_multiplayer : DATA.checkX(thisMod.modDesc.multiPlayer, false),
 		mh_version     : ( thisMod.modHub.id !== null ) ?
 			`<a href="https://www.farming-simulator.com/mod.php?mod_id=${thisMod.modHub.id}" target="_BLANK">${thisMod.modHub.version}</a>` :
-			`<em>${await I18N.buildElement(thisMod.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
+			`<em>${I18N.defer(thisMod.modHub.id === null ? 'mh_norecord' : 'mh_unknown', false )}</em>`,
 		mod_author     : DATA.escapeSpecial(thisMod.modDesc.author),
 		mod_location   : thisMod.fileDetail.fullPath,
 		store_items    : DATA.checkX(thisMod.modDesc.storeItems),
@@ -222,20 +222,18 @@ async function step_table(thisMod) {
 
 // MARK: SUB issues
 async function subStep_issues(modRecord) {
-	const problemPromises = []
+	const problemI18N = []
 	for ( const issue of modRecord.issues ) {
 
-		const thisIssue = I18N.buildElement(issue).then((issueI18N) => {
-			if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
-				return I18N.buildElement('file_error_copy_name').then((copyI18N) => {
-					return `${issueI18N} ${copyI18N} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
-				})
-			}
-			return issueI18N
-		})
-		problemPromises.push(thisIssue)
+		const issueI18N = I18N.defer(issue, false)
+		if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
+			const copyI18N = I18N.defer('file_error_copy_name', false)
+			problemI18N.push(`${issueI18N} ${copyI18N} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`)
+		} else {
+			problemI18N.push(issueI18N)
+		}
 	}
-	return problemPromises
+	return problemI18N
 }
 
 // MARK: SUB binds

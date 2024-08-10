@@ -44,7 +44,7 @@ async function getCropInfo(name) {
 	if ( ! Object.hasOwn(knownCrops, name) ) {
 		return `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
 	}
-	const theName = await I18N.buildElement(knownCrops[name].name)
+	const theName = I18N.defer(knownCrops[name].name, false)
 	return `<fillType style="font-size: calc(1.35rem + .6vw)" name="${knownCrops[name].icon}"></fillType> ${theName}`
 }
 
@@ -93,7 +93,7 @@ async function clientMakeCropCalendar(theData, isSouth = false, weather = null) 
 	const monthLabels = []
 	
 	for ( const month in nameMonth ) {
-		monthLabels.push(makeTD(['p-0 text-center text-white'], `<l10n name="cropmonth_${nameMonth[month]}"></l10n>`, true))
+		monthLabels.push(makeTD(['p-0 text-center text-white'], `<i18n-text data-key="cropmonth_${nameMonth[month]}"></i18n-text>`, true))
 	}
 
 	tableLines.push(`<tr class="crophead">${makeTD(['p-0'], '', true)}${orderLine(monthLabels, isSouth)}</tr>`)

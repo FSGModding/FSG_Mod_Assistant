@@ -6,8 +6,7 @@
 
 // Main Window UI
 
-/* global MA, DATA, I18N, bootstrap, fsgUtil */
-// processL10N, fsgUtil, select_lib, __ */
+/* global MA, DATA, I18N, bootstrap*/
 
 // eslint-disable-next-line no-unused-vars
 class StateManager {
@@ -68,10 +67,6 @@ class StateManager {
 		this.prefs    = new PrefLib()
 		this.modal.mismatch = new ModalOverlay('#open_game_modal')
 		this.modal.modInfo  = new ModalOverlay('#open_mod_info_modal')
-
-		setTimeout(() => {
-			this.prefs.open()
-		}, 1500)
 	}
 
 	// MARK: process data
@@ -181,6 +176,7 @@ class StateManager {
 		if ( this.track.openCollection !== null ) {
 			this.collections[this.track.openCollection]?.modNode?.classList?.remove?.('d-none')
 		}
+		this.prefs.forceUpdate()
 		this.doDisplay()
 	}
 
@@ -466,7 +462,7 @@ class StateManager {
 			colRec.modNode.classList.add('mod-table-folder-detail', 'd-none')
 			colRec.modNode.innerHTML = [
 				'<td class="mod-table-folder-details px-0 ps-4" colspan="3">',
-				'<span class="no-mods-found d-block fst-italic small text-center d-none"><l10n name="empty_or_filtered"></l10n></span>',
+				'<i18n-text class="no-mods-found d-block fst-italic small text-center d-none" data-key="empty_or_filtered"></i18n-text>',
 				'<table class="w-100 py-0 my-0 table table-sm table-hover table-striped"></table>',
 				'</td>'
 			].join('')
@@ -582,7 +578,7 @@ class StateManager {
 			btnNode.appendChild(this.#buttonMaker('removable_button', 'outline-secondary', () => { return }))
 		}
 		if ( note.notes_websiteDL ) {
-			btnNode.appendChild(this.#buttonMaker('download_button', 'outline-warning', () => { window.main_IPC.collectDownload(CKey) }))
+			btnNode.appendChild(this.#buttonMaker('download_button', 'outline-warning', () => { window.main_IPC.folder.download(CKey) }))
 		}
 		if ( note.notes_game_admin !== null ) {
 			btnNode.appendChild(this.#buttonMaker('game_admin_pass_button', 'outline-success', () => { window.operations.clip(note.notes_game_admin) }))
@@ -594,7 +590,7 @@ class StateManager {
 			btnNode.appendChild(this.#buttonMaker('admin_button', 'outline-info', () => { window.operations.url(note.notes_website) }))
 		}
 
-		btnNode.appendChild(this.#buttonMaker('export_button', 'outline-info', () => { window.main_IPC.collectExport(CKey) }))
+		btnNode.appendChild(this.#buttonMaker('export_button', 'outline-info', () => { window.main_IPC.folder.export(CKey) }))
 		btnNode.appendChild(this.#buttonMaker('notes_button', 'primary', () => { window.main_IPC.dispatchNotes(CKey) }))
 		btnNode.appendChild(this.#buttonMaker('check_save', 'primary', () => { window.main_IPC.dispatchSave(CKey) }))
 	}
@@ -960,7 +956,7 @@ class StateManager {
 	// MARK: actions
 	action = {
 		collectActive : async () => {
-			const activePick = fsgUtil.valueById('collectionSelect').replace('collection--', '')
+			const activePick = MA.byIdValue('collectionSelect').replace('collection--', '')
 		
 			if ( activePick !== '0' && activePick !== '999' ) {
 				LEDLib.blinkLED()
@@ -977,7 +973,7 @@ class StateManager {
 			}
 		},
 		collectInActive : async () => {
-			fsgUtil.valueById('collectionSelect', 0)
+			MA.byIdValue('collectionSelect', 0)
 			return window.main_IPC.folder.active(null)
 		},
 		launchGame() {
@@ -988,8 +984,8 @@ class StateManager {
 				window.main_IPC.dispatch('game')
 			} else {
 				// Different, ask confirmation
-				fsgUtil.setById('no_match_game_list', this.mapCollectionDropdown[this.flag.activeCollect])
-				fsgUtil.setById('no_match_ma_list', this.mapCollectionDropdown[currentList])
+				MA.byIdHTML('no_match_game_list', this.mapCollectionDropdown[this.flag.activeCollect])
+				MA.byIdHTML('no_match_ma_list', this.mapCollectionDropdown[currentList])
 				LEDLib.fastBlinkLED()
 				this.modal.mismatch.show()
 			}
@@ -1003,45 +999,31 @@ class StateManager {
 		launchGame_IGNORE : () => {
 			this.modal.mismatch.hide()
 			LEDLib.spinLED()
-			fsgUtil.valueById('collectionSelect', this.flag.activeCollect)
+			MA.byIdValue('collectionSelect', this.flag.activeCollect)
 			window.main_IPC.dispatch('game')
+		},
+		openModInfo : (mod) => {
+			window.settings.site(mod.fileDetail.shortName, false).then((value) => {
+				MA.byIdHTML('mod_info_mod_name', mod.fileDetail.shortName)
+				MA.byIdValue('mod_info_input', value)
+				this.modal.modInfo.show()
+			})
+		},
+		setModInfo : () => {
+			window.settings.site(
+				MA.byIdHTML('mod_info_mod_name'),
+				MA.byIdValue('mod_info_input')
+			)
+			this.modal.modInfo.hide()
 		},
 	}
 }
 
+// MARK: SUB MODULES
 
 
 
-
-
-
-
-
-
-
-// MARK: OLD SHIT
-
-
-// const actionLib = {
-
-	
-
-// 	setModInfo : () => {
-// 		window.mods.setModInfo(
-// 			fsgUtil.htmlById('mod_info_mod_name'),
-// 			fsgUtil.valueById('mod_info_input')
-// 		)
-// 		mainState.win.modInfo.hide()
-// 	},
-
-// 	doCacheClean : () => {
-// 		fsgUtil.setById('clean_cache_size', '')
-// 		fsgUtil.setById('clean_detail_cache_size', '')
-// 		window.mods.cleanCache()
-// 	},
-// }
-
-
+// MARK: LEDLib
 const LEDLib = {
 	ledUSB : { filters : [{ vendorId : MA.led.vendor, productId : MA.led.product }] },
 
@@ -1074,13 +1056,7 @@ const LEDLib = {
 	},
 }
 
-
-
-
-// MARK: SUB MODULE CLASSES
-
-
-// MARK: preferences
+// MARK: PrefLib
 class PrefLib {
 
 	currentDev = null
@@ -1106,9 +1082,17 @@ class PrefLib {
 			set    : (input) => { this.#processCheck('led_active', input, true) },
 			update : (input) => { this.#processCheck('led_active', input, false) },
 		},
+		poll_game : {
+			set    : (input) => { this.#processCheck('poll_game', input, true) },
+			update : (input) => { this.#processCheck('poll_game', input, false) },
+		},
 		show_tooltips : {
 			set    : (input) => { this.#processCheck('show_tooltips', input, true) },
 			update : (input) => { this.#processCheck('show_tooltips', input, false) },
+		},
+		use_one_drive : {
+			set    : (input) => { this.#processCheck('use_one_drive', input, true) },
+			update : (input) => { this.#processCheck('use_one_drive', input, false) },
 		},
 	}
 
@@ -1143,6 +1127,7 @@ class PrefLib {
 		for ( const element of MA.byId('prefcanvas').querySelectorAll('page-replace')) {
 			const replaceType = element.safeAttribute('data-type')
 			const replaceKey  = element.safeAttribute('data-name')
+			const replaceExt  = element.safeAttribute('data-extra')
 	
 			switch ( replaceType ) {
 				case 'version-input' :
@@ -1151,17 +1136,11 @@ class PrefLib {
 				case 'button-input':
 					element.replaceWith(this.#doButton(replaceKey))
 					break
-				// case 'text-input':
-				// 	element.replaceWith(replaceTextInput(replaceKey))
-				// 	break
-				// case 'password-input':
-				// 	element.replaceWith(replacePasswordInput(replaceKey))
-				// 	break
 				case 'special-input' :
 					element.replaceWith(this.#doSpecial(replaceKey))
 					break
 				case 'switch-input':
-					element.replaceWith(this.#doSwitch(replaceKey))
+					element.replaceWith(this.#doSwitch(replaceKey, replaceExt || 3))
 					break
 				default :
 					break
@@ -1194,13 +1173,13 @@ class PrefLib {
 		return node
 	}
 
-	#doSwitch(key) {
+	#doSwitch(key, size = 3) {
 		const node = document.createElement('div')
 		node.innerHTML = [
 			`<i18n-text class="inset-block-header" data-key="user_pref_title_${key}"></i18n-text>`,
 			'<div class="row">',
-			`<i18n-text class="inset-block-blurb-option col-9" data-key="user_pref_blurb_${key}"></i18n-text>`,
-			'<div class="col-3 form-switch custom-switch">',
+			`<i18n-text class="inset-block-blurb-option col-${12-size}" data-key="user_pref_blurb_${key}"></i18n-text>`,
+			`<div class="col-${size} form-switch custom-switch">`,
 			'<input class="form-check-input" type="checkbox" role="switch">',
 			'</div></div>',
 		].join('')
@@ -1343,6 +1322,89 @@ class PrefLib {
 				window?.i18n?.receive('i18n:refresh', lang_update)
 				break
 			}
+			case 'use_discord' : {
+				node.innerHTML = [
+					'<i18n-text class="inset-block-header" data-key="user_pref_title_use_discord"></i18n-text>',
+					'<div class="row gy-2">',
+					'<i18n-text class="inset-block-blurb-option col-10" data-key="user_pref_blurb_use_discord"></i18n-text>',
+					'<div class="form-check form-switch custom-switch col-2">',
+					'<input id="pref--use-discord-check" class="form-check-input" type="checkbox" role="switch">',
+					'</div>',
+					'<i18n-text class="col-6" data-key="user_pref_setting_discord_2"></i18n-text>',
+					'<div class="col-6 px-0"><input type="text" class="form-control" id="pref--use-discord-c2" style="font-size: 70%"></div>',
+					'<i18n-text class="col-6" data-key="user_pref_setting_discord_1"></i18n-text>',
+					'<div class="col-6 px-0"><input type="text" class="form-control" id="pref--use-discord-c1" style="font-size: 70%"></div>',
+					'</div>',
+				].join('')
+				const discord_check = node.querySelector('#pref--use-discord-check')
+				const discord_text_1 = node.querySelector('#pref--use-discord-c1')
+				const discord_text_2 = node.querySelector('#pref--use-discord-c2')
+
+				discord_check.addEventListener('change', () => {
+					window.settings.set('use_discord', discord_check.checked).then((value) => {
+						discord_check.checked = value
+					})
+				})
+
+				discord_text_1.addEventListener('change', () => {
+					window.settings.set('use_discord_c1', discord_text_1.value).then((value) => {
+						discord_text_1.value = value
+					})
+				})
+
+				discord_text_2.addEventListener('change', () => {
+					window.settings.set('use_discord_c2', discord_text_2.value).then((value) => {
+						discord_text_2.value = value
+					})
+				})
+
+				this.update.push(() => {
+					window.settings.get('use_discord').then((value) => {
+						discord_check.checked = value
+					})
+					window.settings.get('use_discord_c1').then((value) => {
+						discord_text_1.value = value
+					})
+					window.settings.get('use_discord_c2').then((value) => {
+						discord_text_2.value = value
+					})
+				})
+				break
+			}
+			case 'cache_manage' :
+				node.innerHTML = [
+					'<i18n-text class="inset-block-header" data-key="user_pref_title_clean_cache"></i18n-text>',
+					'<i18n-text class="inset-block-blurb-option" data-key="user_pref_blurb_clean_cache"></i18n-text>',
+					'<i18n-text class="inset-block-blurb-option text-body-emphasis py-1" data-key="clean_cache_size" id="clean_cache_size"></i18n-text>',
+					'<i18n-text class="inset-block-blurb-option text-body-emphasis py-1" data-key="clean_detail_cache_size" id="clean_detail_cache_size"></i18n-text>',
+					'<i18n-text class="d-block btn btn-success btn-sm w-75 mt-2 mx-auto mb-3" id="pref--cache-clean-btn" data-key="user_pref_button_clean_cache"></i18n-text>',
+					'<i18n-text class="d-block btn btn-warning btn-sm w-75 mt-2 mx-auto mb-3" id="pref--cache-clean-detail-btn" data-key="user_pref_button_clear_detail_cache"></i18n-text>',
+					'<i18n-text class="inset-block-blurb-option" data-key="user_pref_blurb_clear_cache"></i18n-text>',
+					'<i18n-text class="d-block btn btn-danger btn-sm w-75 mt-2 mx-auto" id="pref--cache-clear-btn" data-key="user_pref_button_clear_cache"></i18n-text>',
+					'<i18n-text class="inset-block-blurb-option mt-2" data-key="user_pref_blurb_clear_malware"></i18n-text>',
+					'<i18n-text class="inset-block-blurb-option mt-2 text-body-emphasis py-1 fst-italic mx-3" data-key="clear_malware_size" id="clear_malware_size"></i18n-text>',
+					'<i18n-text class="d-block btn btn-warning btn-sm w-75 mt-2 mx-auto" id="pref--cache-malware-btn" data-key="user_pref_button_clear_malware"></i18n-text>',
+				].join('')
+
+				this.update.push(() => {
+					MA.byId('clear_malware_size').setAttribute('refresh', 'true')
+					MA.byId('clean_cache_size').setAttribute('refresh', 'true')
+					MA.byId('clean_detail_cache_size').setAttribute('refresh', 'true')
+				})
+
+				node.querySelector('#pref--cache-clean-btn').addEventListener('click', () => {
+					window.main_IPC.cache.clean()
+				})
+				node.querySelector('#pref--cache-clean-detail-btn').addEventListener('click', () => {
+					window.main_IPC.cache.detail()
+				})
+				node.querySelector('#pref--cache-clear-btn').addEventListener('click', () => {
+					window.main_IPC.cache.clear()
+				})
+				node.querySelector('#pref--cache-malware-btn').addEventListener('click', () => {
+					window.main_IPC.cache.malware()
+				})
+				break
 			default :
 				break
 		}
@@ -1469,7 +1531,7 @@ class PrefLib {
 	}
 }
 
-// MARK: drag-and-drop
+// MARK: DragDropLib
 class DragDropLib {
 	flags = {
 		isFolder   : false,
@@ -1617,7 +1679,7 @@ class DragDropLib {
 	}
 }
 
-// MARK: modalCollectMismatch
+// MARK: modal overlays
 class ModalOverlay {
 	overlay = null
 

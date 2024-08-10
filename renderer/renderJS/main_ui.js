@@ -53,22 +53,13 @@ window.operations.receive('select:all', () => {
 // })
 
 
-// window.mods.receive('fromMain_modInfoPop', (thisMod, thisSite) => {
-// 	fsgUtil.setById('mod_info_mod_name', thisMod.fileDetail.shortName)
-// 	fsgUtil.setById('mod_info_input', thisSite)
-// 	mainState.win.modInfo.show()
-// })
 
 
-
-// window.mods.receive('fromMain_allSettings', (allSettings, devControls) => {
-// 	prefLib.state(allSettings, devControls)
-// 	prefLib.update()
-// })
-
-
-window.main_IPC.receive('fromMain_modList', (modCollect) => {
+window.main_IPC.receive('mods:list', (modCollect) => {
 	window.state.updateFromData(modCollect)
+})
+window.main_IPC.receive('mods:site', (mod) => {
+	window.state.action.openModInfo(mod)
 })
 
 // MARK: Loader Overlay
@@ -136,6 +127,9 @@ function popUIHandlers() {
 	MA.byIdEventIfExists('loadOverlay_downloadCancelButton', () => { window.main_IPC.cancelDownload() })
 	MA.byIdEventIfExists('mismatchLaunchIgnore', () => { window.state.action.launchGame_IGNORE() })
 	MA.byIdEventIfExists('mismatchLaunchFix',    () => { window.state.action.launchGame_FIX() })
+
+	MA.byIdEventIfExists('mod_info_input',  () => { window.main_IPC.contextInput() }, 'contextmenu')
+	MA.byIdEventIfExists('mod_info_button', () => { window.state.action.setModInfo() })
 }
 
 // MARK: On Load

@@ -20,15 +20,13 @@
 
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="renderJS/util/util_lib.js"></script>
-	<script src="renderJS/util/general_lib.js"></script>
-	<script src="renderJS/util/select_lib_ui.js"></script>
 	<script src="renderJS/main_ui.js"></script>
 	<script src="renderJS/main_ui_lib.js"></script>
 	<script>
 		document.onkeydown = function(event) {
 			const evt = event || window.event
-			if (evt.code === 'F5' ) { window.mods.refreshFolders() }
-			if (evt.code === 'F1' ) { window.mods.openHelp() }
+			if (evt.code === 'F5' ) { window.main_IPC.folder.reload() }
+			if (evt.code === 'F1' ) { window.main_IPC.dispatch('help') }
 		}
 	</script>
 	<style>
@@ -387,17 +385,17 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title"><l10n name="context_set_website"></l10n></h5>
+					<i18n-text class="h5 modal-title" data-key="context_set_website"></i18n-text>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#open_mod_info_modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 					<div class="h5 text-center" id="mod_info_mod_name">MOD NAME</div>
 					<div class="row">
 						<div class="col-9">
-							<input oncontextmenu="window.mods.cutCopyPaste()" placeholder="http://example.net" type="text" id="mod_info_input" class="form-control">
+							<input placeholder="http://example.net" type="text" id="mod_info_input" class="form-control">
 						</div>
 						<div class="col-3">
-							<button type="button" onclick="actionLib.setModInfo()" class="btn btn-success w-100"><l10n name="button_save"></l10n></button>
+							<i18n-text type="button" id="mod_info_button" class="btn btn-success w-100" data-key="button_save"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -549,54 +547,21 @@
 				<div class="tab-pane fade pt-4" id="advanced-pref-pane" role="tabpanel" aria-labelledby="advanced-pref-tab" tabindex="0">
 					<div class="row gx-3 gy-4">
 
-						<div class="col-12 inset-block"><div>  <!-- one drive -->
-							<l10n class="inset-block-header" name="user_pref_title_use_one_drive"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_use_one_drive"></l10n>
-								<div class="form-check form-switch custom-switch col-2">
-									<input id="uPref_use_one_drive" onchange="prefLib.setPref('use_one_drive')" class="form-check-input" type="checkbox" role="switch">
-								</div>
-							</div>
-						</div></div>
+						<div class="col-12 inset-block"><!-- one drive -->
+							<page-replace data-type="switch-input" data-extra="2" data-name="use_one_drive"></page-replace>
+						</div>
 
-						<div class="col-12 inset-block"><div>  <!-- poll game -->
-							<l10n class="inset-block-header" name="user_pref_title_poll_game"></l10n>
-							<div class="row">
-								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_poll_game"></l10n>
-								<div class="form-check form-switch custom-switch col-2">
-									<input id="uPref_poll_game" onchange="prefLib.setPref('poll_game')" class="form-check-input" type="checkbox" role="switch">
-								</div>
-							</div>
-						</div></div>
+						<div class="col-12 inset-block"><!-- poll game -->
+							<page-replace data-type="switch-input" data-extra="2" data-name="poll_game"></page-replace>
+						</div>
 
-						<div class="col-12 inset-block"><div>  <!-- discord -->
-							<l10n class="inset-block-header" name="user_pref_title_use_discord"></l10n>
-							<div class="row gy-2">
-								<l10n class="inset-block-blurb-option col-10" name="user_pref_blurb_use_discord"></l10n>
-								<div class="form-check form-switch custom-switch col-2">
-									<input id="uPref_use_discord" onchange="prefLib.setPref('use_discord')" class="form-check-input" type="checkbox" role="switch">
-								</div>
-								<l10n class="col-6" name="user_pref_setting_discord_2"></l10n>
-								<div class="col-6 px-0"><input type="text" class="form-control" id="uPref_use_discord_c2" onchange="prefLib.setPref('use_discord_c2')" style="font-size: 70%"></div>
-								<l10n class="col-6" name="user_pref_setting_discord_1"></l10n>
-								<div class="col-6 px-0"><input type="text" class="form-control" id="uPref_use_discord_c1" onchange="prefLib.setPref('use_discord_c1')" style="font-size: 70%"></div>
-							</div>
-						</div></div>
+						<div class="col-12 inset-block"><!-- discord -->
+							<page-replace data-type="special-input" data-name="use_discord"></page-replace>
+						</div>
 
-						<div class="col-12 inset-block"><div>  <!-- cache -->
-							<l10n class="inset-block-header" name="user_pref_title_clean_cache"></l10n>
-							<l10n class="inset-block-blurb-option" name="user_pref_blurb_clean_cache"></l10n>
-							<l10n class="inset-block-blurb-option text-body-emphasis py-1" name="clean_cache_size" id="clean_cache_size"></l10n>
-							<l10n class="inset-block-blurb-option text-body-emphasis py-1" name="clean_detail_cache_size" id="clean_detail_cache_size"></l10n>
-							<div class="d-block btn btn-success btn-sm w-75 mt-2 mx-auto mb-3" onclick="actionLib.doCacheClean()"><l10n name="user_pref_button_clean_cache"></l10n></div>
-							<div class="d-block btn btn-warning btn-sm w-75 mt-2 mx-auto mb-3" onclick="window.mods.clearDetailCache()"><l10n name="user_pref_button_clear_detail_cache"></l10n></div>
-							<l10n class="inset-block-blurb-option" name="user_pref_blurb_clear_cache"></l10n>
-							<div class="d-block btn btn-danger btn-sm w-75 mt-2 mx-auto" onclick="window.mods.clearCache()"><l10n name="user_pref_button_clear_cache"></l10n></div>
-							<l10n class="inset-block-blurb-option mt-2" name="user_pref_blurb_clear_malware"></l10n>
-							<l10n class="inset-block-blurb-option mt-2 text-body-emphasis py-1 fst-italic mx-3" name="clear_malware_size"></l10n>
-							<div class="d-block btn btn-warning btn-sm w-75 mt-2 mx-auto" onclick="window.mods.clearMalware()"><l10n name="user_pref_button_clear_malware"></l10n></div>
-						</div></div>
-
+						<div class="col-12 inset-block"><!-- cache -->
+							<page-replace data-type="special-input" data-name="cache_manage"></page-replace>
+						</div>
 					</div>
 				</div>
 

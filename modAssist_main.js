@@ -616,7 +616,7 @@ ipcMain.on('context:mod', async (event, modID, modIDs) => {
 		funcLib.menu.sep,
 		funcLib.menu.iconL10n(
 			'context_set_website',
-			() => { serveIPC.windowLib.sendToWindow('main', 'fromMain_modInfoPop', thisMod, thisSite) },
+			() => { serveIPC.windowLib.sendToWindow('main', 'mods:site', thisMod) },
 			'externalSiteSet'
 		)
 	)
@@ -731,7 +731,7 @@ function toggleMiniWindow () {
 }
 // END : Mini-mode operation
 
-// #region SETTINGS IPC
+// MARK: SETTINGS IPC
 ipcMain.handle('settings:dev',      () => serveIPC.devControls )
 ipcMain.handle('settings:get',      (_, key) => {
 	return serveIPC.storeSet.get(key)
@@ -766,24 +766,20 @@ ipcMain.on('settings:clearDetail', () => {
 	serveIPC.storeCacheDetail.clear()
 	return true
 })
-//#endregion
-
-
-
-ipcMain.on('toMain_clearCacheFile', () => {
+ipcMain.on('cache:clear', () => {
 	serveIPC.storeCache.clearAll()
 	serveIPC.windowLib.forceFocus('main')
 	processModFolders(true)
 })
-ipcMain.on('toMain_clearCacheMalware', () => {
+ipcMain.on('cache:malware', () => {
 	serveIPC.storeSet.set('suppress_malware', [])
 	processModFolders(true)
 })
-ipcMain.on('toMain_clearDetailCacheFile', () => {
+ipcMain.on('cache:detail', () => {
 	serveIPC.storeCacheDetail.clear()
-	serveIPC.windowLib.sendToValidWindow('main', 'fromMain_l10n_refresh', serveIPC.l10n.currentLocale)
+	serveIPC.windowLib.sendToValidWindow('main', 'settings:invalidate')
 })
-ipcMain.on('toMain_cleanCacheFile', () => {
+ipcMain.on('cache:clean', () => {
 	const md5Set     = new Set(serveIPC.storeCache.keys)
 	
 	for ( const collectKey of serveIPC.modCollect.collections ) {
@@ -797,13 +793,12 @@ ipcMain.on('toMain_cleanCacheFile', () => {
 	serveIPC.storeCache.saveFile()
 
 	setTimeout(() => {
-		serveIPC.windowLib.sendToValidWindow('main', 'fromMain_l10n_refresh', serveIPC.l10n.currentLocale)
+		serveIPC.windowLib.sendToValidWindow('main', 'settings:invalidate')
 	}, 500)
 })
 ipcMain.on('settings:prefFile',    (_, version) => { funcLib.prefs.changeFilePath(version, false) })
 ipcMain.on('settings:gamePath',    (_, version) => { funcLib.prefs.changeFilePath(version, true) })
 
-// END : Preferences operations
 
 // Setup Wizard Functions
 ipcMain.on('toMain_showSetupWizard', () => { openWizard() })
@@ -816,7 +811,7 @@ function openWizard() {
 				folders                : [...serveIPC.modFolders],
 				wizardSettings         : funcLib.wizard.getSettings(),
 			},
-			'fromMain_modList',
+			'mods:list',
 			'setup',
 			false
 		)
@@ -825,7 +820,7 @@ function openWizard() {
 // END : Setup Wizard Functions
 
 
-// #region NOTES
+// MARK: NOTES & SITE
 ipcMain.on('dispatch:notes', (_, key) => { serveIPC.windowLib.createNamedWindow('notes', { collectKey : key }) })
 ipcMain.handle('settings:collection:get',   (_, collectKey) => serveIPC.modCollect.renderCollectNotes(collectKey) )
 ipcMain.handle('settings:collection:set',   (_, collectKey, key, value) => {
@@ -834,25 +829,25 @@ ipcMain.handle('settings:collection:set',   (_, collectKey, key, value) => {
 	funcLib.prefs.setOrDelete(serveIPC.storeNote, `${collectKey}.${key}`, cleanValue)
 	return serveIPC.modCollect.renderCollectNotes(collectKey)
 })
-// #endregion
 
-
-ipcMain.on('toMain_setModInfo', (_, mod, site) => {
-	if ( site === '' || site === null ) {
-		serveIPC.storeSites.delete(mod)
-	} else {
-		serveIPC.storeSites.set(mod, site)
+ipcMain.handle('settings:site', (_, mod, site = false) => {
+	if ( site !== false ) {
+		if ( site === '' || site === null ) {
+			serveIPC.storeSites.delete(mod)
+		} else {
+			serveIPC.storeSites.set(mod, site)
+		}
+		refreshClientModList()
 	}
-	refreshClientModList()
+	return serveIPC.storeSites.get(mod, '')
 })
-// END : Collection Settings Operation (notes)
 
-// Download operation
+// MARK: download
 ipcMain.on('file:downloadCancel', () => { if ( serveIPC.dlRequest !== null ) { serveIPC.dlRequest.abort() } })
 ipcMain.on('file:download',   (_, CKey) => { funcLib.general.importZIP(CKey) })
-// END : Download operation
 
-// Export operations
+
+// MARK: export
 ipcMain.on('file:exportCSV', (_, CKey) => { funcLib.general.exportCSV(CKey) })
 ipcMain.on('file:exportZIP', (_, mods) => { funcLib.general.exportZIP(mods) })
 // END : Export operations
@@ -944,7 +939,7 @@ function saveCompare_open(zipMode = false) {
 ipcMain.on('dispatch:version', () => { serveIPC.windowLib.createNamedWindow('version') })
 ipcMain.on('dispatch:resolve', (_, key) => { serveIPC.windowLib.createNamedWindow('resolve', { shortName : key }) })
 
-ipcMain.on('toMain_refreshVersions', () => { serveIPC.windowLib.sendModList({}, 'fromMain_modList', 'version', false ) } )
+ipcMain.on('toMain_refreshVersions', () => { serveIPC.windowLib.sendModList({}, 'mods:list', 'version', false ) } )
 ipcMain.on('toMain_versionResolve',  (_, shortName) => {
 	const modSet    = []
 	const foundMods = serveIPC.modCollect.shortNames[shortName]
@@ -1055,7 +1050,7 @@ function refreshClientModList(closeLoader = true) {
 			pinMini                : serveIPC.windowLib.isAlwaysOnTop('mini'),
 			showMini               : serveIPC.windowLib.isVisible('mini'),
 		},
-		'fromMain_modList',
+		'mods:list',
 		'main',
 		closeLoader
 	)

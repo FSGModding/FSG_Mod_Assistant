@@ -53,7 +53,7 @@
 		<div class="sticky-top pb-2 bg-body border-bottom mb-4">
 			<div class="row g-0 w-100" style="-webkit-app-region: drag;">
 				<div class="col-7 pt-2">
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+					<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
 				</div>
 				<div class="col-5 mt-3 pt-4">
 					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><span class="h4" id="collection_name"></span></div>
@@ -63,15 +63,15 @@
 		
 
 		<div class="alert alert-warning mb-5 mx-4 d-none" id="is_active_collect" role="alert">
-			<l10n name="notes_usage_blurb_2"></l10n>
+			<i18n-text data-key="notes_usage_blurb_2"></i18n-text>
 		</div>
 
 		<div class="row gx-3 gy-4 mx-2">
 
 			<div class="col-12 inset-block"><div><!-- icon color -->
-				<l10n class="inset-block-header" name="notes_title_color"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_color"></i18n-text>
 				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_color"></l10n>
+					<i18n-text class="inset-block-blurb-option col-6" data-key="notes_blurb_color"></i18n-text>
 					<div class="col-6 d-flex flex-wrap justify-content-start" id="notes_color">
 						<div class="form-check form-check-inline">
 							<input class="form-check-input" type="radio" name="notes_color" id="notes_color0" value="0">
@@ -118,9 +118,9 @@
 			</div>
 
 			<div class="col-12 inset-block"><div><!-- notes -->
-				<l10n class="inset-block-header" name="notes_title_notes"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_notes"></i18n-text>
 				<div class="row gy-2">
-					<l10n class="inset-block-blurb-option col-12" name="notes_blurb_notes"></l10n>
+					<i18n-text class="inset-block-blurb-option col-12" data-key="notes_blurb_notes"></i18n-text>
 					<div class="col-10 offset-1">
 						<textarea rows="4" class="inputElement form-control form-control-sm" id="notes_notes"></textarea>
 					</div>
@@ -144,9 +144,9 @@
 			</div>
 
 			<div class="col-12 inset-block" id="multi_version"><div><!-- version -->
-				<l10n class="inset-block-header" name="notes_title_version"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_version"></i18n-text>
 				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_version"></l10n>
+					<i18n-text class="inset-block-blurb-option col-6" data-key="notes_blurb_version"></i18n-text>
 					<div class="col-6">
 						<select class="form-select inputElement" id="notes_version"></select>
 					</div>
@@ -154,12 +154,12 @@
 			</div></div>
 
 			<div class="col-12 inset-block"><div><!-- units -->
-				<l10n class="inset-block-header" name="notes_title_units"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_units"></i18n-text>
 				<div class="row gy-2">
-					<l10n class="inset-block-blurb-option col-12 pb-3" name="notes_blurb_units"></l10n>
+					<i18n-text class="inset-block-blurb-option col-12 pb-3" data-key="notes_blurb_units"></i18n-text>
 
 					<div class="col-4">
-						<l10n name="notes_units_money_title"></l10n>
+						<i18n-text data-key="notes_units_money_title"></i18n-text>
 					</div>
 					<div class="col-2">
 						<select class="inputElement form-select form-select-sm" id="notes_unit_money">
@@ -170,7 +170,7 @@
 					</div>
 
 					<div class="col-4">
-						<l10n name="notes_units_use_miles"></l10n>
+						<i18n-text data-key="notes_units_use_miles"></i18n-text>
 					</div>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
@@ -179,7 +179,7 @@
 					</div>
 
 					<div class="col-4">
-						<l10n name="notes_units_use_fahrenheit"></l10n>
+						<i18n-text data-key="notes_units_use_fahrenheit"></i18n-text>
 					</div>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
@@ -188,7 +188,7 @@
 					</div>
 
 					<div class="col-4">
-						<l10n name="notes_units_use_acres"></l10n>
+						<i18n-text data-key="notes_units_use_acres"></i18n-text>
 					</div>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
@@ -215,22 +215,22 @@
 			</div>
 
 			<div class="col-12 inset-block"><div><!-- website -->
-				<l10n class="inset-block-header" name="notes_title_website"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_website"></i18n-text>
 				<div class="row gy-2">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_website"></l10n>
+					<i18n-text class="inset-block-blurb-option col-6" data-key="notes_blurb_website"></i18n-text>
 					<div class="col-6">
 						<input type="text" class="inputElement form-control form-control-sm" id="notes_website">
-						<div id="notes_website_feedback" class="invalid-feedback"><l10n name="pref_feedback_bad_url"></l10n></div>
+						<div id="notes_website_feedback" class="invalid-feedback"><i18n-text data-key="pref_feedback_bad_url"></i18n-text></div>
 					</div>
 
-					<l10n class="inset-block-blurb-option col-10" name="notes_blurb_website_valid"></l10n>
+					<i18n-text class="inset-block-blurb-option col-10" data-key="notes_blurb_website_valid"></i18n-text>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
 							<input id="notes_websiteVALID" class="form-check-input" type="checkbox" role="switch" checked>
 						</div>
 					</div>
 
-					<l10n class="inset-block-blurb-option col-10" name="notes_blurb_website_dl"></l10n>
+					<i18n-text class="inset-block-blurb-option col-10" data-key="notes_blurb_website_dl"></i18n-text>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
 							<input id="notes_websiteDL" class="inputElement form-check-input" type="checkbox" role="switch">

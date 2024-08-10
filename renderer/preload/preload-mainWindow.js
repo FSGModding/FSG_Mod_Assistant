@@ -62,24 +62,31 @@ contextBridge.exposeInMainWorld(
 				ipcRenderer.send(`dispatch:${win}`)
 			}
 		},
+		dispatchDetail : (id)                => { ipcRenderer.send('dispatch:detail', id) },
+		dispatchLog    : (file)              => { ipcRenderer.send('dispatch:gamelog', file) },
+		dispatchNotes  : (CKey)              => { ipcRenderer.send('dispatch:notes', CKey) },
+		dispatchSave   : (CKey, file = null) => { ipcRenderer.send('dispatch:save', CKey, file) },
 
-		drag : {
-			out : (modID)  => { ipcRenderer.send('main:dragOut', modID ) },
-		},
-
-		updateState       : () => ipcRenderer.invoke('state:all'),
-
+		cancelDownload    : () => { ipcRenderer.send('file:downloadCancel') },
 		minimizeToTray    : () => { ipcRenderer.send('main:minimizeToTray') },
+		startFarmSim      : () => { ipcRenderer.send('dispatch:game') },
 		updateApplication : () => { ipcRenderer.send('main:runUpdateInstall') },
+		updateState       : () => ipcRenderer.invoke('state:all'),
 
 		contextCol   : (CKey)         => { ipcRenderer.send('context:collection', CKey) },
 		contextInput : ()             => ipcRenderer.send('context:cutCopyPaste'),
 		contextMod   : (mod, select ) => { ipcRenderer.send('context:mod', mod, select ) },
 		
-		dispatchDetail : (id)                => { ipcRenderer.send('dispatch:detail', id) },
-		dispatchLog    : (file)              => { ipcRenderer.send('dispatch:gamelog', file) },
-		dispatchNotes  : (CKey)              => { ipcRenderer.send('dispatch:notes', CKey) },
-		dispatchSave   : (CKey, file = null) => { ipcRenderer.send('dispatch:save', CKey, file) },
+		cache : {
+			clean   : () => { ipcRenderer.send('cache:clean') },
+			clear   : () => { ipcRenderer.send('cache:clear') },
+			detail  : () => { ipcRenderer.send('cache:detail') },
+			malware : () => { ipcRenderer.send('cache:malware') },
+		},
+		
+		drag : {
+			out : (modID)  => { ipcRenderer.send('main:dragOut', modID ) },
+		},
 
 		files : {
 			drop        : (files)      => ipcRenderer.invoke('files:drop', files),
@@ -96,64 +103,38 @@ contextBridge.exposeInMainWorld(
 			active   : (CKey)   => ipcRenderer.invoke('folders:activate', CKey),
 			add      : ()       => { ipcRenderer.send('folders:add') },
 			alpha    : ()       => { ipcRenderer.send('folders:alpha') },
+			download : (CKey)   => { ipcRenderer.send('file:download', CKey) },
 			drop     : (folder) => { ipcRenderer.send('folders:addDrop', folder) },
 			edit     : ()       => { ipcRenderer.send('folders:edit') },
+			export   : (CKey)   => { ipcRenderer.send('file:exportCSV', CKey ) },
 			inactive : ()       => ipcRenderer.invoke('folders:active', null),
 			open     : (CKey)   => { ipcRenderer.send('folders:open', CKey) },
 			reload   : ()       => { ipcRenderer.send('folders:reload') },
 			remove   : (CKey)   => { ipcRenderer.send('folders:remove', CKey) },
 			set      : (f, t)   => { ipcRenderer.send('folders:set', f, t) },
 		},
-		
-		cancelDownload  : ()       => { ipcRenderer.send('file:downloadCancel') },
-		collectDownload : (CKey)   => { ipcRenderer.send('file:download', CKey) },
-		collectExport   : (CKey)   => { ipcRenderer.send('file:exportCSV', CKey ) },
-		
-		copyFavorites   : () => { ipcRenderer.send('toMain_copyFavorites') },
-		cutCopyPaste    : () => ipcRenderer.send('context:cutCopyPaste'),
 
-		startFarmSim    : () => { ipcRenderer.send('dispatch:game') },
-
+		
 		// TODO: finish below line
 
 
-		openSave   : (collection)   => { ipcRenderer.send('toMain_openSave', collection) },
-		
-		setModInfo : (mod, site)    => { ipcRenderer.send('toMain_setModInfo', mod, site) },
-
-		
-		
-
-		cleanCache    : () => { ipcRenderer.send('toMain_cleanCacheFile') },
-		clearCache    : () => { ipcRenderer.send('toMain_clearCacheFile') },
-		clearDetailCache : () => { ipcRenderer.send('toMain_clearDetailCacheFile') },
-		clearMalware  : () => { ipcRenderer.send('toMain_clearCacheMalware') },
-		setGamePath   : (ver = 22) => { ipcRenderer.send('toMain_setGamePath', ver) },
-		setPref       : ( name, value ) => { ipcRenderer.send('toMain_setPref', name, value) },
-		setPrefFile   : (ver = 22) => { ipcRenderer.send('toMain_setPrefFile', ver) },
-		showChangelog : () => ipcRenderer.send('dispatch:changelog'),
-		showWizard    : () => { ipcRenderer.send('toMain_showSetupWizard') },
-
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
-				'loading:show',
-				'loading:hide',
-				'loading:titles',
-				'loading:download',
-				'loading:noCount',
-				'loading:total',
-				'loading:current',
-				'status:all',
 				'files:operation',
+				'loading:current',
+				'loading:download',
+				'loading:hide',
+				'loading:noCount',
+				'loading:show',
+				'loading:titles',
+				'loading:total',
+				'mods:list',
+				'mods:site',
+				'status:all',
 
-				'fromMain_allSettings',
-				'fromMain_fileOperation',
+				
 				'fromMain_filterOnly',
 				'fromMain_modInfoPop',
-				'fromMain_modList',
-				'fromMain_selectAllOpen',
-				'fromMain_selectInvertOpen',
-				'fromMain_selectNoneOpen',
 				'fromMain_selectOnly',
 				'fromMain_selectOnlyFilter',
 			])
@@ -202,16 +183,17 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld(
 	'settings', {
-		dev         : ()     => ipcRenderer.invoke('settings:dev'),
-		get         : (key)  => ipcRenderer.invoke('settings:get', key),
-		set         : (k, v) => ipcRenderer.invoke('settings:set', k, v),
+		dev         : ()         => ipcRenderer.invoke('settings:dev'),
+		get         : (key)      => ipcRenderer.invoke('settings:get', key),
+		set         : (k, v)     => ipcRenderer.invoke('settings:set', k, v),
 		setGamePath : (ver = 22) => { ipcRenderer.send('settings:gamePath', ver) },
 		setPrefFile : (ver = 22) => { ipcRenderer.send('settings:prefFile', ver) },
-		theme       : ()     => ipcRenderer.invoke('settings:theme'),
-		themeChange : (k)    => { ipcRenderer.send('settings:themeChange', k) },
-		themeList   : ()     => ipcRenderer.invoke('settings:themeList'),
-		units       : ()     => ipcRenderer.invoke('settings:units'),
-		winReset    : ()     => { ipcRenderer.send('settings:resetWindows') },
+		site        : (k, v)     => ipcRenderer.invoke('settings:site', k, v),
+		theme       : ()         => ipcRenderer.invoke('settings:theme'),
+		themeChange : (k)        => { ipcRenderer.send('settings:themeChange', k) },
+		themeList   : ()         => ipcRenderer.invoke('settings:themeList'),
+		units       : ()         => ipcRenderer.invoke('settings:units'),
+		winReset    : ()         => { ipcRenderer.send('settings:resetWindows') },
 
 		receive   : ( channel, func ) => {
 			const validChannels = new Set([
