@@ -354,10 +354,6 @@ const I18N = {
 		}
 		return badgeDiv
 	},
-	buildElement : async (key) =>
-		// TODO: undo this!
-		window.i18n.get(key).then((result) =>
-			`<l10n name="${key}" data-done="true">${result.entry}</l10n>`),
 	defer : (key, skipNonBase = true) => {
 		if ( key.includes('[[') ) {
 			const nameParts    = key.match(/(.+?) \[\[(.+?)]]/)

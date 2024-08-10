@@ -25,19 +25,19 @@
 		<div class="sticky-top pb-1 bg-body border-bottom mb-0" style="-webkit-app-region: drag;">
 			<div class="row w-100 g-0">
 				<div class="col-7 pt-2" >
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+					<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
 				</div>
 				<div class="col-5 pt-4 pe-2 mt-3">
-					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><l10n class="h4" name="resolve_version_window"></l10n></div>
+					<i18n-text class="badge bg-primary mx-auto w-100 d-block rounded-3 h4" data-key="resolve_version_window"></i18n-text>
 				</div>
 			</div>
 			<div class="row w-100">
 				<div class="col-6">
-					<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="confirm_version_blurb"></l10n></span>
+					<i18n-text class="text-center mt-2 w-100 px-5 d-block blockquote" data-key="confirm_version_blurb"></i18n-text>
 				</div>
 				<div class="col-6 px-1 align-content-center">
 					<div class="alert alert-info mt-2 mb-0 mx-auto text-center" role="alert" id="versionInfo">
-						<strong><span id="modName"></span></strong> :: <l10n name="resolve_version_newest"></l10n> <strong><span id="newVersion"></span></strong>
+						<strong><span id="modName"></span></strong> :: <i18n-text data-key="resolve_version_newest"></i18n-text> <strong><span id="newVersion"></span></strong>
 					</div>
 				</div>
 			</div>
@@ -46,13 +46,13 @@
 		
 		<div class="d-flex flex-column flex-grow-1 overflow-hidden">
 			<div class="alert alert-danger mt-2 mb-0 mx-auto text-center d-none w-50" id="versionBroken" role="alert">
-				<l10n class="text-danger-emphasis fs-2" name="resolve_version_broken"></l10n>
+				<i18n-text class="text-danger-emphasis fs-2" data-key="resolve_version_broken"></i18n-text>
 			</div>
 
 			<div class="list-group my-0 px-2 flex-grow-1 overflow-custom2" id="modSet"></div>
 
 			<div class="border border-top pt-2">
-				<div id="copyButton" class="disabled btn btn-danger text-white mb-2 w-75 mx-auto d-block"><i class="bi bi-check2-circle"></i> <l10n name="copy"></l10n></div>
+				<div id="copyButton" class="disabled btn btn-danger text-white mb-2 w-75 mx-auto d-block"><i class="bi bi-check2-circle"></i> <i18n-text data-key="copy"></i18n-text></div>
 			</div>
 		</div>
 	</div>
@@ -61,9 +61,9 @@
 		<div class="modal-dialog modal-dialog-centered w-50">
 			<div class="modal-content" style="height: 220px;">
 				<div class="modal-body position-relative text-center d-flex flex-column align-items-center justify-content-center">
-					<l10n class="z-2 fs-2 text-center" name="loading_files_title"></l10n>
+					<i18n-text class="z-2 fs-2 text-center" data-key="loading_files_title"></i18n-text>
 					<div id="badFileFeedback" class="d-none">
-						<l10n class="text-center w-100 fs-5" name="file_operation_failure"></l10n>
+						<i18n-text class="text-center w-100 fs-5" data-key="file_operation_failure"></i18n-text>
 						<div id="badFileList" class="text-start"></div>
 					</div>
 					
@@ -93,7 +93,7 @@
 			<div class="ms-2 me-auto">
 				<div class="fw-bold"><template-var>shortName</template-var></div>
 				<div class="small text-body-tertiary"><template-var>title</template-var></div>
-				<div class="small text-body-tertiary ps-3"><l10n name="destination"></l10n> <template-var>collectName</template-var> :: <l10n name="version_same"></l10n></div>
+				<div class="small text-body-tertiary ps-3"><i18n-text data-key="destination"></i18n-text> <template-var>collectName</template-var> :: <i18n-text data-key="version_same"></i18n-text></div>
 			</div>
 		</li>
 	</template>
@@ -103,7 +103,7 @@
 			<div class="ms-2 flex-grow-1">
 				<div class="fw-bold"><template-var>shortName</template-var> <span class="small"><template-var>version</template-var></span></div>
 				<div class="small text-body-tertiary"><template-var>title</template-var></div>
-				<div class="small text-body-emphasis ps-3"><l10n name="destination"></l10n> <template-var>collectName</template-var></div>
+				<div class="small text-body-emphasis ps-3"><i18n-text data-key="destination"></i18n-text> <template-var>collectName</template-var></div>
 			</div>
 			<div class="flex-grow-0 h-100 align-content-center">
 				<input class="form-check-input form-check modToCopy fileOpCheck" type="checkbox" name="modToCopy[]">

@@ -98,7 +98,7 @@
 		<div class="sticky-top pb-2 bg-body border-bottom mb-0" >
 			<div class="row w-100" style="-webkit-app-region: drag;">
 				<div class="col-12">
-					<h2 class="ps-2 mt-2 mastHead"><l10n name="app_name"></l10n> <l10n name="basegame_browser"></l10n></h2>
+					<h2 class="ps-2 mt-2 mastHead"><i18n-text data-key="app_name"></i18n-text> <i18n-text data-key="basegame_browser"></i18n-text></h2>
 				</div>
 			</div>
 		</div>
@@ -106,53 +106,53 @@
 			<div class="col-3 fs-3 px-3 d-flex flex-column justify-content-evenly border-end">
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="brand">
 					<div class="fsico-cat-brand align-self-center"></div>
-					<l10n class="text-end align-self-center" name="basegame_brand"></l10n>
+					<i18n-text class="text-end align-self-center" data-key="basegame_brand"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="vehicle">
 					<div class="fsico-cat-vehicle align-self-center"></div>
-					<l10n class="text-end align-self-center" name="basegame_vehicle"></l10n>
+					<i18n-text class="text-end align-self-center" data-key="basegame_vehicle"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="tool">
 					<div class="fsico-cat-tool align-self-center"></div>
-					<l10n class="text-end align-self-center fs-3" name="basegame_tool"></l10n>
+					<i18n-text class="text-end align-self-center fs-3" data-key="basegame_tool"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="object">
 					<div class="fsico-cat-object align-self-center"></div>
-					<l10n class="text-end align-self-center" name="basegame_object"></l10n>
+					<i18n-text class="text-end align-self-center" data-key="basegame_object"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="placeable">
 					<div class="fsico-cat-placeable align-self-center"></div>
-					<l10n class="text-end align-self-center" name="basegame_placeable"></l10n>
+					<i18n-text class="text-end align-self-center" data-key="basegame_placeable"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="attach_has">
 					<div class="fsico-cat-attach-has align-self-center"></div>
-					<l10n class="text-end align-self-center fs-4" name="basegame_attach_has"></l10n>
+					<i18n-text class="text-end align-self-center fs-4" data-key="basegame_attach_has"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="attach_need">
 					<div class="fsico-cat-attach-need align-self-center"></div>
-					<l10n class="text-end align-self-center fs-4" name="basegame_attach_need"></l10n>
+					<i18n-text class="text-end align-self-center fs-4" data-key="basegame_attach_need"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="fills">
 					<div class="fsico-look-fillunit align-self-center"></div>
-					<l10n class="text-end align-self-center" name="basegame_fills"></l10n>
+					<i18n-text class="text-end align-self-center" data-key="basegame_fills"></i18n-text>
 				</div>
 			</div>
 			<div class="col-9 d-flex flex-column">
 				<div class="d-flex flex-column flex-grow-1 overflow-hidden" id="homePageContent">
 					<div class="d-flex flex-column flex-grow-1 justify-content-center gap-4" id="homePageBlurb">
-						<l10n class="fs-3 align-self-center w-50 text-center mx-auto" name="basegame_browser_blurb"></l10n>
+						<i18n-text class="fs-3 align-self-center w-50 text-center mx-auto" data-key="basegame_browser_blurb"></i18n-text>
 						<div class="fs-4 w-75 mx-auto d-none" id="homePageError">
 							<div class="alert alert-warning" role="alert">
 								<div class="row">
 									<div class="col-3 text-center h0 text-warning"><i class="bi bi-exclamation-triangle"></i></div>
 									<div class="col-7 align-content-center">
-										<l10n name="basegame_not_found"></l10n><br><br>
+										<i18n-text data-key="basegame_not_found"></i18n-text><br><br>
 										<span class="fs-6 fst-italic">
 											<template-var data-name="error-page-type">type</template-var> : 
 											<template-var data-name="error-page-page">page</template-var>
 										</span>
 									</div>
-									<div class="col-2 align-content-center text-center"><button type="button" class="btn btn-lg btn-outline-primary" id="homeButtonError"><l10n name="basegame_button_home"></l10n></button></div>
+									<div class="col-2 align-content-center text-center"><i18n-text type="button" class="btn btn-lg btn-outline-primary" id="homeButtonError" data-key="basegame_button_home"></i18n-text></div>
 								</div>
 							</div>
 						</div>
@@ -162,7 +162,7 @@
 					</div>
 					<div class="pt-3 border-top" id="searchBox">
 						<div class="input-group input-group-sm my-2 mx-auto w-75">
-							<span class="input-group-text"><l10n name="find_basegame_match"></l10n></span>
+							<span class="input-group-text"><i18n-text data-key="find_basegame_match"></i18n-text></span>
 							<input value="" type="text" id="mods__filter" class="form-control mod-row-filter rounded-end">
 							<span id="mods__filter_clear" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:calc( 50% - 10px); "></span>
 						</div>
@@ -179,9 +179,7 @@
 <template id="store_item">
 	<div class="text-end storeItemBox">
 		<div class="position-relative pageClicker p-2 border rounded-3 h-100 text-center hasParentFile d-flex flex-column justify-content-between">
-			<button type="button" class="position-absolute end-0 me-2 btn btn-warning btn-vsm compareSingle">
-				<l10n name="basegame_button_comp"></l10n>
-			</button>
+			<i18n-text type="button" class="position-absolute end-0 me-2 btn btn-warning btn-vsm compareSingle" data-key="basegame_button_comp"></i18n-text>
 			<div class="pb-4">
 				<div class="store-icon-image"><template-var>iconImage</template-var></div>
 				<div class="store-icon-brand"><template-var>brandImage</template-var></div>
@@ -217,7 +215,7 @@
 			<template-var>compareTerms</template-var>
 		</div>
 		<div class="text-center col-1 align-self-center comboCompareButton">
-			<button type="button" class="btn btn-warning btn-vsm float-end mt-2 comboItemAddClicker" style="margin-left: -25px; margin-right:5px;"><l10n name="basegame_button_comp"></l10n></button>
+			<i18n-text type="button" class="btn btn-warning btn-vsm float-end mt-2 comboItemAddClicker" style="margin-left: -25px; margin-right:5px;" data-key="basegame_button_comp"></i18n-text>
 		</div>
 	</div>
 </template>
@@ -225,7 +223,7 @@
 <template id="vehicle_info_div">
 	<div class="inset-vehicle-block vehicleInfoBlock col-12 inset-block mt-4" id="vehicle-info-parent"><div>
 		<span class="inset-block-header" name="detail_dev_info"><template-var>itemName</template-var></span>
-		<span class="inset-block-header-show-hide"><button type="button" class="btn btn-sm btn-warning action-item-compare"><l10n name="basegame_button_comp"></l10n></button></span>
+		<span class="inset-block-header-show-hide"><i18n-text type="button" class="btn btn-sm btn-warning action-item-compare" data-key="basegame_button_comp"></i18n-text></span>
 		<span class="inset-block-blurb-detail">
 			<small class="fst-italic"><template-var>typeDesc</template-var></small>
 			<span class="fw-normal" style="font-size: 50%">-</span>
@@ -246,9 +244,9 @@
 				<div class="col-12 py-2"><p class="text-center"><template-var>functions</template-var></p></div>
 				<div class="col-12 py-2 combo-list">
 					<div class="inset-inline-header">
-						<l10n name="combinations_title" class="inset-inline-header-text"></l10n>
+						<i18n-text data-key="combinations_title" class="inset-inline-header-text"></i18n-text>
 						<span class="inset-inline-header-button">
-							<button type="button" class="btn btn-warning btn-vsm action-compare-all-combo"><l10n name="basegame_compare_all"></l10n></button>
+							<i18n-text type="button" class="btn btn-warning btn-vsm action-compare-all-combo" data-key="basegame_compare_all"></i18n-text>
 						</span>
 					</div>
 					<div class="combo-item-list"></div>
