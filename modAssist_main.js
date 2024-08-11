@@ -105,9 +105,51 @@ ipcMain.on('files:openExplore',  (_, modID)    => {
 		shell.showItemInFolder(path.join(thisMod.folder, path.basename(thisMod.mod.fileDetail.fullPath)))
 	}
 })
+
+// MARK: file manage
 ipcMain.handle('files:list',      (_, mode, mods) => getCopyMoveDelete(mode, mods))
 ipcMain.handle('files:list:favs', ()              => getCopyMoveDelete('copyFavs', ...serveIPC.modCollect.getFavoriteCollectionFiles()))
+ipcMain.handle('files:drop', async (_, files) => {
+	if ( files.length === 1 && files[0].endsWith('.csv') ) {
+		// TODO: HANDLE CSV FILE DROP
+		new csvFileChecker(files[0]).getInfo().then((results) => {
+			serveIPC.windowLib.createNamedWindow('save', {
+				collectKey   : null,
+				thisSaveGame : results,
+			})
+		})
+		return
+	} else if ( files.length === 1 && files[0].endsWith('.json') ) {
+		// TODO: HANDLE JSON IMPORT
+		funcLib.general.importJSON_process(files[0])
+	} else if ( files.length === 1 && files[0].endsWith('.zip') ) {
+		return getCopyMoveDelete('import', null, null, files, await new modPackChecker(files[0]).getInfo())
+	} else {
+		return getCopyMoveDelete('import', null, null, files, false)
+	}
+})
 
+function sendCopyMoveDelete(operation, modIDS) {
+	serveIPC.windowLib.sendToValidWindow('main', 'files:operation', operation, getCopyMoveDelete(operation, modIDS))
+}
+
+function getCopyMoveDelete(operation, modIDS, multiSource = null, fileList = null, zipImport = false) {
+	if ( modIDS === null || modIDS.length !== 0 ) {
+		const isHolding = modIDS !== null ? serveIPC.storeNote.get(`${modIDS[0].split('--')[0]}.notes_holding`, false) : false
+		return {
+			isHoldingPen     : isHolding,
+			isZipImport      : zipImport === false ? false : zipImport[0],
+			multiDestination : isHolding && ( operation === 'copy' || operation === 'move' ),
+			multiSource      : multiSource,
+			operation        : operation,
+			originCollectKey : modIDS !== null ? modIDS[0].split('--')[0] : '',
+			rawFileList      : fileList,
+			records          : modIDS !== null ? serveIPC.modCollect.modColUUIDsToRecords(modIDS) : [],
+			zipFiles         : zipImport === false || zipImport[0] === false ? null : zipImport[1],
+		}
+	}
+	return null
+}
 
 // MARK: folder manage
 ipcMain.handle('folders:activate', async (_, CKey) => funcLib.gameSet.change(CKey) )
@@ -211,10 +253,6 @@ ipcMain.on('folders:alpha', () => {
 	funcLib.prefs.saveFolders()
 
 	refreshClientModList(false)
-
-	// win.sendModList({},	'fromMain_getFolders', 'folder', false )
-	// mainProcessFlags.foldersDirty = true
-	// win.toggleMainDirtyFlag(mainProcessFlags.foldersDirty)
 })
 ipcMain.on('folders:set', (_, from, to) => {
 	const newOrder    = [...serveIPC.modFolders]
@@ -236,53 +274,12 @@ ipcMain.on('folders:set', (_, from, to) => {
 ipcMain.on('toMain_import_json_download', (_, collectKey, uri, unpack) => {
 	funcLib.general.importJSON_download(uri, unpack, collectKey)
 })
-ipcMain.handle('files:drop', async (_, files) => {
-	if ( files.length === 1 && files[0].endsWith('.csv') ) {
-		// TODO: HANDLE CSV FILE DROP
-		new csvFileChecker(files[0]).getInfo().then((results) => {
-			serveIPC.windowLib.createNamedWindow('save', {
-				collectKey   : null,
-				thisSaveGame : results,
-			})
-		})
-		return
-	} else if ( files.length === 1 && files[0].endsWith('.json') ) {
-		// TODO: HANDLE JSON IMPORT
-		funcLib.general.importJSON_process(files[0])
-	} else if ( files.length === 1 && files[0].endsWith('.zip') ) {
-		return getCopyMoveDelete('import', null, null, files, await new modPackChecker(files[0]).getInfo())
-	} else {
-		return getCopyMoveDelete('import', null, null, files, false)
-	}
-})
 
-function sendCopyMoveDelete(operation, modIDS) {
-	serveIPC.windowLib.sendToValidWindow('main', 'files:operation', operation, getCopyMoveDelete(operation, modIDS))
-}
-
-function getCopyMoveDelete(operation, modIDS, multiSource = null, fileList = null, zipImport = false) {
-	if ( modIDS === null || modIDS.length !== 0 ) {
-		const isHolding = modIDS !== null ? serveIPC.storeNote.get(`${modIDS[0].split('--')[0]}.notes_holding`, false) : false
-		return {
-			isHoldingPen     : isHolding,
-			isZipImport      : zipImport === false ? false : zipImport[0],
-			multiDestination : isHolding && ( operation === 'copy' || operation === 'move' ),
-			multiSource      : multiSource,
-			operation        : operation,
-			originCollectKey : modIDS !== null ? modIDS[0].split('--')[0] : '',
-			rawFileList      : fileList,
-			records          : modIDS !== null ? serveIPC.modCollect.modColUUIDsToRecords(modIDS) : [],
-			zipFiles         : zipImport === false || zipImport[0] === false ? null : zipImport[1],
-		}
-	}
-	return null
-}
-// END: File & Collection Operations
 
 // l10n Operations
 
 
-
+// MARK: i18n
 ipcMain.on('toMain_getText_sync',   (event, l10nItem) => { event.returnValue = __(l10nItem) })
 ipcMain.on('toMain_getText_locale', (event) => { event.returnValue = serveIPC.l10n.currentLocale })
 ipcMain.on('toMain_getText_send', (event, l10nSet) => {
@@ -411,7 +408,7 @@ ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
 // #endregion
 
 
-// #region DETAIL
+// MARK: detail
 ipcMain.on('dispatch:detail', (_, thisMod) => { openDetailWindow(thisMod) })
 
 function openDetailWindow(thisMod) {
@@ -444,7 +441,7 @@ async function getStoreItems(fullUUID) {
 // #endregion MOD DETAIL WINDOW
 
 
-// #region COMPARE
+// MARK: compare
 ipcMain.on('dispatch:compare', (_, compareArray) => openCompareWindow(compareArray))
 ipcMain.handle('compare:get', () => Object.fromEntries(serveIPC.compareMap))
 ipcMain.handle('compare:clear', () => {
@@ -466,10 +463,9 @@ function openCompareWindow(compareArray) {
 		serveIPC.windowLib.sendToValidWindow('compare', 'win:forceRefresh')
 	})
 }
-// #endregion
 
 
-// #region BASEGAME
+// MARK: basegame
 ipcMain.on('dispatch:basegame', (_, pageObj = { type : null, page : null}) => { openBaseGameWindow(pageObj.type, pageObj.page) })
 ipcMain.on('basegame:folder', (_e, folderParts) => {
 	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', 22))
@@ -490,7 +486,6 @@ function openBaseGameWindow(type = null, page = null) {
 		)
 	})
 }
-// #endregion BASEGAME WINDOW
 
 
 // #region CONTEXT
@@ -506,7 +501,6 @@ ipcMain.on('context:find', (event, thisMod) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.page_find(thisMod))
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-
 ipcMain.on('main:dragOut', (event, modID) => {
 	const thisMod     = serveIPC.modCollect.modColUUIDToRecord(modID)
 	const thisFolder  = serveIPC.modCollect.modColUUIDToFolder(modID)
@@ -660,7 +654,6 @@ ipcMain.on('context:mod', async (event, modID, modIDs) => {
 	const menu = Menu.buildFromTemplate(template)
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
 })
-
 ipcMain.on('context:collection', async (event, collection) => {
 	const template  = funcLib.menu.page_main_col(collection)
 
@@ -683,7 +676,7 @@ ipcMain.on('context:collection', async (event, collection) => {
 // #endregion
 
 
-// #region GAME LOG
+// MARK: game log
 ipcMain.handle('gamelog:auto', () => {
 	funcLib.gameSet.setGameLog(false)
 	return funcLib.gameSet.streamGameLog()
@@ -705,20 +698,9 @@ ipcMain.handle('gamelog:get',     () => funcLib.gameSet.streamGameLog())
 ipcMain.handle('gamelog:getFile', () => funcLib.prefs.gameLogFile())
 ipcMain.on('gamelog:folder',   () => shell.showItemInFolder(funcLib.prefs.gameLogFile()) )
 ipcMain.on('dispatch:gamelog', () => { serveIPC.windowLib.createNamedWindow('gamelog') })
-// #endregion
 
 
-// #region 1-OFF WIN
-ipcMain.on('dispatch:changelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
-ipcMain.on('dispatch:find',      () => { serveIPC.windowLib.createNamedWindow('find') } )
-// #endregion
-
-
-
-
-
-
-// Mini-mode operation
+// MARK : mini window
 ipcMain.on('mini:togglePin', () => { serveIPC.windowLib.toggleAlwaysOnTop('mini'); refreshClientModList() })
 ipcMain.on('dispatch:mini',  () => { toggleMiniWindow() })
 function toggleMiniWindow () {
@@ -729,9 +711,8 @@ function toggleMiniWindow () {
 		serveIPC.windowLib.toggleAlwaysOnTop('mini', true)
 	}
 }
-// END : Mini-mode operation
 
-// MARK: SETTINGS IPC
+// MARK: settings IPC
 ipcMain.handle('settings:dev',      () => serveIPC.devControls )
 ipcMain.handle('settings:get',      (_, key) => {
 	return serveIPC.storeSet.get(key)
@@ -820,7 +801,7 @@ function openWizard() {
 // END : Setup Wizard Functions
 
 
-// MARK: NOTES & SITE
+// MARK: notes & aites
 ipcMain.on('dispatch:notes', (_, key) => { serveIPC.windowLib.createNamedWindow('notes', { collectKey : key }) })
 ipcMain.handle('settings:collection:get',   (_, collectKey) => serveIPC.modCollect.renderCollectNotes(collectKey) )
 ipcMain.handle('settings:collection:set',   (_, collectKey, key, value) => {
@@ -850,7 +831,7 @@ ipcMain.on('file:download',   (_, CKey) => { funcLib.general.importZIP(CKey) })
 // MARK: export
 ipcMain.on('file:exportCSV', (_, CKey) => { funcLib.general.exportCSV(CKey) })
 ipcMain.on('file:exportZIP', (_, mods) => { funcLib.general.exportZIP(mods) })
-// END : Export operations
+
 
 // Save game manager operation
 ipcMain.on('dispatch:savemanage', () => { funcLib.saveManage.refresh() })
@@ -935,58 +916,26 @@ function saveCompare_open(zipMode = false) {
 }
 // END: Savegame compare window operation
 
-// #region Version Resolve
+// MARK: version resolve
 ipcMain.on('dispatch:version', () => { serveIPC.windowLib.createNamedWindow('version') })
 ipcMain.on('dispatch:resolve', (_, key) => { serveIPC.windowLib.createNamedWindow('resolve', { shortName : key }) })
 
-ipcMain.on('toMain_refreshVersions', () => { serveIPC.windowLib.sendModList({}, 'mods:list', 'version', false ) } )
-ipcMain.on('toMain_versionResolve',  (_, shortName) => {
-	const modSet    = []
-	const foundMods = serveIPC.modCollect.shortNames[shortName]
-
-	for ( const modPointer of foundMods ) {
-		const frozen = serveIPC.storeNote.get(`${modPointer[0]}.notes_frozen`, false)
-		const mod    = serveIPC.modCollect.modColAndUUID(modPointer[0], modPointer[1])
-		
-		if ( !mod.fileDetail.isFolder && !frozen ) {
-			modSet.push({
-				collectKey  : modPointer[0],
-				collectName : serveIPC.modCollect.mapCollectionToName(modPointer[0]),
-				modRecord   : mod,
-				version     : mod.modDesc.version,
-			})
-		}
-	}
-	serveIPC.windowLib.createNamedWindow('resolve', {
-		modSet    : modSet,
-		shortName : shortName,
-	})
-})
-// #endregion VERSIONS
-
-
-
-
-// #region DEBUG LOG
+// MARK: debug log
 ipcMain.on('debug:log', (_e, level, process, ...args) => { serveIPC.log[level](process, ...args) })
 ipcMain.handle('debug:all', () => serveIPC.log.htmlLog )
 ipcMain.on('dispatch:debug', () => {
 	serveIPC.isDebugDanger = false
 	serveIPC.windowLib.createNamedWindow('debug')
 })
-// #endregion DEBUG LOG WINDOW
 
-
-ipcMain.on('win:close', (e) => { BrowserWindow.fromWebContents(e.sender).close() })
-
-// Other shit.
-ipcMain.on('toMain_log', (_, level, process, text) => { serveIPC.log[level](text, process) })
-ipcMain.on('dispatch:game', () => { funcLib.gameLauncher() })
-ipcMain.on('toMain_closeSubWindow', (event) => { BrowserWindow.fromWebContents(event.sender).close() })
-//ipcMain.on('toMain_openHubByID',    (_, hubID) => { shell.openExternal(funcLib.general.doModHub(hubID)) })
-ipcMain.on('dispatch:help', () => { shell.openExternal('https://fsgmodding.github.io/FSG_Mod_Assistant/') })
-
-
+// MARK: misc window.
+ipcMain.on('dispatch:changelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
+ipcMain.on('dispatch:find', () => { serveIPC.windowLib.createNamedWindow('find') } )
+ipcMain.on('dispatch:game', ()         => { funcLib.gameLauncher() })
+ipcMain.on('dispatch:help', ()         => { shell.openExternal('https://fsgmodding.github.io/FSG_Mod_Assistant/') })
+ipcMain.on('win:clipboard', (_, value) => clipboard.writeText(value, 'selection') )
+ipcMain.on('win:openURL',   (_, url)   => { shell.openExternal(url) })
+ipcMain.on('win:close',     (e)        => { BrowserWindow.fromWebContents(e.sender).close() })
 
 ipcMain.on('main:minimizeToTray',   () => { serveIPC.windowLib.sendToTray() })
 ipcMain.on('main:runUpdateInstall', () => {
@@ -996,11 +945,9 @@ ipcMain.on('main:runUpdateInstall', () => {
 		serveIPC.log.debug('auto-update', 'Auto-Update Called Before Ready.')
 	}
 })
-ipcMain.on('toMain_populateClipboard', (_, text) => { clipboard.writeText(text, 'selection') })
 
-ipcMain.on('win:clipboard', (_, value) => clipboard.writeText(value, 'selection') )
-ipcMain.on('win:openURL', (_, url)     => { shell.openExternal(url) })
 
+// MARK: app status flags
 ipcMain.handle('state:all', () => { return {
 	botStatus          : serveIPC.modCollect.botDetails,
 	dangerDebug        : serveIPC.isDebugDanger,
@@ -1010,13 +957,13 @@ ipcMain.handle('state:all', () => { return {
 	updateReady        : serveIPC.modCollect.updateIsReady,
 }})
 
-// send status flags to main and mini
+// MARK: refresh status
 function refreshTransientStatus() {
 	serveIPC.windowLib.sendToValidWindow('main', 'status:all')
 	serveIPC.windowLib.sendToValidWindow('mini', 'status:all')
 }
 
-// Send mod list to main window
+// MARK: refresh list
 function refreshClientModList(closeLoader = true) {
 	// DATA STRUCT - send mod list
 	const currentVersion = serveIPC.storeSet.get('game_version', 22)
@@ -1054,7 +1001,8 @@ function refreshClientModList(closeLoader = true) {
 // MARK: FILE OPS
 ipcMain.handle('file:operation', async (_, operations) => funcLib.fileOperation.process(operations))
 
-// Launch mod scanner
+
+// MARK: run scan
 async function processModFolders(force = false) {
 	if ( serveIPC.isProcessing ) { return }
 	if ( !force && !serveIPC.isFoldersDirty ) { serveIPC.loadWindow.hide(500); return }
@@ -1067,7 +1015,7 @@ async function processModFolders(force = false) {
 	serveIPC.loadWindow.doReady(() => { funcLib.processor.readOnDisk() })
 }
 
-// Post Process on mod scanner
+// MARK: run scan (post)
 modQueueRunner.on('process-mods-done', () => {
 	funcLib.general.toggleFolderDirty(false)
 	funcLib.gameSet.read()
@@ -1152,7 +1100,7 @@ modQueueRunner.on('process-mods-done', () => {
 	}
 })
 
-// Application boot up
+// MARK: APP START
 app.whenReady().then(() => {
 	if ( gotTheLock ) {
 		if ( serveIPC.storeSet.has('force_lang') && serveIPC.storeSet.get('lock_lang', false) ) {
@@ -1221,7 +1169,7 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {	if (process.platform !== 'darwin') { app.quit() } })
 
 
-// #region ModLook Thread
+// #region ModLook
 function modStoreItems({ thisMod = null, cacheUUID = null, thisPromise = null} = {}) {
 	const lookThread = require('node:child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
 		23,
