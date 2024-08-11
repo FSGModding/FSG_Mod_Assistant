@@ -142,11 +142,9 @@ const pageAPI = {
 			'loading:total',
 			'mods:list',
 			'mods:site',
+			'select:list',
+			'select:withText',
 			'status:all',
-
-			'fromMain_filterOnly',       // TODO: finish this
-			'fromMain_selectOnly',       // TODO: finish this
-			'fromMain_selectOnlyFilter', // TODO: finish this
 		]),
 	},
 	'mini' : {

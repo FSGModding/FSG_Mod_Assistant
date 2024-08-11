@@ -103,7 +103,7 @@ async function step_crops(thisMod) {
 		MA.byId('detail_crop_json').clsShow()
 		MA.byId('cropcal_button').addEventListener('click', () => {
 			//TODO : this is wrong
-			window.mods.popClipboard(JSON.stringify(thisMod.modDesc.cropInfo))
+			window.operations.clip(JSON.stringify(thisMod.modDesc.cropInfo))
 		})
 		
 		return clientMakeCropCalendar(

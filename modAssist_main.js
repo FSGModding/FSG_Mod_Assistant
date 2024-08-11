@@ -801,7 +801,7 @@ function openWizard() {
 // END : Setup Wizard Functions
 
 
-// MARK: notes & aites
+// MARK: notes & sites
 ipcMain.on('dispatch:notes', (_, key) => { serveIPC.windowLib.createNamedWindow('notes', { collectKey : key }) })
 ipcMain.handle('settings:collection:get',   (_, collectKey) => serveIPC.modCollect.renderCollectNotes(collectKey) )
 ipcMain.handle('settings:collection:set',   (_, collectKey, key, value) => {
@@ -876,7 +876,7 @@ ipcMain.on('dispatch:save',       (_, collection, _fileName) => { serveIPC.windo
 ipcMain.on('toMain_selectInMain', (_, selectList) => {
 	if ( serveIPC.windowLib.isValid('main') ) {
 		serveIPC.windowLib.win.main.focus()
-		serveIPC.windowLib.sendToWindow('main', 'fromMain_selectOnly', selectList)
+		serveIPC.windowLib.sendToWindow('main', 'select:list', selectList)
 	}
 })
 ipcMain.on('toMain_openSaveFolder', () => { saveCompare_open(false) })

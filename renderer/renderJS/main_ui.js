@@ -24,36 +24,19 @@ window.operations.receive('select:all', () => {
 	else { window.state.files.key_all() }
 })
 
+window.main_IPC.receive('select:list', (list) => {
+	const tableID = `${list[0].split('--')[0]}_mods`
+	window.state.colToggle(tableID)
+	window.state.track.selected = new Set(list)
+	window.state.doDisplay()
+})
 
-//TODO: handle these
-// window.mods.receive('fromMain_selectOnly', (selectList) => {
-// 	const tableID   = `${selectList[0].split('--')[0]}_mods`
-// 	const checkList = selectList.map((id) => `${id}__checkbox`)
-
-// 	select_lib.close_all(tableID)
-// 	select_lib.click_only(tableID, checkList)
-// 	fsgUtil.byId('tag_filter__selected').checked = true
-	
-// })
-
-// window.mods.receive('fromMain_filterOnly', (filterText) => {
-// 	select_lib.out_tag_reset()
-// 	select_lib.tag_reset()
-// 	select_lib.filter_post(filterText)
-// 	select_lib.click_all()
-// })
-
-// window.mods.receive('fromMain_selectOnlyFilter', (selectMod, filterText) => {
-// 	const tableID = `${selectMod.split('--')[0]}_mods`
-// 	const checkList = [`${selectMod}__checkbox`]
-	
-// 	select_lib.close_all(tableID)
-// 	select_lib.click_only(tableID, checkList)
-// 	select_lib.filter_post(filterText)
-// })
-
-
-
+window.main_IPC.receive('select:withText', (list, text) => {
+	const tableID = list.split('--')[0]
+	window.state.colToggle(tableID)
+	window.state.track.selected = new Set([list])
+	window.state.filter.findForce(text)
+})
 
 window.main_IPC.receive('mods:list', (modCollect) => {
 	window.state.updateFromData(modCollect)

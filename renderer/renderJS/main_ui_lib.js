@@ -875,6 +875,10 @@ class StateManager {
 			this.track.searchString = ''
 			this.doDisplay()
 		},
+		findForce : (text) => {
+			MA.byIdValue('filter_input', text)
+			this.filter.findTerm()
+		},
 		findTerm : () => {
 			const newValue = MA.byIdValueLC('filter_input')
 			const needsUpdate = this.track.searchString.length >= 2 ||
