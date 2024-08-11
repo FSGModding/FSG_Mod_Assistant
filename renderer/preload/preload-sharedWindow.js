@@ -149,6 +149,16 @@ const pageAPI = {
 			'fromMain_selectOnlyFilter', // TODO: finish this
 		]),
 	},
+	'mini' : {
+		functions : {
+			dispatchLog  : ()     => { ipcRenderer.send('dispatch:gamelog', null) },
+			setActive    : (CKey) => ipcRenderer.invoke('folders:activate', CKey),
+			startFarmSim : ()     => { ipcRenderer.send('dispatch:game') },
+			togglePin    : ()     => { ipcRenderer.send('mini:togglePin') },
+			updateState  : () => ipcRenderer.invoke('state:all'),
+		},
+		validAsync : new Set(['mods:list', 'status:all']),
+	},
 	'notes' : {
 		functions : {
 			active       : ()    => ipcRenderer.invoke('settings:activeCollection'),

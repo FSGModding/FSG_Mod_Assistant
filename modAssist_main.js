@@ -719,7 +719,7 @@ ipcMain.on('dispatch:find',      () => { serveIPC.windowLib.createNamedWindow('f
 
 
 // Mini-mode operation
-ipcMain.on('toMain_toggleMiniPin', () => { serveIPC.windowLib.toggleAlwaysOnTop('mini'); refreshClientModList() })
+ipcMain.on('mini:togglePin', () => { serveIPC.windowLib.toggleAlwaysOnTop('mini'); refreshClientModList() })
 ipcMain.on('dispatch:mini',  () => { toggleMiniWindow() })
 function toggleMiniWindow () {
 	if ( serveIPC.windowLib.isValid('mini') && serveIPC.windowLib.isVisible('mini') ) {
@@ -1001,26 +1001,19 @@ ipcMain.on('toMain_populateClipboard', (_, text) => { clipboard.writeText(text, 
 ipcMain.on('win:clipboard', (_, value) => clipboard.writeText(value, 'selection') )
 ipcMain.on('win:openURL', (_, url)     => { shell.openExternal(url) })
 
-ipcMain.handle('state:all', () => ({
+ipcMain.handle('state:all', () => { return {
 	botStatus          : serveIPC.modCollect.botDetails,
 	dangerDebug        : serveIPC.isDebugDanger,
 	gameRunning        : serveIPC.isGameRunning,
 	gameRunningEnabled : serveIPC.isGamePolling,
+	pinMini            : serveIPC.windowLib.isAlwaysOnTop('mini'),
 	updateReady        : serveIPC.modCollect.updateIsReady,
-}))
+}})
 
 // send status flags to main and mini
 function refreshTransientStatus() {
-	serveIPC.windowLib.sendToValidWindow('main', 'status:all', {
-		botStatus          : serveIPC.modCollect.botDetails,
-		gameRunning        : serveIPC.isGameRunning,
-		gameRunningEnabled : serveIPC.isGamePolling,
-		updateReady        : serveIPC.modCollect.updateIsReady,
-	})
-	serveIPC.windowLib.sendToValidWindow('mini', 'fromMain_gameUpdate', {
-		gameRunning        : serveIPC.isGameRunning,
-		gameRunningEnabled : serveIPC.isGamePolling,
-	})
+	serveIPC.windowLib.sendToValidWindow('main', 'status:all')
+	serveIPC.windowLib.sendToValidWindow('mini', 'status:all')
 }
 
 // Send mod list to main window

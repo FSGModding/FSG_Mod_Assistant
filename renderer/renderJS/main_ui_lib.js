@@ -67,6 +67,8 @@ class StateManager {
 		this.prefs    = new PrefLib()
 		this.modal.mismatch = new ModalOverlay('#open_game_modal')
 		this.modal.modInfo  = new ModalOverlay('#open_mod_info_modal')
+
+		window.main_IPC.receive('status:all', () => this.updateState() )
 	}
 
 	// MARK: process data

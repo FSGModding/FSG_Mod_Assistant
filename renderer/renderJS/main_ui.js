@@ -85,6 +85,7 @@ function topBarHandlers() {
 	MA.byIdEventIfExists('topBar-find',        () => { window.main_IPC.dispatch('find') })
 	MA.byIdEventIfExists('topBar-gamelog',     () => { window.main_IPC.dispatch('gamelog') })
 	MA.byIdEventIfExists('topBar-help',        () => { window.main_IPC.dispatch('help') })
+	MA.byIdEventIfExists('topBar-mini',        () => { window.main_IPC.dispatch('mini') })
 	MA.byIdEventIfExists('bottomBar-debug',    () => { window.main_IPC.dispatch('debug') })
 }
 //MARK: side bar event
