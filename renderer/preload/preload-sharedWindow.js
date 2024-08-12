@@ -178,6 +178,22 @@ const pageAPI = {
 		},
 		validAsync : new Set(['resolve:shortname']),
 	},
+	'savegame' : {
+		functions : {
+			cacheDetails   : (content) => ipcRenderer.send('save:cacheGameSave', content),
+			drop : {
+				folder : (path)  => { ipcRenderer.send('save:drop', 'folder', path)},
+				file : (path)    => { ipcRenderer.send('save:drop', 'zip', path)},
+			},
+			open : {
+				folder     : ()      => { ipcRenderer.send('save:folder')},
+				hub        : (hubID) => { ipcRenderer.send('files:openModHubID', parseInt(hubID, 10) ) },
+				file       : ()      => { ipcRenderer.send('save:file')},
+			},
+			selectInMain   : (list)  => { ipcRenderer.send('select:listInMain', list)},
+		},
+		validAsync : new Set(['save:collectName', 'save:saveInfo']),
+	},
 	'version' : {
 		functions : {
 			get     : ()    => ipcRenderer.invoke('collect:all'),

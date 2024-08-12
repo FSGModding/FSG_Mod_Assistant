@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
-	<script src="renderJS/util/general_lib.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
 	<script src="renderJS/savegame_ui.js"></script>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2" id="drag_target" style="min-height: 100vh;">
@@ -21,7 +21,7 @@
 		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
 			<div class="row w-100 g-0">
 				<div class="col-7" style="-webkit-app-region: drag;">
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+					<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
 				</div>
 				<div class="col-5 pt-4">
 					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><span class="h4" id="collection_name"></span></div>
@@ -31,41 +31,41 @@
 		</div>
 
 		<div class="btn-group mx-auto w-75 d-flex" id="pickCollect">
-			<select oninput="clientPickCollect()" class="form-select" id="pickCollectSelect" aria-label="Default select example"></select>
+			<select class="form-select" id="pickCollectSelect" aria-label="Default select example"></select>
 		</div>
 
 		<div class="btn-group mx-auto w-75 d-flex" id="loadButtons">
-			<button type="button" class="btn btn-primary btn-sm border" onclick="window.mods.openFolder()"><i class="bi bi-folder"></i> <l10n name="open_save_folder"></l10n></button>
-			<button type="button" class="btn btn-primary btn-sm border" onclick="window.mods.openZIP()"><i class="bi bi-file-earmark-zip"></i> <l10n name="open_save_zip"></l10n></button>
+			<button type="button" class="btn btn-primary btn-sm border" id="openFolderButton"><i class="bi bi-folder"></i> <i18n-text data-key="open_save_folder"></i18n-text></button>
+			<button type="button" class="btn btn-primary btn-sm border" id="openZipButton"><i class="bi bi-file-earmark-zip"></i> <i18n-text data-key="open_save_zip"></i18n-text></button>
 		</div>
 
-		<button type="button" class="btn btn-info btn-sm border w-75 mx-auto d-block mt-2" onclick="clientCopyVisible()"><i class="bi bi-clipboard-check"></i> <l10n name="clipboard_visible"></l10n></button>
+		<button type="button" class="btn btn-info btn-sm border w-75 mx-auto d-block mt-2" id="copyVisibleButton"><i class="bi bi-clipboard-check"></i> <i18n-text data-key="clipboard_visible"></i18n-text></button>
 
 		<div class="input-group input-group-sm btn-group w-100 mt-2 px-1">
-			<span class="input-group-text" id="basic-addon1"><l10n name="savegame_filter_only"></l10n></span>
-			<input type="checkbox" class="btn-check filter_only" id="check_savegame_dlc" onchange="clientChangeFilter()">
-			<label class="btn btn-outline-success btn-sm border" for="check_savegame_dlc"><l10n name="savegame_dlc"></l10n><span class="small"> [<span class="quantity">0</span>]</span></label>
-			<input type="checkbox" class="btn-check filter_only" id="check_savegame_missing" onchange="clientChangeFilter()">
-			<label class="btn btn-outline-success btn-sm border" for="check_savegame_missing"><l10n name="savegame_missing"></l10n><span class="small"> [<span class="quantity">0</span>]</span></label>
-			<input type="checkbox" class="btn-check filter_only" id="check_savegame_scriptonly" onchange="clientChangeFilter()">
-			<label class="btn btn-outline-success btn-sm border" for="check_savegame_scriptonly"><l10n name="savegame_scriptonly"></l10n><span class="small"> [<span class="quantity">0</span>]</span></label>
-			<input type="checkbox" class="btn-check filter_only" id="check_savegame_isloaded" onchange="clientChangeFilter()">
-			<label class="btn btn-outline-success btn-sm border" for="check_savegame_isloaded"><l10n name="savegame_isloaded"></l10n><span class="small"> [<span class="quantity">0</span>]</span></label>
-			<input type="checkbox" class="btn-check filter_only" id="check_savegame_isused" onchange="clientChangeFilter()">
-			<label class="btn btn-outline-success btn-sm border" for="check_savegame_isused"><l10n name="savegame_isused"></l10n><span class="small"> [<span class="quantity">0</span>]</span></label>
-			<input type="checkbox" class="btn-check filter_only" id="check_savegame_unused" onchange="clientChangeFilter()">
-			<label class="btn btn-outline-success btn-sm border" for="check_savegame_unused"><l10n name="savegame_unused"></l10n><span class="small"> [<span class="quantity">0</span>]</span></label>
-			<input type="checkbox" class="btn-check filter_only" id="check_savegame_inactive" onchange="clientChangeFilter()">
-			<label class="btn btn-outline-success btn-sm border" for="check_savegame_inactive"><l10n name="savegame_inactive"></l10n><span class="small"> [<span class="quantity">0</span>]</span></label>
-			<input type="checkbox" class="btn-check filter_only" id="check_savegame_nohub" onchange="clientChangeFilter()">
-			<label class="btn btn-outline-success btn-sm border" for="check_savegame_nohub"><l10n name="savegame_nohub"></l10n><span class="small"> [<span class="quantity">0</span>]</span></label>
+			<span class="input-group-text" id="basic-addon1"><i18n-text data-key="savegame_filter_only"></i18n-text></span>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_dlc">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_dlc"><i18n-text data-key="savegame_dlc"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_missing">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_missing"><i18n-text data-key="savegame_missing"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_scriptonly">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_scriptonly"><i18n-text data-key="savegame_scriptonly"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_isloaded">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_isloaded"><i18n-text data-key="savegame_isloaded"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_isused">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_isused"><i18n-text data-key="savegame_isused"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_unused">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_unused"><i18n-text data-key="savegame_unused"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_inactive">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_inactive"><i18n-text data-key="savegame_inactive"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></label>
+			<input type="checkbox" class="btn-check filter_only" id="check_savegame_nohub">
+			<label class="btn btn-outline-success btn-sm border" for="check_savegame_nohub"><i18n-text data-key="savegame_nohub"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></label>
 		</div>
 		<div class="input-group input-group-sm btn-group w-100 mt-2 px-1">
-			<span class="input-group-text" id="basic-addon2"><l10n name="select_main"></l10n></span>
-			<button type="button" class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('unused')" data-for="check_savegame_unused"><l10n name="savegame_unused"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
-			<button type="button" class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('inactive')" data-for="check_savegame_inactive"><l10n name="savegame_inactive"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
-			<button type="button" class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('active')" data-for="check_savegame_active"><l10n name="savegame_isloaded"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
-			<button type="button" class="btn btn-outline-primary btn-sm border" onclick="clientSelectMain('nohub')" data-for="check_savegame_nohub"><l10n name="savegame_nohub"></l10n><span class="small"> [<span class="quantity">0</span>]</span></button>
+			<span class="input-group-text" id="basic-addon2"><i18n-text data-key="select_main"></i18n-text></span>
+			<button type="button" class="btn btn-outline-primary btn-sm border" id="select_button_unused" data-for="check_savegame_unused"><i18n-text data-key="savegame_unused"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></button>
+			<button type="button" class="btn btn-outline-primary btn-sm border" id="select_button_inactive" data-for="check_savegame_inactive"><i18n-text data-key="savegame_inactive"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></button>
+			<button type="button" class="btn btn-outline-primary btn-sm border" id="select_button_active" data-for="check_savegame_active"><i18n-text data-key="savegame_isloaded"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></button>
+			<button type="button" class="btn btn-outline-primary btn-sm border" id="select_button_nohub" data-for="check_savegame_nohub"><i18n-text data-key="savegame_nohub"></i18n-text><span class="small"> [<span class="quantity">0</span>]</span></button>
 		</div>
 
 		<div class="list-group mx-2 my-3" id="modList"></div>
@@ -91,8 +91,8 @@
 <template id="savegame_error">
 	<li class="mod-item list-group-item text-center justify-content-between list-group-item-danger">
 		<div class="ms-2 me-auto">
-			<div class="fw-bold"><l10n name="savegame_error"></l10n></div>
-			<div class="small">{{errors}}</div>
+			<div class="fw-bold"><i18n-text data-key="savegame_error"></i18n-text></div>
+			<div class="small"><template-var>errors</template-var></div>
 		</div>
 	</li>
 </template>
@@ -100,14 +100,14 @@
 <template id="savegame_mod">
 	<li class="mod-item list-group-item d-flex justify-content-between align-items-start {{colorClass}}">
 		<div class="h-100 mt-1" style="width: 30px;">
-			<button type="button" onclick="window.mods.openHUB('{{hubID}}')" class="{{hubIDHide}} btn btn-sm btn-secondary"><i class="bi bi-search-heart"></i><l10n class="d-none" name="open_hub"></l10n></button>
+			<button type="button" class="hubButton btn btn-sm btn-secondary"><i class="bi bi-search-heart"></i><i18n-text class="d-none" data-key="open_hub"></i18n-text></button>
 		</div>
 		<div class="ms-2 me-auto">
-			<div class="fw-bold">{{name}}</div>
-			<div class="small">{{title}}</div>
-			<div class="{{hideShowFarms}} text-body-emphasis small ps-3"><l10n name="savegame_farms"></l10n>: {{farms}}</div>
+			<div class="fw-bold"><template-var>name</template-var></div>
+			<div class="small"><template-var>title</template-var></div>
+			<div class="farmList text-body-emphasis small ps-3"><i18n-text data-key="savegame_farms"></i18n-text>: <template-var>farms</template-var></div>
 		</div>
-		{{badges}}
+		<div class="badgeDiv"></div>
 	</li>
 </template>
 

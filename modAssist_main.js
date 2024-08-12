@@ -873,19 +873,19 @@ ipcMain.on('toMain_openTrackFolder', () => {
 // Savegame compare window operation
 // TODO: add file support.
 ipcMain.on('dispatch:save',       (_, collection, _fileName) => { serveIPC.windowLib.createNamedWindow('save', { collectKey : collection }) })
-ipcMain.on('toMain_selectInMain', (_, selectList) => {
+ipcMain.on('select:listInMain', (_, selectList) => {
 	if ( serveIPC.windowLib.isValid('main') ) {
 		serveIPC.windowLib.win.main.focus()
 		serveIPC.windowLib.sendToWindow('main', 'select:list', selectList)
 	}
 })
-ipcMain.on('toMain_openSaveFolder', () => { saveCompare_open(false) })
-ipcMain.on('toMain_openSaveZIP',    () => { saveCompare_open(true) })
-ipcMain.on('toMain_openSaveDrop',   (_, type, thisPath) => {
+ipcMain.on('save:folder', () => { saveCompare_open(false) })
+ipcMain.on('save:file',    () => { saveCompare_open(true) })
+ipcMain.on('save:drop',   (_, type, thisPath) => {
 	if ( type !== 'zip' && !fs.statSync(thisPath).isDirectory() ) { return }
 	saveCompare_read(thisPath, type !== 'zip')
 })
-ipcMain.on('toMain_saveCompareCacheSet', (_, payload) => {
+ipcMain.on('save:cacheGameSave', (_, payload) => {
 	serveIPC.cacheGameSave = payload
 	refreshClientModList()
 })
@@ -893,7 +893,7 @@ ipcMain.on('toMain_saveCompareCacheSet', (_, payload) => {
 function saveCompare_read(thisPath, isFolder) {
 	try {
 		new saveFileChecker(thisPath, isFolder).getInfo().then((results) => {
-			serveIPC.windowLib.sendModList({ thisSaveGame : results }, 'fromMain_saveInfo', 'save', false )
+			serveIPC.windowLib.sendModList({ thisSaveGame : results }, 'save:saveInfo', 'save', false )
 		})
 	} catch (err) {
 		serveIPC.log.danger('save-check', 'Load failed', err)
