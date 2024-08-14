@@ -539,7 +539,6 @@ ipcMain.on('context:mod', async (event, modID, modIDs) => {
 			'log'
 		))
 	} else if ( isSave ) {
-		console.log(serveIPC.modCollect.collections)
 		const subMenu = [...serveIPC.modCollect.collections]
 			.filter((x) => serveIPC.modCollect.versionSame(x, 22))
 			.map(   (collectKey) => ({

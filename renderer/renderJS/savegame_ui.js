@@ -196,22 +196,17 @@ class WindowState {
 	}
 
 	doFilter() {
-		console.log('hi!')
 		const filtersActive = MA.query('.filter_only:checked').length
 		const modItems      = MA.query('.mod-item')
 		const filters = ['dlc', 'missing', 'scriptonly', 'isloaded', 'isused', 'inactive', 'unused', 'nohub']
 	
-		console.log(filtersActive)
 		if ( filtersActive === 0 ) {
 			for ( const modItem of modItems ) { modItem.classList.remove('d-none') }
 		} else {
 			const activeFilters = filters.filter((key) => MA.byId(`check_savegame_${key}`).checked )
-			console.log(activeFilters)
 			for ( const modItem of modItems ) {
 				let allBadgesFound = true
 				for ( const thisFilter of activeFilters ) {
-					console.log(thisFilter)
-					console.log(modItem.querySelector(`i18n-text[data-key="savegame_${thisFilter}"]`))
 					if ( modItem.querySelector(`i18n-text[data-key="savegame_${thisFilter}"]`) === null ) {
 						allBadgesFound = false
 						break
