@@ -125,7 +125,7 @@ class StateManager {
 					const thisModName = thisMod.fileDetail.shortName
 
 					// eslint-disable-next-line no-await-in-loop
-					const thisModRec  = await this.#addMod(thisMod)
+					const thisModRec  = await this.#addMod(thisMod, this.getSaveBadges(CKey, thisMod))
 
 					for ( const tag of thisModRec.filters ) { this.searchTagList.add(tag) }
 
@@ -180,6 +180,11 @@ class StateManager {
 		}
 		this.prefs.forceUpdate()
 		this.doDisplay()
+	}
+
+	getSaveBadges(CKey, mod) {
+		if ( this.track.lastPayload.opts?.cacheGameSave?.collectKey !== CKey ) { return null }
+		return this.track.lastPayload.opts?.cacheGameSave?.modList?.[mod.fileDetail.shortName] ?? null
 	}
 
 	// MARK: finish sort trees
@@ -351,7 +356,8 @@ class StateManager {
 					if ( ! this.track.selected.has(modKey) ) {
 						if ( this.doesSearchExclude(modRec) ) { continue }
 						if ( this.doesTagExclude(modRec)    ) { continue }
-					} else if ( this.track.selectedOnly ) { continue }
+						if ( this.track.selectedOnly        ) { continue }
+					}
 
 					thisCol.modNodePoint.appendChild(modRec.node)
 					scrollFrag.appendChild(modRec.scroll)
@@ -598,7 +604,7 @@ class StateManager {
 	}
 
 	// MARK: addMod
-	async #addMod(thisMod) {
+	async #addMod(thisMod, overBadges = null) {
 		const mod = {
 			filters : new Set(thisMod?.displayBadges?.map?.((x) => x.name) || []),
 			node    : document.createElement('tr'),
@@ -652,15 +658,20 @@ class StateManager {
 		}))
 
 		const badgeContain = mod.node.querySelector('.issue_badges')
-		for ( const badge of thisMod?.displayBadges?.filter?.((x) => x.name !== `fs${this.flag.currentVersion}`) || [] ) {
-			badgeContain.appendChild(I18N.buildBadgeMod(badge))
+
+		if ( overBadges !== null ) {
+			badgeContain.innerHTML = overBadges
+		} else {
+			for ( const badge of thisMod?.displayBadges?.filter?.((x) => x.name !== `fs${this.flag.currentVersion}`) || [] ) {
+				badgeContain.appendChild(I18N.buildBadgeMod(badge))
+			}
 		}
 
 		return mod
 	}
 
 	// MARK: col actions
-	colToggle(id) {
+	colToggle(id, stayOpen = false) {
 		this.track.lastID    = null
 		this.track.lastIndex = null
 		this.track.altClick  = null
@@ -673,7 +684,8 @@ class StateManager {
 			this.collections[this.track.openCollection].modNode.classList.add('d-none')
 		}
 
-		if ( this.track.openCollection === id ) {
+		if ( this.track.openCollection === id && !stayOpen ) {
+			this.forceSelectOnly(false)
 			this.track.openCollection = null
 		} else {
 			this.track.openCollection = id
@@ -764,7 +776,7 @@ class StateManager {
 
 		for ( const id of this.track.selected ) {
 			if ( !id.startsWith(this.track.openCollection) ) {
-				this.track.selected.remove(id)
+				this.track.selected.delete(id)
 			} else {
 				MA.safeClsAdd(id, 'bg-success-subtle')
 				MA.safeClsAdd(`${id}--scroller`, 'bg-success')
@@ -774,8 +786,14 @@ class StateManager {
 	}
 
 	// MARK: selection toggles
+	forceSelectOnly(nv = true) {
+		MA.byId('modFilter_selected').checked = nv
+		this.track.selectedOnly = nv
+	}
+
 	toggleSelectOnly() {
 		this.track.selectedOnly = MA.byIdCheck('modFilter_selected')
+		this.doDisplay()
 	}
 
 	changeSort() {

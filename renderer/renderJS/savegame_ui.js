@@ -81,13 +81,16 @@ class WindowState {
 	cacheSaveGame  = null
 	collectKey     = null
 
-	selectList  = null
-	selectCount = null
+	detailSend   = null
+	selectList   = null
+	noSelectList = null
+	selectCount  = null
 
 	constructor() {
-		this.dragDrop    = new DragDropLib()
-		this.selectList  = this.empty_list()
-		this.selectCount = this.empty_count()
+		this.dragDrop     = new DragDropLib()
+		this.selectList   = this.empty_list()
+		this.selectCount  = this.empty_count()
+		this.noSelectList = this.empty_list()
 
 		window.savegame_IPC.receive('save:collectName', (modCollect) => {
 			this.receiveCollectName(modCollect)
@@ -160,20 +163,30 @@ class WindowState {
 		nohub      : 0,
 		scriptonly : 0,
 		unused     : 0,
+
+		s_active   : 0,
+		s_inactive : 0,
+		s_nohub    : 0,
+		s_unused   : 0,
 	}}
 
 	final_count() {
-		this.selectCount.nohub    = this.selectList.nohub.length
-		this.selectCount.inactive = this.selectList.inactive.length
-		this.selectCount.unused   = this.selectList.unused.length
-		this.selectCount.active   = this.selectList.active.length
+		this.selectCount.s_nohub    = this.selectList.nohub.length
+		this.selectCount.s_inactive = this.selectList.inactive.length
+		this.selectCount.s_unused   = this.selectList.unused.length
+		this.selectCount.s_active   = this.selectList.active.length
+
+		this.selectCount.nohub    = this.selectList.nohub.length + this.noSelectList.nohub.length
+		this.selectCount.inactive = this.selectList.inactive.length + this.noSelectList.inactive.length
+		this.selectCount.unused   = this.selectList.unused.length + this.noSelectList.unused.length
+		this.selectCount.active   = this.selectList.active.length + this.noSelectList.active.length
 	}
 
 	doCounts() {
 		for ( const element of MA.query('[data-for^="check_savegame"]') ) {
 			const labelName = element.getAttribute('data-for').replace('check_savegame_', '')
 			const quantity  = element.querySelector('.quantity')
-			quantity.innerHTML = this.selectCount[labelName]
+			quantity.innerHTML = this.selectCount[`s_${labelName}`]
 		}
 		for ( const element of MA.query('[for^="check_savegame"]') ) {
 			const labelName = element.getAttribute('for').replace('check_savegame_', '')
@@ -183,19 +196,23 @@ class WindowState {
 	}
 
 	doFilter() {
+		console.log('hi!')
 		const filtersActive = MA.query('.filter_only:checked').length
 		const modItems      = MA.query('.mod-item')
 		const filters = ['dlc', 'missing', 'scriptonly', 'isloaded', 'isused', 'inactive', 'unused', 'nohub']
 	
+		console.log(filtersActive)
 		if ( filtersActive === 0 ) {
 			for ( const modItem of modItems ) { modItem.classList.remove('d-none') }
 		} else {
 			const activeFilters = filters.filter((key) => MA.byId(`check_savegame_${key}`).checked )
-			
+			console.log(activeFilters)
 			for ( const modItem of modItems ) {
 				let allBadgesFound = true
 				for ( const thisFilter of activeFilters ) {
-					if ( modItem.querySelector(`[name="savegame_${thisFilter}"]`) === null ) {
+					console.log(thisFilter)
+					console.log(modItem.querySelector(`i18n-text[data-key="savegame_${thisFilter}"]`))
+					if ( modItem.querySelector(`i18n-text[data-key="savegame_${thisFilter}"]`) === null ) {
 						allBadgesFound = false
 						break
 					}
@@ -214,8 +231,6 @@ class WindowState {
 		const badges       = ['versionMismatch', 'consumable', 'scriptOnly', 'isUsed', 'isLoaded']
 		const displayBadge = this.getBadges(mod)
 		const colorClass   = this.getColor(mod)
-
-		console.log(mod, colorClass)
 		
 		if ( mod.isDLC )      { this.selectCount.dlc++ }
 		if ( !mod.isPresent ) { this.selectCount.missing++ }
@@ -236,10 +251,11 @@ class WindowState {
 		})
 
 		const badgeDiv = node.querySelector('.badgeDiv')
-		for ( const part of displayBadge ) {
-			const element = I18N.buildBadge({name : part[0], class : ['bg-gradient', 'rounded-1', 'ms-1'] }, { i18nPrefix : 'savegame_', classPrefix : 'badge_savegame_' })
+		for ( const part of displayBadge.sort((a, b) => Intl.Collator().compare(a[0], b[0])) ) {
+			const element = I18N.buildBadge({name : part[0], class : ['bg-gradient', 'rounded-1', 'ms-1'] }, { i18nPrefix : 'savegame_', classPrefix : 'badge-savegame' })
 			badgeDiv.appendChild(element)
 		}
+		this.detailSend.modList[name] = badgeDiv.innerHTML
 		node.querySelector('.mod-item').classList.add(colorClass)
 		node.querySelector('.farmList').clsShow(mod.usedBy !== null && !singleFarm)
 
@@ -255,15 +271,16 @@ class WindowState {
 	}
 
 	doSaveInfo() {
-		const detailSend = { collectKey : this.collectKey, modList : {} }
 		const modCollect = this.cacheSaveGame
 		const savegame   = modCollect.opts.thisSaveGame
 		const isCSV      = savegame.mapMod === 'csvLoaded'
 		const {haveModSet, fullModSet} = this.getSets(modCollect.modList[this.collectKey].mods, Object.keys(savegame.mods))
 		const modSetHTML = []
-	
-		this.selectList  = this.empty_list()
-		this.selectCount = this.empty_count()
+
+		this.detailSend = { collectKey : this.collectKey, modList : {} }
+		this.selectList   = this.empty_list()
+		this.selectCount  = this.empty_count()
+		this.noSelectList = this.empty_list()
 	
 		if ( savegame.errorList.length !== 0 ) {
 			const errors = savegame.errorList.map((error) => `<l10n name="${error[0]}"></l10n> ${error[1]}`)
@@ -309,11 +326,11 @@ class WindowState {
 	
 			this.doSelectLists(thisModDetail, haveModSet?.[thisMod]?.uuid ?? null)
 	
-			detailSend.modList[thisMod] = thisModDetail
+			// detailSend.modList[thisMod] = thisModDetail
 			modSetHTML.push(this.doLine(thisMod, thisModDetail, savegame.singleFarm, modCollect.modHub.list.mods[thisMod]))
 		}
 
-		window.savegame_IPC.cacheDetails(detailSend)
+		window.savegame_IPC.cacheDetails(this.detailSend)
 		const modList = MA.byId('modList')
 		modList.innerHTML = ''
 		for ( const element of modSetHTML ) {
@@ -325,11 +342,11 @@ class WindowState {
 	}
 
 	doSelectLists(thisModDetail, thisUUID) {
-		if ( thisUUID === null ) { return }
-		if ( thisModDetail.isUsed === false )   { this.selectList.unused.push(`${this.collectKey}--${thisUUID}`) }
-		if ( thisModDetail.isLoaded === false ) { this.selectList.inactive.push(`${this.collectKey}--${thisUUID}`) }
-		if ( thisModDetail.isModHub === false ) { this.selectList.nohub.push(`${this.collectKey}--${thisUUID}`) }
-		if ( thisModDetail.isLoaded === true )  { this.selectList.active.push(`${this.collectKey}--${thisUUID}`) }
+		const whichList = thisUUID === null ? 'noSelectList' : 'selectList'
+		if ( thisModDetail.isUsed === false )   { this[whichList].unused.push(`${this.collectKey}--${thisUUID}`) }
+		if ( thisModDetail.isLoaded === false ) { this[whichList].inactive.push(`${this.collectKey}--${thisUUID}`) }
+		if ( thisModDetail.isModHub === false ) { this[whichList].nohub.push(`${this.collectKey}--${thisUUID}`) }
+		if ( thisModDetail.isLoaded === true )  { this[whichList].active.push(`${this.collectKey}--${thisUUID}`) }
 	}
 
 	createModRecord(isMH) { return {
@@ -400,7 +417,7 @@ class WindowState {
 
 	action = {
 		copyVisible : () => {
-			const shownMods = MA.queryA('.mod-item').filter((x) => !x.classList.contains('d-none')).map((x) => x.querySelector('.fw-bold').innerHTML)
+			const shownMods = MA.queryA('.mod-item').filter((x) => !x.classList.contains('d-none')).map((x) => x.querySelector('template-var').innerHTML)
 			window.operations.clip(shownMods.join('\n'))
 		},
 		pickCollect : () => {

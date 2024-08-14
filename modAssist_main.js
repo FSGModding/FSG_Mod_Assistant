@@ -111,7 +111,6 @@ ipcMain.handle('files:list',      (_, mode, mods) => getCopyMoveDelete(mode, mod
 ipcMain.handle('files:list:favs', ()              => getCopyMoveDelete('copyFavs', ...serveIPC.modCollect.getFavoriteCollectionFiles()))
 ipcMain.handle('files:drop', async (_, files) => {
 	if ( files.length === 1 && files[0].endsWith('.csv') ) {
-		// TODO: HANDLE CSV FILE DROP
 		new csvFileChecker(files[0]).getInfo().then((results) => {
 			serveIPC.windowLib.createNamedWindow('save', {
 				collectKey   : null,
@@ -540,6 +539,7 @@ ipcMain.on('context:mod', async (event, modID, modIDs) => {
 			'log'
 		))
 	} else if ( isSave ) {
+		console.log(serveIPC.modCollect.collections)
 		const subMenu = [...serveIPC.modCollect.collections]
 			.filter((x) => serveIPC.modCollect.versionSame(x, 22))
 			.map(   (collectKey) => ({
@@ -548,7 +548,7 @@ ipcMain.on('context:mod', async (event, modID, modIDs) => {
 					serveIPC.windowLib.createNamedWindow('save', { collectKey : collectKey })
 					setTimeout(() => { saveCompare_read(thisPath, thisMod.fileDetail.isFolder) }, 250)
 				},
-				icon  : serveIPC.modCollect.contextIcons.collection,
+				icon  : serveIPC.windowLib.contextIcons.collection,
 			}))
 
 		template.push(funcLib.menu.iconL10n('check_save_text', null, 'save', { submenu : subMenu }))
@@ -871,8 +871,7 @@ ipcMain.on('toMain_openTrackFolder', () => {
 // END : Save game tracker window operation
 
 // Savegame compare window operation
-// TODO: add file support.
-ipcMain.on('dispatch:save',       (_, collection, _fileName) => { serveIPC.windowLib.createNamedWindow('save', { collectKey : collection }) })
+ipcMain.on('dispatch:save',       (_, collection) => { serveIPC.windowLib.createNamedWindow('save', { collectKey : collection }) })
 ipcMain.on('select:listInMain', (_, selectList) => {
 	if ( serveIPC.windowLib.isValid('main') ) {
 		serveIPC.windowLib.win.main.focus()

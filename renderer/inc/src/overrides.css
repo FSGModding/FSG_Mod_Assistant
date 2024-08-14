@@ -445,3 +445,26 @@ i18n-text[data-key="game_icon_lg"] i {
 .badge-mod-web {
 	background-color: #6ca1a7!important;
 }
+
+.badge-savegame-nohub {
+	background-color: #6ca1a7!important;
+}
+.badge-savegame-missing {
+	background-color: var(--bs-danger-bg-subtle)!important;
+	border-color: var(--bs-danger)!important;
+}
+.badge-savegame-isloaded, .badge-savegame-isused {
+	background-color: var(--bs-success-bg-subtle)!important;
+	border-color: var(--bs-success)!important;
+}
+.badge-savegame-unused, .badge-savegame-inactive {
+	background-color: var(--bs-warning-bg-subtle)!important;
+	border-color: var(--bs-warning)!important;
+}
+.badge-savegame-scriptonly {
+	background-color: #bf8e5c!important;
+}
+.badge-savegame-dlc {
+	background-color: var(--bs-blue)!important;
+	font-style: italic;
+}

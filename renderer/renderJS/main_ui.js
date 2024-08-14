@@ -25,15 +25,16 @@ window.operations.receive('select:all', () => {
 })
 
 window.main_IPC.receive('select:list', (list) => {
-	const tableID = `${list[0].split('--')[0]}_mods`
-	window.state.colToggle(tableID)
+	const tableID = list[0].split('--')[0]
+	window.state.colToggle(tableID, true)
 	window.state.track.selected = new Set(list)
+	window.state.forceSelectOnly()
 	window.state.doDisplay()
 })
 
 window.main_IPC.receive('select:withText', (list, text) => {
 	const tableID = list.split('--')[0]
-	window.state.colToggle(tableID)
+	window.state.colToggle(tableID, true)
 	window.state.track.selected = new Set([list])
 	window.state.filter.findForce(text)
 })
