@@ -468,3 +468,6 @@ i18n-text[data-key="game_icon_lg"] i {
 	background-color: var(--bs-blue)!important;
 	font-style: italic;
 }
+.badge-savegame-versionmismatch {
+	background-color: var(--bs-purple)!important;
+}
