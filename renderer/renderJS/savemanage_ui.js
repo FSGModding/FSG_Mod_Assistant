@@ -15,9 +15,16 @@ class stateManager {
 	restoreDialog = null
 
 	uuidMap = {}
+	langCode = 'en'
 
 	constructor() {
-		MA.byIdEventIfExists('importButton', () => {})
+		MA.byIdEventIfExists('compare_save_btn',     () => { this.compare.go() })
+		MA.byIdEventIfExists('delete_save_btn',      () => { this.delete.go() })
+		MA.byIdEventIfExists('import_save_btn',      () => { this.import.go() })
+		MA.byIdEventIfExists('import_save_load_btn', () => { this.import.load() })
+		MA.byIdEventIfExists('importButton',         () => { this.import.open() })
+		MA.byIdEventIfExists('restore_save_btn',     () => { this.restore.go() })
+
 		this.collectDialog = new bootstrap.Modal('#collect_savegame_modal', { backdrop : 'static', keyboard : false })
 		this.deleteDialog  = new bootstrap.Modal('#delete_savegame_modal',  { backdrop : 'static', keyboard : false })
 		this.importDialog  = new bootstrap.Modal('#import_savegame_modal',  { backdrop : 'static', keyboard : false })
@@ -28,9 +35,113 @@ class stateManager {
 		this.importDialog.hide()
 		this.restoreDialog.hide()
 
+		window.savemanage_IPC.receive('savemanage:info', (modCollect) => {
+			this.processData(modCollect)
+		})
 		window.savemanage_IPC.receive('savemanage:import', (savePath) => {
 			MA.byIdText('save_import_path', savePath)
 		})
+	}
+
+	async processData(data) {
+		await this.updateLang()
+
+		this.uuidMap    = {}
+		const theseSaves = data.opts.saveInfo
+
+		const activeIDS      = Object.keys(theseSaves).filter((x) => typeof theseSaves[x].active === 'object' && theseSaves[x].active?.error === false)
+		const backIDS        = Object.keys(theseSaves).filter((x) => Array.isArray(theseSaves[x].backups) && theseSaves[x].backups.length !== 0 )
+
+		const activeGameHTML = []
+		const backGameHTML   = []
+		const compareHTML    = []
+
+		for ( const collectKey of data.set_Collections ) {
+			if ( data.appSettings.game_version === data.collectionNotes[collectKey].notes_version ) {
+				compareHTML.push(DATA.optionFromArray([collectKey, data.collectionToFullName[collectKey]]))
+			}
+		}
+
+		for ( const thisID of activeIDS ) {
+			this.uuidMap[theseSaves[thisID].active.uuid] = {
+				path : theseSaves[thisID].active.fullPath,
+				name : theseSaves[thisID].active.fullName,
+			}
+			activeGameHTML.push(this.doTemplate(thisID, theseSaves[thisID].active))
+		}
+
+		for ( const thisID of backIDS ) {
+			theseSaves[thisID].backups.reverse()
+			for ( const thisRecord of theseSaves[thisID].backups ) {
+				this.uuidMap[thisRecord.uuid] = {
+					path : thisRecord.fullPath,
+					name : thisRecord.fullName,
+				}
+				backGameHTML.push(this.doTemplate(thisID, thisRecord, 'savegame_backup_buttons'))
+			}
+		}
+
+		MA.byIdHTML('save_collect_choice', compareHTML.join(''))
+		MA.byIdNodeArray('active_games', activeGameHTML)
+		MA.byIdNodeArray('backup_games', backGameHTML)
+	}
+
+	async updateLang() {
+		return window.i18n.lang().then((value) => {
+			this.langCode = value
+		})
+	}
+
+	doTemplate(id, record, buttonID = 'savegame_active_buttons') {
+		const buttonNode = DATA.templateEngine(buttonID)
+
+		buttonNode.querySelector('.do-compare-save-btn').addEventListener('click', () => {
+			this.compare.btn(record.uuid)
+		})
+		buttonNode.querySelector('.do-export-save-btn').addEventListener('click', () => {
+			this.export.btn(record.uuid)
+		})
+		buttonNode.querySelector('.do-restore-save-btn').addEventListener('click', () => {
+			this.restore.btn(record.uuid)
+		})
+		buttonNode.querySelector('.do-delete-save-btn').addEventListener('click', () => {
+			this.delete.btn(record.uuid)
+		})
+		const node = DATA.templateEngine('savegame_record', {
+			farms        : this.doFarms(record.farms),
+			saveDate     : record.saveDate,
+			saveMap      : record.map,
+			saveModCount : record.modCount,
+			saveName     : record.name,
+			saveNumber   : id,
+			savePath     : record.fullPath,
+			savePlayTime : record.playTime,
+			saveRealDate : this.doDate(record.fileDate),
+		})
+
+		node.querySelector('.buttonDiv').appendChild(buttonNode)
+		return node
+	}
+
+	doDate(date) {
+		return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+	}
+	
+	doFarms(farms) {
+		const returnHTML = [
+			'<tr><td></td><td class="text-end"><l10n class="fst-italic" name="save_manage_money"></l10n></td><td class="text-end"><l10n class="fst-italic" name="save_manage_loan"></l10n></td></tr>'
+		]
+
+		for ( const thisFarm of farms ) {
+			returnHTML.push(`
+				<tr>
+					<td><span class="farm_${thisFarm.color.toString().padStart(2, '0')}">${thisFarm.name}</span></td>
+					<td class="text-end">${Intl.NumberFormat(this.langCode, {maximumFractionDigits : 0}).format(thisFarm.money)}</td>
+					<td class="text-end">${Intl.NumberFormat(this.langCode, {maximumFractionDigits : 0}).format(thisFarm.loan)}</td>
+				</tr>`
+			)
+		}
+		return `<table class="table table-sm table-borderless table-striped">${returnHTML.join('')}</table>`
 	}
 
 	import = {
@@ -51,8 +162,8 @@ class stateManager {
 			this.deleteDialog.hide()
 		},
 		btn : (uuid) => {
-			MA.byIdText('save_delete_name', uuidMap[uuid].name)
-			MA.byIdText('save_delete_path', uuidMap[uuid].path)
+			MA.byIdText('save_delete_name', this.uuidMap[uuid].name)
+			MA.byIdText('save_delete_path', this.uuidMap[uuid].path)
 			this.deleteDialog.show()
 		},
 	}
@@ -65,8 +176,8 @@ class stateManager {
 			}
 		},
 		btn : (uuid) => {
-			MA.byIdText('save_restore_name', uuidMap[uuid].name)
-			MA.byIdText('save_restore_path', uuidMap[uuid].path)
+			MA.byIdText('save_restore_name', this.uuidMap[uuid].name)
+			MA.byIdText('save_restore_path', this.uuidMap[uuid].path)
 			this.restoreDialog.show()
 		},
 	}
@@ -79,8 +190,8 @@ class stateManager {
 			}
 		},
 		btn : (uuid) => {
-			MA.byIdText('save_collect_name', uuidMap[uuid].name)
-			MA.byIdText('save_collect_path', uuidMap[uuid].path)
+			MA.byIdText('save_collect_name', this.uuidMap[uuid].name)
+			MA.byIdText('save_collect_path', this.uuidMap[uuid].path)
 			this.collectDialog.show()
 		},
 	}
@@ -90,91 +201,6 @@ class stateManager {
 		},
 	}
 }
-
-
-
-window.mods.receive('fromMain_saveInfo', (modCollect) => {
-	uuidMap    = {}
-	const theseSaves = modCollect.opts.saveInfo
-
-	const activeIDS      = Object.keys(theseSaves).filter((x) => typeof theseSaves[x].active === 'object' && theseSaves[x].active?.error === false)
-	const backIDS        = Object.keys(theseSaves).filter((x) => Array.isArray(theseSaves[x].backups) && theseSaves[x].backups.length !== 0 )
-
-	const activeGameHTML = []
-	const backGameHTML   = []
-	const compareHTML    = []
-
-	for ( const collectKey of modCollect.set_Collections ) {
-		if ( modCollect.appSettings.game_version === modCollect.collectionNotes[collectKey].notes_version ) {
-			compareHTML.push(fsgUtil.buildSelectOpt(collectKey, modCollect.collectionToFullName[collectKey]))
-		}
-	}
-
-	for ( const thisID of activeIDS ) {
-		uuidMap[theseSaves[thisID].active.uuid] = {
-			path : theseSaves[thisID].active.fullPath,
-			name : theseSaves[thisID].active.fullName,
-		}
-		activeGameHTML.push(doSaveTemplate(thisID, theseSaves[thisID].active))
-	}
-
-	for ( const thisID of backIDS ) {
-		theseSaves[thisID].backups.reverse()
-		for ( const thisRecord of theseSaves[thisID].backups ) {
-			uuidMap[thisRecord.uuid] = {
-				path : thisRecord.fullPath,
-				name : thisRecord.fullName,
-			}
-			backGameHTML.push(doSaveTemplate(thisID, thisRecord, 'savegame_backup_buttons'))
-		}
-	}
-
-	fsgUtil.setContent({
-		active_games        : activeGameHTML.join(''),
-		backup_games        : backGameHTML.join(''),
-		save_collect_choice : compareHTML.join(''),
-	})
-	processL10N()
-})
-
-function doSaveTemplate(thisID, saveRecord, buttonID = 'savegame_active_buttons') {
-	return fsgUtil.useTemplate('savegame_record', {
-		buttons      : fsgUtil.useTemplate(buttonID, {
-			uuid         : saveRecord.uuid,
-		}),
-		farms        : doFarms(saveRecord.farms),
-		saveDate     : saveRecord.saveDate,
-		saveMap      : saveRecord.map,
-		saveModCount : saveRecord.modCount,
-		saveName     : saveRecord.name,
-		saveNumber   : thisID,
-		savePath     : saveRecord.fullPath,
-		savePlayTime : saveRecord.playTime,
-		saveRealDate : formatDate(saveRecord.fileDate),
-	})
-}
-
-function formatDate(date) {
-	return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
-}
-
-function doFarms(farms) {
-	const returnHTML = [
-		'<tr><td></td><td class="text-end"><l10n class="fst-italic" name="save_manage_money"></l10n></td><td class="text-end"><l10n class="fst-italic" name="save_manage_loan"></l10n></td></tr>'
-	]
-
-	for ( const thisFarm of farms ) {
-		returnHTML.push(`
-			<tr>
-				<td><span class="farm_${thisFarm.color.toString().padStart(2, '0')}">${thisFarm.name}</span></td>
-				<td class="text-end">${Intl.NumberFormat(_l(), {maximumFractionDigits : 0}).format(thisFarm.money)}</td>
-				<td class="text-end">${Intl.NumberFormat(_l(), {maximumFractionDigits : 0}).format(thisFarm.loan)}</td>
-			</tr>`
-		)
-	}
-	return `<table class="table table-sm table-borderless table-striped">${returnHTML.join('')}</table>`
-}
-
 
 window.addEventListener('DOMContentLoaded', () => {
 	window.state = new stateManager()

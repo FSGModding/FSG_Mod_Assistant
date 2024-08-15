@@ -326,11 +326,7 @@ class WindowState {
 		}
 
 		window.savegame_IPC.cacheDetails(this.detailSend)
-		const modList = MA.byId('modList')
-		modList.innerHTML = ''
-		for ( const element of modSetHTML ) {
-			modList.appendChild(element)
-		}
+		MA.byIdNodeArray('modList', modSetHTML)
 	
 		this.final_count()
 		this.doCounts()

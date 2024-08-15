@@ -54,6 +54,13 @@ const MA = {
 			MA.byIdHTML(id, content)
 		}
 	},
+	byIdNodeArray : ( id, arr ) => {
+		const parent = MA.byId(id)
+		parent.innerHTML = ''
+		for ( const element of arr ) {
+			parent.appendChild(element)
+		}
+	},
 	byIdText   : ( id, newValue = null ) => {
 		if ( newValue !== null ) { MA.byId(id).textContent = newValue }
 		return MA.byId(id).textContent

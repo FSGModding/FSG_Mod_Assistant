@@ -834,15 +834,15 @@ ipcMain.on('file:exportZIP', (_, mods) => { funcLib.general.exportZIP(mods) })
 
 // Save game manager operation
 ipcMain.on('dispatch:savemanage', () => { funcLib.saveManage.refresh() })
-ipcMain.on('toMain_saveManageCompare', (_, fullPath, collectKey) => {
+ipcMain.on('savemanage:compare', (_, fullPath, collectKey) => {
 	serveIPC.windowLib.createNamedWindow('save', { collectKey : collectKey })
 	setTimeout(() => { saveCompare_read(fullPath, true) }, 250)
 })
-ipcMain.on('toMain_saveManageDelete',  (_, fullPath) => { funcLib.saveManage.delete(fullPath) })
-ipcMain.on('toMain_saveManageExport',  (_, fullPath) => { funcLib.saveManage.export(fullPath) })
-ipcMain.on('toMain_saveManageRestore', (_, fullPath, newSlot) => { funcLib.saveManage.restore(fullPath, newSlot) })
-ipcMain.on('toMain_saveManageImport',  (_, fullPath, newSlot) => { funcLib.saveManage.doImport(fullPath, newSlot) })
-ipcMain.on('toMain_saveManageGetImport', () => { funcLib.saveManage.getImport() })
+ipcMain.on('savemanage:delete',  (_, fullPath) => { funcLib.saveManage.delete(fullPath) })
+ipcMain.on('savemanage:export',  (_, fullPath) => { funcLib.saveManage.export(fullPath) })
+ipcMain.on('savemanage:restore', (_, fullPath, newSlot) => { funcLib.saveManage.restore(fullPath, newSlot) })
+ipcMain.on('savemanage:import',  (_, fullPath, newSlot) => { funcLib.saveManage.doImport(fullPath, newSlot) })
+ipcMain.on('savemanage:getImport', () => { funcLib.saveManage.getImport() })
 // END : Save game manager operation
 
 // Save game tracker window operation

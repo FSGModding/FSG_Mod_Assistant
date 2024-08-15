@@ -45,14 +45,14 @@
 
 		<div class="border-bottom pb-2">
 			<div class="btn-group mx-auto w-75 d-flex">
-				<button type="button" class="btn btn-primary btn-sm border" id="importButton" onclick="clientImportSave()"><i class="bi bi-folder"></i> <i18n-text data-key="save_manage_import"></i18n-text></button>
+				<button type="button" class="btn btn-primary btn-sm border" id="importButton"><i class="bi bi-folder"></i> <i18n-text data-key="save_manage_import"></i18n-text></button>
 			</div>
 		</div>
 
-		<i18n-text class="text-center pb-2 mt-3 h3" data-key="save_manage_active"></i18n-text>
+		<i18n-text class="d-block text-center pb-2 mt-3 h3" data-key="save_manage_active"></i18n-text>
 		<div id="active_games" class="row gy-4"></div>
 
-		<i18n-text class="text-center pb-2 mt-4 h3" data-key="save_manage_backup"></i18n-text>
+		<i18n-text class="d-block text-center pb-2 mt-4 h3" data-key="save_manage_backup"></i18n-text>
 		<div id="backup_games" class="row gy-4"></div>
 	</div>
 
@@ -82,7 +82,7 @@
 						</div>
 						<div class="col-9">
 							<i18n-text type="button" class="w-100 mb-2 btn btn-warning" data-bs-dismiss="modal" data-key="save_manage_button_cancel"></i18n-text>
-							<i18n-text type="button" class="w-100 btn btn-success" id="compare_save_btn" onclick="clientCompareSave_go()" data-key="save_manage_button_ok"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="compare_save_btn" data-key="save_manage_button_ok"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -107,7 +107,7 @@
 						</div>
 						<div class="col-9">
 							<i18n-text type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal" data-key="save_manage_button_cancel"></i18n-text>
-							<i18n-text type="button" class="w-100 btn btn-success" id="delete_save_btn" onclick="clientDeleteSave_go()" data-key="save_manage_button_ok"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="delete_save_btn" data-key="save_manage_button_ok"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -162,7 +162,7 @@
 						</div>
 						<div class="col-9">
 							<i18n-text type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal" data-key="save_manage_button_cancel"></i18n-text>
-							<i18n-text type="button" class="w-100 btn btn-success" id="restore_save_btn" onclick="clientRestoreSave_go()" data-key="save_manage_button_ok"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="restore_save_btn" data-key="save_manage_button_ok"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -179,7 +179,7 @@
 						<li><strong><i18n-text data-key="save_manage_path"></i18n-text>:</strong> <span id="save_import_path"></span></li>
 					</ul>
 					<div class="mb-3">
-						<i18n-text type="button" class="w-100 mb-2 btn btn-warning text-white" id="import_save_load_btn" onclick="clientImportSave_load()" data-key="save_manage_button_import"></i18n-text>
+						<i18n-text type="button" class="w-100 mb-2 btn btn-warning text-white" id="import_save_load_btn" data-key="save_manage_button_import"></i18n-text>
 					</div>
 					<div class="row">
 						<div class="col-auto">
@@ -219,7 +219,7 @@
 						</div>
 						<div class="col-9">
 							<i18n-text type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal" data-key="save_manage_button_cancel"></i18n-text>
-							<i18n-text type="button" class="w-100 btn btn-success" id="import_save_btn" onclick="clientImportSave_go()" data-key="save_manage_button_ok"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="import_save_btn" data-key="save_manage_button_ok"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -235,13 +235,13 @@
 		<span class="inset-block-header"><template-var>saveNumber</template-var> :: <template-var>saveName</template-var></span>
 		<div class="row gx-2">
 			<div class="col-5"><table class="table table-sm table-borderless table-striped">
-				<tr><td><i18n-text class="fst-italic" name="save_manage_time"></i18n-text></td><td><template-var>savePlayTime</template-var></td></tr>
-				<tr><td><i18n-text class="fst-italic" name="save_manage_date"></i18n-text></td><td><template-var>saveDate</template-var></td></tr>
-				<tr><td><i18n-text class="fst-italic" name="save_manage_real_date"></i18n-text></td><td><template-var>saveRealDate</template-var></td></tr>
-				<tr><td><i18n-text class="fst-italic" name="save_manage_mods"></i18n-text></td><td><template-var>saveModCount</template-var></td></tr>
-				<tr><td><i18n-text class="fst-italic" name="save_manage_map"></i18n-text></td><td><template-var>saveMap</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_time"></i18n-text></td><td><template-var>savePlayTime</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_date"></i18n-text></td><td><template-var>saveDate</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_real_date"></i18n-text></td><td><template-var>saveRealDate</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_mods"></i18n-text></td><td><template-var>saveModCount</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_map"></i18n-text></td><td><template-var>saveMap</template-var></td></tr>
 			</table></div>
-			<div class="col-4 farmDiv"></div>
+			<div class="col-4"><template-var>farms</template-var></div>
 			<div class="col-3 text-center buttonDiv"></div>
 		</div>
 	</div></div>
@@ -250,19 +250,19 @@
 
 <template id="savegame_active_buttons">
 	<div class="d-flex flex-column justify-content-around h-100">
-		<i18n-text type="button" onclick="clientCompareSave('{{uuid}}')" class="do-compare-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_compare"></i18n-text>
-		<i18n-text type="button" onclick="clientExportSave('{{uuid}}')" class="do-export-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_export"></i18n-text>
-		<i18n-text type="button" onclick="clientRestoreSave('{{uuid}}')" class="do-restore-save-btn flex-grow-1 border-dark btn btn-sm btn-warning" data-key="save_manage_duplicate"></i18n-text>
-		<i18n-text type="button" onclick="clientDeleteSave('{{uuid}}')" class="do-delete-save-btn flex-grow-1 border-dark btn btn-sm btn-danger text-white" data-key="save_manage_delete"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-compare-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_compare"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-export-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_export"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-restore-save-btn flex-grow-1 border-dark btn btn-sm btn-warning" data-key="save_manage_duplicate"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-delete-save-btn flex-grow-1 border-dark btn btn-sm btn-danger text-white" data-key="save_manage_delete"></i18n-text>
 	</div>
 </template>
 
 <template id="savegame_backup_buttons">
 	<div class="d-flex flex-column justify-content-around h-100">
-		<i18n-text type="button" onclick="clientCompareSave('{{uuid}}')" class="do-compare-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_compare"></i18n-text>
-		<i18n-text type="button" onclick="clientExportSave('{{uuid}}')" class="do-export-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_export"></i18n-text>
-		<i18n-text type="button" onclick="clientRestoreSave('{{uuid}}')" class="do-restore-save-btn flex-grow-1 border-dark btn btn-sm btn-warning" data-key="save_manage_restore"></i18n-text>
-		<i18n-text type="button" onclick="clientDeleteSave('{{uuid}}')" class="do-delete-save-btn flex-grow-1 border-dark btn btn-sm btn-danger text-white" data-key="save_manage_delete"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-compare-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_compare"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-export-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_export"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-restore-save-btn flex-grow-1 border-dark btn btn-sm btn-warning" data-key="save_manage_restore"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-delete-save-btn flex-grow-1 border-dark btn btn-sm btn-danger text-white" data-key="save_manage_delete"></i18n-text>
 	</div>
 </template>
 

@@ -60,17 +60,18 @@ window.main_IPC.receive('loading:current',  (count, inMB) => { window.state.load
 
 //MARK: top bar event
 function topBarHandlers() {
-	MA.byIdEventIfExists('topBar-launch',      () => { window.state.action.launchGame() })
-	MA.byIdEventIfExists('topBar-update',      () => { window.main_IPC.updateApplication() })
-	MA.byIdEventIfExists('topBar-preferences', () => { window.state.prefs.open() })
-	MA.byIdEventIfExists('topBar-tray',        () => { window.main_IPC.minimizeToTray() })
+	MA.byIdEventIfExists('bottomBar-debug',    () => { window.main_IPC.dispatch('debug') })
 	MA.byIdEventIfExists('topBar-basegame',    () => { window.main_IPC.dispatch('basegame') })
-	MA.byIdEventIfExists('topBar-savetrack',   () => { window.main_IPC.dispatch('savetrack') })
 	MA.byIdEventIfExists('topBar-find',        () => { window.main_IPC.dispatch('find') })
 	MA.byIdEventIfExists('topBar-gamelog',     () => { window.main_IPC.dispatch('gamelog') })
 	MA.byIdEventIfExists('topBar-help',        () => { window.main_IPC.dispatch('help') })
+	MA.byIdEventIfExists('topBar-launch',      () => { window.state.action.launchGame() })
 	MA.byIdEventIfExists('topBar-mini',        () => { window.main_IPC.dispatch('mini') })
-	MA.byIdEventIfExists('bottomBar-debug',    () => { window.main_IPC.dispatch('debug') })
+	MA.byIdEventIfExists('topBar-preferences', () => { window.state.prefs.open() })
+	MA.byIdEventIfExists('topBar-savemanage',  () => { window.main_IPC.dispatch('savemanage') })
+	MA.byIdEventIfExists('topBar-savetrack',   () => { window.main_IPC.dispatch('savetrack') })
+	MA.byIdEventIfExists('topBar-tray',        () => { window.main_IPC.minimizeToTray() })
+	MA.byIdEventIfExists('topBar-update',      () => { window.main_IPC.updateApplication() })
 }
 //MARK: side bar event
 function sideBarHandlers() {

@@ -45,13 +45,7 @@ window.savetrack_IPC.receive('savetrack:results', (modCollect) => {
 		newHTML.push(node)
 	}
 
-	const displayDiv = MA.byId('modList')
-	displayDiv.innerHTML = ''
-
-	for ( const element of newHTML ) {
-		displayDiv.appendChild(element)
-	}
-	
+	MA.byIdNodeArray('modList', newHTML)
 })
 
 window.addEventListener('DOMContentLoaded', () => {
