@@ -194,6 +194,17 @@ const pageAPI = {
 		},
 		validAsync : new Set(['save:collectName', 'save:saveInfo']),
 	},
+	'savemanage' : {
+		functions : {
+			compare     : (path, collectKey) => { ipcRenderer.send('savemanage:compare', path, collectKey) },
+			delete      : (path)             => { ipcRenderer.send('savemanage:delete', path) },
+			export      : (path)             => { ipcRenderer.send('savemanage:export', path) },
+			import      : (path, slot)       => { ipcRenderer.send('savemanage:import', path, slot) },
+			importLoad  : ()                 => { ipcRenderer.send('savemanage:getImport') },
+			restore     : (path, slot)       => { ipcRenderer.send('savemanage:restore', path, slot) },
+		},
+		validAsync : new Set(['savemanage:info', 'savemanage:import']),
+	},
 	'savetrack' : {
 		functions : {
 			openFolder     : ()      => { ipcRenderer.send('savetrack:folder')},

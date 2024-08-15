@@ -51,8 +51,8 @@ contextBridge.exposeInMainWorld(
 
 		receive      : ( channel, func ) => {
 			const validChannels = new Set([
-				'fromMain_saveInfo',
-				'fromMain_saveImport',
+				'savemanage:info',
+				'savemanage:import',
 			])
 		
 			if ( validChannels.has( channel ) ) {

@@ -6,15 +6,92 @@
 
 // Save Manage window UI
 
-/* global fsgUtil, processL10N, bootstrap, _l */
+/* global MA, DATA, bootstrap */
 
-let uuidMap    = {}
+class stateManager {
+	collectDialog = null
+	deleteDialog  = null
+	importDialog  = null
+	restoreDialog = null
 
-window.mods.receive('fromMain_saveImport', (savePath) => {
-	fsgUtil.setContent({
-		save_import_path : savePath,
-	})
-})
+	uuidMap = {}
+
+	constructor() {
+		MA.byIdEventIfExists('importButton', () => {})
+		this.collectDialog = new bootstrap.Modal('#collect_savegame_modal', { backdrop : 'static', keyboard : false })
+		this.deleteDialog  = new bootstrap.Modal('#delete_savegame_modal',  { backdrop : 'static', keyboard : false })
+		this.importDialog  = new bootstrap.Modal('#import_savegame_modal',  { backdrop : 'static', keyboard : false })
+		this.restoreDialog = new bootstrap.Modal('#restore_savegame_modal', { backdrop : 'static', keyboard : false })
+
+		this.collectDialog.hide()
+		this.deleteDialog.hide()
+		this.importDialog.hide()
+		this.restoreDialog.hide()
+
+		window.savemanage_IPC.receive('savemanage:import', (savePath) => {
+			MA.byIdText('save_import_path', savePath)
+		})
+	}
+
+	import = {
+		open : () => { this.importDialog.show() },
+		load : () => { window.savemanage_IPC.importLoad() },
+		go   : () => {
+			const destSlot = MA.byIdValue('save_import_choice')
+			const srcFile  = MA.byIdText('save_import_path')
+			if ( destSlot !== '--' && srcFile !== '' ) {
+				window.savemanage_IPC.import(srcFile, destSlot)
+				this.importDialog.hide()
+			}
+		},
+	}
+	delete = {
+		go : () => {
+			window.savemanage_IPC.delete(MA.byIdText('save_delete_path'))
+			this.deleteDialog.hide()
+		},
+		btn : (uuid) => {
+			MA.byIdText('save_delete_name', uuidMap[uuid].name)
+			MA.byIdText('save_delete_path', uuidMap[uuid].path)
+			this.deleteDialog.show()
+		},
+	}
+	restore = {
+		go : () => {
+			const destSlot = MA.byIdValue('save_restore_choice')
+			if ( destSlot !== '--') {
+				window.savemanage_IPC.restore(MA.byIdText('save_restore_path'), destSlot)
+				this.restoreDialog.hide()
+			}
+		},
+		btn : (uuid) => {
+			MA.byIdText('save_restore_name', uuidMap[uuid].name)
+			MA.byIdText('save_restore_path', uuidMap[uuid].path)
+			this.restoreDialog.show()
+		},
+	}
+	compare = {
+		go : () => {
+			const collectKey = MA.byIdValue('save_collect_choice')
+			if ( collectKey !== '--') {
+				window.savemanage_IPC.compare(MA.byIdText('save_collect_path'), collectKey)
+				this.collectDialog.hide()
+			}
+		},
+		btn : (uuid) => {
+			MA.byIdText('save_collect_name', uuidMap[uuid].name)
+			MA.byIdText('save_collect_path', uuidMap[uuid].path)
+			this.collectDialog.show()
+		},
+	}
+	export = {
+		btn : (uuid) => {
+			window.savemanage_IPC.export(this.uuidMap[uuid].path)
+		},
+	}
+}
+
+
 
 window.mods.receive('fromMain_saveInfo', (modCollect) => {
 	uuidMap    = {}
@@ -98,84 +175,7 @@ function doFarms(farms) {
 	return `<table class="table table-sm table-borderless table-striped">${returnHTML.join('')}</table>`
 }
 
-let deleteDialog  = null
-let restoreDialog = null
-let collectDialog = null
-let importDialog  = null
 
 window.addEventListener('DOMContentLoaded', () => {
-	deleteDialog = new bootstrap.Modal('#delete_savegame_modal', {backdrop : 'static', keyboard : false})
-	deleteDialog.hide()
-	restoreDialog = new bootstrap.Modal('#restore_savegame_modal', {backdrop : 'static', keyboard : false})
-	restoreDialog.hide()
-	collectDialog = new bootstrap.Modal('#collect_savegame_modal', {backdrop : 'static', keyboard : false})
-	collectDialog.hide()
-	importDialog = new bootstrap.Modal('#import_savegame_modal', {backdrop : 'static', keyboard : false})
-	importDialog.hide()
+	window.state = new stateManager()
 })
-
-function clientImportSave() {
-	importDialog.show()
-}
-
-function clientImportSave_load() {
-	window.mods.doImportLoad()
-}
-
-function clientImportSave_go() {
-	const destSlot = fsgUtil.valueById('save_import_choice')
-	const srcFile  = fsgUtil.htmlById('save_import_path')
-	if ( destSlot !== '--' && srcFile !== '' ) {
-		window.mods.doImportSave(srcFile, destSlot)
-		importDialog.hide()
-	}
-}
-
-function clientExportSave(uuid) {
-	window.mods.doExportSave(uuidMap[uuid].path)
-}
-
-function clientDeleteSave(uuid) {
-	fsgUtil.setContent({
-		save_delete_name : uuidMap[uuid].name,
-		save_delete_path : uuidMap[uuid].path,
-	})
-	deleteDialog.show()
-}
-
-function clientRestoreSave(uuid) {
-	fsgUtil.setContent({
-		save_restore_name : uuidMap[uuid].name,
-		save_restore_path : uuidMap[uuid].path,
-	})
-	restoreDialog.show()
-}
-
-function clientCompareSave(uuid) {
-	fsgUtil.setContent({
-		save_collect_name : uuidMap[uuid].name,
-		save_collect_path : uuidMap[uuid].path,
-	})
-	collectDialog.show()
-}
-
-function clientDeleteSave_go() {
-	window.mods.doDeleteSave(fsgUtil.htmlById('save_delete_path'))
-	deleteDialog.hide()
-}
-
-function clientRestoreSave_go() {
-	const destSlot = fsgUtil.valueById('save_restore_choice')
-	if ( destSlot !== '--') {
-		window.mods.doRestoreSave(fsgUtil.htmlById('save_restore_path'), destSlot)
-		restoreDialog.hide()
-	}
-}
-
-function clientCompareSave_go() {
-	const collectKey = fsgUtil.valueById('save_collect_choice')
-	if ( collectKey !== '--') {
-		window.mods.doCompareSave(fsgUtil.htmlById('save_collect_path'), collectKey)
-		collectDialog.hide()
-	}
-}
