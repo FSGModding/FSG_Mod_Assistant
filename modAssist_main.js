@@ -847,7 +847,7 @@ ipcMain.on('toMain_saveManageGetImport', () => { funcLib.saveManage.getImport() 
 
 // Save game tracker window operation
 ipcMain.on('dispatch:savetrack',   () => { serveIPC.windowLib.createNamedWindow('save_track') })
-ipcMain.on('toMain_openTrackFolder', () => {
+ipcMain.on('savetrack:folder', () => {
 	const options = {
 		properties  : ['openDirectory'],
 		defaultPath : serveIPC.path.setFolder,
@@ -857,7 +857,7 @@ ipcMain.on('toMain_openTrackFolder', () => {
 		if ( !result.canceled ) {
 			try {
 				new savegameTrack(result.filePaths[0]).getInfo().then((results) => {
-					serveIPC.windowLib.sendModList({ saveInfo : results }, 'fromMain_saveInfo', 'save_track', false )
+					serveIPC.windowLib.sendModList({ saveInfo : results }, 'savetrack:results', 'save_track', false )
 				})
 			} catch (err) {
 				serveIPC.log.danger('save-track', 'Load failed', err)

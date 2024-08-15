@@ -104,9 +104,9 @@ window.addEventListener('DOMContentLoaded', () => {
 function replaceTextInput(id) {
 	const node = document.createElement('div')
 	node.innerHTML = [
-		`<l10n class="inset-block-header" name="notes_title_${id}"></l10n>`,
+		`<i18n-text class="inset-block-header" data-key="notes_title_${id}"></i18n-text>`,
 		'<div class="row">',
-		`<l10n class="inset-block-blurb-option col-6" name="notes_blurb_${id}"></l10n>`,
+		`<i18n-text class="inset-block-blurb-option col-6" data-key="notes_blurb_${id}"></i18n-text>`,
 		'<div class="col-6">',
 		`<input type="text" class="inputElement form-control form-control-sm" id="notes_${id}">`,
 		'</div></div>',
@@ -122,9 +122,9 @@ function replaceTextInput(id) {
 function replacePasswordInput(id) {
 	const node = document.createElement('div')
 	node.innerHTML = [
-		`<l10n class="inset-block-header" name="notes_title_${id}"></l10n>`,
+		`<i18n-text class="inset-block-header" data-key="notes_title_${id}"></i18n-text>`,
 		'<div class="row">',
-		`<l10n class="inset-block-blurb-option col-6" name="notes_blurb_${id}"></l10n>`,
+		`<i18n-text class="inset-block-blurb-option col-6" data-key="notes_blurb_${id}"></i18n-text>`,
 		'<div class="col-6"><div class="input-group">',
 		`<input type="password" class="inputElement form-control form-control-sm" id="notes_${id}">`,
 		'<span class="input-group-text togglePasswordControl"><i class="bi-eye"></i></span>',
@@ -150,9 +150,9 @@ function replacePasswordInput(id) {
 function replaceSwitchInput(id) {
 	const node = document.createElement('div')
 	node.innerHTML = [
-		`<l10n class="inset-block-header" name="notes_title_${id}"></l10n>`,
+		`<i18n-text class="inset-block-header" data-key="notes_title_${id}"></i18n-text>`,
 		'<div class="row">',
-		`<l10n class="inset-block-blurb-option col-9" name="notes_blurb_${id}"></l10n>`,
+		`<i18n-text class="inset-block-blurb-option col-9" data-key="notes_blurb_${id}"></i18n-text>`,
 		'<div class="col-3 px-2 form-check form-switch custom-switch">',
 		`<input id="notes_${id}" class="inputElement form-check-input" type="checkbox" role="switch">`,
 		'</div></div>'

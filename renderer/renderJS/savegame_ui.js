@@ -278,7 +278,7 @@ class WindowState {
 		this.noSelectList = this.empty_list()
 	
 		if ( savegame.errorList.length !== 0 ) {
-			const errors = savegame.errorList.map((error) => `<l10n name="${error[0]}"></l10n> ${error[1]}`)
+			const errors = savegame.errorList.map((error) => `<i18n-text data-key="${error[0]}"></i18n-text> ${error[1]}`)
 			modSetHTML.push(DATA.templateEngine('savegame_error', { errors : errors.join(', ')}))
 		}
 	

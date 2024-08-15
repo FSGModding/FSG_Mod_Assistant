@@ -420,12 +420,12 @@ function pageTitle(title, { compareAll = false, openFolder = false, preTranslate
 		preTranslated ? title : I18N.defer(title, skipIfNotBase),
 		'</div>',
 		'<div style="margin-top: -1.6em; text-align: start">',
-		'<button type="button" class="btn btn-outline-primary" id="backButton"><l10n name="basegame_button_back"></l10n></button>',
-		'<button type="button" class="btn btn-outline-primary" id="homeButton"><l10n name="basegame_button_home"></l10n></button>',
+		'<button type="button" class="btn btn-outline-primary" id="backButton"><i18n-text data-key="basegame_button_back"></i18n-text></button>',
+		'<button type="button" class="btn btn-outline-primary" id="homeButton"><i18n-text data-key="basegame_button_home"></i18n-text></button>',
 		'</div>',
 		'<div style="margin-top: -1.5em; text-align: end">&nbsp;',
-		!openFolder ? '' : '<button type="button" class="btn btn-outline-warning" id="openFolderButton"><l10n name="basegame_button_folder"></l10n></button>',
-		!compareAll ? '' : '<button type="button" class="btn btn-outline-warning" id="compareAllButton"><l10n name="basegame_compare_all"></l10n></button>',
+		!openFolder ? '' : '<button type="button" class="btn btn-outline-warning" id="openFolderButton"><i18n-text data-key="basegame_button_folder"></i18n-text></button>',
+		!compareAll ? '' : '<button type="button" class="btn btn-outline-warning" id="compareAllButton"><i18n-text data-key="basegame_compare_all"></i18n-text></button>',
 		'</div>'
 	].join('')
 

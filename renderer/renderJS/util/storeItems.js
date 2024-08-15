@@ -396,7 +396,7 @@ const ST = {
 			{ active : true, id : 'hp',  icon : 'engine'},
 			{ active : false, id : 'kph', icon : 'speed'},
 			{ active : false, id : 'mph', icon : 'speed'},
-		].map((x) => `<button class="nav-link ${x.active ? 'active' : ''}" id="${uuid}_${x.id}_tab" data-bs-toggle="tab" data-bs-target="#${uuid}_${x.id}_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-${x.icon}"></i><l10n name="unit_${x.id}"></l10n></button>`)
+		].map((x) => `<button class="nav-link ${x.active ? 'active' : ''}" id="${uuid}_${x.id}_tab" data-bs-toggle="tab" data-bs-target="#${uuid}_${x.id}_graph" type="button" role="tab" ><i class="fsicoLI fsico-look-${x.icon}"></i><i18n-text data-key="unit_${x.id}"></i18n-text></button>`)
 	},
 	markupChartPanes : (uuid) => {
 		return [

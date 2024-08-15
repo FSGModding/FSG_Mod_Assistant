@@ -13,28 +13,28 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
-	<script src="renderJS/util/general_lib.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
 	<script src="renderJS/savertrack_ui.js"></script>
 </head>
 <body data-bs-theme="dark" class="overflow-custom2" id="drag_target" style="min-height: 100vh;">
 	<div class="container-fluid px-1 user-select-none">
-		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3" style="-webkit-app-region: drag;">
 			<div class="row w-100 g-0">
-				<div class="col-7" style="-webkit-app-region: drag;">
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+				<div class="col-7" >
+					<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
 				</div>
 				<div class="col-5 pt-4">
-					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><l10n class="h4" name="save_track_title"></l10n></div>
+					<i18n-text class="badge bg-primary mx-auto w-100 d-block rounded-3 h4 fs-4" data-key="save_track_title"></i18n-text>
 				</div>
 			</div>
-			<span class="text-center mt-2 w-100 px-5 d-block blockquote"><l10n name="save_track_blurb"></l10n></span>
+			<i18n-text class="text-center mt-2 w-100 px-5 d-block blockquote" data-key="save_track_blurb"></i18n-text>
 		</div>
 
 		<div class="btn-group mx-auto w-75 d-flex">
-			<button type="button" class="btn btn-primary btn-sm border" onclick="window.mods.openFolder()"><i class="bi bi-folder"></i> <l10n name="open_save_folder"></l10n></button>
+			<button type="button" class="btn btn-primary btn-sm border" id="openFolderButton"><i class="bi bi-folder"></i> <i18n-text data-key="open_save_folder"></i18n-text></button>
 		</div>
 		
-		<div class="mx-2 my-3 text-center" id="no_list_yet"><l10n name="save_track_none"></l10n></div>
+		<div class="mx-2 my-3 text-center" id="no_list_yet"><i18n-text data-key="save_track_none"></i18n-text></div>
 		<div class="mx-2 my-3 row gy-4" id="modList"></div>
 
 	</div>
@@ -44,20 +44,20 @@
 
 <template id="savetrack_current">
 	<div class="col-12 inset-block"><div>
-		<span class="inset-block-header"><l10n name="save_track_current"></l10n> <em class="small">({{savegameID}})</em></span>
-		<div class="row row-cols-3 g-2">{{modList}}</div>
+		<span class="inset-block-header"><i18n-text data-key="save_track_current"></i18n-text> <em class="small">(<template-var>savegameID</template-var>)</em></span>
+		<template-var class="row row-cols-3 g-2">modList</template-var>
 	</div></div>
 </template>
 
 <template id="savetrack_backup">
 	<div class="col-12 inset-block"><div>
-		<span class="inset-block-header"><l10n name="save_track_backup"></l10n>: <em>{{backupDate}}</em></span>
-		<em class="h6 {{class_isDupe}} text-body-emphasis"><l10n name="save_track_duplicate"></l10n></em>
-		<div class="{{class_notDupe}}">
-			<h6 class="text-primary-subtle"><l10n name="save_track_only_current"></l10n></h6>
-			<div class="row row-cols-3 g-2 mb-4">{{onlyCurrent}}</div>
-			<h6 class="text-primary-subtle"><l10n name="save_track_only_backup"></l10n></h6>
-			<div class="row row-cols-3 g-2">{{onlyBackup}}</div>
+		<span class="inset-block-header"><i18n-text data-key="save_track_backup"></i18n-text>: <em><template-var>backupDate</template-var></em></span>
+		<i18n-text class="h6 is_duplicate text-body-emphasis fst-italic" data-key="save_track_duplicate"></i18n-text>
+		<div class="is_not_duplicate">
+			<i18n-text class="h6 text-primary-subtle" data-key="save_track_only_current"></i18n-text>
+			<template-var class="row row-cols-3 g-2 mb-4">onlyCurrent</template-var>
+			<i18n-text class="h6 text-primary-subtle" data-key="save_track_only_backup"></i18n-text>
+			<template-var class="row row-cols-3 g-2">onlyBackup</template-var>
 		</div>
 	</div></div>
 </template>

@@ -174,7 +174,7 @@ const pageAPI = {
 	'resolve' : {
 		functions : {
 			fileOp : ( object ) => ipcRenderer.invoke('file:operation', object),
-			get    : ( key ) => ipcRenderer.invoke('collect:resolveList', key),
+			get    : ( key )    => ipcRenderer.invoke('collect:resolveList', key),
 		},
 		validAsync : new Set(['resolve:shortname']),
 	},
@@ -183,7 +183,7 @@ const pageAPI = {
 			cacheDetails   : (content) => ipcRenderer.send('save:cacheGameSave', content),
 			drop : {
 				folder : (path)  => { ipcRenderer.send('save:drop', 'folder', path)},
-				file : (path)    => { ipcRenderer.send('save:drop', 'zip', path)},
+				file   : (path)  => { ipcRenderer.send('save:drop', 'zip', path)},
 			},
 			open : {
 				folder     : ()      => { ipcRenderer.send('save:folder')},
@@ -193,6 +193,12 @@ const pageAPI = {
 			selectInMain   : (list)  => { ipcRenderer.send('select:listInMain', list)},
 		},
 		validAsync : new Set(['save:collectName', 'save:saveInfo']),
+	},
+	'savetrack' : {
+		functions : {
+			openFolder     : ()      => { ipcRenderer.send('savetrack:folder')},
+		},
+		validAsync : new Set(['savetrack:results']),
 	},
 	'version' : {
 		functions : {
