@@ -55,8 +55,6 @@ window.main_IPC.receive('loading:titles',   (main, sub, cancel) => { window.stat
 window.main_IPC.receive('loading:total',    (count, inMB) => { window.state.loader.updateTotal(count, inMB) })
 window.main_IPC.receive('loading:current',  (count, inMB) => { window.state.loader.updateCount(count, inMB) })
 
-// File Operations
-// window.mods.receive('fromMain_fileOperation', (opPayload) => { fileOpLib.startOverlay(opPayload) })
 
 //MARK: top bar event
 function topBarHandlers() {

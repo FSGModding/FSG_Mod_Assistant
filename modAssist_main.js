@@ -152,9 +152,9 @@ function getCopyMoveDelete(operation, modIDS, multiSource = null, fileList = nul
 
 // MARK: folder manage
 ipcMain.handle('folders:activate', async (_, CKey) => funcLib.gameSet.change(CKey) )
-ipcMain.on('folders:addDirect', (event, potentialFolder) => {
-	funcLib.processor.addFolderTracking(potentialFolder)
-	event.sender.send( 'fromMain_allSettings', ...funcLib.commonSend.settings() )
+ipcMain.on('folders:addDirect', (event, potentialFolder, version) => {
+	funcLib.processor.addFolderTracking(potentialFolder, version)
+	event.sender.send('setup', 'settings:invalidate')
 })
 ipcMain.on('folders:addDrop', (_, newFolder) => {
 	funcLib.processor.addFolderTracking(newFolder)
@@ -170,7 +170,7 @@ ipcMain.on('folders:add', (notify_import = false) => {
 			const potentialFolder = result.filePaths[0]
 
 			serveIPC.path.last = path.resolve(path.join(potentialFolder, '..'))
-			funcLib.processor.addFolderTracking(potentialFolder, notify_import)
+			funcLib.processor.addFolderTracking(potentialFolder, null, notify_import)
 			if ( notify_import ) {
 				serveIPC.windowLib.sendToValidWindow('importjson', 'fromMain_importFolder', {
 					folder     : result.filePaths[0],
@@ -279,75 +279,6 @@ ipcMain.on('toMain_import_json_download', (_, collectKey, uri, unpack) => {
 
 
 // MARK: i18n
-ipcMain.on('toMain_getText_sync',   (event, l10nItem) => { event.returnValue = __(l10nItem) })
-ipcMain.on('toMain_getText_locale', (event) => { event.returnValue = serveIPC.l10n.currentLocale })
-ipcMain.on('toMain_getText_send', (event, l10nSet) => {
-	const sendEntry  = (entry, text) => { returnL10n(event, entry, text) }
-	const doTitle    = serveIPC.storeSet.get('show_tooltips', true)
-	const curVersion = serveIPC.storeSet.get('game_version')
-
-	sendEntry('__currentLocale__', serveIPC.l10n.currentLocale)
-
-	for ( const l10nEntry of l10nSet ) {
-		switch ( l10nEntry ) {
-			case 'app_name':
-				serveIPC.l10n.stringLookup(l10nEntry).then((text) => {
-					sendEntry(l10nEntry, `<i class="fsico-ma-large"></i>${text}`)
-				})
-				break
-			case 'app_version' :
-				sendEntry(l10nEntry, app.isPackaged ? app.getVersion() : ''); break
-			case 'game_icon' :
-				sendEntry(l10nEntry, `<i class="fsico-ver-${curVersion}"></i>`); break
-			case 'game_icon_lg' :
-				sendEntry(l10nEntry, `<i class="fsico-ver-${curVersion}"></i>`)
-				serveIPC.l10n.stringTitleLookup(l10nEntry).then((text) => { returnL10n(event, l10nEntry, text, 'title') })
-				break
-			case 'clean_cache_size' : {
-				try {
-					const cacheSize = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json')).size/(1024*1024)
-					const iconSize  = fs.statSync(path.join(app.getPath('userData'), 'mod_icons.json')).size/(1024*1024)
-					sendEntry(l10nEntry, `${__(l10nEntry)} ${cacheSize.toFixed(2)}MB / ${iconSize.toFixed(2)}MB` )
-				} catch {
-					sendEntry(l10nEntry, `${__(l10nEntry)} 0.00MB`)
-				}
-				break
-			}
-			case 'clean_detail_cache_size' : {
-				try {
-					const cacheSize = fs.statSync(path.join(app.getPath('userData'), 'mod_detail_cache.json')).size/(1024*1024)
-					sendEntry(l10nEntry, `${__(l10nEntry)} ${cacheSize.toFixed(2)}MB` )
-				} catch {
-					sendEntry( l10nEntry, `${__(l10nEntry)} 0.00MB`)
-				}
-				break
-			}
-			case 'clear_malware_size' :
-				sendEntry(l10nEntry, `[ ${serveIPC.storeSet.get('suppress_malware', []).join(', ')} ]`)
-				break
-			default :
-				serveIPC.l10n.stringLookup(l10nEntry).then((text) => { sendEntry(l10nEntry, text) })
-				if ( doTitle ) {
-					serveIPC.l10n.stringTitleLookup(l10nEntry).then((text) => {
-						returnL10n(event, l10nEntry, text, 'title')
-					})
-				}
-				break
-		}
-	}
-})
-ipcMain.on('toMain_getTextBase_send', (event, l10nSet) => {
-	serveIPC.l10n.baseStringGroup(l10nSet).then((returnGroup) => {
-		for ( const thisReturn of returnGroup ) {
-			returnL10n(event, thisReturn[0], thisReturn[1], 'base')
-		}
-	})
-})
-function returnL10n(event, key, value, extra = null) {
-	if ( value === null ) { return }
-	event.sender.send(`fromMain_getText_return${extra !== null ? `_${extra}` : ''}`, [key, value])
-}
-
 ipcMain.handle('i18n:langList',   () => serveIPC.l10n.getLangList() )
 ipcMain.handle('i18n:lang', (_e, newValue = null) => {
 	if ( newValue !== null ) {
@@ -781,21 +712,13 @@ ipcMain.on('settings:gamePath',    (_, version) => { funcLib.prefs.changeFilePat
 
 
 // Setup Wizard Functions
-ipcMain.on('toMain_showSetupWizard', () => { openWizard() })
+ipcMain.handle('wizard:update', () => ({
+	folders : [...serveIPC.modFolders],
+	wizard  : funcLib.wizard.getSettings(),
+}))
+ipcMain.on('dispatch:wizard', () => { openWizard() })
 function openWizard() {
-	serveIPC.windowLib.createNamedWindow('setup', {}, () => {
-		serveIPC.windowLib.sendModList(
-			{
-				currentLocale          : serveIPC.l10n.currentLocale,
-				devControls            : serveIPC.devControls,
-				folders                : [...serveIPC.modFolders],
-				wizardSettings         : funcLib.wizard.getSettings(),
-			},
-			'mods:list',
-			'setup',
-			false
-		)
-	})
+	serveIPC.windowLib.createNamedWindow('setup')
 }
 // END : Setup Wizard Functions
 

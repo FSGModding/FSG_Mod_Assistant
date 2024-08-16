@@ -133,7 +133,6 @@ async function displayData(data) {
 			}
 
 			listDiv.appendChild(node)
-			I18N.process()
 		})
 	}
 

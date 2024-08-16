@@ -70,10 +70,10 @@ const pageAPI = {
 		functions : {
 			dispatch        : (win) => {
 				const knownWindows = new Set([
-					'compare', 'basegame', 'game', 'gamelog', 'help',
-					'changelog', 'find', 'notes', 'version',
-					'resolve', 'debug', 'savetrack', 'savemanage',
-					'mini',
+					'basegame', 'changelog', 'compare', 'debug',
+					'find', 'game', 'gamelog', 'help', 'mini',
+					'notes', 'resolve', 'savemanage', 'savetrack',
+					'version', 'wizard',
 				])
 				if ( knownWindows.has(win) ) {
 					ipcRenderer.send(`dispatch:${win}`)
@@ -210,6 +210,13 @@ const pageAPI = {
 			openFolder     : ()      => { ipcRenderer.send('savetrack:folder')},
 		},
 		validAsync : new Set(['savetrack:results']),
+	},
+	'setup' : {
+		functions : {
+			addFolder : ( folder, version ) => { ipcRenderer.send('folders:addDirect', folder, version) },
+			update    : () => ipcRenderer.invoke('wizard:update'),
+		},
+		validAsync : new Set(['mods:list']),
 	},
 	'version' : {
 		functions : {

@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // MARK: COMPARE UI
 
-/* global DATA, MA, ST, NUM, I18N, client_BGData */
+/* global DATA, MA, ST, NUM, client_BGData */
 
 let locale       = 'en'
 let sorting      = null
@@ -60,7 +60,6 @@ function processList(list) {
 			dataObject[b].value[sorting.type] - dataObject[a].value[sorting.type] //DESC
 	})
 	updateTable(keyArray, dataObject)
-	I18N.process()
 }
 
 // MARK: TABLE

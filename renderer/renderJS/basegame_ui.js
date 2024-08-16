@@ -576,7 +576,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 	}
 
 	ft_doReplace()
-	I18N.process()
 
 	for ( const element of MA.queryA('.compareSingle')) {
 		element.addEventListener('click', compareSingle)
@@ -613,7 +612,6 @@ function doFilter() {
 		for ( const element of findItemsByTerm(filterText).sort().map((x) => buildItem(x)) ) {
 			MA.byId('searchContent').appendChild(element)
 		}
-		I18N.process()
 	} else {
 		MA.byId('homePageBlurb').clsShow()
 		MA.byId('searchContentBox').clsHide()

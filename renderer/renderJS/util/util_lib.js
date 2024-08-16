@@ -329,17 +329,16 @@ const DATA = {
 			}
 		}
 
-		I18N.processGroup(clone.querySelectorAll('l10n'))
-
 		return clone
 	},
 }
 
 // MARK: I18N
 const I18N = {
-	__ : (key) => {
+	__ : (key, extraClassArr = null) => {
 		const node = document.createElement('i18n-text')
 		node.setAttribute('data-key', key)
+		if ( extraClassArr !== null ) { node.classList.add(...extraClassArr)}
 		return node
 	},
 	buildBadge : (badge, {classPrefix = 'badge', i18nPrefix = ''} = {}) => {
@@ -386,40 +385,8 @@ const I18N = {
 			document.documentElement.setAttribute('lang', value)
 		})
 	},
-	process : ( refresh = false ) => {
-		const elements = ! refresh ?
-			MA.query('l10n:not([data-done="true"]') :
-			MA.query('l10n')
-
-		I18N.processGroup(elements)
-	},
-	processGroup : ( elements ) => {
-		for ( const element of elements ) {
-			const key = element.safeAttribute('name')
-
-			if ( key === null ) { continue }
-
-			window.i18n.get(key).then((result) => {
-				element.innerHTML = result.entry
-				element.setAttribute('data-done', 'true')
-				if ( result.title !== null ) {
-					const extra        = DATA.prefixNotEmpty(element.stringAttribute('data-extra-title'), ' : ')
-					const titleElement = ( result.entry_key === 'game_icon_lg' ) ?
-						element.closest('#multi_version_button') :
-						element.closest('button') || element.closest('span') || element.closest('label') || element.closest('a')
-					
-					if ( titleElement !== null ) {
-						titleElement.setAttribute('title', `${result.title}${extra}`)
-					
-						// pageSTATE.tooltips.push(new bootstrap.Tooltip(titleElement, { trigger : 'hover' }))
-					}
-				}
-			})
-		}
-	},
 	refresh : async () => {
 		I18N.pageLang()
-		I18N.process(true)
 	},
 }
 
