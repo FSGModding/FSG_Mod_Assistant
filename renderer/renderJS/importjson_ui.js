@@ -6,158 +6,174 @@
 
 // Import Collection window UI
 
-/* global processL10N, fsgUtil, __, bootstrap */
+/* global MA, DATA, bootstrap */
 
-
-const formatEmpty = (text) => text !== '' ? text : `<em>${__('import_json_not_set')}</em>`
-const formatBool  = (value) => value ?
-	`<i class="text-success bi bi-check2-circle"></i> ${__('import_json_yes')}`:
-	`<i class="text-danger bi bi-x-circle"></i> ${__('import_json_no')}`
-
-const downloadButton = (uri, isPack = true) => {
-	const thisID = crypto.randomUUID()
-	return [
-		`<div id="but_${thisID}" onclick="clientDoDownload('${thisID}','${uri}', ${isPack})" class="w-75 d-block mx-auto btn btn-primary btn-sm disabled btn-download mb-2">`,
-		isPack ? __('import_json_step_2_download_unpack') : __('import_json_step_2_download'),
-		' :: ',
-		uri,
-		'</div>'
-	].join('')
-}
-
-let importJSON = null
-let importKey = null
-
-window.mods.receive('fromMain_importFolder', (folderData) => {
-	importKey = folderData.collectKey
-	fsgUtil.setById('folder_location', folderData.folder)
-	fsgUtil.clsShowTrue('folder_location_empty', folderData.contents === 0 )
-	fsgUtil.clsShowTrue('folder_location_not_empty', folderData.contents !== 0 )
-	fsgUtil.clsEnable('apply_button')
-	fsgUtil.clsRemoveFromAll('.btn-download', 'disabled')
+window.addEventListener('DOMContentLoaded', () => {
+	window.state = new windowState()
 })
 
-window.mods.receive('fromMain_importData', (modCollect) => {
-	importJSON = modCollect.opts.thisImport
-	fsgUtil.setById('notes_collection_color', fsgUtil.getIconSVG('folder', false, false, false, importJSON.collection_color ))
-	fsgUtil.setById('notes_collection_description', formatEmpty(importJSON.collection_description))
-	fsgUtil.setById('notes_game_version', formatEmpty(importJSON.game_version))
-	fsgUtil.setById('notes_server_name', formatEmpty(importJSON.server_name))
-	fsgUtil.setById('notes_server_id', formatEmpty(importJSON.server_id))
-	fsgUtil.setById('notes_server_password', formatEmpty(importJSON.server_password))
-	fsgUtil.setById('notes_server_website', formatEmpty(importJSON.server_website))
-	fsgUtil.setById('notes_server_downloads', formatBool(importJSON.server_downloads))
-	fsgUtil.setById('notes_force_frozen', formatBool(importJSON.force_frozen))
+// MARK: page state
+class windowState {
+	loader = null
 
-	const packDL = importJSON.download_unzip.map((x) => downloadButton(x, true) )
-	const singleDL = importJSON.download_direct.map((x) => downloadButton(x, false) )
-	fsgUtil.setById('import_mod_packs', packDL.join(''))
-	fsgUtil.setById('import_mod_singles', singleDL.join(''))
+	importJSON = null
+	importKey  = null
 
-	processL10N()
-})
+	constructor() {
+		this.loader = new LoaderLib()
 
-function clientDoDownload(id, uri, isPack) {
-	fsgUtil.clsDelId(`but_${id}`, 'btn-primary')
-	fsgUtil.clsAddId(`but_${id}`, 'btn-success', 'disabled')
-	window.mods.doDownload(importKey, uri, isPack)
+		MA.byIdEventIfExists('loadOverlay_downloadCancelButton', () => { window.importjson_IPC.cancelDownload() })
+		MA.byIdEventIfExists('setFolderButton', () => { window.importjson_IPC.setFolder() })
+		MA.byIdEventIfExists('apply_button', () => { this.applyButton() })
+
+		window.importjson_IPC.receive('loading:show',     () => { window.state.loader.show() })
+		window.importjson_IPC.receive('loading:hide',     () => { window.state.loader.hide() })
+		window.importjson_IPC.receive('loading:download', () => { window.state.loader.startDownload() })
+		window.importjson_IPC.receive('loading:noCount',  () => { window.state.loader.hideCount() })
+		window.importjson_IPC.receive('loading:titles',   (main, sub, cancel) => { window.state.loader.updateText(main, sub, cancel) })
+		window.importjson_IPC.receive('loading:total',    (count, inMB) => { window.state.loader.updateTotal(count, inMB) })
+		window.importjson_IPC.receive('loading:current',  (count, inMB) => { window.state.loader.updateCount(count, inMB) })
+
+		window.importjson_IPC.receive('importjson:folder', (data) => { this.gotFolder(data) })
+		window.importjson_IPC.receive('importjson:data', (data) => { this.gotJSON(data) })
+	}
+
+	applyButton() {
+		window.importjson_IPC.setNote(this.importKey, 'notes_color', this.importJSON.collection_color.toString())
+		window.importjson_IPC.setNote(this.importKey, 'notes_tagline', this.importJSON.collection_description)
+		window.importjson_IPC.setNote(this.importKey, 'notes_version', this.importJSON.game_version)
+		window.importjson_IPC.setNote(this.importKey, 'notes_server', this.importJSON.server_name)
+		window.importjson_IPC.setNote(this.importKey, 'notes_fsg_bot', this.importJSON.server_id)
+		window.importjson_IPC.setNote(this.importKey, 'notes_password', this.importJSON.server_password)
+		window.importjson_IPC.setNote(this.importKey, 'notes_website', this.importJSON.server_website)
+		window.importjson_IPC.setNote(this.importKey, 'notes_websiteDL', this.importJSON.server_downloads)
+		window.importjson_IPC.setNote(this.importKey, 'notes_frozen', this.importJSON.force_frozen)
+		MA.byId('apply_button').classList.remove('btn-primary')
+		MA.byId('apply_button').classList.add('btn-success')
+		window.importjson_IPC.doReload()
+	}
+
+	gotJSON(data) {
+		this.importJSON = data.opts.thisImport
+		MA.byIdHTML('notes_collection_color', DATA.makeFolderIcon(false, false, false, this.importJSON.collection_color ))
+		MA.byIdHTML('notes_collection_description', this.getEmpty(this.importJSON.collection_description))
+		MA.byIdHTML('notes_game_version',           this.getEmpty(this.importJSON.game_version))
+		MA.byIdHTML('notes_server_name',            this.getEmpty(this.importJSON.server_name))
+		MA.byIdHTML('notes_server_id',              this.getEmpty(this.importJSON.server_id))
+		MA.byIdHTML('notes_server_password',        this.getEmpty(this.importJSON.server_password))
+		MA.byIdHTML('notes_server_website',         this.getEmpty(this.importJSON.server_website))
+		MA.byIdHTML('notes_server_downloads',       this.getBool(this.importJSON.server_downloads))
+		MA.byIdHTML('notes_force_frozen',           this.getBool(this.importJSON.force_frozen))
+
+		const packDL   = this.importJSON.download_unzip.map((x) => this.getButton(x, true) )
+		const singleDL = this.importJSON.download_direct.map((x) => this.getButton(x, false) )
+		MA.byIdNodeArray('import_mod_packs', packDL)
+		MA.byIdNodeArray('import_mod_singles', singleDL)
+	}
+
+	gotFolder(data) {
+		this.importKey = data.collectKey
+		MA.byIdText('folder_location', data.folder)
+		MA.byId('folder_location_empty').clsShow(data.contents === 0 )
+		MA.byId('folder_location_not_empty').clsShow(data.contents !== 0 )
+		MA.byId('apply_button').clsEnable()
+		for ( const element of MA.query('.btn-download') ) {
+			element.classList.remove('disabled')
+		}
+	}
+
+	getEmpty(text)  {
+		return text !== '' ? text : '<em><i18n-text data-key="import_json_not_set"></i18n-text</em>'
+	}
+
+	getBool(value) {
+		return value ?
+			'<i class="text-success bi bi-check2-circle"></i><i18n-text data=key="import_json_yes"></i18n-text>':
+			'<i class="text-danger bi bi-x-circle"></i><i18n-text data=key="import_json_no"></i18n-text>'
+	}
+
+	getButton(uri, isPack = true) {
+		const node = document.createElement('div')
+
+		node.classList.add('w-75', 'd-block', 'mx-auto', 'btn', 'btn-primary', 'btn-sm', 'disabled', 'btn-download', 'mb-2')
+		node.innerHTML = `<i18n-text data-key="import_json_step_2_download${isPack ? '_unpack' : ''}"></i18n-text> :: ${uri}`
+		node.firstElementChild.addEventListener('click', () => {
+			node.firstElementChild.classList.remove('btn-primary')
+			node.firstElementChild.classList.add('btn-success', 'disabled')
+			window.importjson_IPC.doDownload(this.importKey, uri, isPack)
+		})
+
+		return node
+	}
+
 }
 
-function clientDoSettings() {
-	window.mods.setNote('notes_color', importJSON.collection_color.toString(), importKey)
-	window.mods.setNote('notes_tagline', importJSON.collection_description, importKey)
-	window.mods.setNote('notes_version', importJSON.game_version, importKey)
-	window.mods.setNote('notes_server', importJSON.server_name, importKey)
-	window.mods.setNote('notes_fsg_bot', importJSON.server_id, importKey)
-	window.mods.setNote('notes_password', importJSON.server_password, importKey)
-	window.mods.setNote('notes_website', importJSON.server_website, importKey)
-	window.mods.setNote('notes_websiteDL', importJSON.server_downloads, importKey)
-	window.mods.setNote('notes_frozen', importJSON.force_frozen, importKey)
-	fsgUtil.clsDelId('apply_button', 'btn-primary')
-	fsgUtil.clsAddId('apply_button', 'btn-success')
-	window.mods.doReload()
-}
+// MARK: LoaderLib
+class LoaderLib {
+	overlay = null
 
-const loaderLib = {
-	overlay : null,
+	lastTotal = 1
+	startTime = Date.now()
 
-	lastTotal : 1,
-	startTime : Date.now(),
+	constructor() {
+		this.overlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
+	}
 
-	hide : () => { loaderLib.overlay?.hide() },
-	show : () => { loaderLib.overlay?.show() },
+	hide() { this.overlay?.hide() }
+	show() { this.overlay?.show() }
 
-	hideCount : () => {
-		fsgUtil.clsHide('loadOverlay_statusCount')
-		fsgUtil.clsHide('loadOverlay_statusProgBar')
-	},
-	startDownload : () => {
-		loaderLib.startTime = Date.now()
-		fsgUtil.clsShow('loadOverlay_downloadCancel')
-		fsgUtil.clsShow('loadOverlay_speed')
-	},
-	updateCount : (count, inMB = false) => {
-		const thisCount   = inMB ? fsgUtil.bytesToMB(count, false) : count
-		const thisElement = fsgUtil.byId('loadOverlay_statusCurrent')
-		const thisProg    = fsgUtil.byId('loadOverlay_statusProgBarInner')
-		const thisPercent = `${Math.max(Math.ceil((count / loaderLib.lastTotal) * 100), 0)}%`
+	hideCount() {
+		MA.byId('loadOverlay_statusCount').clsHide()
+		MA.byId('loadOverlay_statusProgBar').clsHide()
+	}
+	startDownload() {
+		this.startTime = Date.now()
+		MA.byId('loadOverlay_downloadCancel').clsShow()
+		MA.byId('loadOverlay_speed').clsShow()
+	}
+	updateCount(count, inMB = false) {
+		const thisCount   = inMB ? DATA.bytesToMB(count, false) : count
+		const thisElement = MA.byId('loadOverlay_statusCurrent')
+		const thisProg    = MA.byId('loadOverlay_statusProgBarInner')
+		const thisPercent = `${Math.max(Math.ceil((count / this.lastTotal) * 100), 0)}%`
 	
 		if ( thisProg !== null ) { thisProg.style.width = thisPercent }
 	
 		if ( thisElement !== null ) { thisElement.innerHTML = thisCount }
 	
 		if ( inMB ) {
-			const perDone    = Math.max(1, Math.ceil((count / loaderLib.lastTotal) * 100))
+			const perDone    = Math.max(1, Math.ceil((count / this.lastTotal) * 100))
 			const perRem     = 100 - perDone
-			const elapsedSec = (Date.now() - loaderLib.startTime) / 1000
-			const estSpeed   = fsgUtil.bytesToMBCalc(count, false) / elapsedSec // MB/sec
+			const elapsedSec = (Date.now() - this.startTime) / 1000
+			const estSpeed   = DATA.bytesToMBCalc(count, false) / elapsedSec // MB/sec
 			const secRemain  = elapsedSec / perDone * perRem
 	
 			const prettyMinRemain = Math.floor(secRemain / 60)
 			const prettySecRemain = secRemain % 60
 	
-			fsgUtil.setById('loadOverlay_speed_speed', `${estSpeed.toFixed(1)} MB/s`)
-			fsgUtil.setById('loadOverlay_speed_time', `~ ${prettyMinRemain.toFixed(0).padStart(2, '0')}:${prettySecRemain.toFixed(0).padStart(2, '0')}`)
+			MA.byIdText('loadOverlay_speed_speed', `${estSpeed.toFixed(1)} MB/s`)
+			MA.byIdText('loadOverlay_speed_time', `~ ${prettyMinRemain.toFixed(0).padStart(2, '0')}:${prettySecRemain.toFixed(0).padStart(2, '0')}`)
 		}
-	},
-	updateText : (mainTitle, subTitle, dlCancel) => {
-		fsgUtil.setById('loadOverlay_statusMessage', mainTitle)
-		fsgUtil.setById('loadOverlay_statusDetail', subTitle)
-		fsgUtil.setById('loadOverlay_statusTotal', '0')
-		fsgUtil.setById('loadOverlay_statusCurrent', '0')
-		fsgUtil.setById('loadOverlay_downloadCancelButton', dlCancel)
+	}
+	updateText(mainTitle, subTitle, dlCancel) {
+		MA.byIdHTML('loadOverlay_statusMessage', mainTitle)
+		MA.byIdHTML('loadOverlay_statusDetail', subTitle)
+		MA.byIdText('loadOverlay_statusTotal', '0')
+		MA.byIdText('loadOverlay_statusCurrent', '0')
+		MA.byIdHTML('loadOverlay_downloadCancelButton', dlCancel)
 	
-		fsgUtil.clsShow('loadOverlay_statusCount')
-		fsgUtil.clsShow('loadOverlay_statusProgBar')
+		MA.byId('loadOverlay_statusCount').clsShow()
+		MA.byId('loadOverlay_statusProgBar').clsShow()
 	
-		fsgUtil.clsHide('loadOverlay_downloadCancel')
-		fsgUtil.clsHide('loadOverlay_speed')
+		MA.byId('loadOverlay_downloadCancel').clsHide()
+		MA.byId('loadOverlay_speed').clsHide()
 		
-		loaderLib.show()
-	},
-	updateTotal : (count, inMB = false) => {
-		if ( inMB ) { loaderLib.startTime = Date.now() }
-		const thisCount   = inMB ? fsgUtil.bytesToMB(count) : count
-		fsgUtil.setById('loadOverlay_statusTotal', thisCount)
-		loaderLib.lastTotal = ( count < 1 ) ? 1 : count
-	},
+		this.show()
+	}
+	updateTotal(count, inMB = false) {
+		if ( inMB ) { this.startTime = Date.now() }
+		const thisCount   = inMB ? DATA.bytesToMB(count) : count
+		MA.byIdText('loadOverlay_statusTotal', thisCount)
+		this.lastTotal = ( count < 1 ) ? 1 : count
+	}
 }
-
-window.addEventListener('DOMContentLoaded', () => {
-	loaderLib.overlay = new bootstrap.Modal('#loadOverlay', { backdrop : 'static', keyboard : false })
-})
-
-// Loader Overlay
-window.loader.receive('formMain_loading_show',    () => { loaderLib.show() })
-window.loader.receive('formMain_loading_hide',    () => { loaderLib.hide() })
-window.loader.receive('fromMain_loadingDownload', () => { loaderLib.startDownload() })
-window.loader.receive('fromMain_loadingNoCount',  () => { loaderLib.hideCount() })
-window.loader.receive('formMain_loadingTitles',   (mainTitle, subTitle, dlCancel) => {
-	loaderLib.updateText(mainTitle, subTitle, dlCancel)
-})
-window.loader.receive('fromMain_loading_total',   (count, inMB) => {
-	loaderLib.updateTotal(count, inMB)
-})
-window.loader.receive('fromMain_loading_current', (count, inMB ) => {
-	loaderLib.updateCount(count, inMB)
-})

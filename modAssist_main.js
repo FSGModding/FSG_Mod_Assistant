@@ -172,7 +172,7 @@ ipcMain.on('folders:add', (notify_import = false) => {
 			serveIPC.path.last = path.resolve(path.join(potentialFolder, '..'))
 			funcLib.processor.addFolderTracking(potentialFolder, null, notify_import)
 			if ( notify_import ) {
-				serveIPC.windowLib.sendToValidWindow('importjson', 'fromMain_importFolder', {
+				serveIPC.windowLib.sendToValidWindow('importjson', 'importjson:folder', {
 					folder     : result.filePaths[0],
 					collectKey : serveIPC.modCollect.getFolderHash(result.filePaths[0]),
 					contents   : fs.readdirSync(result.filePaths[0]).length,
@@ -270,7 +270,7 @@ ipcMain.on('folders:set', (_, from, to) => {
 })
 
 
-ipcMain.on('toMain_import_json_download', (_, collectKey, uri, unpack) => {
+ipcMain.on('importjson:download', (_, collectKey, uri, unpack) => {
 	funcLib.general.importJSON_download(uri, unpack, collectKey)
 })
 

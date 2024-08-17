@@ -129,7 +129,7 @@ class stateManager {
 	
 	doFarms(farms) {
 		const returnHTML = [
-			'<tr><td></td><td class="text-end"><l10n class="fst-italic" name="save_manage_money"></l10n></td><td class="text-end"><l10n class="fst-italic" name="save_manage_loan"></l10n></td></tr>'
+			'<tr><td></td><td class="text-end"><i18n-text class="fst-italic" data-key="save_manage_money"></i18n-text></td><td class="text-end"><i18n-text class="fst-italic" data-key="save_manage_loan"></i18n-text></td></tr>'
 		]
 
 		for ( const thisFarm of farms ) {

@@ -66,6 +66,26 @@ const pageAPI = {
 		},
 		validAsync : new Set(),
 	},
+	'importjson' : {
+		functions : {
+			cancelDownload : ()                  => { ipcRenderer.send('file:downloadCancel') },
+			doDownload     : (CKey, uri, unpack) => { ipcRenderer.send('importjson:download', CKey, uri, unpack) },
+			doReload       : ()                  => { ipcRenderer.send('folders:reload') },
+			setFolder      : ()                  => { ipcRenderer.send('folders:add', true) },
+			setNote        : (CKey, key, value)  => ipcRenderer.invoke('settings:collection:set', CKey, key, value),
+		},
+		validAsync : new Set([
+			'loading:current',
+			'loading:download',
+			'loading:hide',
+			'loading:noCount',
+			'loading:show',
+			'loading:titles',
+			'loading:total',
+			'importjson:data',
+			'importjson:folder',
+		]),
+	},
 	'main' : {
 		functions : {
 			dispatch        : (win) => {
