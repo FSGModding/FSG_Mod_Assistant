@@ -76,7 +76,7 @@
 	</style>
 </head>
 <body data-bs-theme="dark" class="overflow-hidden">
-	<div class="container-fluid px-0 user-select-none">
+	<div class="container-fluid px-0 user-select-none d-flex flex-column vh-100">
 		<div class="border-bottom bg-body ">
 			<div class="row bg-body border-bottom">
 				<div class="col-12 pt-1" style="-webkit-app-region: drag;">
@@ -127,9 +127,15 @@
 				<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Clear Input" type="button" id="findClear" class="btn btn-secondary"><span class="bi bi-eraser"></span></button>
 			</div>
 		</div>
-		<div id="game_log_contain" class="table-responsive" style="height: calc(100vh - 9.6rem); overflow-x: scroll; overflow-y: scroll;">
-			<table style="width: 100%; table-layout: fixed; transform: translate3d(0, 0, 0);" class="p-0 m-0 table table-borderless font-monospace small" id="game_log"></table>
+		<div class="flex-grow-1 overflow-hidden">
+			<div id="game_log_contain" class="h-100" style="overflow-x: scroll; overflow-y: scroll;">
+				<table style="width: 100%; table-layout: fixed; transform: translate3d(0, 0, 0);" class="p-0 m-0 table table-borderless font-monospace small" id="game_log"></table>
+			</div>
+			<div id="game_log_scroll" class="d-flex flex-column" style="z-index: -1; height: calc(100% - 10px); width: 6px; position:relative; top: -100%; left: calc(100% - 9px); background-color:rgba(0,0,0,0.1)"></div>
 		</div>
+
+		
+		
 	</div>
 
 </body>

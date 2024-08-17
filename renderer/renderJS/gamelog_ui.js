@@ -148,7 +148,13 @@ function filterLines() {
 		for ( const filter of thisLine[0] ) { if ( !showThese.has(filter) ) { goodData = false; break } }
 
 		if ( goodData ) {
-			returnLines.push(thisLine[1])
+			const scrollColor =
+				thisLine[0].has('warning') || thisLine[0].has('dev_warning') ?
+					'warning' :
+					thisLine[0].has('error') || thisLine[0].has('lua_error') ?
+						'danger' :
+						'transparent'
+			returnLines.push([thisLine[1], scrollColor])
 			findCache.push([thisLine[2], thisLine[3]])
 		}
 	}
@@ -176,9 +182,12 @@ function buildDisplayTable() {
 	const endIdx    = startIdx + totalShow
 	const endPad    = Math.max(rowHeight * 2, ((thisData.length - 1) * rowHeight) - theContain.offsetHeight - startAt)
 	
+	MA.byId('game_log_scroll').innerHTML =
+		thisData.map((x) => `<div class="flex-grow-1 bg-${x[1]}"></div>`).join('')
+
 	theTable.innerHTML = [
 		lineEntry('', '', '', '', startAt),
-		...thisData.slice(startIdx, endIdx),
+		...thisData.slice(startIdx, endIdx).map((x) => x[0]),
 		lineEntry('', '', '', '', endPad)
 	].join('')
 
