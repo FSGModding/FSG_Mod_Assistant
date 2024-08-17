@@ -8,13 +8,13 @@
 
 const {contextBridge, ipcRenderer} = require('electron')
 
-const pageName = window.location.pathname.split('/').pop().replace('.html', '')
+const pageName = window.location.pathname.split('/').pop().replace('.html', '').replace(/\d\d/, '')
 
 const pageAPI = {
 	'basegame' : {
 		functions : {
 			context     : ()         => ipcRenderer.send('context:cutCopyPaste'),
-			openFolder  : (folder)   => ipcRenderer.invoke('basegame:folder', folder),
+			openFolder  : (folder)   => ipcRenderer.send('basegame:folder', folder),
 			sendCompare : (aCompare) => ipcRenderer.send('dispatch:compare', aCompare),
 		},
 		validAsync : new Set(['basegame:setPage']),

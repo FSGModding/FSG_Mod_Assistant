@@ -295,9 +295,9 @@ ipcMain.handle('i18n:get', async (_, key) => {
 		case 'app_version' :
 			return serveIPC.l10n.getTextOverride(key, { newText : !app.isPackaged ? app.getVersion().toString() : '' })
 		case 'game_icon' :
-			return serveIPC.l10n.getTextOverride(key, { newText : `<i class="fsico-ver-${serveIPC.storeSet.get('game_version')}"></i>` })
+			return serveIPC.l10n.getTextOverride(key, { newText : `<i class="fsico-ver-${funcLib.prefs.ver()}"></i>` })
 		case 'game_icon_lg' :
-			return serveIPC.l10n.getTextOverride(key, { newText : `<i class="fsico-ver-${serveIPC.storeSet.get('game_version')}"></i>` })
+			return serveIPC.l10n.getTextOverride(key, { newText : `<i class="fsico-ver-${funcLib.prefs.ver()}"></i>` })
 		case 'clean_cache_size' : {
 			try {
 				const cacheSize = fs.statSync(path.join(app.getPath('userData'), 'mod_cache.json')).size/(1024*1024)
@@ -342,7 +342,8 @@ ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
 ipcMain.on('dispatch:detail', (_, thisMod) => { openDetailWindow(thisMod) })
 
 function openDetailWindow(thisMod) {
-	return serveIPC.windowLib.createNamedMulti('detail', { queryString : `mod=${thisMod}` })
+	const ver = funcLib.prefs.ver() > 17 ? funcLib.prefs.ver() : 19
+	return serveIPC.windowLib.createNamedMulti(`detail${ver}`, { queryString : `mod=${thisMod}` })
 }
 
 async function getStoreItems(fullUUID) {
@@ -389,8 +390,9 @@ function openCompareWindow(compareArray) {
 			serveIPC.compareMap.set(compareKey, compareObj)
 		}
 	}
-	serveIPC.windowLib.raiseOrOpen('compare', () => {
-		serveIPC.windowLib.sendToValidWindow('compare', 'win:forceRefresh')
+	const curVer = funcLib.prefs.ver()
+	serveIPC.windowLib.raiseOrOpen(`compare${curVer}`, () => {
+		serveIPC.windowLib.sendToValidWindow(`compare${curVer}`, 'win:forceRefresh')
 	})
 }
 
@@ -398,20 +400,26 @@ function openCompareWindow(compareArray) {
 // MARK: basegame
 ipcMain.on('dispatch:basegame', (_, pageObj = { type : null, page : null}) => { openBaseGameWindow(pageObj.type, pageObj.page) })
 ipcMain.on('basegame:folder', (_e, folderParts) => {
-	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', 22))
+	const curVer   = funcLib.prefs.ver()
+	const gamePath = path.dirname(funcLib.prefs.verGet('game_path', curVer))
 
 	if ( typeof gamePath !== 'string') { return }
 
 	const dataPathParts = gamePath.split(path.sep)
 	const dataPath      = path.join(...(dataPathParts[dataPathParts.length - 1] === 'x64' ? dataPathParts.slice(0, -1) : dataPathParts), 'data', ...folderParts)
 	
-	shell.openPath(dataPath)
+	if ( fs.existsSync(dataPath) ) {
+		shell.openPath(dataPath)
+	} else {
+		serveIPC.log.danger('basegame-browser', 'Could not find specified folder!', dataPath)
+	}
 })
 
 function openBaseGameWindow(type = null, page = null) {
-	serveIPC.windowLib.raiseOrOpen('basegame', () => {
+	const curVersion = funcLib.prefs.ver()
+	serveIPC.windowLib.raiseOrOpen(`basegame${curVersion}`, () => {
 		serveIPC.windowLib.setWindowURL(
-			'basegame',
+			`basegame${curVersion}`,
 			( type === null || page === null ) ? null : { page : page, type : type }
 		)
 	})
@@ -887,7 +895,7 @@ function refreshTransientStatus() {
 // MARK: refresh list
 function refreshClientModList(closeLoader = true) {
 	// DATA STRUCT - send mod list
-	const currentVersion = serveIPC.storeSet.get('game_version', 22)
+	const currentVersion = funcLib.prefs.ver()
 	const pollGame       = serveIPC.storeSet.get('poll_game', true)
 	serveIPC.isGamePolling = currentVersion > 17 && pollGame
 	

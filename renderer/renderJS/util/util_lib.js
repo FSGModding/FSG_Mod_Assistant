@@ -288,7 +288,7 @@ const DATA = {
 	joinArrayOrI18N : async (arr, l10nKey = 'detail_extra_clean') =>
 		Array.isArray(arr) && arr.length !== 0 ?
 			arr.join('\n') :
-			I18N.buildElement(l10nKey),
+			I18N.defer(l10nKey, false),
 
 	prefixNotEmpty : (text, prefix = '') => typeof text === 'undefined' ? '' : text.length === 0 ? text : `${prefix}${text}`,
 
@@ -361,6 +361,7 @@ const I18N = {
 		return badgeDiv
 	},
 	defer : (key, skipNonBase = true) => {
+		if ( key === null || key === '' ) { return '' }
 		if ( key.includes('[[') ) {
 			const nameParts    = key.match(/(.+?) \[\[(.+?)]]/)
 			const replaceParts = nameParts[2] ?? null

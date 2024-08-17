@@ -243,8 +243,9 @@ async function subStep_binds(bindingIssue) {
 		for ( const keyCombo in bindingIssue ) {
 			const actualKey = clientGetKeyMap(keyCombo, locale)
 			const confList  = bindingIssue[keyCombo].join(', ')
+			const i18n      = I18N.defer('bind_conflict')
 			problemPromises.push(
-				I18N.buildElement('bind_conflict').then((i18n) => `${i18n} : ${actualKey} :: ${confList}`)
+				`${i18n} : ${actualKey} :: ${confList}`
 			)
 		}
 	}
