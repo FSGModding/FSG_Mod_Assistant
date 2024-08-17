@@ -622,7 +622,7 @@ ipcMain.handle('gamelog:auto', () => {
 ipcMain.handle('gamelog:open', () => {
 	return dialog.showOpenDialog(serveIPC.windowLib.win.gamelog, {
 		properties  : ['openFile'],
-		defaultPath : path.join(serveIPC.path.setFolder, 'log.txt'),
+		defaultPath : path.join(serveIPC.prefs.basePath(), 'log.txt'),
 		filters     : [{ name : 'Log Files', extensions : ['txt'] }],
 	}).then((result) => {
 		if ( ! result.canceled ) { funcLib.gameSet.setGameLog(result.filePaths[0]) }
@@ -781,7 +781,7 @@ ipcMain.on('dispatch:savetrack',   () => { serveIPC.windowLib.createNamedWindow(
 ipcMain.on('savetrack:folder', () => {
 	const options = {
 		properties  : ['openDirectory'],
-		defaultPath : serveIPC.path.setFolder,
+		defaultPath : funcLib.prefs.basePath(),
 	}
 
 	dialog.showOpenDialog(serveIPC.windowLib.win.save_track, options).then((result) => {
@@ -831,7 +831,7 @@ function saveCompare_read(thisPath, isFolder) {
 function saveCompare_open(zipMode = false) {
 	const options = {
 		properties  : [(zipMode) ? 'openFile' : 'openDirectory'],
-		defaultPath : serveIPC.path.setFolder,
+		defaultPath : funcLib.prefs.basePath(),
 		filters      : zipMode ?
 			[{ name : 'ZIP Files', extensions : ['zip'] }] :
 			null,
