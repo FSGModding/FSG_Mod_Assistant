@@ -660,6 +660,7 @@
 	"sort_title"    : "Sort : Title",
 	"sort_author"   : "Sort : Author",
 	"sort_version"  : "Sort : Version",
+	"sort_date"    : "Sort : File Date",
 	"find_all"     : "Find : All",
 	"find_author"  : "Find : Author",
 	"find_title"   : "Find : Title",

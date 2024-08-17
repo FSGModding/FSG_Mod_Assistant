@@ -134,7 +134,8 @@ class StateManager {
 						thisModRec.search.find_name,
 						thisModRec.search.find_author,
 						thisModRec.search.find_title,
-						thisModRec.search.find_version
+						thisModRec.search.find_version,
+						thisMod.fileDetail.fileDate
 					])
 
 					this.mods[CKey][MKey] = thisModRec
@@ -196,6 +197,7 @@ class StateManager {
 			thisCol.sort_author  = thisCol.sorter.sort((a, b) => Intl.Collator().compare(a[2], b[2])).map((x) => x[0])
 			thisCol.sort_title   = thisCol.sorter.sort((a, b) => Intl.Collator().compare(a[3], b[3])).map((x) => x[0])
 			thisCol.sort_version = thisCol.sorter.sort((a, b) => Intl.Collator().compare(a[4], b[4])).map((x) => x[0])
+			thisCol.sort_date    = thisCol.sorter.sort((a, b) => Intl.Collator().compare(b[5], a[5])).map((x) => x[0])
 		}
 	}
 
@@ -281,7 +283,7 @@ class StateManager {
 	// MARK: translated UI selects
 	async updateI18NDrops() {
 		const finds = ['find_all', 'find_author', 'find_title', 'find_name', 'find_version']
-		const sorts = ['sort_name', 'sort_title', 'sort_author', 'sort_version']
+		const sorts = ['sort_name', 'sort_title', 'sort_author', 'sort_date', 'sort_version']
 
 		const findOptions = finds.map((x) =>
 			window.i18n.get(x).then((r) => DATA.optionFromArray([x, r.entry], this.track.searchType))
@@ -441,6 +443,7 @@ class StateManager {
 			sorter       : [],
 
 			sort_author   : [],
+			sort_date     : [],
 			sort_name     : [],
 			sort_title    : [],
 			sort_version  : [],
