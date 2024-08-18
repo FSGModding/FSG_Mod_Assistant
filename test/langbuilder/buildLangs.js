@@ -22,6 +22,7 @@ const patternToInclude = [
 	'storeItem_',
 	'object_',
 	'category_',
+	'configuration_',
 ]
 
 const langParser = new XMLParser({
@@ -50,7 +51,7 @@ for ( const thisFile of fileList ) {
 		for ( const thisEntry of result.l10n.elements.e ) {
 			for ( const pattern of patternToInclude ) {
 				if ( thisEntry.$.K.startsWith(pattern) ) {
-					outputStruct[langCode][thisEntry.$.K] = thisEntry.$.V
+					outputStruct[langCode][thisEntry.$.K.toLowerCase()] = thisEntry.$.V
 				}
 			}
 		}

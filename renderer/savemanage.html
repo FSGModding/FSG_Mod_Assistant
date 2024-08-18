@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
-	<script src="renderJS/util/general_lib.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
 	<script src="renderJS/savemanage_ui.js"></script>
 	<style>
 		.farm_01 { color : #ffaf00; }
@@ -31,28 +31,28 @@
 </head>
 <body data-bs-theme="dark" class="overflow-custom2" id="drag_target" style="min-height: 100vh;">
 	<div class="container-fluid px-1 user-select-none">
-		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3" style="-webkit-app-region: drag;">
 			<div class="row w-100 g-0">
-				<div class="col-7" style="-webkit-app-region: drag;">
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+				<div class="col-7" >
+					<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
 				</div>
 				<div class="col-5 pt-4">
-					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><l10n class="h4" name="save_manage_title"></l10n></div>
+					<i18n-text class="badge bg-primary mx-auto w-100 d-block rounded-3 h4 fs-5" data-key="save_manage_title"></i18n-text>
 				</div>
 			</div>
-			<span class="text-center mt-2 w-100 px-5 d-block blockquote display-8"><l10n name="save_manage_blurb"></l10n></span>
+			<i18n-text class="text-center mt-2 w-100 px-5 d-block blockquote display-8" data-key="save_manage_blurb"></i18n-text>
 		</div>
 
 		<div class="border-bottom pb-2">
 			<div class="btn-group mx-auto w-75 d-flex">
-				<button type="button" class="btn btn-primary btn-sm border" onclick="clientImportSave()"><i class="bi bi-folder"></i> <l10n name="save_manage_import"></l10n></button>
+				<button type="button" class="btn btn-primary btn-sm border" id="importButton"><i class="bi bi-folder"></i> <i18n-text data-key="save_manage_import"></i18n-text></button>
 			</div>
 		</div>
 
-		<h3 class="text-center pb-2 mt-3"><l10n name="save_manage_active"></l10n></h3>
+		<i18n-text class="d-block text-center pb-2 mt-3 h3" data-key="save_manage_active"></i18n-text>
 		<div id="active_games" class="row gy-4"></div>
 
-		<h3 class="text-center pb-2 mt-4"><l10n name="save_manage_backup"></l10n></h3>
+		<i18n-text class="d-block text-center pb-2 mt-4 h3" data-key="save_manage_backup"></i18n-text>
 		<div id="backup_games" class="row gy-4"></div>
 	</div>
 
@@ -60,14 +60,14 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-body">
-					<p class="m-0"><l10n name="save_manage_select_collection"></l10n></p>
+					<p class="m-0"><i18n-text data-key="save_manage_select_collection"></i18n-text></p>
 					<ul class="m-0 py-2">
-						<li><strong><l10n name="save_manage_name"></l10n>:</strong> <span id="save_collect_name"></span></li>
-						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_collect_path"></span></li>
+						<li><strong><i18n-text data-key="save_manage_name"></i18n-text>:</strong> <span id="save_collect_name"></span></li>
+						<li><strong><i18n-text data-key="save_manage_path"></i18n-text>:</strong> <span id="save_collect_path"></span></li>
 					</ul>
 					<div class="row">
 						<div class="col-auto">
-							<label for="save_collect_choice" class="col-form-label"><l10n name="save_manage_collection"></l10n></label>
+							<label for="save_collect_choice" class="col-form-label"><i18n-text data-key="save_manage_collection"></i18n-text></label>
 						</div>
 						<div class="col">
 							<select id="save_collect_choice" class="form-select" aria-label="Default select example">
@@ -81,8 +81,8 @@
 							<img src="img/info_ask.webp" alt="" class="w-100">
 						</div>
 						<div class="col-9">
-							<button type="button" class="w-100 mb-2 btn btn-warning" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
-							<button type="button" class="w-100 btn btn-success" onclick="clientCompareSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+							<i18n-text type="button" class="w-100 mb-2 btn btn-warning" data-bs-dismiss="modal" data-key="save_manage_button_cancel"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="compare_save_btn" data-key="save_manage_button_ok"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -94,10 +94,10 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-body">
-					<p class="m-0"><l10n name="save_manage_confirm_delete"></l10n></p>
+					<p class="m-0"><i18n-text data-key="save_manage_confirm_delete"></i18n-text></p>
 					<ul class="m-0 py-2">
-						<li><strong><l10n name="save_manage_name"></l10n>:</strong> <span id="save_delete_name"></span></li>
-						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_delete_path"></span></li>
+						<li><strong><i18n-text data-key="save_manage_name"></i18n-text>:</strong> <span id="save_delete_name"></span></li>
+						<li><strong><i18n-text data-key="save_manage_path"></i18n-text>:</strong> <span id="save_delete_path"></span></li>
 					</ul>
 				</div>
 				<div class="modal-footer">
@@ -106,8 +106,8 @@
 							<img alt="" src="img/info_warn.webp" class="w-100">
 						</div>
 						<div class="col-9">
-							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
-							<button type="button" class="w-100 btn btn-success" onclick="clientDeleteSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+							<i18n-text type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal" data-key="save_manage_button_cancel"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="delete_save_btn" data-key="save_manage_button_ok"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -119,14 +119,14 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-body">
-					<p class="m-0"><l10n name="save_manage_select_restore"></l10n></p>
+					<p class="m-0"><i18n-text data-key="save_manage_select_restore"></i18n-text></p>
 					<ul class="m-0 py-2">
-						<li><strong><l10n name="save_manage_name"></l10n>:</strong> <span id="save_restore_name"></span></li>
-						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_restore_path"></span></li>
+						<li><strong><i18n-text data-key="save_manage_name"></i18n-text>:</strong> <span id="save_restore_name"></span></li>
+						<li><strong><i18n-text data-key="save_manage_path"></i18n-text>:</strong> <span id="save_restore_path"></span></li>
 					</ul>
 					<div class="row">
 						<div class="col-auto">
-							<label for="save_restore_choice" class="col-form-label"><l10n name="save_restore_slot"></l10n></label>
+							<label for="save_restore_choice" class="col-form-label"><i18n-text data-key="save_restore_slot"></i18n-text></label>
 						</div>
 						<div class="col">
 							<select id="save_restore_choice" class="form-select" aria-label="Default select example">
@@ -161,8 +161,8 @@
 							<img alt="" src="img/info_warn.webp" class="w-100">
 						</div>
 						<div class="col-9">
-							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
-							<button type="button" class="w-100 btn btn-success" onclick="clientRestoreSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+							<i18n-text type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal" data-key="save_manage_button_cancel"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="restore_save_btn" data-key="save_manage_button_ok"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -174,16 +174,16 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-body">
-					<p class="m-0 mb-3"><l10n name="save_manage_select_import"></l10n></p>
+					<p class="m-0 mb-3"><i18n-text data-key="save_manage_select_import"></i18n-text></p>
 					<ul class="m-0 py-2">
-						<li><strong><l10n name="save_manage_path"></l10n>:</strong> <span id="save_import_path"></span></li>
+						<li><strong><i18n-text data-key="save_manage_path"></i18n-text>:</strong> <span id="save_import_path"></span></li>
 					</ul>
 					<div class="mb-3">
-						<button type="button" class="w-100 mb-2 btn btn-warning text-white" onclick="clientImportSave_load()"><l10n name="save_manage_button_import"></l10n></button>
+						<i18n-text type="button" class="w-100 mb-2 btn btn-warning text-white" id="import_save_load_btn" data-key="save_manage_button_import"></i18n-text>
 					</div>
 					<div class="row">
 						<div class="col-auto">
-							<label for="save_import_choice" class="col-form-label"><l10n name="save_import_slot"></l10n></label>
+							<label for="save_import_choice" class="col-form-label"><i18n-text data-key="save_import_slot"></i18n-text></label>
 						</div>
 						<div class="col">
 							<select id="save_import_choice" class="form-select" aria-label="Default select example">
@@ -218,8 +218,8 @@
 							<img alt="" src="img/info_ask.webp" class="w-100">
 						</div>
 						<div class="col-9">
-							<button type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal"><l10n name="save_manage_button_cancel"></l10n></button>
-							<button type="button" class="w-100 btn btn-success" onclick="clientImportSave_go()"><l10n name="save_manage_button_ok"></l10n></button>
+							<i18n-text type="button" class="w-100 mb-2 btn btn-danger text-white" data-bs-dismiss="modal" data-key="save_manage_button_cancel"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success" id="import_save_btn" data-key="save_manage_button_ok"></i18n-text>
 						</div>
 					</div>
 				</div>
@@ -232,17 +232,17 @@
 
 <template id="savegame_record">
 	<div class="col-12 inset-block"><div>
-		<span class="inset-block-header">{{saveNumber}} :: {{saveName}}</span>
+		<span class="inset-block-header"><template-var>saveNumber</template-var> :: <template-var>saveName</template-var></span>
 		<div class="row gx-2">
 			<div class="col-5"><table class="table table-sm table-borderless table-striped">
-				<tr><td><l10n class="fst-italic" name="save_manage_time"></l10n></td><td>{{savePlayTime}}</td></tr>
-				<tr><td><l10n class="fst-italic" name="save_manage_date"></l10n></td><td>{{saveDate}}</td></tr>
-				<tr><td><l10n class="fst-italic" name="save_manage_real_date"></l10n></td><td>{{saveRealDate}}</td></tr>
-				<tr><td><l10n class="fst-italic" name="save_manage_mods"></l10n></td><td>{{saveModCount}}</td></tr>
-				<tr><td><l10n class="fst-italic" name="save_manage_map"></l10n></td><td>{{saveMap}}</td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_time"></i18n-text></td><td><template-var>savePlayTime</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_date"></i18n-text></td><td><template-var>saveDate</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_real_date"></i18n-text></td><td><template-var>saveRealDate</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_mods"></i18n-text></td><td><template-var>saveModCount</template-var></td></tr>
+				<tr><td><i18n-text class="fst-italic" data-key="save_manage_map"></i18n-text></td><td><template-var>saveMap</template-var></td></tr>
 			</table></div>
-			<div class="col-4">{{farms}}</div>
-			<div class="col-3 text-center">{{buttons}}</div>
+			<div class="col-4"><template-var>farms</template-var></div>
+			<div class="col-3 text-center buttonDiv"></div>
 		</div>
 	</div></div>
 </template>
@@ -250,19 +250,19 @@
 
 <template id="savegame_active_buttons">
 	<div class="d-flex flex-column justify-content-around h-100">
-		<button type="button" onclick="clientCompareSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
-		<button type="button" onclick="clientExportSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
-		<button type="button" onclick="clientRestoreSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-warning"><l10n name="save_manage_duplicate"></l10n></button>
-		<button type="button" onclick="clientDeleteSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
+		<i18n-text type="button" class="align-content-around do-compare-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_compare"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-export-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_export"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-restore-save-btn flex-grow-1 border-dark btn btn-sm btn-warning" data-key="save_manage_duplicate"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-delete-save-btn flex-grow-1 border-dark btn btn-sm btn-danger text-white" data-key="save_manage_delete"></i18n-text>
 	</div>
 </template>
 
 <template id="savegame_backup_buttons">
 	<div class="d-flex flex-column justify-content-around h-100">
-		<button type="button" onclick="clientCompareSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_compare"></l10n></button>
-		<button type="button" onclick="clientExportSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-primary"><l10n name="save_manage_export"></l10n></button>
-		<button type="button" onclick="clientRestoreSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-warning"><l10n name="save_manage_restore"></l10n></button>
-		<button type="button" onclick="clientDeleteSave('{{uuid}}')" class="flex-grow-1 border-dark btn btn-sm btn-danger text-white"><l10n name="save_manage_delete"></l10n></button>
+		<i18n-text type="button" class="align-content-around do-compare-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_compare"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-export-save-btn flex-grow-1 border-dark btn btn-sm btn-primary" data-key="save_manage_export"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-restore-save-btn flex-grow-1 border-dark btn btn-sm btn-warning" data-key="save_manage_restore"></i18n-text>
+		<i18n-text type="button" class="align-content-around do-delete-save-btn flex-grow-1 border-dark btn btn-sm btn-danger text-white" data-key="save_manage_delete"></i18n-text>
 	</div>
 </template>
 

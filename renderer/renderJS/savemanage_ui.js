@@ -6,176 +6,202 @@
 
 // Save Manage window UI
 
-/* global fsgUtil, processL10N, bootstrap, _l */
+/* global MA, DATA, bootstrap */
 
-let uuidMap    = {}
+class stateManager {
+	collectDialog = null
+	deleteDialog  = null
+	importDialog  = null
+	restoreDialog = null
 
-window.mods.receive('fromMain_saveImport', (savePath) => {
-	fsgUtil.setContent({
-		save_import_path : savePath,
-	})
-})
+	uuidMap = {}
+	langCode = 'en'
 
-window.mods.receive('fromMain_saveInfo', (modCollect) => {
-	uuidMap    = {}
-	const theseSaves = modCollect.opts.saveInfo
+	constructor() {
+		MA.byIdEventIfExists('compare_save_btn',     () => { this.compare.go() })
+		MA.byIdEventIfExists('delete_save_btn',      () => { this.delete.go() })
+		MA.byIdEventIfExists('import_save_btn',      () => { this.import.go() })
+		MA.byIdEventIfExists('import_save_load_btn', () => { this.import.load() })
+		MA.byIdEventIfExists('importButton',         () => { this.import.open() })
+		MA.byIdEventIfExists('restore_save_btn',     () => { this.restore.go() })
 
-	const activeIDS      = Object.keys(theseSaves).filter((x) => typeof theseSaves[x].active === 'object' && theseSaves[x].active?.error === false)
-	const backIDS        = Object.keys(theseSaves).filter((x) => Array.isArray(theseSaves[x].backups) && theseSaves[x].backups.length !== 0 )
+		this.collectDialog = new bootstrap.Modal('#collect_savegame_modal', { backdrop : 'static', keyboard : false })
+		this.deleteDialog  = new bootstrap.Modal('#delete_savegame_modal',  { backdrop : 'static', keyboard : false })
+		this.importDialog  = new bootstrap.Modal('#import_savegame_modal',  { backdrop : 'static', keyboard : false })
+		this.restoreDialog = new bootstrap.Modal('#restore_savegame_modal', { backdrop : 'static', keyboard : false })
 
-	const activeGameHTML = []
-	const backGameHTML   = []
-	const compareHTML    = []
+		this.collectDialog.hide()
+		this.deleteDialog.hide()
+		this.importDialog.hide()
+		this.restoreDialog.hide()
 
-	for ( const collectKey of modCollect.set_Collections ) {
-		if ( modCollect.appSettings.game_version === modCollect.collectionNotes[collectKey].notes_version ) {
-			compareHTML.push(fsgUtil.buildSelectOpt(collectKey, modCollect.collectionToFullName[collectKey]))
-		}
+		window.savemanage_IPC.receive('savemanage:info', (modCollect) => {
+			this.processData(modCollect)
+		})
+		window.savemanage_IPC.receive('savemanage:import', (savePath) => {
+			MA.byIdText('save_import_path', savePath)
+		})
 	}
 
-	for ( const thisID of activeIDS ) {
-		uuidMap[theseSaves[thisID].active.uuid] = {
-			path : theseSaves[thisID].active.fullPath,
-			name : theseSaves[thisID].active.fullName,
-		}
-		activeGameHTML.push(doSaveTemplate(thisID, theseSaves[thisID].active))
-	}
+	async processData(data) {
+		await this.updateLang()
 
-	for ( const thisID of backIDS ) {
-		theseSaves[thisID].backups.reverse()
-		for ( const thisRecord of theseSaves[thisID].backups ) {
-			uuidMap[thisRecord.uuid] = {
-				path : thisRecord.fullPath,
-				name : thisRecord.fullName,
+		this.uuidMap    = {}
+		const theseSaves = data.opts.saveInfo
+
+		const activeIDS      = Object.keys(theseSaves).filter((x) => typeof theseSaves[x].active === 'object' && theseSaves[x].active?.error === false)
+		const backIDS        = Object.keys(theseSaves).filter((x) => Array.isArray(theseSaves[x].backups) && theseSaves[x].backups.length !== 0 )
+
+		const activeGameHTML = []
+		const backGameHTML   = []
+		const compareHTML    = []
+
+		for ( const collectKey of data.set_Collections ) {
+			if ( data.appSettings.game_version === data.collectionNotes[collectKey].notes_version ) {
+				compareHTML.push(DATA.optionFromArray([collectKey, data.collectionToFullName[collectKey]]))
 			}
-			backGameHTML.push(doSaveTemplate(thisID, thisRecord, 'savegame_backup_buttons'))
 		}
+
+		for ( const thisID of activeIDS ) {
+			this.uuidMap[theseSaves[thisID].active.uuid] = {
+				path : theseSaves[thisID].active.fullPath,
+				name : theseSaves[thisID].active.fullName,
+			}
+			activeGameHTML.push(this.doTemplate(thisID, theseSaves[thisID].active))
+		}
+
+		for ( const thisID of backIDS ) {
+			theseSaves[thisID].backups.reverse()
+			for ( const thisRecord of theseSaves[thisID].backups ) {
+				this.uuidMap[thisRecord.uuid] = {
+					path : thisRecord.fullPath,
+					name : thisRecord.fullName,
+				}
+				backGameHTML.push(this.doTemplate(thisID, thisRecord, 'savegame_backup_buttons'))
+			}
+		}
+
+		MA.byIdHTML('save_collect_choice', compareHTML.join(''))
+		MA.byIdNodeArray('active_games', activeGameHTML)
+		MA.byIdNodeArray('backup_games', backGameHTML)
 	}
 
-	fsgUtil.setContent({
-		active_games        : activeGameHTML.join(''),
-		backup_games        : backGameHTML.join(''),
-		save_collect_choice : compareHTML.join(''),
-	})
-	processL10N()
-})
-
-function doSaveTemplate(thisID, saveRecord, buttonID = 'savegame_active_buttons') {
-	return fsgUtil.useTemplate('savegame_record', {
-		buttons      : fsgUtil.useTemplate(buttonID, {
-			uuid         : saveRecord.uuid,
-		}),
-		farms        : doFarms(saveRecord.farms),
-		saveDate     : saveRecord.saveDate,
-		saveMap      : saveRecord.map,
-		saveModCount : saveRecord.modCount,
-		saveName     : saveRecord.name,
-		saveNumber   : thisID,
-		savePath     : saveRecord.fullPath,
-		savePlayTime : saveRecord.playTime,
-		saveRealDate : formatDate(saveRecord.fileDate),
-	})
-}
-
-function formatDate(date) {
-	return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
-}
-
-function doFarms(farms) {
-	const returnHTML = [
-		'<tr><td></td><td class="text-end"><l10n class="fst-italic" name="save_manage_money"></l10n></td><td class="text-end"><l10n class="fst-italic" name="save_manage_loan"></l10n></td></tr>'
-	]
-
-	for ( const thisFarm of farms ) {
-		returnHTML.push(`
-			<tr>
-				<td><span class="farm_${thisFarm.color.toString().padStart(2, '0')}">${thisFarm.name}</span></td>
-				<td class="text-end">${Intl.NumberFormat(_l(), {maximumFractionDigits : 0}).format(thisFarm.money)}</td>
-				<td class="text-end">${Intl.NumberFormat(_l(), {maximumFractionDigits : 0}).format(thisFarm.loan)}</td>
-			</tr>`
-		)
+	async updateLang() {
+		return window.i18n.lang().then((value) => {
+			this.langCode = value
+		})
 	}
-	return `<table class="table table-sm table-borderless table-striped">${returnHTML.join('')}</table>`
-}
 
-let deleteDialog  = null
-let restoreDialog = null
-let collectDialog = null
-let importDialog  = null
+	doTemplate(id, record, buttonID = 'savegame_active_buttons') {
+		const buttonNode = DATA.templateEngine(buttonID)
+
+		buttonNode.querySelector('.do-compare-save-btn').addEventListener('click', () => {
+			this.compare.btn(record.uuid)
+		})
+		buttonNode.querySelector('.do-export-save-btn').addEventListener('click', () => {
+			this.export.btn(record.uuid)
+		})
+		buttonNode.querySelector('.do-restore-save-btn').addEventListener('click', () => {
+			this.restore.btn(record.uuid)
+		})
+		buttonNode.querySelector('.do-delete-save-btn').addEventListener('click', () => {
+			this.delete.btn(record.uuid)
+		})
+		const node = DATA.templateEngine('savegame_record', {
+			farms        : this.doFarms(record.farms),
+			saveDate     : record.saveDate,
+			saveMap      : record.map,
+			saveModCount : record.modCount,
+			saveName     : record.name,
+			saveNumber   : id,
+			savePath     : record.fullPath,
+			savePlayTime : record.playTime,
+			saveRealDate : this.doDate(record.fileDate),
+		})
+
+		node.querySelector('.buttonDiv').appendChild(buttonNode)
+		return node
+	}
+
+	doDate(date) {
+		return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+	}
+	
+	doFarms(farms) {
+		const returnHTML = [
+			'<tr><td></td><td class="text-end"><i18n-text class="fst-italic" data-key="save_manage_money"></i18n-text></td><td class="text-end"><i18n-text class="fst-italic" data-key="save_manage_loan"></i18n-text></td></tr>'
+		]
+
+		for ( const thisFarm of farms ) {
+			returnHTML.push(`
+				<tr>
+					<td><span class="farm_${thisFarm.color.toString().padStart(2, '0')}">${thisFarm.name}</span></td>
+					<td class="text-end">${Intl.NumberFormat(this.langCode, {maximumFractionDigits : 0}).format(thisFarm.money)}</td>
+					<td class="text-end">${Intl.NumberFormat(this.langCode, {maximumFractionDigits : 0}).format(thisFarm.loan)}</td>
+				</tr>`
+			)
+		}
+		return `<table class="table table-sm table-borderless table-striped">${returnHTML.join('')}</table>`
+	}
+
+	import = {
+		open : () => { this.importDialog.show() },
+		load : () => { window.savemanage_IPC.importLoad() },
+		go   : () => {
+			const destSlot = MA.byIdValue('save_import_choice')
+			const srcFile  = MA.byIdText('save_import_path')
+			if ( destSlot !== '--' && srcFile !== '' ) {
+				window.savemanage_IPC.import(srcFile, destSlot)
+				this.importDialog.hide()
+			}
+		},
+	}
+	delete = {
+		go : () => {
+			window.savemanage_IPC.delete(MA.byIdText('save_delete_path'))
+			this.deleteDialog.hide()
+		},
+		btn : (uuid) => {
+			MA.byIdText('save_delete_name', this.uuidMap[uuid].name)
+			MA.byIdText('save_delete_path', this.uuidMap[uuid].path)
+			this.deleteDialog.show()
+		},
+	}
+	restore = {
+		go : () => {
+			const destSlot = MA.byIdValue('save_restore_choice')
+			if ( destSlot !== '--') {
+				window.savemanage_IPC.restore(MA.byIdText('save_restore_path'), destSlot)
+				this.restoreDialog.hide()
+			}
+		},
+		btn : (uuid) => {
+			MA.byIdText('save_restore_name', this.uuidMap[uuid].name)
+			MA.byIdText('save_restore_path', this.uuidMap[uuid].path)
+			this.restoreDialog.show()
+		},
+	}
+	compare = {
+		go : () => {
+			const collectKey = MA.byIdValue('save_collect_choice')
+			if ( collectKey !== '--') {
+				window.savemanage_IPC.compare(MA.byIdText('save_collect_path'), collectKey)
+				this.collectDialog.hide()
+			}
+		},
+		btn : (uuid) => {
+			MA.byIdText('save_collect_name', this.uuidMap[uuid].name)
+			MA.byIdText('save_collect_path', this.uuidMap[uuid].path)
+			this.collectDialog.show()
+		},
+	}
+	export = {
+		btn : (uuid) => {
+			window.savemanage_IPC.export(this.uuidMap[uuid].path)
+		},
+	}
+}
 
 window.addEventListener('DOMContentLoaded', () => {
-	deleteDialog = new bootstrap.Modal('#delete_savegame_modal', {backdrop : 'static', keyboard : false})
-	deleteDialog.hide()
-	restoreDialog = new bootstrap.Modal('#restore_savegame_modal', {backdrop : 'static', keyboard : false})
-	restoreDialog.hide()
-	collectDialog = new bootstrap.Modal('#collect_savegame_modal', {backdrop : 'static', keyboard : false})
-	collectDialog.hide()
-	importDialog = new bootstrap.Modal('#import_savegame_modal', {backdrop : 'static', keyboard : false})
-	importDialog.hide()
+	window.state = new stateManager()
 })
-
-function clientImportSave() {
-	importDialog.show()
-}
-
-function clientImportSave_load() {
-	window.mods.doImportLoad()
-}
-
-function clientImportSave_go() {
-	const destSlot = fsgUtil.valueById('save_import_choice')
-	const srcFile  = fsgUtil.htmlById('save_import_path')
-	if ( destSlot !== '--' && srcFile !== '' ) {
-		window.mods.doImportSave(srcFile, destSlot)
-		importDialog.hide()
-	}
-}
-
-function clientExportSave(uuid) {
-	window.mods.doExportSave(uuidMap[uuid].path)
-}
-
-function clientDeleteSave(uuid) {
-	fsgUtil.setContent({
-		save_delete_name : uuidMap[uuid].name,
-		save_delete_path : uuidMap[uuid].path,
-	})
-	deleteDialog.show()
-}
-
-function clientRestoreSave(uuid) {
-	fsgUtil.setContent({
-		save_restore_name : uuidMap[uuid].name,
-		save_restore_path : uuidMap[uuid].path,
-	})
-	restoreDialog.show()
-}
-
-function clientCompareSave(uuid) {
-	fsgUtil.setContent({
-		save_collect_name : uuidMap[uuid].name,
-		save_collect_path : uuidMap[uuid].path,
-	})
-	collectDialog.show()
-}
-
-function clientDeleteSave_go() {
-	window.mods.doDeleteSave(fsgUtil.htmlById('save_delete_path'))
-	deleteDialog.hide()
-}
-
-function clientRestoreSave_go() {
-	const destSlot = fsgUtil.valueById('save_restore_choice')
-	if ( destSlot !== '--') {
-		window.mods.doRestoreSave(fsgUtil.htmlById('save_restore_path'), destSlot)
-		restoreDialog.hide()
-	}
-}
-
-function clientCompareSave_go() {
-	const collectKey = fsgUtil.valueById('save_collect_choice')
-	if ( collectKey !== '--') {
-		window.mods.doCompareSave(fsgUtil.htmlById('save_collect_path'), collectKey)
-		collectDialog.hide()
-	}
-}

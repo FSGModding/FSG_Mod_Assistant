@@ -3,117 +3,144 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
+// MARK: VERSION UI
 
-// Version window UI
+/* global MA, DATA, I18N */
 
-/* global fsgUtil, processL10N */
-
-/* eslint-disable-next-line complexity */
-window.mods.receive('fromMain_modList', (modCollect) => {
-	const doMultiVersion     = modCollect.appSettings.multi_version
+// MARK: process data
+function processVersions(modCollect) {
 	const thisVersion        = modCollect.appSettings.game_version
-	const nameIconMap        = {}
-	const collectionMap      = {}
-	const nameTitleMap       = {}
-	const versionList        = {}
-	const versionListNoMatch = {}
+	const modDisplayData     = {}
+	const collectKeyName     = {}
 
 	for ( const collectKey of modCollect.set_Collections ) {
-		if ( modCollect?.collectionNotes?.[collectKey]?.notes_frozen === true ) {
+		const theseNotes = modCollect?.collectionNotes?.[collectKey]
+
+		if ( theseNotes?.notes_frozen === true ) {
 			continue
 		}
 
-		if ( doMultiVersion && modCollect?.collectionNotes?.[collectKey]?.notes_version !== thisVersion ) {
+		if ( theseNotes?.notes_version !== thisVersion ) {
 			continue
 		}
 
-		collectionMap[collectKey] = modCollect.collectionToName[collectKey]
+		collectKeyName[collectKey] = modCollect.collectionToName[collectKey]
+
 		for ( const modKey of modCollect.modList[collectKey].modSet ) {
-			const mod     = modCollect.modList[collectKey].mods[modKey]
-			const modName = mod.fileDetail.shortName
+			const thisMod = modCollect.modList[collectKey].mods[modKey]
+			const modName = thisMod.fileDetail.shortName
 
-			if ( mod.fileDetail.isFolder ) { continue }
-
-			nameTitleMap[modName] = fsgUtil.escapeSpecial(mod.l10n.title)
-			nameIconMap[modName]  = mod.modDesc.iconImageCache
-
-			if ( Object.hasOwn(versionList, modName) ) {
-				versionList[modName].push([collectKey, mod.modDesc.version])
-			} else {
-				versionList[modName] = [[collectKey, mod.modDesc.version]]
+			if ( thisMod.fileDetail.isFolder ) { continue }
+			modDisplayData[modName] ??= {
+				icon    : thisMod.modDesc.iconImageCache,
+				match   : true,
+				modhub  : modCollect.modHub.version?.[modCollect.modHub.list.mods?.[modName]] || null,
+				title   : DATA.escapeSpecial(thisMod.l10n.title),
+				verList : [],
 			}
+
+			modDisplayData[modName].verList.push([collectKey, thisMod.modDesc.version])
 		}
 	}
 
-	
-	for ( const key in versionList ) {
-		try {
-			if ( versionList[key].length < 2 ) {
-				delete versionList[key]
-				continue
-			}
+	const orderMatch = []
+	const orderDiff  = []
 
-			const firstVer = versionList[key][0][1]
-			for ( let i = 1; i < versionList[key].length; i++ ) {
-				if ( firstVer !== versionList[key][i][1] ) {
-					versionListNoMatch[key] = versionList[key]
-					delete versionList[key]
-					break
-				}
-			}
-		} catch (err) {
-			window.log.warning(`Issue with version sorting : ${key} :: ${err}`, 'version_ui')
+	for ( const [key, entry] of Object.entries(modDisplayData) ) {
+		if ( entry.verList.length < 2 ) {
+			delete modDisplayData[key]
+			continue
 		}
-	}
-	
+		entry.verList = entry.verList
+			.map((x) => ({ name : collectKeyName[x[0]], version : x[1]}))
+			.sort((a, b) => Intl.Collator().compare(a.name, b.name))
 
-	const listHTML = []
-
-	const sortedNoMatch = Object.keys(versionListNoMatch).sort(Intl.Collator().compare)
-	const sortedMatch   = Object.keys(versionList).sort(Intl.Collator().compare)
-
-	for ( const key of sortedNoMatch ) {
-		const theseCollections = versionListNoMatch[key].map((vArray) => `${collectionMap[vArray[0]]}: ${vArray[1]}`)
-		const modVer  = modCollect.modHub.version?.[modCollect.modHub.list.mods?.[key]]
-
-		listHTML.push(makeLine('diff', nameTitleMap[key], key, theseCollections, nameIconMap[key], modVer))
-	}
-
-	for ( const key of sortedMatch ) {
-		const theseCollections = versionList[key].map((vArray) => collectionMap[vArray[0]])
-		const modVer  = modCollect.modHub.version?.[modCollect.modHub.list.mods?.[key]]
-
-		listHTML.push(makeLine('same', nameTitleMap[key], key, theseCollections, nameIconMap[key], modVer))
-	}
-
-	fsgUtil.setById('modList', listHTML)
-	processL10N()
-})
-
-
-function makeColList(collections) {
-	const colList = ['<ul class="list-unstyled px-2">']
-	if ( typeof collections === 'object' ) {
-		for ( const thisColText of collections ) {
-			colList.push(`<li>${thisColText}</li>`)
+		const firstFoundVersion = entry.verList[0].version
+		entry.match = entry.verList.every((x) => x.version === firstFoundVersion )
+		if ( entry.match ) {
+			orderMatch.push(key)
+		} else {
+			orderDiff.push(key)
 		}
+		
 	}
-	colList.push('</ul>')
-	return colList.join('')
+
+	return {
+		data       : modDisplayData,
+		order      : [
+			...orderDiff.sort().map((x) => [true, x]),
+			...orderMatch.sort().map((x) => [false, x]),
+		],
+	}
 }
 
-function makeLine(type, realName, shortName, collections, icon, mhVer) {
-	return fsgUtil.useTemplate('version_line', {
-		badge             : fsgUtil.badge('dark', ( type === 'same' ) ? 'version_same' : 'version_diff', true),
-		clickCallback     : ( type === 'same' ) ? '' : `window.mods.openVersionResolve('${shortName}')`,
-		collectClass      : ( type === 'same' ) ? '' : 'text-body-emphasis',
-		color             : ( type === 'same' ) ? 'list-group-item-secondary' : 'list-group-item-danger',
-		icon              : fsgUtil.iconMaker(icon),
-		joinedCollections : type !== 'same' ? makeColList(collections) : `<l10n name="version_collections"></l10n>: ${fsgUtil.escapeSpecial(collections.join(', '))}`,
-		modHubVersion     : ( type === 'same' || typeof mhVer === 'undefined') ? '' : `<span class="border border-2 badge bg-info">MH:${mhVer}</span>`,
-		realName          : realName,
-		shortName         : shortName,
-		showButton        : ( type === 'same' ) ? 'd-none' : '',
+// MARK: display data
+async function displayData(data) {
+	const listDiv = MA.byId('modList')
+
+	listDiv.innerHTML = ''
+
+	for ( const [isDiff, key] of data.order ) {
+		const thisItem = data.data[key]
+
+		const badgePromise = [
+			I18N.buildBadgeNoI18N({
+				name : `MH:${thisItem.modhub}`,
+				class : ['badge-mod-notmod'],
+				skip : !isDiff || thisItem.modhub === null,
+			}),
+			I18N.buildBadgeBare({
+				name : isDiff ? 'version_diff' : 'version_same',
+				class : [],
+			}),
+		]
+
+		const collectionList = thisItem.verList.map((x) => [
+			'<li>',
+			`<span class="fw-bold">${x.name}</span>`,
+			isDiff ? ` <span class="fst-italic">${x.version}</span>` : '',
+			'</li>'
+		].join(''))
+
+		const node = DATA.templateEngine('version_line', {
+			collections : collectionList.join(''),
+			iconImage   : `<img class="img-fluid" src="${DATA.iconMaker(thisItem.icon)}" />`,
+			realName    : thisItem.title,
+			shortName   : key,
+		})
+
+		node.querySelector('.collection-list').classList.add( isDiff ? 'collection-list-diff' : 'collection-list-same')
+
+		if ( isDiff ) {
+			const actionButton = document.createElement('button')
+			actionButton.setAttribute('type', 'button')
+			actionButton.classList.add('btn', 'btn-primary', 'w-75', 'btn-sm', 'mt-4', 'ms-auto', 'me-0')
+			actionButton.innerHTML = I18N.defer('resolve_version_window', false)
+
+			actionButton.addEventListener('click', () => {
+				window.version_IPC.resolve(key)
+			})
+
+			node.querySelector('.actionButton').appendChild(actionButton)
+		}
+
+		node.firstElementChild.classList.add(isDiff ? 'bg-danger-subtle' : 'bg-primary-subtle')
+
+		Promise.allSettled(badgePromise).then((result) => {
+			const badgeContain = node.querySelector('.badgeContainer')
+			for ( const thisBadge of result ) {
+				badgeContain.appendChild(thisBadge.value)
+			}
+
+			listDiv.appendChild(node)
+		})
+	}
+
+}
+
+// MARK: PAGE LOAD
+window.addEventListener('DOMContentLoaded', () => {
+	window.version_IPC.get().then((modCollect) => {
+		displayData(processVersions(modCollect))
 	})
-}
-
+})

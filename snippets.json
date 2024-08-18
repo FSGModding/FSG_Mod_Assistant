@@ -1,0 +1,8 @@
+{
+	"html": {
+	  "snippets": {
+		"tvar" : "template-var",
+		"i18n" : "i18n-text"
+	  }
+	}
+  }

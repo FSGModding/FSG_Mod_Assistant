@@ -6,23 +6,23 @@
 
 // Detail window UI
 
-/* global fsgUtil, processL10N */
+/* global MA, DATA */
 
-window.mods.receive('fromMain_saveInfo', (modCollect) => {
+window.savetrack_IPC.receive('savetrack:results', (modCollect) => {
 	const saveInfo = modCollect.opts.saveInfo
 
 	if ( saveInfo === null || !Array.isArray(saveInfo.current) || saveInfo.current.length === 0 ) {
-		fsgUtil.clsShow('no_list_yet')
+		MA.byId('no_list_yet').clsShow()
 		return
 	}
 
 	const newHTML  = []
 
-	fsgUtil.clsHide('no_list_yet')
+	MA.byId('no_list_yet').clsHide()
 
 	saveInfo.current.sort(Intl.Collator().compare)
 	
-	newHTML.push(fsgUtil.useTemplate('savetrack_current', {
+	newHTML.push(DATA.templateEngine('savetrack_current', {
 		savegameID : saveInfo.saveID,
 		modList    : saveInfo.current.map((x) => `<div class="col"><div class="border p-1">${x}</div></div>`).join(''),
 	}))
@@ -33,20 +33,22 @@ window.mods.receive('fromMain_saveInfo', (modCollect) => {
 
 		const dateParts = thisBack.date.split('_')
 
-		newHTML.push(fsgUtil.useTemplate('savetrack_backup', {
+		const node = DATA.templateEngine('savetrack_backup', {
 			backupDate    : `${dateParts[0]} ${dateParts[1].replace(/-/, ':')}`,
-			class_isDupe  : thisBack.duplicate ? '' : 'd-none',
-			class_notDupe : thisBack.duplicate ? 'd-none' : '',
 			onlyBackup    : thisBack.onlyBackup.map((x) => `<div class="col"><div class="border p-1">${x}</div></div>`).join(''),
 			onlyCurrent   : thisBack.onlyOriginal.map((x) => `<div class="col"><div class="border p-1">${x}</div></div>`).join(''),
-		}))
+		})
+
+		node.querySelector('.is_duplicate').clsShow(thisBack.duplicate)
+		node.querySelector('.is_not_duplicate').clsHide(thisBack.duplicate)
+
+		newHTML.push(node)
 	}
 
-	fsgUtil.setById('modList', newHTML)
-	processL10N()
+	MA.byIdNodeArray('modList', newHTML)
 })
 
 window.addEventListener('DOMContentLoaded', () => {
-	processL10N()
+	MA.byIdEventIfExists('openFolderButton', () => { window.savetrack_IPC.openFolder() })
 })
 

@@ -132,7 +132,7 @@ class baseLooker {
 		if ( key === null || typeof key !== 'string' ) { return null }
 		if ( ! key.startsWith('$l10n') ) { return key }
 		
-		const searchKey = key.substring(6)
+		const searchKey = key.substring(6).toLowerCase()
 
 		return this.#langData?.[searchKey] ?? key
 	}
@@ -475,7 +475,6 @@ class baseLooker {
 
 		try {
 			const theseFills = this.#parseFillTypes(xml?.fillunit?.fillunitconfigurations?.fillunitconfiguration?.[0]?.fillunits?.fillunit ?? null)
-			
 			return {
 				brand          : this.#parseBrand(storeData?.brand),
 				category       : this.#getCategory(storeData?.category),

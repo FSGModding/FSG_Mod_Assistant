@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
+	<script src="renderJS/version_ui.js"></script>
+	<style>
+		.btn-group-win_ui {
+			height: 23px;
+			left : auto;
+			right: 123px;
+		}
+		.btn-win_ui { height: 25px; }
+
+		.btn-base-ui {
+			--bs-btn-color: var(--bs-tertiary-color);
+			--bs-btn-bg: var(--bs-tertiary-bg);
+			--bs-btn-border-color: var(--bs-tertiary-bg);
+			--bs-btn-hover-color: var(--bs-tertiary-color);
+			--bs-btn-hover-bg: #5c636a;
+			--bs-btn-hover-border-color: #565e64;
+			--bs-btn-focus-shadow-rgb: 130,138,145;
+			--bs-btn-active-color: #fff;
+			--bs-btn-active-bg: #565e64;
+			--bs-btn-active-border-color: #51585e;
+			--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+			--bs-btn-disabled-color: #fff;
+			--bs-btn-disabled-bg: #6c757d;
+			--bs-btn-disabled-border-color: #6c757d;
+		}
+
+		.badge-version_same {
+			background-color: var(--bs-success-bg-subtle)!important;
+			border-color: var(--bs-success-border-subtle)!important;
+		}
+		.badge-version_diff {
+			background-color: var(--bs-danger-bg-subtle)!important;
+			border-color: var(--bs-danger-border-subtle)!important;
+		}
+		.collection-list {
+			list-style-type: none;
+		}
+		.collection-list.collection-list-same li {
+			display: inline-block;
+		}
+		.collection-list.collection-list-same li::after {
+			content : ', '
+		}
+		.collection-list.collection-list-same li:last-child::after {
+			content : '' !important;
+		}
+	</style>
+</head>
+<body data-bs-theme="dark" class="overflow-custom2">
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top pb-2 bg-body border-bottom mb-3">
+			<div class="row w-100 g-0" style="-webkit-app-region: drag;">
+				<div class="col-7 pt-2">
+					<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
+				</div>
+				<div class="col-5 pt-4 mt-3">
+					<i18n-text class="badge bg-primary mx-auto w-100 d-block rounded-3 h4 fs-5" data-key="version_check_window"></i18n-text>
+				</div>
+				<div class="m-0 px-0 rounded-end-0 btn-group-win_ui d-flex justify-content-end bg-transparent" style="position:absolute; -webkit-app-region: no-drag;">
+					<i18n-text type="button" id="pageActionRefresh" class="rounded-0 btn-win_ui btn btn-base-ui" data-key="refresh_page"></i18n-text>
+				</div>
+			</div>
+		</div>
+
+		<div class="list-group mx-2 my-3" id="modList"></div>
+	</div>
+
+
+<template id="version_line">
+	<li class="list-group-item d-flex">
+		<div class="d-flex flex-row w-100 justify-content-between">
+			<div class="col-2 p-0 me-3" style="width:64px; height:64px;">
+				<template-var>iconImage</template-var>
+			</div>
+			<div class="col-6">
+				<div class="fw-bold"><template-var>shortName</template-var></div>
+				<div class="small ps-2 fst-italic"><template-var>realName</template-var></div>
+				<div class="small ps-2 mt-2"><ul class="collection-list"><template-var>collections</template-var></ul></div>
+			</div>
+			<div class="col-4 text-end">
+				<div class="badgeContainer d-flex flex-wrap fs-4 justify-content-end gap-1 mb-2"></div>
+				<div class="actionButton"></div>
+			</div>
+		</div>
+	</li>
+</template>
+
+</body>
+</html>

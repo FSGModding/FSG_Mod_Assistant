@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="inc/chart.min.js"></script>
+	<title>Base Game Data Browser</title>
+
+	<script src="renderJS/util/util_lib.js"></script>
+	<script src="renderJS/util/storeItems.js"></script>
+	<script src="renderJS/util/fillType.js"></script>
+	<script src="renderJS/util/baseGameData.js"></script>
+	
+	<script src="renderJS/basegame_ui.js"></script>
+	<style>
+		fillType {
+			font-size : calc(1.15rem + .6vw);
+		}
+		.h0 { font-size: 10vw; }
+		.fsicoLI {
+			vertical-align : -0.2em;
+			font-size : calc(1.3rem + .6vw);
+			margin-right : 0.3em;
+		}
+		
+		.notRealItem {
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-image : url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(14, 17, 19, 0.15)" class="bi bi-exclamation-triangle" viewBox="0 0 16 16"><path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/><path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/></svg>')
+		}
+		::-webkit-scrollbar-track-piece:start { margin-top: 0px; }
+		::-webkit-scrollbar {
+			width: 10px;
+			height: 10px;
+		}
+
+		.notRealItem img.store-icon-image {
+			filter:saturate(0) brightness(0.6);
+		}
+		.notRealItem img.store-brand-image {
+			filter:brightness(0.6);
+		}
+		.store-icon-brand {
+			margin-top: -10%;
+			width: 35%;
+		}
+		.storeItemBox {
+			max-width: 33%;
+		}
+		.pageClicker {
+			cursor: pointer;
+		}
+
+		.inset-vehicle-block .inset-block-blurb-detail, .inset-placable-block .inset-block-blurb-detail  {
+			text-align: start;
+			margin-top: -0.75rem;
+		}
+		fillType {
+			font-size : calc(1.15rem + .6vw);
+		}
+		
+		.joint-container .joint {
+			border: none;
+			border-radius : 0px;
+			--bs-bg-opacity: 1;
+			background-color: #547aa3!important;
+			margin-left: 2px;
+			font-weight: normal;
+			cursor: pointer;
+			padding-right: 1rem !important;
+			padding-left: 1rem !important;
+		}
+		.joint-container .joint.custom {
+			font-weight: bold;
+			font-style: italic;
+			cursor: default;
+		}
+		.joint-container .joint.attach_need {
+			clip-path: polygon(100% 0, 90% 50%, 100% 100%, 10% 100%, 0% 50%, 10% 0%);
+		}
+		.joint-container .joint.attach_has {
+			clip-path: polygon(90% 0, 100% 50%, 90% 100%, 0% 100%, 10% 50%, 0% 0%);
+		}
+	</style>
+</head>
+<body data-bs-theme="dark" class="overflow-hidden">
+	<div class="container-fluid px-1 vh-100 d-flex flex-column">
+		<div class="sticky-top pb-2 bg-body border-bottom mb-0" >
+			<div class="row w-100" style="-webkit-app-region: drag;">
+				<div class="col-12">
+					<h2 class="ps-2 mt-2 mastHead"><i18n-text data-key="app_name"></i18n-text> <i class="fsico-ver-22"></i> <i18n-text data-key="basegame_browser"></i18n-text></h2>
+				</div>
+			</div>
+		</div>
+		<div class="d-flex flex-row flex-grow-1" style="height: calc(100vh - 60px)">
+			<div class="col-3 fs-3 px-3 d-flex flex-column justify-content-evenly border-end">
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="brand">
+					<div class="fsico-cat-brand align-self-center"></div>
+					<i18n-text class="text-end align-self-center" data-key="basegame_brand"></i18n-text>
+				</div>
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="vehicle">
+					<div class="fsico-cat-vehicle align-self-center"></div>
+					<i18n-text class="text-end align-self-center" data-key="basegame_vehicle"></i18n-text>
+				</div>
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="tool">
+					<div class="fsico-cat-tool align-self-center"></div>
+					<i18n-text class="text-end align-self-center fs-3" data-key="basegame_tool"></i18n-text>
+				</div>
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="object">
+					<div class="fsico-cat-object align-self-center"></div>
+					<i18n-text class="text-end align-self-center" data-key="basegame_object"></i18n-text>
+				</div>
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="placeable">
+					<div class="fsico-cat-placeable align-self-center"></div>
+					<i18n-text class="text-end align-self-center" data-key="basegame_placeable"></i18n-text>
+				</div>
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="attach_has">
+					<div class="fsico-cat-attach-has align-self-center"></div>
+					<i18n-text class="text-end align-self-center fs-4" data-key="basegame_attach_has"></i18n-text>
+				</div>
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="attach_need">
+					<div class="fsico-cat-attach-need align-self-center"></div>
+					<i18n-text class="text-end align-self-center fs-4" data-key="basegame_attach_need"></i18n-text>
+				</div>
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="fills">
+					<div class="fsico-look-fillunit align-self-center"></div>
+					<i18n-text class="text-end align-self-center" data-key="basegame_fills"></i18n-text>
+				</div>
+			</div>
+			<div class="col-9 d-flex flex-column">
+				<div class="d-flex flex-column flex-grow-1 overflow-hidden" id="homePageContent">
+					<div class="d-flex flex-column flex-grow-1 justify-content-center gap-4" id="homePageBlurb">
+						<i18n-text class="fs-3 align-self-center w-50 text-center mx-auto" data-key="basegame_browser_blurb"></i18n-text>
+						<div class="fs-4 w-75 mx-auto d-none" id="homePageError">
+							<div class="alert alert-warning" role="alert">
+								<div class="row">
+									<div class="col-3 text-center h0 text-warning"><i class="bi bi-exclamation-triangle"></i></div>
+									<div class="col-7 align-content-center">
+										<i18n-text data-key="basegame_not_found"></i18n-text><br><br>
+										<span class="fs-6 fst-italic">
+											<template-var data-name="error-page-type">type</template-var> : 
+											<template-var data-name="error-page-page">page</template-var>
+										</span>
+									</div>
+									<div class="col-2 align-content-center text-center"><i18n-text type="button" class="btn btn-lg btn-outline-primary" id="homeButtonError" data-key="basegame_button_home"></i18n-text></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="d-flex flex-column flex-grow-1 d-none overflow-custom2 pt-2 mb-2" id="searchContentBox">
+						<div class="px-2 d-flex justify-content-between gap-1 flex-wrap" id="searchContent"></div>
+					</div>
+					<div class="pt-3 border-top" id="searchBox">
+						<div class="input-group input-group-sm my-2 mx-auto w-75">
+							<span class="input-group-text"><i18n-text data-key="find_basegame_match"></i18n-text></span>
+							<input value="" type="text" id="mods__filter" class="form-control mod-row-filter rounded-end">
+							<span id="mods__filter_clear" class="form-control-clear bi bi-eraser form-control-feedback position-absolute d-none" style="right:10px; cursor:pointer; z-index:100; top:calc( 50% - 10px); "></span>
+						</div>
+						<div class="mx-4 mt-3" id="searchResults"></div>
+					</div>
+				</div>
+				<div class="px-2 overflow-custom2 d-flex justify-content-between gap-1 flex-wrap pb-2" id="bgContent">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+<template id="store_item">
+	<div class="text-end storeItemBox">
+		<div class="position-relative pageClicker p-2 border rounded-3 h-100 text-center hasParentFile d-flex flex-column justify-content-between">
+			<i18n-text type="button" class="position-absolute end-0 me-2 btn btn-warning btn-vsm compareSingle" data-key="basegame_button_comp"></i18n-text>
+			<div class="pb-4">
+				<div class="store-icon-image"><template-var>iconImage</template-var></div>
+				<div class="store-icon-brand"><template-var>brandImage</template-var></div>
+				<span class="text-white"><template-var>name</template-var></span>
+			</div>
+			
+			<div class="px-3 text-start pb-4">
+				<template-var>dataItems</template-var>
+			</div>
+			
+			<em class="text-body-tertiary"><template-var>dlc</template-var></em>
+			
+		</div>
+	</div>
+</template>
+
+<template id="combo_div_source">
+	<div class="row border-bottom mb-2 comboItemEntry">
+		<div class="comboItemInfo d-none">
+			<template-var data-name="clickSource">clickSource</template-var>
+			<template-var data-name="clickType">clickType</template-var>
+			<template-var data-name="clickPage">clickPage</template-var>
+		</div>
+		<div class="text-center col-2 py-2 mt-0 pt-0 comboItemClicker">
+			<div class="store-icon-image"><template-var>iconImage</template-var></div>
+			<div class="store-icon-brand"><template-var>brandImage</template-var></div>
+		</div>
+		<div class="col-5 align-self-center text-center comboItemClicker">
+			<template-var>fullName</template-var><br>
+			<em><template-var>category</template-var></em>
+		</div>
+		<div class="col-4 align-self-center comboItemClicker">
+			<template-var>compareTerms</template-var>
+		</div>
+		<div class="text-center col-1 align-self-center comboCompareButton">
+			<i18n-text type="button" class="btn btn-warning btn-vsm float-end mt-2 comboItemAddClicker" style="margin-left: -25px; margin-right:5px;" data-key="basegame_button_comp"></i18n-text>
+		</div>
+	</div>
+</template>
+
+<template id="vehicle_info_div">
+	<div class="inset-vehicle-block vehicleInfoBlock col-12 inset-block mt-4" id="vehicle-info-parent"><div>
+		<span class="inset-block-header" name="detail_dev_info"><template-var>itemName</template-var></span>
+		<span class="inset-block-header-show-hide"><i18n-text type="button" class="btn btn-sm btn-warning action-item-compare" data-key="basegame_button_comp"></i18n-text></span>
+		<span class="inset-block-blurb-detail">
+			<small class="fst-italic"><template-var>typeDesc</template-var></small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fst-italic fw-normal"><template-var>itemTitle</template-var></small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fw-bold"><template-var>category</template-var></small>
+		</span>
+
+		<div class="inset-body">
+			<div class="row mx-2">
+				<div class="col-5 my-auto mx-auto">
+					<div class="store-icon-image"><template-var>iconImage</template-var></div>
+					<div class="store-icon-brand"><template-var>brandImage</template-var></div>
+				</div>
+				<div class="col-7">
+					<template-var>itemData</template-var>
+				</div>
+				<div class="col-12 py-2"><p class="text-center"><template-var>functions</template-var></p></div>
+				<div class="col-12 py-2 combo-list">
+					<div class="inset-inline-header">
+						<i18n-text data-key="combinations_title" class="inset-inline-header-text"></i18n-text>
+						<span class="inset-inline-header-button">
+							<i18n-text type="button" class="btn btn-warning btn-vsm action-compare-all-combo" data-key="basegame_compare_all"></i18n-text>
+						</span>
+					</div>
+					<div class="combo-item-list"></div>
+				</div>
+				<template-var>chartData</template-var>
+			</div>
+		</div>
+	</div></div>
+</template>
+
+<template id="prod_div">
+	<div class="row border-top mt-2">
+		<div class="col-3 text-center align-self-top border-end">
+			<div class="row py-2"><div class="col"><template-var>prodName</template-var></div></div>
+			<div class="row py-2 align-items-center"><div class="col-6"><i style="font-size: 1.5rem" class="fsico-look-prod-cycle"></i></div><div class="col-6"><template-var>prodCycles</template-var></div></div>
+			<div class="row py-2 align-items-center"><div class="col-6"><i style="font-size: 1.5rem" class="fsico-look-price"></i></div><div class="col-6"><template-var>prodCost</template-var></div></div>
+		</div>
+		<div class="col-9 text-center align-self-center">
+			<div class="row align-items-center"><!-- inputs -->
+				<div class="col-10">
+					<template-var>prodInputs</template-var>
+				</div>
+				<div class="col-2">
+					<i style="font-size: 1.5rem" class="fsico-look-prod-input"></i>
+				</div>
+			</div>
+			<div class="row border-top align-items-center pt-2 mt-2"><!-- outputs -->
+				<div class="col-10">
+					<template-var>prodOutput</template-var>
+				</div>
+				<div class="col-2">
+					<i style="font-size: 1.5rem" class="fsico-look-prod-output"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="place_div">
+	<div class="col-12 inset-block inset-placable-block mt-4"><div>
+		<span class="inset-block-header" name="detail_dev_info"><template-var>itemName</template-var></span>
+		<span class="inset-block-blurb-detail">
+			<small class="fst-italic fw-normal"><template-var>itemTitle</template-var></small>
+			<span class="fw-normal" style="font-size: 50%">-</span>
+			<small class="fw-bold"><template-var>category</template-var></small>
+		</span>
+		<div class="inset-body">
+			<div class="row mx-2">
+				<div class="col-5 my-auto mx-auto">
+					<div class="store-icon-image"><template-var>iconImage</template-var></div>
+				</div>
+				<div class="col-7">
+					<template-var>placeData</template-var>
+					<div class="prodLines"></div>
+				</div>
+				<div class="col-12 pt-2"><p class="text-center"><template-var>functions</template-var></p></div>
+			</div>
+		</div>
+	</div></div>
+</template>
+
+</body>
+</html>

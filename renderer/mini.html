@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="inc/fsico.css">
 	
 	<script src="inc/bootstrap.bundle.min.js"></script>
-	<script src="renderJS/util/general_lib.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
 	<script src="renderJS/mini_ui.js"></script>
 	<style>
 		.btn-group-mini_ui {
@@ -28,7 +28,6 @@
 			text-align: right;
 			margin-top: 1px;
 		}
-		l10n[name=game_icon] i { margin-right: 0px; margin-top: 0px; }
 	</style>
 </head>
 <body class="d-flex flex-column h-100 overflow-custom2" data-bs-theme="dark" style="-webkit-app-region: drag;">
@@ -40,17 +39,15 @@
 
 			<div class="input-group input-group-sm position-absolute h-100" style="width: calc(100% - 55px); right:0px; -webkit-app-region: no-drag;">
 				<select class="form-select from-select-sm" id="collectionSelect"></select>
-				<button class="text-white btn btn-sm btn-warning" id="active_button" type="button" data-bs-placement="bottom" onclick="clientMakeListActive()"><l10n name="list-active"></l10n></button>
-				<button type="button" id="launch_button" class="btn-info btn btn-sm rounded-0 text-white border-0" onclick="clientOpenFarmSim()"><l10n name="game_icon"></l10n></button>
+				<i18n-text class="align-content-around text-white btn btn-sm btn-warning" id="active_button" type="button" data-bs-placement="bottom" data-key="list-active"></i18n-text>
+				<i18n-text type="button" id="launch_button" class="align-content-around btn-info btn btn-sm rounded-0 text-white border-0" data-key="game_icon"></i18n-text>
 			</div>
 			
-			<button type="button" id="window-pin-button" class="btn-primary btn btn-sm rounded-5 text-white border-0 position-absolute" style="padding: 3px; font-size: 40%; left: 2px; top: 35px; -webkit-app-region: no-drag;" onclick="window.mods.pinMiniWindow()">
+			<button type="button" id="window-pin-button" class="btn-primary btn btn-sm rounded-5 text-white border-0 position-absolute" style="padding: 3px; font-size: 40%; left: 2px; top: 35px; -webkit-app-region: no-drag;">
 				<i class="bi bi-pin-fill d-none" id="window-pin-pinned"></i>
 				<i class="bi bi-pin-angle d-none" id="window-pin-not-pinned"></i>
 			</button>
-			<button type="button" class="btn-secondary btn btn-sm rounded-5 text-white border-0 position-absolute" style="padding: 3px; font-size: 40%; left: 15px; top: 35px; -webkit-app-region: no-drag;" onclick="window.mods.openGameLog()">
-				<l10n name="button_gamelog"></l10n>
-			</button>
+			<i18n-text type="button" class="btn-secondary btn btn-sm rounded-5 text-white border-0 position-absolute" style="padding: 3px; font-size: 40%; left: 15px; top: 35px; -webkit-app-region: no-drag;" id="gameLogButton" data-key="button_gamelog"></i18n-text>
 		</div>
 	</div>
 	</main>

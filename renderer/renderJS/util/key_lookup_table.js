@@ -1,3 +1,10 @@
+/*  _______           __ _______               __         __   
+   |   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+   |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+   |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+   (c) 2022-present FSG Modding.  MIT License. */
+// MARK: KEY TABLE
+
 function clientGetKeyMapSimple(keys, locale) {
 	return keys.split(' ').map((key) => { return getKeyMap(key, locale)} ).join('<span class="mx-1">+</span>')
 }

@@ -3,44 +3,261 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
+// MARK: DETAIL UI
+/* eslint complexity: ["error", 25] */
+/* global DATA, MA, ST, NUM, I18N, ft_doReplace, clientGetKeyMapSimple, clientGetKeyMap, clientMakeCropCalendar, client_BGData */
 
-// Detail window UI
-
-/* global dtLib, __, processL10N, fsgUtil, client_BGData, clientGetKeyMap, clientGetKeyMapSimple, clientMakeCropCalendar */
-
+let modName = ''
 let lookItemData = {}
 let lookItemMap  = {}
 let comboItemMap = {}
-let modName      = ''
+let i18nUnits    = null
+let locale       = 'en'
 
-window.mods.receive('fromMain_lookRecord', (lookRecord, chartUnits, currentLocale) => {
+// MARK: PAGE LOAD
+window.addEventListener('DOMContentLoaded', () => {
 	lookItemData = {}
 	lookItemMap  = {}
 	comboItemMap = {}
-	try {
-		buildStore(lookRecord, chartUnits, currentLocale)
-		fsgUtil.clsHideTrue('store_process', true)
-	} catch (err) {
-		window.log.warning(`Store build failed :: ${err}`, 'detail-ui')
+
+	const urlParams = new URLSearchParams(window.location.search)
+	const modColUUID = urlParams.get('mod')
+
+	window.detail_IPC.getMod(modColUUID).then(async (thisMod) => {
+		modName   = thisMod.fileDetail.shortName
+
+		locale    = await window.i18n.lang()
+		i18nUnits = await window.settings.units()
+
+		const basicPromises = [
+			step_table(thisMod),
+			step_keyBinds(thisMod),
+			step_problems(thisMod),
+			step_badges(thisMod),
+			step_crops(thisMod),
+		]
+
+		try {
+			const storeInfo = await window.detail_IPC.getStore(modColUUID)
+
+			const storePromises = [
+				step_mapImage(storeInfo.mapImage),
+			]
+
+			MA.byIdHTML('storeitems', '')
+
+			MA.byId('store_div').clsShow(Object.keys(storeInfo.items).length !== 0)
+
+			for ( const [storeItemFile, thisItem] of Object.entries(storeInfo.items) ) {
+				if ( thisItem.masterType === 'vehicle' ) {
+					const thisUUID = crypto.randomUUID()
+					const combos   = subStep_combos(thisItem?.specs?.combination, storeInfo, thisUUID)
+					storePromises.push(subStep_vehicle(
+						thisUUID,
+						storeItemFile,
+						thisItem,
+						storeInfo.icons[storeItemFile],
+						storeInfo.brands,
+						combos
+					))
+				} else if ( thisItem.masterType === 'placeable' ) {
+					storePromises.push(subStep_placeable(
+						thisItem,
+						storeInfo.icons[storeItemFile]
+					))
+				}
+			}
+
+			basicPromises.push(...storePromises)
+		} finally {
+			Promise.allSettled(basicPromises).then((results) => {
+				for ( const thisResult of results ) {
+					if ( thisResult.status === 'rejected' ) {
+						window.log.log('Issue with page build', thisResult.reason.toString())
+					}
+				}
+				ft_doReplace()
+				MA.byId('loading-spinner').clsHide()
+			})
+		}
+	}).catch((err) => {
+		window.log.error('page build error',  err.message, `\n${err.stack}`)
+	})
+
+	for ( const element of MA.query('.inset-block-header-show-hide l10n') ) {
+		element.addEventListener('click', showHideClicker)
 	}
-	processL10N()
 })
 
-window.mods.receive('fromMain_modRecord', (modCollect) => {
-	try {
-		fsgUtil.clsShowTrue('store_process', modCollect.opts.hasStore)
-		buildPage(modCollect)
-	} catch (err) {
-		window.log.warning(`Page build failed :: ${err}`, 'detail-ui')
-	}
-	processL10N()
-})
+// MARK: mapImage
+async function step_mapImage(mapImage) {
+	if ( mapImage === null || typeof mapImage !== 'string') { return }
+	MA.byId('map_image_div').clsShow()
+	MA.byId('map_image').src = mapImage
+}
 
-const make_combos = (combos, lookRecord, parentItem) => {
-	if ( typeof combos === 'undefined' || combos === null || combos.length === 0 ) { return '' }
+// MARK: crops
+async function step_crops(thisMod) {
+	if ( Array.isArray(thisMod.modDesc.cropInfo) ) {
+		MA.byId('cropcal_div').clsShow()
+		MA.byId('detail_crop_json').clsShow()
+		MA.byId('cropcal_button').addEventListener('click', () => {
+			//TODO : this is wrong
+			window.operations.clip(JSON.stringify(thisMod.modDesc.cropInfo))
+		})
+		
+		return clientMakeCropCalendar(
+			thisMod.modDesc.cropInfo,
+			thisMod.modDesc?.mapIsSouth || false,
+			thisMod.modDesc?.cropWeather || null
+		).then((html) => {
+			MA.byIdHTML('crop-table', html)
+		})
+	}
+}
+
+// MARK: badges
+async function step_badges(thisMod) {
+	return window.detail_IPC.getMalware().then((malware) => {
+		let foundMalware = false
+
+		const theseBadges = Array.isArray(thisMod.displayBadges) ? thisMod.displayBadges.filter((badge) => {
+			if ( badge.name === 'malware' ) {
+				if ( malware.dangerModsSkip.has(thisMod.fileDetail.shortName) ) { return false }
+				if ( malware.suppressList.includes(thisMod.fileDetail.shortName)) { return false }
+				foundMalware = true
+			}
+			return true
+		}) : []
+
+		MA.byId('malware-found').clsShow(foundMalware)
+
+		const badgePromise = theseBadges.map((badge) => I18N.buildBadgeMod(badge))
+
+		return Promise.allSettled(badgePromise).then((badges) => {
+			badges.map((x) => {
+				MA.byId('badges').appendChild(x.value)
+			})
+		})
+	})
+}
+
+// MARK: problems
+async function step_problems(thisMod) {
+	return window.detail_IPC.getBinds().then(async (bindConflicts) => {
+		const bindingIssue     = bindConflicts[thisMod.currentCollection][thisMod.fileDetail.shortName] ?? null
+
+		if ( thisMod.issues.length === 0 && bindingIssue === null ) {
+			MA.byId('problem_div').clsHide()
+		} else {
+			return Promise.allSettled([
+				...await subStep_issues(thisMod),
+				...await subStep_binds(bindingIssue, locale),
+			]).then((value) => {
+				const theseIssues = value.map((item) => `<tr class="py-2"><td class="px-2">${DATA.checkX(0, false)}</td><td>${item.value}}</td></tr>`)
+				MA.byIdHTML('problems', `<table class="table table-borderless mb-0">${theseIssues.join('')}</table>`)
+			})
+		}
+	})
+}
+
+// MARK: keyBinds
+async function step_keyBinds(thisMod) {
+	const keyBinds = []
+	for ( const action in thisMod.modDesc.binds ) {
+		const thisBinds = thisMod.modDesc.binds[action].map((keyCombo) => clientGetKeyMapSimple(keyCombo, locale))
+		keyBinds.push(`${action} :: ${thisBinds.join('<span class="mx-3">/</span>')}`)
+	}
+	return DATA.joinArrayOrI18N(keyBinds, 'detail_key_none').then((value) => {
+		MA.byIdHTML('keyBinds', value)
+		MA.byId('keyBinds').clsOrGateArr(keyBinds, 'text-info')
+	})
+	
+}
+
+// MARK: table (top)
+async function step_table(thisMod) {
+	const joinedArrays = {
+		bigFiles       : [thisMod.fileDetail.tooBigFiles],
+		depends        : [thisMod.modDesc.depend, 'detail_depend_clean'],
+		extraFiles     : [thisMod.fileDetail.extraFiles],
+		pngTexture     : [thisMod.fileDetail.pngTexture],
+		spaceFiles     : [thisMod.fileDetail.spaceFiles],
+	}
+	for ( const [id, content] of Object.entries(joinedArrays)) {
+		DATA.joinArrayOrI18N(...content).then((value) => {
+			MA.byIdHTML(id, value)
+			MA.byId(id).clsOrGateArr(content[0])
+		})
+	}
+
+	const idMap = {
+		description    : DATA.escapeDesc(thisMod.l10n.description),
+		file_date      : (new Date(Date.parse(thisMod.fileDetail.fileDate))).toLocaleString(locale, {timeZoneName : 'short'}),
+		filesize       : await DATA.bytesToHR(thisMod.fileDetail.fileSize),
+		has_scripts    : DATA.checkX(thisMod.modDesc.scriptFiles),
+		i3dFiles       : thisMod.fileDetail.i3dFiles.join('\n'),
+		is_multiplayer : DATA.checkX(thisMod.modDesc.multiPlayer, false),
+		mh_version     : ( thisMod.modHub.id !== null ) ?
+			`<a href="https://www.farming-simulator.com/mod.php?mod_id=${thisMod.modHub.id}" target="_BLANK">${thisMod.modHub.version}</a>` :
+			`<em>${I18N.defer(thisMod.modHub.id === null ? 'mh_norecord' : 'mh_unknown', false )}</em>`,
+		mod_author     : DATA.escapeSpecial(thisMod.modDesc.author),
+		mod_location   : thisMod.fileDetail.fullPath,
+		store_items    : DATA.checkX(thisMod.modDesc.storeItems),
+		title          : (( thisMod.l10n.title !== null && thisMod.l10n.title !== '--' ) ? DATA.escapeSpecial(thisMod.l10n.title) : thisMod.fileDetail.shortName),
+		version        : DATA.escapeSpecial(thisMod.modDesc.version),
+	}
+	for ( const [id, content] of Object.entries(idMap)) {
+		MA.byIdHTML(id, content)
+	}
+
+	for ( const element of MA.query('#description a') ) { element.target = '_BLANK' }
+
+	MA.byIdHTMLorHide(
+		'icon_div',
+		`<img class="img-fluid" src="${thisMod.modDesc.iconImageCache}" />`,
+		thisMod.modDesc.iconImageCache
+	)
+}
+
+// MARK: SUB issues
+async function subStep_issues(modRecord) {
+	const problemI18N = []
+	for ( const issue of modRecord.issues ) {
+
+		const issueI18N = I18N.defer(issue, false)
+		if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
+			const copyI18N = I18N.defer('file_error_copy_name', false)
+			problemI18N.push(`${issueI18N} ${copyI18N} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`)
+		} else {
+			problemI18N.push(issueI18N)
+		}
+	}
+	return problemI18N
+}
+
+// MARK: SUB binds
+async function subStep_binds(bindingIssue) {
+	const problemPromises = []
+	if ( bindingIssue !== null ) {
+		for ( const keyCombo in bindingIssue ) {
+			const actualKey = clientGetKeyMap(keyCombo, locale)
+			const confList  = bindingIssue[keyCombo].join(', ')
+			const i18n      = I18N.defer('bind_conflict')
+			problemPromises.push(
+				`${i18n} : ${actualKey} :: ${confList}`
+			)
+		}
+	}
+	return problemPromises
+}
+
+// MARK: SUB combos
+function subStep_combos (combos, lookRecord, parentItem) {
+	if ( typeof combos === 'undefined' || combos === null || combos.length === 0 ) { return null }
 
 	const comboKeyList = new Set()
-	const comboHTML    = []
+	const comboNodes   = []
 
 	for ( const thisCombo of combos ) {
 		if ( thisCombo === null ) { continue }
@@ -53,300 +270,262 @@ const make_combos = (combos, lookRecord, parentItem) => {
 
 			if ( typeof thisItem === 'undefined' ) { continue }
 
-			const theIcon = dtLib.iconChooser(
+			const thisIcon = ST.resolveIcon(
 				thisItem.icon,
 				lookRecord?.icons?.[thisComboKey]
 			)
 
-			comboKeyList.add({internal : thisComboIsBase, key : thisComboKey, contents : thisComboIsBase ? null : thisItem})
+			comboKeyList.add({
+				contents : thisComboIsBase ? null : thisItem,
+				internal : thisComboIsBase,
+				key      : thisComboKey,
+				source   : thisComboIsBase ? null : modName,
+			})
 
-			const thisItemData = dtLib.getInfo(thisItem)
+			const thisItemData = ST.getInfo(thisItem)
+			const brandImgSRC  = ST.resolveBrand(lookRecord.brands?.[thisItem.brand]?.icon, thisItem.brand)
 
-			comboHTML.push(fsgUtil.useTemplate('combo_div_source', {
-				brandIcon      : dtLib.safeBrandImage(thisItem.brand),
-				category       : __(thisItem.category, {skipIfNotBase : true}),
+			const thisNode = DATA.templateEngine('combo_div_source', {
+				brandImage : `<img src="${brandImgSRC}" class="img-fluid store-brand-image">`,
+				iconImage  : `<img src="${thisIcon}" class="img-fluid store-icon-image">`,
+
+				category       : I18N.defer(thisItem.category),
 				clickPage      : thisComboKey,
 				clickSource    : thisComboIsBase ? 'base' : 'internal',
 				clickType      : 'item',
+				fullName       : I18N.defer(thisItem.name),
+				
 				compareTerms   : [
-					dtLib.doDataType('price', thisItemData.price),
-					dtLib.doDataType('workWidth', thisItemData.workWidth),
+					ST.markupDataType('price', thisItemData.price),
+					ST.markupDataType('workWidth', thisItemData.workWidth),
 				].join(''),
-				fullName       : __(thisItem.name, {skipIfNotBase : true}),
-				itemIcon       : dtLib.safeDataImage(theIcon),
-				page           : thisComboKey,
-				showCompButton : thisItem.masterType === 'vehicle' ? '' : 'd-none',
-			}))
+			}, {}, {
+				'.comboCompareButton' : MA.showTest(thisItem.masterType === 'vehicle'),
+			})
+
+			DATA.eventEngine(thisNode, '.comboItemClicker', comboItemClicker)
+			DATA.eventEngine(thisNode, '.comboItemAddClicker', comboAddSingle)
+			
+			comboNodes.push(thisNode)
 		}
 	}
 	comboItemMap[parentItem] = [...comboKeyList]
-	return comboHTML.join('')
+	return comboNodes
 }
 
-const doMapImage = (mapImage) => {
-	if ( mapImage === null || typeof mapImage !== 'string') { return }
-	fsgUtil.clsShow('map_image_div')
-	fsgUtil.byId('map_image').src = mapImage
-}
+// MARK: SUB vehicles
+async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, combos) {
+	lookItemMap[thisFile] = thisUUID
+	lookItemData[thisUUID] = thisItem
+	lookItemData[thisUUID].icon = ST.resolveIcon(thisIcon, thisItem.icon)
+	lookItemData[thisUUID].brandIcon = ST.resolveBrand(brands?.[thisItem.brand]?.icon, thisItem.brand)
+	lookItemData[thisUUID].uuid_name = thisFile
 
-/* eslint-disable-next-line complexity */
-const buildStore = (lookRecord, chartUnits) => {
-	const storeItemsHTML = []
-	const storeItemsJS   = []
+	const thisItemData = ST.getInfo(thisItem)
+	const fillImages   = ST.markupFillTypes(thisItem.fillTypes)
+	const sprayTypes   = ST.markupSprayTypes(thisItem?.sprayTypes, thisItemData.workWidth)
+	const chartHTML    = MA.showTestValueBool(thisItem.motorInfo) ? ST.markupChart(thisUUID) : ''
 
-	doMapImage(lookRecord?.mapImage)
-
-	for ( const storeitem in lookRecord.items ) {
-		const thisItem     = lookRecord.items[storeitem]
-		const thisItemUUID = crypto.randomUUID()
-
-		if ( thisItem.masterType === 'vehicle' ) {
-			lookItemMap[storeitem] = thisItemUUID
-			lookItemData[thisItemUUID] = thisItem
-			lookItemData[thisItemUUID].icon = fsgUtil.iconMaker(lookRecord?.icons?.[storeitem] || null)
-			lookItemData[thisItemUUID].uuid_name = storeitem
-
-			const thisItemData = dtLib.getInfo(thisItem)
-			const brandImage   = dtLib.safeBrandFromRecord(thisItem.brand, lookRecord, {width : '30%'})
-			const fillImages   = dtLib.doFillTypes(thisItem.fillTypes)
-		
-			const thisItemDataHTML = dtLib.typeDataOrder.map((x) => dtLib.doDataType(x, thisItemData[x]))
-
-			for ( const testItem of dtLib.vehTestTypes ) {
-				if ( fsgUtil.getShowBool(thisItem[testItem[0]], testItem[1]) ) {
-					thisItemDataHTML.push(dtLib.doDataRow(testItem[2], __(testItem[3] === false ? thisItem[testItem[0]]: testItem[3])))
-				}
-			}
-
-			thisItemDataHTML.push(
-				dtLib.doDataType(
-					'fillLevel',
-					thisItemData.fillLevel,
-					fillImages.length !== 0 ? fillImages.join('') : null
-				),
-				dtLib.doDataType(
-					'workWidth',
-					thisItemData.workWidth,
-					dtLib.doSprayTypes(thisItem?.sprayTypes, thisItemData.workWidth)
-				),
-				dtLib.doDataRowTrue(
-					'cat-attach-has',
-					fsgUtil.getShowBool(thisItem?.joints?.canUse) ? __('basegame_attach_has') : null,
-					dtLib.doJoints(thisItem?.joints?.canUse, true, false)
-				),
-				dtLib.doDataRowTrue(
-					'cat-attach-need',
-					fsgUtil.getShowBool(thisItem?.joints?.needs) ? __('basegame_attach_need') : null,
-					dtLib.doJoints(thisItem?.joints?.needs, false, false)
-				)
-			)
-
-			storeItemsHTML.push(fsgUtil.useTemplate('vehicle_info_div', {
-				brandImage   : brandImage,
-				category     : __(thisItem.category, { skipIfNotBase : true }),
-				combinations : make_combos(thisItem?.specs?.combination, lookRecord, thisItemUUID),
-				functions    : dtLib.wrap.functions(thisItem.functions),
-				iconImage    : dtLib.safeDataImage(dtLib.iconChooser(thisItem.icon), { width : 'auto'}),
-				itemData     : thisItemDataHTML.join(''),
-				itemName     : __(thisItem.name, { skipIfNotBase : true }),
-				itemTitle    : thisItem.type,
-				showBrand    : fsgUtil.getHide(brandImage),
-				showCombos   : fsgUtil.getHide(thisItem?.specs?.combination),
-				showGraph    : fsgUtil.getHide(thisItem.motorInfo),
-				typeDesc     : thisItem.typeDesc,
-				uuid         : thisItemUUID,
-			}))
-
-			if ( thisItem.motorInfo !== null ) {
-				storeItemsJS.push(dtLib.doChart(thisItem, thisItemUUID, chartUnits))
-			}
-		}
-
-		if ( thisItem.masterType === 'placeable' ) {
-			const fillImages       = dtLib.doFillTypes(thisItem.silo.types)
-			const thisItemDataHTML = []
-
-			thisItemDataHTML.push(
-				dtLib.doDataType('price', dtLib.default(thisItem.price)),
-				dtLib.doDataType('income', dtLib.default(thisItem.incomePerHour)),
-				dtLib.doDataType('objects', dtLib.default(thisItem.objectStorage)),
-				dtLib.doDataType(
-					'fillLevel',
-					dtLib.default(thisItem?.silo?.capacity),
-					fillImages.length !== 0 ? fillImages.join('') : null
-				),
-				dtLib.doDataType('bees', dtLib.default(thisItem.beehive.radius))
-			)
+	const thisItemDataHTML = ST.typeDataOrder.map((x) => ST.markupDataType(x, thisItemData[x]))
 	
-			for ( const husbandType of dtLib.husbandTestTypes ) {
-				if ( fsgUtil.getShowBool(thisItem.husbandry.type, husbandType) ) {
-					thisItemDataHTML.push(dtLib.doDataRow(`fill-${husbandType.toLowerCase()}`, thisItem.husbandry.capacity))
-				}
-			}
-	
-			storeItemsHTML.push(fsgUtil.useTemplate('place_div', {
-				category  : __(thisItem.category, {skipIfNotBase : true}),
-				functions : dtLib.wrap.functions(thisItem.functions),
-				iconImage : dtLib.safeDataImage(fsgUtil.iconMaker(lookRecord?.icons?.[storeitem]), { width : 'auto'}),
-				itemName  : __(thisItem.name, {skipIfNotBase : true}),
-				itemTitle : thisItem.type,
-				placeData : thisItemDataHTML.join(''),
-				prodLines : dtLib.doProductions(thisItem?.productions),
-			}))
+	for ( const testItem of ST.vehTestTypes ) {
+		if ( MA.showTestValueBool(thisItem[testItem[0]], testItem[1]) ) {
+			thisItemDataHTML.push(ST.markupDataRow(
+				testItem[2],
+				testItem[3] === false ?
+					thisItem[testItem[0]] :
+					I18N.defer(testItem[3], false)
+			))
 		}
 	}
 
-	fsgUtil.setById('storeitems', storeItemsHTML)
-	fsgUtil.clsShow('store_div')
-
-	for ( const thisJS of storeItemsJS ) {
-		setTimeout(thisJS, 25)
-	}
-}
-
-const doKeyBinds = (modRecord, locale) => {
-	const keyBinds = []
-	for ( const action in modRecord.modDesc.binds ) {
-		const thisBinds = modRecord.modDesc.binds[action].map((keyCombo) => clientGetKeyMapSimple(keyCombo, locale))
-		keyBinds.push(`${action} :: ${thisBinds.join('<span class="mx-3">/</span>')}`)
-	}
-	return keyBinds
-}
-
-const buildPage = (modCollect) => {
-	document.body.setAttribute('data-version', modCollect.appSettings.game_version)
-
-	const modRecord    = modCollect.opts.selected
-	modName            = modRecord.fileDetail.shortName
-	const modDate      = new Date(Date.parse(modRecord.fileDetail.fileDate)).toLocaleString(modCollect.currentLocale, {timeZoneName : 'short'})
-	const doneKeyBinds = doKeyBinds(modRecord, modCollect.currentLocale)
-	const idMap = {
-		bigFiles       : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.tooBigFiles),
-		depends        : fsgUtil.arrayJoinOrOther(modRecord.modDesc.depend, 'detail_depend_clean'),
-		description    : fsgUtil.escapeDesc(modRecord.l10n.description),
-		extraFiles     : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.extraFiles),
-		file_date      : modDate,
-		filesize       : fsgUtil.bytesToHR(modRecord.fileDetail.fileSize),
-		has_scripts    : fsgUtil.checkX(modRecord.modDesc.scriptFiles),
-		i3dFiles       : modRecord.fileDetail.i3dFiles.join('\n'),
-		is_multiplayer : fsgUtil.checkX(modRecord.modDesc.multiPlayer, false),
-		keyBinds       : fsgUtil.arrayJoinOrOther(doneKeyBinds, 'detail_key_none'),
-		mh_version     : ( modRecord.modHub.id !== null ) ? `<a href="https://www.farming-simulator.com/mod.php?mod_id=${modRecord.modHub.id}" target="_BLANK">${modRecord.modHub.version}</a>` : `<em>${__(modRecord.modHub.id === null ? 'mh_norecord' : 'mh_unknown' )}</em>`,
-		mod_author     : fsgUtil.escapeSpecial(modRecord.modDesc.author),
-		mod_location   : modRecord.fileDetail.fullPath,
-		pngTexture     : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.pngTexture),
-		spaceFiles     : fsgUtil.arrayJoinOrOther(modRecord.fileDetail.spaceFiles),
-		store_items    : fsgUtil.checkX(modRecord.modDesc.storeItems),
-		title          : (( modRecord.l10n.title !== null && modRecord.l10n.title !== '--' ) ? fsgUtil.escapeSpecial(modRecord.l10n.title) : modRecord.fileDetail.shortName),
-		version        : fsgUtil.escapeSpecial(modRecord.modDesc.version),
-	}
-
-	fsgUtil.setContent(idMap)
-
-	fsgUtil.clsOrGateArr('keyBinds', doneKeyBinds, 'text-info')
-	fsgUtil.clsOrGateArr('pngTexture', modRecord.fileDetail.pngTexture)
-	fsgUtil.clsOrGateArr('spaceFiles', modRecord.fileDetail.spaceFiles)
-	fsgUtil.clsOrGateArr('extraFiles', modRecord.fileDetail.extraFiles)
-	fsgUtil.clsOrGateArr('bigFiles', modRecord.fileDetail.tooBigFiles)
-
-	for ( const element of fsgUtil.query('#description a') ) { element.target = '_BLANK' }
-
-	const bindingIssue     = modCollect.bindConflict[modRecord.currentCollection][modRecord.fileDetail.shortName] ?? null
-
-	if ( modRecord.issues.length === 0 && bindingIssue === null ) {
-		fsgUtil.clsHide('problem_div')
+	if ( sprayTypes !== null ) {
+		thisItemDataHTML.push(ST.markupDataRowTrue(
+			'look-width',
+			sprayTypes
+		))
 	} else {
-		const problems = [
-			...doStep_issues(modRecord),
-			...doStep_binds(bindingIssue, modCollect.currentLocale)
-		].map((x) => `<tr class="py-2"><td class="px-2">${fsgUtil.checkX(0, false)}</td><td>${x}</td></tr>`)
-
-		fsgUtil.setById('problems', `<table class="table table-borderless mb-0">${problems.join('')}</table>`)
+		thisItemDataHTML.push(ST.markupDataType(
+			'workWidth',
+			thisItemData.workWidth
+		))
 	}
 
-	let foundMalware = false
-
-	const theseBadges = Array.isArray(modRecord.displayBadges) ? modRecord.displayBadges.filter((badge) => {
-		if ( badge[0] === 'malware' ) {
-			if ( modCollect.dangerModsSkip.has(modRecord.fileDetail.shortName) ) { return false }
-			if ( modCollect.appSettings.suppress_malware.includes(modRecord.fileDetail.shortName)) { return false }
-			foundMalware = true
-		}
-		return true
-	}).map((badge) => fsgUtil.badge_main(badge)).join(' ') : false
-
-	fsgUtil.clsShowTrue('malware-found', foundMalware)
-	fsgUtil.setTextOrHide(
-		'badges',
-		theseBadges,
-		theseBadges
+	thisItemDataHTML.push(
+		ST.markupDataType(
+			'fillLevel',
+			thisItemData.fillLevel,
+			fillImages.length !== 0 ? fillImages.join('') : null
+		),
+		ST.markupDataRowTrue(
+			'cat-attach-has',
+			MA.showTestValueBool(thisItem?.joints?.canUse) ? I18N.defer('basegame_attach_has', false) : null,
+			ST.markupJoints(thisItem?.joints?.canUse, true, false)
+		),
+		ST.markupDataRowTrue(
+			'cat-attach-need',
+			MA.showTestValueBool(thisItem?.joints?.needs) ? I18N.defer('basegame_attach_need', false) : null,
+			ST.markupJoints(thisItem?.joints?.needs, false, false)
+		)
 	)
+	const infoDivNode = DATA.templateEngine('vehicle_info_div', {
+		brandImage : `<img src="${lookItemData[thisUUID].brandIcon}" class="img-fluid store-brand-image">`,
+		iconImage  : `<img src="${lookItemData[thisUUID].icon}" class="img-fluid store-icon-image">`,
 
-	fsgUtil.setTextOrHide(
-		'icon_div',
-		`<img class="img-fluid" src="${modRecord.modDesc.iconImageCache}" />`,
-		modRecord.modDesc.iconImageCache
+		category  : I18N.defer(thisItem.category),
+		functions : ST.markupFunctions(thisItem.functions),
+		itemName  : I18N.defer(thisItem.name),
+		itemTitle : thisItem.type,
+		typeDesc  : I18N.defer(thisItem.typeDesc),
+
+		chartData : chartHTML,
+		itemData  : thisItemDataHTML.join(''),
+	}, {
+		'vehicle-info-parent' : thisUUID,
+	}, {
+		'.combo-list' : MA.showTest(thisItem?.specs?.combination),
+	})
+
+	if ( combos !== null ) {
+		const comboParent = infoDivNode.querySelector('.combo-item-list')
+		for ( const thisCombo of combos ) {
+			comboParent.appendChild(thisCombo)
+		}
+	}
+	
+	DATA.eventEngine(infoDivNode, '.action-compare-all-combo', comboAddAll)
+	DATA.eventEngine(infoDivNode, '.action-item-compare', singleAdd)
+	DATA.eventEngine(infoDivNode, '.attach_has, .attach_need', attachClicker)
+
+	MA.byIdAppend('storeitems', infoDivNode)
+
+	if ( MA.showTestValueBool(thisItem.motorInfo) ) {
+		ST.markupChartScripts(thisItem, thisUUID, i18nUnits)()
+	}
+}
+
+// MARK: sub PLACEABLE
+async function subStep_placeable(thisItem, thisIcon) {
+	const fillImages       = ST.markupFillTypes(thisItem.silo.types)
+	const thisItemIcon     = ST.resolveIcon(thisIcon, thisItem.icon)
+	const thisItemDataHTML = []
+
+	thisItemDataHTML.push(
+		ST.markupDataType('price', NUM.default(thisItem.price)),
+		ST.markupDataType('income', NUM.default(thisItem.incomePerHour)),
+		ST.markupDataType('objects', NUM.default(thisItem.objectStorage)),
+		ST.markupDataType(
+			'fillLevel',
+			NUM.default(thisItem?.silo?.capacity),
+			fillImages.length !== 0 ? fillImages.join('') : null
+		),
+		ST.markupDataType('bees', NUM.default(thisItem.beehive.radius))
 	)
-
-	if ( Array.isArray(modRecord.modDesc.cropInfo) ) {
-		fsgUtil.clsShow('cropcal_div')
-		fsgUtil.clsShow('detail_crop_json')
-		
-		clientMakeCropCalendar('crop-table', modRecord.modDesc.cropInfo, modRecord.modDesc?.mapIsSouth || false, modRecord.modDesc?.cropWeather || null)
-		
-		fsgUtil.byId('cropcal_button').addEventListener('click', () => {
-			window.mods.popClipboard(JSON.stringify(modRecord.modDesc.cropInfo))
-		})
-	}
-}
-
-function doStep_issues(modRecord) {
-	const problems = []
-	for ( const issue of modRecord.issues ) {
-		let issueText = __(issue)
-		
-		if ( issue === 'FILE_ERROR_LIKELY_COPY' && modRecord.fileDetail.copyName !== false ) {
-			issueText += ` ${__('file_error_copy_name')} ${modRecord.fileDetail.copyName}${modRecord.fileDetail.isFolder?'':'.zip'}`
-		}
-		problems.push(issueText)
-	}
-	return problems
-}
-
-function doStep_binds(bindingIssue, locale) {
-	const problems = []
-	if ( bindingIssue !== null ) {
-		for ( const keyCombo in bindingIssue ) {
-			const actualKey = clientGetKeyMap(keyCombo, locale)
-			const confList  = bindingIssue[keyCombo].join(', ')
-			const issueText = `${__('bind_conflict')} : ${actualKey} :: ${confList}`
-			problems.push(issueText)
+	
+	for ( const husbandType of ST.husbandTestTypes ) {
+		if ( MA.showTestValueBool(thisItem.husbandry.type, husbandType) ) {
+			thisItemDataHTML.push(ST.markupDataRow(`fill-${husbandType.toLowerCase()}`, thisItem.husbandry.capacity))
 		}
 	}
-	return problems
+	
+	const infoDivNode = DATA.templateEngine('place_div', {
+		category  : I18N.defer(thisItem.category),
+		functions : ST.markupFunctions(thisItem.functions),
+		iconImage : `<img src="${thisItemIcon}" class="img-fluid store-icon-image">`,
+		itemName  : I18N.defer(thisItem.name),
+		itemTitle : thisItem.type,
+		placeData : thisItemDataHTML.join(''),
+	})
+
+	if ( MA.showTestValueBool(thisItem?.productions) ) {
+		const prodLines = ST.markupProductions(thisItem?.productions)
+		const parentElement = infoDivNode.querySelector('.prodLines')
+		for ( const element of prodLines ) {
+			parentElement.appendChild(element)
+		}
+	}
+
+	MA.byIdAppend('storeitems', infoDivNode)
+}
+
+// MARK: CLICKERS
+function showHideClicker(e) {
+	const isShow      = e.target.classList.contains('section_show')
+	const buttonGroup = e.target.parentElement
+	const section     = e.target.parentElement.parentElement.querySelector('div')
+
+	section.clsShow(isShow)
+	buttonGroup.children[0].clsShow(!isShow)
+	buttonGroup.children[1].clsShow(isShow)
 }
 
 
-function clientOpenCompare(uuid) {
-	window.mods.openCompareMod(lookItemData[uuid], modName)
+function itemGetInfo(target) {
+	const thisItemDIV = target.closest('.vehicleInfoBlock')
+	return thisItemDIV.id
 }
 
-function clientCompareCombo(source, page) {
+function comboGetInfo(target) {
+	const thisItemDIV = target.closest('.comboItemEntry')
+	const theseVars = thisItemDIV.querySelector('.comboItemInfo').querySelectorAll('template-var')
+	const returnObj = {
+		source : null,
+		type   : null,
+		page   : null,
+	}
+	for ( const element of theseVars ) {
+		if ( element.safeAttribute('data-name') === 'clickSource' ) { returnObj.source = element.textContent }
+		if ( element.safeAttribute('data-name') === 'clickPage' ) { returnObj.page = element.textContent }
+		if ( element.safeAttribute('data-name') === 'clickType' ) { returnObj.type = element.textContent }
+	}
+	return returnObj
+}
+
+function singleAdd(e) {
+	const itemID = itemGetInfo(e.target)
+	const compareObj = {
+		contents : lookItemData[itemID],
+		internal : false,
+		key      : lookItemData[itemID].uuid_name,
+		source   : modName,
+	}
+	window.detail_IPC.sendCompare([compareObj])
+}
+
+function comboAddAll(e) {
+	const compareObjArray = comboItemMap[itemGetInfo(e.target)]
+	window.detail_IPC.sendCompare(compareObjArray)
+}
+
+function comboAddSingle(e) {
+	const { source, page } = comboGetInfo(e.target)
+	const compareObj = {
+		contents : null,
+		internal : source !== 'internal',
+		key      : page,
+		source   : source === 'internal' ? modName : null,
+	}
 	if ( source === 'internal' ) {
-		window.mods.openCompareMod(lookItemData[lookItemMap[page]], modName)
-	} else {
-		window.mods.openCompareBase(page)
+		compareObj.contents = lookItemData[lookItemMap[page]]
 	}
+	window.detail_IPC.sendCompare([compareObj])
 }
 
-function clientOpenCombos(uuid) {
-	window.mods.openCompareMulti(comboItemMap[uuid], modName)
-}
-
-function clientClickCombo(source, type, page) {
+function comboItemClicker(e) {
+	const { source, type, page } = comboGetInfo(e.target)
 	if ( source === 'internal' ) {
 		location.hash = lookItemMap[page]
 	} else {
-		window.mods.openBaseGameDeep(type, page)
+		window.detail_IPC.sendBase({ type : type, page : page })
 	}
+}
+
+function attachClicker(e) {
+	const realTarget = e.target.closest('.badge')
+	if ( realTarget.classList.contains('custom') ) { return }
+	const openObject = {
+		type  : realTarget.classList.contains('attach_need') ? 'attach_need' : 'attach_has',
+		page : realTarget.safeAttribute('data-jointpage'),
+	}
+	window.detail_IPC.sendBase(openObject)
 }

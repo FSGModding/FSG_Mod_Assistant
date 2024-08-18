@@ -12,7 +12,7 @@
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
-	<script src="renderJS/util/general_lib.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
 	<script src="renderJS/notes_ui.js"></script>
 	<style>
 		.form-control.is-inprogress {
@@ -50,12 +50,12 @@
 </head>
 <body data-bs-theme="dark" class="overflow-custom2">
 	<div class="container-fluid px-1 user-select-none">
-		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-4">
-			<div class="row g-0 w-100">
-				<div class="col-7" style="-webkit-app-region: drag;">
-					<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
+		<div class="sticky-top pb-2 bg-body border-bottom mb-4">
+			<div class="row g-0 w-100" style="-webkit-app-region: drag;">
+				<div class="col-7 pt-2">
+					<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
 				</div>
-				<div class="col-5 pt-4">
+				<div class="col-5 mt-3 pt-4">
 					<div class="badge bg-primary mx-auto w-100 d-block rounded-3"><span class="h4" id="collection_name"></span></div>
 				</div>
 			</div>
@@ -63,143 +63,106 @@
 		
 
 		<div class="alert alert-warning mb-5 mx-4 d-none" id="is_active_collect" role="alert">
-			<l10n name="notes_usage_blurb_2"></l10n>
+			<i18n-text data-key="notes_usage_blurb_2"></i18n-text>
 		</div>
 
 		<div class="row gx-3 gy-4 mx-2">
 
 			<div class="col-12 inset-block"><div><!-- icon color -->
-				<l10n class="inset-block-header" name="notes_title_color"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_color"></i18n-text>
 				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_color"></l10n>
-					<div class="col-6 d-flex flex-wrap justify-content-start">
+					<i18n-text class="inset-block-blurb-option col-6" data-key="notes_blurb_color"></i18n-text>
+					<div class="col-6 d-flex flex-wrap justify-content-start" id="notes_color">
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color0" value="0">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color0" value="0">
 							<label class="form-check-label notes-color-label" for="notes_color0">0</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color1" value="1">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color1" value="1">
 							<label class="form-check-label notes-color-label" for="notes_color1">1</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color2" value="2">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color2" value="2">
 							<label class="form-check-label notes-color-label" for="notes_color2">2</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color3" value="3">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color3" value="3">
 							<label class="form-check-label notes-color-label" for="notes_color3">3</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color4" value="4">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color4" value="4">
 							<label class="form-check-label notes-color-label" for="notes_color4">4</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color5" value="5">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color5" value="5">
 							<label class="form-check-label notes-color-label" for="notes_color5">5</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color6" value="6">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color6" value="6">
 							<label class="form-check-label notes-color-label" for="notes_color6">6</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color7" value="7">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color7" value="7">
 							<label class="form-check-label notes-color-label" for="notes_color7">7</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input" onchange="clientSetColor()" type="radio" name="notes_color" id="notes_color8" value="8">
+							<input class="form-check-input" type="radio" name="notes_color" id="notes_color8" value="8">
 							<label class="form-check-label notes-color-label" for="notes_color8">8</label>
 						</div>
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-12 inset-block"><div><!-- description -->
-				<l10n class="inset-block-header" name="notes_title_tagline"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_tagline"></l10n>
-					<div class="col-6">
-						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_tagline')" onblur="clientSetNote('notes_tagline')" type="text" class="form-control form-control-sm" id="notes_tagline">
-					</div>
-				</div>
-			</div></div>
+			<div class="col-12 inset-block"><!-- description -->
+				<page-replace data-type="text-input" data-name="tagline"></page-replace>
+			</div>
 
 			<div class="col-12 inset-block"><div><!-- notes -->
-				<l10n class="inset-block-header" name="notes_title_notes"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_notes"></i18n-text>
 				<div class="row gy-2">
-					<l10n class="inset-block-blurb-option col-12" name="notes_blurb_notes"></l10n>
+					<i18n-text class="inset-block-blurb-option col-12" data-key="notes_blurb_notes"></i18n-text>
 					<div class="col-10 offset-1">
-						<textarea oncontextmenu="window.mods.openCText()" onblur="clientSetNote('notes_notes')" rows="4" class="form-control form-control-sm" id="notes_notes"></textarea>
+						<textarea rows="4" class="inputElement form-control form-control-sm" id="notes_notes"></textarea>
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-md-6 inset-block"><div><!-- favorite -->
-				<l10n class="inset-block-header" name="notes_title_favorite"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-9" name="notes_blurb_favorite"></l10n>
-					<div class="col-3 px-2 form-check form-switch custom-switch">
-						<input id="notes_favorite" onchange="clientSetNote('notes_favorite')" class="form-check-input" type="checkbox" role="switch">
-					</div>
-				</div>
-			</div></div>
+			<div class="col-md-6 inset-block"><!-- favorite -->
+				<page-replace data-type="switch-input" data-name="favorite"></page-replace>
+			</div>
 
-			<div class="col-md-6 inset-block"><div><!-- holding -->
-				<l10n class="inset-block-header" name="notes_title_holding"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-9" name="notes_blurb_holding"></l10n>
-					<div class="col-3 form-check form-switch custom-switch">
-						<input id="notes_holding" onchange="clientSetNote('notes_holding')" class="form-check-input" type="checkbox" role="switch">
-					</div>
-				</div>
-			</div></div>
+			<div class="col-md-6 inset-block"><!-- holding -->
+				<page-replace data-type="switch-input" data-name="holding"></page-replace>
+			</div>
 
-			<div class="col-md-6 inset-block"><div><!-- frozen -->
-				<l10n class="inset-block-header" name="notes_title_frozen"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-9" name="notes_blurb_frozen"></l10n>
-					<div class="col-3 form-check form-switch custom-switch">
-						<input id="notes_frozen" onchange="clientSetNote('notes_frozen')" class="form-check-input" type="checkbox" role="switch">
-					</div>
-				</div>
-			</div></div>
+			<div class="col-md-6 inset-block"><!-- frozen -->
+				<page-replace data-type="switch-input" data-name="frozen"></page-replace>
+			</div>
 
-			<div class="col-md-6 inset-block"><div><!-- removable -->
-				<l10n class="inset-block-header" name="notes_title_removable"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-9" name="notes_blurb_removable"></l10n>
-					<div class="col-3 form-check form-switch custom-switch">
-						<input id="notes_removable" onchange="clientSetNote('notes_removable')" class="form-check-input" type="checkbox" role="switch">
-					</div>
-				</div>
-			</div></div>
+			<div class="col-md-6 inset-block"><!-- removable -->
+				<page-replace data-type="switch-input" data-name="removable"></page-replace>
+			</div>
 
 			<div class="col-12 inset-block" id="multi_version"><div><!-- version -->
-				<l10n class="inset-block-header" name="notes_title_version"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_version"></i18n-text>
 				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_version"></l10n>
+					<i18n-text class="inset-block-blurb-option col-6" data-key="notes_blurb_version"></i18n-text>
 					<div class="col-6">
-						<select class="form-select" id="notes_version" onchange="clientSetNote('notes_version')">
-							<option value="22">2022</option>
-							<option value="19">2019</option>
-							<option value="17">2017</option>
-							<option value="15">2015</option>
-							<option value="13">2013</option>
-							<option value="11">2011</option>
-						</select>
+						<select class="form-select inputElement" id="notes_version"></select>
 					</div>
 				</div>
 			</div></div>
 
 			<div class="col-12 inset-block"><div><!-- units -->
-				<l10n class="inset-block-header" name="notes_title_units"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_units"></i18n-text>
 				<div class="row gy-2">
-					<l10n class="inset-block-blurb-option col-12 pb-3" name="notes_blurb_units"></l10n>
+					<i18n-text class="inset-block-blurb-option col-12 pb-3" data-key="notes_blurb_units"></i18n-text>
 
 					<div class="col-4">
-						<l10n name="notes_units_money_title"></l10n>
+						<i18n-text data-key="notes_units_money_title"></i18n-text>
 					</div>
 					<div class="col-2">
-						<select class="form-select form-select-sm" id="notes_unit_money" onchange="clientSetNote('notes_unit_money')">
+						<select class="inputElement form-select form-select-sm" id="notes_unit_money">
 							<option value="1">€</option>
 							<option value="2">$</option>
 							<option value="3">£</option>
@@ -207,135 +170,86 @@
 					</div>
 
 					<div class="col-4">
-						<l10n name="notes_units_use_miles"></l10n>
+						<i18n-text data-key="notes_units_use_miles"></i18n-text>
 					</div>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
-							<input id="notes_unit_mile" onchange="clientSetNote('notes_unit_mile')" class="form-check-input" type="checkbox" role="switch">
+							<input id="notes_unit_mile" class="inputElement form-check-input" type="checkbox" role="switch">
 						</div>
 					</div>
 
 					<div class="col-4">
-						<l10n name="notes_units_use_fahrenheit"></l10n>
+						<i18n-text data-key="notes_units_use_fahrenheit"></i18n-text>
 					</div>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
-							<input id="notes_unit_temp" onchange="clientSetNote('notes_unit_temp')" class="form-check-input" type="checkbox" role="switch">
+							<input id="notes_unit_temp" class="inputElement form-check-input" type="checkbox" role="switch">
 						</div>
 					</div>
 
 					<div class="col-4">
-						<l10n name="notes_units_use_acres"></l10n>
+						<i18n-text data-key="notes_units_use_acres"></i18n-text>
 					</div>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
-							<input id="notes_unit_acre" onchange="clientSetNote('notes_unit_acre')" class="form-check-input" type="checkbox" role="switch">
+							<input id="notes_unit_acre" class="inputElement form-check-input" type="checkbox" role="switch">
 						</div>
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-12 inset-block"><div><!-- username -->
-				<l10n class="inset-block-header" name="notes_title_username"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_username"></l10n>
-					<div class="col-6">
-						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_username')" onblur="clientSetNote('notes_username')" type="text" class="form-control form-control-sm" id="notes_username">
-						<div id="notes_username_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_30"></l10n></div>
-					</div>
-				</div>
-			</div></div>
+			<div class="col-12 inset-block"><!-- username -->
+				<page-replace data-type="text-input" data-name="username"></page-replace>
+			</div>
 
-			<div class="col-12 inset-block"><div><!-- server search -->
-				<l10n class="inset-block-header" name="notes_title_server"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_server"></l10n>
-					<div class="col-6">
-						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_server')" onblur="clientSetNote('notes_server')" type="text" class="form-control form-control-sm" id="notes_server">
-					</div>
-				</div>
-			</div></div>
+			<div class="col-12 inset-block"><!-- server search -->
+				<page-replace data-type="text-input" data-name="server"></page-replace>
+			</div>
 
-			<div class="col-12 inset-block"><div><!-- fsg bot -->
-				<l10n class="inset-block-header" name="notes_title_fsg_bot"></l10n>
-				<div class="row">
-					<div class="col-6 inset-block-blurb-option">
-						<l10n name="notes_blurb_fsg_bot"></l10n>
-						<a href="https://fsgmodding.github.io/FSG_Mod_Assistant/fsgbot.html" target="_blank"><l10n name="notes_link_fsg_bot">Bot Info</l10n></a>
-					</div>
-					<div class="col-6">
-						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_fsg_bot')" onblur="clientSetNote('notes_fsg_bot')" type="text" class="form-control form-control-sm" id="notes_fsg_bot">
-					</div>
-				</div>
-			</div></div>
+			<div class="col-12 inset-block"><!-- fsg bot -->
+				<page-replace data-type="text-input" data-name="fsg_bot"></page-replace>
+			</div>
 
-			<div class="col-12 inset-block"><div><!-- game password -->
-				<l10n class="inset-block-header" name="notes_title_password"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_password"></l10n>
-					<div class="col-6">
-						<div class="input-group">
-							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_password')" onblur="clientSetNote('notes_password')" type="password" class="form-control form-control-sm" id="notes_password">
-							<span class="input-group-text" onclick="clientToggleVisible('notes_password')" id="notes_password_toggle"><i class="bi-eye"></i></span>
-						</div>
-						<div id="notes_password_feedback" class="invalid-feedback"><l10n name="pref_feedback_limit_16"></l10n></div>
-					</div>
-				</div>
-			</div></div>
+			<div class="col-12 inset-block"><!-- game password -->
+				<page-replace data-type="password-input" data-name="password"></page-replace>
+			</div>
 
 			<div class="col-12 inset-block"><div><!-- website -->
-				<l10n class="inset-block-header" name="notes_title_website"></l10n>
+				<i18n-text class="inset-block-header" data-key="notes_title_website"></i18n-text>
 				<div class="row gy-2">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_website"></l10n>
+					<i18n-text class="inset-block-blurb-option col-6" data-key="notes_blurb_website"></i18n-text>
 					<div class="col-6">
-						<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_website')" onblur="clientSetNote('notes_website')" type="text" class="form-control form-control-sm" id="notes_website">
-						<div id="notes_website_feedback" class="invalid-feedback"><l10n name="pref_feedback_bad_url"></l10n></div>
+						<input type="text" class="inputElement form-control form-control-sm" id="notes_website">
+						<div id="notes_website_feedback" class="invalid-feedback"><i18n-text data-key="pref_feedback_bad_url"></i18n-text></div>
 					</div>
 
-					<l10n class="inset-block-blurb-option col-10" name="notes_blurb_website_valid"></l10n>
+					<i18n-text class="inset-block-blurb-option col-10" data-key="notes_blurb_website_valid"></i18n-text>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
-							<input id="notes_websiteVALID" onchange="clientWebValid()" class="form-check-input" type="checkbox" role="switch" checked>
+							<input id="notes_websiteVALID" class="form-check-input" type="checkbox" role="switch" checked>
 						</div>
 					</div>
 
-					<l10n class="inset-block-blurb-option col-10" name="notes_blurb_website_dl"></l10n>
+					<i18n-text class="inset-block-blurb-option col-10" data-key="notes_blurb_website_dl"></i18n-text>
 					<div class="col-2">
 						<div class="form-check form-switch custom-switch">
-							<input id="notes_websiteDL" onchange="clientSetNote('notes_websiteDL')" class="form-check-input" type="checkbox" role="switch">
+							<input id="notes_websiteDL" class="inputElement form-check-input" type="checkbox" role="switch">
 						</div>
 					</div>
 				</div>
 			</div></div>
 
-			<div class="col-12 inset-block"><div><!-- website admin -->
-				<l10n class="inset-block-header" name="notes_title_admin"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_admin"></l10n>
-					<div class="col-6">
-						<div class="input-group">
-							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_admin')" onblur="clientSetNote('notes_admin')" type="password" class="form-control form-control-sm" id="notes_admin">
-							<span class="input-group-text" onclick="clientToggleVisible('notes_admin')" id="notes_admin_toggle"><i class="bi-eye"></i></span>
-						</div>
-					</div>
-				</div>
-			</div></div>
+			<div class="col-12 inset-block"><!-- website admin -->
+				<page-replace data-type="password-input" data-name="admin"></page-replace>
+			</div>
 
-			<div class="col-12 inset-block mb-3"><div><!-- in-game admin -->
-				<l10n class="inset-block-header" name="notes_title_game_admin"></l10n>
-				<div class="row">
-					<l10n class="inset-block-blurb-option col-6" name="notes_blurb_game_admin"></l10n>
-					<div class="col-6">
-						<div class="input-group">
-							<input oncontextmenu="window.mods.openCText()" onkeyup="clientMarkIP('notes_game_admin')" onblur="clientSetNote('notes_game_admin')" type="password" class="form-control form-control-sm" id="notes_game_admin">
-							<span class="input-group-text" onclick="clientToggleVisible('notes_game_admin')" id="notes_game_admin_toggle"><i class="bi-eye"></i></span>
-						</div>
-						
-					</div>
-				</div>
-			</div></div>
+			<div class="col-12 inset-block mb-3"><!-- in-game admin -->
+				<page-replace data-type="password-input" data-name="game_admin"></page-replace>
+			</div>
 
 		</div>
 	</div>
+
+	
 </body>
 </html>

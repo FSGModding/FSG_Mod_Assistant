@@ -3,97 +3,144 @@
    |       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
    |__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
    (c) 2022-present FSG Modding.  MIT License. */
+// MARK: COMPARE UI
 
-// Base game window UI
+/* global DATA, MA, ST, NUM, client_BGData */
 
-/* global __, _l, dtLib, processL10N, fsgUtil, client_BGData */
-
-const itemList      = new Set()
-
-window.mods.receive('fromMain_addBaseItem', (itemID) => {
-	addItem(client_BGData.records[itemID], null, itemID)
+// MARK: PAGE LOAD
+window.addEventListener('DOMContentLoaded', async () => {
+	window.state = new windowState()
 })
 
-window.mods.receive('fromMain_addModItem', (itemDetails, source) => {
-	addItem(itemDetails, source, itemDetails.uuid_name)
-})
+class windowState {
+	locale  = 'en'
+	sorting = null
 
-window.addEventListener('DOMContentLoaded', () => { processL10N() })
+	// MARK: init
+	constructor() {
+		window.i18n.lang().then((result) => {
+			this.locale = result
 
-function addItem(thisItem, source, uuid_name) {
-	if ( thisItem.masterType !== 'vehicle' ) { return }
+			this.getSorting()
 
-	const identity   = `${source === null ? 'BASEGAME' : source }_${uuid_name.replaceAll('.', '_')}`
+			window.compare_IPC.get().then((compareList) => { this.processList(compareList) })
+		})
+
+		for ( const element of MA.query('.sort-up, .sort-down') ) {
+			element.addEventListener('click', () => { this.changeSort() })
+		}
 	
-	if ( itemList.has(identity) ) { return }
-
-	itemList.add(identity)
-	
-	const uuid     = crypto.randomUUID()
-	const thisData = dtLib.getInfo(thisItem)
-	const locale   = _l()
-
-	const addHTML  = fsgUtil.useTemplate('item_div', {
-		engineHigh        : dtLib.numFmtMany(thisData.powerSpan[1], locale, [dtLib.unit.hp], true),
-		engineHigh_raw    : thisData.powerSpan[1],
-		engineLow         : dtLib.numFmtMany(thisData.powerSpan[0] || thisData.needPower, locale, [dtLib.unit.hp], true),
-		engineLow_raw     : thisData.powerSpan[0] || thisData.needPower,
-		fillunit          : dtLib.numFmtMany(thisData.fillLevel, locale, [dtLib.unit.l], true),
-		fillunit_raw      : thisData.fillLevel,
-		iconImage         : dtLib.safeDataImage(thisItem.icon, { width : '50%'}),
-		maxspeed          : dtLib.numFmtMany(thisData.maxSpeed || thisData.speedLimit, locale, [dtLib.unit.kph], true),
-		maxspeed_raw      : thisData.maxSpeed || thisData.speedLimit,
-		name              : __(thisItem.name, {skipIfNotBase : true}),
-		price             : dtLib.numFmtNoFrac(thisItem.price),
-		price_raw         : thisItem.price,
-		source            : source || __('basegame_title'),
-		uuid              : uuid,
-		weight            : dtLib.numFmtMany(thisData.weight, locale, [dtLib.unit.kg], true),
-		weight_raw        : thisData.weight,
-		width             : dtLib.numFmtMany(thisData.workWidth, locale, [dtLib.unit.m], true),
-		width_raw         : thisData.workWidth,
-	})
-	const appendDiv = document.createElement('tr')
-
-	appendDiv.id = uuid
-	appendDiv.setAttribute('data-identity', identity)
-	appendDiv.innerHTML = addHTML
-	fsgUtil.byId('displayTable').append(appendDiv)
-	processL10N()
-}
-
-function clientSortBy(sortType) {
-	const isDownNow    = fsgUtil.byId(`head_${sortType}`).querySelector('.fsico-sort-down') !== null
-	const shouldBeDown = !isDownNow
-
-	fsgUtil.clsRemoveFromAll('.sort-icon', ['fsico-sort-down', 'fsico-sort-up'])
-	fsgUtil.clsAddToAll('.sort-icon', 'fsico-sort-none')
-
-	fsgUtil.query(`#head_${sortType} .sort-icon`)[0].classList.remove('fsico-sort-none')
-	fsgUtil.query(`#head_${sortType} .sort-icon`)[0].classList.add(shouldBeDown ? 'fsico-sort-down' : 'fsico-sort-up')
-	
-	const currentRows = fsgUtil.byId('displayTable').querySelectorAll('tr')
-
-	const sortRows = []
-	for ( const [thisIdx, thisRow] of currentRows.entries() ) {
-		const thisValue = thisRow.querySelector(`[data-type="${sortType}"]`).getAttribute('data-sort')
-		sortRows.push({idx : thisIdx, value : thisValue, row : thisRow.outerHTML })
+		MA.byId('clearButton').addEventListener('click', () => {
+			window.compare_IPC.clear().then((compareList) => { this.processList(compareList) })
+		})
 	}
 
-	sortRows.sort((a, b) => !shouldBeDown ? a.value - b.value : b.value - a.value )
+	// MARK: clicks
+	changeSort(e) {
+		const sortType = e.target.closest('th').safeAttribute('data-sort')
+		const sortDirection = e.target.classList.contains('sort-down') ? 'sort-down' : 'sort-up'
+		location.search = `?type=${sortType}&direction=${sortDirection}`
+	}
 
-	fsgUtil.setById('displayTable', sortRows.map((x) => x.row))
-}
+	getSorting() {
+		const urlParams     = new URLSearchParams(window.location.search)
 
-function clientRemoveItem(itemID) {
-	itemList.delete(fsgUtil.byId(itemID).getAttribute('data-identity'))
-	fsgUtil.byId(itemID).remove()
-}
+		this.sorting = {
+			type : urlParams.get('type') || 'price',
+			dir  : urlParams.get('direction') || 'sort-down',
+		}
 
-function clientOpenFolder() {
-	const urlParams     = new URLSearchParams(window.location.search)
-	const pageID        = urlParams.get('page')
-	const folder        = pageID.split('_').slice(0, -1)
+		for ( const element of MA.query('.sort-active')) {
+			element.classList.remove('sort-active')
+		}
 
-	window.mods.openBaseFolder(folder)
+		const sortMarker = MA.query(`th[data-sort="${this.sorting.type}"] .${this.sorting.dir}`)
+		if ( sortMarker.length === 1 ) {
+			sortMarker[0].classList.add('sort-active')
+		}
+	}
+
+	
+	noNull(value) { return value === null ? 0 : value }
+
+	// MARK: process
+	processList(list) {
+		const keyArray   = Object.keys(list)
+		const dataObject = {}
+
+		for ( const key of keyArray ) {
+			const record     = list[key]
+			const thisItem   = record.internal ?
+				client_BGData.records[key] :
+				record.contents
+			const thisData   = ST.getInfo(thisItem)
+
+			const thisObject = {
+				info : {
+					brand  : ST.resolveBrand(thisItem.brandIcon || null, thisItem.brand),
+					icon   : ST.resolveIcon(thisItem.icon),
+					name   : thisItem.name,
+					source : record.internal ? '' : record.source,
+				},
+				value : {
+					'engine-high' : this.noNull(thisData.powerSpan[1]),
+					'engine-low'  : this.noNull(thisData.powerSpan[0] ||thisData.needPower),
+					'fill'        : this.noNull(thisData.fillLevel),
+					'price'       : this.noNull(thisItem.price),
+					'speed'       : this.noNull(thisData.maxSpeed || thisData.speedLimit),
+					'weight'      : this.noNull(thisData.weight),
+					'width'       : this.noNull(thisData.workWidth),
+				},
+				text : {
+					'engine-high' : NUM.fmtMany(thisData.powerSpan[1], this.locale, [ST.unit.hp], true),
+					'engine-low'  : NUM.fmtMany(thisData.powerSpan[0] || thisData.needPower, this.locale, [ST.unit.hp], true),
+					'fill'        : NUM.fmtMany(thisData.fillLevel, this.locale, [ST.unit.l], true),
+					'price'       : NUM.fmtNoFrac(thisItem.price),
+					'speed'       : NUM.fmtMany(thisData.maxSpeed || thisData.speedLimit, this.locale, [ST.unit.kph], true),
+					'weight'      : NUM.fmtMany(thisData.weight, this.locale, [ST.unit.kg], true),
+					'width'       : NUM.fmtMany(thisData.workWidth, this.locale, [ST.unit.m], true),
+				},
+			}
+			dataObject[key] = thisObject
+		}
+
+		keyArray.sort()
+		keyArray.sort((a, b) => {
+			return this.sorting.dir === 'sort-up' ?
+				dataObject[a].value[this.sorting.type] - dataObject[b].value[this.sorting.type] : //ASC
+				dataObject[b].value[this.sorting.type] - dataObject[a].value[this.sorting.type] //DESC
+		})
+		this.updateTable(keyArray, dataObject)
+	}
+
+	// MARK: table
+	updateTable(order, data) {
+		const tableElement = MA.byId('displayTable')
+
+		tableElement.innerHTML = ''
+
+		for ( const key of order ) {
+			const thisItem = data[key]
+			const thisElement = DATA.templateEngine('item_div', {
+				brandImage : `<img src="${thisItem.info.brand}" class="img-fluid store-brand-image">`,
+				iconImage  : `<img src="${thisItem.info.icon}" class="img-fluid store-thumb-image">`,
+
+				name       : thisItem.info.name,
+				source     : thisItem.info.source,
+
+				engineHigh : thisItem.text['engine-high'],
+				engineLow  : thisItem.text['engine-low'],
+				fillunit   : thisItem.text.fill,
+				maxspeed   : thisItem.text.speed,
+				price      : thisItem.text.price,
+				weight     : thisItem.text.weight,
+				width      : thisItem.text.width,
+			})
+
+			thisElement.querySelector('.removeButton').addEventListener('click', () => {
+				window.compare_IPC.remove(key).then((newList) => { this.processList(newList) })
+			})
+			tableElement.appendChild(thisElement)
+		}
+	}
 }

@@ -13,40 +13,45 @@
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
-	<script src="renderJS/util/general_lib.js"></script>
+	
+	<script src="renderJS/util/util_lib.js"></script>
 	<script src="renderJS/debug_ui.js"></script>
+	<style>
+		::-webkit-scrollbar-track-piece:start { margin-top: 0px; }
+		::-webkit-scrollbar {
+			width: 10px;
+			height: 10px;
+		}
+		.debug_log_item { white-space: pre; user-select: text; }
+	</style>
 </head>
-<body data-bs-theme="dark" class="overflow-custom2">
-	<div class="container-fluid px-1 user-select-none">
-		<div class="row w-100 pt-2 sticky-top bg-body border-bottom">
-			<div class="col-7" style="-webkit-app-region: drag;">
-				<h2 class="ps-2 mastHead"><l10n name="app_name"></l10n></h2>
-			</div>
-			<div class="col-4 text-end pe-5">
-				<div class="btn-group w-100 ms-auto me-1">
-					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Open log in Explorer" type="button" onclick="debug.openDebugLogFolder()" class="btn btn-success btn-sm"><i class="bi bi-save"></i></button>
-					<button data-bs-placement="bottom" data-bs-toggle="tooltip" title="Refresh" type="button" onclick="debug.getDebugLogContents()" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i></button>
-				</div>
+<body data-bs-theme="dark" class="overflow-hidden">
+	<div class="container-fluid px-0 user-select-none d-flex vh-100 flex-column">
+		<div class="row bg-body border-bottom">
+			<div class="col-12" style="-webkit-app-region: drag;">
+				<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
 			</div>
 			<div class="col-12">
 				<div class="input-group input-group-sm btn-group w-100 mt-2 mb-2 px-1">
 					<span class="input-group-text" id="basic-addon1">Show: </span>
-					<button type="button" class="btn btn-outline-light border" onclick="clientResetButtons()">RESET</button>
-					<input type="checkbox" class="btn-check filter_only" id="debug_debug" onchange="window.debug.getDebugLogContents()">
+					<button type="button" class="btn btn-outline-light border" id="debug_reset">RESET</button>
+					<input type="checkbox" class="btn-check filter_only" id="debug_debug">
 					<label data-bs-toggle="tooltip" title="Developer Stuff" class="btn btn-outline-success btn-sm border" for="debug_debug">DEBUG</label>
-					<input type="checkbox" checked class="btn-check filter_only" id="debug_info" onchange="window.debug.getDebugLogContents()">
+					<input type="checkbox" checked class="btn-check filter_only" id="debug_info">
 					<label data-bs-toggle="tooltip" title="Information" class="btn btn-outline-success btn-sm border" for="debug_info">INFO</label>
-					<input type="checkbox" checked class="btn-check filter_only" id="debug_notice" onchange="window.debug.getDebugLogContents()">
+					<input type="checkbox" checked class="btn-check filter_only" id="debug_notice">
 					<label data-bs-toggle="tooltip" title="Subtle Warnings" class="btn btn-outline-success btn-sm border" for="debug_notice">NOTICE</label>
-					<input type="checkbox" checked class="btn-check filter_only" id="debug_warning" onchange="window.debug.getDebugLogContents()">
+					<input type="checkbox" checked class="btn-check filter_only" id="debug_warning">
 					<label data-bs-toggle="tooltip" title="Strong Warnings" class="btn btn-outline-success btn-sm border" for="debug_warning">WARNING</label>
-					<input type="checkbox" checked class="btn-check filter_only" id="debug_danger" onchange="window.debug.getDebugLogContents()">
+					<input type="checkbox" checked class="btn-check filter_only" id="debug_danger">
 					<label data-bs-toggle="tooltip" title="Failures" class="btn btn-outline-success btn-sm border" for="debug_danger">DANGER</label>
 				</div>
 			</div>
 		</div>
-		
-		<div style="white-space: pre-wrap; user-select: text;" oncontextmenu="window.debug.openCText()" class="ps-3 font-monospace small no-wrap" id="debug_log"></div>
+		<div class="d-flex h-100 overflow-auto">
+			<div class="d-flex flex-column font-monospace small ms-2" id="debug_log"></div>
+		</div>
+		<!-- style="white-space: pre; user-select: text;" -->
 	</div>
 
 </body>
