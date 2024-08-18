@@ -98,7 +98,7 @@ class windowState {
 
 			// MARK: copy button action
 			MA.byIdEventIfExists('copyButton', () => {
-				window.fileOpOverlay.show()
+				this.overlay.show()
 				MA.byId('fileOpWorking').clsShow()
 				MA.byId('fileOpSuccess').clsHide()
 				MA.byId('fileOpDanger').clsHide()

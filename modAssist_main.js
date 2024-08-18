@@ -119,13 +119,23 @@ ipcMain.handle('files:drop', async (_, files) => {
 		})
 		return
 	} else if ( files.length === 1 && files[0].endsWith('.json') ) {
-		// TODO: HANDLE JSON IMPORT
+		// HANDLE JSON IMPORT
 		funcLib.general.importJSON_process(files[0])
+		return
 	} else if ( files.length === 1 && files[0].endsWith('.zip') ) {
+		// Handles ZIP packs, ZIP save game, and finally single ZIP add
+		const saveResult = await new saveFileChecker(files[0], false, true).getInfo()
+		
+		if ( saveResult.isValid ) {
+			serveIPC.windowLib.createNamedWindow('save', {
+				collectKey   : null,
+				thisSaveGame : saveResult,
+			})
+			return
+		}
 		return getCopyMoveDelete('import', null, null, files, await new modPackChecker(files[0]).getInfo())
-	} else {
-		return getCopyMoveDelete('import', null, null, files, false)
 	}
+	return getCopyMoveDelete('import', null, null, files, false)
 })
 
 function sendCopyMoveDelete(operation, modIDS) {
@@ -613,7 +623,7 @@ ipcMain.handle('gamelog:auto', () => {
 ipcMain.handle('gamelog:open', () => {
 	return dialog.showOpenDialog(serveIPC.windowLib.win.gamelog, {
 		properties  : ['openFile'],
-		defaultPath : path.join(serveIPC.prefs.basePath(), 'log.txt'),
+		defaultPath : path.join(funcLib.prefs.basePath(), 'log.txt'),
 		filters     : [{ name : 'Log Files', extensions : ['txt'] }],
 	}).then((result) => {
 		if ( ! result.canceled ) { funcLib.gameSet.setGameLog(result.filePaths[0]) }
@@ -697,6 +707,8 @@ ipcMain.on('cache:clean', () => {
 			md5Set.delete(thisSum)
 		}
 	}
+
+	serveIPC.log.info('cache-cleaner', `Removed ${md5Set.size} stale entries.`)
 
 	for ( const md5 of md5Set ) { delete serveIPC.storeCache.remMod(md5) }
 

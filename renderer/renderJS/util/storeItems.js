@@ -337,7 +337,7 @@ const ST = {
 
 			let nameString = thisProduction.name
 
-			if ( thisProduction.params !== null ) {
+			if ( typeof thisProduction.params !== 'undefined' && thisProduction.params !== null ) {
 				const paramArray = thisProduction.params.split('|')
 				let   matchNum = -1
 				nameString = nameString.replace(/%s/g, () => {

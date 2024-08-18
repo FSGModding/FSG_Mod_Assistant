@@ -112,10 +112,10 @@ class StateManager {
 		},
 		launchGame : () => {
 			const currentList = MA.byIdValue('collectionSelect')
-			if ( currentList === this.track.activeCollect ) {
+			if ( currentList === this.flag.activeCollect ) {
 				// Selected is active, no confirm
 				LEDLib.spinLED()
-				window.mods.startFarmSim()
+				window.mini_IPC.startFarmSim()
 			} else if ( this.flasherInterval === null ) {
 				// Different, ask confirmation
 				LEDLib.fastBlinkLED()

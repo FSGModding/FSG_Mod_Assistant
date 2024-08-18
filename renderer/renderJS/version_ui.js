@@ -89,7 +89,7 @@ async function displayData(data) {
 				class : ['badge-mod-notmod'],
 				skip : !isDiff || thisItem.modhub === null,
 			}),
-			I18N.buildBadgeBare({
+			I18N.buildBadge({
 				name : isDiff ? 'version_diff' : 'version_same',
 				class : [],
 			}),

@@ -97,7 +97,7 @@ class windowState {
 
 		node.classList.add('w-75', 'd-block', 'mx-auto', 'btn', 'btn-primary', 'btn-sm', 'disabled', 'btn-download', 'mb-2')
 		node.innerHTML = `<i18n-text data-key="import_json_step_2_download${isPack ? '_unpack' : ''}"></i18n-text> :: ${uri}`
-		node.firstElementChild.addEventListener('click', () => {
+		node.addEventListener('click', () => {
 			node.firstElementChild.classList.remove('btn-primary')
 			node.firstElementChild.classList.add('btn-success', 'disabled')
 			window.importjson_IPC.doDownload(this.importKey, uri, isPack)
@@ -131,8 +131,8 @@ class LoaderLib {
 		MA.byId('loadOverlay_downloadCancel').clsShow()
 		MA.byId('loadOverlay_speed').clsShow()
 	}
-	updateCount(count, inMB = false) {
-		const thisCount   = inMB ? DATA.bytesToMB(count, false) : count
+	async updateCount(count, inMB = false) {
+		const thisCount   = inMB ? await DATA.bytesToMB(count, false) : count
 		const thisElement = MA.byId('loadOverlay_statusCurrent')
 		const thisProg    = MA.byId('loadOverlay_statusProgBarInner')
 		const thisPercent = `${Math.max(Math.ceil((count / this.lastTotal) * 100), 0)}%`
@@ -145,7 +145,7 @@ class LoaderLib {
 			const perDone    = Math.max(1, Math.ceil((count / this.lastTotal) * 100))
 			const perRem     = 100 - perDone
 			const elapsedSec = (Date.now() - this.startTime) / 1000
-			const estSpeed   = DATA.bytesToMBCalc(count, false) / elapsedSec // MB/sec
+			const estSpeed   = await DATA.bytesToMBCalc(count, false) / elapsedSec // MB/sec
 			const secRemain  = elapsedSec / perDone * perRem
 	
 			const prettyMinRemain = Math.floor(secRemain / 60)
@@ -170,9 +170,9 @@ class LoaderLib {
 		
 		this.show()
 	}
-	updateTotal(count, inMB = false) {
+	async updateTotal(count, inMB = false) {
 		if ( inMB ) { this.startTime = Date.now() }
-		const thisCount   = inMB ? DATA.bytesToMB(count) : count
+		const thisCount   = inMB ? await DATA.bytesToMB(count) : count
 		MA.byIdText('loadOverlay_statusTotal', thisCount)
 		this.lastTotal = ( count < 1 ) ? 1 : count
 	}

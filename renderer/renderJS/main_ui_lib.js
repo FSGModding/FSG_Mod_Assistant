@@ -1005,28 +1005,28 @@ class StateManager {
 		},
 		launchGame() {
 			const currentList = MA.byIdValue('collectionSelect')
-			if ( currentList === this.flag.activeCollect ) {
+			if ( currentList === window.state.flag.activeCollect ) {
 				// Selected is active, no confirm
 				LEDLib.spinLED()
 				window.main_IPC.dispatch('game')
 			} else {
 				// Different, ask confirmation
-				MA.byIdHTML('no_match_game_list', this.mapCollectionDropdown[this.flag.activeCollect])
+				MA.byIdHTML('no_match_game_list', this.mapCollectionDropdown[window.state.flag.activeCollect])
 				MA.byIdHTML('no_match_ma_list', this.mapCollectionDropdown[currentList])
 				LEDLib.fastBlinkLED()
-				this.modal.mismatch.show()
+				window.state.modal.mismatch.show()
 			}
 		},
 		launchGame_FIX : () => {
-			this.modal.mismatch.hide()
-			this.action.collectActive().then(() => {
+			window.state.modal.mismatch.hide()
+			window.state.action.collectActive().then(() => {
 				window.main_IPC.dispatch('game')
 			})
 		},
 		launchGame_IGNORE : () => {
-			this.modal.mismatch.hide()
+			window.state.modal.mismatch.hide()
 			LEDLib.spinLED()
-			MA.byIdValue('collectionSelect', this.flag.activeCollect)
+			MA.byIdValue('collectionSelect', window.state.flag.activeCollect)
 			window.main_IPC.dispatch('game')
 		},
 		openModInfo : (mod) => {
@@ -1637,7 +1637,9 @@ class DragDropLib {
 			const fileList = []
 			for ( const thisFile of files ) { fileList.push(thisFile.path) }
 			window.main_IPC.files.drop(fileList).then((result) => {
-				window.state.files.start_external('import', result)
+				if ( typeof result !== 'undefined' ) {
+					window.state.files.start_external('import', result)
+				}
 			})
 		}
 	
@@ -1747,8 +1749,8 @@ class LoaderLib {
 		MA.byId('loadOverlay_downloadCancel').clsShow()
 		MA.byId('loadOverlay_speed').clsShow()
 	}
-	updateCount(count, inMB = false) {
-		const thisCount   = inMB ? DATA.bytesToMB(count, false) : count
+	async updateCount(count, inMB = false) {
+		const thisCount   = inMB ? await DATA.bytesToMB(count, false) : count
 		const thisElement = MA.byId('loadOverlay_statusCurrent')
 		const thisProg    = MA.byId('loadOverlay_statusProgBarInner')
 		const thisPercent = `${Math.max(Math.ceil((count / this.lastTotal) * 100), 0)}%`
@@ -1761,7 +1763,7 @@ class LoaderLib {
 			const perDone    = Math.max(1, Math.ceil((count / this.lastTotal) * 100))
 			const perRem     = 100 - perDone
 			const elapsedSec = (Date.now() - this.startTime) / 1000
-			const estSpeed   = DATA.bytesToMBCalc(count, false) / elapsedSec // MB/sec
+			const estSpeed   = await DATA.bytesToMBCalc(count, false) / elapsedSec // MB/sec
 			const secRemain  = elapsedSec / perDone * perRem
 	
 			const prettyMinRemain = Math.floor(secRemain / 60)
@@ -1786,9 +1788,9 @@ class LoaderLib {
 		
 		this.show()
 	}
-	updateTotal(count, inMB = false) {
+	async updateTotal(count, inMB = false) {
 		if ( inMB ) { this.startTime = Date.now() }
-		const thisCount   = inMB ? DATA.bytesToMB(count) : count
+		const thisCount   = inMB ? await DATA.bytesToMB(count) : count
 		MA.byIdText('loadOverlay_statusTotal', thisCount)
 		this.lastTotal = ( count < 1 ) ? 1 : count
 	}
@@ -2026,7 +2028,7 @@ class FileLib {
 					<path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
 				</svg>`,
 			shortname  : shortName,
-			title      : zipFiles === null ? path : [...zipFiles].join('<br>'),
+			title      : zipFiles === null ? path.replaceAll('\\', '\\<wbr>') : [...zipFiles].join('<br>'),
 		})
 	}
 
