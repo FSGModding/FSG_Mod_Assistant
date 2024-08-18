@@ -275,9 +275,6 @@ ipcMain.on('importjson:download', (_, collectKey, uri, unpack) => {
 })
 
 
-// l10n Operations
-
-
 // MARK: i18n
 ipcMain.handle('i18n:langList',   () => serveIPC.l10n.getLangList() )
 ipcMain.handle('i18n:lang', (_e, newValue = null) => {
@@ -321,21 +318,16 @@ ipcMain.handle('i18n:get', async (_, key) => {
 			return serveIPC.l10n.getText(key)
 	}
 })
-// END: l10n Operations
 
 
-// #region COLLECT IPC
+// MARK: collect IPC
 ipcMain.handle('collect:bindConflict', () => serveIPC.modCollect.renderBindConflict() )
 ipcMain.handle('collect:malware',      () => ({ dangerModsSkip : serveIPC.whiteMalwareList, suppressList : serveIPC.storeSet.get('suppress_malware', []) }))
 ipcMain.handle('collect:all',          () => serveIPC.modCollect.toRenderer())
-
 ipcMain.handle('collect:resolveList',  (_, shortName) => serveIPC.modCollect.modVerListFiltered(shortName))
 ipcMain.handle('collect:name',         (_, key) => serveIPC.modCollect.mapCollectionToName(key))
-
 ipcMain.handle('mod:modColUUID', (_, fullUUID) => serveIPC.modCollect.renderMod(fullUUID))
-
 ipcMain.handle('store:modColUUID', (_, fullUUID) => getStoreItems(fullUUID))
-// #endregion
 
 
 // MARK: detail
@@ -369,7 +361,6 @@ async function getStoreItems(fullUUID) {
 
 	return thisPromise.promise
 }
-// #endregion MOD DETAIL WINDOW
 
 
 // MARK: compare
@@ -426,7 +417,7 @@ function openBaseGameWindow(type = null, page = null) {
 }
 
 
-// #region CONTEXT
+// #region context menu
 ipcMain.on('context:copy', (event) => {
 	const menu = Menu.buildFromTemplate(funcLib.menu.snip_copy())
 	menu.popup(BrowserWindow.fromWebContents(event.sender))
@@ -719,7 +710,7 @@ ipcMain.on('settings:prefFile',    (_, version) => { funcLib.prefs.changeFilePat
 ipcMain.on('settings:gamePath',    (_, version) => { funcLib.prefs.changeFilePath(version, true) })
 
 
-// Setup Wizard Functions
+// MARK: setup wizard
 ipcMain.handle('wizard:update', () => ({
 	folders : [...serveIPC.modFolders],
 	wizard  : funcLib.wizard.getSettings(),
@@ -728,7 +719,6 @@ ipcMain.on('dispatch:wizard', () => { openWizard() })
 function openWizard() {
 	serveIPC.windowLib.createNamedWindow('setup')
 }
-// END : Setup Wizard Functions
 
 
 // MARK: notes & sites
@@ -763,7 +753,7 @@ ipcMain.on('file:exportCSV', (_, CKey) => { funcLib.general.exportCSV(CKey) })
 ipcMain.on('file:exportZIP', (_, mods) => { funcLib.general.exportZIP(mods) })
 
 
-// Save game manager operation
+// MARK: save manage
 ipcMain.on('dispatch:savemanage', () => { funcLib.saveManage.refresh() })
 ipcMain.on('savemanage:compare', (_, fullPath, collectKey) => {
 	serveIPC.windowLib.createNamedWindow('save', { collectKey : collectKey })
@@ -774,9 +764,9 @@ ipcMain.on('savemanage:export',  (_, fullPath) => { funcLib.saveManage.export(fu
 ipcMain.on('savemanage:restore', (_, fullPath, newSlot) => { funcLib.saveManage.restore(fullPath, newSlot) })
 ipcMain.on('savemanage:import',  (_, fullPath, newSlot) => { funcLib.saveManage.doImport(fullPath, newSlot) })
 ipcMain.on('savemanage:getImport', () => { funcLib.saveManage.getImport() })
-// END : Save game manager operation
 
-// Save game tracker window operation
+
+// MARK: save track
 ipcMain.on('dispatch:savetrack',   () => { serveIPC.windowLib.createNamedWindow('save_track') })
 ipcMain.on('savetrack:folder', () => {
 	const options = {
@@ -798,9 +788,8 @@ ipcMain.on('savetrack:folder', () => {
 		serveIPC.log.danger('save-track', 'Could not read specified folder', err)
 	})
 })
-// END : Save game tracker window operation
 
-// Savegame compare window operation
+// MARK: save compare
 ipcMain.on('dispatch:save',       (_, collection) => { serveIPC.windowLib.createNamedWindow('save', { collectKey : collection }) })
 ipcMain.on('select:listInMain', (_, selectList) => {
 	if ( serveIPC.windowLib.isValid('main') ) {
@@ -843,7 +832,7 @@ function saveCompare_open(zipMode = false) {
 		serveIPC.log.danger('save-check', 'Could not read specified file/folder', err)
 	})
 }
-// END: Savegame compare window operation
+
 
 // MARK: version resolve
 ipcMain.on('dispatch:version', () => { serveIPC.windowLib.createNamedWindow('version') })
