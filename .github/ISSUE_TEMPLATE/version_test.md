@@ -1,5 +1,5 @@
 ---
-name: Version tracking
+name: Version testing
 about: Create a report to help us improve
 title: "[VERSION TESTING]"
 labels: ["bug", "version-track"]
