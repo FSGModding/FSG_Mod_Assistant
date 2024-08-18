@@ -1321,14 +1321,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.4":
-  version: 1.6.7
-  resolution: "axios@npm:1.6.7"
+"axios@npm:^1.7.4":
+  version: 1.7.4
+  resolution: "axios@npm:1.7.4"
   dependencies:
-    follow-redirects: ^1.15.4
+    follow-redirects: ^1.15.6
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: 87d4d429927d09942771f3b3a6c13580c183e31d7be0ee12f09be6d5655304996bb033d85e54be81606f4e89684df43be7bf52d14becb73a12727bf33298a082
+  checksum: 0c17039a9acfe6a566fca8431ba5c1b455c83d30ea6157fec68a6722878fcd30f3bd32d172f6bee0c51fe75ca98e6414ddcd968a87b5606b573731629440bfaf
   languageName: node
   linkType: hard
 
@@ -1986,15 +1986,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepl-node@npm:^1.13.0":
-  version: 1.13.0
-  resolution: "deepl-node@npm:1.13.0"
+"deepl-node@npm:^1.13.1":
+  version: 1.13.1
+  resolution: "deepl-node@npm:1.13.1"
   dependencies:
     "@types/node": ">=12.0"
-    axios: ^1.6.4
+    axios: ^1.7.4
     form-data: ^3.0.0
     loglevel: ">=1.6.2"
-  checksum: 730fa93c72aa78c1ef0f583d4b9d14c50d354f46ad92ed3dbed2c1d9ecf2c28e58f8218bee29d1b921d1c791a64aaa07bc11109db97af812c52f8ad8d3cf0a34
+  checksum: 1e2680899827062524c33e5bae2e9bc2baedcb9570155a3c6c144977e76ec1ba94825a8dbb773c816ae81fc616ee71623b52de6af38dbb8e6be614db6a566e83
   languageName: node
   linkType: hard
 
@@ -2237,7 +2237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:^6.2.1":
+"electron-updater@npm:^6.3.3":
   version: 6.3.3
   resolution: "electron-updater@npm:6.3.3"
   dependencies:
@@ -2253,16 +2253,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^31.3.1":
-  version: 31.3.1
-  resolution: "electron@npm:31.3.1"
+"electron@npm:^31.4.0":
+  version: 31.4.0
+  resolution: "electron@npm:31.4.0"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^20.9.0
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 35e720fced273557a7a5dcab4b4511aa2c01b5b2bbaeffd2a1bdeba86c3aec046bff06def69f83c324e28aca48c953d556a576d4bdea3a1218c54cbd62ca8b18
+  checksum: 3ff314ef8dd7e14b00c4fe6b6c7b044be64d1e22a3bf1c0ab70433357942cb67861025cc3b166b551e856ed25e1eaf15c8ef996efedb5c0ffc6964133ca9b0fa
   languageName: node
   linkType: hard
 
@@ -2753,13 +2753,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.4":
-  version: 1.15.5
-  resolution: "follow-redirects@npm:1.15.5"
+"follow-redirects@npm:^1.15.6":
+  version: 1.15.6
+  resolution: "follow-redirects@npm:1.15.6"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 5ca49b5ce6f44338cbfc3546823357e7a70813cecc9b7b768158a1d32c1e62e7407c944402a918ea8c38ae2e78266312d617dc68783fac502cbb55e1047b34ec
+  checksum: a62c378dfc8c00f60b9c80cab158ba54e99ba0239a5dd7c81245e5a5b39d10f0c35e249c3379eae719ff0285fff88c365dd446fab19dee771f1d76252df1bbf5
   languageName: node
   linkType: hard
 
@@ -2865,14 +2865,14 @@ __metadata:
     ansi-colors: ^4.1.3
     archiver: ^7.0.1
     clean-css: ^5.3.3
-    deepl-node: ^1.13.0
+    deepl-node: ^1.13.1
     deepmerge: ^4.3.1
     discord-rpc: ^4.0.1
     docolatte: ^4.5.1
-    electron: ^31.3.1
+    electron: ^31.4.0
     electron-builder: ^24.13.3
     electron-store: ^8.2.0
-    electron-updater: ^6.2.1
+    electron-updater: ^6.3.3
     eslint: ^9.9.0
     eslint-plugin-unicorn: ^55.0.0
     fast-xml-parser: ^4.4.1
@@ -2882,7 +2882,7 @@ __metadata:
     jsdoc: ^4.0.3
     node-stream-zip: ^1.15.0
     unzip-stream: ^0.3.4
-    wasm-vips: ^0.0.9
+    wasm-vips: ^0.0.10
   languageName: unknown
   linkType: soft
 
@@ -5605,10 +5605,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wasm-vips@npm:^0.0.9":
-  version: 0.0.9
-  resolution: "wasm-vips@npm:0.0.9"
-  checksum: 2088214b4d87abd262b5f32c69ddba8bfb2dc49061c9e72cbda0126d2a820a407a28369e96711f06c77282e6919648ec9ecbf8fa3044b7394b66ee0048c3b579
+"wasm-vips@npm:^0.0.10":
+  version: 0.0.10
+  resolution: "wasm-vips@npm:0.0.10"
+  checksum: 998bcd255bd927ccafc929e8365b3e8ff396a52c950ecfc1c46866dc329e29ff4d312f18d153e10d038490855ddce412e6460ee938c484781a348e1e627b0c35
   languageName: node
   linkType: hard
 

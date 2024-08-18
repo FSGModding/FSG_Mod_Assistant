@@ -4,5 +4,5 @@
 	  "target": "ES2023"
 	},
 	"include": ["renderJS/util/*.js", "renderJS/*.js", "preload/**/*"],
-	// "exclude": [],
+	"exclude": ["node_modules/**/*"],
 }
