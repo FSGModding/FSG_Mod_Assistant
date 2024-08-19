@@ -210,6 +210,12 @@
 			background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 20%, var(--bs-danger-bg-subtle) 80%);
 		}
 
+		.bg-mod-selected {
+			--bs-bg-opacity: 0.80;
+			background-color: rgba(var(--bs-success-rgb),var(--bs-bg-opacity))!important;
+			color: white;
+		}
+
 	</style>
 	
 </head>
@@ -359,6 +365,7 @@
 
 	</div>
 
+	<!-- MARK: game launch modal -->
 	<div class="modal" id="open_game_modal" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
@@ -388,6 +395,7 @@
 		</div>
 	</div>
 
+	<!-- MARK: source site -->
 	<div class="modal" id="open_mod_info_modal" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
@@ -411,6 +419,7 @@
 	</div>
 
 
+	<!-- MARK: drag-drop back -->
 	<div id="drag_back" class="d-none position-absolute w-100 h-100 text-center" style="z-index: 10000; background-color: #00000066">
 		<div class="row h-100">
 			<div id="drag_add_file" class="bg-opacity-50 col">
@@ -430,6 +439,7 @@
 		</div>
 	</div>
 
+	<!-- MARK: version pick -->
 	<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas-version" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel">
 		<div class="offcanvas-header">
 			<i18n-text class="h5 offcanvas-title" id="offcanvasLabel" data-key="notes_title_version"></i18n-text>
@@ -441,9 +451,10 @@
 		</div>
 	</div>
 
+	<!-- MARK: pref canvas-->
 	<div class="offcanvas offcanvas-end w-75" tabindex="-1" id="prefcanvas" style="-webkit-app-region: no-drag; transition: 0.5s" aria-labelledby="offcanvasLabel-prefs">
 		<div class="offcanvas-header justify-content-start" style="-webkit-app-region: drag;">
-			<button type="button" style="-webkit-app-region: no-drag; z-index: 1;" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#prefcanvas" aria-label="Close"><i class="bi-x-lg"></i></button>
+			<button id="prefs--close-btn" type="button" style="-webkit-app-region: no-drag; z-index: 1;" class="btn btn-secondary"><i class="bi-x-lg"></i></button>
 			<i18n-text class="h5 offcanvas-title ps-3" id="offcanvasLabel-prefs" data-key="user_pref_title_main"></i18n-text>
 		</div>
 		<div class="offcanvas-body full-scroll" id="prefcanvas_content">
@@ -576,9 +587,10 @@
 		</div>
 	</div>
 
+	<!-- MARK: file canvas -->
 	<div class="offcanvas offcanvas-bottom h-100" tabindex="-1" id="fileOpCanvas" style="-webkit-app-region: no-drag; transition: 0.5s">
 		<div class="offcanvas-header justify-content-start" style="-webkit-app-region: drag;">
-			<button type="button" style="-webkit-app-region: no-drag; z-index: 1;" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-bs-target="#fileOpCanvas" aria-label="Close"><i class="bi-x-lg"></i></button>
+			<button type="button" id="fileOpCanvas-button-close" style="-webkit-app-region: no-drag; z-index: 1;" class="btn btn-secondary"><i class="bi-x-lg"></i></button>
 			<i18n-text class="h5 offcanvas-title ps-3" data-key="app_name"></i18n-text>
 		</div>
 		<div class="offcanvas-body full-scroll">
@@ -622,6 +634,7 @@
 		</div>
 	</div>
 
+	<!-- MARK : loader -->
 	<div id="loadOverlay" class="modal" tabindex="-1">
 		<div class="modal-dialog modal-lg modal-dialog-centered" style="width:600px; height:300px;">
 			<div class="modal-content p-0 m-0 bg-dark">
@@ -650,6 +663,7 @@
 		</div>
 	</div>
 
+	<!-- MARK: file progress -->
 	<div class="modal fade" id="fileOpProgress">
 		<div class="modal-dialog modal-dialog-centered w-50">
 			<div class="modal-content" style="height: 220px;">

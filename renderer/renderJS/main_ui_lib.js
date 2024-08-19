@@ -10,6 +10,7 @@
 
 // eslint-disable-next-line no-unused-vars
 class StateManager {
+	selectClass     = 'bg-mod-selected'
 	malwareSkip     = []
 	malwareSuppress = []
 
@@ -282,7 +283,7 @@ class StateManager {
 
 	// MARK: translated UI selects
 	async updateI18NDrops() {
-		const finds = ['find_all', 'find_author', 'find_title', 'find_name', 'find_version']
+		const finds = ['find_all', 'find_author', 'find_title', 'find_name']
 		const sorts = ['sort_name', 'sort_title', 'sort_author', 'sort_date', 'sort_version']
 
 		const findOptions = finds.map((x) =>
@@ -750,11 +751,11 @@ class StateManager {
 
 		if ( doAdd ) {
 			this.track.selected.add(id)
-			MA.safeClsAdd(id, 'bg-success-subtle')
+			MA.safeClsAdd(id, this.selectClass)
 			MA.safeClsAdd(`${id}--scroller`, 'bg-success')
 		} else {
 			this.track.selected.delete(id)
-			MA.safeClsRem(id, 'bg-success-subtle')
+			MA.safeClsRem(id, this.selectClass)
 			MA.safeClsRem(`${id}--scroller`, 'bg-success')
 		}
 		
@@ -770,8 +771,8 @@ class StateManager {
 
 	// MARK: safe refresh
 	refreshSelected() {
-		for ( const element of MA.query('.mod-row.bg-success-subtle') ) {
-			element.classList.remove('bg-success-subtle')
+		for ( const element of MA.query(`.mod-row.${this.selectClass}`) ) {
+			element.classList.remove(this.selectClass)
 		}
 		for ( const element of MA.query('scroller-item.bg-success') ) {
 			element.classList.remove('bg-success')
@@ -781,7 +782,7 @@ class StateManager {
 			if ( !id.startsWith(this.track.openCollection) ) {
 				this.track.selected.delete(id)
 			} else {
-				MA.safeClsAdd(id, 'bg-success-subtle')
+				MA.safeClsAdd(id, this.selectClass)
 				MA.safeClsAdd(`${id}--scroller`, 'bg-success')
 			}
 		}
@@ -1146,6 +1147,9 @@ class PrefLib {
 			MA.byId('prefcanvas').querySelector('.offcanvas-body').scrollTop = 0
 			window.state.dragDrop.flags.preventRun = true
 		})
+		MA.byId('prefs--close-btn').addEventListener('click', () => {
+			this.overlay.hide()
+		})
 		window.settings.receive('settings:invalidate', () => { this.forceUpdate() })
 		this.init()
 	}
@@ -1343,6 +1347,7 @@ class PrefLib {
 					window.settings.get('lang_lock').then((value) => {
 						lang_lock.checked = value
 					})
+					window.state.updateI18NDrops()
 				}
 
 				this.update.push(lang_update)
@@ -1854,6 +1859,9 @@ class FileLib {
 			MA.byId('fileOpCanvas').querySelector('.offcanvas-body').scrollTop = 0
 		})
 		MA.byId('fileOpCanvas-button').addEventListener('click', () => { this.process() })
+		MA.byId('fileOpCanvas-button-close').addEventListener('click', () => {
+			this.overlay.hide()
+		})
 
 		window.main_IPC.receive('files:operation', (mode, mods) => {
 			this.start_external(mode, mods)

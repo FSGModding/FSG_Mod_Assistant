@@ -560,7 +560,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	})(window.console)
 	
 	// eslint-disable-next-line no-constant-condition
-	if ( false ) {
+	if ( true ) {
 		window.console = newConsole
 	}
 
