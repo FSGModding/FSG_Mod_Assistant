@@ -1012,8 +1012,8 @@ class StateManager {
 				window.main_IPC.dispatch('game')
 			} else {
 				// Different, ask confirmation
-				MA.byIdHTML('no_match_game_list', this.mapCollectionDropdown[window.state.flag.activeCollect])
-				MA.byIdHTML('no_match_ma_list', this.mapCollectionDropdown[currentList])
+				MA.byIdHTML('no_match_game_list', window.state.mapCollectionDropdown.get(window.state.flag.activeCollect))
+				MA.byIdHTML('no_match_ma_list', window.state.mapCollectionDropdown.get(currentList))
 				LEDLib.fastBlinkLED()
 				window.state.modal.mismatch.show()
 			}
