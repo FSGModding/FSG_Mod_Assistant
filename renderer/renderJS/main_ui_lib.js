@@ -2211,6 +2211,7 @@ class FileLib {
 			setTimeout(() => {
 				this.feedback.hide()
 				this.overlay.hide()
+				window.state.select.none()
 				window.main_IPC.folder.reload()
 			}, didFail ? 5000 : 1500)
 		})
