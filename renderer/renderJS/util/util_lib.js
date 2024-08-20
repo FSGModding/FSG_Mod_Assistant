@@ -528,6 +528,18 @@ function enhanceI18N() {
 	})
 }
 
+// MARK: ERROR HANDLE
+window.addEventListener('unhandledrejection', (e) => {
+	window.log.error('Unhandled Rejection')
+	window.log.warning(e?.reason?.message)
+	window.log.warning(e?.reason?.stack)
+})
+window.addEventListener('error', (e) => {
+	window.log.error('Uncaught Error')
+	window.log.warning(e?.error?.message)
+	window.log.warning(e?.error?.stack)
+})
+
 // MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
 	enhanceI18N()
