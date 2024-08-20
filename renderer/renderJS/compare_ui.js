@@ -19,7 +19,8 @@ class windowState {
 	// MARK: init
 	constructor() {
 		window.i18n.lang().then((result) => {
-			this.locale = result
+			this.locale   = result
+			window.locale = result
 
 			this.getSorting()
 
