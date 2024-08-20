@@ -4,7 +4,7 @@
 
 ## Overview
 
-Sometimes you just need to know what base game equipment is available without going into the game.  Mod Assitant has you covered.  Open it with the <i class="bi bi-wikipedia"></i> icon in the top bar
+Sometimes you just need to know what base game equipment is available without going into the game.  Mod Assistant has you covered for FS22, FS19, and shortly after release, FS25.  Open it with the <i class="bi bi-wikipedia"></i> icon in the top bar
 
 ![overview](img340/main-window-part-top-bar.png)
 

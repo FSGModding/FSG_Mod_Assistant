@@ -4,5 +4,10 @@
 	  "target": "ES2023"
 	},
 	"include": ["renderJS/util/*.js", "renderJS/*.js", "preload/**/*"],
-	"exclude": ["node_modules/**/*"],
+	"exclude": [
+		"node_modules",
+		"renderer/renderJS/inc/**/*.js",
+		"renderer/renderJS/util/baseGameData.js",
+		"renderer/renderJS/util/baseGameData19.js"
+	],
 }

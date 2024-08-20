@@ -64,7 +64,7 @@ Most of the collection buttons are covered in other sections, most notably in:
 - [Savegame Compare](savegame.html)
 - [Import and Export](importexport.html)
 
-Not mentioned in any of those is the first icon in this sample - this collection only contains a single map, so the map icon is shown, and clicking it will load the mod detail screen for that map.
+Not mentioned in any of those is the first icon in this sample - if a collection only contains a single map, the map icon is shown, and clicking it will load the mod detail screen for that map.  If multiple maps are in a collection, a dropdown selection will appear.
 
 ![Active collection](img340/collection-entry.png)
 
@@ -90,4 +90,4 @@ Sometimes you have changed the active collection in the dropdown list but either
 
 ![Alt text](img340/collection-mismatch.png)
 
-You can ignore the warning, or set the currently selected mod set as active.  Note that you will have to press the `Launch Game` button again when the process is finished.
+You can ignore the warning, or set the currently selected mod set as active and launch the game (new in 5.0.0, the game will launch after the collection is marked active)

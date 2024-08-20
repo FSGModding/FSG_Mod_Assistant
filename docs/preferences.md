@@ -46,12 +46,11 @@ Sometimes, your windows may get to be odd sizes, or open in odd places.  These s
 
 ## Game Options
 
-![display](img340/pref-game-22.png)
+![display](img340/pref-game.png)
 
 ### Multiple Version Mode
 
-Mod Assistant is capable of working with more than one version of Farming Simulator at the same time.  We currently support `FS22`, `FS19`, `FS17`, `FS15`, and `FS13`.  At this time, there are no plans to support earlier versions, nor will any attempt be made at supporting any mobile version.  You can learn more about this feature in the [Multiple Game Version Mode](multi-version.html) documentation.
-
+As of version 5.0.0, multiple version mode is always on.
 
 ### Game Path Settings
 
@@ -81,7 +80,7 @@ In some cases, if you synchronize your mods with multiple computers, Mod Assista
 
 ### Poll Game Status
 
-When enabled, this will update the Mod Assistant interface to indicate if the game is currently running.  This is only applicable to Farming Simulator 22
+When enabled, this will update the Mod Assistant interface to indicate if the game is currently running. This follows the current version.
 
 ### Discord Rich Presence
 
@@ -89,4 +88,4 @@ If you'd like Mod Assistant to update your discord presence (desktop app only), 
 
 ### Mod Cache
 
-The Mod Cache is how Mod Assistant is able to keep track of your mod files.  If you have removed a lot of mod files over time, it may be a good idea to `Clean Cache`, or, when upgrading between major versions, `Clear Cache` can help. In the example image, my mod collection is around 500 files, and this was after rebuilding the cache after the 2.0.0 upgrade. The `Clear Detail Cache` is a safe option if you have altered a mod and the store data is out-of-date. Note that the detail cache auto-expires over time.
+The Mod Cache is how Mod Assistant is able to keep track of your mod files.  If you have removed a lot of mod files over time, it may be a good idea to `Clean Cache`, or, when upgrading between major versions, `Clear Cache` can help. In the example image, my mod collection is around 500 files, and this was after rebuilding the cache after the 2.0.0 upgrade. The `Clear Detail Cache` is a safe option if you have altered a mod and the store data is out-of-date. Note that the detail cache auto-expires over time. Finally, use `Clear User-Defined Malware Ignore List` to reset any possible bad mods you have ignored the warning for.

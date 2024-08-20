@@ -62,7 +62,7 @@ This option marks a collection as being on removable storage.  When set as remov
 
 #### Version
 
-This sets the game version the collection is associated with.  It will always be preset to the version you are currently working with in Mod Assistant, or, if you do not have multi-version support enabled, it will be set to 2022
+This sets the game version the collection is associated with.  It will always be preset to the version you are currently working with in Mod Assistant.
 
 #### In-Game Units
 

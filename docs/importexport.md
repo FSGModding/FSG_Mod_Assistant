@@ -30,7 +30,7 @@ You will be presented with a dialog where you can choose to copy the files to on
 
 ### Drag-and-Drop Import Package
 
-If you have exported a mod collection (or part of one), those ZIP files are specially detected by Mod Assistant and will unzip their contents on import.
+If you have exported a mod collection (or part of one), those ZIP files are specially detected by Mod Assistant and will unzip their contents on import. New in 5.0.0, you can preview the files that will be unpacked.
 
 ![drag in confirm](img340/drag-drop-import-zip.png)
 
@@ -64,7 +64,19 @@ You can drag single mods from the collection area to any valid target in windows
 
 ## Import & Export of Collections
 
-There is support for importing and exporting collection settings.
+There is support for importing and exporting collection settings.  Drag the exported JSON collection file to Mod Assistant. A popup will appear with the settings contained
+
+![step 1](img340/import-step-0.png)
+
+Next, pick a folder location for the new collection.  The popup allows you to create a new folder directly if needed.  Press `Apply Settings` if you are happy with your selection
+
+![step 2](img340/import-step-1.png)
+
+Finally, if the JSON provider as added download links to get the collection started, you can download those files here.
+
+![step 3](img340/import-step-2.png)
+
+This is a very new feature, and may change in the future.  If you want to be able to provide a JSON import for your users, the best bet is to join our discord for more information on how to set up the file.
 
 ### Export Collection
 

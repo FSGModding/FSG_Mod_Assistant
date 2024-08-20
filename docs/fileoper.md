@@ -18,7 +18,6 @@ For better display, paths are shortened, hover over the path to see the full pat
 
 ![movecopy](img340/movecopy-single.png)
 
-
 ## Move or Copy - Multiple Collections (Dropbox)
 
 Moving or copying files **from a dropbox collection** brings up a confirmation window.  Choose a destination to and press the `Yes` button to continue.  Exiting files will be automatically overwritten.

@@ -12,11 +12,11 @@ The first step is for the simple things - it lets you set the display font size,
 
 ## Step 2
 
-Next, we need some basic details about where Farming Simulator 2022 is installed.  Mod Assistant will do it's best to find your settings file and game exe.
+Next, we need some basic details about where Farming Simulator 2022 and/or 2025 is installed.  Mod Assistant will do it's best to find your settings file and game exe.
 
 If you see an option that looks good, and the button isn't already green with a thumbs up, go ahead and press it.
 
-Mod Assistant can find FS2022 in the default eShop install, the default Epic Games install, any steam folder, and the default MS/XBox store install location.  If it fails, you'll need to locate the game manually.
+Mod Assistant can find Farm Sim in the default eShop install, the default Epic Games install, any steam folder, and the default MS/XBox store install location.  If it fails, you'll need to locate the game manually.
 
 If more than one install is found, they will all be presented as options.
 
@@ -24,7 +24,7 @@ If more than one install is found, they will all be presented as options.
 
 ## Step 3
 
-A lot of new users of Mod Assistant are already using mod collections, they are just doing it the hard way.  In step 3, if MA sees a bunch of `.ZIP` files in your mods folder, it will offer to add it as a collection.  If it sees a bunch of folders in there that __do not__ start with `FS22`, it will offer to add those as collections.
+A lot of new users of Mod Assistant are already using mod collections, they are just doing it the hard way.  In step 3, if MA sees a bunch of `.ZIP` files in your mods folder, it will offer to add it as a collection.  If it sees a bunch of folders in there that __do not__ start with `FS`, it will offer to add those as collections.  New in 5.0.0, it will search for previous version mod folders as well - the version mod assistant things a collection for is denoted by the icon at the beginning of the line
 
 ![001](img340/wizard-step-003.png)
 

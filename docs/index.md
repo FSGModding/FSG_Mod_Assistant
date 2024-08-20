@@ -36,7 +36,6 @@ Please note that this documentation is auto-generated, and may refer to a newer 
 - [Comparison Tool](comparetool.html)
 - [User Preferences](preferences.html)
 - [Game Log Viewer](gamelog.html)
-- [Multiple Game Version Mode](multi-version.html)
 - [FSG Bot Integration HowTo](fsgbot.html)
 - [Frequently Asked Questions](faq.html)
 
@@ -84,7 +83,7 @@ Either download the new version and install over top, or, the program will self-
 
 ### Mod Assistant Speed
 
-__PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk so that this app can run as fast as possible - but the initial scanning process is in depth, and ___not very fast___.  So, be aware than when you add a folder of a lot of mods, it may take a bit of time to scan them for the first time. Mod Assistant goes out of it's way to only scan a "version" of a file once, so subsequent loads on the program will be much, much fast.  If you are interested in the details of the cache, see the FAQ. If you find that your collections continue to full rescan, you may need to enable sync mode - see the page on [User Preferences](preferences.html)
+__PLEASE READ: Note about the Mod Cache:__ Mods are scanned and cached from disk so that this app can run as fast as possible - but the initial scanning process is in depth, and ___not very fast___.  So, be aware than when you add a folder of a lot of mods, it may take a bit of time to scan them for the first time. Mod Assistant goes out of it's way to only scan a "version" of a file once, so subsequent loads on the program will be much, much faster.  If you are interested in the details of the cache, see the FAQ. If you find that your collections continue to full rescan, you may need to enable sync mode - see the page on [User Preferences](preferences.html)
 
 ## Translations and Localizations
 
