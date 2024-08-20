@@ -881,6 +881,7 @@ ipcMain.on('main:runUpdateInstall', () => {
 ipcMain.handle('state:all', () => { return {
 	botStatus          : serveIPC.modCollect.botDetails,
 	dangerDebug        : serveIPC.isDebugDanger,
+	foldersDirty       : serveIPC.isFoldersDirty,
 	gameRunning        : serveIPC.isGameRunning,
 	gameRunningEnabled : serveIPC.isGamePolling,
 	pinMini            : serveIPC.windowLib.isAlwaysOnTop('mini'),

@@ -207,8 +207,10 @@ class StateManager {
 		window.main_IPC.updateState().then((status) => {
 			MA.byId('debug_danger_bubble').clsShow(status.dangerDebug)
 			MA.byId('topBar-update').clsShow(status.updateReady)
+			this.flag.folderDirty  = status.foldersDirty
 			this.flag.gameRunning  = status.gameRunning
 			this.flag.launchEnable = status.gameRunningEnabled
+			MA.byId('dirty_folders').clsShow(this.flag.folderDirty)
 			MA.byId('gameRunningBubble')
 				.clsShow(this.flag.launchEnable)
 				.clsOrGate(this.flag.gameRunning, 'text-success', 'text-danger')
