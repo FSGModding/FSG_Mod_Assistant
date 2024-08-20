@@ -610,6 +610,14 @@ function doFilter() {
 		MA.byId('homePageBlurb').clsHide()
 		MA.byId('searchContentBox').clsShow()
 		for ( const element of findItemsByTerm(filterText).sort().map((x) => buildItem(x)) ) {
+			for ( const clicker of element.querySelectorAll('.compareSingle')) {
+				clicker.addEventListener('click', compareSingle)
+			}
+		
+			for ( const clicker of element.querySelectorAll('.pageClicker')) {
+				clicker.addEventListener('click', changePage)
+			}
+
 			MA.byId('searchContent').appendChild(element)
 		}
 	} else {
