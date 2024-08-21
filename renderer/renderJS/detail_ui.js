@@ -387,10 +387,18 @@ async function subStep_vehicle(thisUUID, thisFile, thisItem, thisIcon, brands, c
 	})
 
 	if ( combos !== null ) {
+		infoDivNode.querySelector('.combo_count').textContent = combos.length
 		const comboParent = infoDivNode.querySelector('.combo-item-list')
 		for ( const thisCombo of combos ) {
 			comboParent.appendChild(thisCombo)
 		}
+		const showHide = infoDivNode.querySelector('.inset-block-combo-show-hide')
+		showHide.addEventListener('click', () => {
+			const isShow      = showHide.querySelector('.section_hide').classList.contains('d-none')
+			comboParent.clsShow(isShow)
+			showHide.children[0].clsShow(!isShow)
+			showHide.children[1].clsShow(isShow)
+		})
 	}
 	
 	DATA.eventEngine(infoDivNode, '.action-compare-all-combo', comboAddAll)

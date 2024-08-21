@@ -27,7 +27,7 @@
 	"bad_game_xml_title"                    : "game.xml Problem Detected - Version :",
 	"base_game_data__title"                 : "Browse Base Game Items",
 	"basegame_attach"                       : "Attachment",
-	"basegame_attach_has"                   : "Accepts attachments with",
+	"basegame_attach_has"                   : "Accepts attachments",
 	"basegame_attach_need"                  : "Can be attached to",
 	"basegame_brand"                        : "Brands",
 	"basegame_browser"                      : "Base Game Browser",

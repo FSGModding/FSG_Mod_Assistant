@@ -266,12 +266,16 @@
 				<div class="col-12 py-2"><p class="text-center"><template-var>functions</template-var></p></div>
 				<div class="col-12 py-2 combo-list">
 					<div class="inset-inline-header">
-						<i18n-text data-key="combinations_title" class="inset-inline-header-text"></i18n-text>
+						<span class="inset-inline-header-text"><i18n-text data-key="combinations_title"></i18n-text> (<span class="combo_count">0</span>)</span>
 						<span class="inset-inline-header-button">
 							<i18n-text type="button" class="btn btn-warning btn-vsm action-compare-all-combo" data-key="basegame_compare_all"></i18n-text>
 						</span>
+						<span class="inset-block-combo-show-hide" style="margin-left: 10px; margin-top: -1.5rem; margin-right: auto;">
+							<i18n-text class="section_show" data-key="section_show"></i18n-text>
+							<i18n-text class="d-none section_hide" data-key="section_hide"></i18n-text>
+						</span>
 					</div>
-					<div class="combo-item-list"></div>
+					<div class="combo-item-list d-none"></div>
 				</div>
 				<template-var>chartData</template-var>
 			</div>

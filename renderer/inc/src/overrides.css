@@ -191,6 +191,24 @@ tr.mod-list-row td:first-child input { display: none; }
 	margin-right: 0px;
 	cursor: pointer;
 }
+.inset-block-combo-show-hide {
+	--bs-bg-opacity: 1;
+	--bs-text-opacity: 1;
+	background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity))!important;
+	color: rgba(var(--bs-info-rgb),var(--bs-text-opacity))!important;
+	display : block;
+	font-size: 1rem;
+	font-weight: 500;
+	line-height: 1.2;
+	margin-top: -1.5rem;
+	padding-bottom: 0.5rem!important;
+	padding-left: 1rem!important;
+	padding-right: 1rem!important;
+	width: fit-content;
+	margin-left: 10px;
+	margin-right: auto;
+	cursor: pointer;
+}
 
 .inset-inline-header {
 	width: 75%!important;

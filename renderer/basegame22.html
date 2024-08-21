@@ -103,37 +103,37 @@
 			</div>
 		</div>
 		<div class="d-flex flex-row flex-grow-1" style="height: calc(100vh - 60px)">
-			<div class="col-3 fs-3 px-3 d-flex flex-column justify-content-evenly border-end">
+			<div class="col-3 fs-5 px-3 d-flex flex-column justify-content-evenly border-end">
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="brand">
-					<div class="fsico-cat-brand align-self-center"></div>
+					<div class="fs-2 fsico-cat-brand align-self-center"></div>
 					<i18n-text class="text-end align-self-center" data-key="basegame_brand"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="vehicle">
-					<div class="fsico-cat-vehicle align-self-center"></div>
+					<div class="fs-2 fsico-cat-vehicle align-self-center"></div>
 					<i18n-text class="text-end align-self-center" data-key="basegame_vehicle"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="tool">
-					<div class="fsico-cat-tool align-self-center"></div>
-					<i18n-text class="text-end align-self-center fs-3" data-key="basegame_tool"></i18n-text>
+					<div class="fs-2 fsico-cat-tool align-self-center"></div>
+					<i18n-text class="text-end align-self-center" data-key="basegame_tool"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="object">
-					<div class="fsico-cat-object align-self-center"></div>
+					<div class="fs-2 fsico-cat-object align-self-center"></div>
 					<i18n-text class="text-end align-self-center" data-key="basegame_object"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="placeable">
-					<div class="fsico-cat-placeable align-self-center"></div>
+					<div class="fs-2 fsico-cat-placeable align-self-center"></div>
 					<i18n-text class="text-end align-self-center" data-key="basegame_placeable"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="attach_has">
-					<div class="fsico-cat-attach-has align-self-center"></div>
-					<i18n-text class="text-end align-self-center fs-4" data-key="basegame_attach_has"></i18n-text>
+					<div class="fs-2 fsico-cat-attach-has align-self-center"></div>
+					<i18n-text class="text-end align-self-center" data-key="basegame_attach_has"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="attach_need">
-					<div class="fsico-cat-attach-need align-self-center"></div>
-					<i18n-text class="text-end align-self-center fs-4" data-key="basegame_attach_need"></i18n-text>
+					<div class="fs-2 fsico-cat-attach-need align-self-center"></div>
+					<i18n-text class="text-end align-self-center" data-key="basegame_attach_need"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="fills">
-					<div class="fsico-look-fillunit align-self-center"></div>
+					<div class="fs-2 fsico-look-fillunit align-self-center"></div>
 					<i18n-text class="text-end align-self-center" data-key="basegame_fills"></i18n-text>
 				</div>
 			</div>
@@ -244,12 +244,16 @@
 				<div class="col-12 py-2"><p class="text-center"><template-var>functions</template-var></p></div>
 				<div class="col-12 py-2 combo-list">
 					<div class="inset-inline-header">
-						<i18n-text data-key="combinations_title" class="inset-inline-header-text"></i18n-text>
+						<span class="inset-inline-header-text"><i18n-text data-key="combinations_title"></i18n-text> (<span class="combo_count">0</span>)</span>
 						<span class="inset-inline-header-button">
 							<i18n-text type="button" class="btn btn-warning btn-vsm action-compare-all-combo" data-key="basegame_compare_all"></i18n-text>
 						</span>
+						<span class="inset-block-combo-show-hide" style="margin-left: 10px; margin-top: -1.5rem; margin-right: auto;">
+							<i18n-text class="section_show" data-key="section_show"></i18n-text>
+							<i18n-text class="d-none section_hide" data-key="section_hide"></i18n-text>
+						</span>
 					</div>
-					<div class="combo-item-list"></div>
+					<div class="combo-item-list d-none"></div>
 				</div>
 				<template-var>chartData</template-var>
 			</div>
