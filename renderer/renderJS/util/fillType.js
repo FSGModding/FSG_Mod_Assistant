@@ -155,7 +155,7 @@ const ft_normalizeName = (name) => {
 	if ( ft_known.has(addFill) ) { return [addFill, sanitizedName] }
 
 	/* eslint-disable no-console */
-	console.error(`${name} not found (maybe ${sanitizedName} or ${addFill})`)
+	console.log(`${name} not found (maybe ${sanitizedName} or ${addFill})`)
 	return ['fill-unknown', name]
 	/* eslint-enable no-console */
 }
