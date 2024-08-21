@@ -84,7 +84,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		window.log.error('page build error',  err.message, `\n${err.stack}`)
 	})
 
-	for ( const element of MA.query('.inset-block-header-show-hide l10n') ) {
+	for ( const element of MA.query('.inset-block-header-show-hide i18n-text') ) {
 		element.addEventListener('click', showHideClicker)
 	}
 })
