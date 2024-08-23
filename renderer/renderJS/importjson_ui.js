@@ -98,8 +98,8 @@ class windowState {
 		node.classList.add('w-75', 'd-block', 'mx-auto', 'btn', 'btn-primary', 'btn-sm', 'disabled', 'btn-download', 'mb-2')
 		node.innerHTML = `<i18n-text data-key="import_json_step_2_download${isPack ? '_unpack' : ''}"></i18n-text> :: ${uri}`
 		node.addEventListener('click', () => {
-			node.firstElementChild.classList.remove('btn-primary')
-			node.firstElementChild.classList.add('btn-success', 'disabled')
+			node.classList.remove('btn-primary')
+			node.classList.add('btn-success', 'disabled')
 			window.importjson_IPC.doDownload(this.importKey, uri, isPack)
 		})
 
