@@ -129,7 +129,7 @@ class PrefLib {
 
 		if ( !alreadyExists ) {
 			node.querySelector('.btn').addEventListener('click', () => {
-				window.wizard_IPC.addFolder(folder, version)
+				window.setup_IPC.addFolder(folder, version)
 			})
 		}
 		return node

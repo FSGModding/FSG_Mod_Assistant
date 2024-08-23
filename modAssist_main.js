@@ -164,7 +164,7 @@ function getCopyMoveDelete(operation, modIDS, multiSource = null, fileList = nul
 ipcMain.handle('folders:activate', async (_, CKey) => funcLib.gameSet.change(CKey) )
 ipcMain.on('folders:addDirect', (event, potentialFolder, version) => {
 	funcLib.processor.addFolderTracking(potentialFolder, version)
-	event.sender.send('setup', 'settings:invalidate')
+	event.sender.send('settings:invalidate')
 })
 ipcMain.on('folders:addDrop', (_, newFolder) => {
 	funcLib.processor.addFolderTracking(newFolder)
