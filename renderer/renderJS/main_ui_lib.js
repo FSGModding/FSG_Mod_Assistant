@@ -243,7 +243,7 @@ class StateManager {
 			response.online ?
 				`${response.name} :: ${response.playersOnline} / ${response.slotCount} ${l10n.online}` :
 				`${response.name} ${l10n.offline}`
-		const thisText = isGood && response.online ? response.playersOnline : ''
+		const thisText = isGood && response.online ? response.playersOnline : '-'
 		const node = document.createElement('a')
 		node.setAttribute('title', thisTitle)
 		node.innerHTML = `<span class="bot-status bot-${thisStatus}">${thisText}</span>`
