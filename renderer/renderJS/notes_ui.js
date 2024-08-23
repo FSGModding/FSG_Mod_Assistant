@@ -125,10 +125,10 @@ class windowState {
 		const dataKey     = formControl.id
 		if ( ! this.inputValidate(dataKey, formControl, false) ) { return }
 
-		if ( dataKey === 'notes_website' && MA.byIdCheck('notes_websiteVALID') ) {
+		if ( dataKey === 'notes_website' ) {
 			try {
 				const parsedURL   = new URL('', formControl.value)
-				formControl.value = new URL('/', parsedURL.origin).href
+				formControl.value = parsedURL.href
 			} catch {
 				/* do nothing? */
 			}
@@ -165,13 +165,15 @@ class windowState {
 		
 		switch ( id ) {
 			case 'notes_website' :
-				try {
-					const parsedURL   = new URL('', formValue)
-					if ( (parsedURL.protocol !== 'http:' && parsedURL.protocol !== 'https:') || parsedURL.pathname !== '/' ) {
+				if ( formValue !== '' ) {
+					try {
+						const parsedURL   = new URL('', formValue)
+						if ( (parsedURL.protocol !== 'http:' && parsedURL.protocol !== 'https:') ) {
+							validCheck = false
+						}
+					} catch {
 						validCheck = false
 					}
-				} catch {
-					validCheck = false
 				}
 				break
 			case 'notes_password' :
