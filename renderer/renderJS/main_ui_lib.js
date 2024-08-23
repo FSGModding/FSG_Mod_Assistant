@@ -33,6 +33,7 @@ class StateManager {
 		lastID         : null,
 		lastIndex      : null,
 		lastPayload    : null,
+		newFolder      : null,
 		openCollection : null,
 		scrollPosition : 0,
 		searchString   : '',
@@ -72,8 +73,20 @@ class StateManager {
 		window.main_IPC.receive('status:all', () => this.updateState() )
 	}
 
-	// MARK: process data
-	async updateFromData(data) {
+	#updateTracking(data) {
+		const lastColSet = this.track.lastPayload?.set_Collections || null
+
+		if ( lastColSet !== null ) {
+			const newFolderSet = data.set_Collections.difference(lastColSet)
+			if ( newFolderSet.size === 1 ) {
+				this.track.newFolder = [...newFolderSet][0]
+			} else {
+				this.track.newFolder = null
+			}
+		} else {
+			this.track.newFolder = null
+		}
+
 		this.track.lastPayload   = data
 		this.flag.activeCollect  = data.opts.activeCollection
 		this.flag.currentVersion = data.appSettings.game_version
@@ -98,6 +111,10 @@ class StateManager {
 		this.mapCollectionFiles    = new Map()
 		this.mapCollectionDropdown = new Map()
 		this.mapCollectionDropdown.set(0, `--${data.opts.l10n.disable}--`)
+	}
+	// MARK: process data
+	async updateFromData(data) {
+		this.#updateTracking(data)
 	
 		for ( const [CIndex, CKey] of Object.entries([...data.set_Collections]) ) {
 			if ( data.collectionNotes[CKey].notes_version !== this.flag.currentVersion ) { continue }
@@ -168,13 +185,7 @@ class StateManager {
 			}
 		}
 
-		const versionPicker = MA.byId('farm_sim_versions')
-		versionPicker.innerHTML = ''
-		for ( const ver of [25, 22, 19, 17, 15, 13] ) {
-			const verNode = this.doVersionChanger(ver, data.appSettings, data)
-			if ( verNode !== null ) { versionPicker.appendChild(verNode) }
-		}
-
+		this.updateVerPick(data)
 		this.updateUI()
 		this.fixSorts()
 		if ( this.track.openCollection !== null ) {
@@ -182,6 +193,19 @@ class StateManager {
 		}
 		this.prefs.forceUpdate()
 		this.doDisplay()
+
+		if ( this.track.newFolder !== null ) {
+			this.colScroll(this.track.newFolder)
+		}
+	}
+
+	updateVerPick(data) {
+		const versionPicker = MA.byId('farm_sim_versions')
+		versionPicker.innerHTML = ''
+		for ( const ver of [25, 22, 19, 17, 15, 13] ) {
+			const verNode = this.doVersionChanger(ver, data.appSettings, data)
+			if ( verNode !== null ) { versionPicker.appendChild(verNode) }
+		}
 	}
 
 	getSaveBadges(CKey, mod) {
@@ -602,6 +626,17 @@ class StateManager {
 		}
 		if ( note.notes_website !== null ) {
 			btnNode.appendChild(this.#buttonMaker('admin_button', 'outline-info', () => { window.operations.url(note.notes_website) }))
+		}
+		const colTime = typeof note.notes_add_date === 'string' ?
+			new Date(note.notes_add_date).getTime() :
+			note.notes_add_date !== null ?
+				note.notes_add_date.getTime() :
+				0
+		const recTime = (new Date().getTime()) - (1000*60*60)
+		if ( colTime > recTime ) {
+			col.node.classList.add('bg-info-subtle')
+		} else {
+			col.node.classList.remove('bg-info-subtle')
 		}
 
 		btnNode.appendChild(this.#buttonMaker('export_button', 'outline-info', () => { window.main_IPC.folder.export(CKey) }))
