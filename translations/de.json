@@ -388,7 +388,7 @@
 	"notes_blurb_version"                   : "Für welche Version des Landwirtschafts-Simulators diese Sammlung ist",
 	"notes_blurb_website"                   : "Webadresse für den Server (http://example.net:8080/)",
 	"notes_blurb_website_dl"                : "Erlaube direkten Mod-Download von diesem Server",
-	"notes_blurb_website_valid"             : "Gültige Website-Adresse erzwingen",
+	"notes_blurb_website_valid"             : "Gültige Website-Adressen werden von Mod Assistant immer am Ende mit <code>all_mods_download?onlyActive=true</code> versehen. Normalerweise ist die gültige Adresse das Server-Root-Verzeichnis, wie im obigen Beispiel.",
 	"notes_button__title"                   : "Ordnerdetails bearbeiten",
 	"notes_link_fsg_bot"                    : "Mehr Information",
 	"notes_title_admin"                     : "Server-Website-Admin-Passwort",
