@@ -358,8 +358,6 @@ const ST = {
 
 			nameString = nameString.replace(/\$l10n_\w+/g, (match) => I18N.defer(match))
 
-			console.log(thisProduction.name, '::', nameString, '||', thisProduction.params)
-
 			prodNodes.push(DATA.templateEngine('prod_div', {
 				prodCost         : ST.markupProdCycle(thisProduction.cost),
 				prodCycles       : ST.markupProdCycle(thisProduction.cycles),

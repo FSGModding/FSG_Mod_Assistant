@@ -700,6 +700,11 @@ class StateManager {
 		this.doDisplay()
 	}
 
+	colScroll(id) {
+		const top = MA.byId(id).offsetTop
+		MA.byId('mod-collections').parentElement.scrollTo({top : top, behavior : 'instant'})
+	}
+
 	colContext(id) { window.main_IPC.contextCol(id) }
 
 

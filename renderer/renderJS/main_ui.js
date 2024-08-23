@@ -30,6 +30,7 @@ window.main_IPC.receive('select:list', (list) => {
 	window.state.track.selected = new Set(list)
 	window.state.forceSelectOnly()
 	window.state.doDisplay()
+	window.state.colScroll(tableID)
 })
 
 window.main_IPC.receive('select:withText', (list, text) => {
@@ -37,6 +38,7 @@ window.main_IPC.receive('select:withText', (list, text) => {
 	window.state.colToggle(tableID, true)
 	window.state.track.selected = new Set([list])
 	window.state.filter.findForce(text)
+	window.state.colScroll(tableID)
 })
 
 window.main_IPC.receive('mods:list', (modCollect) => {
