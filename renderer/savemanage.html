@@ -43,17 +43,28 @@
 			<i18n-text class="text-center mt-2 w-100 px-5 d-block blockquote display-8" data-key="save_manage_blurb"></i18n-text>
 		</div>
 
-		<div class="border-bottom pb-2">
+		<div class="pb-2 mb-3">
 			<div class="btn-group mx-auto w-75 d-flex">
 				<button type="button" class="btn btn-primary btn-sm border" id="importButton"><i class="bi bi-folder"></i> <i18n-text data-key="save_manage_import"></i18n-text></button>
 			</div>
 		</div>
 
-		<i18n-text class="d-block text-center pb-2 mt-3 h3" data-key="save_manage_active"></i18n-text>
-		<div id="active_games" class="row gy-4"></div>
-
-		<i18n-text class="d-block text-center pb-2 mt-4 h3" data-key="save_manage_backup"></i18n-text>
-		<div id="backup_games" class="row gy-4"></div>
+		<ul class="nav nav-tabs" id="savemanageTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<i18n-text class="nav-link active" id="active-tab" data-bs-target="#active-tab-pane" data-bs-toggle="tab" data-key="save_manage_active"></i18n-text>
+			</li>
+			<li class="nav-item" role="presentation">
+				<i18n-text class="nav-link" id="backup-tab" data-bs-target="#backup-tab-pane" data-bs-toggle="tab" data-key="save_manage_backup"></i18n-text>
+			</li>			
+		</ul>
+		<div class="tab-content" id="savemanageTabContent">
+			<div class="tab-pane fade show active py-4" id="active-tab-pane" role="tabpanel">
+				<div id="active_games" class="row gy-4"></div>
+			</div>
+			<div class="tab-pane fade show py-4" id="backup-tab-pane" role="tabpanel">
+				<div id="backup_games" class="row gy-4"></div>
+			</div>
+		</div>
 	</div>
 
 	<div class="modal" id="collect_savegame_modal" tabindex="-1">
