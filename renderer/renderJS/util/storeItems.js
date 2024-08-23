@@ -306,6 +306,16 @@ const ST = {
 
 		return jointHTML.length === 0 ? null : `<div class="d-flex joint-container justify-content-end">${jointHTML.join('')}</div>`
 	},
+	markupProdCycle   : (cycle) => {
+		const min = Math.floor(cycle / 60) === 0 ? '<1' : Math.floor(cycle / 60)
+		return [
+			'<div class="row">',
+			`<div class="col border-end"><i18n-text data-key="prod_month"></i18n-text><br>${Math.floor(cycle * 24)}</div>`,
+			`<div class="col border-end"><i18n-text class="text-warning-emphasis" data-key="prod_hour"></i18n-text><br>${Math.floor(cycle)}</div>`,
+			`<div class="col"><i18n-text data-key="prod_minute"></i18n-text><br>${min}</div>`,
+			'</div>'
+		].join('')
+	},
 	markupProductions : (prodRecords) => {
 		if ( typeof prodRecords === 'undefined' || prodRecords === null ) { return ''}
 		const prodNodes = []
@@ -346,13 +356,13 @@ const ST = {
 				})
 			}
 
-			nameString = nameString.replace(/\$l10n_\w+/g, (match) => {
-				I18N.defer(match)
-			})
+			nameString = nameString.replace(/\$l10n_\w+/g, (match) => I18N.defer(match))
+
+			console.log(thisProduction.name, '::', nameString, '||', thisProduction.params)
 
 			prodNodes.push(DATA.templateEngine('prod_div', {
-				prodCost         : NUM.fmtNoFrac(thisProduction.cost),
-				prodCycles       : thisProduction.cycles,
+				prodCost         : ST.markupProdCycle(thisProduction.cost),
+				prodCycles       : ST.markupProdCycle(thisProduction.cycles),
 				prodInputs       : inputHTML.join(ST.markupRow('<i class="text-success bi-plus-lg"></i>')),
 				prodName         : nameString,
 				prodOutput       : thisProduction.outputs.map((x) =>
