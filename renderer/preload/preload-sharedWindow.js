@@ -48,9 +48,10 @@ const pageAPI = {
 	},
 	'find' : {
 		functions : {
-			inputContext : ()     => ipcRenderer.send('context:cutCopyPaste'),
-			modContext   : (data) => ipcRenderer.send('context:find', data),
-			all          : ()     => ipcRenderer.invoke('collect:all'),
+			all          : ()        => ipcRenderer.invoke('collect:all'),
+			inputContext : ()        => ipcRenderer.send('context:cutCopyPaste'),
+			modContext   : (data)    => ipcRenderer.send('context:find', data),
+			select       : (id, txt) => ipcRenderer.send('select:withText', id, txt),
 		},
 		validAsync : new Set(['find:filterText']),
 	},

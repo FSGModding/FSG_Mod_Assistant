@@ -86,6 +86,7 @@ class windowState {
 							author    : DATA.escapeSpecial(mod.modDesc.author),
 							collect   : [],
 							icon      : mod.modDesc.iconImageCache,
+							id        : mod.colUUID,
 							name      : mod.fileDetail.shortName,
 							search    : [
 								mod.fileDetail.shortName,
@@ -132,10 +133,14 @@ class windowState {
 
 			const itemCollectNode = itemNode.querySelector('.versionList')
 			for ( const cItem of item.collect ) {
-				itemCollectNode.appendChild(DATA.templateEngine('version_entry', {
+				const node = DATA.templateEngine('version_entry', {
 					name    : cItem.name,
 					version : cItem.version,
-				}))
+				})
+				node.querySelector('dt').addEventListener('click', () => {
+					window.find_IPC.select(item.id, item.name)
+				})
+				itemCollectNode.appendChild(node)
 			}
 
 			itemNode.firstElementChild.addEventListener('contextmenu', () => {

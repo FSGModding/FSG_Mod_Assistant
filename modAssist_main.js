@@ -459,7 +459,7 @@ ipcMain.on('context:mod', async (event, modID, modIDs) => {
 	const isLog       = thisMod.badgeArray.includes('log')
 
 	const template = [
-		funcLib.menu.icon(thisMod.fileDetail.shortName, null, 'mod'),
+		funcLib.menu.icon(thisMod.fileDetail.shortName, null, 'mod', { enabled : false }),
 		funcLib.menu.sep,
 	]
 
@@ -803,7 +803,7 @@ ipcMain.on('savetrack:folder', () => {
 
 // MARK: save compare
 ipcMain.on('dispatch:save',       (_, collection) => { serveIPC.windowLib.createNamedWindow('save', { collectKey : collection }) })
-ipcMain.on('select:listInMain', (_, selectList) => {
+ipcMain.on('listInMain', (_, selectList) => {
 	if ( serveIPC.windowLib.isValid('main') ) {
 		serveIPC.windowLib.win.main.focus()
 		serveIPC.windowLib.sendToWindow('main', 'select:list', selectList)
@@ -861,6 +861,9 @@ ipcMain.on('dispatch:debug', () => {
 // MARK: misc window.
 ipcMain.on('dispatch:changelog', () => { serveIPC.windowLib.createNamedWindow('change') } )
 ipcMain.on('dispatch:find', () => { serveIPC.windowLib.createNamedWindow('find') } )
+ipcMain.on('select:withText', (_, id, txt) => {
+	serveIPC.windowLib.sendAndFocusValid('main', 'select:withText', id, txt)
+})
 ipcMain.on('dispatch:game', ()         => { funcLib.gameLauncher() })
 ipcMain.on('dispatch:help', ()         => { shell.openExternal('https://fsgmodding.github.io/FSG_Mod_Assistant/') })
 ipcMain.on('win:clipboard', (_, value) => clipboard.writeText(value, 'selection') )
