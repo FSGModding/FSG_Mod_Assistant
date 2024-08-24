@@ -736,7 +736,7 @@ class StateManager {
 	}
 
 	colScroll(id) {
-		const top = MA.byId(id).offsetTop
+		const top = MA.byId(id)?.offsetTop ?? 0
 		MA.byId('mod-collections').parentElement.scrollTo({top : top, behavior : 'instant'})
 	}
 
