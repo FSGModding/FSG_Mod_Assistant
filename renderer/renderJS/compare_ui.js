@@ -28,7 +28,7 @@ class windowState {
 		})
 
 		for ( const element of MA.query('.sort-up, .sort-down') ) {
-			element.addEventListener('click', () => { this.changeSort() })
+			element.addEventListener('click', (e) => { this.changeSort(e) })
 		}
 	
 		MA.byId('clearButton').addEventListener('click', () => {
