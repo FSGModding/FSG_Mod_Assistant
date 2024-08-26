@@ -1058,23 +1058,30 @@ app.whenReady().then(() => {
 
 		app.on('second-instance', (_, argv) => {
 			// Someone tried to run a second instance, we should focus our window.
-			if ( argv.includes('--start-game') ) { funcLib.gameLauncher() }
+			for ( const thisArg of argv ) {
+				if ( thisArg === '--start-game' ) { funcLib.gameLauncher() }
+				else if ( thisArg.startsWith('--start-game-with') ) {
+					funcLib.gameSet.change(thisArg.split('=')[1]).then(() => {
+						funcLib.gameLauncher()
+					})
+				}
+			}
 			if ( serveIPC.windowLib.isValid('main') ) {
 				if ( serveIPC.windowLib.win.main.isMinimized() || !serveIPC.windowLib.win.main.isVisible() ) { serveIPC.windowLib.win.main.show() }
 				serveIPC.windowLib.win.main.focus()
 			}
 		})
 
-		app.setUserTasks([
-			{
-				arguments : '--start-game',
-				description : '',
-				iconIndex : 0,
-				iconPath  : serveIPC.icon.tray,
-				program   : process.execPath,
-				title     : __('launch_game'),
-			}
-		])
+		// app.setUserTasks([
+		// 	{
+		// 		arguments : '--start-game',
+		// 		description : '',
+		// 		iconIndex : 0,
+		// 		iconPath  : serveIPC.icon.tray,
+		// 		program   : process.execPath,
+		// 		title     : __('launch_game'),
+		// 	}
+		// ])
 
 		serveIPC.windowLib.createMainWindow(() => {
 			if ( serveIPC.storeSet.has('modFolders') ) {
