@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Die neueste Version finden Sie hier:",
 	"launch_game"                           : "Spiel starten",
 	"launch_game__title"                    : "Spiel starten",
+	"launch_game_with"                      : "Spiel mit Sammlung starten",
 	"launcher_error_message"                : "Bitte setzen Sie den Spielpfad in den Einstellungen (nicht gesetzt oder nicht gültig!)",
 	"launcher_error_title"                  : "Spielpfad nicht gefunden",
 	"list-active"                           : "Aktiv setzen",

@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Pobierz najnowszą wersję na:",
 	"launch_game"                           : "Uruchom grę",
 	"launch_game__title"                    : "Uruchom FSa",
+	"launch_game_with"                      : "Uruchom grę z kolekcją",
 	"launcher_error_message"                : "Proszę ustawić ścieżkę gry w preferencjach",
 	"launcher_error_title"                  : "Ścieżka gry nieznaleziona",
 	"list-active"                           : "Aktywuj",

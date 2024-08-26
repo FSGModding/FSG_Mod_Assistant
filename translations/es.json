@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Consigue la última versión en:",
 	"launch_game"                           : "Iniciar el juego",
 	"launch_game__title"                    : "Iniciar el juego",
+	"launch_game_with"                      : "Juego de lanzamiento con recogida",
 	"launcher_error_message"                : "Por favor, establece la ruta del juego en las preferencias (¡no establecido, o no es válido!)",
 	"launcher_error_title"                  : "Ruta de juego no encontrada",
 	"list-active"                           : "Establecer como activo",

@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Получите последнюю версию по адресу:",
 	"launch_game"                           : "Играть",
 	"launch_game__title"                    : "Запустить игру",
+	"launch_game_with"                      : "Запуск игры с коллекцией",
 	"launcher_error_message"                : "Пожалуйста, укажите путь к игре в настройках (не задан или недействителен!)",
 	"launcher_error_title"                  : "Путь игры не найден",
 	"list-active"                           : "Активировать",

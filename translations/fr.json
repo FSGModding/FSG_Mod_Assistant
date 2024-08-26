@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Obtenez la dernière version à l'adresse suivante :",
 	"launch_game"                           : "Jeu de lancement",
 	"launch_game__title"                    : "Démarrer la partie",
+	"launch_game_with"                      : "Lancer le jeu avec la collection",
 	"launcher_error_message"                : "Veuillez définir le chemin de jeu dans les préférences (non défini, ou non valide!)",
 	"launcher_error_title"                  : "Chemin du jeu non trouvé",
 	"list-active"                           : "Définir comme active",

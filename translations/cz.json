@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Získejte nejnovější verzi na:",
 	"launch_game"                           : "Spustit hru",
 	"launch_game__title"                    : "Spustit hru",
+	"launch_game_with"                      : "Spuštění hry s kolekcí",
 	"launcher_error_message"                : "Nastavte prosím cestu k hře v předvolbách (nenastaveno, nebo není platné!)",
 	"launcher_error_title"                  : "Cesta k partii nebyla nalezena",
 	"list-active"                           : "Nastavit jako aktivní",

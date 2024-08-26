@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Obtenha a versão mais recente em:",
 	"launch_game"                           : "Lançar Jogo",
 	"launch_game__title"                    : "Iniciar o Jogo",
+	"launch_game_with"                      : "Lançar o jogo com a coleção",
 	"launcher_error_message"                : "Por favor, defina o caminho do jogo nas preferências",
 	"launcher_error_title"                  : "Caminho do jogo não encontrado",
 	"list-active"                           : "Definir como ativo",

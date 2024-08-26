@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "请在以下网址获取最新版本：",
 	"launch_game"                           : "启动游戏",
 	"launch_game__title"                    : "Start the Game",
+	"launch_game_with"                      : "用收藏启动游戏",
 	"launcher_error_message"                : "Please set the game path in preferences (not set, or not valid!)",
 	"launcher_error_title"                  : "找不到游戏路径",
 	"list-active"                           : "设置为激活状态",

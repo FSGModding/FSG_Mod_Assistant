@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Iegūt jaunāko versiju šeit:",
 	"launch_game"                           : "Uzsākt spēli",
 	"launch_game__title"                    : "Sākt spēli",
+	"launch_game_with"                      : "Uzsākt spēli ar kolekciju",
 	"launcher_error_message"                : "Lūdzu, iestatiet spēles ceļu preferencēs (nav iestatīts vai nav derīgs!)",
 	"launcher_error_title"                  : "Spēles ceļš nav atrasts",
 	"list-active"                           : "Aktivizēt",

@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Haal de laatste versie op:",
 	"launch_game"                           : "Start het spel",
 	"launch_game__title"                    : "Start het spel",
+	"launch_game_with"                      : "Start spel met collectie",
 	"launcher_error_message"                : "Stel het pad van het spel in bij de voorkeuren (niet ingesteld, of niet geldig!)",
 	"launcher_error_title"                  : "Spelpad niet gevonden",
 	"list-active"                           : "Actief instellen",

@@ -249,6 +249,7 @@
 	"latest_version_link_blurb"             : "Get the latest version at",
 	"launch_game"                           : "Launch Game",
 	"launch_game__title"                    : "Start the Game",
+	"launch_game_with"                      : "Launch Game with Collection",
 	"launcher_error_message"                : "Please set the game path in preferences (not set, or not valid!)",
 	"launcher_error_title"                  : "Game Path Not Found",
 	"list-active"                           : "Set Active",
