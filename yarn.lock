@@ -531,14 +531,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/config-array@npm:^0.17.1":
-  version: 0.17.1
-  resolution: "@eslint/config-array@npm:0.17.1"
+"@eslint/config-array@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "@eslint/config-array@npm:0.18.0"
   dependencies:
     "@eslint/object-schema": ^2.1.4
     debug: ^4.3.1
     minimatch: ^3.1.2
-  checksum: b678a7af5b0be8f1b29deaf751c77c365cf0b24bead3add677edbc7c7793dfb3eb423e33395787ff86fdbd85117a571f2f338d612a23210d9771aedf765d5482
+  checksum: 5ff748e1788745bfb3160c3b3151d62a7c054e336e9fe8069e86cfa6106f3abbd59b24f1253122268295f98c66803e9a7b23d7f947a8c00f62d2060cc44bc7fc
   languageName: node
   linkType: hard
 
@@ -559,10 +559,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.9.0":
-  version: 9.9.0
-  resolution: "@eslint/js@npm:9.9.0"
-  checksum: 33f0c8988e4e6f6c1499d05e2e91ef3df1c0b221a46c41ed1d27cf1265809451fba5b7a9452ece70e98bfd2f745c0f0df3c9cc1fdcfdcaacbcae45ddc415b5d6
+"@eslint/js@npm:9.9.1":
+  version: 9.9.1
+  resolution: "@eslint/js@npm:9.9.1"
+  checksum: 24436d7a1023dbc6c63fd199e45afa9eab8537f7bd808872d9d17dd70c5237f599fe3d08f519d55b40e33bfde02a460861df1c96aa07674090c3f98c83b0c178
   languageName: node
   linkType: hard
 
@@ -2237,9 +2237,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:^6.3.3":
-  version: 6.3.3
-  resolution: "electron-updater@npm:6.3.3"
+"electron-updater@npm:^6.3.4":
+  version: 6.3.4
+  resolution: "electron-updater@npm:6.3.4"
   dependencies:
     builder-util-runtime: 9.2.5
     fs-extra: ^10.1.0
@@ -2247,22 +2247,22 @@ __metadata:
     lazy-val: ^1.0.5
     lodash.escaperegexp: ^4.1.2
     lodash.isequal: ^4.5.0
-    semver: ^7.3.8
+    semver: ^7.6.3
     tiny-typed-emitter: ^2.1.0
-  checksum: ffea88f3d9996d4280dc0266c9557512b585cf1b55c9a4b612fe5fe9e358c432aa53278674e6ae6013e9f8509d1c32b98b092c077fb7d7ee73bdc91db219981d
+  checksum: 25b2ea00e17f59861c17fe0e8c778f133c99278ac17782960122057e278609df4aabdc9cde07a03470c50bc5b6fd2421eefca2515516ba7ed9758377fd264890
   languageName: node
   linkType: hard
 
-"electron@npm:^31.4.0":
-  version: 31.4.0
-  resolution: "electron@npm:31.4.0"
+"electron@npm:^32.0.1":
+  version: 32.0.1
+  resolution: "electron@npm:32.0.1"
   dependencies:
     "@electron/get": ^2.0.0
     "@types/node": ^20.9.0
     extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 3ff314ef8dd7e14b00c4fe6b6c7b044be64d1e22a3bf1c0ab70433357942cb67861025cc3b166b551e856ed25e1eaf15c8ef996efedb5c0ffc6964133ca9b0fa
+  checksum: 099a6b2fa18e9a62f5f1c03641abf11f90f4c0c4c4a4d8f7736cb9b5230a669bdb61f7a37de2edfb68d215f76d4c38fe2f0530e7d59ca7dc9a83d239e7bb878d
   languageName: node
   linkType: hard
 
@@ -2453,15 +2453,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.9.0":
-  version: 9.9.0
-  resolution: "eslint@npm:9.9.0"
+"eslint@npm:^9.9.1":
+  version: 9.9.1
+  resolution: "eslint@npm:9.9.1"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.11.0
-    "@eslint/config-array": ^0.17.1
+    "@eslint/config-array": ^0.18.0
     "@eslint/eslintrc": ^3.1.0
-    "@eslint/js": 9.9.0
+    "@eslint/js": 9.9.1
     "@humanwhocodes/module-importer": ^1.0.1
     "@humanwhocodes/retry": ^0.3.0
     "@nodelib/fs.walk": ^1.2.8
@@ -2498,7 +2498,7 @@ __metadata:
       optional: true
   bin:
     eslint: bin/eslint.js
-  checksum: 050956566d1cab8abc3ae81f98debc0e48bb612e007c62dac2c99272471885b62a8aa4814b3713838e9e2e825a7446adfc8453066c708d91579ead0ad63fed7d
+  checksum: a1ff85cd26a6f138e0f52e17668b7794371c81fd0ac66634c4d554dc2d878dcfbe6047a025e63e85168c897c83dfa453501a10395cbefda7debd79fe6ea00eab
   languageName: node
   linkType: hard
 
@@ -2869,11 +2869,11 @@ __metadata:
     deepmerge: ^4.3.1
     discord-rpc: ^4.0.1
     docolatte: ^4.5.1
-    electron: ^31.4.0
+    electron: ^32.0.1
     electron-builder: ^24.13.3
     electron-store: ^8.2.0
-    electron-updater: ^6.3.3
-    eslint: ^9.9.0
+    electron-updater: ^6.3.4
+    eslint: ^9.9.1
     eslint-plugin-unicorn: ^55.0.0
     fast-xml-parser: ^4.4.1
     glob: ^11.0.0
@@ -4992,6 +4992,15 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 40f6a95101e8d854357a644da1b8dd9d93ce786d5c6a77227bc69dbb17bea83d0d1d1d7c4cd5920a6df909f48e8bd8a5909869535007f90278289f2451d0292d
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.6.3":
+  version: 7.6.3
+  resolution: "semver@npm:7.6.3"
+  bin:
+    semver: bin/semver.js
+  checksum: 4110ec5d015c9438f322257b1c51fe30276e5f766a3f64c09edd1d7ea7118ecbc3f379f3b69032bacf13116dc7abc4ad8ce0d7e2bd642e26b0d271b56b61a7d8
   languageName: node
   linkType: hard
 
