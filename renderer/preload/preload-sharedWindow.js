@@ -6,7 +6,7 @@
 
 // preload file.  all windows.
 
-const {contextBridge, ipcRenderer} = require('electron')
+const {contextBridge, ipcRenderer, webUtils } = require('electron')
 
 const pageName = window.location.pathname.split('/').pop().replace('.html', '').replace(/\d\d/, '')
 
@@ -127,7 +127,7 @@ const pageAPI = {
 			},
 	
 			files : {
-				drop        : (files)      => ipcRenderer.invoke('files:drop', files),
+				drop        : (files)      => ipcRenderer.invoke('files:drop', Object.values(files).map((x) => webUtils.getPathForFile(x)) ),
 				exportZIP   : (MKey_s)     => { ipcRenderer.send('file:exportZIP', MKey_s) },
 				list        : (mode, mods) => ipcRenderer.invoke('files:list', mode, mods),
 				listFavs    : ()           => ipcRenderer.invoke('files:list:favs'),
@@ -142,7 +142,7 @@ const pageAPI = {
 				add      : ()       => { ipcRenderer.send('folders:add') },
 				alpha    : ()       => { ipcRenderer.send('folders:alpha') },
 				download : (CKey)   => { ipcRenderer.send('file:download', CKey) },
-				drop     : (folder) => { ipcRenderer.send('folders:addDrop', folder) },
+				drop     : (folder) => { ipcRenderer.send('folders:addDrop', webUtils.getPathForFile(folder)) },
 				edit     : ()       => { ipcRenderer.send('folders:edit') },
 				export   : (CKey)   => { ipcRenderer.send('file:exportCSV', CKey ) },
 				inactive : ()       => ipcRenderer.invoke('folders:active', null),

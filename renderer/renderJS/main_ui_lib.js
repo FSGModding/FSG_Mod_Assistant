@@ -1676,14 +1676,11 @@ class DragDropLib {
 	
 		const dt    = e.dataTransfer
 		const files = dt.files
-	
+
 		if ( this.flags.isFolder ) {
-			const newFolder = files[0].path
-			window.main_IPC.folder.drop(newFolder)
+			window.main_IPC.folder.drop(files[0])
 		} else {
-			const fileList = []
-			for ( const thisFile of files ) { fileList.push(thisFile.path) }
-			window.main_IPC.files.drop(fileList).then((result) => {
+			window.main_IPC.files.drop(files).then((result) => {
 				if ( typeof result !== 'undefined' ) {
 					window.state.files.start_external('import', result)
 				}
@@ -1708,7 +1705,7 @@ class DragDropLib {
 			this.csvTrueSwitch(isCSV)
 	
 			if ( e.dataTransfer.items.length > 1 || e.dataTransfer.items[0].type !== '' ) {
-				// multiple, so can't add as collection or non-empty type
+				// multiple or non-empty type
 				this.feedback.folder.clsHide()
 			}
 	
