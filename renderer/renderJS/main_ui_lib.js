@@ -688,12 +688,11 @@ class StateManager {
 			})
 		}
 
-		console.log(typeof thisMod.fileDetail.fileDate)
 		mod.node.appendChild(DATA.templateEngine('item_mod', {
 			author     : DATA.escapeSpecial(thisMod.modDesc.author),
 			fileDate   : thisMod.fileDetail.fileDate.slice(0, 10),
-			fileTime   : thisMod.fileDetail.fileDate.slice(11, 16),
 			fileSize   : ( thisMod.fileDetail.fileSize > 0 ) ? await DATA.bytesToHR(thisMod.fileDetail.fileSize) : '',
+			fileTime   : thisMod.fileDetail.fileDate.slice(11, 16),
 			folderIcon : thisMod.badgeArray.includes('folder') ? '<i class="bi bi-folder2-open mod-folder-overlay"></i>' : '',
 			iconImage  : `<img alt="" class="img-fluid" src="${DATA.iconMaker(thisMod.modDesc.iconImageCache)}">`,
 			shortname  : thisMod.fileDetail.shortName,
