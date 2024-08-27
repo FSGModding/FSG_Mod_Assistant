@@ -67,7 +67,8 @@
       "!/renderer/inc/src/*"
     ],
     "extraFiles": [
-      "texconv.exe"
+      "texconv.exe",
+      "icon/*"
     ],
     "win": {
       "target": [
