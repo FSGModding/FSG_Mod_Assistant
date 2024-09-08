@@ -440,6 +440,8 @@
 	"perf_txt_too_many"                     : "Uwaga dotycząca wydajności - Zbyt wiele plików TXT w modzie (> 2)",
 	"perf_xml_too_big"                      : "Uwaga dotycząca wydajności - Jeden lub więcej plików XML jest zbyt duży (> 0,25MB)",
 	"png_texture"                           : "Uwaga dotycząca wydajności - Pliki PNG nie powinny być używane jako tekstury.",
+	"pref_error"                            : "Błąd konfiguracji",
+	"pref_error_blurb"                      : "Jedna lub więcej ścieżek do pliku gameSettings.xml lub pliku wykonywalnego gry jest ustawionych nieprawidłowo. Sprawdź je dokładnie - możesz wyświetlić dziennik debugowania, aby uzyskać bardziej szczegółowe informacje.",
 	"pref_feedback_bad_url"                 : "Nieprawidłowy URL - Musi być adresem głównego serwera i kończyć się ukośnikiem",
 	"pref_feedback_limit_16"                : "Limit 16 znaków",
 	"pref_feedback_limit_30"                : "Limit 30 znaków",

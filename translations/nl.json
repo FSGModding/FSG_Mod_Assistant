@@ -440,6 +440,8 @@
 	"perf_txt_too_many"                     : "Prestatie-overweging - Te veel TXT's in mod (> 2)",
 	"perf_xml_too_big"                      : "Prestatie-overweging - Een of meer XML-bestanden zijn te groot (> 0,25MB)",
 	"png_texture"                           : "Prestatie-overweging - PNG-bestanden mogen niet worden gebruikt als texturen.",
+	"pref_error"                            : "Configuratiefout",
+	"pref_error_blurb"                      : "Een of meer gameSettings.xml of uitvoerbare paden voor het spel zijn onjuist ingesteld. Controleer ze zorgvuldig - je kunt de debug log bekijken voor meer gedetailleerde informatie.",
 	"pref_feedback_bad_url"                 : "Ongeldige URL - moet een server root zijn en eindigen met slash",
 	"pref_feedback_limit_16"                : "Maximaal 16 karakters.",
 	"pref_feedback_limit_30"                : "Maximaal 30 karakters.",

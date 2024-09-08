@@ -116,6 +116,8 @@ function popUIHandlers() {
 
 	MA.byIdEventIfExists('mod_info_input',  () => { window.main_IPC.contextInput() }, 'contextmenu')
 	MA.byIdEventIfExists('mod_info_button', () => { window.state.action.setModInfo() })
+
+	MA.byIdEventIfExists('prefOverlay-debug',    () => { window.main_IPC.dispatch('debug') })
 }
 
 // MARK: On Load

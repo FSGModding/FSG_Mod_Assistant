@@ -440,6 +440,8 @@
 	"perf_txt_too_many"                     : "Performance Consideration - pārāk daudz TXT modā (> 2)",
 	"perf_xml_too_big"                      : "Performance Consideration - Viens vai vairāki XML faili ir pārāk lieli (> 0,25 MB)",
 	"png_texture"                           : "Performance Consideration - PNG failus nedrīkst izmantot kā tekstūras",
+	"pref_error"                            : "Konfigurācijas kļūda",
+	"pref_error_blurb"                      : "Viens vai vairāki gameSettings.xml vai spēles izpildāmās programmas ceļi ir iestatīti nepareizi. Lūdzu, rūpīgi tos pārbaudiet - sīkākai informācijai varat apskatīt atkļūdošanas žurnālu.",
 	"pref_feedback_bad_url"                 : "Nepareizs URL - jābūt servera saknes adresei un jābeidzas ar slīpsvītru",
 	"pref_feedback_limit_16"                : "16 rakstzīmju ierobežojums",
 	"pref_feedback_limit_30"                : "30 rakstzīmju ierobežojums",

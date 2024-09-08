@@ -230,6 +230,8 @@ class StateManager {
 	updateState() {
 		window.main_IPC.updateState().then((status) => {
 			MA.byId('debug_danger_bubble').clsShow(status.dangerDebug)
+			MA.byId('prefcanvas_error').clsShow(status.prefDanger)
+			MA.byId('topBar-preferences').clsOrGate(status.prefDanger, 'pref-danger', null)
 			MA.byId('topBar-update').clsShow(status.updateReady)
 			this.flag.folderDirty  = status.foldersDirty
 			this.flag.gameRunning  = status.gameRunning

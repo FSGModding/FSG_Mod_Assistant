@@ -440,6 +440,8 @@
 	"perf_txt_too_many"                     : "Considération de performance - Trop de TXTs dans le mod (> 2)",
 	"perf_xml_too_big"                      : "Considération sur les performances - Un ou plusieurs fichiers XML sont trop volumineux (> 0.25MB)",
 	"png_texture"                           : "Considération de performance - Les fichiers PNG ne doivent pas être utilisés comme textures.",
+	"pref_error"                            : "Erreur de configuration",
+	"pref_error_blurb"                      : "Un ou plusieurs chemins d'accès au fichier gameSettings.xml ou à l'exécutable du jeu sont mal définis. Veuillez les vérifier attentivement - vous pouvez consulter le journal de débogage pour obtenir des informations plus détaillées.",
 	"pref_feedback_bad_url"                 : "URL invalide - Doit être la racine du serveur, et se terminer par un slash",
 	"pref_feedback_limit_16"                : "Limite de caractères",
 	"pref_feedback_limit_30"                : "Limite de 30 caractères",

@@ -440,6 +440,8 @@
 	"perf_txt_too_many"                     : "Zvažování výkonnosti - Příliš mnoho TXT v modu (> 2)",
 	"perf_xml_too_big"                      : "Zvažování výkonu - jeden nebo více XML souborů je příliš velkých (> 0,25MB)",
 	"png_texture"                           : "Zvažování výkonnosti - soubory PNG by se neměly používat jako textury",
+	"pref_error"                            : "Chyba konfigurace",
+	"pref_error_blurb"                      : "Jedna nebo více cest k souboru gameSettings.xml nebo ke spustitelným souborům hry jsou nastaveny nesprávně. Pečlivě je zkontrolujte - podrobnější informace získáte v protokolu ladění.",
 	"pref_feedback_bad_url"                 : "Neplatná URL - musí být kořenový adresář serveru a končit lomítkem",
 	"pref_feedback_limit_16"                : "Omezení počtu znaků",
 	"pref_feedback_limit_30"                : "Limit pro 30 znaků",

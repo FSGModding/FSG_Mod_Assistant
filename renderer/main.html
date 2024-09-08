@@ -216,6 +216,17 @@
 			color: white;
 		}
 
+		.pref-danger {
+			animation: PREF-PULSE 3s infinite; 
+		}
+
+		/* Chrome, Safari, Opera */
+		@keyframes PREF-PULSE {
+			0% { color: rgba(var(--bs-danger-rgb),1) !important; }
+			50% { color : var(--bs-tertiary-color)!important;}
+			100% { color: rgba(var(--bs-danger-rgb),1) !important; }
+		}
+
 	</style>
 	
 </head>
@@ -458,6 +469,13 @@
 			<i18n-text class="h5 offcanvas-title ps-3" id="offcanvasLabel-prefs" data-key="user_pref_title_main"></i18n-text>
 		</div>
 		<div class="offcanvas-body full-scroll" id="prefcanvas_content">
+
+			<div class="col-md-12 inset-block mb-3 d-none" id="prefcanvas_error"><div>
+				<i18n-text class="inset-block-header" style="color: rgba(var(--bs-danger-rgb),var(--bs-text-opacity))!important;" data-key="pref_error"></i18n-text>
+				<i18n-text class="inset-block-blurb-option col-9" data-key="pref_error_blurb"></i18n-text>
+				<i18n-text class="fw-bold text-white btn btn-vsm btn-primary mx-auto d-block w-75 mt-2" style="padding-top: 3px; padding-bottom: 3px;" id="prefOverlay-debug" data-key="open_debug_log">Debug Log</i18n-text>
+			</div></div>
+
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item" role="presentation">
 					<i18n-text class="nav-link active" id="display-pref-tab" data-bs-toggle="tab" data-bs-target="#display-pref-pane" type="button" role="tab" data-key="user_pref_tab_display"></i18n-text>

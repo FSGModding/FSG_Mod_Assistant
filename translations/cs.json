@@ -440,6 +440,8 @@
 	"perf_txt_too_many"                     : "性能考虑 - mod 中的 TXT 文件过多 (> 2)",
 	"perf_xml_too_big"                      : "性能考虑 - 一个或多个 XML 文件太大 (> 0.25MB)",
 	"png_texture"                           : "性能考虑 - 不应使用 PNG 文件作为纹理",
+	"pref_error"                            : "配置错误",
+	"pref_error_blurb"                      : "一个或多个 gameSettings.xml 或游戏可执行文件路径设置不正确。请仔细检查，您可以查看调试日志了解更多详细信息。",
 	"pref_feedback_bad_url"                 : "Invalid URL - Must be server root, and end with slash",
 	"pref_feedback_limit_16"                : "16 字符限制",
 	"pref_feedback_limit_30"                : "30 个字符限制",

@@ -888,6 +888,7 @@ ipcMain.handle('state:all', () => { return {
 	gameRunning        : serveIPC.isGameRunning,
 	gameRunningEnabled : serveIPC.isGamePolling,
 	pinMini            : serveIPC.windowLib.isAlwaysOnTop('mini'),
+	prefDanger         : serveIPC.isPrefWrong,
 	updateReady        : serveIPC.modCollect.updateIsReady,
 }})
 
@@ -942,6 +943,7 @@ async function processModFolders(force = false) {
 	if ( !force && !serveIPC.isFoldersDirty ) { serveIPC.loadWindow.hide(500); return }
 
 	serveIPC.isProcessing = true
+	serveIPC.isPrefWrong  = false
 
 	serveIPC.loadWindow.open('mods')
 	serveIPC.loadWindow.total(0, true)
