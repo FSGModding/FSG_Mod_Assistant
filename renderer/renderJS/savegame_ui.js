@@ -420,7 +420,9 @@ class WindowState {
 			}
 		},
 		selectInMain : (type) => {
+			console.log(type)
 			if ( this.selectList[type].length !== 0 ) {
+				console.log(this.selectList[type])
 				window.savegame_IPC.selectInMain(this.selectList[type])
 			}
 		},

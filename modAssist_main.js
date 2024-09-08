@@ -803,7 +803,7 @@ ipcMain.on('savetrack:folder', () => {
 
 // MARK: save compare
 ipcMain.on('dispatch:save',       (_, collection) => { serveIPC.windowLib.createNamedWindow('save', { collectKey : collection }) })
-ipcMain.on('listInMain', (_, selectList) => {
+ipcMain.on('select:listInMain', (_, selectList) => {
 	if ( serveIPC.windowLib.isValid('main') ) {
 		serveIPC.windowLib.win.main.focus()
 		serveIPC.windowLib.sendToWindow('main', 'select:list', selectList)
