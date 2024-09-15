@@ -2272,7 +2272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:^25.1.2":
+"electron-builder@npm:^25.0.5":
   version: 25.1.2
   resolution: "electron-builder@npm:25.1.2"
   dependencies:
@@ -2976,7 +2976,7 @@ __metadata:
     discord-rpc: ^4.0.1
     docolatte: ^4.5.1
     electron: ^32.1.0
-    electron-builder: ^25.1.2
+    electron-builder: ^25.0.5
     electron-store: ^8.2.0
     electron-updater: ^6.3.6
     eslint: ^9.10.0
