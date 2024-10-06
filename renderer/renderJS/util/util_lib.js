@@ -494,14 +494,20 @@ function enhanceI18N() {
 			return window.i18n.get(this.key).then((result) => {
 				this.response = result.entry
 				
-				if ( result.title !== null && window.use_tooltips ) {
-					const parent = this.parentElement
-					if ( parent !== null && (parent.tagName === 'BUTTON' || parent.tagName === 'LABEL' ) ) {
+				console.log(window.use_tooltips)
+				const parent = this.parentElement
+				if ( parent !== null && (parent.tagName === 'BUTTON' || parent.tagName === 'LABEL' ) ) {
+					if ( window.use_tooltips && result.title !== null ) {
 						parent.setAttribute('title', `${result.title}${this.extra}`)
 					} else {
-						this.setAttribute('title', `${result.title}${this.extra}`)
+						parent.removeAttribute('title')
 					}
+				} else if ( window.use_tooltips && result.title !== null ) {
+					this.setAttribute('title', `${result.title}${this.extra}`)
+				} else {
+					this.removeAttribute('title')
 				}
+
 				this.loading = false
 			})
 		}
@@ -591,8 +597,11 @@ window?.operations?.receive('win:updateTheme', MA.updateTheme)
 window?.operations?.receive('win:updateFontSize', MA.updateFontSize)
 window?.operations?.receive('win:forceRefresh', () => { location.reload() })
 window?.i18n?.receive('i18n:refresh', () => {
-	for ( const element of MA.query('i18n-text') ) {
-		element.setAttribute('refresh', true)
-	}
+	window.settings.get('show_tooltips').then((value) => {
+		window.use_tooltips = value
+		for ( const element of MA.query('i18n-text') ) {
+			element.setAttribute('refresh', true)
+		}
+	})
 })
 MA.byIdEventIfExists('pageActionRefresh', () => { location.reload() })
