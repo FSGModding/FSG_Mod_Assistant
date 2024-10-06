@@ -494,7 +494,7 @@ function enhanceI18N() {
 			return window.i18n.get(this.key).then((result) => {
 				this.response = result.entry
 				
-				if ( result.title !== null ) {
+				if ( result.title !== null && window.use_tooltips ) {
 					const parent = this.parentElement
 					if ( parent !== null && (parent.tagName === 'BUTTON' || parent.tagName === 'LABEL' ) ) {
 						parent.setAttribute('title', `${result.title}${this.extra}`)
@@ -542,7 +542,10 @@ window.addEventListener('error', (e) => {
 
 // MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', () => {
-	enhanceI18N()
+	window.settings.get('show_tooltips').then((value) => {
+		window.use_tooltips = value
+		enhanceI18N()
+	})
 
 	window.fontSheet = new CSSStyleSheet()
 	document.adoptedStyleSheets.push(window.fontSheet)
