@@ -494,7 +494,6 @@ function enhanceI18N() {
 			return window.i18n.get(this.key).then((result) => {
 				this.response = result.entry
 				
-				console.log(window.use_tooltips)
 				const parent = this.parentElement
 				if ( parent !== null && (parent.tagName === 'BUTTON' || parent.tagName === 'LABEL' ) ) {
 					if ( window.use_tooltips && result.title !== null ) {
