@@ -23,6 +23,8 @@ const patternToInclude = [
 	'object_',
 	'category_',
 	'configuration_',
+	'input_',
+	'inputCategory_',
 ]
 
 const langParser = new XMLParser({
