@@ -87,12 +87,21 @@ const pageAPI = {
 			'importjson:folder',
 		]),
 	},
+	'input' : {
+		functions : {
+			copyBindings   : (s, d) => ipcRenderer.invoke('input:copy', s, d),
+			deleteBindings : (s)    => ipcRenderer.invoke('input:delete', s),
+			listBindings   : ()     => ipcRenderer.invoke('input:list'),
+			loadBindings   : (s)    => ipcRenderer.invoke('input:load', s),
+		},
+		validAsync : new Set([]),
+	},
 	'main' : {
 		functions : {
 			dispatch        : (win) => {
 				const knownWindows = new Set([
 					'basegame', 'changelog', 'compare', 'debug',
-					'find', 'game', 'gamelog', 'help', 'mini',
+					'find', 'game', 'gamelog', 'help', 'input', 'mini',
 					'notes', 'resolve', 'savemanage', 'savetrack',
 					'version', 'wizard',
 				])

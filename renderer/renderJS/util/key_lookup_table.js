@@ -8,17 +8,26 @@
 function clientGetKeyMapSimple(keys, locale) {
 	return keys.split(' ').map((key) => { return getKeyMap(key, locale)} ).join('<span class="mx-1">+</span>')
 }
+function clientGetKeyMapSmall(keys, locale) {
+	return keys.split(' ').map((key) => { return getKeyMap_sm(key, locale)} ).join('<span class="mx-1">+</span>')
+}
 function clientGetKeyMap(keys, locale) {
 	return keys.split('--')[1].split(' ').map((key) => { return getKeyMap(key, locale)}).join('<span class="mx-1">+</span>')
 }
 function getKeyMap(key, locale) {
+	return `<span class="btn btn-sm btn-outline-secondary small">${getKeyMap_each(key, locale)}</span>`
+}
+function getKeyMap_sm(key, locale) {
+	return `<span class="btn btn-vsm btn-outline-secondary small">${getKeyMap_each(key, locale)}</span>`
+}
+function getKeyMap_each(key, locale) {
 	let thisKey = null
 
 	thisKey ??= keyMap[key]
 	thisKey ??= localKeys?.[locale]?.[key]
 	thisKey ??= localKeys.en[key]
 
-	return `<span class="btn btn-sm btn-outline-secondary small">${thisKey}</span>`
+	return thisKey
 }
 /* cSpell: disable */
 const keyMap = {
@@ -152,6 +161,10 @@ const keyMap = {
 	'KEY_x'                   : 'X',
 	'KEY_y'                   : 'Y',
 	'KEY_z'                   : 'Z',
+	'MOUSE_AXIS_X+'           : '🖯 →',
+	'MOUSE_AXIS_X-'           : '🖯 ←',
+	'MOUSE_AXIS_Y+'           : '🖯 ↑',
+	'MOUSE_AXIS_Y-'           : '🖯 ↓',
 	'MOUSE_BUTTON_NONE'       : '🖯 NONE',
 	'MOUSE_BUTTON_X1'         : '🖯 4',
 	'MOUSE_BUTTON_X2'         : '🖯 5',

@@ -845,6 +845,12 @@ function saveCompare_open(zipMode = false) {
 	})
 }
 
+// MARK: input bindings
+ipcMain.on('dispatch:input',   ()        => { serveIPC.windowLib.createNamedWindow('input') })
+ipcMain.handle('input:list',   ()        => funcLib.inputManage.list())
+ipcMain.handle('input:load',   (_, s)    => funcLib.inputManage.load(s))
+ipcMain.handle('input:delete', (_, s)    => funcLib.inputManage.delete(s))
+ipcMain.handle('input:copy',   (_, s, d) => funcLib.inputManage.copy(s, d))
 
 // MARK: version resolve
 ipcMain.on('dispatch:version', () => { serveIPC.windowLib.createNamedWindow('version') })

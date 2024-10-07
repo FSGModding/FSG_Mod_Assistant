@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- _______           __ _______               __         __   
+		|   |   |.-----.--|  |   _   |.-----.-----.|__|.-----.|  |_ 
+		|       ||  _  |  _  |       ||__ --|__ --||  ||__ --||   _|
+		|__|_|__||_____|_____|___|___||_____|_____||__||_____||____|
+		(c) 2022-present FSG Modding.  MIT License. -->
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+	<link rel="stylesheet" href="inc/bootstrap.min.css">
+	<link rel="stylesheet" href="inc/fsico.css">
+	<script src="inc/bootstrap.bundle.min.js"></script>
+	<script src="renderJS/util/util_lib.js"></script>
+	<script src="renderJS/util/key_lookup_table.js"></script>
+	<script src="renderJS/input_ui.js"></script>
+</head>
+<body data-bs-theme="dark" class="overflow-custom2" id="drag_target" style="min-height: 100vh;">
+	<div class="container-fluid px-1 user-select-none">
+		<div class="sticky-top pt-3 pb-2 bg-body border-bottom mb-3" style="-webkit-app-region: drag;">
+			<div class="row w-100 g-0">
+				<div class="col-7" >
+					<i18n-text class="h2 ps-2 mastHead" data-key="app_name"></i18n-text>
+				</div>
+				<div class="col-5 pt-4">
+					<i18n-text class="badge bg-primary mx-auto w-100 d-block rounded-3 h4 fs-4" data-key="input_manage__title"></i18n-text>
+				</div>
+			</div>
+			<i18n-text class="text-center mt-2 w-100 px-5 d-block blockquote" data-key="input_manage_blurb"></i18n-text>
+		</div>
+
+		<table class="table table-striped table-sm">
+			<thead>
+				<tr>
+					<th class="text-center" scope="col"><i18n-text data-key="detail_mod_version"></i18n-text></th>
+					<th class="text-center" scope="col"><i18n-text data-key="input_manage_type"></i18n-text></th>
+					<th class="text-center" scope="col"><i18n-text data-key="input_manage_file"></i18n-text></th>
+					<th class="text-center" scope="col"><i18n-text data-key="input_manage_date"></i18n-text></th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody id="listFiles"></tbody>
+		</table>
+
+		
+	</div>
+
+	<div class="offcanvas offcanvas-bottom h-100" tabindex="-1" id="viewCanvas" style="-webkit-app-region: no-drag; transition: 0.5s">
+		<div class="offcanvas-header justify-content-start" style="-webkit-app-region: drag;">
+			<button type="button" id="viewCanvas-button-close" style="-webkit-app-region: no-drag; z-index: 1;" class="btn btn-secondary"><i class="bi-x-lg"></i></button>
+			<i18n-text class="h5 offcanvas-title ps-3" data-key="app_name"></i18n-text>
+		</div>
+		<div class="offcanvas-body full-scroll">
+			<table class="table table-striped table-bordered table-sm">
+				<thead>
+					<tr>
+						<th style="width: 25%" class="text-center text-info text-uppercase" scope="col"><i18n-text data-key="$l10n_ui_action"></i18n-text></th>
+						<th style="width: 15%" class="text-center text-info text-uppercase" scope="col"><i18n-text data-key="$l10n_ui_key1"></i18n-text></th>
+						<th style="width: 15%" class="text-center text-info text-uppercase" scope="col"><i18n-text data-key="$l10n_ui_key2"></i18n-text></th>
+						<th style="width: 15%" class="text-center text-info text-uppercase" scope="col"><i18n-text data-key="$l10n_ui_mouse"></i18n-text></th>
+						<th style="width: 15%" class="text-center text-info text-uppercase" scope="col"><i18n-text data-key="$l10n_ui_gamepad"></i18n-text></th>
+						<th style="width: 15%" class="text-center text-info text-uppercase" scope="col"><i18n-text data-key="$l10n_ui_gamepad"></i18n-text></th>
+					</tr>
+				</thead>
+				<tbody id="bindMap">
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</body>
+</html>

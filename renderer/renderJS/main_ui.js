@@ -65,6 +65,7 @@ function topBarHandlers() {
 	MA.byIdEventIfExists('topBar-find',        () => { window.main_IPC.dispatch('find') })
 	MA.byIdEventIfExists('topBar-gamelog',     () => { window.main_IPC.dispatch('gamelog') })
 	MA.byIdEventIfExists('topBar-help',        () => { window.main_IPC.dispatch('help') })
+	MA.byIdEventIfExists('topBar-input',       () => { window.main_IPC.dispatch('input') })
 	MA.byIdEventIfExists('topBar-launch',      () => { window.state.action.launchGame() })
 	MA.byIdEventIfExists('topBar-mini',        () => { window.main_IPC.dispatch('mini') })
 	MA.byIdEventIfExists('topBar-preferences', () => { window.state.prefs.open() })

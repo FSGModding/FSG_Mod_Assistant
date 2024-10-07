@@ -25,7 +25,16 @@ const patternToInclude = [
 	'configuration_',
 	'input_',
 	'inputCategory_',
+	'ui_action',
+	'ui_key1',
+	'ui_key2',
+	'ui_mouse',
+	'ui_gamepad',
 ]
+
+const forceArray = new Set([
+	'l10n.elements.e',
+])
 
 const langParser = new XMLParser({
 	attributeNamePrefix    : '',
@@ -33,6 +42,7 @@ const langParser = new XMLParser({
 	ignoreAttributes       : false,
 	ignoreDeclaration      : true,
 	ignorePiTags           : true,
+	isArray                : (_, jPath) => forceArray.has(jPath),
 	parseAttributeValue    : true,
 	parseTagValue          : true,
 	processEntities        : false,
