@@ -6,7 +6,7 @@
 
 // MARK: INPUT MANAGE UI
 
-/* global MA, I18N, clientGetKeyMapSmall, bootstrap */
+/* global MA, I18N, DATA, clientGetKeyMapSmall, bootstrap */
 
 
 // MARK: PAGE LOAD
@@ -142,6 +142,12 @@ class windowState {
 	actionMods  = []
 	conMap      = null
 	overlay     = null
+	goodVersion = new Set([])
+
+	modalDelete   = null
+	modalRestore  = null
+	modalCopy     = null
+	currentSource = null
 
 	actions = {
 		CAMERA : [
@@ -458,6 +464,14 @@ class windowState {
 		view.addEventListener('click', () => {
 			window.input_IPC.loadBindings(item.path).then((result) => this.initViewer(result))
 		})
+		copy.addEventListener('click', () => {
+			MA.byIdValue('input_copy_new', '')
+			MA.byId('copy_dest_file_version').checked = true
+			this.modalCopy.version = item.version
+			this.modalCopy.src = item.path
+			this.updateCopyModal()
+			this.modalCopy.show()
+		})
 
 		node.append(copy, view)
 		return node
@@ -474,7 +488,24 @@ class windowState {
 		view.addEventListener('click', () => {
 			window.input_IPC.loadBindings(item.path).then((result) => this.initViewer(result))
 		})
-
+		remove.addEventListener('click', () => {
+			MA.byIdText('delete_source_file', item.file)
+			this.modalDelete.src = item.path
+			this.modalDelete.show()
+		})
+		copy.addEventListener('click', () => {
+			const opts = [
+				DATA.optionFromArray([0, '--'], item.version),
+				...[...this.goodVersion].map((x) => DATA.optionFromArray([x, `20${x}`], item.version)),
+			]
+			MA.byIdText('restore_source_file', item.file)
+			MA.byIdHTML('restore_version', opts.join(''))
+			this.modalRestore.src = item.path
+			this.modalRestore.version = item.version
+			this.updateRestoreModal()
+			this.modalRestore.show()
+		})
+		
 		node.append(remove, copy, view)
 		return node
 
@@ -482,6 +513,8 @@ class windowState {
 
 	#doLine(item, thisLocale) {
 		const node  = document.createElement('tr')
+
+		if ( item.type === 'active' ) { this.goodVersion.add(item.version) }
 
 		node.append(
 			this.#simpleTD(I18N.buildBadgeMod({
@@ -501,8 +534,43 @@ class windowState {
 		return node
 	}
 
+	updateRestoreModal() {
+		this.modalRestore.dest = MA.byIdValue('restore_version')
+		if ( this.modalRestore.dest === '0' || this.modalRestore.dest === null ) {
+			this.modalRestore.buttonGo.classList.add('disabled')
+		} else {
+			this.modalRestore.buttonGo.classList.remove('disabled')
+		}
+	}
+
+	updateCopyModal() {
+		const text = MA.byIdValue('input_copy_new')
+		if ( text === null || text === '' ) {
+			this.modalCopy.buttonGo.classList.add('disabled')
+			this.modalCopy.dest = ''
+		} else {
+			this.modalCopy.buttonGo.classList.remove('disabled')
+			this.modalCopy.dest = `${text.replaceAll(/[^\w-]/g, '_')}${!MA.byIdCheck('copy_dest_file_version') ? '' : `_fs${this.modalCopy.version}`}.xml`
+		}
+		MA.byIdText('copy_dest_file', this.modalCopy.dest)
+	}
+
 	init() {
 		this.overlay  = new bootstrap.Offcanvas('#viewCanvas')
+
+		this.modalDelete = new ModalOverlay('delete_backup_modal', (src) => {
+			window.input_IPC.deleteBindings(src).then((result) => { this.populateList(result) })
+		})
+		this.modalCopy = new ModalOverlay('copy_backup_modal', (src, dest) => {
+			window.input_IPC.copyBindings(src, dest).then((result) => { this.populateList(result) })
+		})
+		this.modalRestore = new ModalOverlay('restore_backup_modal', (src, dest) => {
+			window.input_IPC.restoreBindings(src, dest).then((result) => { this.populateList(result) })
+		})
+
+		MA.byId('input_copy_new').addEventListener('keyup', () => { this.updateCopyModal() })
+		MA.byId('copy_dest_file_version').addEventListener('change', () => { this.updateCopyModal() })
+		MA.byId('restore_version').addEventListener('change', () => { this.updateRestoreModal() })
 
 		MA.byId('viewCanvas-button-close').addEventListener('click', () => {
 			this.overlay.hide()
@@ -539,15 +607,18 @@ class windowState {
 		this.updateList()
 	}
 
+	async populateList(data) {
+		this.goodVersion.clear()
+		this.currentLocale = await window.i18n.lang() ?? 'en'
+		const listFiles  = MA.byId('listFiles')
+		listFiles.innerHTML = ''
+		for ( const thisLine of data ) {
+			listFiles.appendChild(this.#doLine(thisLine, this.currentLocale))
+		}
+	}
+
 	updateList() {
-		window.input_IPC.listBindings().then(async (result) => {
-			this.currentLocale = await window.i18n.lang() ?? 'en'
-			const listFiles  = MA.byId('listFiles')
-			listFiles.innerHTML = ''
-			for ( const thisLine of result ) {
-				listFiles.appendChild(this.#doLine(thisLine, this.currentLocale))
-			}
-		})
+		window.input_IPC.listBindings().then((result) => { this.populateList(result) })
 	}
 
 	#parseActionData(data) {
@@ -686,3 +757,59 @@ class windowState {
 		return key.split(' ').map((x) => this.conMap[x] ?? x).join('<span class="mx-1">+</span>')
 	}
 }
+
+
+// MARK: modal overlays
+class ModalOverlay {
+	overlay = null
+	src     = null
+	dest    = null
+	version = null
+
+	buttonCancel = null
+	buttonGo     = null
+
+	constructor(id, goCallback) {
+		this.buttonCancel = MA.byId(id).querySelector('.genericModalCancel')
+		this.buttonGo     = MA.byId(id).querySelector('.genericModalGo')
+		
+		this.overlay = new bootstrap.Modal(`#${id}`, {backdrop : 'static', keyboard : false })
+		this.overlay.hide()
+
+		this.buttonCancel.addEventListener('click', () => {
+			this.src     = null
+			this.dest    = null
+			this.version = null
+			this.hide()
+		})
+
+		this.buttonGo.addEventListener('click', () => {
+			goCallback(this.src, this.dest)
+			this.src     = null
+			this.dest    = null
+			this.version = null
+			this.hide()
+		})
+	}
+
+	show() {
+		this.overlay.show()
+	}
+
+	hide() {
+		this.overlay.hide()
+	}
+}
+
+window.addEventListener('beforeunload', (e) => {
+	if ( MA.byId('viewCanvas').classList.contains('show') ) {
+		window.state.overlay.hide()
+		e.preventDefault()
+	} else if ( MA.byId('delete_backup_modal').classList.contains('show') ) {
+		e.preventDefault()
+	} else if ( MA.byId('copy_backup_modal').classList.contains('show') ) {
+		e.preventDefault()
+	} else if ( MA.byId('restore_backup_modal').classList.contains('show') ) {
+		e.preventDefault()
+	}
+})

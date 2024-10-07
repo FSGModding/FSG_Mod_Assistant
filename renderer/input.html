@@ -47,6 +47,7 @@
 		
 	</div>
 
+	<!-- MARK: view canvas -->
 	<div class="offcanvas offcanvas-bottom h-100" tabindex="-1" id="viewCanvas" style="-webkit-app-region: no-drag; transition: 0.5s">
 		<div class="offcanvas-header justify-content-start" style="-webkit-app-region: drag;">
 			<button type="button" id="viewCanvas-button-close" style="-webkit-app-region: no-drag; z-index: 1;" class="btn btn-secondary"><i class="bi-x-lg"></i></button>
@@ -67,6 +68,95 @@
 				<tbody id="bindMap">
 				</tbody>
 			</table>
+		</div>
+	</div>
+
+	<!-- MARK: delete backup -->
+	<div class="modal" id="delete_backup_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<i18n-text class="h5 modal-title" data-key="input_manage_delete_title"></i18n-text>
+				</div>
+				<div class="modal-body">
+					<i18n-text class="fs-5 text-center" data-key="input_manage_delete_blurb"></i18n-text>
+					<p class="text-muted fst-italic text-center mt-3" id="delete_source_file"></p>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100">
+						<div class="col-3">
+							<img src="img/info_ask.webp" alt="" class="w-100">
+						</div>
+						<div class="col-9">
+							<i18n-text type="button" class="w-100 mb-2 btn btn-warning genericModalGo" data-key="input_manage_delete_button"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success genericModalCancel" data-key="input_manage_cancel_button"></i18n-text>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- MARK: copy to backup -->
+	<div class="modal" id="copy_backup_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<i18n-text class="h5 modal-title" data-key="input_manage_copy_title"></i18n-text>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-12"><i18n-text class="fs-5 text-center" data-key="input_manage_copy_blurb"></i18n-text></div>
+						<div class="col-12"><input type="text" id="input_copy_new" class="form-control form-control-sm my-2 w-100"></div>
+						<div class="col-9"><i18n-text class="fs-5 text-center" data-key="input_manage_copy_version"></i18n-text></div>
+						<div class="col-3">
+							<div class="form-switch custom-switch">
+							<input id="copy_dest_file_version" class="form-check-input" type="checkbox" role="switch" checked>
+						</div></div>
+					</div>
+					<p class="text-muted fst-italic text-center mt-3" id="copy_dest_file"></p>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100">
+						<div class="col-3">
+							<img src="img/info_ask.webp" alt="" class="w-100">
+						</div>
+						<div class="col-9">
+							<i18n-text type="button" class="w-100 mb-2 btn btn-warning genericModalGo" data-key="input_manage_copy_button"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success genericModalCancel" data-key="input_manage_cancel_button"></i18n-text>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- MARK: restore  -->
+	<div class="modal" id="restore_backup_modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<i18n-text class="h5 modal-title" data-key="input_manage_restore_title"></i18n-text>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-12"><i18n-text class="fs-5 text-center" data-key="input_manage_restore_blurb"></i18n-text></div>
+						<div class="col-12"><select class="form-select form-select-sm" id="restore_version"></select></div>
+					</div>
+					<p class="text-muted fst-italic text-center mt-3" id="restore_source_file"></p>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100">
+						<div class="col-3">
+							<img src="img/info_ask.webp" alt="" class="w-100">
+						</div>
+						<div class="col-9">
+							<i18n-text type="button" class="w-100 mb-2 btn btn-warning genericModalGo" data-key="input_manage_restore_button"></i18n-text>
+							<i18n-text type="button" class="w-100 btn btn-success genericModalCancel" data-key="input_manage_cancel_button"></i18n-text>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 

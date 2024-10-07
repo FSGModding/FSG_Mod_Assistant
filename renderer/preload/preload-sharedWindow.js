@@ -89,10 +89,11 @@ const pageAPI = {
 	},
 	'input' : {
 		functions : {
-			copyBindings   : (s, d) => ipcRenderer.invoke('input:copy', s, d),
-			deleteBindings : (s)    => ipcRenderer.invoke('input:delete', s),
-			listBindings   : ()     => ipcRenderer.invoke('input:list'),
-			loadBindings   : (s)    => ipcRenderer.invoke('input:load', s),
+			copyBindings    : (s, d) => ipcRenderer.invoke('input:copy', s, d),
+			deleteBindings  : (s)    => ipcRenderer.invoke('input:delete', s),
+			listBindings    : ()     => ipcRenderer.invoke('input:list'),
+			loadBindings    : (s)    => ipcRenderer.invoke('input:load', s),
+			restoreBindings : (s, v) => ipcRenderer.invoke('input:restore', s, v),
 		},
 		validAsync : new Set([]),
 	},
