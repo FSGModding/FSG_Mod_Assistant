@@ -23,6 +23,7 @@ const expectFiles = new Set([
 	'en.json',
 	'es.json',
 	'fr.json',
+	'it.json',
 	'lv.json',
 	'nl.json',
 	'pl.json',
