@@ -2771,8 +2771,8 @@ __metadata:
     eslint-plugin-unicorn: ^56.0.0
     fast-xml-parser: ^4.5.0
     glob: ^11.0.0
-    globals: ^15.10.0
-    html-validate: ^8.24.0
+    globals: ^15.11.0
+    html-validate: ^8.24.1
     jsdoc: ^4.0.3
     node-stream-zip: ^1.15.0
     unzip-stream: ^0.3.4
@@ -2942,7 +2942,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^15.10.0, globals@npm:^15.9.0":
+"globals@npm:^15.11.0":
+  version: 15.11.0
+  resolution: "globals@npm:15.11.0"
+  checksum: ef32d5ef987f3d4b47fc2e389a0b235f6a46f605160c4e405722fd7b576106ca407cb867e66fd1e0fc43b631800e2e2e71847f37691026d813f96f40339da702
+  languageName: node
+  linkType: hard
+
+"globals@npm:^15.9.0":
   version: 15.10.0
   resolution: "globals@npm:15.10.0"
   checksum: c6b7d1b3e74a830005e248c2a2b26a0c4b0d40460dbd3b2b1badbee13fadf6e735f7ea6c232e48fbef6beb4b4eac0d3530d9d89e31d6f629ac27e755d42d4872
@@ -3070,9 +3077,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-validate@npm:^8.24.0":
-  version: 8.24.0
-  resolution: "html-validate@npm:8.24.0"
+"html-validate@npm:^8.24.1":
+  version: 8.24.1
+  resolution: "html-validate@npm:8.24.1"
   dependencies:
     "@html-validate/stylish": ^4.1.0
     "@sidvind/better-ajv-errors": 3.0.1
@@ -3100,7 +3107,7 @@ __metadata:
       optional: true
   bin:
     html-validate: bin/html-validate.js
-  checksum: 543af99cfed547f2c8ce99981335420d90fbc33017fca0528ffb1a277aac5c3c56b4544d171d1d5bef873b62c8ee6bab40b40dab77efb5ac06a87e4c818c57d0
+  checksum: a5e849732762d929c404efb06a6b0ac67e5603867dc46883f2398a8a1ef96b0c1380f6e1a4a79c1c8cc72ab611eb509b5dd7124de9bac72634323f8fe8e0572a
   languageName: node
   linkType: hard
 
