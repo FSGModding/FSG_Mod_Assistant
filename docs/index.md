@@ -33,6 +33,7 @@ Please note that this documentation is auto-generated, and may refer to a newer 
 - [Detail Window](moddetail.html)
 - [Base Game Browser](basegame.html)
 - [Local Save Manager](savemanage.html)
+- [Manage inputBindings.xml](input.html)
 - [Comparison Tool](comparetool.html)
 - [User Preferences](preferences.html)
 - [Game Log Viewer](gamelog.html)

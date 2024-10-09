@@ -20,6 +20,7 @@ From left to right, those buttons are:
 - <i class="bi bi-wikipedia"></i> : [Browse Base Game Vehicles, Implements, Objects, and Placeables](basegame.html)
 - <i class="bi bi-calendar2-check"></i> : [Savegame Mod Tracking](savetrack.html)
 - <i class="bi bi-hdd"></i> : [Local Savegame Manager](savemange.html)
+- <i class="bi bi-controller"></i> : [Manage inputBindings.xml](input.html)
 - <i class="bi bi-search"></i> : [Search All Collections](search.html)
 - <i class="bi bi-file-earmark-text"></i> : [Game Log Viewer](gamelog.html)
 - <i class="bi bi-gear"></i> :  [User Preferences](preferences.html)
