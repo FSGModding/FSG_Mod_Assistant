@@ -973,6 +973,7 @@ class StateManager {
 				this.track.selected.add(`${CKey}--${MKey}`)
 			}
 			this.refreshSelected()
+			this.doSideBar()
 		},
 		count : () => {
 			MA.byIdText('select_quantity', this.track.selected.size)
@@ -985,10 +986,12 @@ class StateManager {
 
 			this.track.selected = allMods.difference(this.track.selected)
 			this.refreshSelected()
+			this.doSideBar()
 		},
 		none : () => {
 			this.track.selected.clear()
 			this.refreshSelected()
+			this.doSideBar()
 		},
 	}
 
