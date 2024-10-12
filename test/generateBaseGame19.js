@@ -234,7 +234,6 @@ function openLookThread(threadID = 1, thisPromise, workPacket) {
 	threadList.add(threadID)
 	const lookThread = require('node:child_process').fork(path.join(__dirname, 'generateBaseGame_queue.js'), [
 		threadID,
-		path.join(__dirname, '..', 'texconv.exe'),
 		() => {return 'en'},
 		'hp',
 	])

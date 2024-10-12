@@ -7,12 +7,11 @@
 // Test Program - Mod Internals Looker
 
 const path = require('node:path')
-const os   = require('node:os')
 
 const { modLooker, requiredItems, ddsDecoder } = require('../../lib/workerThreadLib')
 
 requiredItems.currentLocale = 'en'
-requiredItems.iconDecoder   = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
+requiredItems.iconDecoder   = new ddsDecoder()
 
 const {testLib}     = require('../test.js')
 

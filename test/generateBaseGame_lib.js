@@ -55,7 +55,7 @@ class baseLooker {
 		const thisItemInfo = this.#parseStoreItem(thisItemTree)
 
 		if ( thisItemInfo !== null && thisItemInfo.icon !== null ) {
-			iconLoads.push(this.#loadIcon(thisItemInfo.icon, false).then((itemIcon) => {
+			iconLoads.push(this.#loadIcon(thisItemInfo.icon).then((itemIcon) => {
 				thisItemInfo.iconOriginalName = thisItemInfo.icon
 				thisItemInfo.icon = itemIcon
 			}).catch((err) => {
@@ -85,7 +85,7 @@ class baseLooker {
 		}
 	}
 
-	async #loadIcon(iconFile, isMap) {
+	async #loadIcon(iconFile) {
 		if ( typeof iconFile !== 'string' || iconFile === null ) { return null }
 
 		if ( iconFile.startsWith('$data/store/brands/') ) {
@@ -99,9 +99,7 @@ class baseLooker {
 		try {
 			if ( this.#modHandle.exists(fileName) ) {
 				return this.#iconParser.parseDDS(
-					await this.#modHandle.readBin(fileName),
-					true,
-					isMap
+					await this.#modHandle.readBin(fileName)
 				)
 			}
 			return null

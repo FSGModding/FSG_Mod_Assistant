@@ -7,20 +7,19 @@
 // Actual Sub-Process
 
 const loopTimeDelay  = 100
-const os             = require('node:os')
 const process        = require('node:process')
 const { setTimeout } = require('node:timers/promises')
 const { requiredItems, ddsDecoder } = require('../lib/workerThreadLib.js')
 const { baseLooker } = require('./generateBaseGame_lib.js')
 
-const [threadNum, convertPath, locale, l10nHP] = process.argv.slice(2)
+const [threadNum, locale, l10nHP] = process.argv.slice(2)
 
 const L_DEBUG  = 'debug'
 const L_DANGER = 'danger'
 const L_NOTICE = 'notice'
 
 requiredItems.currentLocale = locale
-requiredItems.iconDecoder   = new ddsDecoder(convertPath, os.tmpdir())
+requiredItems.iconDecoder   = new ddsDecoder()
 requiredItems.l10n_hp       = l10nHP
 
 const workQueue = [{ type : 'start' }]
@@ -63,7 +62,6 @@ const mainLoop = async () => {
 			case 'exit' :
 				if ( workQueue.length === 0 ) {
 					log(L_DEBUG, ' -- Exit Call, Work Finished --')
-					requiredItems.iconDecoder.clearTemp()
 					process.exit()
 				} else {
 					log(L_NOTICE, ' -- Ignoring Exit Call, More Work To Do --')

@@ -7,13 +7,12 @@
 // Test Program - Mod Checker
 
 const path      = require('node:path')
-const os        = require('node:os')
 const {testLib} = require('../test.js')
 
 const { modFileChecker, requiredItems, ddsDecoder } = require('../../lib/workerThreadLib.js')
 
 requiredItems.currentLocale = 'en'
-requiredItems.iconDecoder   = new ddsDecoder(path.join(__dirname, '..', '..', 'texconv.exe'), os.tmpdir())
+requiredItems.iconDecoder   = new ddsDecoder()
 
 const basePath = path.join(__dirname, 'mods')
 

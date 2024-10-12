@@ -27,7 +27,6 @@ funcLib.general.doBootLog()
 serveIPC.l10n           = new (require('./lib/modUtilLib')).translator(null, !app.isPackaged)
 serveIPC.l10n.mcVersion = app.getVersion()
 serveIPC.icon.tray      = funcLib.general.getPackPathRender('img', 'icon.ico')
-serveIPC.decodePath     = funcLib.general.getPackPathRoot('texconv.exe')
 
 const __ = (x) => serveIPC.l10n.syncStringLookup(x)
 
@@ -1123,7 +1122,6 @@ app.on('window-all-closed', () => {	if (process.platform !== 'darwin') { app.qui
 function modStoreItems({ thisMod = null, cacheUUID = null, thisPromise = null} = {}) {
 	const lookThread = require('node:child_process').fork(path.join(__dirname, 'lib', 'queueRunner.js'), [
 		23,
-		serveIPC.decodePath,
 		serveIPC.l10n.deferCurrentLocale(),
 		serveIPC.__('unit_hp')
 	])

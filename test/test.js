@@ -44,7 +44,6 @@ serveIPC.storeNote        = fakeStore
 serveIPC.storeSet         = fakeStore
 serveIPC.storeSites       = fakeStore
 serveIPC.storeCache       = { getMod : () => false, setMod : () => null, saveFile : () => null }
-serveIPC.decodePath       = path.join(__dirname, '..', 'texconv.exe')
 
 const L_LOG  = 0
 const L_NORM = 1
