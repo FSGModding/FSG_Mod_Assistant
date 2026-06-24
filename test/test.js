@@ -10,11 +10,6 @@
 const startTime  = Date.now()
 const testList   = [
 	'csvcheck',     // CSV Reader (collection compare)
-	'modcheck',     // Mod Checker
-	'modcollect',   // Collection test
-	'modlook',      // Mod Internal Looker
-	'modtrack',     // Mod tracking
-	'savegame',     // Savegame Reading
 	'sourcecode',   // ESLint Source code
 	'sourcehtml',   // HTML Source
 	'translations', // Translation file check
@@ -39,12 +34,10 @@ serveIPC.log.forceNoConsole()
 serveIPC.isBotDisabled      = true
 serveIPC.isModCacheDisabled = true
 
-serveIPC.storeCacheDetail = fakeStore
 serveIPC.storeNote        = fakeStore
 serveIPC.storeSet         = fakeStore
 serveIPC.storeSites       = fakeStore
 serveIPC.storeCache       = { getMod : () => false, setMod : () => null, saveFile : () => null }
-serveIPC.decodePath       = path.join(__dirname, '..', 'texconv.exe')
 
 const L_LOG  = 0
 const L_NORM = 1

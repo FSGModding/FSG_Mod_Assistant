@@ -16,7 +16,7 @@ window.mini_IPC.receive('mods:list', (modCollect) => {
 class StateManager {
 	flag = {
 		activeCollect  : null,
-		currentVersion : 22,
+		currentVersion : 25,
 		gameRunning    : false,
 		launchEnable   : false,
 		pinMini        : false,

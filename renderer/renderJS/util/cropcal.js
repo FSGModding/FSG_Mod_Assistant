@@ -9,42 +9,47 @@
 
 /* eslint-disable sort-keys */
 const knownCrops = {
-	wheat         : {	name : 'croptype_wheat',			icon : 'wheat' },
-	barley        : {	name : 'croptype_barley',			icon : 'barley' },
-	canola        : {	name : 'croptype_canola',			icon : 'canola' },
-	oat           : {	name : 'croptype_oat',				icon : 'oat' },
-	sorghum       : {	name : 'croptype_sorghum',			icon : 'sorghum' },
-	cotton        : {	name : 'croptype_cotton',			icon : 'cotton' },
-	maize         : {	name : 'croptype_maize',			icon : 'maize' },
-	sunflower     : {	name : 'croptype_sunflower',		icon : 'sunflower' },
-	soybean       : {	name : 'croptype_soybean',			icon : 'soybean' },
-	potato        : {	name : 'croptype_potato',			icon : 'potato' },
-	sugarbeet     : {	name : 'croptype_sugarbeet',		icon : 'sugarbeet' },
-	sugarcane     : {	name : 'croptype_sugarcane',		icon : 'sugarcane' },
-	poplar        : {	name : 'croptype_poplar',			icon : 'poplar' },
-	oilseedradish : {	name : 'croptype_oilseedradish',	icon : 'oilradish' },
-	grass         : {	name : 'croptype_grass',			icon : 'grass' },
-	grape         : {	name : 'croptype_grape',			icon : 'grape' },
-	olive         : {	name : 'croptype_olive',			icon : 'olive' },
-	clover        : {	name : 'croptype_clover',			icon : 'clover' },
-	alfalfa       : {	name : 'croptype_alfalfa',			icon : 'alfalfa' },
-	onion         : {	name : 'croptype_onion',			icon : 'onion' },
-	carrot        : {	name : 'croptype_carrot',			icon : 'carrot' },
-	whitecabbage  : {	name : 'croptype_whitecabbage',		icon : 'whitecabbage' },
-	redcabbage    : {	name : 'croptype_redcabbage',		icon : 'redcabbage' },
-	rye           : {	name : 'croptype_rye',				icon : 'rye' },
-	poppy         : {	name : 'croptype_poppy',			icon : 'poppy' },
-	spelt         : {	name : 'croptype_spelt',			icon : 'spelt' },
+	wheat         : {	name : '$l10n_filltype_wheat',			icon : 'wheat' },
+	barley        : {	name : '$l10n_filltype_barley',			icon : 'barley' },
+	canola        : {	name : '$l10n_filltype_canola',			icon : 'canola' },
+	oat           : {	name : '$l10n_filltype_oat',			icon : 'oat' },
+	sorghum       : {	name : '$l10n_filltype_sorghum',		icon : 'sorghum' },
+	cotton        : {	name : '$l10n_filltype_cotton',			icon : 'cotton' },
+	maize         : {	name : '$l10n_filltype_maize',			icon : 'maize' },
+	sunflower     : {	name : '$l10n_filltype_sunflower',		icon : 'sunflower' },
+	soybean       : {	name : '$l10n_filltype_soybean',		icon : 'soybean' },
+	potato        : {	name : '$l10n_filltype_potato',			icon : 'potato' },
+	sugarbeet     : {	name : '$l10n_filltype_sugarbeet',		icon : 'sugarbeet' },
+	sugarcane     : {	name : '$l10n_filltype_sugarcane',		icon : 'sugarcane' },
+	poplar        : {	name : '$l10n_filltype_poplar',			icon : 'poplar' },
+	oilseedradish : {	name : '$l10n_filltype_oilradish',		icon : 'oilradish' },
+	grass         : {	name : '$l10n_filltype_grass',			icon : 'grass' },
+	grape         : {	name : '$l10n_filltype_grape',			icon : 'grape' },
+	olive         : {	name : '$l10n_filltype_olive',			icon : 'olive' },
+	clover        : {	name : 'croptype_clover',				icon : 'clover' },
+	alfalfa       : {	name : 'croptype_alfalfa',				icon : 'alfalfa' },
+	onion         : {	name : '$l10n_filltype_onion',			icon : 'onion' },
+	carrot        : {	name : '$l10n_filltype_carrot',			icon : 'carrot' },
+	whitecabbage  : {	name : '$l10n_filltype_whitecabbage',	icon : 'whitecabbage' },
+	redcabbage    : {	name : '$l10n_filltype_redcabbage',		icon : 'redcabbage' },
+	rye           : {	name : 'croptype_rye',					icon : 'rye' },
+	poppy         : {	name : 'croptype_poppy',				icon : 'poppy' },
+	spelt         : {	name : 'croptype_spelt',				icon : 'spelt' },
+	rice          : {	name : '$l10n_filltype_rice',			icon : 'rice'},
+	ricelonggrain : {	name : '$l10n_filltype_ricelonggrain',	icon : 'ricelonggrain'},
+	greenbean     : {	name : '$l10n_filltype_greenbean',		icon : 'greenbean'},
+	pea           : {	name : '$l10n_filltype_pea',			icon : 'pea'},
+	spinach       : {	name : '$l10n_filltype_spinach',		icon : 'spinach'},
 }
 /* eslint-enable sort-keys */
 
 const nameMonth = ['mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb']
 
-async function getCropInfo(name) {
+async function getCropInfo(name, version) {
 	if ( ! Object.hasOwn(knownCrops, name) ) {
 		return `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
 	}
-	const theName = I18N.defer(knownCrops[name].name, false)
+	const theName = I18N.unwrap_base(knownCrops[name].name, version)
 	return `<fillType style="font-size: calc(1.35rem + .6vw)" name="${knownCrops[name].icon}"></fillType> ${theName}`
 }
 
@@ -61,7 +66,7 @@ function orderLine(lineArray, isSouth) {
 
 const c2f = (value) => Math.floor((value * 9/5) + 32)
 
-async function clientMakeCropCalendar(theData, isSouth = false, weather = null) {
+async function clientMakeCropCalendar(theData, isSouth = false, weather = null, version = 22) {
 	const tableLines    = []
 	let   evenRow       = false
 
@@ -110,7 +115,7 @@ async function clientMakeCropCalendar(theData, isSouth = false, weather = null) 
 					'pe-2'
 				],
 				// eslint-disable-next-line no-await-in-loop
-				await getCropInfo(crop.name),
+				await getCropInfo(crop.name, version),
 				false,
 				1,
 				2
@@ -125,7 +130,7 @@ async function clientMakeCropCalendar(theData, isSouth = false, weather = null) 
 						'crop-box',
 						`crop-row-${ evenRow ? 'even' : 'odd' }`,
 						`crop-col-${idx % 2 === 0 ? 'even' : 'odd'}`,
-						crop.plantPeriods.includes(idx) ? 'crop_plant' : ''
+						crop.plant_periods.includes(idx) ? 'crop_plant' : ''
 					]
 				))
 
@@ -134,7 +139,7 @@ async function clientMakeCropCalendar(theData, isSouth = false, weather = null) 
 						'crop-box',
 						`crop-row-${ evenRow ? 'even' : 'odd' }`,
 						`crop-col-${idx % 2 === 0 ? 'even' : 'odd'}`,
-						crop.harvestPeriods.includes(idx) ? 'crop_harvest' : ''
+						crop.harvest_periods.includes(idx) ? 'crop_harvest' : ''
 					]
 				))
 			}

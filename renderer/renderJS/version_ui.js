@@ -7,6 +7,14 @@
 
 /* global MA, DATA, I18N */
 
+function doL10N(item, locale) {
+	let returnText = item?.[locale]
+	returnText ??= item?.en
+	returnText ??= item?.de
+	returnText ??= '--'
+	return DATA.escapeSpecial(returnText)
+}
+
 // MARK: process data
 function processVersions(modCollect) {
 	const thisVersion        = modCollect.appSettings.game_version
@@ -32,10 +40,10 @@ function processVersions(modCollect) {
 
 			if ( thisMod.fileDetail.isFolder ) { continue }
 			modDisplayData[modName] ??= {
-				icon    : thisMod.modDesc.iconImageCache,
+				icon    : thisMod.modDesc.iconImage,
 				match   : true,
 				modhub  : modCollect.modHub.version?.[modCollect.modHub.list.mods?.[modName]] || null,
-				title   : DATA.escapeSpecial(thisMod.l10n.title),
+				title   : doL10N(thisMod.l10n.title, modCollect.appSettings.force_lang),
 				verList : [],
 			}
 

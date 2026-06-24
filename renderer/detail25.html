@@ -11,14 +11,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
-	<link rel="stylesheet" href="inc/fsico.css">
+	<link rel="stylesheet" href="inc/fsico25.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="inc/chart.min.js"></script>
 
 	<script src="renderJS/util/util_lib.js"></script>
-	<script src="renderJS/util/storeItems.js"></script>
-	<script src="renderJS/util/fillType.js"></script>
-	<script src="renderJS/util/baseGameData.js"></script>
+	<script src="renderJS/util/storeItemBuilder.js"></script>
+	<script src="renderJS/util/fillType25.js"></script>
+	<script src="renderJS/util/baseGameData_25.js"></script>
 	<script src="renderJS/util/key_lookup_table.js"></script>
 	<script src="renderJS/util/cropcal.js"></script>
 
@@ -121,12 +121,22 @@
 					<tr><th scope="col"><i18n-text data-key="detail_mod_author"></i18n-text></th><td class="text-end" id="mod_author"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_version"></i18n-text></th><td class="text-end" id="version"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_mh_version"></i18n-text></th><td class="text-end" id="mh_version"></td></tr>
+					<tr><th scope="col"><i18n-text data-key="detail_mod_update_source"></i18n-text></th><td class="text-end" id="update_source"></td></tr>
+					<tr><th scope="col"><i18n-text data-key="detail_mod_github_version"></i18n-text></th><td class="text-end" id="github_version"></td></tr>
+					<tr><th scope="col"><i18n-text data-key="detail_mod_update_status"></i18n-text></th><td class="text-end" id="update_status"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_size"></i18n-text></th><td class="text-end" id="filesize"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_date"></i18n-text></th><td class="text-end" id="file_date"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_has_scripts"></i18n-text></th><td class="text-end" id="has_scripts"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_store_items"></i18n-text></th><td class="text-end" id="store_items"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_multiplayer"></i18n-text></th><td class="text-end" id="is_multiplayer"></td></tr>
 				</table>				
+				<div class="input-group input-group-sm mt-2">
+					<span class="input-group-text"><i18n-text data-key="update_source_github"></i18n-text></span>
+					<input type="text" class="form-control" id="update_source_input" placeholder="https://github.com/owner/repository">
+					<i18n-text type="button" class="btn btn-success" id="update_source_save" data-key="button_save"></i18n-text>
+					<i18n-text type="button" class="btn btn-outline-secondary" id="update_source_clear" data-key="button_clear"></i18n-text>
+					<div class="invalid-feedback"><i18n-text data-key="update_source_github_invalid"></i18n-text></div>
+				</div>
 			</div>
 		</div>
 

@@ -259,6 +259,29 @@ const DATA = {
 	bytesToMB     : async (count, suffix = true) => DATA.bytesToHR(count, { forceMB : true, showSuffix : suffix}),
 	bytesToMBCalc : (bytes) => Math.round((bytes / ( 1024 * 1024) * 100 )) / 100,
 
+	versionCompare : (localVersion, remoteVersion) => {
+		const localParts  = DATA.versionParts(localVersion)
+		const remoteParts = DATA.versionParts(remoteVersion)
+		if ( localParts.length === 0 || remoteParts.length === 0 ) { return Number.NaN }
+
+		for ( let i = 0; i < Math.max(localParts.length, remoteParts.length); i++ ) {
+			const localPart  = localParts[i] ?? 0
+			const remotePart = remoteParts[i] ?? 0
+			if ( localPart < remotePart ) { return -1 }
+			if ( localPart > remotePart ) { return 1 }
+		}
+
+		return 0
+	},
+	versionDifferent : (localVersion, remoteVersion) => DATA.versionNormalize(localVersion) !== DATA.versionNormalize(remoteVersion),
+	versionNormalize : (version) => version.toString().trim().toLowerCase().replace(/^v/, ''),
+	versionParts : (version) => version.toString()
+		.toLowerCase()
+		.replace(/^v/, '')
+		.split(/\D+/)
+		.filter((item) => item !== '')
+		.map((item) => parseInt(item, 10)),
+
 	dateToString : (textDate) => {
 		const year2000 = 949381200000
 		const date = typeof textDate === 'string' ? new Date(Date.parse(textDate)) : textDate
@@ -336,6 +359,9 @@ const DATA = {
 
 // MARK: I18N
 const I18N = {
+	local_entries : {},
+
+
 	__ : (key, extraClassArr = null) => {
 		const node = document.createElement('i18n-text')
 		node.setAttribute('data-key', key)
@@ -362,7 +388,7 @@ const I18N = {
 		return badgeDiv
 	},
 	defer : (key, skipNonBase = true) => {
-		if ( key === null || key === '' ) { return '' }
+		if ( key === null || key === '' || typeof key === 'undefined' ) { return '' }
 		if ( key.includes('[[') ) {
 			const nameParts    = key.match(/(.+?) \[\[(.+?)]]/)
 			const replaceParts = nameParts[2] ?? null
@@ -389,6 +415,56 @@ const I18N = {
 	},
 	refresh : async () => {
 		I18N.pageLang()
+	},
+	unwrap_base : (input, version = 22, params = '') => {
+		if ( typeof input !== 'string' ) { return '~~bad-l10n-input~~'}
+		let output = input.split(/\s+/).map((word) => {
+			if ( ! word.startsWith('$l10n') ) { return word }
+			
+			const local_search = word.toLowerCase().replace('$l10n_', '')
+			return I18N.local_entries[local_search] || `<i18n-text data-version="${version}" data-key="${word}"></i18n-text>`
+			
+		})
+		if ( params.length !== 0 ) {
+			const param_replace = params.split('|').map((param) =>
+				`<i18n-text data-version="${version}" data-key="${param}"></i18n-text>`
+			)
+			let thisReplace = -1
+			output = output.map((word) => {
+				if (word === '%s') {
+					thisReplace++
+					return param_replace[thisReplace]
+				}
+				return word
+			})
+		}
+		return output.join(' ')
+	},
+
+	unwrap_base_inline : async (input, version = 22) => {
+		if ( typeof input !== 'string' ) { return '~~bad-l10n-input~~'}
+
+		const output = []
+
+		for ( const word of input.split(/\s+/)) {
+			if ( ! word.startsWith('$l10n') ) {
+				output.push(word)
+				continue
+			}
+
+			const local_search = word.toLowerCase().replace('$l10n_', '')
+			const local_find   = I18N.local_entries[local_search]
+
+			if ( local_find ) {
+				output.push(word)
+				continue
+			}
+			
+			/* eslint-disable-next-line no-await-in-loop */
+			const transObj = await window.i18n.get(word, version)
+			output.push(transObj.entry)
+		}
+		return output.join(' ')
 	},
 }
 
@@ -484,6 +560,9 @@ function enhanceI18N() {
 		get key() {
 			return this.getAttribute('data-key')
 		}
+		get version() {
+			return this.getAttribute('data-version') || 22
+		}
 		get extra() {
 			return DATA.prefixNotEmpty(this.stringAttribute('data-extra-title'), ' : ')
 		}
@@ -492,7 +571,7 @@ function enhanceI18N() {
 			if ( this.key === null ) { return }
 			this.loading = true
 
-			return window.i18n.get(this.key).then((result) => {
+			return window.i18n.get(this.key, this.version).then((result) => {
 				this.response = result.entry
 				
 				const parent = this.parentElement
@@ -564,18 +643,18 @@ window.addEventListener('DOMContentLoaded', () => {
 		return {
 			debug : (...args) => {
 				oldConsole.debug(...args)
-				window.log.debug(...args)
+				// window.log.debug(...args)
 			},
 			error : (...args) => {
 				oldConsole.error(...args)
-				window.log.error(...args)
+				// window.log.error(...args)
 			},
 			local : (...args) => {
 				oldConsole.info(...args)
 			},
 			log : (...args) => {
 				oldConsole.info(...args)
-				window.log.log(...args)
+				// window.log.log(...args)
 			},
 		}
 	})(window.console)

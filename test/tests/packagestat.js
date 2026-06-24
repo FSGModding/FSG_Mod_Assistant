@@ -79,7 +79,7 @@ const makeLine  = (type, data) => {
 const tblHeader = '| ----------- | ----: | ----: | -----: | -----: | ---------: | -------: |'
 
 const countFiles = (test) => {
-	return glob('**', { cwd : path.join(__dirname, '..', '..'), ignore : 'node_modules/**', stat : true, withFileTypes : true }).then((results) => {
+	return glob('**', { cwd : path.join(__dirname, '..', '..'), ignore : ['node_modules/**', 'dist/**', 'dist-*/**'], stat : true, withFileTypes : true }).then((results) => {
 		test.step(`Current App Version is ${pkgDetail.version}`)
 		test.step('Current File Statistics:\n')
 		const fileList = results.filter((x) => x.isFile())

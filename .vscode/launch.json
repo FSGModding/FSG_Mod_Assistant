@@ -2,7 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Debug - Electron Main Process",
+			"name": "Electron: Main",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
@@ -12,9 +12,14 @@
 			},
 			// "args" : ["."],
 			// "autoAttachChildProcesses": false,
-			"args" : ["--inspect=5858", "."],
+			"args": [
+				// "--enable-logging=file",
+				"--remote-debugging-port=9223",
+				"--inspect=5858",
+				"."
+			],
 			"autoAttachChildProcesses": true,
-			"outputCapture": "std"
+			"outputCapture": "console"
 		},
 		{
 			"name": "Debug - CLI Tester",
@@ -25,6 +30,23 @@
 				"<node_internals>/**"
 			],
 			"type": "node"
+		},
+		{
+			"name": "Electron: Renderer",
+			"type": "chrome",
+			"request": "attach",
+			"port": 9223,
+			"webRoot": "${workspaceFolder}",
+			"timeout": 30000
+		}
+	],
+	"compounds": [
+		{
+			"name": "Electron: All",
+			"configurations": [
+				"Electron: Main",
+				"Electron: Renderer"
+			]
 		}
 	]
 }

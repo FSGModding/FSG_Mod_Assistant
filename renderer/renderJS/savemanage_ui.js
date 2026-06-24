@@ -49,7 +49,7 @@ class stateManager {
 		this.uuidMap    = {}
 		const theseSaves = data.opts.saveInfo
 
-		const activeIDS      = Object.keys(theseSaves).filter((x) => typeof theseSaves[x].active === 'object' && theseSaves[x].active?.error === false)
+		const activeIDS      = Object.keys(theseSaves).filter((x) => typeof theseSaves[x].active === 'object' && theseSaves[x].active?.errorList.length === 0)
 		const backIDS        = Object.keys(theseSaves).filter((x) => Array.isArray(theseSaves[x].backups) && theseSaves[x].backups.length !== 0 )
 
 		const activeGameHTML = []
@@ -110,7 +110,7 @@ class stateManager {
 		const node = DATA.templateEngine('savegame_record', {
 			farms        : this.doFarms(record.farms),
 			saveDate     : record.saveDate,
-			saveMap      : record.map,
+			saveMap      : record.mapMod,
 			saveModCount : record.modCount,
 			saveName     : record.name,
 			saveNumber   : id,
@@ -132,15 +132,18 @@ class stateManager {
 			'<tr><td></td><td class="text-end"><i18n-text class="fst-italic" data-key="save_manage_money"></i18n-text></td><td class="text-end"><i18n-text class="fst-italic" data-key="save_manage_loan"></i18n-text></td></tr>'
 		]
 
-		for ( const thisFarm of farms ) {
+		for ( const farmKey of Object.keys(farms) ) {
+			
+			const thisFarm = farms[farmKey]
 			returnHTML.push(`
 				<tr>
 					<td><span class="farm_${thisFarm.color.toString().padStart(2, '0')}">${thisFarm.name}</span></td>
-					<td class="text-end">${Intl.NumberFormat(this.langCode, {maximumFractionDigits : 0}).format(thisFarm.money)}</td>
+					<td class="text-end">${Intl.NumberFormat(this.langCode, {maximumFractionDigits : 0}).format(thisFarm.cash)}</td>
 					<td class="text-end">${Intl.NumberFormat(this.langCode, {maximumFractionDigits : 0}).format(thisFarm.loan)}</td>
 				</tr>`
 			)
 		}
+
 		return `<table class="table table-sm table-borderless table-striped">${returnHTML.join('')}</table>`
 	}
 

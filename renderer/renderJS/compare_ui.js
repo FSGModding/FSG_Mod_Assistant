@@ -5,7 +5,7 @@
    (c) 2022-present FSG Modding.  MIT License. */
 // MARK: COMPARE UI
 
-/* global DATA, MA, ST, NUM, client_BGData */
+/* global DATA, MA, Util, UNITS */
 
 // MARK: PAGE LOAD
 window.addEventListener('DOMContentLoaded', async () => {
@@ -15,12 +15,15 @@ window.addEventListener('DOMContentLoaded', async () => {
 class windowState {
 	locale  = 'en'
 	sorting = null
+	util = null
 
 	// MARK: init
 	constructor() {
 		window.i18n.lang().then((result) => {
 			this.locale   = result
 			window.locale = result
+
+			this.util = new Util(result)
 
 			this.getSorting()
 
@@ -61,9 +64,6 @@ class windowState {
 		}
 	}
 
-	
-	noNull(value) { return value === null ? 0 : value }
-
 	// MARK: process
 	processList(list) {
 		const keyArray   = Object.keys(list)
@@ -71,36 +71,33 @@ class windowState {
 
 		for ( const key of keyArray ) {
 			const record     = list[key]
-			const thisItem   = record.internal ?
-				client_BGData.records[key] :
-				record.contents
-			const thisData   = ST.getInfo(thisItem)
 
 			const thisObject = {
 				info : {
-					brand  : ST.resolveBrand(thisItem.brandIcon || null, thisItem.brand),
-					icon   : ST.resolveIcon(thisItem.icon),
-					name   : thisItem.name,
+					brand  : record.contents.brand_icon,
+					icon   : record.contents.icon,
+					name   : record.contents.name,
 					source : record.internal ? '' : record.source,
 				},
 				value : {
-					'engine-high' : this.noNull(thisData.powerSpan[1]),
-					'engine-low'  : this.noNull(thisData.powerSpan[0] ||thisData.needPower),
-					'fill'        : this.noNull(thisData.fillLevel),
-					'price'       : this.noNull(thisItem.price),
-					'speed'       : this.noNull(thisData.maxSpeed || thisData.speedLimit),
-					'weight'      : this.noNull(thisData.weight),
-					'width'       : this.noNull(thisData.workWidth),
+					'engine-high' : this.util.num_default(record.contents.powerSpan[1]),
+					'engine-low'  : this.util.num_default(record.contents.powerSpan[0] || record.contents.powerSpan || record.contents.needPower),
+					'fill'        : this.util.num_default(record.contents.fillLevel),
+					'price'       : this.util.num_default(record.contents.price),
+					'speed'       : this.util.num_default(record.contents.maxSpeed || record.contents.speedLimit),
+					'weight'      : this.util.num_default(record.contents.weight),
+					'width'       : this.util.num_default(record.contents.workWidth),
 				},
-				text : {
-					'engine-high' : NUM.fmtMany(thisData.powerSpan[1], this.locale, [ST.unit.hp], true),
-					'engine-low'  : NUM.fmtMany(thisData.powerSpan[0] || thisData.needPower, this.locale, [ST.unit.hp], true),
-					'fill'        : NUM.fmtMany(thisData.fillLevel, this.locale, [ST.unit.l], true),
-					'price'       : NUM.fmtNoFrac(thisItem.price),
-					'speed'       : NUM.fmtMany(thisData.maxSpeed || thisData.speedLimit, this.locale, [ST.unit.kph], true),
-					'weight'      : NUM.fmtMany(thisData.weight, this.locale, [ST.unit.kg], true),
-					'width'       : NUM.fmtMany(thisData.workWidth, this.locale, [ST.unit.m], true),
-				},
+			}
+
+			thisObject.text = {
+				'engine-high' : this.util.num_format_single(thisObject.value['engine-high'], UNITS.hp),
+				'engine-low'  : this.util.num_format_single(thisObject.value['engine-low'], UNITS.hp),
+				'fill'        : this.util.num_format_single(thisObject.value.fill, UNITS.l),
+				'price'       : this.util.num_format_single(thisObject.value.price, UNITS.none),
+				'speed'       : this.util.num_format_single(thisObject.value.speed, UNITS.kph),
+				'weight'      : this.util.num_format_single(thisObject.value.weight, UNITS.kg),
+				'width'       : this.util.num_format_single(thisObject.value.width, UNITS.m),
 			}
 			dataObject[key] = thisObject
 		}

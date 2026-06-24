@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 class windowState {
 	overlay = null
+	locale  = 'en'
 
 	constructor() {
 		this.overlay = new bootstrap.Modal('#fileOpProgress', { backdrop : 'static', keyboard : false })
@@ -22,6 +23,16 @@ class windowState {
 		window.operations.receive('select:all',    MA.fileOpCheckAll)
 		window.operations.receive('select:none',   MA.fileOpCheckNone)
 		window.operations.receive('select:invert', MA.fileOpCheckInv)
+
+		window.i18n.lang().then((newLocale) => this.locale = newLocale)
+	}
+
+	doL10N(item) {
+		let returnText = item?.[this.locale]
+		returnText ??= item?.en
+		returnText ??= item?.de
+		returnText ??= '--'
+		return DATA.escapeSpecial(returnText)
 	}
 
 	// MARK: page build
@@ -30,13 +41,13 @@ class windowState {
 			return DATA.templateEngine('version_same', {
 				collectName : thisMod.collectName,
 				shortName   : thisMod.modRecord.fileDetail.shortName,
-				title       : DATA.escapeSpecial(thisMod.modRecord.l10n.title),
+				title       : this.doL10N(thisMod.modRecord.l10n.title),
 			})
 		}
 		const node = DATA.templateEngine('version_diff', {
 			collectName : thisMod.collectName,
 			shortName   : thisMod.modRecord.fileDetail.shortName,
-			title       : DATA.escapeSpecial(thisMod.modRecord.l10n.title),
+			title       : this.doL10N(thisMod.modRecord.l10n.title),
 			version     : thisMod.version,
 		})
 	

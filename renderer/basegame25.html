@@ -11,15 +11,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 	<link rel="stylesheet" href="inc/bootstrap.min.css">
-	<link rel="stylesheet" href="inc/fsico.css">
+	<link rel="stylesheet" href="inc/fsico25.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="inc/chart.min.js"></script>
 	<title>Base Game Data Browser</title>
 
 	<script src="renderJS/util/util_lib.js"></script>
-	<script src="renderJS/util/storeItems.js"></script>
-	<script src="renderJS/util/fillType.js"></script>
-	<script src="renderJS/util/baseGameData.js"></script>
+	<script src="renderJS/util/storeItemBuilder.js"></script>
+	<script src="renderJS/util/fillType25.js"></script>
+	<script src="renderJS/util/baseGameData_25.js"></script>
 	
 	<script src="renderJS/basegame_ui.js"></script>
 	<style>
@@ -98,7 +98,7 @@
 		<div class="sticky-top pb-2 bg-body border-bottom mb-0" >
 			<div class="row w-100" style="-webkit-app-region: drag;">
 				<div class="col-12">
-					<h2 class="ps-2 mt-2 mastHead"><i18n-text data-key="app_name"></i18n-text> <i class="fsico-ver-22"></i> <i18n-text data-key="basegame_browser"></i18n-text></h2>
+					<h2 class="ps-2 mt-2 mastHead"><i18n-text data-key="app_name"></i18n-text> <i class="fsico-ver-25"></i> <i18n-text data-key="basegame_browser"></i18n-text></h2>
 				</div>
 			</div>
 		</div>
@@ -108,17 +108,9 @@
 					<div class="fs-2 fsico-cat-brand align-self-center"></div>
 					<i18n-text class="text-end align-self-center" data-key="basegame_brand"></i18n-text>
 				</div>
-				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="vehicle">
+				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="non-place">
 					<div class="fs-2 fsico-cat-vehicle align-self-center"></div>
-					<i18n-text class="text-end align-self-center" data-key="basegame_vehicle"></i18n-text>
-				</div>
-				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="tool">
-					<div class="fs-2 fsico-cat-tool align-self-center"></div>
-					<i18n-text class="text-end align-self-center" data-key="basegame_tool"></i18n-text>
-				</div>
-				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="object">
-					<div class="fs-2 fsico-cat-object align-self-center"></div>
-					<i18n-text class="text-end align-self-center" data-key="basegame_object"></i18n-text>
+					<i18n-text class="text-end align-self-center" data-key="basegame_categories"></i18n-text>
 				</div>
 				<div class="border-top border-bottom pageClicker d-flex justify-content-between" data-type="cat" data-page="placeable">
 					<div class="fs-2 fsico-cat-placeable align-self-center"></div>

@@ -14,11 +14,10 @@
 	<link rel="stylesheet" href="inc/fsico.css">
 	<script src="inc/bootstrap.bundle.min.js"></script>
 	<script src="inc/chart.min.js"></script>
-
 	<script src="renderJS/util/util_lib.js"></script>
-	<script src="renderJS/util/storeItems.js"></script>
+	<script src="renderJS/util/storeItemBuilder.js"></script>
 	<script src="renderJS/util/fillType.js"></script>
-	<script src="renderJS/util/baseGameData19.js"></script>
+	<script src="renderJS/util/baseGameData_19.js"></script>
 	<script src="renderJS/util/key_lookup_table.js"></script>
 	<script src="renderJS/util/cropcal.js"></script>
 
@@ -121,12 +120,22 @@
 					<tr><th scope="col"><i18n-text data-key="detail_mod_author"></i18n-text></th><td class="text-end" id="mod_author"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_version"></i18n-text></th><td class="text-end" id="version"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_mh_version"></i18n-text></th><td class="text-end" id="mh_version"></td></tr>
+					<tr><th scope="col"><i18n-text data-key="detail_mod_update_source"></i18n-text></th><td class="text-end" id="update_source"></td></tr>
+					<tr><th scope="col"><i18n-text data-key="detail_mod_github_version"></i18n-text></th><td class="text-end" id="github_version"></td></tr>
+					<tr><th scope="col"><i18n-text data-key="detail_mod_update_status"></i18n-text></th><td class="text-end" id="update_status"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_size"></i18n-text></th><td class="text-end" id="filesize"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_date"></i18n-text></th><td class="text-end" id="file_date"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_has_scripts"></i18n-text></th><td class="text-end" id="has_scripts"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_store_items"></i18n-text></th><td class="text-end" id="store_items"></td></tr>
 					<tr><th scope="col"><i18n-text data-key="detail_mod_multiplayer"></i18n-text></th><td class="text-end" id="is_multiplayer"></td></tr>
 				</table>				
+				<div class="input-group input-group-sm mt-2">
+					<span class="input-group-text"><i18n-text data-key="update_source_github"></i18n-text></span>
+					<input type="text" class="form-control" id="update_source_input" placeholder="https://github.com/owner/repository">
+					<i18n-text type="button" class="btn btn-success" id="update_source_save" data-key="button_save"></i18n-text>
+					<i18n-text type="button" class="btn btn-outline-secondary" id="update_source_clear" data-key="button_clear"></i18n-text>
+					<div class="invalid-feedback"><i18n-text data-key="update_source_github_invalid"></i18n-text></div>
+				</div>
 			</div>
 		</div>
 
@@ -221,122 +230,5 @@
 			<span class="visually-hidden">Loading...</span>
 		</div>
 	</div>
-
-<template id="combo_div_source">
-	<div class="row border-bottom mb-2 comboItemEntry">
-		<div class="comboItemInfo d-none">
-			<template-var data-name="clickSource">clickSource</template-var>
-			<template-var data-name="clickType">clickType</template-var>
-			<template-var data-name="clickPage">clickPage</template-var>
-		</div>
-		<div class="text-center col-2 py-2 mt-0 pt-0 comboItemClicker">
-			<div class="store-icon-image"><template-var>iconImage</template-var></div>
-			<div class="store-icon-brand"><template-var>brandImage</template-var></div>
-		</div>
-		<div class="col-5 align-self-center text-center comboItemClicker">
-			<template-var>fullName</template-var><br>
-			<em><template-var>category</template-var></em>
-		</div>
-		<div class="col-4 align-self-center comboItemClicker">
-			<template-var>compareTerms</template-var>
-		</div>
-		<div class="text-center col-1 align-self-center comboCompareButton">
-			<i18n-text type="button" class="btn btn-warning btn-vsm float-end mt-2 comboItemAddClicker" style="margin-left: -25px; margin-right:5px;" data-key="basegame_button_comp"></i18n-text>
-		</div>
-	</div>
-</template>
-
-<template id="vehicle_info_div">
-	<div class="inset-vehicle-block vehicleInfoBlock col-12 inset-block" id="vehicle-info-parent"><div>
-		<span class="inset-block-header" name="detail_dev_info"><template-var>itemName</template-var></span>
-		<span class="inset-block-header-show-hide"><i18n-text type="button" class="btn btn-sm btn-warning action-item-compare" data-key="basegame_button_comp"></i18n-text></span>
-		<span class="inset-block-blurb-detail">
-			<small class="fst-italic"><template-var>typeDesc</template-var></small>
-			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fst-italic fw-normal"><template-var>itemTitle</template-var></small>
-			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fw-bold"><template-var>category</template-var></small>
-		</span>
-
-		<div class="inset-body">
-			<div class="row mx-2">
-				<div class="col-5 my-auto mx-auto">
-					<div class="store-icon-image"><template-var>iconImage</template-var></div>
-					<div class="store-icon-brand"><template-var>brandImage</template-var></div>
-				</div>
-				<div class="col-7">
-					<template-var>itemData</template-var>
-				</div>
-				<div class="col-12 py-2"><p class="text-center"><template-var>functions</template-var></p></div>
-				<div class="col-12 py-2 combo-list">
-					<div class="inset-inline-header">
-						<span class="inset-inline-header-text"><i18n-text data-key="combinations_title"></i18n-text> (<span class="combo_count">0</span>)</span>
-						<span class="inset-inline-header-button">
-							<i18n-text type="button" class="btn btn-warning btn-vsm action-compare-all-combo" data-key="basegame_compare_all"></i18n-text>
-						</span>
-						<span class="inset-block-combo-show-hide" style="margin-left: 10px; margin-top: -1.5rem; margin-right: auto;">
-							<i18n-text class="section_show" data-key="section_show"></i18n-text>
-							<i18n-text class="d-none section_hide" data-key="section_hide"></i18n-text>
-						</span>
-					</div>
-					<div class="combo-item-list d-none"></div>
-				</div>
-				<template-var>chartData</template-var>
-			</div>
-		</div>
-	</div></div>
-</template>
-
-<template id="prod_div">
-	<div class="row border-top mt-2">
-		<div class="col-3 text-center align-self-top border-end">
-			<div class="row py-2"><div class="col"><template-var>prodName</template-var></div></div>
-			<div class="row py-2 align-items-center"><div class="col-12 mb-1"><i style="font-size: 1.5rem" class="fsico-look-prod-cycle"></i></div><div class="col-12"><template-var>prodCycles</template-var></div></div>
-			<div class="row py-2 align-items-center"><div class="col-12 mb-1"><i style="font-size: 1.5rem" class="fsico-look-price"></i></div><div class="col-12"><template-var>prodCost</template-var></div></div>
-		</div>
-		<div class="col-9 text-center align-self-center">
-			<div class="row align-items-center"><!-- inputs -->
-				<div class="col-10">
-					<template-var>prodInputs</template-var>
-				</div>
-				<div class="col-2">
-					<i style="font-size: 1.5rem" class="fsico-look-prod-input"></i>
-				</div>
-			</div>
-			<div class="row border-top align-items-center pt-2 mt-2"><!-- outputs -->
-				<div class="col-10">
-					<template-var>prodOutput</template-var>
-				</div>
-				<div class="col-2">
-					<i style="font-size: 1.5rem" class="fsico-look-prod-output"></i>
-				</div>
-			</div>
-		</div>
-	</div>
-</template>
-
-<template id="place_div">
-	<div class="col-12 inset-block inset-placable-block"><div>
-		<span class="inset-block-header" name="detail_dev_info"><template-var>itemName</template-var></span>
-		<span class="inset-block-blurb-detail">
-			<small class="fst-italic fw-normal"><template-var>itemTitle</template-var></small>
-			<span class="fw-normal" style="font-size: 50%">-</span>
-			<small class="fw-bold"><template-var>category</template-var></small>
-		</span>
-		<div class="inset-body">
-			<div class="row mx-2">
-				<div class="col-5 my-auto mx-auto">
-					<div class="store-icon-image"><template-var>iconImage</template-var></div>
-				</div>
-				<div class="col-7">
-					<template-var>placeData</template-var>
-					<div class="prodLines"></div>
-				</div>
-				<div class="col-12 pt-2"><p class="text-center"><template-var>functions</template-var></p></div>
-			</div>
-		</div>
-	</div></div>
-</template>
-
 </body>
 </html>

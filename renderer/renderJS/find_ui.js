@@ -18,6 +18,15 @@ class windowState {
 	fullList_filter = []
 	filter_last     = ''
 	filter_length   = 0
+	locale          = 'en'
+
+	doL10N(item) {
+		let returnText = item?.[this.locale]
+		returnText ??= item?.en
+		returnText ??= item?.de
+		returnText ??= '--'
+		return DATA.escapeSpecial(returnText)
+	}
 
 	constructor() {
 		window.find_IPC.all().then((results) => { this.buildObject(results) })
@@ -85,15 +94,15 @@ class windowState {
 						this.fullList_data[mod.fileDetail.shortName] ??= {
 							author    : DATA.escapeSpecial(mod.modDesc.author),
 							collect   : [],
-							icon      : mod.modDesc.iconImageCache,
+							icon      : mod.modDesc.iconImage,
 							id        : mod.colUUID,
 							name      : mod.fileDetail.shortName,
 							search    : [
 								mod.fileDetail.shortName,
 								DATA.escapeSpecial(mod.modDesc.author),
-								DATA.escapeSpecial(mod.l10n.title),
+								this.doL10N(mod.l10n.title),
 							].join(' ').toLowerCase(),
-							title     : DATA.escapeSpecial(mod.l10n.title),
+							title     : this.doL10N(mod.l10n.title),
 						}
 						this.fullList_data[mod.fileDetail.shortName].collect.push({
 							fullId  : `${collectKey}--${mod.uuid}`,

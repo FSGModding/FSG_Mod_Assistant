@@ -628,7 +628,7 @@ class windowState {
 		if ( data !== null ) {
 			const devMap = {}
 
-			if ( typeof data.devices.device === 'object' ) {
+			if ( typeof data?.devices?.device === 'object' ) {
 				for ( const device of data.devices.device ) {
 					devMap[device.$.ID] = [this.deviceName[device.$.NAME] ?? device.$.NAME, device.$.NAME]
 				}
